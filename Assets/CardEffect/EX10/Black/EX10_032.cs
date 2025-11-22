@@ -167,7 +167,7 @@ namespace DCGO.CardEffects.EX10
 
             string SharedEffectDiscription(string tag)
             {
-                return $"[{tag}] By trashing any 1 [Mineral] or [Rock] trait card from your Digimon's digivolution cards, 1 of your such Digimon gains ＜Collision＞, ＜Piercing＞ and +3000 DP until your opponent's turn ends.";
+                return $"[{tag}] By trashing any 1 [Mineral] or [Rock] trait card from your Digimon's digivolution cards, 1 of your such Digimon gains <Collision>, <Piercing> and +3000 DP until your opponent's turn ends.";
             }
 
             bool CanSelectSource(CardSource source)

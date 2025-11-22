@@ -192,7 +192,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "When effects trash this card from a [Bagra Army] trait Digimon's digivolution cards, ＜Draw 1＞";
+                    return "When effects trash this card from a [Bagra Army] trait Digimon's digivolution cards, <Draw 1>";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

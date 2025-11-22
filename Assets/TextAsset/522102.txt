@@ -548,7 +548,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -621,7 +621,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -694,7 +694,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -769,7 +769,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While your opponent has a Digimon with no digivolution cards, this Digimon gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn] While your opponent has a Digimon with no digivolution cards, this Digimon gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -842,7 +842,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While your opponent has a Digimon with no digivolution cards, this Digimon gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn] While your opponent has a Digimon with no digivolution cards, this Digimon gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -915,7 +915,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While your opponent has a Digimon with no digivolution cards, this Digimon gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn] While your opponent has a Digimon with no digivolution cards, this Digimon gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>

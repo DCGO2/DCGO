@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[Start of Your Main Phase] By placing 1 Digimon card with the [Xros Heart]/[Blue Flare]/[Hero] trait from your hand under this Tamer, ＜Draw 1＞ (Draw 1 card from your deck) and gain 1 memory.";
+                    return "[Start of Your Main Phase] By placing 1 Digimon card with the [Xros Heart]/[Blue Flare]/[Hero] trait from your hand under this Tamer, <Draw 1> (Draw 1 card from your deck) and gain 1 memory.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

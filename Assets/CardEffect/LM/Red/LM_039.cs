@@ -83,7 +83,7 @@ namespace DCGO.CardEffects.LM
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] [Once Per Turn] Return 1 of your opponent's Digimon with 8000 DP or less to the bottom of the deck. If this effect didn't return, this Digimon gains ＜Security A. +1＞ (This Digimon checks 1 additional security card) for the turn.";
+                    return "[When Digivolving] [Once Per Turn] Return 1 of your opponent's Digimon with 8000 DP or less to the bottom of the deck. If this effect didn't return, this Digimon gains <Security A. +1> (This Digimon checks 1 additional security card) for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -180,7 +180,7 @@ namespace DCGO.CardEffects.LM
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] [Once Per Turn] Return 1 of your opponent's Digimon with 8000 DP or less to the bottom of the deck. If this effect didn't return, this Digimon gains ＜Security A. +1＞ (This Digimon checks 1 additional security card) for the turn.";
+                    return "[When Attacking] [Once Per Turn] Return 1 of your opponent's Digimon with 8000 DP or less to the bottom of the deck. If this effect didn't return, this Digimon gains <Security A. +1> (This Digimon checks 1 additional security card) for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

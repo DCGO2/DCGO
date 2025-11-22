@@ -402,7 +402,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[On Play] You may play 1 of each [Dark Masters] trait card with different names from this Digimon's digivolution cards without paying the costs. Then, all of your [Dark Masters] trait Digimon gain ＜Rush＞ for the turn. At turn end, delete the Digimon this effect played.";
+                    return "[On Play] You may play 1 of each [Dark Masters] trait card with different names from this Digimon's digivolution cards without paying the costs. Then, all of your [Dark Masters] trait Digimon gain <Rush> for the turn. At turn end, delete the Digimon this effect played.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -602,7 +602,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] You may play 1 of each [Dark Masters] trait card with different names from this Digimon's digivolution cards without paying the costs. Then, all of your [Dark Masters] trait Digimon gain ＜Rush＞ for the turn. (This Digimon can attack the turn it comes into play.) At turn end, delete the Digimon this effect played.";
+                    return "[When Digivolving] You may play 1 of each [Dark Masters] trait card with different names from this Digimon's digivolution cards without paying the costs. Then, all of your [Dark Masters] trait Digimon gain <Rush> for the turn. (This Digimon can attack the turn it comes into play.) At turn end, delete the Digimon this effect played.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

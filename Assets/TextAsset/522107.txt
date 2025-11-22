@@ -341,7 +341,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, trigger ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, trigger <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -414,7 +414,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, trigger ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, trigger <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -487,7 +487,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, trigger ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, trigger <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -560,7 +560,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, trigger ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, trigger <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -633,7 +633,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, trigger ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, trigger <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -700,7 +700,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[Your Turn] This Digimon can't attack players.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[Your Turn] This Digimon can't attack players.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1499,7 +1499,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, this Digimon gains ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, this Digimon gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1572,7 +1572,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, this Digimon gains ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, this Digimon gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1639,7 +1639,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Security Attack +1＞ (This Digimon checks 1 additional security card.)[When Attacking] Delete 1 of your opponent's Digimon with 4000 DP or less. If no Digimon was deleted by this effect, this Digimon gets +3000 DP for the turn.</dd>
+<dd><Security Attack +1> (This Digimon checks 1 additional security card.)[When Attacking] Delete 1 of your opponent's Digimon with 4000 DP or less. If no Digimon was deleted by this effect, this Digimon gets +3000 DP for the turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1710,7 +1710,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Security Attack +1＞ (This Digimon checks 1 additional security card.)＜Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.)</dd>
+<dd><Security Attack +1> (This Digimon checks 1 additional security card.)<Piercing> (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1780,7 +1780,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] 1 of your Digimon gets +2000 DP for the turn. Then, if the number of cards in your security stack is less than or equal to your opponent's, 1 of your Digimon gains ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Main] 1 of your Digimon gets +2000 DP for the turn. Then, if the number of cards in your security stack is less than or equal to your opponent's, 1 of your Digimon gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1852,7 +1852,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] 1 of your Digimon gets +2000 DP for the turn. Then, if the number of cards in your security stack is less than or equal to your opponent's, 1 of your Digimon gains ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Main] 1 of your Digimon gets +2000 DP for the turn. Then, if the number of cards in your security stack is less than or equal to your opponent's, 1 of your Digimon gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>

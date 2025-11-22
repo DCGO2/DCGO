@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDescription()
                 {
-                    return "[On Play] Until your opponent's turn ends, their effects can't reduce the DP of 1 of your [Hudie] trait Digimon, and it gains ＜Reboot＞ and ＜Blocker＞.";
+                    return "[On Play] Until your opponent's turn ends, their effects can't reduce the DP of 1 of your [Hudie] trait Digimon, and it gains <Reboot> and <Blocker>.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

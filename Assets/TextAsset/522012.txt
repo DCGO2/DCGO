@@ -124,7 +124,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Opponent's Turn] While you have another Digimon with [D-Brigade] in its traits in play, this Digimon gains ＜Reboot＞. (Unsuspend this Digimon during your opponent's unsuspend phase.)</dd>
+<dd>[Opponent's Turn] While you have another Digimon with [D-Brigade] in its traits in play, this Digimon gains <Reboot>. (Unsuspend this Digimon during your opponent's unsuspend phase.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -408,7 +408,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has [Dragon], [saur], or [Ceratopsian] in one of its traits, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has [Dragon], [saur], or [Ceratopsian] in one of its traits, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -621,7 +621,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has [Dragon], [saur], or [Ceratopsian] in one of its traits, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has [Dragon], [saur], or [Ceratopsian] in one of its traits, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -692,7 +692,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has [Imperialdramon] in its name, it gains ＜Security Attack +1＞.</dd>
+<dd>[Your Turn] While this Digimon has [Imperialdramon] in its name, it gains <Security Attack +1>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -765,7 +765,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has [Imperialdramon] in its name, it gains ＜Security Attack +1＞.</dd>
+<dd>[Your Turn] While this Digimon has [Imperialdramon] in its name, it gains <Security Attack +1>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1047,7 +1047,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 1 from [Machinedramon][On Play][When Digivolving] By placing up to 3 red and/or black level 5 cards with [Cyborg] in their traits and different card numbers from your hand and/or trash under this Digimon as its bottom digivolution cards, ＜De-Digivolve 1＞ 1 of your opponent's Digimon for each card placed by this effect.[All Turns] When this Digimon would be deleted or returned to your hand or deck, you may trash 2 level 5 cards in this Digimon's digivolution cards to prevent it from leaving play.</dd>
+<dd>Digivolve: 1 from [Machinedramon][On Play][When Digivolving] By placing up to 3 red and/or black level 5 cards with [Cyborg] in their traits and different card numbers from your hand and/or trash under this Digimon as its bottom digivolution cards, <De-Digivolve 1> 1 of your opponent's Digimon for each card placed by this effect.[All Turns] When this Digimon would be deleted or returned to your hand or deck, you may trash 2 level 5 cards in this Digimon's digivolution cards to prevent it from leaving play.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1120,7 +1120,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 1 from [Machinedramon][On Play][When Digivolving] By placing up to 3 red and/or black level 5 cards with [Cyborg] in their traits and different card numbers from your hand and/or trash under this Digimon as its bottom digivolution cards, ＜De-Digivolve 1＞ 1 of your opponent's Digimon for each card placed by this effect.[All Turns] When this Digimon would be deleted or returned to your hand or deck, you may trash 2 level 5 cards in this Digimon's digivolution cards to prevent it from leaving play.</dd>
+<dd>Digivolve: 1 from [Machinedramon][On Play][When Digivolving] By placing up to 3 red and/or black level 5 cards with [Cyborg] in their traits and different card numbers from your hand and/or trash under this Digimon as its bottom digivolution cards, <De-Digivolve 1> 1 of your opponent's Digimon for each card placed by this effect.[All Turns] When this Digimon would be deleted or returned to your hand or deck, you may trash 2 level 5 cards in this Digimon's digivolution cards to prevent it from leaving play.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1191,7 +1191,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[DigiXros -2] 5 Digimon cards w/different names + [Dragon], [saur], or [Ceratopsian] in one of its traitsOn play, place from hand/battle area under this card. Reduce play cost per card.＜Rush＞ (This Digimon may attack the turn it was played.)[On Play] Delete 1 of your opponent's Digimon with 3000 or less. For each card with [Dragon], [saur] or [Ceratopsian] in one of its traits in this Digimon's digivolution cards, add 2000 DP to the maximum DP you can choose with this effect.</dd>
+<dd>[DigiXros -2] 5 Digimon cards w/different names + [Dragon], [saur], or [Ceratopsian] in one of its traitsOn play, place from hand/battle area under this card. Reduce play cost per card.<Rush> (This Digimon may attack the turn it was played.)[On Play] Delete 1 of your opponent's Digimon with 3000 or less. For each card with [Dragon], [saur] or [Ceratopsian] in one of its traits in this Digimon's digivolution cards, add 2000 DP to the maximum DP you can choose with this effect.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1264,7 +1264,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[DigiXros -2] 5 Digimon cards w/different names + [Dragon], [saur], or [Ceratopsian] in one of its traitsOn play, place from hand/battle area under this card. Reduce play cost per card.＜Rush＞ (This Digimon may attack the turn it was played.)[On Play] Delete 1 of your opponent's Digimon with 3000 or less. For each card with [Dragon], [saur] or [Ceratopsian] in one of its traits in this Digimon's digivolution cards, add 2000 DP to the maximum DP you can choose with this effect.</dd>
+<dd>[DigiXros -2] 5 Digimon cards w/different names + [Dragon], [saur], or [Ceratopsian] in one of its traitsOn play, place from hand/battle area under this card. Reduce play cost per card.<Rush> (This Digimon may attack the turn it was played.)[On Play] Delete 1 of your opponent's Digimon with 3000 or less. For each card with [Dragon], [saur] or [Ceratopsian] in one of its traits in this Digimon's digivolution cards, add 2000 DP to the maximum DP you can choose with this effect.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1335,7 +1335,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] 1 of your blue Digimon gains ＜Jamming＞ for the turn. (This Digimon can't be deleted in battles against Security Digimon.) When played from digivolution cards, you may place 1 blue level 5 or lower Digimon card from your hand under that Digimon as its bottom digivolution card.</dd>
+<dd>[On Play] 1 of your blue Digimon gains <Jamming> for the turn. (This Digimon can't be deleted in battles against Security Digimon.) When played from digivolution cards, you may place 1 blue level 5 or lower Digimon card from your hand under that Digimon as its bottom digivolution card.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1477,7 +1477,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] 1 of your blue Digimon gains ＜Blocker＞ until the end of your opponent's turn. When played from digivolution cards, unsuspend that Digimon.</dd>
+<dd>[On Play] 1 of your blue Digimon gains <Blocker> until the end of your opponent's turn. When played from digivolution cards, unsuspend that Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1548,11 +1548,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 if name contains [Dracomon]＜Evade＞ (When this Digimon would be deleted, you may suspend it to prevent that deletion.)</dd>
+<dd>Digivolve: 2 if name contains [Dracomon]<Evade> (When this Digimon would be deleted, you may suspend it to prevent that deletion.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[All Turns] While this Digimon has [Dramon] or [Examon] in its name, it gains ＜Evade＞. (When this Digimon would be deleted, you may suspend it to prevent that deletion.)</dd>
+<dd>[All Turns] While this Digimon has [Dramon] or [Examon] in its name, it gains <Evade>. (When this Digimon would be deleted, you may suspend it to prevent that deletion.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1690,11 +1690,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from [Coredramon]＜Evade＞ (When this Digimon would be deleted, you may suspend it to prevent that deletion.)[Your Turn] [Examon] in your hand can treat this Digimon as level 6 for DNA Digivolution.[End of Your Turn] This Digimon and 1 of your other Digimon with [Dramon] in its name may DNA digivolve into a Digimon card in your hand by paying its DNA digivolve cost.</dd>
+<dd>Digivolve: 3 from [Coredramon]<Evade> (When this Digimon would be deleted, you may suspend it to prevent that deletion.)[Your Turn] [Examon] in your hand can treat this Digimon as level 6 for DNA Digivolution.[End of Your Turn] This Digimon and 1 of your other Digimon with [Dramon] in its name may DNA digivolve into a Digimon card in your hand by paying its DNA digivolve cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[All Turns] While this Digimon has [Dramon] or [Examon] in its name, it gains ＜Evade＞. (When this Digimon would be deleted, you may suspend it to prevent that deletion.)</dd>
+<dd>[All Turns] While this Digimon has [Dramon] or [Examon] in its name, it gains <Evade>. (When this Digimon would be deleted, you may suspend it to prevent that deletion.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1763,11 +1763,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from [Coredramon]＜Evade＞ (When this Digimon would be deleted, you may suspend it to prevent that deletion.)[Your Turn] [Examon] in your hand can treat this Digimon as level 6 for DNA Digivolution.[End of Your Turn] This Digimon and 1 of your other Digimon with [Dramon] in its name may DNA digivolve into a Digimon card in your hand by paying its DNA digivolve cost.</dd>
+<dd>Digivolve: 3 from [Coredramon]<Evade> (When this Digimon would be deleted, you may suspend it to prevent that deletion.)[Your Turn] [Examon] in your hand can treat this Digimon as level 6 for DNA Digivolution.[End of Your Turn] This Digimon and 1 of your other Digimon with [Dramon] in its name may DNA digivolve into a Digimon card in your hand by paying its DNA digivolve cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[All Turns] While this Digimon has [Dramon] or [Examon] in its name, it gains ＜Evade＞. (When this Digimon would be deleted, you may suspend it to prevent that deletion.)</dd>
+<dd>[All Turns] While this Digimon has [Dramon] or [Examon] in its name, it gains <Evade>. (When this Digimon would be deleted, you may suspend it to prevent that deletion.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -2191,7 +2191,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] ＜Draw 2＞. (Draw 2 cards from your deck.) Then, if this card was played by [Trial of the Four Great Dragons]'s effect, gain 2 memory.[On Deletion] If you don't have a [Trial of the Four Great Dragons] in play, you may place 1 [Trial of the Four Great Dragons] from your hand in your battle area.</dd>
+<dd>[On Play] <Draw 2>. (Draw 2 cards from your deck.) Then, if this card was played by [Trial of the Four Great Dragons]'s effect, gain 2 memory.[On Deletion] If you don't have a [Trial of the Four Great Dragons] in play, you may place 1 [Trial of the Four Great Dragons] from your hand in your battle area.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2264,7 +2264,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] ＜Draw 2＞. (Draw 2 cards from your deck.) Then, if this card was played by [Trial of the Four Great Dragons]'s effect, gain 2 memory.[On Deletion] If you don't have a [Trial of the Four Great Dragons] in play, you may place 1 [Trial of the Four Great Dragons] from your hand in your battle area.</dd>
+<dd>[On Play] <Draw 2>. (Draw 2 cards from your deck.) Then, if this card was played by [Trial of the Four Great Dragons]'s effect, gain 2 memory.[On Deletion] If you don't have a [Trial of the Four Great Dragons] in play, you may place 1 [Trial of the Four Great Dragons] from your hand in your battle area.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2483,7 +2483,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When you play a Digimon with [Four Great Dragons] in its traits or place [Trial of the Four Great Dragons] in your battle area, ＜Draw 1＞.</dd>
+<dd>[Your Turn][Once Per Turn] When you play a Digimon with [Four Great Dragons] in its traits or place [Trial of the Four Great Dragons] in your battle area, <Draw 1>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -2621,7 +2621,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] Search your security stack, reveal 1 card from it, and add it to your hand. If it's a yellow card, ＜Recovery +1 (Deck)＞. (Place the top card of your deck on top of your security stack.) Then, shuffle your security stack.</dd>
+<dd>[On Play] Search your security stack, reveal 1 card from it, and add it to your hand. If it's a yellow card, <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.) Then, shuffle your security stack.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2696,7 +2696,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Inherited Effect][Your Turn][Once Per Turn] When you play a Digimon with [Four Great Dragons] trait, 1 of those Digimon gains  ＜Rush＞ for the turn. (This Digimon may attack the turn it was played.)</dd>
+<dd>[Inherited Effect][Your Turn][Once Per Turn] When you play a Digimon with [Four Great Dragons] trait, 1 of those Digimon gains  <Rush> for the turn. (This Digimon may attack the turn it was played.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -2907,7 +2907,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] 1 of your opponent's Digimon gains ＜Security Attack -2＞ (This Digimon checks 2 fewer security cards) until the end of your opponent's turn. If you have a Digimon with [Four Sovereigns] in its traits in play, gain 2 memory.</dd>
+<dd>[On Play] 1 of your opponent's Digimon gains <Security Attack -2> (This Digimon checks 2 fewer security cards) until the end of your opponent's turn. If you have a Digimon with [Four Sovereigns] in its traits in play, gain 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2978,11 +2978,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] If you don't have a [Trial of the Four Great Dragons] in play, you may place 1 [Trial of the Four Great Dragons] from your hand in your battle area.[Opponent's Turn] While you have a Digimon with [Four Great Dragons] in its traits in play, or [Trial of the Four Great Dragons] is in your battle area, this Digimon gains ＜Blocker＞.</dd>
+<dd>[When Digivolving] If you don't have a [Trial of the Four Great Dragons] in play, you may place 1 [Trial of the Four Great Dragons] from your hand in your battle area.[Opponent's Turn] While you have a Digimon with [Four Great Dragons] in its traits in play, or [Trial of the Four Great Dragons] is in your battle area, this Digimon gains <Blocker>.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Opponent's Turn] All of your Digimon with [Four Great Dragons] in their traits gain ＜Blocker＞. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd>[Opponent's Turn] All of your Digimon with [Four Great Dragons] in their traits gain <Blocker>. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3264,7 +3264,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] All of your opponent's Digimon gain ＜Security Attack -1＞ until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.) If this card was played by [Trial of the Four Great Dragons]'s effect, all of your opponent's Digimon gain ＜Security Attack -2＞ until the end of your opponent's turn instead.[On Deletion] If you don't have a [Trial of the Four Great Dragons] in play, you may place 1 [Trial of the Four Great Dragons] from your hand in your battle area.</dd>
+<dd>[On Play] All of your opponent's Digimon gain <Security Attack -1> until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.) If this card was played by [Trial of the Four Great Dragons]'s effect, all of your opponent's Digimon gain <Security Attack -2> until the end of your opponent's turn instead.[On Deletion] If you don't have a [Trial of the Four Great Dragons] in play, you may place 1 [Trial of the Four Great Dragons] from your hand in your battle area.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3337,7 +3337,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] All of your opponent's Digimon gain ＜Security Attack -1＞ until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.) If this card was played by [Trial of the Four Great Dragons]'s effect, all of your opponent's Digimon gain ＜Security Attack -2＞ until the end of your opponent's turn instead.[On Deletion] If you don't have a [Trial of the Four Great Dragons] in play, you may place 1 [Trial of the Four Great Dragons] from your hand in your battle area.</dd>
+<dd>[On Play] All of your opponent's Digimon gain <Security Attack -1> until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.) If this card was played by [Trial of the Four Great Dragons]'s effect, all of your opponent's Digimon gain <Security Attack -2> until the end of your opponent's turn instead.[On Deletion] If you don't have a [Trial of the Four Great Dragons] in play, you may place 1 [Trial of the Four Great Dragons] from your hand in your battle area.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3623,11 +3623,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 if name contains [Dracomon]＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd>Digivolve: 2 if name contains [Dracomon]<Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[All Turns] While this Digimon has [Dramon] or [Examon] in its name, it gains ＜Blocker＞.</dd>
+<dd>[All Turns] While this Digimon has [Dramon] or [Examon] in its name, it gains <Blocker>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3765,11 +3765,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from [Coredramon]＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.) [Your Turn] [Examon] in your hand can treat this Digimon as level 6 for DNA digivolution.[End of Your Turn] This Digimon and 1 of your other Digimon with [Dramon] in its name may DNA digivolve into a Digimon card in your hand by paying its DNA digivolve cost.</dd>
+<dd>Digivolve: 3 from [Coredramon]<Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.) [Your Turn] [Examon] in your hand can treat this Digimon as level 6 for DNA digivolution.[End of Your Turn] This Digimon and 1 of your other Digimon with [Dramon] in its name may DNA digivolve into a Digimon card in your hand by paying its DNA digivolve cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[All Turns] While this Digimon has [Dramon] or [Examon] in its name, it gains ＜Blocker＞.</dd>
+<dd>[All Turns] While this Digimon has [Dramon] or [Examon] in its name, it gains <Blocker>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3838,11 +3838,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from [Coredramon]＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.) [Your Turn] [Examon] in your hand can treat this Digimon as level 6 for DNA digivolution.[End of Your Turn] This Digimon and 1 of your other Digimon with [Dramon] in its name may DNA digivolve into a Digimon card in your hand by paying its DNA digivolve cost.</dd>
+<dd>Digivolve: 3 from [Coredramon]<Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.) [Your Turn] [Examon] in your hand can treat this Digimon as level 6 for DNA digivolution.[End of Your Turn] This Digimon and 1 of your other Digimon with [Dramon] in its name may DNA digivolve into a Digimon card in your hand by paying its DNA digivolve cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[All Turns] While this Digimon has [Dramon] or [Examon] in its name, it gains ＜Blocker＞.</dd>
+<dd>[All Turns] While this Digimon has [Dramon] or [Examon] in its name, it gains <Blocker>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3980,7 +3980,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Digisorption -3＞ (When one of your Digimon digivolves into this card from your hand, you may suspend 1 of your Digimon to reduce the digivolution cost by 3.)[When Digivolving] If you have 2 or more suspended Digimon in play, unsuspend this Digimon.</dd>
+<dd><Digisorption -3> (When one of your Digimon digivolves into this card from your hand, you may suspend 1 of your Digimon to reduce the digivolution cost by 3.)[When Digivolving] If you have 2 or more suspended Digimon in play, unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4339,7 +4339,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Decoy ([D-Brigade])＞ (When one of your other Digimon with [D-Brigade] in its traits would be deleted by an opponent's effect, you may delete this Digimon to prevent that deletion.)</dd>
+<dd><Decoy ([D-Brigade])> (When one of your other Digimon with [D-Brigade] in its traits would be deleted by an opponent's effect, you may delete this Digimon to prevent that deletion.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4552,11 +4552,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Jamming＞ (This Digimon can't be deleted in battles against Security Digimon.)</dd>
+<dd><Jamming> (This Digimon can't be deleted in battles against Security Digimon.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When you play another Digimon with [D-Brigade] in its traits, it gains ＜Rush＞ for the turn. (This Digimon may attack the turn it was played.)</dd>
+<dd>[Your Turn][Once Per Turn] When you play another Digimon with [D-Brigade] in its traits, it gains <Rush> for the turn. (This Digimon may attack the turn it was played.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -4625,11 +4625,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Jamming＞ (This Digimon can't be deleted in battles against Security Digimon.)</dd>
+<dd><Jamming> (This Digimon can't be deleted in battles against Security Digimon.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When you play another Digimon with [D-Brigade] in its traits, it gains ＜Rush＞ for the turn. (This Digimon may attack the turn it was played.)</dd>
+<dd>[Your Turn][Once Per Turn] When you play another Digimon with [D-Brigade] in its traits, it gains <Rush> for the turn. (This Digimon may attack the turn it was played.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -4838,11 +4838,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] ＜De-Digivolve 1＞ 1 of your opponent's Digimon. (Trash 1 card from the top of 1 of your opponent's Digimon. Stop trashing when you would trash a level 3 card or the Digimon's last card.) Then, you may play 1 [Hina Kurihara] from your hand without paying the cost.</dd>
+<dd>[On Play] <De-Digivolve 1> 1 of your opponent's Digimon. (Trash 1 card from the top of 1 of your opponent's Digimon. Stop trashing when you would trash a level 3 card or the Digimon's last card.) Then, you may play 1 [Hina Kurihara] from your hand without paying the cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has an [On Play] effect, it gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn] While this Digimon has an [On Play] effect, it gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -4909,7 +4909,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] ＜De-Digivolve 1＞ all of your opponent's Digimon. Then, delete 1 of your opponent's Digimon with a play cost of 5 or less. If no Digimon is deleted by this effect, none of your opponent's unsuspended Digimon can digivolve until the end of your opponent's turn.[Opponent's Turn] While you have a Tamer in play, this Digimon gains ＜Blocker＞ and ＜Reboot＞.</dd>
+<dd>[On Play] <De-Digivolve 1> all of your opponent's Digimon. Then, delete 1 of your opponent's Digimon with a play cost of 5 or less. If no Digimon is deleted by this effect, none of your opponent's unsuspended Digimon can digivolve until the end of your opponent's turn.[Opponent's Turn] While you have a Tamer in play, this Digimon gains <Blocker> and <Reboot>.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4982,7 +4982,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] ＜De-Digivolve 1＞ all of your opponent's Digimon. Then, delete 1 of your opponent's Digimon with a play cost of 5 or less. If no Digimon is deleted by this effect, none of your opponent's unsuspended Digimon can digivolve until the end of your opponent's turn.[Opponent's Turn] While you have a Tamer in play, this Digimon gains ＜Blocker＞ and ＜Reboot＞.</dd>
+<dd>[On Play] <De-Digivolve 1> all of your opponent's Digimon. Then, delete 1 of your opponent's Digimon with a play cost of 5 or less. If no Digimon is deleted by this effect, none of your opponent's unsuspended Digimon can digivolve until the end of your opponent's turn.[Opponent's Turn] While you have a Tamer in play, this Digimon gains <Blocker> and <Reboot>.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5201,7 +5201,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[All Turns] While you have a red Digimon in play, this Digimon gains ＜Retaliation＞. (When this Digimon is deleted in battle, delete the Digimon it battled.)</dd>
+<dd>[All Turns] While you have a red Digimon in play, this Digimon gains <Retaliation>. (When this Digimon is deleted in battle, delete the Digimon it battled.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -5343,7 +5343,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] By deleting 1 of your other Digimon, this Digimon gains ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.)</dd>
+<dd>[When Attacking][Once Per Turn] By deleting 1 of your other Digimon, this Digimon gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -5552,7 +5552,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.) [All Turns] While this Digimon has no digivolution cards, it can't attack or block.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.) [All Turns] While this Digimon has no digivolution cards, it can't attack or block.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5838,7 +5838,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DNA Digivolution: 0 from purple Lv.5 + red Lv.5[When Digivolving] If DNA digivolving, your opponent chooses 1 of their Digimon. Delete all of their other Digimon. Then, ＜Blitz＞.[When Attacking][Once Per Turn] This Digimon gets +2000 DP for the turn. Then, this Digimon may digivolve into [Imperialdramon: Fighter Mode] in your hand for the digivolution cost.</dd>
+<dd>DNA Digivolution: 0 from purple Lv.5 + red Lv.5[When Digivolving] If DNA digivolving, your opponent chooses 1 of their Digimon. Delete all of their other Digimon. Then, <Blitz>.[When Attacking][Once Per Turn] This Digimon gets +2000 DP for the turn. Then, this Digimon may digivolve into [Imperialdramon: Fighter Mode] in your hand for the digivolution cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5911,7 +5911,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DNA Digivolution: 0 from purple Lv.5 + red Lv.5[When Digivolving] If DNA digivolving, your opponent chooses 1 of their Digimon. Delete all of their other Digimon. Then, ＜Blitz＞.[When Attacking][Once Per Turn] This Digimon gets +2000 DP for the turn. Then, this Digimon may digivolve into [Imperialdramon: Fighter Mode] in your hand for the digivolution cost.</dd>
+<dd>DNA Digivolution: 0 from purple Lv.5 + red Lv.5[When Digivolving] If DNA digivolving, your opponent chooses 1 of their Digimon. Delete all of their other Digimon. Then, <Blitz>.[When Attacking][Once Per Turn] This Digimon gets +2000 DP for the turn. Then, this Digimon may digivolve into [Imperialdramon: Fighter Mode] in your hand for the digivolution cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6267,7 +6267,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>While you have a level 6 Digimon with [Machine] in its traits in play, you may use this card without meeting its color requirements.[Main] ＜De-Digivolve 3＞ 1 of your opponent's Digimon. Then, by placing 1 card with [Cyborg] in its traits from your hand or trash under 1 of your level 6 Digimon with [Machine] in its traits as its bottom digivolution card, delete 1 of your opponent's Digimon with 6000 DP or less.</dd>
+<dd>While you have a level 6 Digimon with [Machine] in its traits in play, you may use this card without meeting its color requirements.[Main] <De-Digivolve 3> 1 of your opponent's Digimon. Then, by placing 1 card with [Cyborg] in its traits from your hand or trash under 1 of your level 6 Digimon with [Machine] in its traits as its bottom digivolution card, delete 1 of your opponent's Digimon with 6000 DP or less.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6477,7 +6477,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] ＜Draw 1＞. Then, place this card in your battle area.[Main] ＜Delay＞ (By trashing this card in your battle area, activate the effect below. You can't activate this effect the turn this card enters play.)・Play 1 Digimon card with [Four Great Dragons] in its traits from your hand without paying the cost. The Digimon played by this effect can't digivolve to level 7, and at the end of your opponent's turn, delete that Digimon.</dd>
+<dd>[Main] <Draw 1>. Then, place this card in your battle area.[Main] <Delay> (By trashing this card in your battle area, activate the effect below. You can't activate this effect the turn this card enters play.)・Play 1 Digimon card with [Four Great Dragons] in its traits from your hand without paying the cost. The Digimon played by this effect can't digivolve to level 7, and at the end of your opponent's turn, delete that Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6547,7 +6547,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] Activate 1 of the effects below. If you have a Digimon with [Examon] in its name in play, activate all of the effects below instead.・Suspend 1 of your opponent's Digimon, and 1 of your Digimon gains ＜Piercing＞ for the turn.・Unsuspend 1 of your Digimon.</dd>
+<dd>[Main] Activate 1 of the effects below. If you have a Digimon with [Examon] in its name in play, activate all of the effects below instead.・Suspend 1 of your opponent's Digimon, and 1 of your Digimon gains <Piercing> for the turn.・Unsuspend 1 of your Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6617,7 +6617,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] ＜De-Digivolve 1＞ 1 of your opponent's Digimon. (Trash 1 card from the top of 1 of your opponent's Digimon. Stop trashing when you would trash a level 3 card or the Digimon's last card.) Then, delete 1 of your opponent's Digimon with a play cost of 5 or less.</dd>
+<dd>[Main] <De-Digivolve 1> 1 of your opponent's Digimon. (Trash 1 card from the top of 1 of your opponent's Digimon. Stop trashing when you would trash a level 3 card or the Digimon's last card.) Then, delete 1 of your opponent's Digimon with a play cost of 5 or less.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6758,7 +6758,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 if name contains [Dragon Mode]＜Piercing＞[When Digivolving] By returning 1 [Imperialdramon: Dragon Mode] from this Digimon's digivolution cards to the bottom of its owner's deck, none of your opponent's [Security] effects can activate for the turn.[On Deletion] You may play 1 [Wormmon] and 1 [Veemon] from your trash without paying the costs.</dd>
+<dd>Digivolve: 2 if name contains [Dragon Mode]<Piercing>[When Digivolving] By returning 1 [Imperialdramon: Dragon Mode] from this Digimon's digivolution cards to the bottom of its owner's deck, none of your opponent's [Security] effects can activate for the turn.[On Deletion] You may play 1 [Wormmon] and 1 [Veemon] from your trash without paying the costs.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6831,7 +6831,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 if name contains [Dragon Mode]＜Piercing＞[When Digivolving] By returning 1 [Imperialdramon: Dragon Mode] from this Digimon's digivolution cards to the bottom of its owner's deck, none of your opponent's [Security] effects can activate for the turn.[On Deletion] You may play 1 [Wormmon] and 1 [Veemon] from your trash without paying the costs.</dd>
+<dd>Digivolve: 2 if name contains [Dragon Mode]<Piercing>[When Digivolving] By returning 1 [Imperialdramon: Dragon Mode] from this Digimon's digivolution cards to the bottom of its owner's deck, none of your opponent's [Security] effects can activate for the turn.[On Deletion] You may play 1 [Wormmon] and 1 [Veemon] from your trash without paying the costs.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>

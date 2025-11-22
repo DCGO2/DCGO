@@ -233,7 +233,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete a digimon, if you didnt <Recovery +1 (Deck)＞", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete a digimon, if you didnt <Recovery +1 (Deck)>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -267,7 +267,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete a digimon, if you didnt <Recovery +1 (Deck)＞", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete a digimon, if you didnt <Recovery +1 (Deck)>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

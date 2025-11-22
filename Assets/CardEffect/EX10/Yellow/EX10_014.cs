@@ -53,13 +53,13 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Give 2 of your opponent's Digimon ＜Security A. -1＞", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Give 2 of your opponent's Digimon <Security A. -1>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] Give 2 of your opponent's Digimon ＜Security A. -1＞ (This Digimon checks 1 fewer security card.) until their turn ends.";
+                    return "[On Play] [When Digivolving] Give 2 of your opponent's Digimon <Security A. -1> (This Digimon checks 1 fewer security card.) until their turn ends.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -125,13 +125,13 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Give 2 of your opponent's Digimon ＜Security A. -1＞", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Give 2 of your opponent's Digimon <Security A. -1>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Give 2 of your opponent's Digimon ＜Security A. -1＞ (This Digimon checks 1 fewer security card.) until their turn ends.";
+                    return "[When Digivolving] Give 2 of your opponent's Digimon <Security A. -1> (This Digimon checks 1 fewer security card.) until their turn ends.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

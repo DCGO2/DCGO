@@ -151,7 +151,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When any of your Digimon digivolve into a Digimon with the [Ghost] trait, by suspending this Tamer, that Digimon gains ＜Rush＞ for the turn.";
+                    return "[Your Turn] When any of your Digimon digivolve into a Digimon with the [Ghost] trait, by suspending this Tamer, that Digimon gains <Rush> for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

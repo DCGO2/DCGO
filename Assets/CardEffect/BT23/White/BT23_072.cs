@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[Hand][Main] By paying 3 cost and placing this card as the bottom digivolution card of your [King Drasil_7D6] or [Mother Eater] in the breeding area, ＜Draw 1＞.";
+                    return "[Hand][Main] By paying 3 cost and placing this card as the bottom digivolution card of your [King Drasil_7D6] or [Mother Eater] in the breeding area, <Draw 1>.";
                 }
 
                 bool IsProperDigimonInBreeding(Permanent targetPermanent)

@@ -333,7 +333,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Your Turn][Once Per Turn] When one of your effects places a digivolution card under this Digimon, this Digimon gets +3000 DP and ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.)[When Attacking] Reveal the top 3 cards of your deck. You may play 1 Digimon card with [Legend-Arms] in its traits and a play cost of 7 or less among them without paying its memory cost. Place the rest at the bottom of your deck in any order.</dd>
+<dd>[Your Turn][Once Per Turn] When one of your effects places a digivolution card under this Digimon, this Digimon gets +3000 DP and <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.)[When Attacking] Reveal the top 3 cards of your deck. You may play 1 Digimon card with [Legend-Arms] in its traits and a play cost of 7 or less among them without paying its memory cost. Place the rest at the bottom of your deck in any order.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -404,7 +404,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DNA Digivolution: 0 from red Lv.6 + black Lv.6[When Digivolving] ＜Blitz＞ (This Digimon can attack when your opponent has 1 or more memory.) When DNA digivolving, for every 4 cards in this Digimon's digivolution cards, delete 1 of your opponent's Digimon with a play cost of 20 or less and trash the top card of your opponent's security stack.[All Turns][Once Per Turn] When a card is removed from a player's security stack, unsuspend this Digimon.</dd>
+<dd>DNA Digivolution: 0 from red Lv.6 + black Lv.6[When Digivolving] <Blitz> (This Digimon can attack when your opponent has 1 or more memory.) When DNA digivolving, for every 4 cards in this Digimon's digivolution cards, delete 1 of your opponent's Digimon with a play cost of 20 or less and trash the top card of your opponent's security stack.[All Turns][Once Per Turn] When a card is removed from a player's security stack, unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -621,7 +621,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Opponent's Turn] While you have a Digimon that's red or has [Legend-Arms] in its traits in play, this Digimon gains ＜Blocker＞. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd>[Opponent's Turn] While you have a Digimon that's red or has [Legend-Arms] in its traits in play, this Digimon gains <Blocker>. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -759,11 +759,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] By placing this Digimon under 1 of your other Digimon that's red or has [Legend-Arms] in its traits as its bottom digivolution card, 1 of your Digimon gains ＜Reboot＞ until the end of your opponent's turn. (Unsuspend this Digimon during your opponent's unsuspend phase.)</dd>
+<dd>[On Play] By placing this Digimon under 1 of your other Digimon that's red or has [Legend-Arms] in its traits as its bottom digivolution card, 1 of your Digimon gains <Reboot> until the end of your opponent's turn. (Unsuspend this Digimon during your opponent's unsuspend phase.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Opponent's Turn] While you have a Digimon that's red or has [Legend-Arms] in its traits in play, this Digimon gains ＜Blocker＞. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd>[Opponent's Turn] While you have a Digimon that's red or has [Legend-Arms] in its traits in play, this Digimon gains <Blocker>. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1112,7 +1112,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] You may play 1 Digimon card with [Legend-Arms] in its traits and a play cost of 7 or less in your hand without paying its memory cost. Then, place this card in your Battle Area.[Main] ＜Delay＞ (Trash this card in your battle area to activate the effect below. You can't activate this effect the turn this card enters play.)・Reveal the top 4 cards of your deck. Place those cards on the top or bottom of your deck in any order.</dd>
+<dd>[Main] You may play 1 Digimon card with [Legend-Arms] in its traits and a play cost of 7 or less in your hand without paying its memory cost. Then, place this card in your Battle Area.[Main] <Delay> (Trash this card in your battle area to activate the effect below. You can't activate this effect the turn this card enters play.)・Reveal the top 4 cards of your deck. Place those cards on the top or bottom of your deck in any order.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>

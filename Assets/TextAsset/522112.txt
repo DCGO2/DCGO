@@ -617,11 +617,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Security Attack +1＞ (This Digimon checks 1 additional security card.)</dd>
+<dd><Security Attack +1> (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -688,7 +688,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] ＜Blitz＞ (This Digimon can attack when your opponent has 1 or more memory.)[When Attacking] You may play 1 Digimon card with [Sistermon] in its name from your hand without paying its memory cost.[Your Turn][Once Per Turn] When you play another Digimon by an effect, this Digimon gets +3000 DP and gains ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.)</dd>
+<dd>[When Digivolving] <Blitz> (This Digimon can attack when your opponent has 1 or more memory.)[When Attacking] You may play 1 Digimon card with [Sistermon] in its name from your hand without paying its memory cost.[Your Turn][Once Per Turn] When you play another Digimon by an effect, this Digimon gets +3000 DP and gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -759,7 +759,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] You may play 1 [Huckmon] or 1 Digimon card with [Sistermon] in its name in your trash without paying its memory cost.[Your Turn][Once Per Turn] When you play another Digimon by an effect, ＜De-Digivolve 1＞ up to 2 of your opponent's Digimon. (Trash 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)</dd>
+<dd>[When Digivolving] You may play 1 [Huckmon] or 1 Digimon card with [Sistermon] in its name in your trash without paying its memory cost.[Your Turn][Once Per Turn] When you play another Digimon by an effect, <De-Digivolve 1> up to 2 of your opponent's Digimon. (Trash 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -830,7 +830,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] By trashing 1 card in your hand, ＜Draw 2＞. (Draw 2 cards from your deck.)[All Turns] While you have a Digimon in play with [Huckmon] in its name or [Royal Knight] in its traits, this Digimon gains ＜Decoy (Red/Black)＞.(When one of your other red or black Digimon would be deleted by an opponent's effect, you may delete this Digimon to prevent that deletion.)</dd>
+<dd>[On Play] By trashing 1 card in your hand, <Draw 2>. (Draw 2 cards from your deck.)[All Turns] While you have a Digimon in play with [Huckmon] in its name or [Royal Knight] in its traits, this Digimon gains <Decoy (Red/Black)>.(When one of your other red or black Digimon would be deleted by an opponent's effect, you may delete this Digimon to prevent that deletion.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -901,7 +901,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] Reveal the top 3 cards of your deck. Add 1 card with [Huckmon] in its name or [Royal Knight] in its traits among them to your hand. Trash the rest.[All Turns] All of your Digimon with [Huckmon] in their names and [Royal Knight] in their traits gain ＜Reboot＞. (Unsuspend this Digimon during your opponent's unsuspend phase.)*Also treat as if name is [Sistermon Noir] and traits include [Virus].</dd>
+<dd>[On Play] Reveal the top 3 cards of your deck. Add 1 card with [Huckmon] in its name or [Royal Knight] in its traits among them to your hand. Trash the rest.[All Turns] All of your Digimon with [Huckmon] in their names and [Royal Knight] in their traits gain <Reboot>. (Unsuspend this Digimon during your opponent's unsuspend phase.)*Also treat as if name is [Sistermon Noir] and traits include [Virus].</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -971,7 +971,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] 1 of your Digimon gets +2000 DP for the turn. Then, if you have a Digimon with [Huckmon] in its name or [Royal Knight] in its traits in play, gain 1 memory, and 1 of your Digimon gains ＜Piercing＞ for the turn. (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.)</dd>
+<dd>[Main] 1 of your Digimon gets +2000 DP for the turn. Then, if you have a Digimon with [Huckmon] in its name or [Royal Knight] in its traits in play, gain 1 memory, and 1 of your Digimon gains <Piercing> for the turn. (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1041,7 +1041,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] Reveal the top 3 cards of your deck. Add 1 card with [Huckmon] or [Sistermon] in its name or [Royal Knight] in its traits among them to your hand. Trash the rest. Then, place this card in your Battle Area.[Main] ＜Delay＞ (Trash this card in your battle area to activate the effect below. You can't activate this effect the turn this card enters play.)・The next time one of your Digimon would digivolve this turn, reduce the digivolution cost by 1.</dd>
+<dd>[Main] Reveal the top 3 cards of your deck. Add 1 card with [Huckmon] or [Sistermon] in its name or [Royal Knight] in its traits among them to your hand. Trash the rest. Then, place this card in your Battle Area.[Main] <Delay> (Trash this card in your battle area to activate the effect below. You can't activate this effect the turn this card enters play.)・The next time one of your Digimon would digivolve this turn, reduce the digivolution cost by 1.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>

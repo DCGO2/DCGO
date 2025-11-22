@@ -124,7 +124,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If your opponent has 2 or more Digimon in play, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking][Once Per Turn] If your opponent has 2 or more Digimon in play, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -195,7 +195,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking] If this Digimon has [Xros Heart] in its traits, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking] If this Digimon has [Xros Heart] in its traits, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -268,7 +268,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking] If this Digimon has [Xros Heart] in its traits, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking] If this Digimon has [Xros Heart] in its traits, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -341,7 +341,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking] If this Digimon has [Xros Heart] in its traits, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking] If this Digimon has [Xros Heart] in its traits, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -554,7 +554,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Opponent's Turn] When an effect trashes this digivolution card, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Opponent's Turn] When an effect trashes this digivolution card, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -692,11 +692,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from Lv.2 w/[Xros Heart] in traits[On Play] Reveal the top 3 cards of your deck. Add 1 Digimon card and 1 Tamer card―both with [Xros Heart] in their traits―among them to your hand. Place the rest at the bottom of your deck in any order.<br>[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>Digivolve: 0 from Lv.2 w/[Xros Heart] in traits[On Play] Reveal the top 3 cards of your deck. Add 1 Digimon card and 1 Tamer card―both with [Xros Heart] in their traits―among them to your hand. Place the rest at the bottom of your deck in any order.<br>[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has [Shoutmon] in its name, it gains ＜Rush＞. (This Digimon may attack the turn it was played.)</dd>
+<dd>[Your Turn] While this Digimon has [Shoutmon] in its name, it gains <Rush>. (This Digimon may attack the turn it was played.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -763,7 +763,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -2: [Shoutmon] + [Ballistamon] + [Dorulumon] + [Starmons] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.＜Material Save 2＞ (When this Digimon is deleted, you may place 2 cards in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)<br>[On Play] ＜Draw 2＞. (Draw 2 cards from your deck.)<br>[End of Attack] By placing all digivolution cards from under this Digimon under 1 of your Tamers, unsuspend 1 of your Tamers, and delete this Digimon.</dd>
+<dd>DigiXros -2: [Shoutmon] + [Ballistamon] + [Dorulumon] + [Starmons] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.<Material Save 2> (When this Digimon is deleted, you may place 2 cards in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)<br>[On Play] <Draw 2>. (Draw 2 cards from your deck.)<br>[End of Attack] By placing all digivolution cards from under this Digimon under 1 of your Tamers, unsuspend 1 of your Tamers, and delete this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -905,7 +905,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.4 w/[Gammamon] in name[Your Turn][Once Per Turn] When one of your Tamers becomes suspended, this Digimon gets +2000 DP for the turn. Then, if this Digimon has 12000 DP or more, it gains ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.)<br>[All Turns] This Digimon gains all effects of cards with [Gammamon] in their names in this Digimon's digivolution cards.</dd>
+<dd>Digivolve: 3 from Lv.4 w/[Gammamon] in name[Your Turn][Once Per Turn] When one of your Tamers becomes suspended, this Digimon gets +2000 DP for the turn. Then, if this Digimon has 12000 DP or more, it gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.)<br>[All Turns] This Digimon gains all effects of cards with [Gammamon] in their names in this Digimon's digivolution cards.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -978,7 +978,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.4 w/[Gammamon] in name[Your Turn][Once Per Turn] When one of your Tamers becomes suspended, this Digimon gets +2000 DP for the turn. Then, if this Digimon has 12000 DP or more, it gains ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.)<br>[All Turns] This Digimon gains all effects of cards with [Gammamon] in their names in this Digimon's digivolution cards.</dd>
+<dd>Digivolve: 3 from Lv.4 w/[Gammamon] in name[Your Turn][Once Per Turn] When one of your Tamers becomes suspended, this Digimon gets +2000 DP for the turn. Then, if this Digimon has 12000 DP or more, it gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.)<br>[All Turns] This Digimon gains all effects of cards with [Gammamon] in their names in this Digimon's digivolution cards.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1049,7 +1049,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -2: [Shoutmon X4] + [Beelzemon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.＜Armor Purge＞<br>[On Play][When Digivolving] You may place 1 Digimon card with [Xros Heart] in its traits from your hand or from under one of your Tamers under this Digimon as its bottom digivolution card. Then, if [Beelzemon] is in this Digimon's digivolution cards, return 2 cards with [Xros Heart] in their traits from your trash to your hand.</dd>
+<dd>DigiXros -2: [Shoutmon X4] + [Beelzemon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.<Armor Purge><br>[On Play][When Digivolving] You may place 1 Digimon card with [Xros Heart] in its traits from your hand or from under one of your Tamers under this Digimon as its bottom digivolution card. Then, if [Beelzemon] is in this Digimon's digivolution cards, return 2 cards with [Xros Heart] in their traits from your trash to your hand.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1120,7 +1120,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -2: [Shoutmon] + [Ballistamon] + [Dorulumon] + [Starmons] + [Sparrowmon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.＜Security Attack +1＞<br>＜Blocker＞<br>＜Material Save 3＞ (When this Digimon is deleted, you may place 3 cards in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)</dd>
+<dd>DigiXros -2: [Shoutmon] + [Ballistamon] + [Dorulumon] + [Starmons] + [Sparrowmon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.<Security Attack +1><br><Blocker><br><Material Save 3> (When this Digimon is deleted, you may place 3 cards in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1193,7 +1193,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -2: [Shoutmon] + [Ballistamon] + [Dorulumon] + [Starmons] + [Sparrowmon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.＜Security Attack +1＞<br>＜Blocker＞<br>＜Material Save 3＞ (When this Digimon is deleted, you may place 3 cards in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)</dd>
+<dd>DigiXros -2: [Shoutmon] + [Ballistamon] + [Dorulumon] + [Starmons] + [Sparrowmon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.<Security Attack +1><br><Blocker><br><Material Save 3> (When this Digimon is deleted, you may place 3 cards in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1264,7 +1264,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] ＜Blitz＞ (If your opponent has 1 or more memory, this Digimon may attack.)<br>[Your Turn] This Digimon gets +2000 DP.</dd>
+<dd>[When Digivolving] <Blitz> (If your opponent has 1 or more memory, this Digimon may attack.)<br>[Your Turn] This Digimon gets +2000 DP.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1335,7 +1335,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -2: [Shoutmon X5] + [Beelzemon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.＜Blocker＞ ＜Armor Purge＞<br>[On Play][When Digivolving] You may place 1 Digimon card with [Xros Heart] in its traits from your hand or from under one of your Tamers under this Digimon as its bottom digivolution card. Then, if [Beelzemon] is in this Digimon's digivolution cards, you may play 1 level 4 or lower Digimon card with [Xros Heart] in its traits from your trash without paying its cost.</dd>
+<dd>DigiXros -2: [Shoutmon X5] + [Beelzemon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.<Blocker> <Armor Purge><br>[On Play][When Digivolving] You may place 1 Digimon card with [Xros Heart] in its traits from your hand or from under one of your Tamers under this Digimon as its bottom digivolution card. Then, if [Beelzemon] is in this Digimon's digivolution cards, you may play 1 level 4 or lower Digimon card with [Xros Heart] in its traits from your trash without paying its cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1406,7 +1406,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from [Jesmon]＜Piercing＞<br>[When Digivolving] You may play 1 Digimon card with [Sistermon] in its name from your hand or trash without paying its memory cost. Then, if [Jesmon] is in this Digimon's digivolution cards or you have a Digimon with [Sistermon] in its name in play, until the end of your opponent's turn, all of your Digimon may also attack unsuspended Digimon and get +2000 DP.</dd>
+<dd>Digivolve: 0 from [Jesmon]<Piercing><br>[When Digivolving] You may play 1 Digimon card with [Sistermon] in its name from your hand or trash without paying its memory cost. Then, if [Jesmon] is in this Digimon's digivolution cards or you have a Digimon with [Sistermon] in its name in play, until the end of your opponent's turn, all of your Digimon may also attack unsuspended Digimon and get +2000 DP.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1479,7 +1479,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from [Jesmon]＜Piercing＞<br>[When Digivolving] You may play 1 Digimon card with [Sistermon] in its name from your hand or trash without paying its memory cost. Then, if [Jesmon] is in this Digimon's digivolution cards or you have a Digimon with [Sistermon] in its name in play, until the end of your opponent's turn, all of your Digimon may also attack unsuspended Digimon and get +2000 DP.</dd>
+<dd>Digivolve: 0 from [Jesmon]<Piercing><br>[When Digivolving] You may play 1 Digimon card with [Sistermon] in its name from your hand or trash without paying its memory cost. Then, if [Jesmon] is in this Digimon's digivolution cards or you have a Digimon with [Sistermon] in its name in play, until the end of your opponent's turn, all of your Digimon may also attack unsuspended Digimon and get +2000 DP.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1692,7 +1692,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] Reveal the top 4 cards of your deck. Add 2 cards with [Blue Flare] in their traits among them to your hand. Place the rest at the bottom of your deck in any order. If you have a [Kiriha Aonuma] in play, you may return 1 [MetalGreymon] from your trash to your hand instead.<br>[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>[On Play] Reveal the top 4 cards of your deck. Add 2 cards with [Blue Flare] in their traits among them to your hand. Place the rest at the bottom of your deck in any order. If you have a [Kiriha Aonuma] in play, you may return 1 [MetalGreymon] from your trash to your hand instead.<br>[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1763,7 +1763,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] ＜Draw 1＞. (Draw 1 card from your deck.) Then, for each Digimon your opponent has in play, ＜Draw 1＞.<br>[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>[On Play] <Draw 1>. (Draw 1 card from your deck.) Then, for each Digimon your opponent has in play, <Draw 1>.<br>[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1834,7 +1834,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] If you have a [Kiriha Aonuma] in play, you may return 1 [MetalGreymon] from your trash to your hand. If you don't have a [Kiriha Aonuma] in play, you may play 1 [Kiriha Aonuma] from your hand without paying its memory cost.<br>[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>[On Play] If you have a [Kiriha Aonuma] in play, you may return 1 [MetalGreymon] from your trash to your hand. If you don't have a [Kiriha Aonuma] in play, you may play 1 [Kiriha Aonuma] from your hand without paying its memory cost.<br>[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1976,7 +1976,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] If you have 6 or fewer cards in your hand, ＜Draw 2＞. (Draw 2 cards from your deck.)<br>[When Attacking][Once Per Turn] If you have 8 or more cards in your hand, by trashing 2 cards in your hand, unsuspend this Digimon.</dd>
+<dd>[When Digivolving] If you have 6 or fewer cards in your hand, <Draw 2>. (Draw 2 cards from your deck.)<br>[When Attacking][Once Per Turn] If you have 8 or more cards in your hand, by trashing 2 cards in your hand, unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2049,7 +2049,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] If you have 6 or fewer cards in your hand, ＜Draw 2＞. (Draw 2 cards from your deck.)<br>[When Attacking][Once Per Turn] If you have 8 or more cards in your hand, by trashing 2 cards in your hand, unsuspend this Digimon.</dd>
+<dd>[When Digivolving] If you have 6 or fewer cards in your hand, <Draw 2>. (Draw 2 cards from your deck.)<br>[When Attacking][Once Per Turn] If you have 8 or more cards in your hand, by trashing 2 cards in your hand, unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2120,7 +2120,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -2: [Greymon] + [MailBirdramon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.＜Material Save 2＞ (When this Digimon is deleted, you may place 2 cards in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)<br>[On Play] This Digimon gains ＜Rush＞ for the turn. Then, if DigiXrosing, 3 of your opponent's Digimon with digivolution cards less than or equal to this Digimon's digivolution cards can't attack or block until the end of your opponent's turn.</dd>
+<dd>DigiXros -2: [Greymon] + [MailBirdramon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.<Material Save 2> (When this Digimon is deleted, you may place 2 cards in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)<br>[On Play] This Digimon gains <Rush> for the turn. Then, if DigiXrosing, 3 of your opponent's Digimon with digivolution cards less than or equal to this Digimon's digivolution cards can't attack or block until the end of your opponent's turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2193,7 +2193,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -2: [Greymon] + [MailBirdramon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.＜Material Save 2＞ (When this Digimon is deleted, you may place 2 cards in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)<br>[On Play] This Digimon gains ＜Rush＞ for the turn. Then, if DigiXrosing, 3 of your opponent's Digimon with digivolution cards less than or equal to this Digimon's digivolution cards can't attack or block until the end of your opponent's turn.</dd>
+<dd>DigiXros -2: [Greymon] + [MailBirdramon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.<Material Save 2> (When this Digimon is deleted, you may place 2 cards in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)<br>[On Play] This Digimon gains <Rush> for the turn. Then, if DigiXrosing, 3 of your opponent's Digimon with digivolution cards less than or equal to this Digimon's digivolution cards can't attack or block until the end of your opponent's turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2335,7 +2335,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -2: [MetalGreymon] + [Deckerdramon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.＜Armor Purge＞<br>[On Play][When Digivolving] You may place 1 Digimon card with [Blue Flare] in its traits from your hand or from under one of your Tamers under this Digimon as its bottom digivolution card. Then, if [Deckerdramon] is in this Digimon's digivolution cards, 1 of your opponent's Digimon can't attack or block until the end of your opponent's turn.</dd>
+<dd>DigiXros -2: [MetalGreymon] + [Deckerdramon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.<Armor Purge><br>[On Play][When Digivolving] You may place 1 Digimon card with [Blue Flare] in its traits from your hand or from under one of your Tamers under this Digimon as its bottom digivolution card. Then, if [Deckerdramon] is in this Digimon's digivolution cards, 1 of your opponent's Digimon can't attack or block until the end of your opponent's turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2408,7 +2408,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -2: [MetalGreymon] + [Deckerdramon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.＜Armor Purge＞<br>[On Play][When Digivolving] You may place 1 Digimon card with [Blue Flare] in its traits from your hand or from under one of your Tamers under this Digimon as its bottom digivolution card. Then, if [Deckerdramon] is in this Digimon's digivolution cards, 1 of your opponent's Digimon can't attack or block until the end of your opponent's turn.</dd>
+<dd>DigiXros -2: [MetalGreymon] + [Deckerdramon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.<Armor Purge><br>[On Play][When Digivolving] You may place 1 Digimon card with [Blue Flare] in its traits from your hand or from under one of your Tamers under this Digimon as its bottom digivolution card. Then, if [Deckerdramon] is in this Digimon's digivolution cards, 1 of your opponent's Digimon can't attack or block until the end of your opponent's turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2550,7 +2550,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br>[When Digivolving] Unsuspend this Digimon.<br>[Opponent's Turn][Once Per Turn] When this Digimon deletes an opponent's Digimon in battle, unsuspend this Digimon.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br>[When Digivolving] Unsuspend this Digimon.<br>[Opponent's Turn][Once Per Turn] When this Digimon deletes an opponent's Digimon in battle, unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2621,11 +2621,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from Lv.2 w/[Xros Heart] in traits[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>Digivolve: 0 from Lv.2 w/[Xros Heart] in traits[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking] If this Digimon has [Shoutmon] in its name, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking] If this Digimon has [Shoutmon] in its name, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -2692,7 +2692,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] 1 of your opponent's level 5 or lower Digimon gains ＜Security Attack -1＞ until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.)</dd>
+<dd>[On Play] 1 of your opponent's level 5 or lower Digimon gains <Security Attack -1> until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2763,7 +2763,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from [Bibimon][Opponent's Turn] While you have 3 or fewer security cards, this Digimon gains ＜Blocker＞. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd>Digivolve: 0 from [Bibimon][Opponent's Turn] While you have 3 or fewer security cards, this Digimon gains <Blocker>. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2976,7 +2976,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/[Xros Heart] in traits[On Play] If you have another Digimon or Tamer with [Xros Heart] in its traits in play, 1 of your opponent's Digimon gets -3000 DP until the end of your opponent's turn.<br>[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>Digivolve: 2 from Lv.3 w/[Xros Heart] in traits[On Play] If you have another Digimon or Tamer with [Xros Heart] in its traits in play, 1 of your opponent's Digimon gets -3000 DP until the end of your opponent's turn.<br>[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3051,7 +3051,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] 1 of your opponent's Digimon gains ＜Security Attack -1＞ until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.)</dd>
+<dd>[When Attacking][Once Per Turn] 1 of your opponent's Digimon gains <Security Attack -1> until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3118,7 +3118,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] You may activate 1 of the effects below.<br>・Return 1 Option card with [Plug-In] in its name from your trash to your hand.<br>・By trashing 1 Option card with [Plug-In] in its name in your hand, ＜Draw 2＞. (Draw 2 cards from your deck.)</dd>
+<dd>[When Digivolving] You may activate 1 of the effects below.<br>・Return 1 Option card with [Plug-In] in its name from your trash to your hand.<br>・By trashing 1 Option card with [Plug-In] in its name in your hand, <Draw 2>. (Draw 2 cards from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3260,11 +3260,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] 1 of your opponent's Digimon gains ＜Security Attack -1＞ until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.)</dd>
+<dd>[When Digivolving] 1 of your opponent's Digimon gains <Security Attack -1> until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] 1 of your opponent's Digimon gains ＜Security Attack -1＞ until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.)</dd>
+<dd>[When Attacking][Once Per Turn] 1 of your opponent's Digimon gains <Security Attack -1> until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3402,7 +3402,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] If you have 2 or fewer security cards, ＜Recovery +1 (Deck)＞. (Place the top card of your deck on top of your security stack.)<br>[When Attacking][Once Per Turn] If you have 3 or more security cards, 1 of your opponent's Digimon gets -5000 DP for the turn. If you have 3 or fewer security cards, gain 2 memory.</dd>
+<dd>[When Digivolving] If you have 2 or fewer security cards, <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)<br>[When Attacking][Once Per Turn] If you have 3 or more security cards, 1 of your opponent's Digimon gets -5000 DP for the turn. If you have 3 or fewer security cards, gain 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3617,7 +3617,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] All of your opponent's Digimon gain ＜Security Attack -1＞ until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.)<br>[Opponent's Turn] All of your opponent's Digimon with ＜Security Attack＞ can't attack this Digimon and can't activate [When Attacking] and [When Digivolving] effects.</dd>
+<dd>[When Digivolving] All of your opponent's Digimon gain <Security Attack -1> until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.)<br>[Opponent's Turn] All of your opponent's Digimon with <Security Attack> can't attack this Digimon and can't activate [When Attacking] and [When Digivolving] effects.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3690,7 +3690,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] All of your opponent's Digimon gain ＜Security Attack -1＞ until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.)<br>[Opponent's Turn] All of your opponent's Digimon with ＜Security Attack＞ can't attack this Digimon and can't activate [When Attacking] and [When Digivolving] effects.</dd>
+<dd>[When Digivolving] All of your opponent's Digimon gain <Security Attack -1> until the end of your opponent's turn. (This Digimon checks 1 fewer security cards.)<br>[Opponent's Turn] All of your opponent's Digimon with <Security Attack> can't attack this Digimon and can't activate [When Attacking] and [When Digivolving] effects.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3832,11 +3832,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Your Turn][Once Per Turn] When you play a green Tamer, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] When you play a green Tamer, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When an opponent's Digimon becomes suspended, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] When an opponent's Digimon becomes suspended, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3905,11 +3905,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Your Turn][Once Per Turn] When you play a green Tamer, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] When you play a green Tamer, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When an opponent's Digimon becomes suspended, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] When an opponent's Digimon becomes suspended, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -4193,7 +4193,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When an effect suspends one of your Digimon, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] When an effect suspends one of your Digimon, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -4260,11 +4260,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/[Xros Heart] in traits[Opponent's Turn] While you have another Digimon or Tamer with [Xros Heart] in its traits in play, this Digimon gains ＜Blocker＞. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br>[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>Digivolve: 2 from Lv.3 w/[Xros Heart] in traits[Opponent's Turn] While you have another Digimon or Tamer with [Xros Heart] in its traits in play, this Digimon gains <Blocker>. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br>[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has [Shoutmon] in its name, it gains ＜Piercing＞. (When this Digimon attacks and deletes an opponent's Digimon, it performs any security checks it normally would.)</dd>
+<dd>[Your Turn] While this Digimon has [Shoutmon] in its name, it gains <Piercing>. (When this Digimon attacks and deletes an opponent's Digimon, it performs any security checks it normally would.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -4331,7 +4331,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from [Gammamon]＜Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon, it performs any security checks it normally would.)</dd>
+<dd>Digivolve: 2 from [Gammamon]<Piercing> (When this Digimon attacks and deletes an opponent's Digimon, it performs any security checks it normally would.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4473,7 +4473,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Digisorption -2＞ (When one of your Digimon would digivolve into this card from your hand, you may suspend 1 of your Digimon to reduce digivolution cost by 2.)<br>[Opponent's Turn][Once Per Turn] When an opponent's Digimon attacks, you may switch the target of attack to 1 of your suspended Digimon.</dd>
+<dd><Digisorption -2> (When one of your Digimon would digivolve into this card from your hand, you may suspend 1 of your Digimon to reduce digivolution cost by 2.)<br>[Opponent's Turn][Once Per Turn] When an opponent's Digimon attacks, you may switch the target of attack to 1 of your suspended Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4901,7 +4901,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] You may suspend 1 of your Digimon. Then, gain 1 memory for each suspended Digimon with [Vegetation] or [Fairy] in their traits you have in play. If you gain 2 or more memory by this effect, unsuspend this Digimon and it gains ＜Piercing＞ for the turn.<br>[Your Turn] For every 2 suspended Digimon you have in play, this Digimon gets +2000 DP and gains ＜Security Attack +1＞.</dd>
+<dd>[When Digivolving] You may suspend 1 of your Digimon. Then, gain 1 memory for each suspended Digimon with [Vegetation] or [Fairy] in their traits you have in play. If you gain 2 or more memory by this effect, unsuspend this Digimon and it gains <Piercing> for the turn.<br>[Your Turn] For every 2 suspended Digimon you have in play, this Digimon gets +2000 DP and gains <Security Attack +1>.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4974,7 +4974,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] You may suspend 1 of your Digimon. Then, gain 1 memory for each suspended Digimon with [Vegetation] or [Fairy] in their traits you have in play. If you gain 2 or more memory by this effect, unsuspend this Digimon and it gains ＜Piercing＞ for the turn.<br>[Your Turn] For every 2 suspended Digimon you have in play, this Digimon gets +2000 DP and gains ＜Security Attack +1＞.</dd>
+<dd>[When Digivolving] You may suspend 1 of your Digimon. Then, gain 1 memory for each suspended Digimon with [Vegetation] or [Fairy] in their traits you have in play. If you gain 2 or more memory by this effect, unsuspend this Digimon and it gains <Piercing> for the turn.<br>[Your Turn] For every 2 suspended Digimon you have in play, this Digimon gets +2000 DP and gains <Security Attack +1>.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5116,7 +5116,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] By placing this Digimon under 1 of your Digimon with [Legend-Arms] or [Xros Heart] in its traits as its bottom digivolution card, ＜De-Digivolve 1＞ 1 of your opponent's Digimon. (Trash 1 card from the top of 1 of your opponent's Digimon. Stop trashing when you would trash a level 3 card or the Digimon's last card.)</dd>
+<dd>[On Play] By placing this Digimon under 1 of your Digimon with [Legend-Arms] or [Xros Heart] in its traits as its bottom digivolution card, <De-Digivolve 1> 1 of your opponent's Digimon. (Trash 1 card from the top of 1 of your opponent's Digimon. Stop trashing when you would trash a level 3 card or the Digimon's last card.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5187,11 +5187,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from Lv.2 w/[Xros Heart] in traits[All Turns] While you have another Digimon or Tamer with [Xros Heart] or [Twilight] in its traits in play, this Digimon gets +3000 DP.<br>[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>Digivolve: 0 from Lv.2 w/[Xros Heart] in traits[All Turns] While you have another Digimon or Tamer with [Xros Heart] or [Twilight] in its traits in play, this Digimon gets +3000 DP.<br>[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Opponent's Turn] While this Digimon has [Shoutmon] or [Mervamon] in its name, it gains ＜Reboot＞. (Unsuspend this Digimon during your opponent's unsuspend phase.)</dd>
+<dd>[Opponent's Turn] While this Digimon has [Shoutmon] or [Mervamon] in its name, it gains <Reboot>. (Unsuspend this Digimon during your opponent's unsuspend phase.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -5260,11 +5260,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from Lv.2 w/[Xros Heart] in traits[All Turns] While you have another Digimon or Tamer with [Xros Heart] or [Twilight] in its traits in play, this Digimon gets +3000 DP.<br>[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>Digivolve: 0 from Lv.2 w/[Xros Heart] in traits[All Turns] While you have another Digimon or Tamer with [Xros Heart] or [Twilight] in its traits in play, this Digimon gets +3000 DP.<br>[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Opponent's Turn] While this Digimon has [Shoutmon] or [Mervamon] in its name, it gains ＜Reboot＞. (Unsuspend this Digimon during your opponent's unsuspend phase.)</dd>
+<dd>[Opponent's Turn] While this Digimon has [Shoutmon] or [Mervamon] in its name, it gains <Reboot>. (Unsuspend this Digimon during your opponent's unsuspend phase.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -5686,7 +5686,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -2: [SkullKnightmon] + [DeadlyAxemon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.[On Play] ＜De-Digivolve 1＞ 1 of your opponent's Digimon. Then, if DigiXrosing with 2 cards, delete 1 of your opponent's Digimon with a play cost of 5 or less.<br>[All Turns] When this Digimon would be deleted, by returning 1 black level 4 or lower Digimon card from this Digimon's digivolution cards to its owner's hand, you may play 1 [SkullKnightmon] or [DeadlyAxemon] from this Digimon's digivolution cards without paying its memory cost.</dd>
+<dd>DigiXros -2: [SkullKnightmon] + [DeadlyAxemon] When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.[On Play] <De-Digivolve 1> 1 of your opponent's Digimon. Then, if DigiXrosing with 2 cards, delete 1 of your opponent's Digimon with a play cost of 5 or less.<br>[All Turns] When this Digimon would be deleted, by returning 1 black level 4 or lower Digimon card from this Digimon's digivolution cards to its owner's hand, you may play 1 [SkullKnightmon] or [DeadlyAxemon] from this Digimon's digivolution cards without paying its memory cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5828,7 +5828,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 1 from [Gankoomon]＜Blocker＞<br>[When Digivolving] You may play 1 Digimon card with [Sistermon] in its name from your hand or trash without paying its memory cost. Then, if [Gankoomon] is in this Digimon's digivolution cards or you have a Digimon with [Sistermon] in its name in play, until the end of your opponent's turn, all of your Digimon get +2000 DP and your opponent's effects can't return them to hands or decks or reduce their DP.</dd>
+<dd>Digivolve: 1 from [Gankoomon]<Blocker><br>[When Digivolving] You may play 1 Digimon card with [Sistermon] in its name from your hand or trash without paying its memory cost. Then, if [Gankoomon] is in this Digimon's digivolution cards or you have a Digimon with [Sistermon] in its name in play, until the end of your opponent's turn, all of your Digimon get +2000 DP and your opponent's effects can't return them to hands or decks or reduce their DP.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5901,7 +5901,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 1 from [Gankoomon]＜Blocker＞<br>[When Digivolving] You may play 1 Digimon card with [Sistermon] in its name from your hand or trash without paying its memory cost. Then, if [Gankoomon] is in this Digimon's digivolution cards or you have a Digimon with [Sistermon] in its name in play, until the end of your opponent's turn, all of your Digimon get +2000 DP and your opponent's effects can't return them to hands or decks or reduce their DP.</dd>
+<dd>Digivolve: 1 from [Gankoomon]<Blocker><br>[When Digivolving] You may play 1 Digimon card with [Sistermon] in its name from your hand or trash without paying its memory cost. Then, if [Gankoomon] is in this Digimon's digivolution cards or you have a Digimon with [Sistermon] in its name in play, until the end of your opponent's turn, all of your Digimon get +2000 DP and your opponent's effects can't return them to hands or decks or reduce their DP.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6116,7 +6116,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Rush＞ (This Digimon may attack the turn it was played.)<br>[On Play] If this Digimon has 3 digivolution cards, ＜Blitz＞. (If your opponent has 1 or more memory, this Digimon may attack.)<br>[Opponent's Turn][Once Per Turn] When an opponent's Digimon attacks, by trashing 1 of this Digimon's digivolution cards, delete 1 of your opponent's level 4 or lower Digimon.</dd>
+<dd><Rush> (This Digimon may attack the turn it was played.)<br>[On Play] If this Digimon has 3 digivolution cards, <Blitz>. (If your opponent has 1 or more memory, this Digimon may attack.)<br>[Opponent's Turn][Once Per Turn] When an opponent's Digimon attacks, by trashing 1 of this Digimon's digivolution cards, delete 1 of your opponent's level 4 or lower Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6191,7 +6191,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[All Turns] While there are 10 or more cards in your trash, this Digimon gains ＜Retaliation＞. (When this Digimon is deleted in battle, delete the Digimon it battled.)</dd>
+<dd>[All Turns] While there are 10 or more cards in your trash, this Digimon gains <Retaliation>. (When this Digimon is deleted in battle, delete the Digimon it battled.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -6258,7 +6258,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Attacking] By placing 1 purple Digimon card from your hand under one of your Tamers, ＜Draw 1＞. (Draw 1 card from your deck.)<br>[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>[When Attacking] By placing 1 purple Digimon card from your hand under one of your Tamers, <Draw 1>. (Draw 1 card from your deck.)<br>[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6329,7 +6329,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] Reveal the top 4 cards of your deck. Add 1 Digimon card with [Bagra Army] in its traits and 1 [Yuu Amano] among them to your hand. Place the rest at the bottom of your deck in any order.<br>[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>[On Play] Reveal the top 4 cards of your deck. Add 1 Digimon card with [Bagra Army] in its traits and 1 [Yuu Amano] among them to your hand. Place the rest at the bottom of your deck in any order.<br>[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6400,7 +6400,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Armor Purge＞ (When this Digimon would be deleted, you may trash the top card of this Digimon to prevent that deletion.)</dd>
+<dd><Armor Purge> (When this Digimon would be deleted, you may trash the top card of this Digimon to prevent that deletion.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6471,7 +6471,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play][When Digivolving] If you don't have an [Yuu Amano] in play, you may play 1 [Yuu Amano] from your hand without paying its memory cost.<br>[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>[On Play][When Digivolving] If you don't have an [Yuu Amano] in play, you may play 1 [Yuu Amano] from your hand without paying its memory cost.<br>[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6542,7 +6542,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Opponent's Turn][Once Per Turn] When an opponent plays a Digimon or Tamer, by trashing 1 of this Digimon's digivolution cards, gain 1 memory.<br>[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>[Opponent's Turn][Once Per Turn] When an opponent plays a Digimon or Tamer, by trashing 1 of this Digimon's digivolution cards, gain 1 memory.<br>[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6613,7 +6613,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -2: 1 Digimon card w/[Bagra Army] in traits<br>When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.[Opponent's Turn][Once Per Turn] When an effect adds cards to your opponent's hand, by trashing 1 of this Digimon's digivolution cards, your opponent trashes cards in their hand equal to the number of cards added to their hand by the effect.<br>[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>DigiXros -2: 1 Digimon card w/[Bagra Army] in traits<br>When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.[Opponent's Turn][Once Per Turn] When an effect adds cards to your opponent's hand, by trashing 1 of this Digimon's digivolution cards, your opponent trashes cards in their hand equal to the number of cards added to their hand by the effect.<br>[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6684,7 +6684,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from [Gammamon][All Turns] While a card with [Gammamon] in its name is in this Digimon's digivolution cards, this Digimon gains ＜Retaliation＞. (When this Digimon is deleted in battle, delete the Digimon it battled.)<br>[On Deletion] You may play 1 [Gammamon] from your trash suspended without paying its memory cost.</dd>
+<dd>Digivolve: 2 from [Gammamon][All Turns] While a card with [Gammamon] in its name is in this Digimon's digivolution cards, this Digimon gains <Retaliation>. (When this Digimon is deleted in battle, delete the Digimon it battled.)<br>[On Deletion] You may play 1 [Gammamon] from your trash suspended without paying its memory cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7112,7 +7112,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Retaliation＞ (When this Digimon is deleted in battle, delete the Digimon it battled.)<br>[Opponent's Turn] When an opponent plays a Digimon, you may play 1 purple level 4 or lower Digimon card from your trash without paying its memory cost. Any [On Play] effects on Digimon played by this effect don't activate.<br>[On Deletion] If your opponent has 2 or fewer Digimon in play, you may play 1 purple level 5 or lower Digimon card or 1 [Mervamon] from your trash without paying its memory cost.</dd>
+<dd><Retaliation> (When this Digimon is deleted in battle, delete the Digimon it battled.)<br>[Opponent's Turn] When an opponent plays a Digimon, you may play 1 purple level 4 or lower Digimon card from your trash without paying its memory cost. Any [On Play] effects on Digimon played by this effect don't activate.<br>[On Deletion] If your opponent has 2 or fewer Digimon in play, you may play 1 purple level 5 or lower Digimon card or 1 [Mervamon] from your trash without paying its memory cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7185,7 +7185,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Retaliation＞ (When this Digimon is deleted in battle, delete the Digimon it battled.)<br>[Opponent's Turn] When an opponent plays a Digimon, you may play 1 purple level 4 or lower Digimon card from your trash without paying its memory cost. Any [On Play] effects on Digimon played by this effect don't activate.<br>[On Deletion] If your opponent has 2 or fewer Digimon in play, you may play 1 purple level 5 or lower Digimon card or 1 [Mervamon] from your trash without paying its memory cost.</dd>
+<dd><Retaliation> (When this Digimon is deleted in battle, delete the Digimon it battled.)<br>[Opponent's Turn] When an opponent plays a Digimon, you may play 1 purple level 4 or lower Digimon card from your trash without paying its memory cost. Any [On Play] effects on Digimon played by this effect don't activate.<br>[On Deletion] If your opponent has 2 or fewer Digimon in play, you may play 1 purple level 5 or lower Digimon card or 1 [Mervamon] from your trash without paying its memory cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7256,7 +7256,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] You may play 2 level 4 or lower Digimon cards with [Bagra Army] in their traits from your trash without paying their memory costs. All Digimon played by this effect gain ＜Blocker＞ until the end of your opponent's turn.<br>[Opponent's Turn] When an effect would trash one of your other Digimon's digivolution cards, you may trash this Digimon's digivolution cards instead.</dd>
+<dd>[On Play] You may play 2 level 4 or lower Digimon cards with [Bagra Army] in their traits from your trash without paying their memory costs. All Digimon played by this effect gain <Blocker> until the end of your opponent's turn.<br>[Opponent's Turn] When an effect would trash one of your other Digimon's digivolution cards, you may trash this Digimon's digivolution cards instead.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7615,7 +7615,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -2: 1 Digimon card w/[Xros Heart] in traits <br>When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.This card/Digimon is also treated as if its name is [Shoutmon].<br>[On Play] Return 1 card with a DigiXros requirement from your trash to your hand. When DigiXrosing this turn, you may use this Digimon in place of one of the DigiXros requirements.<br>＜Material Save 1＞ (When this Digimon is deleted, you may place 1 card in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)</dd>
+<dd>DigiXros -2: 1 Digimon card w/[Xros Heart] in traits <br>When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.This card/Digimon is also treated as if its name is [Shoutmon].<br>[On Play] Return 1 card with a DigiXros requirement from your trash to your hand. When DigiXrosing this turn, you may use this Digimon in place of one of the DigiXros requirements.<br><Material Save 1> (When this Digimon is deleted, you may place 1 card in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7688,7 +7688,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -2: 1 Digimon card w/[Xros Heart] in traits <br>When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.This card/Digimon is also treated as if its name is [Shoutmon].<br>[On Play] Return 1 card with a DigiXros requirement from your trash to your hand. When DigiXrosing this turn, you may use this Digimon in place of one of the DigiXros requirements.<br>＜Material Save 1＞ (When this Digimon is deleted, you may place 1 card in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)</dd>
+<dd>DigiXros -2: 1 Digimon card w/[Xros Heart] in traits <br>When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.This card/Digimon is also treated as if its name is [Shoutmon].<br>[On Play] Return 1 card with a DigiXros requirement from your trash to your hand. When DigiXrosing this turn, you may use this Digimon in place of one of the DigiXros requirements.<br><Material Save 1> (When this Digimon is deleted, you may place 1 card in this Digimon's DigiXros conditions from this Digimon's digivolution cards under 1 of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7759,7 +7759,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 5 from Lv.6 w/[Royal Knight] in traits[When Digivolving] You may place 1 card with [Royal Knight] in its traits and a play cost of 13 or less from your hand or trash under this Digimon as its bottom digivolution card. Activate 1 of that Digimon's [When Digivolving] effects as an effect of this Digimon. Then, ＜Blitz＞.<br>[All Turns] While a card with [Royal Knight] in its traits is in this Digimon's digivolution cards, this Digimon gains ＜Piercing＞ and ＜Blocker＞, and gains ＜Security Attack +1＞ for each card with [Royal Knights] in its traits in this Digimon's digivolution cards.</dd>
+<dd>Digivolve: 5 from Lv.6 w/[Royal Knight] in traits[When Digivolving] You may place 1 card with [Royal Knight] in its traits and a play cost of 13 or less from your hand or trash under this Digimon as its bottom digivolution card. Activate 1 of that Digimon's [When Digivolving] effects as an effect of this Digimon. Then, <Blitz>.<br>[All Turns] While a card with [Royal Knight] in its traits is in this Digimon's digivolution cards, this Digimon gains <Piercing> and <Blocker>, and gains <Security Attack +1> for each card with [Royal Knights] in its traits in this Digimon's digivolution cards.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7832,7 +7832,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 5 from Lv.6 w/[Royal Knight] in traits[When Digivolving] You may place 1 card with [Royal Knight] in its traits and a play cost of 13 or less from your hand or trash under this Digimon as its bottom digivolution card. Activate 1 of that Digimon's [When Digivolving] effects as an effect of this Digimon. Then, ＜Blitz＞.<br>[All Turns] While a card with [Royal Knight] in its traits is in this Digimon's digivolution cards, this Digimon gains ＜Piercing＞ and ＜Blocker＞, and gains ＜Security Attack +1＞ for each card with [Royal Knights] in its traits in this Digimon's digivolution cards.</dd>
+<dd>Digivolve: 5 from Lv.6 w/[Royal Knight] in traits[When Digivolving] You may place 1 card with [Royal Knight] in its traits and a play cost of 13 or less from your hand or trash under this Digimon as its bottom digivolution card. Activate 1 of that Digimon's [When Digivolving] effects as an effect of this Digimon. Then, <Blitz>.<br>[All Turns] While a card with [Royal Knight] in its traits is in this Digimon's digivolution cards, this Digimon gains <Piercing> and <Blocker>, and gains <Security Attack +1> for each card with [Royal Knights] in its traits in this Digimon's digivolution cards.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8257,7 +8257,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] You may play 1 [Dorulumon] from your hand or from under one of your Tamers without paying its memory cost.<br>[Your Turn] When you play a Digimon with [Xros Heart] in its traits, by suspending this Tamer, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[On Play] You may play 1 [Dorulumon] from your hand or from under one of your Tamers without paying its memory cost.<br>[Your Turn] When you play a Digimon with [Xros Heart] in its traits, by suspending this Tamer, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8329,7 +8329,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] You may play 1 [Dorulumon] from your hand or from under one of your Tamers without paying its memory cost.<br>[Your Turn] When you play a Digimon with [Xros Heart] in its traits, by suspending this Tamer, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[On Play] You may play 1 [Dorulumon] from your hand or from under one of your Tamers without paying its memory cost.<br>[Your Turn] When you play a Digimon with [Xros Heart] in its traits, by suspending this Tamer, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8611,7 +8611,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] Reveal the top 4 cards of your deck. Add 1 card with [Knightmon] or [DeadlyAxemon] in its name or [Twilight] in its traits among them to your hand. Place the rest at the bottom of your deck in any order.<br>[Opponent's Turn] All of your Digimon with [DarkKnightmon] in their names or [Twilight] in their traits gain ＜Blocker＞.<br>[On Deletion] Gain 2 memory.</dd>
+<dd>[On Play] Reveal the top 4 cards of your deck. Add 1 card with [Knightmon] or [DeadlyAxemon] in its name or [Twilight] in its traits among them to your hand. Place the rest at the bottom of your deck in any order.<br>[Opponent's Turn] All of your Digimon with [DarkKnightmon] in their names or [Twilight] in their traits gain <Blocker>.<br>[On Deletion] Gain 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8683,7 +8683,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] Reveal the top 4 cards of your deck. Add 1 card with [Knightmon] or [DeadlyAxemon] in its name or [Twilight] in its traits among them to your hand. Place the rest at the bottom of your deck in any order.<br>[Opponent's Turn] All of your Digimon with [DarkKnightmon] in their names or [Twilight] in their traits gain ＜Blocker＞.<br>[On Deletion] Gain 2 memory.</dd>
+<dd>[On Play] Reveal the top 4 cards of your deck. Add 1 card with [Knightmon] or [DeadlyAxemon] in its name or [Twilight] in its traits among them to your hand. Place the rest at the bottom of your deck in any order.<br>[Opponent's Turn] All of your Digimon with [DarkKnightmon] in their names or [Twilight] in their traits gain <Blocker>.<br>[On Deletion] Gain 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8753,7 +8753,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[All Turns][Once Per Turn] When a purple card is placed under this Tamer, ＜Draw 1＞ (Draw 1 card from your deck), and gain 1 memory.<br>[Your Turn][Once Per Turn] When you would play a level 4 or higher Digimon card with [Bagra Army] in its traits, by placing up to 3 purple Digimon cards from under your Tamers in the digivolution cards of the Digimon card played, reduce the memory cost of that Digimon by 2 for each card placed.</dd>
+<dd>[All Turns][Once Per Turn] When a purple card is placed under this Tamer, <Draw 1> (Draw 1 card from your deck), and gain 1 memory.<br>[Your Turn][Once Per Turn] When you would play a level 4 or higher Digimon card with [Bagra Army] in its traits, by placing up to 3 purple Digimon cards from under your Tamers in the digivolution cards of the Digimon card played, reduce the memory cost of that Digimon by 2 for each card placed.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8825,7 +8825,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[All Turns][Once Per Turn] When a purple card is placed under this Tamer, ＜Draw 1＞ (Draw 1 card from your deck), and gain 1 memory.<br>[Your Turn][Once Per Turn] When you would play a level 4 or higher Digimon card with [Bagra Army] in its traits, by placing up to 3 purple Digimon cards from under your Tamers in the digivolution cards of the Digimon card played, reduce the memory cost of that Digimon by 2 for each card placed.</dd>
+<dd>[All Turns][Once Per Turn] When a purple card is placed under this Tamer, <Draw 1> (Draw 1 card from your deck), and gain 1 memory.<br>[Your Turn][Once Per Turn] When you would play a level 4 or higher Digimon card with [Bagra Army] in its traits, by placing up to 3 purple Digimon cards from under your Tamers in the digivolution cards of the Digimon card played, reduce the memory cost of that Digimon by 2 for each card placed.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8895,7 +8895,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] 1 of your Digimon gets +2000 DP for the turn. Then, by placing 1 Digimon card with [Gammamon] in its name from your hand under 1 of your Digimon as its bottom digivolution card, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Main] 1 of your Digimon gets +2000 DP for the turn. Then, by placing 1 Digimon card with [Gammamon] in its name from your hand under 1 of your Digimon as its bottom digivolution card, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8965,7 +8965,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] Activate 1 of the effects below. If you have a Digimon with [Shoutmon X5] in its name in play, activate all of the effects below instead.<br>・1 of your Digimon with [Xros Heart] in its traits gains ＜Security Attack +1＞ for the turn.<br>・＜Draw 2＞ (Draw 2 cards from your deck.)</dd>
+<dd>[Main] Activate 1 of the effects below. If you have a Digimon with [Shoutmon X5] in its name in play, activate all of the effects below instead.<br>・1 of your Digimon with [Xros Heart] in its traits gains <Security Attack +1> for the turn.<br>・<Draw 2> (Draw 2 cards from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9105,7 +9105,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] Reveal the top 6 cards of your deck. Add 2 cards with [Blue Flare] in their traits among them to your hand, and you may play 1 [Kiriha Aonuma] among them without paying its memory cost. Place the rest at the bottom of your deck in any order. Then, place this card in your Battle Area.<br>[Main] ＜Delay＞ (By trashing this card in your battle area, activate the effect below. You can't activate this effect the turn this card enters play.)<br>・Gain 2 memory.</dd>
+<dd>[Main] Reveal the top 6 cards of your deck. Add 2 cards with [Blue Flare] in their traits among them to your hand, and you may play 1 [Kiriha Aonuma] among them without paying its memory cost. Place the rest at the bottom of your deck in any order. Then, place this card in your Battle Area.<br>[Main] <Delay> (By trashing this card in your battle area, activate the effect below. You can't activate this effect the turn this card enters play.)<br>・Gain 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9245,7 +9245,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] Until the end of your opponent's turn, 1 of your opponent's Digimon gains ＜Security Attack -1＞. (This Digimon checks 1 fewer security cards.) If you have a [Venusmon] in play, 3 of your opponent's Digimon gain it instead.</dd>
+<dd>[Main] Until the end of your opponent's turn, 1 of your opponent's Digimon gains <Security Attack -1>. (This Digimon checks 1 fewer security cards.) If you have a [Venusmon] in play, 3 of your opponent's Digimon gain it instead.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9315,7 +9315,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] You may play 1 [Pulsemon] from your hand without paying its memory cost. Then, place this card in your Battle Area.<br>[Main] ＜Delay＞ (By trashing this card in your battle area, activate the effect below. You can't activate this effect the turn this card enters play.)<br>・Gain 2 memory.</dd>
+<dd>[Main] You may play 1 [Pulsemon] from your hand without paying its memory cost. Then, place this card in your Battle Area.<br>[Main] <Delay> (By trashing this card in your battle area, activate the effect below. You can't activate this effect the turn this card enters play.)<br>・Gain 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9455,7 +9455,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] 1 of your Digimon gains ＜Piercing＞ for the turn. (When this Digimon attacks and deletes an opponent's Digimon, it performs any security checks it normally would.) Then, if you have a Digimon in play with [Angoramon] in its name or digivolution cards, suspend 1 of your opponent's Digimon.</dd>
+<dd>[Main] 1 of your Digimon gains <Piercing> for the turn. (When this Digimon attacks and deletes an opponent's Digimon, it performs any security checks it normally would.) Then, if you have a Digimon in play with [Angoramon] in its name or digivolution cards, suspend 1 of your opponent's Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9665,7 +9665,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>While you have a Tamer in play, you may use this card without meeting its color requirements.<br>[Main] Until the end of your opponent's turn, 1 of your Digimon gains ＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead), and ＜Reboot＞ (Unsuspend this Digimon during your opponent's unsuspend phase), and can't be deleted by your opponent's effects.</dd>
+<dd>While you have a Tamer in play, you may use this card without meeting its color requirements.<br>[Main] Until the end of your opponent's turn, 1 of your Digimon gains <Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead), and <Reboot> (Unsuspend this Digimon during your opponent's unsuspend phase), and can't be deleted by your opponent's effects.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>

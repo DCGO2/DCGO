@@ -204,7 +204,7 @@ namespace DCGO.CardEffects.EX9
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] [Once Per Turn] ＜De-Digivolve 1＞ 1 of your opponent's Digimon (Trash the top card. You can't trash past level 3 cards).";
+                    return "[When Attacking] [Once Per Turn] <De-Digivolve 1> 1 of your opponent's Digimon (Trash the top card. You can't trash past level 3 cards).";
                 }
 
                 bool IsOpponentDigimon(Permanent targetPermanent)

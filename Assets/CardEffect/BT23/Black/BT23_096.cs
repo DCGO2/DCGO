@@ -100,13 +100,13 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("＜De-Digivolve 4＞ 1 digimon, then place in battle area", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 4> 1 digimon, then place in battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Main] ＜De-Digivolve 4＞ 1 of your opponent's Digimon. Then, place this card in the battle area.";
+                    return "[Main] <De-Digivolve 4> 1 of your opponent's Digimon. Then, place this card in the battle area.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -128,13 +128,13 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("＜De-Digivolve 4＞ 1 digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 4> 1 digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When one of your [CS] trait Digimon attacks, ＜Delay＞ \r\n・＜De-Digivolve 4＞ 1 of your opponent's Digimon. (Trash up to 4 cards from the top. You can't trash past level 3 cards.)";
+                    return "[Your Turn] When one of your [CS] trait Digimon attacks, <Delay> \r\n・<De-Digivolve 4> 1 of your opponent's Digimon. (Trash up to 4 cards from the top. You can't trash past level 3 cards.)";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -174,14 +174,14 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("＜De-Digivolve 4＞ 1 digimon, then place in battle area", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 4> 1 digimon, then place in battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Security] ＜De-Digivolve 4＞ 1 of your opponent's Digimon. Then, place this card in the battle area.";
+                    return "[Security] <De-Digivolve 4> 1 of your opponent's Digimon. Then, place this card in the battle area.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When any of your Digimon digivolve into a Digimon with ＜Save＞ in its text, by suspending this Tamer and placing 1 Digimon card with ＜Save＞ in its text from under your Tamers as that Digimon's bottom digivolution card, that Digimon gains ＜Alliance＞ for the turn.";
+                    return "[Your Turn] When any of your Digimon digivolve into a Digimon with <Save> in its text, by suspending this Tamer and placing 1 Digimon card with <Save> in its text from under your Tamers as that Digimon's bottom digivolution card, that Digimon gains <Alliance> for the turn.";
                 }
 
                 bool HasSaveText(CardSource source)

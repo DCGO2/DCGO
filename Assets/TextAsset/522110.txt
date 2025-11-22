@@ -53,7 +53,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking] If you have a yellow Digimon in play, ＜Draw 1＞. (Draw 1 card from your deck.) If you do, trash 1 card in your hand.</dd>
+<dd>[When Attacking] If you have a yellow Digimon in play, <Draw 1>. (Draw 1 card from your deck.) If you do, trash 1 card in your hand.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -333,11 +333,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] 1 of your opponent's Digimon gains ＜Security Attack -2＞ until the end of your opponent's next turn. (This Digimon checks 2 fewer security cards.)</dd>
+<dd>[On Play] 1 of your opponent's Digimon gains <Security Attack -2> until the end of your opponent's next turn. (This Digimon checks 2 fewer security cards.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While you have a purple Digimon in play, this Digimon gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn] While you have a purple Digimon in play, this Digimon gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -406,11 +406,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] 1 of your opponent's Digimon gains ＜Security Attack -2＞ until the end of your opponent's next turn. (This Digimon checks 2 fewer security cards.)</dd>
+<dd>[On Play] 1 of your opponent's Digimon gains <Security Attack -2> until the end of your opponent's next turn. (This Digimon checks 2 fewer security cards.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While you have a purple Digimon in play, this Digimon gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn] While you have a purple Digimon in play, this Digimon gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -477,7 +477,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜DNA Digivolution: 0 from yellow Lv.5 + purple Lv.5＞ Digivolve unsuspended with the 2 specified Digimon stacked on top of each other. [When Digivolving] Place 1 yellow or purple Digimon card from your trash on top of your security stack face down. When DNA digivolving, you may search your security stack for 1 level 5 or lower Digimon card and play it without paying its memory cost. Then, shuffle your security stack. [All Turns] When you play another Digimon using an effect, delete 1 of your opponent's Digimon whose level is less than or equal to the played Digimon's level.</dd>
+<dd><DNA Digivolution: 0 from yellow Lv.5 + purple Lv.5> Digivolve unsuspended with the 2 specified Digimon stacked on top of each other. [When Digivolving] Place 1 yellow or purple Digimon card from your trash on top of your security stack face down. When DNA digivolving, you may search your security stack for 1 level 5 or lower Digimon card and play it without paying its memory cost. Then, shuffle your security stack. [All Turns] When you play another Digimon using an effect, delete 1 of your opponent's Digimon whose level is less than or equal to the played Digimon's level.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -550,7 +550,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜DNA Digivolution: 0 from yellow Lv.5 + purple Lv.5＞ Digivolve unsuspended with the 2 specified Digimon stacked on top of each other. [When Digivolving] Place 1 yellow or purple Digimon card from your trash on top of your security stack face down. When DNA digivolving, you may search your security stack for 1 level 5 or lower Digimon card and play it without paying its memory cost. Then, shuffle your security stack. [All Turns] When you play another Digimon using an effect, delete 1 of your opponent's Digimon whose level is less than or equal to the played Digimon's level.</dd>
+<dd><DNA Digivolution: 0 from yellow Lv.5 + purple Lv.5> Digivolve unsuspended with the 2 specified Digimon stacked on top of each other. [When Digivolving] Place 1 yellow or purple Digimon card from your trash on top of your security stack face down. When DNA digivolving, you may search your security stack for 1 level 5 or lower Digimon card and play it without paying its memory cost. Then, shuffle your security stack. [All Turns] When you play another Digimon using an effect, delete 1 of your opponent's Digimon whose level is less than or equal to the played Digimon's level.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -623,7 +623,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜DNA Digivolution: 0 from yellow Lv.5 + purple Lv.5＞ Digivolve unsuspended with the 2 specified Digimon stacked on top of each other. [When Digivolving] Place 1 yellow or purple Digimon card from your trash on top of your security stack face down. When DNA digivolving, you may search your security stack for 1 level 5 or lower Digimon card and play it without paying its memory cost. Then, shuffle your security stack. [All Turns] When you play another Digimon using an effect, delete 1 of your opponent's Digimon whose level is less than or equal to the played Digimon's level.</dd>
+<dd><DNA Digivolution: 0 from yellow Lv.5 + purple Lv.5> Digivolve unsuspended with the 2 specified Digimon stacked on top of each other. [When Digivolving] Place 1 yellow or purple Digimon card from your trash on top of your security stack face down. When DNA digivolving, you may search your security stack for 1 level 5 or lower Digimon card and play it without paying its memory cost. Then, shuffle your security stack. [All Turns] When you play another Digimon using an effect, delete 1 of your opponent's Digimon whose level is less than or equal to the played Digimon's level.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -694,7 +694,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Opponent's Turn] While you have a yellow Digimon in play, this Digimon gains ＜Blocker＞. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd>[Opponent's Turn] While you have a yellow Digimon in play, this Digimon gains <Blocker>. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1053,7 +1053,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] All of your yellow Digimon gain ＜Retaliation＞. (When this Digimon is deleted after losing a battle, delete the Digimon it was battling.)</dd>
+<dd>[Your Turn] All of your yellow Digimon gain <Retaliation>. (When this Digimon is deleted after losing a battle, delete the Digimon it was battling.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1126,7 +1126,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] All of your yellow Digimon gain ＜Retaliation＞. (When this Digimon is deleted after losing a battle, delete the Digimon it was battling.)</dd>
+<dd>[Your Turn] All of your yellow Digimon gain <Retaliation>. (When this Digimon is deleted after losing a battle, delete the Digimon it was battling.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1193,7 +1193,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Retaliation＞ (When this Digimon is deleted after losing a battle, delete the Digimon it was battling.)[When Digivolving] Trash the top 3 cards of your deck. Then, return 1 Digimon card from your trash to your hand.</dd>
+<dd><Retaliation> (When this Digimon is deleted after losing a battle, delete the Digimon it was battling.)[When Digivolving] Trash the top 3 cards of your deck. Then, return 1 Digimon card from your trash to your hand.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>

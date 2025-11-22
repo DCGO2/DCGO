@@ -913,7 +913,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -986,7 +986,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1059,7 +1059,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1347,7 +1347,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] When you have 3 security cards or less, trigger ＜Recovery +1 (Deck)＞. (Place the top card of your deck on top of your security stack.)</dd>
+<dd>[When Digivolving] When you have 3 security cards or less, trigger <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1420,7 +1420,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] When you have 3 security cards or less, trigger ＜Recovery +1 (Deck)＞. (Place the top card of your deck on top of your security stack.)</dd>
+<dd>[When Digivolving] When you have 3 security cards or less, trigger <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2202,7 +2202,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] 1 of your opponent's Digimon gains ＜Security Attack -3＞ (This Digimon checks 3 fewer security cards) until the end of your opponent's next turn.</dd>
+<dd>[Main] 1 of your opponent's Digimon gains <Security Attack -3> (This Digimon checks 3 fewer security cards) until the end of your opponent's next turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2210,7 +2210,7 @@
 </dl>
 <dl>
 <dt>Securityeffect</dt>
-<dd>[Security] All of your opponent's Digimon gain ＜Security Attack -1＞ (This Digimon checks 1 fewer security card) for the turn. </dd>
+<dd>[Security] All of your opponent's Digimon gain <Security Attack -1> (This Digimon checks 1 fewer security card) for the turn. </dd>
 </dl>
 <dl>
 <dt>Notes</dt>

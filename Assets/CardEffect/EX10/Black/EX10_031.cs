@@ -178,7 +178,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[On Play] Until your opponent's turn ends, their ＜De-Digivolve＞ effects don't affect 1 of your Digimon, and it gets +3000 DP.";
+                    return "[On Play] Until your opponent's turn ends, their <De-Digivolve> effects don't affect 1 of your Digimon, and it gets +3000 DP.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -207,7 +207,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Until your opponent's turn ends, their ＜De-Digivolve＞ effects don't affect 1 of your Digimon, and it gets +3000 DP.";
+                    return "[When Digivolving] Until your opponent's turn ends, their <De-Digivolve> effects don't affect 1 of your Digimon, and it gets +3000 DP.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

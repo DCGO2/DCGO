@@ -156,7 +156,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When any of your [Violet Inboots] suspend, ＜Delay＞ (By trashing this card after the placing turn, activate the effect below.)\r\n・1 of your [Ghost] trait Digimon may digivolve into a [Ghost] and [LIBERATOR] trait Digimon card in the hand with the digivolution cost reduced by 3.";
+                    return "[Your Turn] When any of your [Violet Inboots] suspend, <Delay> (By trashing this card after the placing turn, activate the effect below.)\r\n・1 of your [Ghost] trait Digimon may digivolve into a [Ghost] and [LIBERATOR] trait Digimon card in the hand with the digivolution cost reduced by 3.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

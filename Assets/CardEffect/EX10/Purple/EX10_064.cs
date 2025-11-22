@@ -74,7 +74,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[Start of Your Main Phase] By placing 1 [Bagra Army] or [Twilight] trait Digimon card from your hand or trash under this Tamer, ＜Draw 1＞.";
+                    return "[Start of Your Main Phase] By placing 1 [Bagra Army] or [Twilight] trait Digimon card from your hand or trash under this Tamer, <Draw 1>.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

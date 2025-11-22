@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.EX9
 
                 string EffectDiscription()
                 {
-                    return "[Main] ＜Draw 1＞. Then, place this card in the battle area.";
+                    return "[Main] <Draw 1>. Then, place this card in the battle area.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -68,7 +68,7 @@ namespace DCGO.CardEffects.EX9
 
                 string EffectDiscription()
                 {
-                    return "[Main] ＜Delay＞.\r\n・By trashing 1 of your [DM] trait Digimon's bottom 2 face-down digivolution card, it unsuspends.";
+                    return "[Main] <Delay>.\r\n・By trashing 1 of your [DM] trait Digimon's bottom 2 face-down digivolution card, it unsuspends.";
                 }
 
                 bool DMTraitDigimon(Permanent permanent)

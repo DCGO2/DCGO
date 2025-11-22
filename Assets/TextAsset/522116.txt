@@ -120,7 +120,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] ＜Draw 1＞. (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
+<dd>[On Play] <Draw 1>. (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -195,7 +195,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] ＜Draw 1＞. (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
+<dd>[When Attacking][Once Per Turn] <Draw 1>. (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -266,7 +266,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Retaliation＞ (When this Digimon is deleted in battle, delete the Digimon it battled.)</dd>
+<dd><Retaliation> (When this Digimon is deleted in battle, delete the Digimon it battled.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -333,7 +333,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Retaliation＞ (When this Digimon is deleted in battle, delete the Digimon it battled.)<br> [Your Turn] When this Digimon attacks an opponent's Digimon, lose 2 memory.</dd>
+<dd><Retaliation> (When this Digimon is deleted in battle, delete the Digimon it battled.)<br> [Your Turn] When this Digimon attacks an opponent's Digimon, lose 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -404,7 +404,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (At blocker timing, by suspending this Digimon, it becomes the attack target.)</dd>
+<dd><Blocker> (At blocker timing, by suspending this Digimon, it becomes the attack target.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -546,11 +546,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.3 w/[Gabumon] in name: Cost 2<br>[Security] You may play 1 [Gabumon] or 1 Tamer card with [Matt Ishida] in its name from your hand or trash without paying the cost.<br> [When Digivolving] ＜Draw 1＞. (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
+<dd>[Digivolve] Lv.3 w/[Gabumon] in name: Cost 2<br>[Security] You may play 1 [Gabumon] or 1 Tamer card with [Matt Ishida] in its name from your hand or trash without paying the cost.<br> [When Digivolving] <Draw 1>. (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] ＜Draw 1＞. (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
+<dd>[When Attacking][Once Per Turn] <Draw 1>. (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -688,11 +688,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (At blocker timing, by suspending this Digimon, it becomes the attack target.)</dd>
+<dd><Blocker> (At blocker timing, by suspending this Digimon, it becomes the attack target.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Retaliation＞ (When this Digimon is deleted in battle, delete the Digimon it battled.)</dd>
+<dd><Retaliation> (When this Digimon is deleted in battle, delete the Digimon it battled.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -830,11 +830,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.5 w/[Garurumon] in name: Cost 3<br>[Hand][Counter] ＜Blast Digivolve＞ (One of your Digimon may digivolve into this card without paying the cost.)<br> [When Digivolving] By trashing up to 3 cards in your hand, gain 1 memory for each card trashed.<br> [When Attacking][Once Per Turn] By trashing 1 card in your hand, delete 1 of your opponent's Digimon with the lowest level.</dd>
+<dd>[Digivolve] Lv.5 w/[Garurumon] in name: Cost 3<br>[Hand][Counter] <Blast Digivolve> (One of your Digimon may digivolve into this card without paying the cost.)<br> [When Digivolving] By trashing up to 3 cards in your hand, gain 1 memory for each card trashed.<br> [When Attacking][Once Per Turn] By trashing 1 card in your hand, delete 1 of your opponent's Digimon with the lowest level.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Overflow (-4)＞ (When this card would move from the battle area or under a card to another area, lose 4 memory.)</dd>
+<dd><Overflow (-4)> (When this card would move from the battle area or under a card to another area, lose 4 memory.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -901,7 +901,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] ＜Draw 1＞. (Draw 1 card from your deck.) Then, trash 1 card in your hand.<br> [All Turns][Once Per Turn] When one of your effects trashes a card in your hand, you may play 1 level 4 or lower purple Digimon card from your trash without paying the cost.</dd>
+<dd>[When Digivolving] <Draw 1>. (Draw 1 card from your deck.) Then, trash 1 card in your hand.<br> [All Turns][Once Per Turn] When one of your effects trashes a card in your hand, you may play 1 level 4 or lower purple Digimon card from your trash without paying the cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>

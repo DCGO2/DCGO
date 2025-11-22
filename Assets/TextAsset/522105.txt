@@ -53,7 +53,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has ＜Blocker＞, it gets +1000 DP.</dd>
+<dd>[Your Turn] While this Digimon has <Blocker>, it gets +1000 DP.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -191,7 +191,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -264,7 +264,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -339,7 +339,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[End of Opponent's Turn] If your opponent didn't attack with a Digimon this turn, trigger ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[End of Opponent's Turn] If your opponent didn't attack with a Digimon this turn, trigger <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -481,7 +481,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[End of Opponent's Turn] If your opponent didn't attack with a Digimon this turn, trigger ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[End of Opponent's Turn] If your opponent didn't attack with a Digimon this turn, trigger <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -619,7 +619,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -692,7 +692,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[When Attacking] Lose 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -763,7 +763,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] Until the end of your opponent's next turn, 1 of your Digimon gains ＜Blocker＞. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd>[When Digivolving] Until the end of your opponent's next turn, 1 of your Digimon gains <Blocker>. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -909,7 +909,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -976,7 +976,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] Up to 2 of your Digimon gain ＜Reboot＞  (Unsuspend this Digimon during your opponent's unsuspend phase) until the end of your opponent's next turn.</dd>
+<dd>[When Digivolving] Up to 2 of your Digimon gain <Reboot>  (Unsuspend this Digimon during your opponent's unsuspend phase) until the end of your opponent's next turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1049,7 +1049,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] Up to 2 of your Digimon gain ＜Reboot＞  (Unsuspend this Digimon during your opponent's unsuspend phase) until the end of your opponent's next turn.</dd>
+<dd>[When Digivolving] Up to 2 of your Digimon gain <Reboot>  (Unsuspend this Digimon during your opponent's unsuspend phase) until the end of your opponent's next turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1120,7 +1120,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Security Attack +1＞ (This Digimon checks 1 additional security card.)[Main] ＜Digi-Burst 2＞ (Trash 2 of this Digimon's Digivolution cards to activate the effect below.)・1 of your Digimon gets +4000 DP until the end of your opponent's next turn.</dd>
+<dd><Security Attack +1> (This Digimon checks 1 additional security card.)[Main] <Digi-Burst 2> (Trash 2 of this Digimon's Digivolution cards to activate the effect below.)・1 of your Digimon gets +4000 DP until the end of your opponent's next turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1190,7 +1190,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Opponent's Turn] When you use ＜Blocker＞ to suspend one of your Digimon, you may suspend this Tamer to unsuspend 1 of your Digimon.</dd>
+<dd>[Opponent's Turn] When you use <Blocker> to suspend one of your Digimon, you may suspend this Tamer to unsuspend 1 of your Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1260,7 +1260,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] Trigger ＜De-Digivolve 1＞ on up to 2 of your opponent's Digimon. (Trash a card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)</dd>
+<dd>[Main] Trigger <De-Digivolve 1> on up to 2 of your opponent's Digimon. (Trash a card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>

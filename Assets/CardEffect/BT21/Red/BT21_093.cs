@@ -260,7 +260,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When your opponent's security stack is removed from, ＜Delay＞ (After this card is placed, by trashing it the next turn or later, activate the effect below).\r\n・1 of your [Reptile]/[Dragonkin] trait Digimon may digivolve into a [Reptile]/[Dragonkin] trait Digimon card in the hand without paying the cost.\r\n";
+                    return "[All Turns] When your opponent's security stack is removed from, <Delay> (After this card is placed, by trashing it the next turn or later, activate the effect below).\r\n・1 of your [Reptile]/[Dragonkin] trait Digimon may digivolve into a [Reptile]/[Dragonkin] trait Digimon card in the hand without paying the cost.\r\n";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

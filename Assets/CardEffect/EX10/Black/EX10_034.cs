@@ -411,14 +411,14 @@ namespace DCGO.CardEffects.EX10
                 List<Permanent> removedPermanents = new List<Permanent>();
 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 2 source cards, gain ＜Security A. +1> and +3000 DP", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 2 source cards, gain <Security A. +1> and +3000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("AT_EX10_034");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] [Once Per Turn] When Digimon attack, by trashing any 2 of this Digimon's digivolution cards, this Digimon gains ＜Security A. +1＞ and +3000 DP until your turn ends.";
+                    return "[All Turns] [Once Per Turn] When Digimon attack, by trashing any 2 of this Digimon's digivolution cards, this Digimon gains <Security A. +1> and +3000 DP until your turn ends.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

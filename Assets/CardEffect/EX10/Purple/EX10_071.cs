@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDescription()
                 {
-                    return "[Main] Until your opponent's turn ends, 1 of your Digimon with [Lucemon] in its name in its name gains ＜Raid＞, ＜Piercing＞, ＜Blocker＞ and +3000 DP.";
+                    return "[Main] Until your opponent's turn ends, 1 of your Digimon with [Lucemon] in its name in its name gains <Raid>, <Piercing>, <Blocker> and +3000 DP.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

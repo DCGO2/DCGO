@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.EX9
 
                 string EffectDescription()
                 {
-                    return "[When Digivolving] [Once Per Turn] By placing 1 card in your hand face down as this Digimon's bottom digivolution card, if you have as many or fewer security cards as this Digimon has face-down digivolution cards, ＜Recovery +1 (Deck)＞ (Place the top card of your deck on top of your security stack).";
+                    return "[When Digivolving] [Once Per Turn] By placing 1 card in your hand face down as this Digimon's bottom digivolution card, if you have as many or fewer security cards as this Digimon has face-down digivolution cards, <Recovery +1 (Deck)> (Place the top card of your deck on top of your security stack).";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -119,7 +119,7 @@ namespace DCGO.CardEffects.EX9
 
                 string EffectDescription()
                 {
-                    return "[When Attacking] [Once Per Turn] By placing 1 card in your hand face down as this Digimon's bottom digivolution card, if you have as many or fewer security cards as this Digimon has face-down digivolution cards, ＜Recovery +1 (Deck)＞ (Place the top card of your deck on top of your security stack).";
+                    return "[When Attacking] [Once Per Turn] By placing 1 card in your hand face down as this Digimon's bottom digivolution card, if you have as many or fewer security cards as this Digimon has face-down digivolution cards, <Recovery +1 (Deck)> (Place the top card of your deck on top of your security stack).";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
