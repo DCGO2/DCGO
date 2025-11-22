@@ -305,7 +305,8 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete opponent's lowest level Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetHashString("AT_BT23-068");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

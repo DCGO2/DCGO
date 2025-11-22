@@ -288,7 +288,8 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOwnersSecurity(card, CanSelectCardCondition, false);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

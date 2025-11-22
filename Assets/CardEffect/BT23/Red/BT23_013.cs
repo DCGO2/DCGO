@@ -108,6 +108,7 @@ namespace DCGO.CardEffects.BT23
                 }
 
                 bool playToken = false;
+                bool playSistermon = false;
                 bool playFromHand = false;
                 bool playFromTrash = false;
 
@@ -124,8 +125,7 @@ namespace DCGO.CardEffects.BT23
                 if (playOptions.Count == 1)
                 {
                     if (playOptions[0].Message.Contains("Token")) playToken = true;
-                    else if (canSelectHand) playFromHand = true;
-                    else playFromTrash = true;
+                    else playSistermon = true;
                 }
 
                 if (playOptions.Count == 2)
@@ -138,9 +138,12 @@ namespace DCGO.CardEffects.BT23
                     var selectedOption = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                     if (selectedOption) playToken = true;
-                    else if (!selectedOption && canSelectHand && !canSelectTrash) playFromHand = true;
-                    else if (!selectedOption && canSelectTrash && !canSelectHand) playFromTrash = true;
-                    else
+                    else playSistermon = true;
+                }
+
+                if (playSistermon)
+                {
+                    if (canSelectHand && canSelectTrash)
                     {
                         List<SelectionElement<bool>> selectionElements1 = new List<SelectionElement<bool>>()
                         {
@@ -152,12 +155,17 @@ namespace DCGO.CardEffects.BT23
                         string notSelectPlayerMessage1 = "The opponent is choosing from which area to select a card.";
 
                         GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                        var handOrTrashSelection = GManager.instance.userSelectionManager.SelectedBoolValue;
-                        if (handOrTrashSelection) playFromHand = true;
-                        else playFromTrash = true;
                     }
+                    else
+                    {
+                        GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    var handOrTrashSelection = GManager.instance.userSelectionManager.SelectedBoolValue;
+                    if (handOrTrashSelection) playFromHand = true;
+                    else playFromTrash = true;
                 }
 
                 #endregion

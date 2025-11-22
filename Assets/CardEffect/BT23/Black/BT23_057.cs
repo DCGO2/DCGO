@@ -28,8 +28,8 @@ namespace DCGO.CardEffects.BT23
 
             bool CanSelectReturnCardCondition(CardSource cardSource)
             {
-                return cardSource.ContainsCardName("Huckmon") &&
-                       cardSource.ContainsCardName("Sistermon") &&
+                return cardSource.ContainsCardName("Huckmon") ||
+                       cardSource.ContainsCardName("Sistermon") ||
                        cardSource.ContainsCardName("Jesmon");
             }
 

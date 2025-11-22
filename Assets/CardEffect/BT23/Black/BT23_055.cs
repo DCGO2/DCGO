@@ -209,6 +209,7 @@ namespace DCGO.CardEffects.BT23
                 bool RemovedPermanent(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent == card.PermanentOfThisCard() &&
                            (permanent.TopCard.ContainsCardName("Cyberdramon") || permanent.TopCard.ContainsCardName("Justimon") || permanent.TopCard.HasCSTraits);
                 }
 
