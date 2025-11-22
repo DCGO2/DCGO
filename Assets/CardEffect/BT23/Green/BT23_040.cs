@@ -117,7 +117,7 @@ namespace DCGO.CardEffects.BT23
                             bool SelectSourceCard(CardSource cardSource)
                             {
                                 return cardSource.IsDigimon
-                                    && cardSource.HasHudieTraits
+                                    && cardSource.EqualsCardName("Hudiemon")
                                     && cardSource.CanPlayCardTargetFrame(thisPermament.PermanentFrame, true, activateClass);
                             }
 

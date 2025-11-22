@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.BT23
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDPPlayerEffect(
                         permanentCondition: PermanentCondition,
-                        changeValue: -5000,
+                        changeValue: -6000,
                         effectDuration: EffectDuration.UntilOpponentTurnEnd,
                         activateClass: activateClass));
                 }

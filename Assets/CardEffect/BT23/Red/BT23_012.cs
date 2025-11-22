@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.BT23
             {
                 return cardSource.IsDigimon
                     && cardSource.HasLevel && cardSource.Level <= 4
-                    && cardSource.HasAvianBeastAnimalTraits
+                    && (cardSource.HasCSTraits || cardSource.HasAvianBeastAnimalTraits)
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
             }
 
