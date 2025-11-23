@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public partial class CardEffectFactory
 {
@@ -193,7 +194,7 @@ public partial class CardEffectFactory
 
     #region Digimon's Security effect to play oneself after battle
 
-    public static ICardEffect PlaySelfDigimonAfterBattleSecurityEffect(CardSource card)
+    public static ICardEffect PlaySelfDigimonAfterBattleSecurityEffect(CardSource card, EffectDuration deleteDigimon = EffectDuration.UntilEndBattle)
     {
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Play this card at the end of the battle", CanUseCondition, card);
@@ -226,6 +227,7 @@ public partial class CardEffectFactory
 
             ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
 
+            #region Play Card
             ActivateClass activateClass1 = new ActivateClass();
             activateClass1.SetUpICardEffect("Play this card", CanUseCondition1, card);
             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
@@ -267,6 +269,87 @@ public partial class CardEffectFactory
                             isTapped: false,
                             root: SelectCardEffect.Root.Security,
                             activateETB: true));
+
+                        if (deleteDigimon != EffectDuration.UntilEndBattle)
+                        {
+                            yield return new WaitForSeconds(0.2f);
+
+                            #region Delete Digimon Played
+                            Permanent playedDigimon = card.PermanentOfThisCard();
+
+                            ActivateClass activateClass2 = new ActivateClass();
+                            activateClass2.SetUpICardEffect("Delete this Digimon", CanUseCondition2, card);
+                            activateClass2.SetUpActivateClass(CanActivateCondition2, ActivateCoroutine2, -1, false, EffectDiscription2());
+                            activateClass2.SetEffectSourcePermanent(playedDigimon);
+                            playedDigimon.UntilOpponentTurnEndEffects.Add(GetCardEffect);
+
+                            string EffectDiscription2()
+                            {
+                                if (deleteDigimon == EffectDuration.UntilOwnerTurnEnd)
+                                {
+                                    return "[End of Your Turn] Delete this Digimon.";
+                                }
+
+                                if (deleteDigimon == EffectDuration.UntilOpponentTurnEnd)
+                                {
+                                    return "[End of Opponents Turn] Delete this Digimon.";
+                                }
+
+                                return "";
+                            }
+
+                            bool CanUseCondition2(Hashtable hashtable1)
+                            {
+                                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(playedDigimon, playedDigimon.TopCard))
+                                {
+                                    if(deleteDigimon == EffectDuration.UntilOwnerTurnEnd)
+                                    {
+                                        return CardEffectCommons.IsOwnerTurn(card);
+                                    }
+
+                                    if (deleteDigimon == EffectDuration.UntilOpponentTurnEnd)
+                                    {
+                                        return CardEffectCommons.IsOpponentTurn(card);
+                                    }
+                                }
+
+                                return false;
+                            }
+
+                            bool CanActivateCondition2(Hashtable hashtable1)
+                            {
+                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedDigimon))
+                                {
+                                    if (!playedDigimon.TopCard.CanNotBeAffected(activateClass2))
+                                    {
+                                        return true;
+                                    }
+                                }
+
+                                return false;
+                            }
+
+                            IEnumerator ActivateCoroutine2(Hashtable _hashtable1)
+                            {
+                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedDigimon))
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                                    new List<Permanent>() { playedDigimon },
+                                    CardEffectCommons.CardEffectHashtable(activateClass2)).Destroy());
+                                }
+                            }
+
+                            ICardEffect GetCardEffect(EffectTiming _timing)
+                            {
+                                if (_timing == EffectTiming.OnEndTurn)
+                                {
+                                    return activateClass2;
+                                }
+
+                                return null;
+                            }
+                            #endregion
+                        }
                     }
                 }
             }
@@ -280,6 +363,8 @@ public partial class CardEffectFactory
 
                 return null;
             }
+            #endregion
+
         }
 
         return activateClass;

@@ -1925,7 +1925,7 @@ public class IAddSecurityFromLibrary
             {
                 CardSource StockCard = _player.LibraryCards[0];
 
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(StockCard));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(StockCard, useEffect: (i == 0)));
 
                 count++;
             }

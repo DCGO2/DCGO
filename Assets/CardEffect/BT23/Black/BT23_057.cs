@@ -216,7 +216,7 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.None)
             {
                 ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -1", CanUseCondition, card);
+                changeCostClass.SetUpICardEffect("Play Cost -5", CanUseCondition, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
                 changeCostClass.SetNotShowUI(true);
                 cardEffects.Add(changeCostClass);
@@ -225,7 +225,7 @@ namespace DCGO.CardEffects.BT23
                 {
                     if (card.Owner.HandCards.Contains(card))
                     {
-                        ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Return 6 [D-Brigade] to get Play Cost -6");
+                        ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Return 3 cards with [Huckmon], [Sistermon] or [Jesmon] in their names to get Play Cost -5");
 
                         if (activateClass != null)
                         {
