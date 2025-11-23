@@ -228,7 +228,7 @@ namespace DCGO.CardEffects.BT23
                             DisableEffectClass invalidationClass = new DisableEffectClass();
                             invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", CanUseConditionDebuff, card);
                             invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
-                            selectedPermanent.UntilEachTurnEndEffects.Add(_ => invalidationClass);
+                            selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => invalidationClass);
 
                             bool CanUseConditionDebuff(Hashtable hashtableDebuff)
                             {

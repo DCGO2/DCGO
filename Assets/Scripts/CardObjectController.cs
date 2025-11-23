@@ -966,7 +966,7 @@ public class CardObjectController : MonoBehaviour
     #endregion
 
     #region Add card to security
-    public static IEnumerator AddSecurityCard(CardSource cardSource, bool toTop = true, bool faceUp = false)
+    public static IEnumerator AddSecurityCard(CardSource cardSource, bool toTop = true, bool faceUp = false, bool useEffect = true)
     {
         if (!cardSource.Owner.SecurityCards.Contains(cardSource))
         {
@@ -987,7 +987,8 @@ public class CardObjectController : MonoBehaviour
                     cardSource.Owner.SecurityCards.Add(cardSource);
                 }
 
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
+                if(useEffect)
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
 
                 yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource).AddSecurity());
             }
