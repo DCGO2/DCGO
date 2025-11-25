@@ -1,0 +1,3 @@
+[submodule "Assets/CardScripts"]
+	path = Assets/CardScripts
+	url = https://github.com/DCGO2/DCGO-Card-Scripts.git
