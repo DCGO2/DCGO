@@ -72,13 +72,9 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-/Assets/Titles/
-/Assets/Titles.meta
+# Build/Patch ignores
 /Assets/MHLab/
 /Assets/MHLab.meta
-/Assets/ToDo.txt
-/Assets/ToDo.txt.meta
 /PATCHWorkspace/
-
 /.idea
 /.idea/.idea.DCGO
