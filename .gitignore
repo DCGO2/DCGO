@@ -78,3 +78,30 @@ crashlytics-build.properties
 /PATCHWorkspace/
 /.idea
 /.idea/.idea.DCGO
+
+#Open Source Locked
+/Assets/Editor
+/Assets/AddOn/@ Xxuebi
+/Assets/AddOn/Energy Shield Shader
+/Assets/AddOn/NucleusDNAEffect
+/Assets/AddOn/Taimiso
+/Assets/AddOn/unity3d-curves-master
+/Assets/Effect/DigitalEnvironmentEffects
+/Assets/Effect/DL_Fantasy_RPG_Effects
+/Assets/Effect/KTK_Effect_Samples
+/Assets/SCI-FI UI Components
+/Assets/Sound
+/Assets/CardBaseEntity/CardEntity_JSONLoader.asset
+
+/Assets/Editor.meta
+/Assets/AddOn/@ Xxuebi.meta
+/Assets/AddOn/Energy Shield Shader.meta
+/Assets/AddOn/NucleusDNAEffect.meta
+/Assets/AddOn/Taimiso.meta
+/Assets/AddOn/unity3d-curves-master.meta
+/Assets/Effect/DigitalEnvironmentEffects.meta
+/Assets/Effect/DL_Fantasy_RPG_Effects.meta
+/Assets/Effect/KTK_Effect_Samples.meta
+/Assets/SCI-FI UI Components.meta
+/Assets/Sound.meta
+/Assets/CardBaseEntity/CardEntity_JSONLoader.meta
