@@ -169598,6 +169598,7 @@ GameObject:
   - component: {fileID: 2083418106}
   - component: {fileID: 2083418105}
   - component: {fileID: 2083418108}
+  - component: {fileID: 2083418109}
   m_Layer: 5
   m_Name: "\u5834\u3092\u78BA\u8A8D\u30DC\u30BF\u30F3"
   m_TagString: Untagged
@@ -169749,6 +169750,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &2083418109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2083418103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9304cb057684aa3448c3c8974edc49bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2085143703
 GameObject:
   m_ObjectHideFlags: 0
@@ -174556,6 +174569,7 @@ GameObject:
   - component: {fileID: 7680548881316394294}
   - component: {fileID: 7036955738301115125}
   - component: {fileID: 7972841691181700678}
+  - component: {fileID: 7972841691181700679}
   m_Layer: 5
   m_Name: EndSelectButton
   m_TagString: Untagged
@@ -175901,6 +175915,7 @@ GameObject:
   - component: {fileID: 3113213584902791058}
   - component: {fileID: 8840675403265924351}
   - component: {fileID: 8840675403265924352}
+  - component: {fileID: 8840675403265924353}
   m_Layer: 5
   m_Name: NotSelectButton
   m_TagString: Untagged
@@ -197878,6 +197893,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &7972841691181700679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2567500601957287854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9304cb057684aa3448c3c8974edc49bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!222 &8141707575800699682
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -198251,6 +198278,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &8840675403265924353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4160445583917126395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9304cb057684aa3448c3c8974edc49bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8849028199470458862
 GameObject:
   m_ObjectHideFlags: 0
