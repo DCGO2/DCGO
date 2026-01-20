@@ -48,6 +48,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9087878232752822907}
   - component: {fileID: 6754228367933223943}
+  - component: {fileID: 860432446521144979}
   - component: {fileID: 4608105844449142102}
   m_Layer: 8
   m_Name: Window002_BlueTitle
@@ -88,6 +89,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 389817155771020265}
   m_CullTransparentMesh: 0
+--- !u!114 &860432446521144979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389817155771020265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9304cb057684aa3448c3c8974edc49bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4608105844449142102
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -692,7 +705,7 @@ RectTransform:
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &3751631643572900190
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -709,7 +722,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &3751631643572900162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1258,6 +1272,7 @@ GameObject:
   - component: {fileID: 1555779862118152829}
   - component: {fileID: 2218845355730495835}
   - component: {fileID: 3909343950701462315}
+  - component: {fileID: 1393932544902825481}
   - component: {fileID: 5896306082600215633}
   m_Layer: 8
   m_Name: Window002_Blue_Opaque
@@ -1344,6 +1359,18 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 5, y: 5}
   m_UseGraphicAlpha: 1
+--- !u!114 &1393932544902825481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7437543865522074446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9304cb057684aa3448c3c8974edc49bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5896306082600215633
 MonoBehaviour:
   m_ObjectHideFlags: 0
