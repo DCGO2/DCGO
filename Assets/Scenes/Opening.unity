@@ -94003,6 +94003,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1337625605}
+    - target: {fileID: 4810676986596033396, guid: a43e5208db4997f4fa87057d46d4d457, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickCopyRoomIDButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 4810676986596033396, guid: a43e5208db4997f4fa87057d46d4d457, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: RoomManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a43e5208db4997f4fa87057d46d4d457, type: 3}
 --- !u!1 &1113754684868550828
