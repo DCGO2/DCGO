@@ -80,7 +80,6 @@ crashlytics-build.properties
 /.idea/.idea.DCGO
 
 #Open Source Locked
-/Assets/Editor
 /Assets/AddOn/@ Xxuebi
 /Assets/AddOn/Energy Shield Shader
 /Assets/AddOn/NucleusDNAEffect
@@ -93,7 +92,6 @@ crashlytics-build.properties
 /Assets/Sound
 /Assets/CardBaseEntity/CardEntity_JSONLoader.asset
 
-/Assets/Editor.meta
 /Assets/AddOn/@ Xxuebi.meta
 /Assets/AddOn/Energy Shield Shader.meta
 /Assets/AddOn/NucleusDNAEffect.meta
