@@ -499,21 +499,21 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      EmojiOne_3: 21300006
-      EmojiOne_1: 21300002
-      EmojiOne_9: 21300016
-      EmojiOne_13: 21300024
-      EmojiOne_7: 21300012
-      EmojiOne_2: 21300004
-      EmojiOne_10: 21300018
       EmojiOne_0: 21300000
+      EmojiOne_1: 21300002
+      EmojiOne_10: 21300018
+      EmojiOne_11: 21300020
+      EmojiOne_12: 21300022
+      EmojiOne_13: 21300024
+      EmojiOne_14: 21300028
+      EmojiOne_2: 21300004
+      EmojiOne_3: 21300006
       EmojiOne_4: 21300008
       EmojiOne_5: 21300026
       EmojiOne_6: 21300010
+      EmojiOne_7: 21300012
       EmojiOne_8: 21300014
-      EmojiOne_14: 21300028
-      EmojiOne_11: 21300020
-      EmojiOne_12: 21300022
+      EmojiOne_9: 21300016
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
