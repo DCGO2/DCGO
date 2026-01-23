@@ -17879,7 +17879,7 @@ MonoBehaviour:
   AssemblySelectCardEffect: {fileID: 0}
   AssemblySelectCardEffectSE: {fileID: 0}
   FreezeSE: {fileID: 8300000, guid: 949e1686482c3d2439a1d7242d9f6828, type: 3}
-  HealLifeEffect: {fileID: 100008, guid: bc00d416d18684a42ae0ecb244d2fa95, type: 3}
+  HealLifeEffect: {fileID: 100008, guid: a5ccdba1ca772ff4b84271ccf56160fd, type: 3}
   HealLifeSE: {fileID: 8300000, guid: 3c8669efb2f62b645a53ef51b5979db2, type: 3}
   permanetBreakGlassPrefab: {fileID: 7079274603882314403, guid: 2710e0a121a6e054398dd9a8c9bd364b, type: 3}
   destroyPermanentMaterial: {fileID: 2100000, guid: 829e2cc3752264546832d17be21d0426, type: 2}
