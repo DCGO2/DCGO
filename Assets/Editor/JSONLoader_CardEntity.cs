@@ -31,6 +31,9 @@ namespace DCGO.CardEntities
         public override void OnInspectorGUI()
         {
             _loadJSON = target as LoadJSON_CardEntity;
+
+            GUILayout.Label("**IMPORTANT: DO NOT EDIT**");
+
             DrawDefaultInspector();
 
             if (GUILayout.Button("Get JSON Object"))
