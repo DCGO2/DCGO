@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-// UlforceVeedramon
+// UlforceVeedramon making a random change
 namespace DCGO.CardEffects.BT22
 {
     public class BT22_025 : CEntity_Effect
