@@ -1,0 +1,119 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Linq;
+using Photon;
+using System;
+using Photon.Pun;
+
+public class BT6_107 : CEntity_Effect
+{
+    public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+    {
+        List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+        if (timing == EffectTiming.OptionSkill)
+        {
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
+            activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+            cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[Main] Return 1 purple Digimon card from your trash to your hand. Then, place this card in your battle area.";
+            }
+
+            bool CanSelectCardCondition(CardSource cardSource)
+            {
+                if (cardSource != null)
+                {
+                    if (cardSource.IsDigimon)
+                    {
+                        if (cardSource.Owner == card.Owner)
+                        {
+                            if (cardSource.CardColors.Contains(CardColor.Purple))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
+            }
+
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            {
+                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                {
+                    int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
+
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: () => false,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: null,
+                        message: "Select 1 card to add to your hand.",
+                        maxCount: maxCount,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.AddHand,
+                        root: SelectCardEffect.Root.Trash,
+                        customRootCardList: null,
+                        canLookReverseCard: true,
+                        selectPlayer: card.Owner,
+                        cardEffect: activateClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                }
+
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
+            }
+        }
+
+        if (timing == EffectTiming.OnDeclaration)
+        {
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect("Memory +2", CanUseCondition, card);
+            activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+            cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[Main] <Delay> (Trash this card in your battle area to activate the effect below. You can't activate this effect the turn this card enters play.) - Gain 2 memory.";
+            }
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                return CardEffectCommons.CanDeclareOptionDelayEffect(card);
+            }
+
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            {
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+
+                IEnumerator SuccessProcess()
+                {
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
+                }
+            }
+        }
+
+        if (timing == EffectTiming.SecuritySkill)
+        {
+            cardEffects.Add(CardEffectFactory.PlaceSelfDelayOptionSecurityEffect(card));
+        }
+
+        return cardEffects;
+    }
+}
