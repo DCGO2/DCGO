@@ -572,6 +572,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         // 自動処理チェックタイミング
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+        
+        //Handle attacks by effect caused in this phase
+        while (GManager.instance.attackProcess.ActiveAttack())
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.ProcessNextState());
+
+            //自動処理チェックタイミング
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+        }
 
         //ターン終了チェック
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.EndTurnCheck());
@@ -628,6 +637,18 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         //自動処理チェックタイミング
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
+        //Handle attacks by effect caused in this phase
+        while (GManager.instance.attackProcess.ActiveAttack())
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.ProcessNextState());
+
+            //自動処理チェックタイミング
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+        }
+
+        //ターン終了チェック
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.EndTurnCheck());
+
         #region アクティブフェイズ終了時までの効果をリセット
         gameContext.TurnPlayer.UntilOwnerActivePhaseEffects = new List<Func<EffectTiming, ICardEffect>>();
         #endregion
@@ -674,6 +695,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         //自動処理チェックタイミング
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+        
+        //Handle attacks by effect caused in this phase
+        while (GManager.instance.attackProcess.ActiveAttack())
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.ProcessNextState());
+
+            //自動処理チェックタイミング
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+        }
         //ターン終了チェック
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.EndTurnCheck());
     }
@@ -800,6 +830,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         //自動処理チェックタイミング
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
+        //Handle attacks by effect caused in this phase
+        while (GManager.instance.attackProcess.ActiveAttack())
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.ProcessNextState());
+
+            //自動処理チェックタイミング
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+        }
+
         //ターン終了チェック
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.EndTurnCheck());
 
@@ -911,6 +950,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
             //自動処理チェックタイミング
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+            //Handle attack steps
+            while (GManager.instance.attackProcess.ActiveAttack())
+            {
+                Debug.Log($"Active Attack, {Enum.GetName(typeof(AttackProcess.AttackState),GManager.instance.attackProcess.State)} Step");
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.ProcessNextState());
+
+                //自動処理チェックタイミング
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+            }
             //ターン終了チェック
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.EndTurnCheck());
 
