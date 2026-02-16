@@ -139,39 +139,50 @@ namespace DCGO.CardEffects.BT24
                             Hashtable _hashtable = new Hashtable();
                             _hashtable.Add("CardEffect", activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BouncePeremanentAndProcessAccordingToResult(
-                                targetPermanents: bouncePermanents,
+                            bool Success = false;
+
+                            foreach (Permanent permanent in bouncePermanents)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BouncePeremanentAndProcessAccordingToResult(
+                                targetPermanents: new List<Permanent>() { permanent },
                                 activateClass: activateClass,
                                 successProcess: SuccessProcess(),
                                 failureProcess: null));
 
+                                IEnumerator SuccessProcess()
+                                {
+                                    Success = true;
+
+                                    return null;
+                                }
+                            }
+
+
+
                             #region if returned, unsuspend
 
-                            IEnumerator SuccessProcess()
+                            if (Success && CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
                             {
-                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
-                                {
-                                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigimonCondition));
+                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigimonCondition));
 
-                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                                    selectPermanentEffect.SetUp(
-                                        selectPlayer: card.Owner,
-                                        canTargetCondition: CanSelectDigimonCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        maxCount: maxCount,
-                                        canNoSelect: false,
-                                        canEndNotMax: false,
-                                        selectPermanentCoroutine: null,
-                                        afterSelectPermanentCoroutine: null,
-                                        mode: SelectPermanentEffect.Mode.UnTap,
-                                        cardEffect: activateClass);
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectDigimonCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: maxCount,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.UnTap,
+                                    cardEffect: activateClass);
 
-                                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will unsuspend", "The opponent is selecting 1 Digimon to unsuspend.");
+                                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will unsuspend", "The opponent is selecting 1 Digimon to unsuspend.");
 
-                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                                }
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                             }
 
                             #endregion
