@@ -139,34 +139,39 @@ namespace DCGO.CardEffects.BT24
                             Hashtable _hashtable = new Hashtable();
                             _hashtable.Add("CardEffect", activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(new HandBounceClaass(bouncePermanents, _hashtable).Bounce());
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BouncePeremanentAndProcessAccordingToResult(
+                                targetPermanents: bouncePermanents,
+                                activateClass: activateClass,
+                                successProcess: SuccessProcess(),
+                                failureProcess: null));
 
                             #region if returned, unsuspend
-                            
-                            var returnCount = bouncePermanents.Count - bouncePermanents.Filter(x => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(x, card)).Count;
 
-                            if (returnCount > 0 && CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
+                            IEnumerator SuccessProcess()
                             {
-                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigimonCondition));
+                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
+                                {
+                                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigimonCondition));
 
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectDigimonCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: null,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.UnTap,
-                                    cardEffect: activateClass);
+                                    selectPermanentEffect.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: CanSelectDigimonCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: maxCount,
+                                        canNoSelect: false,
+                                        canEndNotMax: false,
+                                        selectPermanentCoroutine: null,
+                                        afterSelectPermanentCoroutine: null,
+                                        mode: SelectPermanentEffect.Mode.UnTap,
+                                        cardEffect: activateClass);
 
-                                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will unsuspend", "The opponent is selecting 1 Digimon to unsuspend.");
+                                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will unsuspend", "The opponent is selecting 1 Digimon to unsuspend.");
 
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                }
                             }
 
                             #endregion
