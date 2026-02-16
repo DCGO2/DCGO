@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -203,12 +204,14 @@ namespace DCGO.CardEffects.EX11
                                 {
                                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
+                                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, targetPermanents.Contains));
+
                                     selectPermanentEffect.SetUp(
                                         selectPlayer: card.Owner,
                                         canTargetCondition: permanent => targetPermanents.Contains(permanent),
                                         canTargetCondition_ByPreSelecetedList: null,
                                         canEndSelectCondition: null,
-                                        maxCount: 1,
+                                        maxCount: maxCount,
                                         canNoSelect: false,
                                         canEndNotMax: false,
                                         selectPermanentCoroutine: SelectPermanentCoroutine,
