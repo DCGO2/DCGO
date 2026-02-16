@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.EX11
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && (permanent.TopCard.ContainsTraits("Avian")
                         || permanent.TopCard.ContainsTraits("Bird")
-                        || permanent.TopCard.EqualsTraits("Vortex Warrior"));
+                        || permanent.TopCard.EqualsTraits("Vortex Warriors"));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
