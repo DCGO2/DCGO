@@ -180,13 +180,13 @@ namespace DCGO.CardEffects.EX11
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && card.Owner.HandCards.Count <= 4;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
+                        && card.Owner.HandCards.Count <= 4
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
