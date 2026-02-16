@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Tidal Stream
 namespace DCGO.CardEffects.BT24
@@ -121,71 +122,52 @@ namespace DCGO.CardEffects.BT24
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTargetCondition))
                     {
-                        List<Permanent> bouncePermanents = new List<Permanent>();
-
-                        foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
-                        {
-                            if (CanSelectTargetCondition(permanent))
-                            {
-                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                                {
-                                    bouncePermanents.Add(permanent);
-                                }
-                            }
-                        }
+                        List<Permanent> bouncePermanents = (from Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons()
+                                                            where CanSelectTargetCondition(permanent)
+                                                            where !permanent.TopCard.CanNotBeAffected(activateClass)
+                                                            select permanent).ToList();
 
                         if (bouncePermanents.Count >= 1)
                         {
-                            Hashtable _hashtable = new Hashtable();
-                            _hashtable.Add("CardEffect", activateClass);
 
-                            bool Success = false;
-
-                            foreach (Permanent permanent in bouncePermanents)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BouncePeremanentAndProcessAccordingToResult(
-                                targetPermanents: new List<Permanent>() { permanent },
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BouncePeremanentAndProcessAccordingToResult(
+                                targetPermanents: bouncePermanents,
                                 activateClass: activateClass,
                                 successProcess: SuccessProcess(),
                                 failureProcess: null));
 
-                                IEnumerator SuccessProcess()
-                                {
-                                    Success = true;
-
-                                    return null;
-                                }
-                            }
-
-
-
-                            #region if returned, unsuspend
-
-                            if (Success && CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
+                            IEnumerator SuccessProcess()
                             {
-                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigimonCondition));
+                                #region if returned, unsuspend
 
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
+                                {
+                                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigimonCondition));
 
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectDigimonCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: null,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.UnTap,
-                                    cardEffect: activateClass);
+                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will unsuspend", "The opponent is selecting 1 Digimon to unsuspend.");
+                                    selectPermanentEffect.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: CanSelectDigimonCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: maxCount,
+                                        canNoSelect: false,
+                                        canEndNotMax: false,
+                                        selectPermanentCoroutine: null,
+                                        afterSelectPermanentCoroutine: null,
+                                        mode: SelectPermanentEffect.Mode.UnTap,
+                                        cardEffect: activateClass);
 
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will unsuspend", "The opponent is selecting 1 Digimon to unsuspend.");
+
+                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                }
+
+                                #endregion
+
+
                             }
-
-                            #endregion
                         }
                     }
 
