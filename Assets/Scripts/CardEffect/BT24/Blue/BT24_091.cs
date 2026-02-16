@@ -142,8 +142,10 @@ namespace DCGO.CardEffects.BT24
                             yield return ContinuousController.instance.StartCoroutine(new HandBounceClaass(bouncePermanents, _hashtable).Bounce());
 
                             #region if returned, unsuspend
+                            
+                            var returnCount = bouncePermanents.Count - bouncePermanents.Filter(x => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(x, card)).Count;
 
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
+                            if (returnCount > 0 && CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
                             {
                                 int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigimonCondition));
 
