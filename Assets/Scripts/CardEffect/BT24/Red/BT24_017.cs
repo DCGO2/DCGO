@@ -134,8 +134,7 @@ namespace DCGO.CardEffects.BT24
 
                             #region Play 2 Tokens
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPetrificationToken(activateClass));
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPetrificationToken(activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPetrificationToken(activateClass, 2));
 
                             #endregion
 

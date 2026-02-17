@@ -1613,13 +1613,12 @@ public class PlayPermanentClass
                 }
             }
 
-            GManager.instance.GetComponent<SelectDNACondition>().ResetSelectDNAConditionClass();
             GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
             GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
+            GManager.instance.GetComponent<SelectDNACondition>().ResetSelectDNAConditionClass();
 
             yield return GManager.instance.photonWaitController.StartWait("EndPlayPermanent");
         }
-
 
         // except [On Play] effect
         bool CardEffectCondition(ICardEffect cardEffect)
@@ -4347,7 +4346,7 @@ public class IBattle
                     else if (battleResults == 0)
                     {
                         WasTie = true;
-
+                        
                         WinnerPermanents.Add(AttackingPermanent);
                         WinnerPermanents.Add(DefendingPermanent);
 
@@ -4379,7 +4378,7 @@ public class IBattle
                     else if (AttackingPermanent.DP == DefendingCard.CardDP)
                     {
                         WasTie = true;
-
+                        
                         if (AttackingPermanent.CanBeDestroyedByBattle(AttackingPermanent, DefendingPermanent, DefendingCard))
                         {
                             LoserPermanents.Add(AttackingPermanent);
@@ -4440,7 +4439,6 @@ public class IBattle
                     hashtable["LoserPermanents_real"] = LoserPermanents;
                 }
 
-                
                 // "At the end of battle" effect
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnEndBattle));
 
@@ -4454,7 +4452,7 @@ public class IBattle
                 #endregion
 
                 #region effect when determine whether to do security check
-                
+
                 List<SkillInfo> skillInfos_Pierce = AutoProcessing.GetSkillInfos(hashtable, EffectTiming.OnDetermineDoSecurityCheck)
                     .Filter(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.CanActivate(skillInfo.Hashtable));
 
@@ -5298,11 +5296,6 @@ public class IUnsuspendPermanents
             #endregion
 
             yield return new WaitForSeconds(0.3f);
-        }
-
-        foreach (Permanent permanent in untappedPermanets)
-        {
-            permanent.UntilNextUntapEffects = new List<Func<EffectTiming, ICardEffect>>();
         }
     }
 }

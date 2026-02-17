@@ -29,6 +29,7 @@ public abstract class ICardEffect
         SetIsDeclarative(false);
         SetIsInheritedEffect(false);
         SetIsLinkedEffect(false);
+        SetIsEffectOfCard(false);
         SetIsSecurityEffect(false);
         SetIsCounterEffect(false);
         SetIsDigimonEffect(false);
@@ -509,6 +510,23 @@ public abstract class ICardEffect
     public void SetIsLinkedEffect(bool isLinkededEffect)
     {
         IsLinkedEffect = isLinkededEffect;
+    }
+
+    #endregion
+
+    #region Whether this is a static effect on a card itself
+
+    bool _isEffectOfCard = false;
+
+    public bool IsEffectOfCard
+    {
+        get { return _isEffectOfCard; }
+        private set { _isEffectOfCard = value; }
+    }
+
+    public void SetIsEffectOfCard(bool isEffectOfCard)
+    {
+        IsEffectOfCard = isEffectOfCard;
     }
 
     #endregion
