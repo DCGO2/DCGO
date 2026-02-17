@@ -4156,11 +4156,13 @@ public class IBattle
         this.AttackingPermanent = AttackingPermanent;
         this.DefendingPermanent = DefendingPermanent;
         this.DefendingCard = DefendingCard;
+        this.IsWithoutAttack = IsWithoutAttack;
     }
 
     public Permanent AttackingPermanent { get; private set; } = null;
     public Permanent DefendingPermanent { get; private set; } = null;
     CardSource DefendingCard { get; set; } = null;
+    bool IsWithoutAttack { get; set; } = false;
     public Hashtable hashtable { get; set; } = new Hashtable();
 
     public Permanent enemyPermanent(Permanent permanent)
@@ -4236,6 +4238,7 @@ public class IBattle
                 List<Permanent> WinnerPermanents = new List<Permanent>();
                 List<Permanent> LoserPermanents = new List<Permanent>();
                 CardSource LoserCard = null;
+                bool WasTie = false;
 
                 //add log
                 string log = $"\nBattle:\n{AttackingPermanent.TopCard.BaseENGCardNameFromEntity}({AttackingPermanent.TopCard.CardID})";
@@ -4316,14 +4319,17 @@ public class IBattle
 
                 #endregion
 
-                // auto process check
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+                if (!IsWithoutAttack)//If started by effect, do not perform processing during this battle
+                {
+                    // auto process check
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
-                GManager.instance.turnStateMachine.IsSelecting = true;
+                    GManager.instance.turnStateMachine.IsSelecting = true;
 
-                //Preemptive end battle if the attack process is ended
-                if (GManager.instance.attackProcess.IsEndAttack)
-                    yield break;
+                    //Preemptive end battle if the attack process is ended
+                    if (GManager.instance.attackProcess.IsEndAttack )
+                        yield break;
+                }
 
                 #region battle with permanent
 
@@ -4339,6 +4345,8 @@ public class IBattle
                     }
                     else if (battleResults == 0)
                     {
+                        WasTie = true;
+                        
                         WinnerPermanents.Add(AttackingPermanent);
                         WinnerPermanents.Add(DefendingPermanent);
 
@@ -4369,6 +4377,8 @@ public class IBattle
                     }
                     else if (AttackingPermanent.DP == DefendingCard.CardDP)
                     {
+                        WasTie = true;
+                        
                         if (AttackingPermanent.CanBeDestroyedByBattle(AttackingPermanent, DefendingPermanent, DefendingCard))
                         {
                             LoserPermanents.Add(AttackingPermanent);
@@ -4411,6 +4421,7 @@ public class IBattle
                 hashtable.Add("LoserPermanents", _LoserPermanents);
                 hashtable.Add("LoserPermanents_real", LoserPermanents);
                 hashtable.Add("LoserCard", LoserCard);
+                hashtable.Add("WasTie", WasTie);
                 hashtable.Add("battle", this);
 
                 // battle effect
