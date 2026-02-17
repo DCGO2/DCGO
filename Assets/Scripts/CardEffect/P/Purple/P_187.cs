@@ -196,21 +196,16 @@ namespace DCGO.CardEffects.P
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                                 bool position = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                                if (selectedPermanent.TopCard.Owner.CanAddSecurity(activateClass))
+                                yield return ContinuousController.instance.StartCoroutine(
+                                    CardEffectCommons.PlacePermanentInSecurityAndProcessAccordingToResult(selectedPermanent, activateClass, toTop: position, SuccessProcess));
+
+                                IEnumerator SuccessProcess(CardSource cardSource)
                                 {
-                                    CardSource topCard = selectedPermanent.TopCard;
-
-                                    // TODO: Replace this and if below with a PlaceInSecurityProcessFromResult
-                                    yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(selectedPermanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop: position).PutSecurity());
-
-                                    if (topCard.Owner.SecurityCards.Contains(topCard) || topCard.IsToken)
-                                    {
-                                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                                         player: card.Owner.Enemy,
                                         destroySecurityCount: 1,
                                         cardEffect: activateClass,
                                         fromTop: true).DestroySecurity());
-                                    }
                                 }
                             }
                         }
