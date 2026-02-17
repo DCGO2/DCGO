@@ -17,11 +17,12 @@ namespace DCGO.CardEffects.BT12
                 activateClass.SetUpICardEffect("Play Cost -1 and select trash cards for a DigiXros", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 activateClass.SetHashString("PlayCost-1_BT12_112");
+                activateClass.SetIsEffectOfCard(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "When you would play this card from your hand, by placing 1 of your [Shoutmon] as a digivolution card under this Digimon, reduce its play cost by 1 and place the cards in your trash as digivolution cards for a DigiXros.";
+                    return "When you would play this card, by placing 1 [Shoutmon] as a digivolution card under this Digimon, reduce its play cost by 1 and place the cards in your trash as digivolution cards for a DigiXros.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
