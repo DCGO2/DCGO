@@ -29,6 +29,7 @@ public abstract class ICardEffect
         SetIsDeclarative(false);
         SetIsInheritedEffect(false);
         SetIsLinkedEffect(false);
+        SetIsEffectOfCard(false);
         SetIsSecurityEffect(false);
         SetIsCounterEffect(false);
         SetIsDigimonEffect(false);
@@ -513,6 +514,23 @@ public abstract class ICardEffect
 
     #endregion
 
+    #region Whether this is a static effect on a card itself
+
+    bool _isEffectOfCard = false;
+
+    public bool IsEffectOfCard
+    {
+        get { return _isEffectOfCard; }
+        private set { _isEffectOfCard = value; }
+    }
+
+    public void SetIsEffectOfCard(bool isEffectOfCard)
+    {
+        IsEffectOfCard = isEffectOfCard;
+    }
+
+    #endregion
+
     #region Whether this effect is an Security Effect
 
     bool _isSecurityEffect = false;
@@ -658,8 +676,8 @@ public abstract class ICardEffect
             {
                 if (!string.IsNullOrEmpty(EffectDiscription))
                 {
-                    Debug.Log($"Effect Description: {EffectDiscription.StartsWith("[On Play]")}");
-                    if (EffectDiscription.StartsWith("[On Play]"))
+                    Debug.Log($"Effect Description: {EffectDiscription.Contains("[On Play]")}");
+                    if (EffectDiscription.Contains("[On Play]"))
                     {
                         Hashtable hashtable = CardEffectCommons.OnPlayCheckHashtableOfCard(EffectSourceCard);
                         Debug.Log($"Can Trigger: {CanTrigger(hashtable)}");
@@ -687,7 +705,7 @@ public abstract class ICardEffect
             {
                 if (!string.IsNullOrEmpty(EffectDiscription))
                 {
-                    if (EffectDiscription.StartsWith("[When Digivolving]"))
+                    if (EffectDiscription.Contains("[When Digivolving]"))
                     {
                         Hashtable hashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(EffectSourceCard);
 
@@ -715,7 +733,7 @@ public abstract class ICardEffect
             {
                 if (!string.IsNullOrEmpty(EffectDiscription))
                 {
-                    if (EffectDiscription.StartsWith("[On Deletion]"))
+                    if (EffectDiscription.Contains("[On Deletion]"))
                     {
                         Permanent effectPermanent = EffectSourceCard.PermanentOfThisCard() ?? new Permanent(new List<CardSource>() { EffectSourceCard });
 
@@ -745,7 +763,7 @@ public abstract class ICardEffect
             {
                 if (!string.IsNullOrEmpty(EffectDiscription))
                 {
-                    if (EffectDiscription.StartsWith("[When Attacking]"))
+                    if (EffectDiscription.Contains("[When Attacking]"))
                     {
                         Hashtable hashtable = CardEffectCommons.OnAttackCheckHashtableOfCard(EffectSourceCard, null);
 
