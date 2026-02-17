@@ -1145,7 +1145,7 @@ public class Permanent
                     yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(addedDigivolutionCard, trashCard: false));
                 }
 
-                if (addedDigivolutionCard == TopCard)
+                else if (addedDigivolutionCard == TopCard)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(addedDigivolutionCard));
 
