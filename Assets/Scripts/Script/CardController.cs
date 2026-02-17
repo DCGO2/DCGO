@@ -4151,7 +4151,7 @@ public class IDestroySecurity
 
 public class IBattle
 {
-    public IBattle(Permanent AttackingPermanent, Permanent DefendingPermanent, CardSource DefendingCard)
+    public IBattle(Permanent AttackingPermanent, Permanent DefendingPermanent, CardSource DefendingCard, bool IsWithoutAttack = false)
     {
         this.AttackingPermanent = AttackingPermanent;
         this.DefendingPermanent = DefendingPermanent;
