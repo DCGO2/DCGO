@@ -63,8 +63,6 @@ namespace DCGO.CardEffects.LM
                 {
                     bool placedToSecurity = false;
 
-                    List<Permanent> selectedPermanents = new List<Permanent>();
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -88,23 +86,11 @@ namespace DCGO.CardEffects.LM
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        selectedPermanents.Add(permanent);
-
-                        if (!permanent.IsToken)
-                        {
-                            Player selectedOwner = permanent.TopCard.Owner;
-                            int beforeEffectSecurityCount = permanent.TopCard.Owner.SecurityCards.Count;
-
-                            yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(permanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop: true).PutSecurity());
-
-                            if (selectedOwner.SecurityCards.Count > beforeEffectSecurityCount)
-                                placedToSecurity = true;
-                        }
-
-                        yield return null;
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.PlacePermanentInSecurityAndProcessAccordingToResult(permanent, activateClass, toTop: true, SuccessProcess));
                     }
 
-                    if (placedToSecurity)
+                    IEnumerator SuccessProcess(CardSource cardSource)
                     {
                         if (card.Owner.Enemy.SecurityCards.Count >= 1)
                         {
@@ -162,6 +148,7 @@ namespace DCGO.CardEffects.LM
 
                             card.Owner.Enemy.SecurityCards = RandomUtility.ShuffledDeckCards(card.Owner.Enemy.SecurityCards);
                         }
+                        yield return null;
                     }
                 }
             }

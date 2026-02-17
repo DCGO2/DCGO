@@ -571,6 +571,36 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Place in security with callbacks for success or failure
+    public static IEnumerator PlacePermanentInSecurityAndProcessAccordingToResult(Permanent targetPermanent, ICardEffect activateClass, bool toTop, Func<CardSource, IEnumerator> successProcess, Func<IEnumerator> failureProcess = null, bool isFaceUp = false)
+    {
+        IPutSecurityPermanent putSecurityPermanent = new IPutSecurityPermanent(targetPermanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop, isFaceUp);
+
+        CardSource topCard = targetPermanent.TopCard;
+        if (activateClass.EffectSourceCard != null 
+            && activateClass.EffectSourceCard.Owner.CanAddSecurity(activateClass))
+        {
+            yield return ContinuousController.instance.StartCoroutine(putSecurityPermanent.PutSecurity());
+        }
+
+        if (putSecurityPermanent.IsPlacedSecurity)
+        {
+            if (successProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(successProcess(topCard));
+            }
+        }
+        else
+        {
+            if (failureProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(failureProcess());
+            }
+        }
+    }
+
+    #endregion
+
     #region Trash digivolution cards from top or bottom
 
     public static IEnumerator TrashDigivolutionCardsFromTopOrBottom(Permanent targetPermanent, int trashCount, bool isFromTop, ICardEffect activateClass, Func<CardSource, bool> cardCondition = null)

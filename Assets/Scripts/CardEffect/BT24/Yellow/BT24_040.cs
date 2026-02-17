@@ -406,13 +406,14 @@ namespace DCGO.CardEffects.BT24
     
                                 CardSource topCard = selectedPermanent.TopCard;
     
-                                yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                                    permanent: selectedPermanent,
-                                    hashtable: _hashtable,
-                                    toTop: false).PutSecurity()
-                                );
+                                yield return ContinuousController.instance.StartCoroutine(
+                                    CardEffectCommons.PlacePermanentInSecurityAndProcessAccordingToResult(
+                                        targetPermanent: selectedPermanent,
+                                        activateClass: activateClass,
+                                        toTop: false,
+                                        SuccessProcess));
     
-                                if (card.Owner.SecurityCards.Contains(topCard) || card.Owner.Enemy.SecurityCards.Contains(topCard) || (selectedPermanent.IsToken && !CardEffectCommons.IsExistOnBattleArea(topCard)))
+                                IEnumerator SuccessProcess(CardSource cardSource)
                                 {
                                     foreach (Permanent permanent in removedPermanents)
                                     {
@@ -422,6 +423,7 @@ namespace DCGO.CardEffects.BT24
                                         permanent.HideDeckBounceEffect();
                                         permanent.HideWillRemoveFieldEffect();
                                     }
+                                    yield return null;
                                 }
                             }
                         }
