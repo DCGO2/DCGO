@@ -387,15 +387,16 @@ public partial class CardEffectCommons
 
     #endregion
 
-    #region Play 1 [Petrification] Token
+    #region Play [Petrification] Token(s)
 
-    public static IEnumerator PlayPetrificationToken(ICardEffect activateClass)
+    public static IEnumerator PlayPetrificationToken(ICardEffect activateClass, int quantity = 1)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
             tokenData: ContinuousController.instance.PetrificationToken,
             activateClass: activateClass,
             isOwnerPermanent: false,
-            isTapped: false
+            isTapped: false,
+            quantity
             ));
     }
 
