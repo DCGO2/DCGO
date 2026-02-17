@@ -1140,11 +1140,7 @@ public class Permanent
             {
                 isFromSameDigimon = true;
 
-                if (LinkedCards.Contains(addedDigivolutionCard))
-                {
-                    yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(addedDigivolutionCard, trashCard: false));
-                }
-                else if (addedDigivolutionCard == TopCard)
+                if (addedDigivolutionCard == TopCard)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(addedDigivolutionCard));
 
@@ -1479,28 +1475,27 @@ public class Permanent
                     if (!cardSource.IsFlipped)
                     {
                         bool isTopCard = cardSource == TopCard;
-
-                        if (!isTopCard)
-                        {
-                            if (!IsDigimon)
-                            {
-                                continue;
-                            }
-                        }
+                        bool isDigimon = IsDigimon;
 
                         foreach (ICardEffect cardEffect in cardSource.cEntity_EffectController.GetCardEffects(timing, cardSource))
                         {
                             if (cardEffect != null)
                             {
-                                #region Entity, Inherited and Link effects
-
-                                if (cardEffect.IsInheritedEffect && !isTopCard)
+                                if (cardEffect.IsEffectOfCard)
                                 {
                                     _EffectList.Add(cardEffect);
                                     continue;
                                 }
 
-                                if (cardEffect.IsLinkedEffect && cardSource.IsLinked)
+                                #region Entity, Inherited and Link effects
+
+                                if (cardEffect.IsInheritedEffect && !isTopCard && isDigimon)
+                                {
+                                    _EffectList.Add(cardEffect);
+                                    continue;
+                                }
+
+                                if (cardEffect.IsLinkedEffect && cardSource.IsLinked && isDigimon)
                                 {
                                     _EffectList.Add(cardEffect);
                                     continue;
@@ -2590,28 +2585,6 @@ public class Permanent
                     }
                     #endregion
                 }
-
-                #region Effects of faceup security
-                foreach (CardSource source in player.SecurityCards)
-                {
-                    if (source.IsFlipped)
-                        continue;
-
-                    foreach (ICardEffect cardEffect in source.EffectList(EffectTiming.None))
-                    {
-                        if (cardEffect is IRebootEffect)
-                        {
-                            if (cardEffect.CanTrigger(null))
-                            {
-                                if (((IRebootEffect)cardEffect).HasReboot(this))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-                #endregion
 
                 #region プレイヤーの効果
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
@@ -4024,4 +3997,3 @@ public class Permanent
     }
     #endregion
 }
-
