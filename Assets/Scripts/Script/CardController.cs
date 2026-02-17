@@ -3269,6 +3269,7 @@ public class IPutSecurityPermanent
     Hashtable _hashtable = new Hashtable();
     bool _toTop = false;
     bool _isFaceup = false;
+    public bool IsPlacedSecurity = false;
 
     public IEnumerator PutSecurity()
     {
@@ -3328,6 +3329,8 @@ public class IPutSecurityPermanent
         PlayLog.OnAddLog?.Invoke(log);
 
         #endregion
+
+        IsPlacedSecurity = true;
 
         #region show cards
 
