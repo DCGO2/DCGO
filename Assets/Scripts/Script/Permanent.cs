@@ -2591,7 +2591,7 @@ public class Permanent
                     #endregion
                 }
 
-                #region Effects of faceup securityExpand commentComment on line L2594
+                #region Effects of faceup security
                 foreach (CardSource source in player.SecurityCards)
                 {
                     if (source.IsFlipped)
