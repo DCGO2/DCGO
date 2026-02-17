@@ -31,10 +31,13 @@ namespace DCGO.CardEffects.BT24
 
             if (timing == EffectTiming.OnDiscardHand)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("If you have 5 or less cards, draw 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
+                cardEffects.Add(CardEffectFactory.ActivateClass(card,
+                                                                "If you have 5 or less cards, draw 1",
+                                                                CanUseCondition,
+                                                                CanActivateCondition,
+                                                                ActivateCoroutine,
+                                                                EffectDescription(),
+                                                                false));
 
                 string EffectDescription()
                 {
@@ -51,7 +54,7 @@ namespace DCGO.CardEffects.BT24
                     return CardEffectCommons.IsExistOnTrash(card) && card.Owner.HandCards.Count <= 5;
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable _hashtable, ActivateClass activateClass)
                 {
                     yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                 }
@@ -61,32 +64,14 @@ namespace DCGO.CardEffects.BT24
 
             #region Shared OP/WA
 
-            string SharedHash()
-            {
-                return "OP_WA_BT24_026";
-            }
-
-            string SharedEffectName()
-            {
-                return "Trash a card to give one of your digimon Jamming and Blocker.";
-            }
-
             string SharedEffectDescription(string tag)
             {
                 return $"[{tag}] [Once Per Turn] By trashing 1 card in your hand, 1 of your digimon with the [Demon], [Shaman] or [Titan] trait gains <Jamming> and <Blocker> until your opponent's turn ends.";
             }
 
-            bool SharedCanActivateCondition(Hashtable hashtable)
+            bool AdditionalActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (card.Owner.HandCards.Count >= 1)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return card.Owner.HandCards.Count >= 1;
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -165,41 +150,16 @@ namespace DCGO.CardEffects.BT24
                 }
             }
 
-            #endregion
-
-            #region On Play
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition,(hash) => SharedActivateCoroutine(hash, activateClass), 1, false, SharedEffectDescription("On Play"));
-                activateClass.SetHashString(SharedHash());
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-            }
-
-            #endregion
-
-            #region When Attacking
-
-            if (timing == EffectTiming.OnAllyAttack)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition,(hash) => SharedActivateCoroutine(hash, activateClass), 1, false, SharedEffectDescription("When Attacking"));
-                activateClass.SetHashString(SharedHash());
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
-            }
+            CardEffectFactory.ActivateClassesForSharedEffects(ref cardEffects, timing, card, 
+                                                                "Trash a card to give one of your digimon Jamming and Blocker.",
+                                                                SharedActivateCoroutine,
+                                                                SharedEffectDescription,
+                                                                optional: false,
+                                                                maxCountPerTurn: 1,
+                                                                hashValue: "OP_WA_BT24_026",
+                                                                onPlay: true,
+                                                                whenAttacking: true,
+                                                                additionalActivateCondition: AdditionalActivateCondition);
 
             #endregion
 

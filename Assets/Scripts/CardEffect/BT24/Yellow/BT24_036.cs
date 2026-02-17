@@ -47,8 +47,6 @@ namespace DCGO.CardEffects.BT24
 
             #region Shared OP / OD
 
-            string SharedEffectName() => "DP -3000";
-
             string SharedEffectDescription(string tag) => $"[{tag}] 1 of your opponent's Digimon gets -3000 DP for the turn.";
 
             bool SharedCanSelectPermanentCondition(Permanent permanent)
@@ -57,84 +55,50 @@ namespace DCGO.CardEffects.BT24
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable _hashtable, ActivateClass activateClass)
+            {
+                if (CardEffectCommons.HasMatchConditionPermanent(SharedCanSelectPermanentCondition))
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(SharedCanSelectPermanentCondition))
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(SharedCanSelectPermanentCondition));
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: SharedCanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get DP -3000.", "The opponent is selecting 1 Digimon that will get DP -3000.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(SharedCanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: SharedCanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get DP -3000.", "The opponent is selecting 1 Digimon that will get DP -3000.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                targetPermanent: permanent,
-                                changeValue: -3000,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
-                                activateClass: activateClass));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                            targetPermanent: permanent,
+                            changeValue: -3000,
+                            effectDuration: EffectDuration.UntilEachTurnEnd,
+                            activateClass: activateClass));
                     }
                 }
-
-            #endregion
-
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), -1, false, SharedEffectDescription("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                        CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                        CardEffectCommons.HasMatchConditionPermanent(SharedCanSelectPermanentCondition);
-                }
             }
-            #endregion
 
-            #region On Deletion
+            CardEffectFactory.ActivateClassesForSharedEffects(ref cardEffects, timing, card,
+                                                              effectName: "DP -3000",
+                                                              activateCoroutine: SharedActivateCoroutine,
+                                                              effectDescription: SharedEffectDescription,
+                                                              optional: false,
+                                                              maxCountPerTurn: -1,
+                                                              onPlay: true,
+                                                              onDeletion: true);
 
-            if (timing == EffectTiming.OnDestroyedAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), -1, false, SharedEffectDescription("On Deletion"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanActivateOnDeletion(card);
-                }
-            }
             #endregion
 
             #region Link

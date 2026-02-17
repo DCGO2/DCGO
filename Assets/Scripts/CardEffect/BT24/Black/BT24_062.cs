@@ -96,10 +96,9 @@ namespace DCGO.CardEffects.BT24
 
             string SharedEffectHash = "BT24_062_EOT_EOOT";
 
-            bool SharedCanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+            bool AdditionalActivateCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card)
-                    && card.PermanentOfThisCard().DigivolutionCards.Any(cardSource => CanSelectCardCondition(cardSource));
+                return card.PermanentOfThisCard().DigivolutionCards.Any(cardSource => CanSelectCardCondition(cardSource));
             } 
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -159,43 +158,16 @@ namespace DCGO.CardEffects.BT24
                     activateETB: true));
             }
 
-            #endregion
-
-            #region End of Attack
-
-            if (timing == EffectTiming.OnEndAttack)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(hash => SharedCanActivateCondition(hash, activateClass), hash => SharedActivateCoroutine(hash, activateClass), 1, true, SharedEffectDescription("End of Attack"));
-                activateClass.SetHashString(SharedEffectHash);
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
-            }
-
-            #endregion
-
-            #region End of Opponent's Turn
-
-            if (timing == EffectTiming.OnEndTurn)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(hash => SharedCanActivateCondition(hash, activateClass), hash => SharedActivateCoroutine(hash, activateClass), 1, true, SharedEffectDescription("End of Opponent's Turn"));
-                activateClass.SetHashString(SharedEffectHash);
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.IsOpponentTurn(card);
-                }
-            }
+            CardEffectFactory.ActivateClassesForSharedEffects(ref cardEffects, timing, card,
+                                                                SharedEffectName,
+                                                                SharedActivateCoroutine,
+                                                                SharedEffectDescription,
+                                                                additionalActivateCondition: AdditionalActivateCondition,
+                                                                optional: true,
+                                                                maxCountPerTurn: 1,
+                                                                hashValue: SharedEffectHash,
+                                                                endOfAttack: true,
+                                                                endOfOpponentTurn: true);
 
             #endregion
 

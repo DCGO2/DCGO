@@ -36,34 +36,28 @@ namespace DCGO.CardEffects.P
 
             #region Shared WM / OP / WD
 
-            string SharedEffectName()
-                => "By placing 1 [Ice-Snow], [Mineral] or [Rock] Digimon from hand or trash under this, 1 such digimon cannot be returned to deck or de-digivolved.";
-
             string SharedEffectDescription(string tag)
-            {
-                return $"[{tag}] By placing 1 level 4 or lower [Ice-Snow], [Mineral] or [Rock] trait card from your hand or trash as this Digimon's bottom digivolution card, until your opponent's turn ends, their effects can't return 1 of your [Ice-Snow], [Mineral] or [Rock] trait Digimon to hands or decks or affect it with <De-Digivolve> effects.";
-            }
+                => $"[{tag}] By placing 1 level 4 or lower [Ice-Snow], [Mineral] or [Rock] trait card from your hand or trash as this Digimon's bottom digivolution card, until your opponent's turn ends, their effects can't return 1 of your [Ice-Snow], [Mineral] or [Rock] trait Digimon to hands or decks or affect it with <De-Digivolve> effects.";
 
-            bool SharedCanActivateCondition(Hashtable hashtable)
+            bool AdditionalActivateCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card)
-                    && (CardEffectCommons.HasMatchConditionOwnersHand(card, CardSelectCondition)
-                    || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CardSelectCondition));
+                return CardEffectCommons.HasMatchConditionOwnersHand(card, CardSelectCondition)
+                    || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CardSelectCondition);
             }
 
             bool CardSelectCondition(CardSource cardSource)
             {
-                return cardSource.HasLevel &&
-                    cardSource.Level <= 4 &&
-                    (cardSource.EqualsTraits("Ice-Snow")
-                    || cardSource.HasRockMineralTraits);
+                return cardSource.HasLevel 
+                    && cardSource.Level <= 4 
+                    && (cardSource.EqualsTraits("Ice-Snow")
+                        || cardSource.HasRockMineralTraits);
             }
 
             bool PermanentSelectCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                   && (permanent.TopCard.EqualsTraits("Ice-Snow")
-                   || permanent.TopCard.HasRockMineralTraits);
+                    && (permanent.TopCard.EqualsTraits("Ice-Snow")
+                        || permanent.TopCard.HasRockMineralTraits);
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
@@ -240,62 +234,15 @@ namespace DCGO.CardEffects.P
                 }
             }
 
-            #endregion
-
-            #region When Moving
-
-            if (timing == EffectTiming.OnMove)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), -1, true, SharedEffectDescription("When Moving"));
-                cardEffects.Add(activateClass);
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return permanent == card.PermanentOfThisCard();
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerOnMove(hashtable, PermanentCondition);
-                }
-            }
-
-            #endregion
-
-            #region On Play
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), -1, true, SharedEffectDescription("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-            }
-
-            #endregion
-
-            #region When Digivolving
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), -1, true, SharedEffectDescription("When Digivolving"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-            }
+            CardEffectFactory.ActivateClassesForSharedEffects(ref cardEffects, timing, card, 
+                                                "By placing 1 [Ice-Snow], [Mineral] or [Rock] Digimon from hand or trash under this, 1 such digimon cannot be returned to deck or de-digivolved.",
+                                                SharedActivateCoroutine,
+                                                SharedEffectDescription,
+                                                optional: true,
+                                                whenMoving: true,
+                                                onPlay: true,
+                                                whenDigivolving: true,
+                                                additionalActivateCondition: AdditionalActivateCondition);
 
             #endregion
 

@@ -84,27 +84,14 @@ namespace DCGO.CardEffects.BT24
 
             #region Shared OP WD WA
 
-            string SharedEffectName()
-            {
-                return "Trash a card to delete all opponent's lowest digimon.";
-            }
-
             string SharedEffectDescription(string tag)
             {
                 return $"[{tag}] By trashing 1 card in your hand, delete all of your opponent's Digimon with the lowest level.";
             }
 
-            bool SharedCanActivateCondition(Hashtable hashtable)
+            bool AdditionalActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (card.Owner.HandCards.Count >= 1)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return card.Owner.HandCards.Count >= 1;
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -158,54 +145,16 @@ namespace DCGO.CardEffects.BT24
                 }
             }
 
-            #endregion
+            CardEffectFactory.ActivateClassesForSharedEffects(ref cardEffects, timing, card, 
+                                                                "Trash a card to delete all opponent's lowest digimon.",
+                                                                SharedActivateCoroutine,
+                                                                SharedEffectDescription,
+                                                                optional: false,
+                                                                onPlay: true,
+                                                                whenDigivolving: true,
+                                                                whenAttacking: true,
+                                                                additionalActivateCondition: AdditionalActivateCondition);
 
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition,(hash) => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card)
-                        && CardEffectCommons.IsExistOnBattleArea(card);
-                }
-            }
-            #endregion
-
-            #region When Digivolving
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition,(hash) => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("When Digivolving"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card)
-                        && CardEffectCommons.IsExistOnBattleArea(card);
-                }
-            }
-            #endregion
-
-            #region When Attacking
-            if (timing == EffectTiming.OnAllyAttack)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition,(hash) => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("When Attacking"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card)
-                        && CardEffectCommons.IsExistOnBattleArea(card);
-                }
-            }
             #endregion
 
             #region On Deletion
