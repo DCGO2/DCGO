@@ -80,7 +80,7 @@ namespace DCGO.CardEffects.BT24
                         mode: SelectPermanentEffect.Mode.Destroy,
                         cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select a digimon to delete.", "Opponent is selecting a Digimon to delete.");
+                        selectPermanentEffect.SetUpCustomMessage("Select a digimon to delete.", "Opponent is selectign a Digimon to delete.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
@@ -134,8 +134,7 @@ namespace DCGO.CardEffects.BT24
 
                             #region Play 2 Tokens
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPetrificationToken(activateClass));
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPetrificationToken(activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPetrificationToken(activateClass, 2));
 
                             #endregion
 
