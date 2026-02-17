@@ -4465,22 +4465,25 @@ public class IBattle
             }
         }
 
-        // auto process check
-        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
-
-        #region reset effect until the end of battle
-
-        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+        if (!IsWithoutAttack)//If started by effect, do not perform processing & don't reset effects relevant to the actual attack process
         {
-            foreach (Permanent permanent in player.GetFieldPermanents())
+            // auto process check
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+
+            #region reset effect until the end of battle
+
+            foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
             {
-                permanent.UntilEndBattleEffects = new List<Func<EffectTiming, ICardEffect>>();
+                foreach (Permanent permanent in player.GetFieldPermanents())
+                {
+                    permanent.UntilEndBattleEffects = new List<Func<EffectTiming, ICardEffect>>();
+                }
+
+                player.UntilEndBattleEffects = new List<Func<EffectTiming, ICardEffect>>();
             }
 
-            player.UntilEndBattleEffects = new List<Func<EffectTiming, ICardEffect>>();
+            #endregion
         }
-
-        #endregion
 
         if (AttackingPermanent != null)
         {
@@ -5030,6 +5033,65 @@ public class IAddSecurity
 
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnAddSecurity));
 
+        #endregion
+
+        #region "When face up cards are added"
+        if (!_cardSource.IsFlipped)
+        {
+            #region Hashtable setting
+
+            Hashtable faceUpHashtable = new Hashtable()
+            {
+                {"Player", _player},
+                {"CardSources", new List<CardSource> { _cardSource } }
+            };
+
+            #endregion
+
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(faceUpHashtable, EffectTiming.OnFaceUpSecurityIncreased));
+        }
+        #endregion
+    }
+}
+
+#endregion
+
+#region Flip Security Face Up
+
+public class IFlipSecurity
+{
+    public IFlipSecurity(CardSource source)
+    {
+        _player = source.Owner;
+        _cardSource = source;
+    }
+
+    Player _player { get; set; }
+    CardSource _cardSource {  get; set; }
+
+    public IEnumerator FlipFaceUp()
+    {
+        if (!_player.SecurityCards.Contains(_cardSource) || !_cardSource.IsFlipped)
+            yield break;
+
+        _cardSource.SetFace();
+
+        #region "When face up cards are added"
+
+        #region Hashtable setting
+
+        Hashtable hashtable = new Hashtable()
+        {
+            {"Player", _player},
+            {"CardSources", new List<CardSource> { _cardSource } }
+        };
+
+        #endregion
+
+        if (!_cardSource.IsFlipped)
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnFaceUpSecurityIncreased));
+        }
         #endregion
     }
 }
