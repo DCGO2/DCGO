@@ -705,7 +705,7 @@ public abstract class ICardEffect
             {
                 if (!string.IsNullOrEmpty(EffectDiscription))
                 {
-                    if (EffectDiscription.Contains("[When Digivolving]"))
+                    if (EffectDiscription.StartsWith("[When Digivolving]"))
                     {
                         Hashtable hashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(EffectSourceCard);
 
@@ -733,7 +733,7 @@ public abstract class ICardEffect
             {
                 if (!string.IsNullOrEmpty(EffectDiscription))
                 {
-                    if (EffectDiscription.Contains("[On Deletion]"))
+                    if (EffectDiscription.StartsWith("[On Deletion]"))
                     {
                         Permanent effectPermanent = EffectSourceCard.PermanentOfThisCard() ?? new Permanent(new List<CardSource>() { EffectSourceCard });
 
@@ -763,7 +763,7 @@ public abstract class ICardEffect
             {
                 if (!string.IsNullOrEmpty(EffectDiscription))
                 {
-                    if (EffectDiscription.Contains("[When Attacking]"))
+                    if (EffectDiscription.StartsWith("[When Attacking]"))
                     {
                         Hashtable hashtable = CardEffectCommons.OnAttackCheckHashtableOfCard(EffectSourceCard, null);
 
