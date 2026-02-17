@@ -630,6 +630,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         #region アクティブフェイズ終了時までの効果をリセット
         gameContext.TurnPlayer.UntilOwnerActivePhaseEffects = new List<Func<EffectTiming, ICardEffect>>();
+        foreach(Permanent permanent in gameContext.TurnPlayer.GetBattleAreaDigimons())
+            permanent.UntilNextUntapEffects = new List<Func<EffectTiming, ICardEffect>>();
         #endregion
     }
     #endregion
