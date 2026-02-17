@@ -1140,6 +1140,11 @@ public class Permanent
             {
                 isFromSameDigimon = true;
 
+                if (LinkedCards.Contains(addedDigivolutionCard))
+                {
+                    yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(addedDigivolutionCard, trashCard: false));
+                }
+
                 if (addedDigivolutionCard == TopCard)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(addedDigivolutionCard));
@@ -2585,6 +2590,28 @@ public class Permanent
                     }
                     #endregion
                 }
+
+                #region Effects of faceup securityExpand commentComment on line L2594
+                foreach (CardSource source in player.SecurityCards)
+                {
+                    if (source.IsFlipped)
+                        continue;
+
+                    foreach (ICardEffect cardEffect in source.EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is IRebootEffect)
+                        {
+                            if (cardEffect.CanTrigger(null))
+                            {
+                                if (((IRebootEffect)cardEffect).HasReboot(this))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                #endregion
 
                 #region プレイヤーの効果
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
