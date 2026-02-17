@@ -176,15 +176,18 @@ namespace DCGO.CardEffects.EX11
 
                         List<CardSource> selectedCards = new List<CardSource>();
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
                             revealCount: 2,
-                            simplifiedSelectCardCondition:
-                            new SimplifiedSelectCardConditionClass(
-                                    canTargetCondition: cardSource => cardSource.EqualsCardName("Vemmon"),
-                                    message: "",
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    maxCount: -1,
-                                    selectCardCoroutine: SelectCardCoroutine),
+                            simplifiedSelectCardConditions:
+                            new SimplifiedSelectCardConditionClass[]
+                            {
+                                new(
+                                canTargetCondition: cardSource => cardSource.EqualsCardName("Vemmon"),
+                                message: "Select all Vemmon",
+                                mode: SelectCardEffect.Mode.Custom,
+                                maxCount: 2,
+                                selectCardCoroutine: SelectCardCoroutine),
+                            },
                             remainingCardsPlace: RemainingCardsPlace.Trash,
                             activateClass: activateClass
                         ));
