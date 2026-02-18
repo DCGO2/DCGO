@@ -172,7 +172,7 @@ namespace DCGO.CardEffects.BT13
                                         return true;
                                     }
 
-                                    int GetEvoCost(Permanent permanent, CardSource cardSource, bool checkAvailability)
+                                    int GetEvoCost(Permanent permanent, CardSource cardSource, CardEffectCommons.IgnoreRequirement ignore, bool checkAvailability)
                                     {
                                         if (card.Owner.CanIgnoreDigivolutionRequirement(permanent, cardSource))
                                         {

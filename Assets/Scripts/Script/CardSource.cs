@@ -426,7 +426,7 @@ public class CardSource : MonoBehaviour
                     .Flat()
                     .Filter(cardEffect => cardEffect is IAddDigivolutionRequirementEffect && cardEffect.CanUse(null))
                     .Map<ICardEffect, Func<Permanent, int>>(cardEffect =>
-                        (targetPermanent) => ((IAddDigivolutionRequirementEffect)cardEffect).GetEvoCost(targetPermanent, this, checkAvailability)))
+                        (targetPermanent) => ((IAddDigivolutionRequirementEffect)cardEffect).GetEvoCost(targetPermanent, this, ignore, checkAvailability)))
                     .ToList();
 
         #endregion
@@ -442,7 +442,7 @@ public class CardSource : MonoBehaviour
                     .Flat()
                     .Filter(cardEffect => cardEffect is IAddDigivolutionRequirementEffect && cardEffect.CanUse(null))
                     .Map<ICardEffect, Func<Permanent, int>>(cardEffect =>
-                        (targetPermanent) => ((IAddDigivolutionRequirementEffect)cardEffect).GetEvoCost(targetPermanent, this, checkAvailability)))
+                        (targetPermanent) => ((IAddDigivolutionRequirementEffect)cardEffect).GetEvoCost(targetPermanent, this, ignore, checkAvailability)))
                     .ToList();
 
         #endregion
@@ -456,7 +456,7 @@ public class CardSource : MonoBehaviour
                     EffectList(EffectTiming.None)
                         .Filter(cardEffect => cardEffect is IAddDigivolutionRequirementEffect && cardEffect.CanUse(null))
                         .Map<ICardEffect, Func<Permanent, int>>(cardEffect =>
-                            (targetPermanent) => ((IAddDigivolutionRequirementEffect)cardEffect).GetEvoCost(targetPermanent, this, checkAvailability)))
+                            (targetPermanent) => ((IAddDigivolutionRequirementEffect)cardEffect).GetEvoCost(targetPermanent, this, ignore, checkAvailability)))
                         .ToList();
         }
 

@@ -270,7 +270,7 @@ public class BT7_112 : CEntity_Effect
                             return true;
                         }
 
-                        int GetEvoCost(Permanent permanent, CardSource cardSource, bool ignoreDigivolutionCondition)
+                        int GetEvoCost(Permanent permanent, CardSource cardSource, CardEffectCommons.IgnoreRequirement ignore, bool ignoreDigivolutionCondition)
                         {
                             if ((CardSourceCondition(cardSource) && PermanentCondition(permanent)))
                             {
