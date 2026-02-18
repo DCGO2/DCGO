@@ -630,15 +630,5 @@ namespace DCGO.CardEffects.BT11
 
             return cardEffects;
         }
-
-        bool endSelect = false;
-        bool fromHand = false;
-
-        [PunRPC]
-        public void SetFromHand(bool fromHand)
-        {
-            this.fromHand = fromHand;
-            endSelect = true;
-        }
     }
 }
