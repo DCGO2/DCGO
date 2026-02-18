@@ -1199,6 +1199,13 @@ public static class ActivateICardEffectExtensionClass
     }
 
     #endregion
+
+    #region remove a usage of an X Per Turn
+    public static void RemoveUse(this ActivateICardEffect activateICardEffect)
+    {
+        ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RemoveUseEffectThisTurn((ICardEffect)activateICardEffect);
+    }
+    #endregion
 }
 
 #endregion

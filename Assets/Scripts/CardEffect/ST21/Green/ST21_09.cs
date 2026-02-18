@@ -228,6 +228,7 @@ namespace DCGO.CardEffects.ST21
                 {
                     List<Permanent> etbPermanents = new List<Permanent>();
                     List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
+                    bool activated = false;
 
                     if (hashtables != null)
                     {
@@ -246,6 +247,8 @@ namespace DCGO.CardEffects.ST21
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(MyDigimonAlliance))
                         {
+                            activated = true;
+
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectPermanentEffect.SetUp(
@@ -298,6 +301,8 @@ namespace DCGO.CardEffects.ST21
                         {
                             selectedPermanent = permanent;
 
+                            activated = true;
+
                             yield return null;
                         }
 
@@ -313,6 +318,11 @@ namespace DCGO.CardEffects.ST21
 
                             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
+                    }
+
+                    if(!activated)
+                    {
+                        activateClass.RemoveUse();
                     }
                 }
             }
