@@ -40,8 +40,15 @@ public abstract class ICardEffect
 
         if (!(this is ActivateICardEffect))
         {
-            SetIsDigimonEffect(card != null && CardEffectCommons.IsExistOnBattleArea(card) && card.PermanentOfThisCard().IsDigimon);
-            SetIsTamerEffect(card != null && CardEffectCommons.IsExistOnBattleArea(card) && card.PermanentOfThisCard().IsTamer);
+            if (IsInheritedEffect || IsLinkedEffect)
+            {
+                SetIsDigimonEffect(true);
+            }
+            else if (card != null && CardEffectCommons.IsExistOnBattleArea(card))
+            {
+                SetIsDigimonEffect(card.PermanentOfThisCard().IsDigimon);
+                SetIsTamerEffect(card.PermanentOfThisCard().IsTamer);
+            }
         }
     }
 
