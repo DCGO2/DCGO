@@ -218,7 +218,7 @@ namespace DCGO.CardEffects.EX10
 
                             if (selectedCards.Count >= 1)
                             {
-                                GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(new AddDigivolutionCardsInfo(activateClass, selectedCards));
+                                GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(card, new AddDigivolutionCardsInfo(activateClass, selectedCards));
                                 yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                     player: card.Owner,
                                     refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
