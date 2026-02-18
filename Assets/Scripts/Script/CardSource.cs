@@ -108,12 +108,17 @@ public class CardSource : MonoBehaviour
     {
         get
         {
+            if (IsDualCard && Owner.GetBattleAreaDigimons().Some(permanent => CanPlayCardTargetFrame(permanent.PermanentFrame, true, null)))
+            {
+                return true;
+            }
+
             if (CanNotPlayThisOption)
             {
                 return false;
             }
 
-            if (_cEntity_Base.IsPermanent)
+            if (_cEntity_Base.IsPermanent && !IsDualCard)
             {
                 if (!CanPlayJogress(true))
                 {
@@ -267,9 +272,11 @@ public class CardSource : MonoBehaviour
 
                 #endregion
 
-                bool matchColorRequirement = CardColors.Every(cardColor =>
+                List<CardColor> colorsToCheck = IsDualCard ? DualCardColors : CardColors;
+
+                bool matchColorRequirement = colorsToCheck.Every(cardColor =>
                     Owner.GetFieldPermanents().Some(permanent =>
-                        !permanent.TopCard.IsOption && permanent.TopCard.CardColors.Contains(cardColor)));
+                        permanent.TopCard.IsPermanent && permanent.TopCard.CardColors.Contains(cardColor)));
 
                 if (!matchColorRequirement)
                 {
@@ -315,6 +322,8 @@ public class CardSource : MonoBehaviour
 
     public List<CardColor> BaseCardColorsFromEntity => _cEntity_Base.cardColors.Distinct().ToList();
 
+    public List<CardColor> BaseDualCardColorsFromEntity => _cEntity_Base.DualCardColors.Distinct().ToList();
+
     #endregion
 
     #region base card colors
@@ -358,6 +367,45 @@ public class CardSource : MonoBehaviour
         }
     }
 
+    public List<CardColor> BaseDualCardColors
+    {
+        get
+        {
+            List<CardColor> baseCardColors = BaseDualCardColorsFromEntity;
+
+            #region the effects that changes base card colors
+
+            #region the effects of itself
+
+            if (PermanentOfThisCard() == null)
+            {
+                EffectList(EffectTiming.None)
+                    .Filter(cardEffect => cardEffect is IChangeBaseCardColorEffect && cardEffect.CanUse(null))
+                    .ForEach(cardEffect => baseCardColors = ((IChangeBaseCardColorEffect)cardEffect).GetBaseCardColors(baseCardColors, this));
+            }
+
+            #endregion
+
+            #region the effects of permanents
+
+            GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+                .Map(player => player.GetFieldPermanents())
+                .Flat()
+                .Map(permanent => permanent.EffectList(EffectTiming.None))
+                .Flat()
+                .Filter(cardEffect => cardEffect is IChangeBaseCardColorEffect && cardEffect.CanUse(null))
+                .ForEach(cardEffect => baseCardColors = ((IChangeBaseCardColorEffect)cardEffect).GetBaseCardColors(baseCardColors, this));
+
+            #endregion
+
+            #endregion
+
+            baseCardColors = baseCardColors.Distinct().ToList();
+
+            return baseCardColors;
+        }
+    }
+
     #endregion
 
     #region card colors
@@ -367,6 +415,45 @@ public class CardSource : MonoBehaviour
         get
         {
             List<CardColor> cardColors = BaseCardColors;
+
+            #region the effects that changes card colors
+
+            #region the effects of itself
+
+            if (PermanentOfThisCard() == null)
+            {
+                EffectList(EffectTiming.None)
+                    .Filter(cardEffect => cardEffect is IChangeCardColorEffect && cardEffect.CanUse(null))
+                    .ForEach(cardEffect => cardColors = ((IChangeCardColorEffect)cardEffect).GetCardColors(cardColors, this));
+            }
+
+            #endregion
+
+            #region the effects of permanents
+
+            GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+                .Map(player => player.GetFieldPermanents())
+                .Flat()
+                .Map(permanent => permanent.EffectList(EffectTiming.None))
+                .Flat()
+                .Filter(cardEffect => cardEffect is IChangeCardColorEffect && cardEffect.CanUse(null))
+                .ForEach(cardEffect => cardColors = ((IChangeCardColorEffect)cardEffect).GetCardColors(cardColors, this));
+
+            #endregion
+
+            #endregion
+
+            cardColors = cardColors.Distinct().ToList();
+
+            return cardColors;
+        }
+    }
+
+    public List<CardColor> DualCardColors
+    {
+        get
+        {
+            List<CardColor> cardColors = BaseDualCardColors;
 
             #region the effects that changes card colors
 
@@ -1386,6 +1473,24 @@ public class CardSource : MonoBehaviour
         || cardName.Contains(replaced)
         || cardName.Contains(lower)
         || cardName.ToLower().Contains(lower));
+    }
+
+    #endregion
+
+    #region whether this card has the mentioned color
+
+    public bool HasCardColor(CardColor cardColor, bool isOptionOnly = false)
+    {
+        if (isOptionOnly)
+        {
+            if (!IsOption)
+                return false;
+            if (IsDualCard)
+            {
+                return DualCardColors.Contains(cardColor);
+            }
+        }
+        return CardColors.Contains(cardColor);
     }
 
     #endregion
@@ -3166,7 +3271,7 @@ public class CardSource : MonoBehaviour
 
     #region whether this card is Digimon
 
-    public bool IsDigimon => CardKind == CardKind.Digimon;
+    public bool IsDigimon => CardKind == CardKind.Digimon || IsDualCard;
 
     #endregion
 
@@ -3184,7 +3289,13 @@ public class CardSource : MonoBehaviour
 
     #region whether this card is Option
 
-    public bool IsOption => CardKind == CardKind.Option;
+    public bool IsOption => CardKind == CardKind.Option || IsDualCard;
+
+    #endregion
+
+    #region whether this card is a Dual Card
+
+    public bool IsDualCard => CardKind == CardKind.DualCard;
 
     #endregion
 

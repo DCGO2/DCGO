@@ -42,6 +42,7 @@ public class CEntity_Base : ScriptableObject
     public int MaxCountInDeck = 4;
     public bool HasLoadStarted { get; set; } = false;
     public Sprite CardSprite { get; set; } = null;
+    public List<CardColor> DualCardColors = new List<CardColor>();
     public async Task LoadCardImage()
     {
         if (String.IsNullOrEmpty(CardSpriteName))
@@ -232,7 +233,7 @@ public class CEntity_Base : ScriptableObject
     #endregion
 
     #region whether it is permanent card
-    public bool IsPermanent => cardKind == CardKind.Digimon || cardKind == CardKind.Tamer || cardKind == CardKind.DigiEgg;
+    public bool IsPermanent => cardKind == CardKind.Digimon || cardKind == CardKind.Tamer || cardKind == CardKind.DigiEgg || cardKind == CardKind.DualCard;
     #endregion
 
     #region �J�[�hIndex���f�b�L�R�[�h�ɗp���镶����ɕϊ�(256�i��)
@@ -315,12 +316,12 @@ public class CEntity_Base : ScriptableObject
     {
         get
         {
-            if (Level == 0)
+            if (Level <= 0)
             {
                 return false;
             }
 
-            if (cardKind != CardKind.Digimon && cardKind != CardKind.DigiEgg)
+            if (cardKind != CardKind.Digimon && cardKind != CardKind.DigiEgg && cardKind != CardKind.DualCard)
             {
                 return false;
             }
@@ -335,11 +336,11 @@ public class CEntity_Base : ScriptableObject
     #endregion
 
     #region Wheter the card has play cost
-    public bool HasPlayCost => cardKind != CardKind.Option && PlayCost >= 0;
+    public bool HasPlayCost => cardKind != CardKind.Option && cardKind != CardKind.DualCard && PlayCost >= 0;
     #endregion
 
     #region Wheter the card has use cost
-    public bool HasUseCost => cardKind == CardKind.Option && PlayCost >= 0;
+    public bool HasUseCost => (cardKind == CardKind.Option || cardKind == CardKind.DualCard) && PlayCost >= 0;
     #endregion
 }
 public enum CardKind
@@ -348,6 +349,8 @@ public enum CardKind
     Tamer,
     Option,
     DigiEgg,
+
+    DualCard
 }
 
 [Serializable]

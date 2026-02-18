@@ -1010,6 +1010,55 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Arts Digivolve
+    public static IEnumerator ArtsDigivolve(CardSource card, ActivateClass activateClass = null)
+    {
+        Permanent targetPermanent = null;
+
+        bool PermanentCondition(Permanent permanent) 
+            => card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, isBreedingArea: true)
+            || card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, isBreedingArea: false);
+
+        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+        {
+            targetPermanent = permanent;
+
+            yield return null;
+        }
+
+        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+        selectPermanentEffect.SetUp(
+            selectPlayer: card.Owner,
+            canTargetCondition: PermanentCondition,
+            canTargetCondition_ByPreSelecetedList: null,
+            canEndSelectCondition: null,
+            maxCount: 1,
+            canNoSelect: true,
+            canEndNotMax: false,
+            selectPermanentCoroutine: null,
+            afterSelectPermanentCoroutine: null,
+            mode: SelectPermanentEffect.Mode.Custom,
+            cardEffect: activateClass);
+
+        selectPermanentEffect.SetUpCustomMessage("Select a digimon to Arts Digivolve.", "Opponent is selecting a digimon to Arts Digivolve.");
+
+        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+        if (targetPermanent != null)
+        {
+            yield return ContinuousController.instance.StartCoroutine(new PlayCardClass(
+                cardSources: new List<CardSource>() { card },
+                hashtable: CardEffectHashtable(activateClass),
+                payCost: false,
+                targetPermanent: targetPermanent,
+                isTapped: false,
+                root: SelectCardEffect.Root.Execution,
+                activateETB: true).PlayCard());
+        }
+    }
+    #endregion
+
     #region Target permanent Digivolves into Digimon card execution area
 
     public static IEnumerator DigivolveIntoExcecutingAreaCard(

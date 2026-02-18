@@ -715,4 +715,29 @@ public partial class CardEffectFactory
     }
 
     #endregion
+
+    #region Can't play this dual card
+    public static ICardEffect DualCardCantPlay(CardSource card)
+    {
+        CanNotPutFieldClass canNotPutFieldClass = new CanNotPutFieldClass();
+        canNotPutFieldClass.SetUpICardEffect("Can't play to the field.", CanUseCondition, card);
+        canNotPutFieldClass.SetUpCanNotPutFieldClass(cardCondition: CardCondition, cardEffectCondition: CardEffectCondition);
+        return canNotPutFieldClass;
+
+        bool CanUseCondition(Hashtable hashtable)
+        {
+            return true;
+        }
+
+        bool CardCondition(CardSource cardSource)
+        {
+            return cardSource == card;
+        }
+
+        bool CardEffectCondition(ICardEffect cardEffect)
+        {
+            return true;
+        }
+    }
+    #endregion
 }

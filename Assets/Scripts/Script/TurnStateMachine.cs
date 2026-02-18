@@ -2057,22 +2057,25 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             {
                                 bool CanPlayEmptyFrame = false;
 
-                                foreach (FieldCardFrame fieldCardFrame in GManager.instance.You.fieldCardFrames)
+                                if (!handCard1.cardSource.IsDualCard)
                                 {
-                                    if (fieldCardFrame.IsEmptyFrame())
+                                    foreach (FieldCardFrame fieldCardFrame in GManager.instance.You.fieldCardFrames)
                                     {
-                                        if (handCard1.cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null))
+                                        if (fieldCardFrame.IsEmptyFrame())
                                         {
-                                            CanPlayEmptyFrame = true;
-                                            break;
+                                            if (handCard1.cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null))
+                                            {
+                                                CanPlayEmptyFrame = true;
+                                                break;
+                                            }
                                         }
                                     }
-                                }
 
-                                if (CanPlayEmptyFrame)
-                                {
-                                    GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(true);
-                                    GManager.instance.You.playMatCardFrame.OnFrame_Select(DataBase.SelectColor_Blue);
+                                    if (CanPlayEmptyFrame)
+                                    {
+                                        GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(true);
+                                        GManager.instance.You.playMatCardFrame.OnFrame_Select(DataBase.SelectColor_Blue);
+                                    }
                                 }
 
                                 foreach (FieldCardFrame fieldCardFrame in GManager.instance.You.fieldCardFrames)
@@ -2522,51 +2525,53 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                     bool CanPlayEmptyFrame = false;
 
-                                    foreach (FieldCardFrame fieldCardFrame in GManager.instance.You.fieldCardFrames)
+                                    if(!handCard.cardSource.IsDualCard)
                                     {
-                                        if (fieldCardFrame.IsEmptyFrame())
+                                        foreach (FieldCardFrame fieldCardFrame in GManager.instance.You.fieldCardFrames)
                                         {
-                                            if (handCard.cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null))
+                                            if (fieldCardFrame.IsEmptyFrame())
                                             {
-                                                CanPlayEmptyFrame = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    if (CanPlayEmptyFrame)
-                                    {
-                                        #region Check for drops on the playmat
-                                        if (dropAreas.Count((dropArea) => dropArea.IsChildThisDropArea(GManager.instance.You.playMatCardFrame.Frame)) > 0)
-                                        {
-                                            if (handCard.cardSource.Owner.HandTransform.GetComponent<HandContoller>() != null)
-                                            {
-                                                handCard.cardSource.Owner.HandTransform.GetComponent<HandContoller>().isDragging = true;
-                                            }
-
-                                            OffHandCardTarget(gameContext.TurnPlayer);
-
-                                            handCard.Outline_Select.gameObject.SetActive(false);
-
-                                            foreach (Player player in gameContext.Players_ForTurnPlayer)
-                                            {
-                                                foreach (FieldCardFrame fieldCardFrame in player.fieldCardFrames)
+                                                if (handCard.cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null))
                                                 {
-                                                    fieldCardFrame.RemoveClickTarget();
+                                                    CanPlayEmptyFrame = true;
+                                                    break;
                                                 }
                                             }
-
-                                            GManager.instance.You.playMatCardFrame.RemoveClickTarget();
-                                            GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(false);
-
-                                            photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, handCard.cardSource.PreferredFrame().FrameID, new int[0], -1, new int[0]);
-                                            selected = true;
-
-                                            return;
                                         }
-                                        #endregion
-                                    }
 
+                                        if (CanPlayEmptyFrame)
+                                        {
+                                            #region Check for drops on the playmat
+                                            if (dropAreas.Count((dropArea) => dropArea.IsChildThisDropArea(GManager.instance.You.playMatCardFrame.Frame)) > 0)
+                                            {
+                                                if (handCard.cardSource.Owner.HandTransform.GetComponent<HandContoller>() != null)
+                                                {
+                                                    handCard.cardSource.Owner.HandTransform.GetComponent<HandContoller>().isDragging = true;
+                                                }
+
+                                                OffHandCardTarget(gameContext.TurnPlayer);
+
+                                                handCard.Outline_Select.gameObject.SetActive(false);
+
+                                                foreach (Player player in gameContext.Players_ForTurnPlayer)
+                                                {
+                                                    foreach (FieldCardFrame fieldCardFrame in player.fieldCardFrames)
+                                                    {
+                                                        fieldCardFrame.RemoveClickTarget();
+                                                    }
+                                                }
+
+                                                GManager.instance.You.playMatCardFrame.RemoveClickTarget();
+                                                GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(false);
+
+                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, handCard.cardSource.PreferredFrame().FrameID, new int[0], -1, new int[0]);
+                                                selected = true;
+
+                                                return;
+                                            }
+                                            #endregion
+                                        }
+                                    }
                                 }
                                 #endregion
 
