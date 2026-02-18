@@ -209,96 +209,75 @@ public class SelectJogressEffect : MonoBehaviour
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, _card))
                     {
-                        if (!selectedEvoRoots.Contains(permanent))
+                        if(!_card.CanNotEvolve(permanent))
                         {
-                            if (element.EvoRootCondition != null)
+                            if (!selectedEvoRoots.Contains(permanent))
                             {
-                                if (element.EvoRootCondition(permanent))
+                                if (element.EvoRootCondition != null)
                                 {
-                                    if (_customPermanentConditions != null)
+                                    if (element.EvoRootCondition(permanent))
                                     {
-                                        if (_customPermanentConditions.Length == 1)
+                                        if (_customPermanentConditions != null)
                                         {
-                                            if (_customPermanentConditions[0] != null)
+                                            if (_customPermanentConditions.Length == 1)
                                             {
-                                                if (_card.Owner.GetBattleAreaDigimons().Count(_customPermanentConditions[0]) >= 1)
+                                                if (_customPermanentConditions[0] != null)
                                                 {
-                                                    if (selectedEvoRoots.Count(_customPermanentConditions[0]) == 0)
+                                                    if (_card.Owner.GetBattleAreaDigimons().Count(_customPermanentConditions[0]) >= 1)
                                                     {
-                                                        if (!_customPermanentConditions[0](permanent))
-                                                        {
-                                                            if (i == 1)
-                                                            {
-                                                                return false;
-                                                            }
-
-                                                            else
-                                                            {
-                                                                JogressConditionElement element1 = selectedDNA.elements[1];
-
-                                                                if (_card.Owner.GetBattleAreaDigimons().Count((permanent1) => permanent1 != permanent && element1.EvoRootCondition(permanent1) && _customPermanentConditions[0](permanent1)) == 0)
-                                                                {
-                                                                    return false;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                else
-                                                {
-                                                    return false;
-                                                }
-                                            }
-                                        }
-
-                                        else if (_customPermanentConditions.Length == 2)
-                                        {
-                                            if (_customPermanentConditions[0] != null && _customPermanentConditions[1] != null)
-                                            {
-                                                if (_card.Owner.GetBattleAreaDigimons().Count(_customPermanentConditions[0]) >= 1 && _card.Owner.GetBattleAreaDigimons().Count(_customPermanentConditions[1]) >= 1)
-                                                {
-                                                    if (i == 1)
-                                                    {
-                                                        if (selectedEvoRoots.Count(_customPermanentConditions[0]) == 0 && selectedEvoRoots.Count(_customPermanentConditions[1]) == 0)
-                                                        {
-                                                            return false;
-                                                        }
-
-                                                        if (selectedEvoRoots.Count(_customPermanentConditions[0]) == 0 && selectedEvoRoots.Count(_customPermanentConditions[1]) == 1)
+                                                        if (selectedEvoRoots.Count(_customPermanentConditions[0]) == 0)
                                                         {
                                                             if (!_customPermanentConditions[0](permanent))
                                                             {
-                                                                return false;
-                                                            }
-                                                        }
+                                                                if (i == 1)
+                                                                {
+                                                                    return false;
+                                                                }
 
-                                                        if (selectedEvoRoots.Count(_customPermanentConditions[0]) == 1 && selectedEvoRoots.Count(_customPermanentConditions[1]) == 0)
-                                                        {
-                                                            if (!_customPermanentConditions[1](permanent))
-                                                            {
-                                                                return false;
+                                                                else
+                                                                {
+                                                                    JogressConditionElement element1 = selectedDNA.elements[1];
+
+                                                                    if (_card.Owner.GetBattleAreaDigimons().Count((permanent1) => permanent1 != permanent && element1.EvoRootCondition(permanent1) && _customPermanentConditions[0](permanent1)) == 0)
+                                                                    {
+                                                                        return false;
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
 
                                                     else
                                                     {
-                                                        if (_customPermanentConditions[0](permanent) || _customPermanentConditions[1](permanent))
-                                                        {
-                                                            JogressConditionElement element1 = selectedDNA.elements[1];
+                                                        return false;
+                                                    }
+                                                }
+                                            }
 
-                                                            if (_customPermanentConditions[0](permanent))
+                                            else if (_customPermanentConditions.Length == 2)
+                                            {
+                                                if (_customPermanentConditions[0] != null && _customPermanentConditions[1] != null)
+                                                {
+                                                    if (_card.Owner.GetBattleAreaDigimons().Count(_customPermanentConditions[0]) >= 1 && _card.Owner.GetBattleAreaDigimons().Count(_customPermanentConditions[1]) >= 1)
+                                                    {
+                                                        if (i == 1)
+                                                        {
+                                                            if (selectedEvoRoots.Count(_customPermanentConditions[0]) == 0 && selectedEvoRoots.Count(_customPermanentConditions[1]) == 0)
                                                             {
-                                                                if (_card.Owner.GetBattleAreaDigimons().Count((permanent1) => permanent1 != permanent && element1.EvoRootCondition(permanent1) && _customPermanentConditions[1](permanent1)) == 0)
+                                                                return false;
+                                                            }
+
+                                                            if (selectedEvoRoots.Count(_customPermanentConditions[0]) == 0 && selectedEvoRoots.Count(_customPermanentConditions[1]) == 1)
+                                                            {
+                                                                if (!_customPermanentConditions[0](permanent))
                                                                 {
                                                                     return false;
                                                                 }
                                                             }
 
-                                                            if (_customPermanentConditions[1](permanent))
+                                                            if (selectedEvoRoots.Count(_customPermanentConditions[0]) == 1 && selectedEvoRoots.Count(_customPermanentConditions[1]) == 0)
                                                             {
-                                                                if (_card.Owner.GetBattleAreaDigimons().Count((permanent1) => permanent1 != permanent && element1.EvoRootCondition(permanent1) && _customPermanentConditions[0](permanent1)) == 0)
+                                                                if (!_customPermanentConditions[1](permanent))
                                                                 {
                                                                     return false;
                                                                 }
@@ -307,31 +286,55 @@ public class SelectJogressEffect : MonoBehaviour
 
                                                         else
                                                         {
-                                                            return false;
+                                                            if (_customPermanentConditions[0](permanent) || _customPermanentConditions[1](permanent))
+                                                            {
+                                                                JogressConditionElement element1 = selectedDNA.elements[1];
+
+                                                                if (_customPermanentConditions[0](permanent))
+                                                                {
+                                                                    if (_card.Owner.GetBattleAreaDigimons().Count((permanent1) => permanent1 != permanent && element1.EvoRootCondition(permanent1) && _customPermanentConditions[1](permanent1)) == 0)
+                                                                    {
+                                                                        return false;
+                                                                    }
+                                                                }
+
+                                                                if (_customPermanentConditions[1](permanent))
+                                                                {
+                                                                    if (_card.Owner.GetBattleAreaDigimons().Count((permanent1) => permanent1 != permanent && element1.EvoRootCondition(permanent1) && _customPermanentConditions[0](permanent1)) == 0)
+                                                                    {
+                                                                        return false;
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            else
+                                                            {
+                                                                return false;
+                                                            }
                                                         }
                                                     }
-                                                }
 
-                                                else
-                                                {
-                                                    return false;
+                                                    else
+                                                    {
+                                                        return false;
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
 
-                                    if (i == 0)
-                                    {
-                                        List<Permanent> nextCandidates = _card.Owner.GetBattleAreaDigimons()
-                                            .Filter(permanent1 => permanent1 != permanent);
-
-                                        if (nextCandidates.Count(selectedDNA.elements[1].EvoRootCondition) == 0)
+                                        if (i == 0)
                                         {
-                                            return false;
-                                        }
-                                    }
+                                            List<Permanent> nextCandidates = _card.Owner.GetBattleAreaDigimons()
+                                                .Filter(permanent1 => permanent1 != permanent);
 
-                                    return true;
+                                            if (nextCandidates.Count(selectedDNA.elements[1].EvoRootCondition) == 0)
+                                            {
+                                                return false;
+                                            }
+                                        }
+
+                                        return true;
+                                    }
                                 }
                             }
                         }
