@@ -163,41 +163,25 @@ namespace DCGO.CardEffects.BT19
                 {   
                     if(card.Owner.Enemy.SecurityCards.Count > 0)
                     {
-                        if (!card.Owner.isYou)
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
-                            GManager.instance.commandText.OpenCommandText("Will you discard the top card of your security?");
+                            new SelectionElement<bool>(message: $"Discard", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"Not Discard", value : false, spriteIndex: 1),
+                        };
 
-                            List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
-                    {
-                        new Command_SelectCommand($"Discard", () => photonView.RPC("SetDoDiscard", RpcTarget.All, true), 0),
-                        new Command_SelectCommand($"Not Discard", () => photonView.RPC("SetDoDiscard", RpcTarget.All, false), 1),
-                    };
+                        string selectPlayerMessage = "Will you discard the top card of your security?";
+                        string notSelectPlayerMessage = "The opponent is choosing whether to discard security.";
 
-                            GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
-                        }
-                        else
-                        {
-                            GManager.instance.commandText.OpenCommandText("The opponent is choosing whether to discard security.");
-
-                            #region AI
-                            if (GManager.instance.IsAI)
-                            {
-                                SetDoDiscard(RandomUtility.IsSucceedProbability(0.5f));
-                            }
-                            #endregion
-                        }
-
-                        yield return new WaitWhile(() => !endSelect);
-                        endSelect = false;
-
-                        GManager.instance.commandText.CloseCommandText();
-                        yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner.Enemy, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                     }
                     else
                     {
-                        SetDoDiscard(false);
+                        GManager.instance.userSelectionManager.SetBool(false);
                     }
-                    
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    bool doDiscard = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                     if (!doDiscard)
                     {
@@ -239,17 +223,5 @@ namespace DCGO.CardEffects.BT19
 
             return cardEffects;
         }
-
-        #region Extras
-        bool endSelect = false;
-        bool doDiscard = false;
-
-        [PunRPC]
-        public void SetDoDiscard(bool doDiscard)
-        {
-            this.doDiscard = doDiscard;
-            endSelect = true;
-        }
-        #endregion 
     }
 }

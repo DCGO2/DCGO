@@ -57,38 +57,21 @@ namespace DCGO.CardEffects.EX4
                         if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
                         {
                             yield return GManager.instance.photonWaitController.StartWait("Kuresgarurumon_Select_ETB");
-
-                            if (card.Owner.isYou)
+                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                             {
-                                GManager.instance.commandText.OpenCommandText("Which effect will you activate?");
+                                new SelectionElement<int>(message: $"Deck Bounce", value : 0, spriteIndex: 0),
+                                new SelectionElement<int>(message: $"Your other 1 Digimon digivolves", value : 1, spriteIndex: 0),
+                                new SelectionElement<int>(message: $"DNA Digivolution", value : 2, spriteIndex: 0),
+                            };
 
-                                List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
-                                {
-                                    new Command_SelectCommand($"Deck Bounce", () => photonView.RPC("SetActionID", RpcTarget.All, 0), 0),
-                                    new Command_SelectCommand($"Your other 1 Digimon digivolves", () => photonView.RPC("SetActionID", RpcTarget.All, 1), 0),
-                                    new Command_SelectCommand($"DNA Digivolution", () => photonView.RPC("SetActionID", RpcTarget.All, 2), 0),
-                                };
+                            string selectPlayerMessage = "Which effect will you activate?";
+                            string notSelectPlayerMessage = "The opponent is choosing which effect to activate.";
 
-                                GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
-                            }
+                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                            else
-                            {
-                                GManager.instance.commandText.OpenCommandText("The opponent is choosing which effect to activate.");
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                                #region AI
-                                if (GManager.instance.IsAI)
-                                {
-                                    SetActionID(UnityEngine.Random.Range(0, 3));
-                                }
-                                #endregion
-                            }
-
-                            yield return new WaitWhile(() => !endSelect);
-                            endSelect = false;
-
-                            GManager.instance.commandText.CloseCommandText();
-                            yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                            int actionID = GManager.instance.userSelectionManager.SelectedIntValue;
 
                             switch (actionID)
                             {
@@ -580,14 +563,6 @@ namespace DCGO.CardEffects.EX4
         }
 
         bool endSelect = false;
-        int actionID = -1;
-
-        [PunRPC]
-        public void SetActionID(int actionID)
-        {
-            this.actionID = actionID;
-            endSelect = true;
-        }
 
         int[] JogressEvoRootsFrameIDs = new int[0];
 

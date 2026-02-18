@@ -166,36 +166,20 @@ namespace DCGO.CardEffects.EX2
                         {
                             if (card.Owner.LibraryCards.Count >= 1)
                             {
-                                if (card.Owner.isYou)
+                                List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                                 {
-                                    GManager.instance.commandText.OpenCommandText("Will you trash the top cards of your deck?");
-
-                                    List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
-                                {
-                                    new Command_SelectCommand($"Trash", () => photonView.RPC("SetDoTrash", RpcTarget.All, true), 0),
-                                    new Command_SelectCommand($"Not trash", () => photonView.RPC("SetDoTrash", RpcTarget.All, false), 1),
+                                    new SelectionElement<bool>(message: $"Trash", value : true, spriteIndex: 0),
+                                    new SelectionElement<bool>(message: $"Not trash", value : false, spriteIndex: 1),
                                 };
 
-                                    GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
-                                }
+                                string selectPlayerMessage = "Will you trash the top cards of your deck?";
+                                string notSelectPlayerMessage = "The opponent is choosing wheter to trash the top cards of deck.";
 
-                                else
-                                {
-                                    GManager.instance.commandText.OpenCommandText("The opponent is choosing wheter to trash the top cards of deck.");
+                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                                    #region AIモード
-                                    if (GManager.instance.IsAI)
-                                    {
-                                        SetDoTrash(RandomUtility.IsSucceedProbability(0.5f));
-                                    }
-                                    #endregion
-                                }
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                                yield return new WaitWhile(() => !endSelect);
-                                endSelect = false;
-
-                                GManager.instance.commandText.CloseCommandText();
-                                yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                                bool doTrash = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                                 if (doTrash)
                                 {
@@ -294,36 +278,20 @@ namespace DCGO.CardEffects.EX2
                         {
                             if (card.Owner.LibraryCards.Count >= 1)
                             {
-                                if (card.Owner.isYou)
+                                List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                                 {
-                                    GManager.instance.commandText.OpenCommandText("Will you trash the top cards of your deck?");
-
-                                    List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
-                                {
-                                    new Command_SelectCommand($"Trash", () => photonView.RPC("SetDoTrash", RpcTarget.All, true), 0),
-                                    new Command_SelectCommand($"Not trash", () => photonView.RPC("SetDoTrash", RpcTarget.All, false), 1),
+                                    new SelectionElement<bool>(message: $"Trash", value : true, spriteIndex: 0),
+                                    new SelectionElement<bool>(message: $"Not trash", value : false, spriteIndex: 1),
                                 };
 
-                                    GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
-                                }
+                                string selectPlayerMessage = "Will you trash the top cards of your deck?";
+                                string notSelectPlayerMessage = "The opponent is choosing wheter to trash the top cards of deck.";
 
-                                else
-                                {
-                                    GManager.instance.commandText.OpenCommandText("The opponent is choosing wheter to trash the top cards of deck.");
+                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                                    #region AIモード
-                                    if (GManager.instance.IsAI)
-                                    {
-                                        SetDoTrash(RandomUtility.IsSucceedProbability(0.5f));
-                                    }
-                                    #endregion
-                                }
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                                yield return new WaitWhile(() => !endSelect);
-                                endSelect = false;
-
-                                GManager.instance.commandText.CloseCommandText();
-                                yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                                bool doTrash = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                                 if (doTrash)
                                 {
@@ -358,16 +326,6 @@ namespace DCGO.CardEffects.EX2
             }
 
             return cardEffects;
-        }
-
-        bool endSelect = false;
-        bool doTrash = false;
-
-        [PunRPC]
-        public void SetDoTrash(bool doTrash)
-        {
-            this.doTrash = doTrash;
-            endSelect = true;
         }
     }
 }

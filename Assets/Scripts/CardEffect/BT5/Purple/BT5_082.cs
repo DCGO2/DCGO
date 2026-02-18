@@ -128,96 +128,45 @@ public class BT5_082 : CEntity_Effect
                     {
                         yield return GManager.instance.photonWaitController.StartWait("Tactimon_selectFirst");
 
-                        if (card.Owner.isYou)
+                        if (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) >= 2)
                         {
-                            if (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) >= 2)
+                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                             {
-                                if (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) == 3)
-                                {
-                                    GManager.instance.commandText.OpenCommandText("Which effect will you activate the first?");
-                                }
+                                new SelectionElement<int>(message: $"Memory +1", value : 0, spriteIndex: 0),
+                                new SelectionElement<int>(message: $"DP +2000", value : 1, spriteIndex: 0),
+                                new SelectionElement<int>(message: $"Delete Digimons", value : 2, spriteIndex: 0),
+                            };
 
-                                else if (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) == 2)
-                                {
-                                    GManager.instance.commandText.OpenCommandText("Which effect will you activate the second?");
-                                }
+                            string selectPlayerMessage = "Which effect will you activate?";
+                            string notSelectPlayerMessage = "The opponent is choosing which effect activates.";
 
-                                List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>();
-
-                                for (int i = 0; i < canSelectEffects.Count; i++)
-                                {
-                                    if (!activatedEffects.Contains(canSelectEffects[i]))
-                                    {
-                                        int k = i;
-
-                                        string message = "";
-
-                                        switch (k)
-                                        {
-                                            case 0:
-                                                message = "Memory +1";
-                                                break;
-
-                                            case 1:
-                                                message = "DP +2000";
-                                                break;
-
-                                            case 2:
-                                                message = "Delete Digimons";
-                                                break;
-                                        }
-
-                                        command_SelectCommands.Add(new Command_SelectCommand(message, () => photonView.RPC("SetEffectIndex", RpcTarget.All, k), 0));
-                                    }
-                                }
-
-                                GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
+                            if (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) == 3)
+                            {
+                                selectPlayerMessage = "Which effect will you activate the first?";
                             }
 
-                            else
+                            else if (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) == 2)
                             {
-                                for (int i = 0; i < canSelectEffects.Count; i++)
-                                {
-                                    if (!activatedEffects.Contains(canSelectEffects[i]))
-                                    {
-                                        photonView.RPC("SetEffectIndex", RpcTarget.All, i);
-                                        break;
-                                    }
-                                }
+                                selectPlayerMessage = "Which effect will you activate the second?";
                             }
+
+                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                         }
-
                         else
                         {
-                            GManager.instance.commandText.OpenCommandText("The opponent is choosing which effect activates.");
-
-                            #region AIモード
-                            if (GManager.instance.IsAI)
+                            for (int i = 0; i < canSelectEffects.Count; i++)
                             {
-                                List<int> indexes = new List<int>();
-
-                                for (int i = 0; i < canSelectEffects.Count; i++)
+                                if (!activatedEffects.Contains(canSelectEffects[i]))
                                 {
-                                    if (!activatedEffects.Contains(canSelectEffects[i]))
-                                    {
-                                        int k = i;
-                                        indexes.Add(k);
-                                    }
-                                }
-
-                                if (indexes.Count >= 1)
-                                {
-                                    SetEffectIndex(UnityEngine.Random.Range(0, indexes.Count));
+                                    GManager.instance.userSelectionManager.SetInt(i);
+                                    break;
                                 }
                             }
-                            #endregion
                         }
 
-                        yield return new WaitWhile(() => !endSelect);
-                        endSelect = false;
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        GManager.instance.commandText.CloseCommandText();
-                        yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                        int effectIndex = GManager.instance.userSelectionManager.SelectedIntValue;
 
                         if (0 <= effectIndex && effectIndex <= canSelectEffects.Count - 1)
                         {
@@ -237,37 +186,21 @@ public class BT5_082 : CEntity_Effect
                 #region 他のデジモンがいる場合(1つ選択)
                 else
                 {
-                    if (card.Owner.isYou)
+                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                     {
-                        GManager.instance.commandText.OpenCommandText("Which effect will you activate?");
+                        new SelectionElement<int>(message: $"Memory +1", value : 0, spriteIndex: 0),
+                        new SelectionElement<int>(message: $"DP +2000", value : 1, spriteIndex: 0),
+                        new SelectionElement<int>(message: $"Delete Digimons", value : 2, spriteIndex: 0),
+                    };
 
-                        List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
-                                {
-                                    new Command_SelectCommand("Memory +1", () => photonView.RPC("SetEffectIndex", RpcTarget.All, 0), 0),
-                                    new Command_SelectCommand("DP +2000", () => photonView.RPC("SetEffectIndex", RpcTarget.All, 1), 0),
-                                    new Command_SelectCommand("Delete Digimons", () => photonView.RPC("SetEffectIndex", RpcTarget.All, 2), 0),
-                                };
+                    string selectPlayerMessage = "Which effect will you activate?";
+                    string notSelectPlayerMessage = "The opponent is choosing which effect activates.";
 
-                        GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
-                    }
+                    GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                    else
-                    {
-                        GManager.instance.commandText.OpenCommandText("The opponent is choosing which effect activates.");
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        #region AIモード
-                        if (GManager.instance.IsAI)
-                        {
-                            SetEffectIndex(UnityEngine.Random.Range(0, canSelectEffects.Count));
-                        }
-                        #endregion
-                    }
-
-                    yield return new WaitWhile(() => !endSelect);
-                    endSelect = false;
-
-                    GManager.instance.commandText.CloseCommandText();
-                    yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                    int effectIndex = GManager.instance.userSelectionManager.SelectedIntValue;
 
                     if (0 <= effectIndex && effectIndex <= canSelectEffects.Count - 1)
                     {
@@ -281,15 +214,5 @@ public class BT5_082 : CEntity_Effect
         }
 
         return cardEffects;
-    }
-
-    int effectIndex = 0;
-    bool endSelect = false;
-
-    [PunRPC]
-    public void SetEffectIndex(int effectIndex)
-    {
-        this.effectIndex = effectIndex;
-        endSelect = true;
     }
 }
