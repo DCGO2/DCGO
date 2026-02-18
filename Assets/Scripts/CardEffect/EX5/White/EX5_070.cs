@@ -256,7 +256,7 @@ public class EX5_070 : CEntity_Effect
                                     canEndNotMax: false,
                                     isShowOpponent: true,
                                     mode: SelectCardEffect.Mode.AddHand,
-                                    root: SelectCardEffect.Root.Custom,
+                                    root: SelectCardEffect.Root.DigivolutionCards,
                                     customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
                                     canLookReverseCard: true,
                                     selectPlayer: card.Owner,
