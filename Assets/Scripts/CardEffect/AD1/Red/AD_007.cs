@@ -196,7 +196,150 @@ namespace DCGO.CardEffects.AD1
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                // Code for placing gammamon in text in sources goes here
+                Permanent thisPermanent = card.PermanentOfThisCard();
+                List<CardSource> selectedCards = new List<CardSource>();
+
+                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                {
+                    selectedCards.Add(cardSource);
+
+                    yield return null;
+                }
+
+                while (selectedCards.Count < 3)
+                {
+                    List<CardSource> validHandCards = card.Owner.HandCards.Filter(CanSelectCardCondition).Except(selectedCards).ToList();
+                    List<CardSource> validTrashCards = card.Owner.TrashCards.Filter(CanSelectCardCondition).Except(selectedCards).ToList();
+                    int validHandCardCount = validHandCards.Count;
+                    int validTrashCardCount = validTrashCards.Count;
+
+                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+                    if (validHandCardCount > 0)
+                    {
+                        selectionElements.Add(new(message: $"Link from Hand", value: 1, spriteIndex: 0));
+                    }
+                    if (validTrashCardCount > 0)
+                    {
+                        selectionElements.Add(new(message: $"Link from Trash", value: 2, spriteIndex: 0));
+                    }                  
+
+                    string selectPlayerMessage = "From which area will you select a card to place under as digivolution cards?";
+                    string notSelectPlayerMessage = "The opponent is choosing from which area to select a card to place under as digivolution cards.";
+
+                    Debug.Log("Selection Elements Count: " + selectionElements.Count);
+                    GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    switch (GManager.instance.userSelectionManager.SelectedIntValue)
+                    {
+                        case 1: // From Hand
+                        {
+                            int maxCount = Math.Min(3 - selectedCards.Count, validHandCardCount);
+
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: cardSource => validHandCards.Contains(cardSource),
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: true,
+                                canEndNotMax: true,
+                                isShowOpponent: true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectHandEffect.SetUpCustomMessage($"Select up to {maxCount} cards to place under as digivolution cards.", "The opponent is selecting cards to place under as digivolution cards.");
+
+                            yield return StartCoroutine(selectHandEffect.Activate());
+                            break;
+                        }
+                        case 2: // From Trash
+                        {
+                            int maxCount = Math.Min(3 - selectedCards.Count, validTrashCardCount);
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: cardSource => validTrashCards.Contains(cardSource),
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select cards to link",
+                                maxCount: maxCount,
+                                canEndNotMax: true,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage($"Select up to {maxCount} cards to place under as digivolution cards.", "The opponent is selecting cards to place under as digivolution cards.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            break;
+                        }                       
+                    }
+                }
+
+                List<SelectionElement<bool>> selectionElements1 = new List<SelectionElement<bool>>()
+                    {
+                        new SelectionElement<bool>(message: $"To Top", value : true, spriteIndex: 0),
+                        new SelectionElement<bool>(message: $"To Bottom", value : false, spriteIndex: 1),
+                    };
+
+                string selectPlayerMessage1 = "From which area do you select a card?";
+                string notSelectPlayerMessage1 = "The opponent is choosing from which area to select a card.";
+
+                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
+
+                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                bool ToTop = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                selectCardEffect.SetUp(
+                    canTargetCondition: (cardSource) => true,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    canNoSelect: () => false,
+                    selectCardCoroutine: null,
+                    afterSelectCardCoroutine: AfterSelectCardCoroutine1,
+                    message: "Specify the order to place the cards in the digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
+                    maxCount: digivolutionCards.Count,
+                    canEndNotMax: false,
+                    isShowOpponent: false,
+                    mode: SelectCardEffect.Mode.Custom,
+                    root: SelectCardEffect.Root.Custom,
+                    customRootCardList: digivolutionCards,
+                    canLookReverseCard: true,
+                    selectPlayer: card.Owner,
+                    cardEffect: activateClass);
+
+                selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Cards");
+
+                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+                {
+                    if (ToTop)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(selectedCards, activateClass));
+                    }
+                    else
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
+                    }
+
+                    yield return null;
+                }
 
                 if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, ValidOpponentDigimon))
                 {
