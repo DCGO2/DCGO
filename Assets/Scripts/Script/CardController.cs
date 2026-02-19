@@ -2675,12 +2675,14 @@ public class IPlacePermanentToDigivolutionCards
         List<Permanent[]> permanentArrays,
         bool toTop,
         ICardEffect cardEffect,
-        bool skipEffectAndActivateSkill = false)
+        bool skipEffectAndActivateSkill = false,
+        bool isDigixros = false)
     {
         permanentArrays.Clone().ForEach(permanentArray => _permanentArrays.Add(permanentArray.CloneArray()));
         _toTop = toTop;
         _cardEffect = cardEffect;
         _skipEffectAndActivateSkill = skipEffectAndActivateSkill;
+        _isDigixros = isDigixros;
     }
 
     public void SetNotShowCards()
@@ -2693,6 +2695,7 @@ public class IPlacePermanentToDigivolutionCards
     bool _toTop = false;
     bool _notShowCards = false;
     bool _skipEffectAndActivateSkill = false;
+    bool _isDigixros = false;
     public bool Placed { get; private set; } = false;
 
     public IEnumerator PlacePermanentToDigivolutionCards()
@@ -2749,7 +2752,8 @@ public class IPlacePermanentToDigivolutionCards
         CardEffectCommons.WhenPermanentWouldRemoveFieldCheckHashtable(
                 removeFieldPermanents,
                 _cardEffect,
-                null);
+                null,
+                _isDigixros);
 
         #region  "When permanents would remove field" effect
 
