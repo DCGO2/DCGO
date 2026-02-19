@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.LM
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return !card.Owner.GetBattleAreaPermanents().Some(permanet =>
-                        permanet.TopCard.EqualsCardName("Parkour Training"));
+                        permanet.TopCard.EqualsCardName("Heat Training"));
                 }
 
                 bool CardCondition(CardSource cardSource)
