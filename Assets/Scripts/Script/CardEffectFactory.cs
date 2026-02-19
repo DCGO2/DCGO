@@ -767,4 +767,27 @@ public partial class CardEffectFactory
         }
     }
     #endregion
+
+    #region DigiXrosEffect by Name
+    public static AddDigiXrosConditionClass DigiXrosEffectFromNames(CardSource card, int CostReduction, Func<List<CardSource>, CardSource, bool> CanTargetCondition_ByPreSelecetedList, params string[] names)
+    {
+        AddDigiXrosConditionClass addDigiXrosConditionClass = new AddDigiXrosConditionClass();
+        addDigiXrosConditionClass.SetUpICardEffect($"DigiXros", CanUseCondition, card);
+        addDigiXrosConditionClass.SetUpAddDigiXrosConditionClass(getDigiXrosCondition: GetDigiXros);
+        addDigiXrosConditionClass.SetNotShowUI(true);
+        return addDigiXrosConditionClass;
+
+        bool CanUseCondition(Hashtable hashtable) => true;
+
+        DigiXrosCondition GetDigiXros(CardSource cardSource)
+        {
+            if (cardSource == card)
+            {
+                return CardEffectCommons.GetDigiXrosConditionsFromNames(card, 2, null, names);
+            }
+
+            return null;
+        }
+    }
+    #endregion
 }
