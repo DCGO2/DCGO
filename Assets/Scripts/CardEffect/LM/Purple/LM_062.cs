@@ -190,7 +190,7 @@ namespace DCGO.CardEffects.LM
                 CardEffectCommons.AddActivateMainOptionSecurityEffect(
                     card: card,
                     cardEffects: ref cardEffects,
-                    effectName: "[Main] Reveal the top 2 cards of your deck.Add 1 Purple or Yellow card among them to the hand.Return the rest at the bottom of your deck.Then, place this card in the battle area.");
+                    effectName: "[Main] Reveal the top 2 cards of your deck. Add 1 Purple or Yellow card among them to the hand.Return the rest at the bottom of your deck.Then, place this card in the battle area.");
             }
 
             #endregion
