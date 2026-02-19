@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.LM
 
                 string EffectDiscription()
                 {
-                    return "[Main] Reveal the top 2 cards of your deck. Add 1 yellow or black card among them to the hand. Return the rest at the bottom of your deck. Then, place this card in the battle area.";
+                    return "[Main] Reveal the top 2 cards of your deck. Add 1 Yellow or Black card among them to the hand. Return the rest at the bottom of your deck. Then, place this card in the battle area.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -71,7 +71,7 @@ namespace DCGO.CardEffects.LM
                         {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 yellow or black card.",
+                            message: "Select 1 Yellow or Black card.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
@@ -96,7 +96,7 @@ namespace DCGO.CardEffects.LM
 
                 string EffectDiscription()
                 {
-                    return "[Main] <Delay> - 1 of your Digimon may digivolve into a yellow or black Digimon card in the hand with the digivolution cost reduced by 2.";
+                    return "[Main] <Delay> - 1 of your Digimon may digivolve into a Yellow or Black Digimon card in the hand with the digivolution cost reduced by 2.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -190,7 +190,7 @@ namespace DCGO.CardEffects.LM
                 CardEffectCommons.AddActivateMainOptionSecurityEffect(
                     card: card,
                     cardEffects: ref cardEffects,
-                    effectName: "[Main] Reveal the top 2 cards of your deck.Add 1 yellow or black card among them to the hand.Return the rest at the bottom of your deck.Then, place this card in the battle area.");
+                    effectName: "[Main] Reveal the top 2 cards of your deck.Add 1 Yellow or Black card among them to the hand.Return the rest at the bottom of your deck.Then, place this card in the battle area.");
             }
 
             #endregion
