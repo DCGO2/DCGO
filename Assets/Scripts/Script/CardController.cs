@@ -2242,6 +2242,20 @@ public class DeckBottomBounceClass
 
         #endregion
 
+        #region "When permanents leave the battle area" effect
+
+        if (deckBounceTargetPermanents_Fixed.Count > 0) yield return ContinuousController.instance.StartCoroutine(
+            GManager.instance.autoProcessing.StackSkillInfos(
+                CardEffectCommons.OnDeletionHashtable(
+                    deckBounceTargetPermanents_Fixed,
+                    cardEffect,
+                    null,
+                    false
+                ),
+                EffectTiming.OnLeaveFieldAnyone));
+
+        #endregion
+
         #region
 
         List<CardSource> deckBottomCards = new List<CardSource>();
@@ -2394,6 +2408,20 @@ public class DeckTopBounceClass
 
         #endregion
 
+        #region "When permanents leave the battle area" effect
+
+        if (deckBounceTargetPermanents_Fixed.Count > 0) yield return ContinuousController.instance.StartCoroutine(
+            GManager.instance.autoProcessing.StackSkillInfos(
+                CardEffectCommons.OnDeletionHashtable(
+                    deckBounceTargetPermanents_Fixed,
+                    cardEffect,
+                    null,
+                    false
+                ),
+                EffectTiming.OnLeaveFieldAnyone));
+
+        #endregion
+
         #region
 
         List<CardSource> deckTopCards = new List<CardSource>();
@@ -2543,6 +2571,19 @@ public class HandBounceClaass
                 false
                 ),
                 EffectTiming.OnPermamemtReturnedToHand));
+
+        #endregion
+
+        #region "When permanents leave the battle area" effect
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+            CardEffectCommons.OnDeletionHashtable(
+                bounceTargetPermanents_Fixed,
+                cardEffect,
+                null,
+                false
+            ),
+            EffectTiming.OnLeaveFieldAnyone));
 
         #endregion
 
@@ -3185,6 +3226,19 @@ public class IPlacePermanentToLinkCards
                 {
                     if (LinkedPermanent.TopCard != null && getLinkPermanent.TopCard != null && !getLinkPermanent.IsToken && LinkedPermanent.willBeRemoveField)
                     {
+                        #region "When permanents leave the battle area" effect
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+                            CardEffectCommons.OnDeletionHashtable(
+                                new List<Permanent> { LinkedPermanent },
+                                _cardEffect,
+                                null,
+                                false
+                            ),
+                            EffectTiming.OnLeaveFieldAnyone));
+
+                        #endregion
+
                         yield return ContinuousController.instance.StartCoroutine(LinkedPermanent.DiscardEvoRoots());
 
                         CardSource cardSource = LinkedPermanent.TopCard;
@@ -3348,6 +3402,19 @@ public class IPutSecurityPermanent
 
         #endregion
 
+        #region "When permanents leave the battle area" effect
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+            CardEffectCommons.OnDeletionHashtable(
+                new List<Permanent> { _permanent },
+                cardEffect,
+                null,
+                false
+            ),
+            EffectTiming.OnLeaveFieldAnyone));
+
+        #endregion
+
         #region place permanent to security
 
         yield return ContinuousController.instance.StartCoroutine(_permanent.DiscardEvoRoots());
@@ -3483,6 +3550,19 @@ public class DestroyPermanentsClass
                 isDPZero
                 ),
                 EffectTiming.OnDestroyedAnyone));
+
+        #endregion
+
+        #region "When permanents leave the battle area" effect
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+            CardEffectCommons.OnDeletionHashtable(
+                destroyTargetPermanents_Fixed,
+                cardEffect,
+                battle,
+                isDPZero
+            ),
+            EffectTiming.OnLeaveFieldAnyone));
 
         #endregion
 
