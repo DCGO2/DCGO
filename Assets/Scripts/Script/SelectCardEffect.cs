@@ -173,6 +173,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     {
         AddHand,
         Discard,
+        PlayForFree,
 
         // PutLibraryTop,
         // PutLibraryBottom,
@@ -405,6 +406,10 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
                             case Mode.Discard:
                                 message = "Select cards to trash.";
+                                break;
+
+                            case Mode.PlayForFree:
+                                message = "Select cards to play without paying the cost.";
                                 break;
 
                             case Mode.Custom:
@@ -674,6 +679,10 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_targetCards, "Cards put on the trash", true, true));
                                     break;
 
+                                case Mode.PlayForFree:
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_targetCards, "Played cards", true, true));
+                                    break;
+
                                 case Mode.Custom:
                                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_targetCards, "Selected Cards", true, true));
                                     break;
@@ -754,6 +763,17 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
                     }
                     break;
+
+                case Mode.PlayForFree:
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.PlayPermanentCards(
+                                cardSources: _targetCards, 
+                                activateClass: _cardEffect, 
+                                payCost: false, 
+                                isTapped: false, 
+                                root: _root, 
+                                activateETB: true));
+                        break;
 
                 case Mode.Custom:
                     if (_selectCardCoroutine != null)
