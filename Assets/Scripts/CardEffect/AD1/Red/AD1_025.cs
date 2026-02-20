@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.AD1
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsOpponentsDigimon);
+                        && CardEffectCommons.CanTriggerOnPermanentLeave(hashtable, IsOpponentsDigimon);
                 }
 
                 bool IsEnemyOptionPermanent(Permanent permanent)
