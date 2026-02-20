@@ -105,8 +105,8 @@ namespace DCGO.CardEffects.LM
                     {
                         foreach (CardSource cardSource in card.Owner.HandCards)
                         {
-                            return CanSelectCardCondition(cardSource)
-                                && cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass);
+                            if (CanSelectCardCondition(cardSource)
+                                && cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass)) => return true;
                         }
                     }
 
