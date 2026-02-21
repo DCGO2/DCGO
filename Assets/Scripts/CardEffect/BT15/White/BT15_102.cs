@@ -218,7 +218,7 @@ namespace DCGO.CardEffects.BT15
 
                             if (selectedCards.Count >= 1)
                             {
-                                GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(new AddDigivolutionCardsInfo(activateClass, selectedCards));
+                                GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(card, new AddDigivolutionCardsInfo(activateClass, selectedCards));
 
                                 yield return StartCoroutine(AfterSelectCardCoroutine(selectedCards));
                             }

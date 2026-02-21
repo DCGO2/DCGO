@@ -110,7 +110,7 @@ namespace DCGO.CardEffects.BT12
                                     {
                                         if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                         {
-                                            GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(new AddDigivolutionCardsInfo(activateClass, new List<CardSource>() { selectedPermanent.TopCard }));
+                                            GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(card, new AddDigivolutionCardsInfo(activateClass, new List<CardSource>() { selectedPermanent.TopCard }));
 
                                             if (card.Owner.CanReduceCost(null, card))
                                             {
