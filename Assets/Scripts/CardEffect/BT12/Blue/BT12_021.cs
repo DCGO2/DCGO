@@ -171,9 +171,7 @@ namespace DCGO.CardEffects.BT12
                 {
                     if (isExistOnField(card))
                     {
-                        if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(
+                        yield return ContinuousController.instance.StartCoroutine(
                              CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
                                  CanSelectCardCondition,
                                  payCost: true,
@@ -181,7 +179,6 @@ namespace DCGO.CardEffects.BT12
                                  activateClass,
                                  permanentConditions: new Func<Permanent, bool>[] { (permanent) => permanent == card.PermanentOfThisCard() }
                              ));
-                        }
                     }
                 }
             }

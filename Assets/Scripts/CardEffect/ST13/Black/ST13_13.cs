@@ -121,9 +121,7 @@ public class ST13_13 : CEntity_Effect
             {
                 if (isExistOnField(card))
                 {
-                    if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
+                    yield return ContinuousController.instance.StartCoroutine(
                                          CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
                                              CanSelectCardCondition,
                                              payCost: true,
@@ -131,7 +129,6 @@ public class ST13_13 : CEntity_Effect
                                              activateClass,
                                              permanentConditions: new Func<Permanent, bool>[] { (permanent) => permanent == card.PermanentOfThisCard() }
                                          ));
-                    }
                 }
             }
         }
