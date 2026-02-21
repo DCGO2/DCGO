@@ -1144,7 +1144,6 @@ public class Permanent
                 {
                     yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(addedDigivolutionCard, trashCard: false));
                 }
-
                 else if (addedDigivolutionCard == TopCard)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(addedDigivolutionCard));
@@ -1480,27 +1479,28 @@ public class Permanent
                     if (!cardSource.IsFlipped)
                     {
                         bool isTopCard = cardSource == TopCard;
-                        bool isDigimon = IsDigimon;
+                        
+                        if (!isTopCard)
+                        {
+                            if (!IsDigimon)
+                            {
+                                continue;
+                            }
+                        }
 
                         foreach (ICardEffect cardEffect in cardSource.cEntity_EffectController.GetCardEffects(timing, cardSource))
                         {
                             if (cardEffect != null)
                             {
-                                if (cardEffect.IsEffectOfCard)
-                                {
-                                    _EffectList.Add(cardEffect);
-                                    continue;
-                                }
-
                                 #region Entity, Inherited and Link effects
 
-                                if (cardEffect.IsInheritedEffect && !isTopCard && isDigimon)
+                                if (cardEffect.IsInheritedEffect && !isTopCard)
                                 {
                                     _EffectList.Add(cardEffect);
                                     continue;
                                 }
 
-                                if (cardEffect.IsLinkedEffect && cardSource.IsLinked && isDigimon)
+                                if (cardEffect.IsLinkedEffect && cardSource.IsLinked)
                                 {
                                     _EffectList.Add(cardEffect);
                                     continue;

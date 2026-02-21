@@ -17,7 +17,6 @@ namespace DCGO.CardEffects.BT12
                 activateClass.SetUpICardEffect("Play Cost -1 and select trash cards for a DigiXros", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 activateClass.SetHashString("PlayCost-1_BT12_112");
-                activateClass.SetIsEffectOfCard(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
