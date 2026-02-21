@@ -16,6 +16,7 @@ public abstract class ICardEffect
         SetEffectSourcePermanent(null);
         SetMaxCountPerTurn(-1);
         SetEffectName(effectName);
+        SetEffectTargets(null);
         SetEffectDiscription("");
         SetHashString("");
         SetOnProcessCallbuck(null);
@@ -138,6 +139,26 @@ public abstract class ICardEffect
     internal void SetEffectName(string effectName)
     {
         EffectName = effectName;
+    }
+
+    #endregion
+
+    #region Effect Target, used to display a detail of what card triggered this / will be targetted by the effect if performed
+
+    Func<Hashtable, List<Permanent>> _effectTargets = null;
+
+    public Func<Hashtable, List<Permanent>> EffectTargets
+    {
+        get { return _effectTargets; }
+        private set
+        {
+            _effectTargets = value;
+        }
+    }
+
+    internal void SetEffectTargets(Func<Hashtable, List<Permanent>> effectTargets)
+    {
+        EffectTargets = effectTargets;
     }
 
     #endregion
@@ -955,11 +976,11 @@ public static class ActivateICardEffectExtensionClass
 {
     #region Optional
 
-    public static IEnumerator Activate_Optional(this ActivateICardEffect activateICardEffect)
+    public static IEnumerator Activate_Optional(this ActivateICardEffect activateICardEffect, Hashtable hash)
     {
         if (((ICardEffect)activateICardEffect).IsOptional)
         {
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<OptionalSkill>().SelectOptional((ICardEffect)activateICardEffect));
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<OptionalSkill>().SelectOptional((ICardEffect)activateICardEffect, hash));
         }
     }
 
@@ -1101,7 +1122,7 @@ public static class ActivateICardEffectExtensionClass
             {
                 if (isCheckOptional)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(Activate_Optional(activateICardEffect));
+                    yield return ContinuousController.instance.StartCoroutine(Activate_Optional(activateICardEffect, hash));
                 }
                 else
                 {
