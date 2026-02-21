@@ -9,20 +9,61 @@ using UnityEngine.Events;
 
 public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 {
-    public List<CardSource> selectedAssemblyCards { get; private set; } = new List<CardSource>();
-    public List<AddDigivolutionCardsInfo> addDigivolutionCardInfos { get; private set; } = new List<AddDigivolutionCardsInfo>();
-    public CardSource playCard { get; private set; } = null;
+    private List<CardSource> selectedAssemblyCards = new List<CardSource>();
+    public List<CardSource> PreviouslySelectedAssemblyCards { get; private set; } = new List<CardSource>();
+    private List<PlayCardTuple> AllAssemblyCards = new List<PlayCardTuple>();
+
+    void AddSelectedCard(CardSource cardSource)
+    {
+        selectedAssemblyCards.Add(cardSource);
+        PreviouslySelectedAssemblyCards.Add(cardSource);
+    }
+
+    public List<CardSource> GetPreviouslySelected()
+    {
+        SelectDigiXrosClass selectDigiXrosClass = GManager.instance.GetComponent<SelectDigiXrosClass>();
+        return AllAssemblyCards.Map(tuple => tuple.SelectedAssemblyCards).Flat().Concat(selectDigiXrosClass.PreviouslySelectedDigicrossCards).ToList();
+    }
+
+    private class PlayCardTuple
+    {
+        public CardSource PlayCard;
+        public List<CardSource> SelectedAssemblyCards;
+        public List<AddDigivolutionCardsInfo> AddDigivolutionCardInfos;
+    }
+
+    private PlayCardTuple GetTupleForCard(CardSource card)
+    {
+        return AllAssemblyCards.FirstOrDefault(tuple => tuple.PlayCard == card);
+    }
+
+    private PlayCardTuple GetOrMakeTupleForCard(CardSource card)
+    {
+        PlayCardTuple cardTuple = GetTupleForCard(card);
+        if (cardTuple == null)
+        {
+            cardTuple = new()
+            {
+                PlayCard = card,
+                SelectedAssemblyCards = new List<CardSource>(),
+                AddDigivolutionCardInfos = new List<AddDigivolutionCardsInfo>()
+            };
+            AllAssemblyCards.Add(cardTuple);
+        }
+        return cardTuple;
+    }
 
     public void ResetSelectAssemblyClass()
     {
+        AllAssemblyCards = new List<PlayCardTuple>();
         selectedAssemblyCards = new List<CardSource>();
-        addDigivolutionCardInfos = new List<AddDigivolutionCardsInfo>();
-        playCard = null;
+        PreviouslySelectedAssemblyCards = new List<CardSource>();
     }
 
-    public void AddDigivolutionCardInfos(AddDigivolutionCardsInfo digivolutionCardsInfo)
+    public void AddDigivolutionCardInfos(CardSource card, AddDigivolutionCardsInfo digivolutionCardsInfo)
     {
-        addDigivolutionCardInfos.Add(digivolutionCardsInfo);
+        PlayCardTuple cardTuple = GetOrMakeTupleForCard(card);
+        cardTuple.AddDigivolutionCardInfos.Add(digivolutionCardsInfo);
     }
 
     #region Is Trash Card
@@ -57,13 +98,14 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
                             {
                                 if (!targetCard.IsToken)
                                 {
-                                    if (!selectedAssemblyCards.Contains(targetCard))
+                                    if (!PreviouslySelectedAssemblyCards.Contains(targetCard))
                                     {
+                                        List<AddDigivolutionCardsInfo> addDigivolutionCardInfos = GetAddDigivolutionCardInfos(card);
                                         if (addDigivolutionCardInfos.Count((addDigivolutionCardInfo) => addDigivolutionCardInfo.cardSources.Contains(targetCard)) == 0)
                                         {
                                             if (element.CanTargetCondition_ByPreSelecetedList != null)
                                             {
-                                                if (!element.CanTargetCondition_ByPreSelecetedList(selectedAssemblyCards, targetCard))
+                                                if (!element.CanTargetCondition_ByPreSelecetedList(PreviouslySelectedAssemblyCards, targetCard))
                                                 {
                                                     return false;
                                                 }
@@ -126,7 +168,7 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
         if (index >= AssemblyCondition.elements.Count)
             return true;
             
-        usedCards ??= new List<CardSource>();
+        usedCards ??= PreviouslySelectedAssemblyCards;
 
         AssemblyConditionElement currentElement = AssemblyCondition.elements[index];
 
@@ -156,9 +198,11 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     {
         GManager.instance.turnStateMachine.isSync = true;
 
-        selectedAssemblyCards = new List<CardSource>();
+        PlayCardTuple cardTuple = GetOrMakeTupleForCard(card);
 
-        playCard = card;
+        selectedAssemblyCards = cardTuple.SelectedAssemblyCards;
+
+        PreviouslySelectedAssemblyCards = GetPreviouslySelected();
 
         if (CanFulfillConditions(card))
         {
@@ -274,16 +318,45 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
+    #region Check if card was Assembled
+    public bool WasAssembled(CardSource card)
+    {
+        return GetTupleForCard(card) != null;
+    }
+    #endregion
+
+    #region Get Count of Digivolution Cards for Card
+    public int GetSelectedCardCount(CardSource card)
+    {
+        PlayCardTuple cardTuple = GetTupleForCard(card);
+        if (cardTuple != null)
+        {
+            return cardTuple.SelectedAssemblyCards.Count;
+        }
+        return 0;
+    }
+    #endregion
+
+    #region Get AddDigivolutionCardInfos
+    public List<AddDigivolutionCardsInfo> GetAddDigivolutionCardInfos(CardSource card)
+    {
+        PlayCardTuple cardTuple = GetOrMakeTupleForCard(card);
+        return cardTuple.AddDigivolutionCardInfos;
+    }
+    #endregion
+
     #region Add Digivolution Cards
     public IEnumerator AddDigivolutiuonCards(CardSource card)
     {
         if (card != null)
         {
-            if (card == playCard)
+            PlayCardTuple cardTuple = GetTupleForCard(card);
+            if (cardTuple != null)
             {
                 if (card.PermanentOfThisCard() != null)
                 {
-                    if (selectedAssemblyCards.Count == playCard.assemblyCondition.elementCount)
+                    selectedAssemblyCards = cardTuple.SelectedAssemblyCards;
+                    if (selectedAssemblyCards.Count == cardTuple.PlayCard.assemblyCondition.elementCount)
                     {
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(selectedAssemblyCards, "Assembly Cards", true, true));
 
@@ -310,42 +383,44 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     #region Add Digivolution Card
     public IEnumerator AddDigivolutiuonCardsByEffect(CardSource card)
     {
-        if (addDigivolutionCardInfos.Count >= 1)
+        PlayCardTuple cardTuple = GetTupleForCard(card);
+        if (cardTuple != null)
         {
-            if (card != null)
+            List<AddDigivolutionCardsInfo> addDigivolutionCardInfos = cardTuple.AddDigivolutionCardInfos;
+            if (addDigivolutionCardInfos.Count >= 1)
             {
-                if (card.PermanentOfThisCard() != null)
+                if (card != null)
                 {
-                    List<CardSource> addedCards = new List<CardSource>();
-
-                    foreach (AddDigivolutionCardsInfo info in addDigivolutionCardInfos)
+                    if (card.PermanentOfThisCard() != null)
                     {
-                        List<CardSource> underTamerCards = new List<CardSource>();
-                        List<Permanent> digimonPermanents = new List<Permanent>();
-                        List<CardSource> trashCards = new List<CardSource>();
+                        List<CardSource> addedCards = new List<CardSource>();
 
-                        foreach (CardSource cardSource in info.cardSources)
+                        foreach (AddDigivolutionCardsInfo info in addDigivolutionCardInfos)
                         {
-                            if (isTrashCard(cardSource))
+                            List<CardSource> underTamerCards = new List<CardSource>();
+                            List<Permanent> digimonPermanents = new List<Permanent>();
+                            List<CardSource> trashCards = new List<CardSource>();
+
+                            foreach (CardSource cardSource in info.cardSources)
                             {
-                                trashCards.Add(cardSource);
-                                addedCards.Add(cardSource);
+                                if (isTrashCard(cardSource))
+                                {
+                                    trashCards.Add(cardSource);
+                                    addedCards.Add(cardSource);
+                                }
+                            }
+
+                            if (trashCards.Count >= 1)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(trashCards, info.cardEffect));
                             }
                         }
 
-                        if (trashCards.Count >= 1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(trashCards, info.cardEffect));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(addedCards, "Digivolution Cards", true, true));
                     }
-
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(addedCards, "Digivolution Cards", true, true));
                 }
             }
         }
-
-        addDigivolutionCardInfos = new List<AddDigivolutionCardsInfo>();
-
         yield return null;
     }
     #endregion
