@@ -137,7 +137,8 @@ namespace DCGO.CardEffects.EX9
 
                 bool TriggerCondtion(Permanent permanent)
                 {
-                    return permanent != card.PermanentOfThisCard() && CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return permanent != card.PermanentOfThisCard() 
+                        && CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
