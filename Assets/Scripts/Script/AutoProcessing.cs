@@ -621,7 +621,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     #region Check end of turn
     public IEnumerator EndTurnCheck()
     {
-        if (GManager.instance.turnStateMachine.gameContext.TurnPhase != GameContext.phase.End)
+        if (GManager.instance.turnStateMachine.gameContext.TurnPhase != GameContext.phase.End && !GManager.instance.attackProcess.ActiveAttack())
         {
             if (GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.MemoryForPlayer >= TurnEndMinMemory)
             {
@@ -693,6 +693,16 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
             //Automatic processing check timing
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+
+            //Handle attack steps
+            while (GManager.instance.attackProcess.ActiveAttack())
+            {
+                Debug.Log($"Active Attack, {Enum.GetName(typeof(AttackProcess.AttackState),GManager.instance.attackProcess.State)} Step");
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.ProcessNextState());
+
+                //自動処理チェックタイミング
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+            }
 
             if (GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.MemoryForPlayer >= TurnEndMinMemory)
             {
