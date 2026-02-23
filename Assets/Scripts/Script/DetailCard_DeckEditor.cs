@@ -486,11 +486,19 @@ public class DetailCard_DeckEditor : MonoBehaviour
                 }
             }
 
-            else if (cEntity_Base.IsDualCard)
+            else if (cEntity_Base.HasInhetitedEffect)
             {
-                alternativeEffectTitleText.text = $"{cEntity_Base.dualEffect}";
-                alternativeEffectDiscriptionText.text = DataBase.ReplaceToASCII(cEntity_Base.OptionEffect);
+                if (ContinuousController.instance.language == Language.ENG)
+                {
+                    alternativeEffectTitleText.text = $"Dual Card";
+                    alternativeEffectDiscriptionText.text = DataBase.ReplaceToASCII(cEntity_Base.InheritedEffectDiscription_ENG);
+                }
 
+                else
+                {
+                    alternativeEffectTitleText.text = $"進化元効果";
+                    alternativeEffectDiscriptionText.text = DataBase.ReplaceToASCII(cEntity_Base.InheritedEffectDiscription_JPN);
+                }
             }
 
             effectDiscriptionText.fontSizeMax = 25;
