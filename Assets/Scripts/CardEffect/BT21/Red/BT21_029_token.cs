@@ -52,14 +52,7 @@ namespace DCGO.CardEffects.Tokens
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                        return CardEffectCommons.CanTriggerOnDeletion(hashtable, card)
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
