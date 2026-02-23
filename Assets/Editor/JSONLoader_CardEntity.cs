@@ -10,6 +10,7 @@ using UnityEngine.Networking;
 using System.Drawing.Text;
 using System.Net;
 using System.Data;
+using WebSocketSharp;
 
 namespace DCGO.CardEntities
 {
@@ -132,7 +133,7 @@ namespace DCGO.CardEntities
             cardEntity.EvoCosts = GetEvoCosts(card.digivolveCondition,cardEntity.cardColors);
 
             cardEntity.Level = levelParse(card.cardLv);
-            cardEntity.CardName_ENG = card.name.english;
+            cardEntity.CardName_ENG = GetName(card.name.english);
 
             cardEntity.Form_ENG = GetCardInfo(card.form);
             cardEntity.Attribute_ENG = GetCardInfo(card.attribute);
@@ -157,6 +158,9 @@ namespace DCGO.CardEntities
             cardEntity.LinkDP = dpParse(card.linkDP);
             cardEntity.LinkEffect = card.linkEffect;
             cardEntity.LinkRequirement = card.linkRequirement;
+
+            if(!card.dualEffect.IsNullOrEmpty())
+                cardEntity.dualEffect = GetName(card.name.english, true);
 
             cardEntity.OptionCardColorRequirements = GetCardColors(card.optionCardColourRequirment);
             cardEntity.OptionEffect = card.optionCardEffect;
@@ -293,6 +297,17 @@ namespace DCGO.CardEntities
                 .Replace(")", "");
 
             return name;
+        }
+
+        //Parse Names
+        string GetName(string str, bool isCardName = true)
+        {
+            string[] stringSplits = str.Split('/');
+
+            if (isCardName)
+                return stringSplits[0];
+            else
+                return stringSplits[1];
         }
 
         //Parse effect description

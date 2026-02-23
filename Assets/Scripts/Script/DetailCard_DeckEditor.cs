@@ -151,7 +151,7 @@ public class DetailCard_DeckEditor : MonoBehaviour
 
             if (_playCostTitleText != null)
             {
-                if (cEntity_Base.cardKind != CardKind.Option)
+                if (cEntity_Base.cardKind != CardKind.Option && !cEntity_Base.IsDualCard)
                 {
                     _playCostTitleText.text = LocalizeUtility.GetLocalizedString(
                         EngMessage: "PlayCost",
@@ -401,10 +401,11 @@ public class DetailCard_DeckEditor : MonoBehaviour
         }
 
         //追加効果タイトル
-        if (cEntity_Base.HasInhetitedEffect || cEntity_Base.HasSecutiryEffect)
+        if (cEntity_Base.HasInhetitedEffect || cEntity_Base.HasSecutiryEffect || cEntity_Base.IsDualCard)
         {
             alternativeEffectTitleText.transform.parent.gameObject.SetActive(true);
 
+            #region Text Colors
             for (int i = 0; i < alternativeEffectTitleBackgrounds.Count; i++)
             {
                 CardColor cardColor = CardColor.None;
@@ -420,8 +421,14 @@ public class DetailCard_DeckEditor : MonoBehaviour
                 }
 
                 alternativeEffectTitleBackgrounds[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
+                List<CardColor> tempColors = new List<CardColor>();
 
-                if (cEntity_Base.cardColors.Contains(CardColor.Yellow) || cEntity_Base.cardColors.Contains(CardColor.White))
+                if (cEntity_Base.IsDualCard)
+                    tempColors = cEntity_Base.OptionCardColorRequirements;
+                else
+                    tempColors = cEntity_Base.cardColors;
+
+                if (tempColors.Contains(CardColor.Yellow) || tempColors.Contains(CardColor.White))
                 {
                     alternativeEffectTitleText.color = Color.black;
                 }
@@ -431,6 +438,8 @@ public class DetailCard_DeckEditor : MonoBehaviour
                     alternativeEffectTitleText.color = Color.white;
                 }
             }
+            #endregion
+
 
             if (ContinuousController.instance.language == Language.ENG)
             {
@@ -440,7 +449,6 @@ public class DetailCard_DeckEditor : MonoBehaviour
                 alternativeEffectDiscriptionText.font = Font_ENG;
                 alternativeEffectDiscriptionText.fontSharedMaterial = Material_ENG;
             }
-
             else
             {
                 alternativeEffectTitleText.font = Font_JPN;
@@ -475,6 +483,21 @@ public class DetailCard_DeckEditor : MonoBehaviour
                 {
                     alternativeEffectTitleText.text = $"セキュリティ効果";
                     alternativeEffectDiscriptionText.text = DataBase.ReplaceToASCII(cEntity_Base.SecurityEffectDiscription_JPN);
+                }
+            }
+
+            else if (cEntity_Base.HasInhetitedEffect)
+            {
+                if (ContinuousController.instance.language == Language.ENG)
+                {
+                    alternativeEffectTitleText.text = $"Dual Card";
+                    alternativeEffectDiscriptionText.text = DataBase.ReplaceToASCII(cEntity_Base.InheritedEffectDiscription_ENG);
+                }
+
+                else
+                {
+                    alternativeEffectTitleText.text = $"進化元効果";
+                    alternativeEffectDiscriptionText.text = DataBase.ReplaceToASCII(cEntity_Base.InheritedEffectDiscription_JPN);
                 }
             }
 
