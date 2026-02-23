@@ -3227,15 +3227,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     #region Attack permanent determination
     public void SetAttackingPermaent(int permanentIndex, int attackTargetPermanentIndex)
     {
-        List<Permanent> turnPlayerFeild = gameContext.TurnPlayer.GetFieldPermanents();
+        List<Permanent> turnPlayerField = gameContext.TurnPlayer.GetFieldPermanents();
         List<Permanent> nonTurnPlayerFeid = gameContext.NonTurnPlayer.GetFieldPermanents();
 
         AttackingPermanent = null;
         DefendingPermanent = null;
 
-        if (permanentIndex >= 0 && permanentIndex < turnPlayerFeild.Count)
+        if (permanentIndex >= 0 && permanentIndex < turnPlayerField.Count)
         {
-            AttackingPermanent = turnPlayerFeild[permanentIndex];
+            AttackingPermanent = turnPlayerField[permanentIndex];
         }
 
         if (attackTargetPermanentIndex >= 0 && attackTargetPermanentIndex < nonTurnPlayerFeid.Count)
