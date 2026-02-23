@@ -570,9 +570,9 @@ public class CardSource : MonoBehaviour
 
                         if (selectDigiXrosClass != null)
                         {
-                            if (selectDigiXrosClass.WasDigiXrosed(this))
+                            if (selectDigiXrosClass.playCard == this)
                             {
-                                Cost -= selectDigiXrosClass.GetSelectedCardCount(this) * digiXrosCondition.reduceCostPerCard;
+                                Cost -= selectDigiXrosClass.selectedDigicrossCards.Count * digiXrosCondition.reduceCostPerCard;
                             }
                         }
                     }
@@ -605,9 +605,9 @@ public class CardSource : MonoBehaviour
 
                         if (selectAssemblyClass != null)
                         {
-                            if (selectAssemblyClass.WasAssembled(this))
+                            if (selectAssemblyClass.playCard == this)
                             {
-                                if (selectAssemblyClass.GetSelectedCardCount(this) == assemblyCondition.elementCount)
+                                if (selectAssemblyClass.selectedAssemblyCards.Count == assemblyCondition.elementCount)
                                     Cost -= assemblyCondition.reduceCost;
                             }
                         }

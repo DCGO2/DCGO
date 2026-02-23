@@ -9,63 +9,20 @@ using UnityEngine.Events;
 
 public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 {
-    private List<CardSource> selectedDigicrossCards = new List<CardSource>();
-
-    public List<CardSource> PreviouslySelectedDigicrossCards { get; private set; } = new List<CardSource>();
-
-    private List<PlayCardTuple> AllDigiXrosCards = new List<PlayCardTuple>();
-
-    private void AddSelectedCard(CardSource cardSource)
-    {
-        selectedDigicrossCards.Add(cardSource);
-        PreviouslySelectedDigicrossCards.Add(cardSource);
-    }
-
-    private List<CardSource> GetPreviouslySelected()
-    {
-        SelectAssemblyClass selectAssemblyClass = GManager.instance.GetComponent<SelectAssemblyClass>();
-        return AllDigiXrosCards.Map(tuple => tuple.SelectedDigicrossCards).Flat().Concat(selectAssemblyClass.PreviouslySelectedAssemblyCards).ToList();
-    }
-    
-    private class PlayCardTuple
-    {
-        public CardSource PlayCard;
-        public List<CardSource> SelectedDigicrossCards;
-        public List<AddDigivolutionCardsInfo> AddDigivolutionCardInfos;
-    }
-
-    private PlayCardTuple GetTupleForCard(CardSource card)
-    {
-        return AllDigiXrosCards.FirstOrDefault(tuple => tuple.PlayCard == card);
-    }
-
-    private PlayCardTuple GetOrMakeTupleForCard(CardSource card)
-    {
-        PlayCardTuple cardTuple = GetTupleForCard(card);
-        if (cardTuple == null)
-        {
-            cardTuple = new()
-            {
-                PlayCard = card,
-                SelectedDigicrossCards = new List<CardSource>(),
-                AddDigivolutionCardInfos = new List<AddDigivolutionCardsInfo>()
-            };
-            AllDigiXrosCards.Add(cardTuple);
-        }
-        return cardTuple;
-    }
+    public List<CardSource> selectedDigicrossCards { get; private set; } = new List<CardSource>();
+    public List<AddDigivolutionCardsInfo> addDigivolutionCardInfos { get; private set; } = new List<AddDigivolutionCardsInfo>();
+    public CardSource playCard { get; private set; } = null;
 
     public void ResetSelectDigiXrosClass()
     {
-        AllDigiXrosCards = new List<PlayCardTuple>();
         selectedDigicrossCards = new List<CardSource>();
-        PreviouslySelectedDigicrossCards = new List<CardSource>();
+        addDigivolutionCardInfos = new List<AddDigivolutionCardsInfo>();
+        playCard = null;
     }
 
-    public void AddDigivolutionCardInfos(CardSource card, AddDigivolutionCardsInfo digivolutionCardsInfo)
+    public void AddDigivolutionCardInfos(AddDigivolutionCardsInfo digivolutionCardsInfo)
     {
-        PlayCardTuple cardTuple = GetOrMakeTupleForCard(card);
-        cardTuple.AddDigivolutionCardInfos.Add(digivolutionCardsInfo);
+        addDigivolutionCardInfos.Add(digivolutionCardsInfo);
     }
 
     #region Max Trash Count
@@ -77,10 +34,10 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
         {
             List<int> maxTrashCountList = new List<int>();
 
-            #region é¸æŠå¯èƒ½ãƒˆãƒ©ãƒƒã‚·ãƒ¥æšæ•°ã‚’å¤‰æ›´ã™ã‚‹åŠ¹æœ
+            #region ‘I‘ğ‰Â”\ƒgƒ‰ƒbƒVƒ…–‡”‚ğ•ÏX‚·‚éŒø‰Ê
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
             {
-                #region å ´ã®ãƒ‘ãƒ¼ãƒãƒãƒ³ãƒˆã®åŠ¹æœ
+                #region ê‚Ìƒp[ƒ}ƒlƒ“ƒg‚ÌŒø‰Ê
                 foreach (Permanent permanent in player.GetBattleAreaPermanents())
                 {
                     foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
@@ -101,7 +58,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                 }
                 #endregion
 
-                #region ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åŠ¹æœ
+                #region ƒvƒŒƒCƒ„[‚ÌŒø‰Ê
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
                 {
                     if (cardEffect is IAddMaxTrashCountDigiXrosEffect)
@@ -120,7 +77,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                 #endregion
             }
 
-            #region ã‚«ãƒ¼ãƒ‰è‡ªèº«ã®åŠ¹æœ
+            #region ƒJ[ƒh©g‚ÌŒø‰Ê
             if (card.PermanentOfThisCard() == null)
             {
                 foreach (ICardEffect cardEffect in card.EffectList(EffectTiming.None))
@@ -172,10 +129,10 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
         {
             List<int> maxTamerDigivolutionCardsCountList = new List<int>();
 
-            #region é¸æŠå¯èƒ½ãƒ†ã‚¤ãƒãƒ¼é€²åŒ–å…ƒæšæ•°ã‚’å¤‰æ›´ã™ã‚‹åŠ¹æœ
+            #region ‘I‘ğ‰Â”\ƒeƒCƒ}[i‰»Œ³–‡”‚ğ•ÏX‚·‚éŒø‰Ê
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
             {
-                #region å ´ã®ãƒ‘ãƒ¼ãƒãƒãƒ³ãƒˆã®åŠ¹æœ
+                #region ê‚Ìƒp[ƒ}ƒlƒ“ƒg‚ÌŒø‰Ê
                 foreach (Permanent permanent in player.GetBattleAreaPermanents())
                 {
                     foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
@@ -196,7 +153,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                 }
                 #endregion
 
-                #region ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åŠ¹æœ
+                #region ƒvƒŒƒCƒ„[‚ÌŒø‰Ê
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
                 {
                     if (cardEffect is IAddMaxUnderTamerCountDigiXrosEffect)
@@ -215,7 +172,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                 #endregion
             }
 
-            #region ã‚«ãƒ¼ãƒ‰è‡ªèº«ã®åŠ¹æœ
+            #region ƒJ[ƒh©g‚ÌŒø‰Ê
             if (card.PermanentOfThisCard() == null)
             {
                 foreach (ICardEffect cardEffect in card.EffectList(EffectTiming.None))
@@ -357,14 +314,13 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                             {
                                 if (!targetCard.IsToken)
                                 {
-                                    if (!PreviouslySelectedDigicrossCards.Contains(targetCard))
+                                    if (!selectedDigicrossCards.Contains(targetCard))
                                     {
-                                        List<AddDigivolutionCardsInfo> addDigivolutionCardInfos = GetAddDigivolutionCardInfos(card);
                                         if (addDigivolutionCardInfos.Count((addDigivolutionCardInfo) => addDigivolutionCardInfo.cardSources.Contains(targetCard)) == 0)
                                         {
                                             if (card.digiXrosCondition.CanTargetCondition_ByPreSelecetedList != null)
                                             {
-                                                if (!card.digiXrosCondition.CanTargetCondition_ByPreSelecetedList(PreviouslySelectedDigicrossCards, targetCard))
+                                                if (!card.digiXrosCondition.CanTargetCondition_ByPreSelecetedList(selectedDigicrossCards, targetCard))
                                                 {
                                                     return false;
                                                 }
@@ -404,11 +360,9 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     {
         GManager.instance.turnStateMachine.isSync = true;
 
-        PlayCardTuple cardTuple = GetOrMakeTupleForCard(card);
+        selectedDigicrossCards = new List<CardSource>();
 
-        selectedDigicrossCards = cardTuple.SelectedDigicrossCards;
-
-        PreviouslySelectedDigicrossCards = GetPreviouslySelected();
+        playCard = card;
 
         if (card != null)
         {
@@ -564,7 +518,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                         {
                             GManager.instance.commandText.OpenCommandText($"The opponent is choosing from which area to select {element.selectMessage}.", digiXros: true);
 
-                            #region AIãƒ¢ãƒ¼ãƒ‰
+                            #region AIƒ‚[ƒh
                             if (GManager.instance.IsAI)
                             {
                                 List<int> indexes = new List<int>();
@@ -646,7 +600,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 
             IEnumerator SelectCardCoroutine(CardSource cardSource)
             {
-                AddSelectedCard(cardSource);
+                selectedDigicrossCards.Add(cardSource);
 
                 yield return null;
             }
@@ -670,7 +624,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region Select Battle Area Permanent
+    #region Select Battle Area Permanent
     IEnumerator SelectBattleAreaPermanent(DigiXrosCondition digiXrosCondition, DigiXrosConditionElement element, CardSource card)
     {
         bool CanSelectPermanentCondition(Permanent permanent) => permanent.TopCard.Owner.GetBattleAreaPermanents().Contains(permanent) && CanSelectDigiXros(element, permanent.TopCard, card);
@@ -704,7 +658,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 
             IEnumerator SelectPermanentCoroutine(Permanent permanent)
             {
-                AddSelectedCard(permanent.TopCard);
+                selectedDigicrossCards.Add(permanent.TopCard);
 
                 yield return null;
             }
@@ -821,7 +775,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        AddSelectedCard(cardSource);
+                        selectedDigicrossCards.Add(cardSource);
 
                         yield return null;
                     }
@@ -886,7 +840,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 
             IEnumerator SelectCardCoroutine(CardSource cardSource)
             {
-                AddSelectedCard(cardSource);
+                selectedDigicrossCards.Add(cardSource);
 
                 yield return null;
             }
@@ -918,33 +872,6 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region Check if card was DigiXrosed
-    public bool WasDigiXrosed(CardSource card)
-    {
-        return GetTupleForCard(card) != null;
-    }
-    #endregion
-
-    #region Get Count of Digivolution Cards for Card
-    public int GetSelectedCardCount(CardSource card)
-    {
-        PlayCardTuple cardTuple = GetTupleForCard(card);
-        if (cardTuple != null)
-        {
-            return cardTuple.SelectedDigicrossCards.Count;
-        }
-        return 0;
-    }
-    #endregion
-
-    #region Get AddDigivolutionCardInfos
-    public List<AddDigivolutionCardsInfo> GetAddDigivolutionCardInfos(CardSource card)
-    {
-        PlayCardTuple cardTuple = GetOrMakeTupleForCard(card);
-        return cardTuple.AddDigivolutionCardInfos;
-    }
-    #endregion
-
     #region Add Digivolution Cards
     public IEnumerator AddDigivolutiuonCards(CardSource card)
     {
@@ -952,13 +879,10 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
         {
             if (card != null)
             {
-                PlayCardTuple cardTuple = GetTupleForCard(card);
-                if (cardTuple != null)
+                if (card == playCard)
                 {
                     if (card.PermanentOfThisCard() != null)
                     {
-                        selectedDigicrossCards = cardTuple.SelectedDigicrossCards;
-
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(selectedDigicrossCards, "Digixros Cards", true, true));
 
                         foreach (CardSource cardSource in selectedDigicrossCards)
@@ -1003,83 +927,81 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region åŠ¹æœã«ã‚ˆã£ã¦é€²åŒ–å…ƒã‚’ä»˜ä¸(å¤©é‡ãƒ¦ã‚¦(BT10),ã‚·ãƒ£ã‚¦ãƒˆãƒ¢ãƒ³X7ã‚¹ãƒšãƒªã‚ªãƒ«ãƒ¢ãƒ¼ãƒ‰(BT12))
+    #region Œø‰Ê‚É‚æ‚Á‚Äi‰»Œ³‚ğ•t—^(“V–ìƒ†ƒE(BT10),ƒVƒƒƒEƒgƒ‚ƒ“X7ƒXƒyƒŠƒIƒ‹ƒ‚[ƒh(BT12))
     public IEnumerator AddDigivolutiuonCardsByEffect(CardSource card)
     {
-        PlayCardTuple cardTuple = GetTupleForCard(card);
-        if (cardTuple != null)
+        if (addDigivolutionCardInfos.Count >= 1)
         {
-            List<AddDigivolutionCardsInfo> addDigivolutionCardInfos = cardTuple.AddDigivolutionCardInfos;
-            if (addDigivolutionCardInfos.Count >= 1)
+            if (card != null)
             {
-                if (card != null)
+                if (card.PermanentOfThisCard() != null)
                 {
-                    if (card.PermanentOfThisCard() != null)
+                    List<CardSource> addedCards = new List<CardSource>();
+
+                    foreach (AddDigivolutionCardsInfo info in addDigivolutionCardInfos)
                     {
-                        List<CardSource> addedCards = new List<CardSource>();
+                        List<CardSource> underTamerCards = new List<CardSource>();
+                        List<Permanent> digimonPermanents = new List<Permanent>();
+                        List<CardSource> trashCards = new List<CardSource>();
+                        List<CardSource> secuirtyCards = new List<CardSource>();
 
-                        foreach (AddDigivolutionCardsInfo info in addDigivolutionCardInfos)
+                        foreach (CardSource cardSource in info.cardSources)
                         {
-                            List<CardSource> underTamerCards = new List<CardSource>();
-                            List<Permanent> digimonPermanents = new List<Permanent>();
-                            List<CardSource> trashCards = new List<CardSource>();
-                            List<CardSource> secuirtyCards = new List<CardSource>();
-
-                            foreach (CardSource cardSource in info.cardSources)
+                            if (isTamerDigivolutionCard(cardSource))
                             {
-                                if (isTamerDigivolutionCard(cardSource))
-                                {
-                                    underTamerCards.Add(cardSource);
-                                    addedCards.Add(cardSource);
-                                }
-
-                                else if (isBattleAreaCard(cardSource))
-                                {
-                                    digimonPermanents.Add(cardSource.PermanentOfThisCard());
-                                    addedCards.Add(cardSource);
-                                }
-                                else if (isTrashCard(cardSource))
-                                {
-                                    trashCards.Add(cardSource);
-                                    addedCards.Add(cardSource);
-                                }
-
-                                else if (isSecurityCard(cardSource))
-                                {
-                                    secuirtyCards.Add(cardSource);
-                                    addedCards.Add(cardSource);
-                                }
+                                underTamerCards.Add(cardSource);
+                                addedCards.Add(cardSource);
                             }
 
-                            if (underTamerCards.Count >= 1)
+                            else if (isBattleAreaCard(cardSource))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(underTamerCards, info.cardEffect));
+                                digimonPermanents.Add(cardSource.PermanentOfThisCard());
+                                addedCards.Add(cardSource);
+                            }
+                            else if (isTrashCard(cardSource))
+                            {
+                                trashCards.Add(cardSource);
+                                addedCards.Add(cardSource);
                             }
 
-                            if (digimonPermanents.Count >= 1)
+                            else if (isSecurityCard(cardSource))
                             {
-                                foreach (Permanent digimonPermanent in digimonPermanents)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { digimonPermanent, card.PermanentOfThisCard() } }, false, info.cardEffect).PlacePermanentToDigivolutionCards());
-                                }
-                            }
-
-                            if (trashCards.Count >= 1)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(trashCards, info.cardEffect));
-                            }
-
-                            if (secuirtyCards.Count >= 1)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(secuirtyCards, info.cardEffect));
+                                secuirtyCards.Add(cardSource);
+                                addedCards.Add(cardSource);
                             }
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(addedCards, "Digivolution Cards", true, true));
+                        if (underTamerCards.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(underTamerCards, info.cardEffect));
+                        }
+
+                        if (digimonPermanents.Count >= 1)
+                        {
+                            foreach (Permanent digimonPermanent in digimonPermanents)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { digimonPermanent, card.PermanentOfThisCard() } }, false, info.cardEffect).PlacePermanentToDigivolutionCards());
+                            }
+                        }
+
+                        if (trashCards.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(trashCards, info.cardEffect));
+                        }
+
+                        if (secuirtyCards.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(secuirtyCards, info.cardEffect));
+                        }
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(addedCards, "Digivolution Cards", true, true));
                 }
             }
         }
+
+        addDigivolutionCardInfos = new List<AddDigivolutionCardsInfo>();
+
         yield return null;
     }
     #endregion
