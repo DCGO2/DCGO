@@ -124,7 +124,7 @@ namespace DCGO.CardEntities
         void CreateScriptableObject(CardData card, string imageID)
         {
             Debug.Log($"creating: {card.name.english} - {card.cardType}");
-            // CardEntity‚ instance created
+            // CardEntityï¿½ instance created
             CEntity_Base cardEntity = CreateInstance<CEntity_Base>();
             
             cardEntity.cardColors = GetCardColors(card.color);
