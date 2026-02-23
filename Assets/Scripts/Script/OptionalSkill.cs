@@ -27,7 +27,7 @@ public class OptionalSkill : MonoBehaviourPunCallbacks
         }
         else
         {
-            _Message = $"Will you use \"{cardEffect.EffectName}\" targetting {string.Join(", ", effectTargets.Select(permanent => permanent.TopCard.CardNames[0]))}?";
+            _Message = $"Will you use \"{cardEffect.EffectName}\" targeting {string.Join(", ", effectTargets.Select(permanent => permanent.TopCard.CardNames[0]))}?";
         }
 
         yield return GManager.instance.photonWaitController.StartWait("SelectOptional");
