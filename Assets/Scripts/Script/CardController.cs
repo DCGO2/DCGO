@@ -1224,9 +1224,15 @@ public class PlayPermanentClass
         {
             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
-            _digiXrosCount = GManager.instance.GetComponent<SelectDigiXrosClass>().GetSelectedCardCount(card);
+            if (GManager.instance.GetComponent<SelectDigiXrosClass>().playCard == card)
+            {
+                _digiXrosCount = GManager.instance.GetComponent<SelectDigiXrosClass>().selectedDigicrossCards.Count;
+            }
 
-            _assemblyCount = GManager.instance.GetComponent<SelectAssemblyClass>().GetSelectedCardCount(card);
+            if (GManager.instance.GetComponent<SelectAssemblyClass>().playCard == card)
+            {
+                _assemblyCount = GManager.instance.GetComponent<SelectAssemblyClass>().selectedAssemblyCards.Count;
+            }
 
             bool isFromDigimonDigivolutionCards = card.Owner.GetFieldPermanents().Some((permanent) => permanent.DigivolutionCards.Contains(card));
 
@@ -1607,13 +1613,12 @@ public class PlayPermanentClass
                 }
             }
 
+            GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
+            GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
             GManager.instance.GetComponent<SelectDNACondition>().ResetSelectDNAConditionClass();
 
             yield return GManager.instance.photonWaitController.StartWait("EndPlayPermanent");
         }
-
-        GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
-        GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
 
         // except [On Play] effect
         bool CardEffectCondition(ICardEffect cardEffect)
