@@ -158,6 +158,9 @@ namespace DCGO.CardEntities
             cardEntity.LinkEffect = card.linkEffect;
             cardEntity.LinkRequirement = card.linkRequirement;
 
+            cardEntity.OptionCardColorRequirements = GetCardColors(card.optionCardColourRequirment);
+            cardEntity.OptionEffect = card.optionCardEffect;
+
             cardEntity.name = cardEntity.CardSpriteName.Replace("-Errata","").Replace("-","_");
 
             if (cardEntity.cardKind == CardKind.DigiEgg && cardEntity.PlayCost == 0)
