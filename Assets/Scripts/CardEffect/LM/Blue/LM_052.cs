@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 // Malachite Memory Boost!
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.LM
 {
     public class LM_052 : CEntity_Effect
     {
