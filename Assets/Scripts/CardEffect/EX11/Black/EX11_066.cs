@@ -293,7 +293,7 @@ namespace DCGO.CardEffects.EX11
                             revealCount: 2,
                             simplifiedSelectCardCondition:
                             new SimplifiedSelectCardConditionClass(
-                                    canTargetCondition: cardSource => cardSource.EqualsCardName("Vemmon") && !cardSource.EqualsCardName("Vemmon"),
+                                    canTargetCondition: _ => false,
                                     message: "",
                                     mode: SelectCardEffect.Mode.Custom,
                                     maxCount: -1,
