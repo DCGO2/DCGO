@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.EX11
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
-                    => "[All Turns] When any Digimon suspend, by suspending this Tamer, if effects suspended those Digimon, <Draw 1>. After, 1 of your digimon with [Avian] or [Bird] in any of its traits or the [Vortex Warrior] trait gets +3000 DP until your opponent's turn ends.";
+                    => "[All Turns] When any Digimon suspend, by suspending this Tamer, if effects suspended those Digimon, <Draw 1>. After, 1 of your digimon with [Avian] or [Bird] in any of its traits or the [Vortex Warriors] trait gets +3000 DP until your opponent's turn ends.";
 
                 bool PermanentCondition(Permanent permanent)
                 {
