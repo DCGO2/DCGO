@@ -234,7 +234,6 @@ namespace DCGO.CardEffects.EX11
                                     if (selectedPermament != null)
                                     {
                                         List<CardSource> digivolutionCards_fixed = new List<CardSource>();
-                                        digivolutionCards_fixed.Clear(); // Clear here in cases of multiple loops
                                         if (selectedCards.Count > 1)
                                         {
                                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
