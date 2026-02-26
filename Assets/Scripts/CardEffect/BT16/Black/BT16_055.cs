@@ -95,7 +95,7 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digimon can't be DP reduced or De-Digivolved, Digimon gains <Rush> and <Blocker>", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digimon can't be DP reduced or De-Digivolved, Digimon gains <Blocker> and <Reboot>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -172,7 +172,7 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digimon can't be DP reduced or De-Digivolved, Digimon gains <Rush> and <Blocker>", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digimon can't be DP reduced or De-Digivolved, Digimon gains <Blocker> and <Reboot>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
