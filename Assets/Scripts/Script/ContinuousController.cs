@@ -371,7 +371,6 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT19-091-token-yellow",
-            CardSpriteName = "BT19-091-token",
             cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000
         };
