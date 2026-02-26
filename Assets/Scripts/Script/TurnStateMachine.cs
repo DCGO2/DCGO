@@ -1086,7 +1086,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                 }
 
                                 CanPlayCards = CanPlayCards
-                                    .OrderBy((value) => Array.IndexOf(DataBase.cardKinds, value.CardKind))
+                                    .OrderBy((value) => Array.IndexOf(DataBase.cardKinds, value.CardKinds))
                                     .ThenBy((value) => Array.IndexOf(new bool[] { true, false }, value.Owner.fieldCardFrames.Count((frame) => value.CanPlayCardTargetFrame(frame, true, null) && !frame.IsEmptyFrame()) >= 1))
                                     .ToList();
 

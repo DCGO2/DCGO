@@ -30,7 +30,7 @@ public class DeckBuildingRule : MonoBehaviour
 
         foreach (CEntity_Base cEntity_Base in modifiedDeck)
         {
-            if (cEntity_Base.cardKind != CardKind.DigiEgg)
+            if (!cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
             {
                 modifiedDeckCards.Add(cEntity_Base);
             }
@@ -145,7 +145,7 @@ public class DeckBuildingRule : MonoBehaviour
 
     public static bool CanAddCard(CEntity_Base cEntity_Base, DeckData deckData)
     {
-        if (cEntity_Base.cardKind == CardKind.DigiEgg)
+        if (cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
         {
             if (cEntity_Base.SameCardIDCount(deckData.DigitamaDeckCards()) >= cEntity_Base.MaxCountInDeck)
             {

@@ -3166,25 +3166,25 @@ public class CardSource : MonoBehaviour
 
     #region whether this card is Digimon
 
-    public bool IsDigimon => CardKind == CardKind.Digimon;
+    public bool IsDigimon => CardKinds.Contains(CardKind.Digimon);
 
     #endregion
 
     #region whether this card is DigiEgg
 
-    public bool IsDigiEgg => CardKind == CardKind.DigiEgg;
+    public bool IsDigiEgg => CardKinds.Contains(CardKind.DigiEgg);
 
     #endregion
 
     #region whether this card is Tamer
 
-    public bool IsTamer => CardKind == CardKind.Tamer;
+    public bool IsTamer => CardKinds.Contains(CardKind.Tamer);
 
     #endregion
 
     #region whether this card is Option
 
-    public bool IsOption => CardKind == CardKind.Option;
+    public bool IsOption => CardKinds.Contains(CardKind.Option);
 
     #endregion
 
@@ -3249,7 +3249,7 @@ public class CardSource : MonoBehaviour
 
     #region Card Kind
 
-    public CardKind CardKind => _cEntity_Base.cardKind;
+    public List<CardKind> CardKinds => _cEntity_Base.cardKind;
 
     #endregion
 
