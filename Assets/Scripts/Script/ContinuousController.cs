@@ -143,7 +143,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>() { "種族不明" },
             Type_ENG = new List<string>() { "Unidentified" },
             CardSpriteName = "BT2-082-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 3000,
         };
 
@@ -163,7 +163,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT14-018-token-red",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000,
             CardEffectClassName = "BT4_038"
         };
@@ -184,7 +184,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT14-018-token-yellow",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000,
             CardEffectClassName = "BT1_031"
         };
@@ -205,7 +205,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "EX5-058-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 3000,
             CardEffectClassName = "EX5_058_token"
         };
@@ -226,7 +226,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>() { "ダークアニマル" },
             Type_ENG = new List<string>() { "Dark Animal" },
             CardSpriteName = "LM-018-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 3000,
         };
 
@@ -246,7 +246,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT16-052-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 1000,
             CardEffectClassName = "BT16_052_token"
         };
@@ -267,7 +267,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "EX7-030-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 3000,
             CardEffectClassName = "EX7_030_token"
         };
@@ -288,7 +288,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "EX7-030-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 3000,
             CardEffectClassName = "P_165_token"
         };
@@ -309,7 +309,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "EX7-058-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 5000,
             CardEffectClassName = "EX7_058_token"
         };
@@ -330,7 +330,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "EX8-037-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 9000,
             CardEffectClassName = "EX8_037_token"
         };
@@ -351,7 +351,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT19-091-token-red",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000
         };
 
@@ -371,7 +371,8 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT19-091-token-yellow",
-            cardKind = CardKind.Digimon,
+            CardSpriteName = "BT19-091-token",
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000
         };
 
@@ -391,7 +392,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT19-091-token-green",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000
         };
 
@@ -411,7 +412,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT19-040-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000,
             CardEffectClassName = "BT19_040_token"
         };
@@ -432,7 +433,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT20-017-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000,
             CardEffectClassName = "BT20_017_token"
         };
@@ -453,7 +454,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT23-057-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000,
             CardEffectClassName = "BT23_057_token"
         };
@@ -476,7 +477,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT21-029-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 3000,
             CardEffectClassName = "BT21_029_token"
         };
@@ -685,7 +686,7 @@ public class ContinuousController : MonoBehaviour
 
         foreach (CEntity_Base cEntity_Base in AllDeckCards)
         {
-            if (cEntity_Base.cardKind == CardKind.DigiEgg)
+            if (cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
             {
                 digitamaDeckCards.Add(cEntity_Base);
             }

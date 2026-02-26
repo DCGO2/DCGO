@@ -22,7 +22,7 @@ public class CEntity_Base : ScriptableObject
     public List<string> Type_JPN = new List<string>();
     public List<string> Type_ENG = new List<string>();
     public string CardSpriteName = "";
-    public CardKind cardKind = CardKind.Digimon;
+    public List<CardKind> cardKind = new List<CardKind> { CardKind.Digimon };
     [TextArea] public string EffectDiscription_JPN = "";
     [TextArea] public string EffectDiscription_ENG = "";
     [TextArea] public string InheritedEffectDiscription_JPN = "";
@@ -235,7 +235,7 @@ public class CEntity_Base : ScriptableObject
     #endregion
 
     #region whether it is permanent card
-    public bool IsPermanent => cardKind == CardKind.Digimon || cardKind == CardKind.Tamer || cardKind == CardKind.DigiEgg;
+    public bool IsPermanent => cardKind.Contains(CardKind.Digimon) || cardKind.Contains(CardKind.Tamer) || cardKind.Contains(CardKind.DigiEgg);
     #endregion
 
     #region �J�[�hIndex���f�b�L�R�[�h�ɗp���镶����ɕϊ�(256�i��)
@@ -323,7 +323,7 @@ public class CEntity_Base : ScriptableObject
                 return false;
             }
 
-            if (cardKind != CardKind.Digimon && cardKind != CardKind.DigiEgg)
+            if (!cardKind.Contains(CardKind.Digimon) && !cardKind.Contains(CardKind.DigiEgg))
             {
                 return false;
             }
@@ -338,11 +338,11 @@ public class CEntity_Base : ScriptableObject
     #endregion
 
     #region Wheter the card has play cost
-    public bool HasPlayCost => cardKind != CardKind.Option && PlayCost >= 0;
+    public bool HasPlayCost => !cardKind.Contains(CardKind.Option) && PlayCost >= 0;
     #endregion
 
     #region Wheter the card has use cost
-    public bool HasUseCost => cardKind == CardKind.Option && PlayCost >= 0;
+    public bool HasUseCost => cardKind.Contains(CardKind.Option) && PlayCost >= 0;
     #endregion
 }
 public enum CardKind

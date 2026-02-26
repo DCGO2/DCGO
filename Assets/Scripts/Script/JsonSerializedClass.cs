@@ -41,7 +41,7 @@ namespace DCGO.CardEntities
         public string linkRequirement;
         public CardName name;
         public string notes;
-        public string optionCardColourRequirment;
+        public string optionCardColourRequirement;
         public string optionCardEffect;
         public string playCost;
         public string rarity;
