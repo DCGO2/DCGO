@@ -3472,7 +3472,8 @@ public class DestroyPermanentsClass
         List<Permanent> destroyTargetPermanents_Fixed = _destroytargetPermanents.Filter(permanent =>
             permanent != null
             && permanent.TopCard != null
-            && permanent.willBeRemoveField);
+            && permanent.willBeRemoveField
+            && permanent.CanBeDestroyedBySkill(cardEffect));
 
         #region "When permanents are deleted" effect
 
