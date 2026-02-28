@@ -716,4 +716,23 @@ public partial class CardEffectFactory
 
     #endregion
 
+    #region Use Requirements
+    public static ActivateClass UseRequirements(CardSource card, Func<Permanent, bool> permanentCondition)
+    {
+        IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
+        ignoreColorConditionClass.SetUpICardEffect("Ignore color requirements", CanUseCondition, card);
+        ignoreColorConditionClass.SetUpIgnoreColorConditionClass(cardCondition: CardCondition);
+        return ignoreColorConditionClass;
+
+        bool CanUseCondition(Hashtable hashtable)
+        {
+            return CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanentCondition);
+        }
+
+        bool CardCondition(CardSource cardSource)
+        {
+            return cardSource == card;
+        }
+    }
+    #endregion
 }
