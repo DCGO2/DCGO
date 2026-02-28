@@ -277,27 +277,12 @@ namespace DCGO.CardEffects.ST24
             #region Ignore Colour Requirement
             if (timing == EffectTiming.None)
             {
-                IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
-                ignoreColorConditionClass.SetUpICardEffect("Ignore color requirements", CanUseCondition, card);
-                ignoreColorConditionClass.SetUpIgnoreColorConditionClass(cardCondition: CardCondition);
-                cardEffects.Add(ignoreColorConditionClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition);
-                }
+                cardEffects.Add(CardEffectFactory.UseRequirements(card, PermanentCondition));
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return (permanent.IsDigimon || permanent.IsTamer)
-                        && permanent.TopCard.EqualsTraits("DATA SQUAD");
+                    return permanent.TopCard.EqualsTraits("DATA SQUAD");
                 }
-
-                bool CardCondition(CardSource cardSource)
-                {
-                    return cardSource == card;
-                }
-
             }
             #endregion
 
