@@ -82,7 +82,7 @@ namespace DCGO.CardEffects.EX11
                     break;
                 }
 
-                if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsRoyalBaseDigimon))
+                if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsRoyalBaseDigimon) && card.Owner.CanAddSecurity(activateClass))
                 {
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
