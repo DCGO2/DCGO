@@ -97,9 +97,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
         IsAttacking = true;
 
-        // check timing
-        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
-
         GManager.instance.turnStateMachine.IsSelecting = true;
 
         // force to end attack
@@ -154,24 +151,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
             PlayLog.OnAddLog?.Invoke(log);
 
-            /*List<SkillInfo> stackedSkillInfos = new List<SkillInfo>();
-
-            if (GManager.instance.autoProcessing.executingMultipleSkills != null)
-            {
-                if (GManager.instance.autoProcessing.executingMultipleSkills.StackedSkillInfos.Count >= 1)
-                {
-                    foreach (SkillInfo skillInfo in GManager.instance.autoProcessing.executingMultipleSkills.StackedSkillInfos)
-                    {
-                        stackedSkillInfos.Add(skillInfo);
-                    }
-                }
-
-                foreach (SkillInfo skillInfo in stackedSkillInfos)
-                {
-                    GManager.instance.autoProcessing.executingMultipleSkills.StackedSkillInfos.Remove(skillInfo);
-                }
-            }*/
-
             // suspend
             if (!withoutTap)
             {
@@ -205,10 +184,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                 }
             }
 
-            // activate cutin effects
-            // yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(true, null));
-
             // callback that is processed before [On Attack]
             if (beforeOnAttackCoroutine != null)
             {
@@ -216,21 +191,9 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             }
 
             // trigger [On Attack] effect
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
                 EffectHashtable,
                 EffectTiming.OnAllyAttack));
-
-            // activate cutin effects
-            // yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(true, null));
-
-            /*if (stackedSkillInfos.Count >= 1)
-            {
-                foreach (SkillInfo skillInfo in stackedSkillInfos)
-                {
-                    GManager.instance.autoProcessing.PutStackedSkill(skillInfo);
-                }
-            }*/
 
             GManager.instance.turnStateMachine.IsSelecting = true;
 
@@ -248,9 +211,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                     DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
                 }
             }
-
-            // check timing
-            // yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
             GManager.instance.turnStateMachine.IsSelecting = true;
 

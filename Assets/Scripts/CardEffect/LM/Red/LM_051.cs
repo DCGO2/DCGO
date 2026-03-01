@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 // Alexandrite Memory Boost!
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.LM
 {
     public class LM_051 : CEntity_Effect
     {
