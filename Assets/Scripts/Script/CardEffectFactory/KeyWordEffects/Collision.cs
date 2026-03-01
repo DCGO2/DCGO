@@ -7,10 +7,8 @@ using UnityEngine;
 public partial class CardEffectFactory
 {
     #region Static effect of [Collision] on oneself
-    public static ActivateClass CollisionSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition)
+    public static CollisionClass CollisionSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition)
     {
-        Permanent targetPermanent = card.PermanentOfThisCard();
-
         bool PermanentCondition(Permanent permanent) => permanent == card.PermanentOfThisCard();
 
         bool CanUseCondition()
@@ -40,21 +38,16 @@ public partial class CardEffectFactory
     #endregion
 
     #region Static effect of [Collision]
-    public static ActivateClass CollisionStaticEffect(
+    public static CollisionClass CollisionStaticEffect(
         Func<Permanent, bool> permanentCondition,
         bool isInheritedEffect,
         CardSource card,
         Func<bool> condition)
     {
-        ActivateClass activateClass = new ActivateClass();
-        activateClass.SetUpICardEffect("Collision", CanUseCondition, card);
-        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-        activateClass.SetIsInheritedEffect(isInheritedEffect);
-
-        string EffectDiscription()
-        {
-            return DataBase.CollisionEffectDiscription();
-        }
+        CollisionClass collisionClass = new ();
+        collisionClass.SetUpICardEffect("Collision", CanUseCondition, card);
+        collisionClass.SetUpCollisionClass(PermanentCondition);
+        collisionClass.SetIsInheritedEffect(isInheritedEffect);
 
         bool PermanentCondition(Permanent permanent)
         {
@@ -80,17 +73,7 @@ public partial class CardEffectFactory
             return false;
         }
 
-        bool CanActivateCondition(Hashtable hashtable)
-        {
-            return true;
-        }
-
-        IEnumerator ActivateCoroutine(Hashtable _hashtable)
-        {
-            return CardEffectCommons.CollisionProcess(card, activateClass);
-        }
-
-        return activateClass;
+        return collisionClass;
     }
     #endregion
 }
