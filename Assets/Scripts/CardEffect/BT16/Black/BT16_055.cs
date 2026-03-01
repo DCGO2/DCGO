@@ -141,20 +141,20 @@ namespace DCGO.CardEffects.BT16
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        selectedPermanent = permanent;
+                        selectedPermanent1 = permanent;
 
                         yield return null;
                     }
 
-                    if (selectedPermanent != null)
+                    if (selectedPermanent1 != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainReboot(
-                            targetPermanent: selectedPermanent,
+                            targetPermanent: selectedPermanent1,
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass));
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
-                            targetPermanent: selectedPermanent,
+                            targetPermanent: selectedPermanent1,
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass));
                     }
