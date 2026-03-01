@@ -716,43 +716,4 @@ public partial class CardEffectFactory
 
     #endregion
 
-    #region Effect of a Permanent to Delete Itself
-
-    public static ActivateClass DeleteSelfEffect(Permanent permanent, bool deleteOnOwnturn = true, bool deleteOnOpponentsTurn = true)
-    {
-        ActivateClass activateClass = new ActivateClass();
-        activateClass.SetUpICardEffect("Delete this Digimon", CanUseCondition, permanent.TopCard);
-        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, "");
-        activateClass.SetEffectSourcePermanent(permanent);
-        return activateClass;
-
-        bool CanUseCondition(Hashtable hashtable)
-        {
-            if (permanent.TopCard != null && CardEffectCommons.IsExistOnBattleArea(permanent.TopCard))
-            {
-                if (CardEffectCommons.IsOwnerTurn(permanent.TopCard))
-                {
-                    return deleteOnOwnturn;
-                }
-                else
-                {
-                    return deleteOnOpponentsTurn;
-                }
-            }
-            return false;
-        }
-
-        bool CanActivateCondition(Hashtable hashtable)
-        {
-            return permanent.TopCard != null
-                && CardEffectCommons.IsExistOnBattleArea(permanent.TopCard);
-        }
-
-        IEnumerator ActivateCoroutine(Hashtable hashtable)
-        {
-            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent>() { permanent }, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
-        }
-    }
-
-    #endregion
 }
