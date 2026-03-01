@@ -47,10 +47,12 @@ namespace DCGO.CardEffects.BT16
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
             }
-
-            Permanent selectedPermanent = null;
+            
+            Permanent selectedPermanent1 = null;
 
             #region Can't Be De-Digivolved
+
+            Permanent selectedPermanent = null;
 
             IEnumerator AfterSelectPermanent(List<Permanent> permanents)
             {
