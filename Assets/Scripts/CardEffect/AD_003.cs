@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.AD1
                 return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                     && (CardEffectCommons.HasMatchConditionOwnersHand(card, cardSource => Takato(cardSource, activateClass))
                         || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, cardSource => Takato(cardSource, activateClass))
-                        || CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition));
+                        || CardEffectCommons.HasMatchConditionPermanent(permanent => CanSelectPermanentCondition(permanent, activateClass)));
             }
 
             bool Takato(CardSource cardSource, ActivateClass activateClass)
