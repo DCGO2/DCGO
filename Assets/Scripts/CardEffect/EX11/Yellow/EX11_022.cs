@@ -161,31 +161,8 @@ namespace DCGO.CardEffects.EX11
 
                     if (selectedCard != null)
                     {
-
-                        Permanent selectedPermanent = selectedCard.PermanentOfThisCard();
-
-                        ActivateClass activateClass1 = new ActivateClass();
-                        activateClass1.SetUpICardEffect("Delete this Digimon", CanUseCondition2, card);
-                        activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "");
-                        activateClass1.SetEffectSourcePermanent(selectedPermanent);
-                        CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
-
-                        bool CanUseCondition2(Hashtable hashtable)
-                        {
-                            return true;
-                        }
-
-                        bool CanActivateCondition1(Hashtable hashtable)
-                        {
-                            return selectedPermanent.TopCard != null
-                                && selectedPermanent.CanBeDestroyedBySkill(activateClass1)
-                                && !selectedPermanent.TopCard.CanNotBeAffected(activateClass1);
-                        }
-
-                        IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent>() { selectedPermanent }, CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.AddSelfDeleteEffect(selectedCard.PermanentOfThisCard(), CardEffectCommons.DeleteTiming.AtTurnEnd));
                     }
 
                     #endregion
