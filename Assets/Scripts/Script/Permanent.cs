@@ -2058,7 +2058,7 @@ public class Permanent
     #endregion
 
     #region このパーマネントが攻撃できるかどうか
-    public bool CanAttack(ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false)
+    public bool CanAttack(ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false, bool isExecute = false)
     {
         // can not attack with empty cards
         if (TopCard == null)
@@ -2077,10 +2077,10 @@ public class Permanent
             return false;
 
         // can not attack to player
-        if (!CanAttackTargetDigimon(null, cardEffect, withoutTap, isVortex))
+        if (!CanAttackTargetDigimon(null, cardEffect, withoutTap, isVortex, isExecute))
         {
             // can not attack to opponent's Digimon
-            if (TopCard.Owner.Enemy.GetFieldPermanents().Count((permanent) => CanAttackTargetDigimon(permanent, cardEffect, withoutTap, isVortex)) == 0)
+            if (TopCard.Owner.Enemy.GetFieldPermanents().Count((permanent) => CanAttackTargetDigimon(permanent, cardEffect, withoutTap, isVortex, isExecute)) == 0)
             {
                 return false;
             }
@@ -2182,7 +2182,7 @@ public class Permanent
     #endregion
 
     #region 対象のパーマネントを攻撃できるか
-    public bool CanAttackTargetDigimon(Permanent Defender, ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false)
+    public bool CanAttackTargetDigimon(Permanent Defender, ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false, bool isExecute = false)
     {
         if (TopCard != null)
         {
@@ -2279,7 +2279,7 @@ public class Permanent
                     {
                         if (Defender.IsDigimon && Defender.TopCard.Owner.GetBattleAreaPermanents().Contains(Defender))
                         {
-                            if (Defender.IsSuspended)
+                            if (Defender.IsSuspended || isExecute)
                             {
                                 return true;
                             }
