@@ -99,7 +99,7 @@ namespace DCGO.CardEffects.BT22
                                     canEndNotMax: false,
                                     isShowOpponent: true,
                                     mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Custom,
+                                    root: SelectCardEffect.Root.DigivolutionCards,
                                     customRootCardList: thisPermanent.DigivolutionCards,
                                     canLookReverseCard: true,
                                     selectPlayer: card.Owner,
