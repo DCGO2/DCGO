@@ -8,7 +8,7 @@ public partial class CardEffectCommons
     public static bool CanActivateExecute(CardSource cardSource, ICardEffect activateClass)
     {
         return IsExistOnBattleArea(cardSource) &&
-               cardSource.PermanentOfThisCard().CanAttack(activateClass);
+               cardSource.PermanentOfThisCard().CanAttack(activateClass, isExecute: true);
     }
 
     #endregion
@@ -19,7 +19,7 @@ public partial class CardEffectCommons
     {
         Permanent selectedPermanent = cardSource.PermanentOfThisCard();
 
-        if (selectedPermanent.CanAttack(activateClass))
+        if (selectedPermanent.CanAttack(activateClass, isExecute: true))
         {
             #region Attack unsuspended Digimon
 
@@ -29,7 +29,7 @@ public partial class CardEffectCommons
                 attackerCondition: AttackerCondition,
                 defenderCondition: DefenderCondition,
                 cardEffectCondition: CardEffectCondition);
-            selectedPermanent.UntilEachTurnEndEffects.Add(_ => canAttackTargetDefendingPermanentClass);
+            selectedPermanent.UntilEndAttackEffects.Add(_ => canAttackTargetDefendingPermanentClass);
 
             bool CanUseCondition(Hashtable hashtable)
             {
