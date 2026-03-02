@@ -460,7 +460,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     IEnumerator DigimonLackDPProcess()
     {
         List<Permanent> LackPowerPermanents = GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
-            .Map(player => player.GetFieldPermanents()
+            .Map(player => player.GetBattleAreaPermanents()
             .Filter(IsDigimonLackDP)).Flat();
 
         if (LackPowerPermanents.Count >= 1)
