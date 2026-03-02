@@ -1613,13 +1613,12 @@ public class PlayPermanentClass
                 }
             }
 
+            GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
+            GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
             GManager.instance.GetComponent<SelectDNACondition>().ResetSelectDNAConditionClass();
 
             yield return GManager.instance.photonWaitController.StartWait("EndPlayPermanent");
         }
-
-        GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
-        GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
 
         // except [On Play] effect
         bool CardEffectCondition(ICardEffect cardEffect)

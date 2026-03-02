@@ -43,14 +43,24 @@ namespace DCGO.CardEffects.BT16
                 return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
             }
 
-            Permanent selectedPermanent = null;
-
             bool CanSelectPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
             }
             
+            Permanent selectedPermanent1 = null;
+
             #region Can't Be De-Digivolved
+
+            Permanent selectedPermanent = null;
+
+            IEnumerator AfterSelectPermanent(List<Permanent> permanents)
+            {
+                if (permanents.Count >= 1)
+                    selectedPermanent = permanents[0];
+
+                yield return null;
+            }
 
             void ActivateDeDigivolveProtection()
             {
@@ -62,22 +72,12 @@ namespace DCGO.CardEffects.BT16
 
             bool CanUseDeDigivolveCondition(Hashtable hashtable1)
             {
-                if (selectedPermanent.TopCard != null)
-                {
-                    return true;
-                }
-
-                return false;
+                return selectedPermanent.TopCard != null;
             }
 
             bool PermanentDeDigivolveCondition(Permanent permanent)
             {
-                if (permanent == selectedPermanent)
-                {
-                    return true;
-                }
-
-                return false;
+                return permanent == selectedPermanent;
             }
             #endregion
 
@@ -95,8 +95,8 @@ namespace DCGO.CardEffects.BT16
                             maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: AfterSelectPermanent,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
@@ -105,13 +105,6 @@ namespace DCGO.CardEffects.BT16
                                 "The opponent is selecting 1 Digimon that can't have its DP reduced by your opponent's effects and isn't affected by <De-Digivolve> effects until the end of your turn.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        selectedPermanent = permanent;
-
-                        yield return null;
-                    }
 
                     if (selectedPermanent != null)
                     {
@@ -150,20 +143,20 @@ namespace DCGO.CardEffects.BT16
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        selectedPermanent = permanent;
+                        selectedPermanent1 = permanent;
 
                         yield return null;
                     }
 
-                    if (selectedPermanent != null)
+                    if (selectedPermanent1 != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainReboot(
-                            targetPermanent: selectedPermanent,
+                            targetPermanent: selectedPermanent1,
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass));
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
-                            targetPermanent: selectedPermanent,
+                            targetPermanent: selectedPermanent1,
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass));
                     }
