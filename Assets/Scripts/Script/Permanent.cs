@@ -466,6 +466,8 @@ public class Permanent
                     }
                 }
             }
+            
+            DP += LinkedDP;
 
             foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown)
             {
@@ -485,8 +487,6 @@ public class Permanent
                 DP += boost.DP;
             }
             #endregion
-
-            DP += LinkedDP;
 
             if (DP < 0)
             {
@@ -635,6 +635,8 @@ public class Permanent
                         }
                     }
                 }
+                
+                DP += LinkedDP;
 
                 foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown)
                 {
@@ -654,8 +656,6 @@ public class Permanent
                     DP += boost.DP;
                 }
                 #endregion
-
-                DP += LinkedDP;
 
                 if (DP < 0)
                 {
