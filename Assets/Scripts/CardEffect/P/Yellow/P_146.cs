@@ -249,7 +249,7 @@ namespace DCGO.CardEffects.P
                         message: "Select 1 card to put in security.",
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Custom,
+                        root: SelectCardEffect.Root.DigivolutionCards,
                         customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
                         canLookReverseCard: false,
                         cardEffect: activateClass);
