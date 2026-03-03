@@ -250,6 +250,7 @@ namespace DCGO.CardEffects.P
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
                         root: SelectCardEffect.Root.DigivolutionCards,
+                        customRootCardList: thisPermanent.DigivolutionCards,
                         canLookReverseCard: false,
                         cardEffect: activateClass);
 
