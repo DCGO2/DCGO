@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine;
 
 [CreateAssetMenu(menuName = "Create/CEntity_Base")]
 public class CEntity_Base : ScriptableObject
@@ -41,7 +41,6 @@ public class CEntity_Base : ScriptableObject
     public string CardID = "";
     public int MaxCountInDeck = 4;
     public bool HasLoadStarted { get; set; } = false;
-    public Task CurrentLoadingTask { get; set; } = null;
     public Sprite CardSprite { get; set; } = null;
     public async Task LoadCardImage()
     {
@@ -60,22 +59,11 @@ public class CEntity_Base : ScriptableObject
         Sprite sprite = await StreamingAssetsUtility.GetSprite(CardSpriteName, isCard: true);
 
         CardSprite = sprite;
-
-        CurrentLoadingTask = null;
     }
 
     public async Task<Sprite> GetCardSprite()
     {
-        if (!HasLoadStarted)
-        {
-            CurrentLoadingTask = LoadCardImage();
-            await CurrentLoadingTask;
-        } 
-        else if (CurrentLoadingTask != null)
-        {
-            CurrentLoadingTask?.Wait();
-        }
-
+        if (!HasLoadStarted) await LoadCardImage();
         return CardSprite;
     }
     public bool IsACE => OverflowMemory >= 1;
