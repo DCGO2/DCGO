@@ -18,10 +18,11 @@ namespace DCGO.CardEffects.BT19
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Lucemon") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level >= 5;
+                    return targetPermanent.TopCard.ContainsCardName("Lucemon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    minLevel: 5,
                     permanentCondition: PermanentCondition,
                     digivolutionCost: 3,
                     ignoreDigivolutionRequirement: false,

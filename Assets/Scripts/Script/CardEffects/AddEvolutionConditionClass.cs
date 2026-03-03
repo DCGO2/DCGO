@@ -4,13 +4,13 @@ using UnityEngine;
 using System;
 public class AddDigivolutionRequirementClass : ICardEffect, IAddDigivolutionRequirementEffect
 {
-    Func<Permanent, CardSource, bool, int> _getEvoCost { get; set; }
-    public void SetUpAddDigivolutionRequirementClass(Func<Permanent, CardSource, bool, int> getEvoCost)
+    Func<Permanent, CardSource, CardEffectCommons.IgnoreRequirement, bool, int> _getEvoCost { get; set; }
+    public void SetUpAddDigivolutionRequirementClass(Func<Permanent, CardSource, CardEffectCommons.IgnoreRequirement, bool, int> getEvoCost)
     {
         _getEvoCost = getEvoCost;
     }
 
-    public int GetEvoCost(Permanent permanent, CardSource cardSource, bool isCheckAvailability)
+    public int GetEvoCost(Permanent permanent, CardSource cardSource, CardEffectCommons.IgnoreRequirement ignore, bool isCheckAvailability)
     {
         if (permanent != null && cardSource != null)
         {
@@ -18,7 +18,7 @@ public class AddDigivolutionRequirementClass : ICardEffect, IAddDigivolutionRequ
             {
                 if (_getEvoCost != null)
                 {
-                    return _getEvoCost(permanent, cardSource, isCheckAvailability);
+                    return _getEvoCost(permanent, cardSource, ignore, isCheckAvailability);
                 }
             }
         }
