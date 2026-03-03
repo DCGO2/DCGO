@@ -317,7 +317,7 @@ public interface ICannotBlockEffect
 #region "Target permanent gets additional digivolution condition" effect
 public interface IAddDigivolutionRequirementEffect
 {
-    int GetEvoCost(Permanent permanent, CardSource cardSource, bool checkAvailability);
+    int GetEvoCost(Permanent permanent, CardSource cardSource, CardEffectCommons.IgnoreRequirement ignore, bool checkAvailability);
 }
 #endregion
 
