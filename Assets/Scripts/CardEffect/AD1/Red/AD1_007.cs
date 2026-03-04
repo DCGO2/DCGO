@@ -60,113 +60,6 @@ namespace DCGO.CardEffects.AD1
 
             #endregion
 
-            #region When Digivolving
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 card to digivolution cards to Delete Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[When Digivolving] By placing 1 Digimon card with [Gammamon] in its text or the [Hero] trait from your hand as this Digimon's bottom digivolution card, delete 1 of your opponent's lowest DP Digimon.";
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return cardSource.IsDigimon &&
-                        (cardSource.HasText("Gammamon") ||
-                        cardSource.EqualsTraits("Hero"));
-                }
-
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                        CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                        CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                        card.Owner.HandCards.Count >= 1;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                        {
-                            List<CardSource> selectedCards = new List<CardSource>();
-
-                            int maxCount = 1;
-
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectHandEffect.SetUpCustomMessage("Select 1 card to place on bottom of digivolution cards.", "The opponent is selecting 1 card to place on bottom of digivolution cards.");
-                            selectHandEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
-
-                            yield return StartCoroutine(selectHandEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-
-                                yield return null;
-                            }
-
-                            if (selectedCards.Count >= 1)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
-
-                                maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectPermanentCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: null,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Destroy,
-                                    cardEffect: activateClass);
-
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                            }
-                        }
-                    }
-                }
-            }
-
-            #endregion
-
             #region Shared WD/WA
 
             string SharedHashString = "AD1_007_WD_WA";
@@ -216,12 +109,12 @@ namespace DCGO.CardEffects.AD1
                     List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
                     if (validHandCardCount > 0)
                     {
-                        selectionElements.Add(new(message: $"Link from Hand", value: 1, spriteIndex: 0));
+                        selectionElements.Add(new(message: $"from Hand", value: 1, spriteIndex: 0));
                     }
                     if (validTrashCardCount > 0)
                     {
-                        selectionElements.Add(new(message: $"Link from Trash", value: 2, spriteIndex: 0));
-                    }                  
+                        selectionElements.Add(new(message: $"from Trash", value: 2, spriteIndex: 0));
+                    }
 
                     string selectPlayerMessage = "From which area will you select a card to place under as digivolution cards?";
                     string notSelectPlayerMessage = "The opponent is choosing from which area to select a card to place under as digivolution cards.";
@@ -234,58 +127,58 @@ namespace DCGO.CardEffects.AD1
                     switch (GManager.instance.userSelectionManager.SelectedIntValue)
                     {
                         case 1: // From Hand
-                        {
-                            int maxCount = Math.Min(3 - selectedCards.Count, validHandCardCount);
+                            {
+                                int maxCount = Math.Min(3 - selectedCards.Count, validHandCardCount);
 
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: cardSource => validHandCards.Contains(cardSource),
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: true,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
-                                cardEffect: activateClass);
+                                selectHandEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: cardSource => validHandCards.Contains(cardSource),
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: maxCount,
+                                    canNoSelect: true,
+                                    canEndNotMax: true,
+                                    isShowOpponent: true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    mode: SelectHandEffect.Mode.Custom,
+                                    cardEffect: activateClass);
 
-                            selectHandEffect.SetUpCustomMessage($"Select up to {maxCount} cards to place under as digivolution cards.", "The opponent is selecting cards to place under as digivolution cards.");
+                                selectHandEffect.SetUpCustomMessage($"Select up to {maxCount} cards to place under as digivolution cards.", "The opponent is selecting cards to place under as digivolution cards.");
 
-                            yield return StartCoroutine(selectHandEffect.Activate());
-                            break;
-                        }
+                                yield return StartCoroutine(selectHandEffect.Activate());
+                                break;
+                            }
                         case 2: // From Trash
-                        {
-                            int maxCount = Math.Min(3 - selectedCards.Count, validTrashCardCount);
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            {
+                                int maxCount = Math.Min(3 - selectedCards.Count, validTrashCardCount);
+                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                            selectCardEffect.SetUp(
-                                canTargetCondition: cardSource => validTrashCards.Contains(cardSource),
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select cards to link",
-                                maxCount: maxCount,
-                                canEndNotMax: true,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
+                                selectCardEffect.SetUp(
+                                    canTargetCondition: cardSource => validTrashCards.Contains(cardSource),
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    message: "Select cards",
+                                    maxCount: maxCount,
+                                    canEndNotMax: true,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Trash,
+                                    customRootCardList: null,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
 
-                            selectCardEffect.SetUpCustomMessage($"Select up to {maxCount} cards to place under as digivolution cards.", "The opponent is selecting cards to place under as digivolution cards.");
+                                selectCardEffect.SetUpCustomMessage($"Select up to {maxCount} cards to place under as digivolution cards.", "The opponent is selecting cards to place under as digivolution cards.");
 
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                            break;
-                        }                       
+                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                                break;
+                            }
                     }
                 }
 
@@ -408,11 +301,11 @@ namespace DCGO.CardEffects.AD1
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Attack with this Digimon without suspending", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("AD1_007_EoYT");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[End of Your Turn] [Once Per Turn] This Digimon with 5 or more digivolution cards may attack without suspending.";
                 }
