@@ -294,8 +294,7 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return card.Owner.Enemy.SecurityCards.Count > 0 &&
-                           CardEffectCommons.HasMatchConditionPermanent(IsDeviceTrait);
+                    return CardEffectCommons.HasMatchConditionPermanent(IsDeviceTrait);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
