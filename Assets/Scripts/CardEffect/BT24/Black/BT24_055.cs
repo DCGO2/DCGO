@@ -216,8 +216,9 @@ namespace DCGO.CardEffects.BT24
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                        && permanent.TopCard.HasPlayCost
                         && (permanent.IsDigimon
-                        || permanent.IsTamer)
+                            || permanent.IsTamer)
                         && permanent.TopCard.GetCostItself <= card.PermanentOfThisCard().TopCard.GetCostItself;
                 }
 
