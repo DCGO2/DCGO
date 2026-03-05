@@ -66,10 +66,10 @@ public partial class CardEffectFactory
                                     && cardSource.Owner.CanIgnoreDigivolutionRequirement(permanent, cardSource));
 
                 //Level matters and doesn't have one
-                if(ignoreLevel //If not checking level or of Ignoring level requirements
+                if(ignoreLevel //If not checking level or if ignoring level requirements
                     || (permanent.TopCard.HasLevel //all other checks will require the permanent has a level
                         && (permanent.TopCard.Level == level //if equal for exact
-                            || (level < 0 && (minLevel < 0 || level >= minLevel) && (maxLevel < 0 || level <= maxLevel))))) //for "or higher", "or lower" conditons, Lucemon (X Antibody)
+                            || (level < 0 && (minLevel < 0 || permanent.TopCard.Level >= minLevel) && (maxLevel < 0 || permanent.TopCard.Level <= maxLevel))))) //for "or higher", "or lower" conditons, Lucemon (X Antibody)
                 {
                     if (CardCondition(cardSource) && PermanentCondition(permanent))
                     {
