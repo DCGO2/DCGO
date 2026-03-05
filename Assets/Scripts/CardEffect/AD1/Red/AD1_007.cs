@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 // Siriusmon
 namespace DCGO.CardEffects.AD1
@@ -101,8 +102,8 @@ namespace DCGO.CardEffects.AD1
 
                 while (selectedCards.Count < 3)
                 {
-                    List<CardSource> validHandCards = card.Owner.HandCards.Filter(CanSelectCardCondition).Except(selectedCards).ToList();
-                    List<CardSource> validTrashCards = card.Owner.TrashCards.Filter(CanSelectCardCondition).Except(selectedCards).ToList();
+                    List<CardSource> validHandCards = card.Owner.HandCards.Filter(GammamonInText).Except(selectedCards).ToList();
+                    List<CardSource> validTrashCards = card.Owner.TrashCards.Filter(GammamonInText).Except(selectedCards).ToList();
                     int validHandCardCount = validHandCards.Count;
                     int validTrashCardCount = validTrashCards.Count;
 
@@ -154,9 +155,9 @@ namespace DCGO.CardEffects.AD1
                         case 2: // From Trash
                             {
                                 int maxCount = Math.Min(3 - selectedCards.Count, validTrashCardCount);
-                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                                SelectCardEffect selectCardEffect1 = GManager.instance.GetComponent<SelectCardEffect>();
 
-                                selectCardEffect.SetUp(
+                                selectCardEffect1.SetUp(
                                     canTargetCondition: cardSource => validTrashCards.Contains(cardSource),
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
@@ -174,9 +175,9 @@ namespace DCGO.CardEffects.AD1
                                     selectPlayer: card.Owner,
                                     cardEffect: activateClass);
 
-                                selectCardEffect.SetUpCustomMessage($"Select up to {maxCount} cards to place under as digivolution cards.", "The opponent is selecting cards to place under as digivolution cards.");
+                                selectCardEffect1.SetUpCustomMessage($"Select up to {maxCount} cards to place under as digivolution cards.", "The opponent is selecting cards to place under as digivolution cards.");
 
-                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect1.Activate());
                                 break;
                             }
                     }
@@ -206,12 +207,12 @@ namespace DCGO.CardEffects.AD1
                     selectCardCoroutine: null,
                     afterSelectCardCoroutine: AfterSelectCardCoroutine1,
                     message: "Specify the order to place the cards in the digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
-                    maxCount: digivolutionCards.Count,
+                    maxCount: selectedCards.Count,
                     canEndNotMax: false,
                     isShowOpponent: false,
                     mode: SelectCardEffect.Mode.Custom,
                     root: SelectCardEffect.Root.Custom,
-                    customRootCardList: digivolutionCards,
+                    customRootCardList: selectedCards,
                     canLookReverseCard: true,
                     selectPlayer: card.Owner,
                     cardEffect: activateClass);
