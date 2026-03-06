@@ -77,7 +77,7 @@ public partial class CardEffectCommons
             {
                 if (timing == EffectTiming.OnEndAttack)
                 {
-                    return CardEffectFactory.DeleteSelfEffect(selectedPermanent);
+                    return PermanentEffectFactory.DeleteSelfEffect(selectedPermanent);
                 }
                 return null;
             }
