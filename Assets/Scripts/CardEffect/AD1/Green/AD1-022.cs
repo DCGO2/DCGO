@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.AD1
             {
                 ActivateClass activateClass = new ();
                 activateClass.SetUpICardEffect("By suspending this tamer, 1 of your [ADVENTURE] Digimon may digivolve for -1 per 2 colors on your Tamers.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
