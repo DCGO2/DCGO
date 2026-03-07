@@ -14,9 +14,7 @@ namespace DCGO.CardEffects.AD1
 
             #region Shared OP/SOMP
 
-            string SharedHashString = "AD1_020_OP_SOMP";
-
-            string SharedEffectName = "Place up to 2 [Hybrid] trait cards with different colors under this Tamer";
+            string SharedEffectName = "Place up to 2 [Hybrid] cards with different colors under, if so <Draw 1> and if 4 or more under gain 2 memory";
 
             string SharedEffectDescription(string tag) =>
                 $"[{tag}] You may place up to 2 [Hybrid] trait cards with different colors from your hand or trash under this Tamer. If this effect placed, <Draw 1>. Then, if there are 4 or more [Hybrid] trait cards under this Tamer, gain 2 memory.";
@@ -24,14 +22,13 @@ namespace DCGO.CardEffects.AD1
             bool IsHybridCard(CardSource cardSource)
             {
                 return cardSource.ContainsTraits("Hybrid")
-                    && cardSource.Owner == card.Owner;
+                    && cardSource.Owner == card.Owner
+                    && cardSource.CardColors.Any(c => card.CardColors.Contains(c));
             }
 
             bool SharedCanActivateCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card)
-                    && (card.Owner.HandCards.Any(IsHybridCard)
-                        || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsHybridCard));
+                return CardEffectCommons.IsExistOnBattleArea(card);
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
@@ -221,10 +218,11 @@ namespace DCGO.CardEffects.AD1
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Attack with a [Hybrid] or [Ten Warriors] Digimon with Security A. +1",
+                activateClass.SetUpICardEffect("Attack with this Digimon with Security A. +1",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true,
                     EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("AD1_020_EoYT");
                 cardEffects.Add(activateClass);
 
@@ -235,27 +233,26 @@ namespace DCGO.CardEffects.AD1
 
                 bool HasHybridOrTenWarriors(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && (permanent.TopCard.ContainsTraits("Hybrid")
-                            || permanent.TopCard.ContainsTraits("Ten Warriors")
-                            || permanent.TopCard.ContainsTraits("TenWarriors"));
+                    return permanent.TopCard.ContainsTraits("Hybrid")
+                        || permanent.TopCard.ContainsTraits("Ten Warriors")
+                        || permanent.TopCard.ContainsTraits("TenWarriors");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
+                        Permanent thisPermanent = card.PermanentOfThisCard();
                         if (!GManager.instance.attackProcess.IsAttacking)
                         {
-                            return CardEffectCommons.HasMatchConditionOwnersPermanent(card,
-                                permanent => HasHybridOrTenWarriors(permanent)
-                                    && permanent.CanAttack(activateClass));
+                            return HasHybridOrTenWarriors(thisPermanent)
+                                && thisPermanent.CanAttack(activateClass);
                         }
                     }
                     return false;
@@ -263,51 +260,23 @@ namespace DCGO.CardEffects.AD1
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    Permanent selectedPermanent = null;
+                    Permanent thisPermanent = card.PermanentOfThisCard();
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: permanent =>
-                            HasHybridOrTenWarriors(permanent) && permanent.CanAttack(activateClass),
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage(
-                        "Select 1 Digimon with [Hybrid] or [Ten Warriors] trait to attack.",
-                        "The opponent is selecting 1 Digimon with [Hybrid] or [Ten Warriors] trait to attack.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        selectedPermanent = permanent;
-                        yield return null;
-                    }
-
-                    if (selectedPermanent != null && CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(thisPermanent))
                     {
                         yield return ContinuousController.instance.StartCoroutine(
                             CardEffectCommons.ChangeDigimonSAttack(
-                                targetPermanent: selectedPermanent,
+                                targetPermanent: thisPermanent,
                                 changeValue: 1,
                                 effectDuration: EffectDuration.UntilEndAttack,
                                 activateClass: activateClass));
 
-                        if (selectedPermanent.CanAttack(activateClass))
+                        if (thisPermanent.CanAttack(activateClass))
                         {
                             SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
                             selectAttackEffect.SetUp(
-                                attacker: selectedPermanent,
+                                attacker: thisPermanent,
                                 canAttackPlayerCondition: () => true,
                                 defenderCondition: (permanent) => true,
                                 cardEffect: activateClass);
