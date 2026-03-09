@@ -165,7 +165,7 @@ namespace DCGO.CardEffects.BT21
                             canEndNotMax: false,
                             isShowOpponent: true,
                             mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Custom,
+                            root: SelectCardEffect.Root.DigivolutionCards,
                             customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
                             canLookReverseCard: true,
                             selectPlayer: card.Owner,
@@ -327,7 +327,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] [Once Per Turn] When this Digimon gets linked, delete 1 of your opponent’s Digimon with as much or less DP as this Digimon";
+                    return "[Your Turn] [Once Per Turn] When this Digimon gets linked, delete 1 of your opponent's Digimon with as much or less DP as this Digimon";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
