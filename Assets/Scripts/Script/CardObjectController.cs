@@ -1109,6 +1109,18 @@ public class CardObjectController : MonoBehaviour
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnMove));
                             #endregion
                         }
+                        if (toBreeding)
+                        {
+                            // "When permanents leave the battle area" effect
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+                                CardEffectCommons.OnDeletionHashtable(
+                                    new List<Permanent> { movingPermanent },
+                                    effect,
+                                    null,
+                                    false
+                                ),
+                                EffectTiming.OnLeaveFieldAnyone));
+                        }
                     }
                 }
 
