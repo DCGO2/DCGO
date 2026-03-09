@@ -116,6 +116,7 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
         PutLibraryTop,
         PutLibraryBottom,
         PutSecurityBottom,
+        PlayForFree,
         Custom
     }
 
@@ -221,6 +222,10 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
                             string str = _isFaceUp ? "faceup" : "facedown";
                             message = $"Select card(s) to put on bottom of the security {str}.";
 
+                            break;
+
+                        case Mode.PlayForFree:
+                            message = "Select cards to play for free.";
                             break;
 
                         case Mode.Custom:
@@ -650,6 +655,12 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
 
                                     break;
 
+                                case Mode.PlayForFree:
+
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_targetCards, "Played cards", true, true));
+
+                                    break;
+
                                 case Mode.Custom:
 
                                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_targetCards, "Selected cards", true, true));
@@ -703,7 +714,18 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
                         foreach (CardSource cardSource in _targetCards)
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource,false, _isFaceUp));
                         break;
-                }
+
+                    case Mode.PlayForFree:
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.PlayPermanentCards(
+                                cardSources: _targetCards, 
+                                activateClass: _cardEffect, 
+                                payCost: false, 
+                                isTapped: false, 
+                                root: SelectCardEffect.Root.Hand, 
+                                activateETB: true));
+                        break;
+                }  
                 #endregion
 
                 if (discardHands.Count > 0)
@@ -711,7 +733,7 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
                     yield return ContinuousController.instance.StartCoroutine(new IDiscardHands(discardHands, _cardEffect).DiscardHands());
                 }
 
-                #region ƒƒO’Ç‰Á
+                #region ï¿½ï¿½ï¿½Oï¿½Ç‰ï¿½
                 if (_isShowOpponent || _selectPlayer.isYou)
                 {
                     if (_targetCards.Count >= 1)
@@ -734,7 +756,7 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
 
     }
 
-    #region ƒJ[ƒh‘I‘ğ‚ğŒˆ’è
+    #region ï¿½Jï¿½[ï¿½hï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     [PunRPC]
     public void SetTargetHandCards(int[] CardIDs)
     {
@@ -751,7 +773,7 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region ‰½‚à‘I‘ğ‚µ‚È‚¢
+    #region ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
     [PunRPC]
     public void SetNoSelectHand()
     {
