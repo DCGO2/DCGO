@@ -796,6 +796,23 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region If leaving for Digixros
+    public static bool IsLeavingForDigiXros(Hashtable hashtable)
+    {
+        if (hashtable != null)
+        {
+            if (hashtable.ContainsKey("digixros"))
+            {
+                if (hashtable["digixros"] is bool)
+                {
+                    return (bool)hashtable["digixros"]; ;
+                }
+            }
+        }
+        return false;
+    }
+    #endregion
+
     #region Get IsDijiXros from hashtable
     public static bool IsDijiXros(Hashtable hashtable, Func<int, bool> digixrosCountCondition)
     {
