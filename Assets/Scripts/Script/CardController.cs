@@ -5115,7 +5115,13 @@ public class SuspendPermanentsClass
         _hashtable = hashtable;
     }
 
+    public bool IsSuspended(Permanent permanent)
+    {
+        return SuspendedPermanents.Contains(permanent);
+    }
+
     List<Permanent> _permanents { get; set; }
+    public List<Permanent> SuspendedPermanents { get; private set; } = new List<Permanent>();
     Hashtable _hashtable { get; set; }
 
     public IEnumerator Tap()
@@ -5169,6 +5175,8 @@ public class SuspendPermanentsClass
             {
                 permanent.ShowingPermanentCard.ShowPermanentData(true);
             }
+
+            SuspendedPermanents.Add(permanent);
         }
 
         if (suspendTargetPermanents.Count >= 1)
