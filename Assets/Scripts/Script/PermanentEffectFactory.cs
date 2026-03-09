@@ -9,6 +9,7 @@ using UnityEngine;
 /// </summary>
 public partial class PermanentEffectFactory
 {
+
     #region Effect of a Permanent to Delete Itself
     public static ActivateClass DeleteSelfEffect(Permanent permanent, bool deleteOnOwnturn = true, bool deleteOnOpponentsTurn = true)
     {
@@ -72,6 +73,28 @@ public partial class PermanentEffectFactory
         canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
         canNotAffectedClass.SetEffectSourcePermanent(permanent);
         return canNotAffectedClass;
+
+    }
+    #endregion
+
+    #region Cannot change Attack Target Effect
+    public static CanNotSwitchAttackTargetClass CanNotSwitchAttackTargetEffect(Permanent targetPermanent)
+    {
+        CanNotSwitchAttackTargetClass canNotSwitchAttackTargetClass = new CanNotSwitchAttackTargetClass();
+        canNotSwitchAttackTargetClass.SetUpICardEffect("This Digimon's attack target can't be switched.", CanUseCondition, targetPermanent.TopCard);
+        canNotSwitchAttackTargetClass.SetUpCanNotSwitchAttackTargetClass(PermanentCondition: PermanentCondition);
+        return canNotSwitchAttackTargetClass;
+
+        bool CanUseCondition(Hashtable hashtable)
+        {
+            return CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent) &&
+                    CardEffectCommons.IsOwnerTurn(targetPermanent.TopCard);
+        }
+
+        bool PermanentCondition(Permanent permanent)
+        {
+            return permanent != null && permanent.TopCard && permanent == targetPermanent;
+        }
     }
     #endregion
 }
