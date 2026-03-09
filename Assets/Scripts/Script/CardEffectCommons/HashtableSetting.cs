@@ -67,13 +67,14 @@ public partial class CardEffectCommons
     #endregion
 
     #region Hashtable used when check whether the permanent would remove field effect
-    public static Hashtable WhenPermanentWouldRemoveFieldCheckHashtable(List<Permanent> permanents, ICardEffect cardEffect, IBattle battle)
+    public static Hashtable WhenPermanentWouldRemoveFieldCheckHashtable(List<Permanent> permanents, ICardEffect cardEffect, IBattle battle, bool isDigixros = false)
     {
         Hashtable hashtable = new Hashtable()
         {
             {"CardEffect", cardEffect},
             {"Permanents", permanents},
-            {"battle", battle}
+            {"battle", battle},
+            {"digixros", isDigixros}
         };
 
         return hashtable;
