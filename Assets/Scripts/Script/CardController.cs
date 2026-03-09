@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
 #region Trash cards from hand
 
@@ -1265,8 +1265,8 @@ public class PlayPermanentClass
                         {
                             if (_isHatching)
                                 frameId = digieggFrame.FrameID;
-                            else if(card.CanPlayCardTargetFrame(digieggFrame, false, CardEffect, isBreedingArea: _isBreedingArea))
-                                    frameId = digieggFrame.FrameID;
+                            else if (card.CanPlayCardTargetFrame(digieggFrame, false, CardEffect, isBreedingArea: _isBreedingArea))
+                                frameId = digieggFrame.FrameID;
                         }
                     }
                 }
@@ -1317,7 +1317,7 @@ public class PlayPermanentClass
                             played = false;
                         }
 
-                        if(_isHatching)
+                        if (_isHatching)
                             played = _isHatching;
                     }
 
@@ -1451,7 +1451,7 @@ public class PlayPermanentClass
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(evoRootPermanent, ignoreOverflow: true));
                     }
 
-                    foreach(CardSource linkCard in linkCards)
+                    foreach (CardSource linkCard in linkCards)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(linkCard));
                     }
@@ -3466,7 +3466,7 @@ public class DestroyPermanentsClass
         }
 
         #endregion
-        
+
         // fix delete target permanents
         List<Permanent> destroyTargetPermanents_Fixed = _destroytargetPermanents.Filter(permanent =>
             permanent != null
@@ -3670,7 +3670,7 @@ public class ISecurityCheck
                     {
                         List<SkillInfo> triggeredSkillInfos = new List<SkillInfo>();
 
-                        
+
                         CardSource brokenSecurityCard = player.SecurityCards[0];
                         bool isFaceDown = brokenSecurityCard.IsFlipped;
 
@@ -4330,7 +4330,7 @@ public class IBattle
                     GManager.instance.turnStateMachine.IsSelecting = true;
 
                     //Preemptive end battle if the attack process is ended
-                    if (GManager.instance.attackProcess.IsEndAttack )
+                    if (GManager.instance.attackProcess.IsEndAttack)
                         yield break;
                 }
 
@@ -4349,7 +4349,7 @@ public class IBattle
                     else if (battleResults == 0)
                     {
                         WasTie = true;
-                        
+
                         WinnerPermanents.Add(AttackingPermanent);
                         WinnerPermanents.Add(DefendingPermanent);
 
@@ -4381,7 +4381,7 @@ public class IBattle
                     else if (AttackingPermanent.DP == DefendingCard.CardDP)
                     {
                         WasTie = true;
-                        
+
                         if (AttackingPermanent.CanBeDestroyedByBattle(AttackingPermanent, DefendingPermanent, DefendingCard))
                         {
                             LoserPermanents.Add(AttackingPermanent);
@@ -4434,7 +4434,7 @@ public class IBattle
                 yield return ContinuousController.instance.StartCoroutine(destoryBattlePermanents.Destroy());
 
                 //Fix Loser Permanents
-                if(LoserPermanents.Count != destoryBattlePermanents.DestroyedPermanents.Count)
+                if (LoserPermanents.Count != destoryBattlePermanents.DestroyedPermanents.Count)
                 {
                     LoserPermanents = destoryBattlePermanents.DestroyedPermanents;
                     _LoserPermanents = destoryBattlePermanents.DestroyedPermanents;
@@ -5016,7 +5016,7 @@ public class IAddSecurity
     }
 
     Player _player { get; set; }
-    CardSource _cardSource {  get; set; }
+    CardSource _cardSource { get; set; }
 
     public IEnumerator AddSecurity()
     {
@@ -5070,7 +5070,7 @@ public class IFlipSecurity
     }
 
     Player _player { get; set; }
-    CardSource _cardSource {  get; set; }
+    CardSource _cardSource { get; set; }
 
     public IEnumerator FlipFaceUp()
     {
@@ -5111,7 +5111,13 @@ public class SuspendPermanentsClass
         _hashtable = hashtable;
     }
 
+    public bool IsSuspended(Permanent permanent)
+    {
+        return SuspendedPermanents.Contains(permanent);
+    }
+
     List<Permanent> _permanents { get; set; }
+    public List<Permanent> SuspendedPermanents { get; private set; } = new List<Permanent>();
     Hashtable _hashtable { get; set; }
 
     public IEnumerator Tap()
@@ -5165,6 +5171,8 @@ public class SuspendPermanentsClass
             {
                 permanent.ShowingPermanentCard.ShowPermanentData(true);
             }
+
+            SuspendedPermanents.Add(permanent);
         }
 
         if (suspendTargetPermanents.Count >= 1)

@@ -415,6 +415,32 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Suspend target permanents, and the effect determines whether the permanent has been suspended or not
+
+    public static IEnumerator SuspendPeremanentAndProcessAccordingToResult(List<Permanent> targetPermanents, ICardEffect activateClass, Func<List<Permanent>, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
+    {
+        SuspendPermanentsClass suspendPermanentsClass = new SuspendPermanentsClass(targetPermanents, CardEffectHashtable(activateClass));
+
+        yield return ContinuousController.instance.StartCoroutine(suspendPermanentsClass.Tap());
+
+        if (targetPermanents.Some((permanent) => suspendPermanentsClass.IsSuspended(permanent)))
+        {
+            if (successProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(successProcess(suspendPermanentsClass.SuspendedPermanents));
+            }
+        }
+        else
+        {
+            if (failureProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(failureProcess());
+            }
+        }
+    }
+
+    #endregion
+
     #region Delete target permanents, and the effect determines whether the permanent has been deleted or not
 
     public static IEnumerator DeletePeremanentAndProcessAccordingToResult(List<Permanent> targetPermanents, ICardEffect activateClass, Func<List<Permanent>, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
@@ -577,7 +603,7 @@ public partial class CardEffectCommons
         IPutSecurityPermanent putSecurityPermanent = new IPutSecurityPermanent(targetPermanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop, isFaceUp);
 
         CardSource topCard = targetPermanent.TopCard;
-        if (activateClass.EffectSourceCard != null 
+        if (activateClass.EffectSourceCard != null
             && activateClass.EffectSourceCard.Owner.CanAddSecurity(activateClass))
         {
             yield return ContinuousController.instance.StartCoroutine(putSecurityPermanent.PutSecurity());
