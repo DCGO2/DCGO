@@ -21,7 +21,7 @@ public partial class CardEffectCommons
         {
             if (timing == EffectTiming.OnEndTurn)
             {
-                return CardEffectFactory.DeleteSelfEffect(permanent, deleteOnOwnturn, deleteOnOpponentsTurn);
+                return PermanentEffectFactory.DeleteSelfEffect(permanent, deleteOnOwnturn, deleteOnOpponentsTurn);
             }
             return null;
         }
