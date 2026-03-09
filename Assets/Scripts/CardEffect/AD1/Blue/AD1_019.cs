@@ -57,45 +57,50 @@ namespace DCGO.CardEffects.AD1
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(
+                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SuspendPeremanentAndProcessAccordingToResult(
                         new List<Permanent>() { card.PermanentOfThisCard() },
-                        CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+                        activateClass,
+                        SuccessProcess,
+                        null));
 
-                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsAdventureDigimon))
+                    IEnumerator SuccessProcess(List<Permanent> suspendedPermaments)
                     {
-                        List<CardSource> tamerCards = new List<CardSource>();
-
-                        foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsAdventureDigimon))
                         {
-                            if (permanent.IsTamer)
+                            List<CardSource> tamerCards = new List<CardSource>();
+
+                            foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
                             {
-                                tamerCards.Add(permanent.TopCard);
+                                if (permanent.IsTamer)
+                                {
+                                    tamerCards.Add(permanent.TopCard);
+                                }
                             }
+
+                            int reduceCost = Combinations.GetUniqueColorCardCount(tamerCards) / 2;
+
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: IsAdventureDigimon,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.PlayForCost,
+                                cardEffect: activateClass);
+
+                            selectHandEffect.SetReducedCostTuple((reduceCost, null));
+
+                            selectHandEffect.SetUpCustomMessage("Select 1 card to play", "The opponent is selecting 1 card to play");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                         }
-
-                        int reduceCost = Combinations.GetUniqueColorCardCount(tamerCards) / 2;
-
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: IsAdventureDigimon,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.PlayForCost,
-                            cardEffect: activateClass);
-
-                        selectHandEffect.SetReducedCostTuple((reduceCost, null));
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 digimon to play", "The opponent is selecting 1 digimon to play");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                     }
                 }
             }
