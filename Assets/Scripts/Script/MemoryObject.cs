@@ -102,7 +102,7 @@ public class MemoryObject : MonoBehaviour
                 }
 
 
-                #region ƒAƒjƒ[ƒVƒ‡ƒ“
+                #region ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½
                 bool end = false;
                 var sequence = DOTween.Sequence();
 
@@ -121,15 +121,6 @@ public class MemoryObject : MonoBehaviour
 
                 yield return new WaitWhile(() => !end);
                 end = false;
-                #endregion
-
-                #region setting used blitz
-                if (GManager.instance.attackProcess.UsedBlitz)
-                {
-                    if (GManager.instance.turnStateMachine.gameContext.Memory <= 0)
-                        GManager.instance.attackProcess.UsedBlitz = false;
-                }
-                    
                 #endregion
             }
         }
