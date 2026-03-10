@@ -18,7 +18,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     public bool DoSecurityCheck { get; set; } = false;
     public bool IsEndAttack { get; set; } = false;
 
-    public bool UsedBlitz { get; set; } = false;
     public Hashtable EffectHashtable { get; set; } = null;
 
     public Hashtable CounterEffectHashtable { get; set; } = null;

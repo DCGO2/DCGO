@@ -17,10 +17,7 @@ public partial class CardEffectCommons
                 {
                     if (!GManager.instance.attackProcess.IsAttacking)
                     {
-                        if (!GManager.instance.attackProcess.UsedBlitz)
-                        {
-                            return true;
-                        }                                                
+                        return true;                                         
                     }
                 }
             }
@@ -46,8 +43,6 @@ public partial class CardEffectCommons
             selectAttackEffect.SetBeforeOnAttackCoroutine(beforeOnAttackCoroutine);
 
             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-
-            GManager.instance.attackProcess.UsedBlitz = true;
         }
     }
     #endregion
