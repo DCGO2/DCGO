@@ -968,14 +968,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             ResetMainPhaseParameter();
             #endregion
 
-            #region resetting used blitz
-            if (GManager.instance.attackProcess.UsedBlitz)
-            {
-                if (GManager.instance.turnStateMachine.gameContext.Memory <= 0)
-                    GManager.instance.attackProcess.UsedBlitz = false;
-            }
-            #endregion
-
             yield return GManager.instance.photonWaitController.StartWait("SetMainPhase");
 
             if (gameContext.TurnPhase == GameContext.phase.Main)
