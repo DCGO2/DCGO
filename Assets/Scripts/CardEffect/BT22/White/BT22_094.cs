@@ -53,7 +53,7 @@ namespace DCGO.CardEffects.BT22
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
-                    },                    
+                    },
                     remainingCardsPlace: RemainingCardsPlace.DeckBottom,
                     activateClass: activateClass
                     ));
@@ -63,107 +63,102 @@ namespace DCGO.CardEffects.BT22
             #endregion
 
             #region Your Turn
-
-            #region Reduce Cost Effect
-
-            ActivateClass activateClass2 = new ActivateClass();
-            activateClass2.SetUpICardEffect("Reduce play cost", CanUseCondition2, card);
-            activateClass2.SetUpActivateClass(CanActivateCondition2, ActivateCoroutine2, 1, true, EffectDiscription2());
-
-            string EffectDiscription2()
-            {
-                return "[Your Turn] When any of your Digimon or Tamers with the [CS] trait would be played, by returning this Tamer to the bottom of the deck, reduce the play cost by 2.";
-            }
-
-            bool PlayCardCondition(CardSource cardSource)
-            { 
-                return (cardSource.IsDigimon
-                        || cardSource.IsTamer)
-                    && cardSource.HasCSTraits
-                    && cardSource.Owner == card.Owner;
-            }
-
-            bool CanUseCondition2(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, PlayCardCondition)
-                    && CardEffectCommons.IsExistOnBattleArea(card);
-            }
-
-            bool CanActivateCondition2(Hashtable hashtable)
-            {
-                return CardEffectCommons.IsExistOnBattleArea(card)
-                    && CardEffectCommons.IsOwnerTurn(card);
-            }
-
-            IEnumerator ActivateCoroutine2(Hashtable _hashtable)
-            {
-                Permanent bounceTargetPermanent = card.PermanentOfThisCard();
-
-                if (bounceTargetPermanent != null)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeckBouncePeremanentAndProcessAccordingToResult(
-                        targetPermanents: new List<Permanent>() { bounceTargetPermanent },
-                        activateClass: activateClass2,
-                        successProcess: SuccessProcess(),
-                        failureProcess: null));
-
-                    IEnumerator SuccessProcess()
-                    {
-                        ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-
-                        ChangeCostClass changeCostClass = new ChangeCostClass();
-                        changeCostClass.SetUpICardEffect("Cost -2", CanUseChangeCostCondition, card);
-                        changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                        card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
-
-                        bool CanUseChangeCostCondition(Hashtable hashtable)
-                        {
-                            return true;
-                        }
-
-                        int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                        {
-                            if (CardSourceCondition(cardSource)
-                            && RootCondition(root)
-                            && PermanentsCondition(targetPermanents))
-                            {
-                                Cost -= 2;
-                            }
-
-                            return Cost;
-                        }
-
-                        bool PermanentsCondition(List<Permanent> targetPermanents)
-                        {
-                            return targetPermanents != null;
-                        }
-
-                        bool CardSourceCondition(CardSource cardSource)
-                        {
-                            if (cardSource != null)
-                            {
-                                return cardSource.Owner == card.Owner;
-                            }
-
-                            return false;
-                        }
-
-                        bool RootCondition(SelectCardEffect.Root root) => true;
-
-                        bool isUpDown() => true;
-                    }
-                }
-            }
-
-            #endregion
-
+          
             #region Before Pay Cost
 
             if (timing == EffectTiming.BeforePayCost)
             {
+                ActivateClass activateClass2 = new ActivateClass();
+                activateClass2.SetUpICardEffect("Reduce play cost", CanUseCondition2, card);
+                activateClass2.SetUpActivateClass(CanActivateCondition2, ActivateCoroutine2, 1, true, EffectDiscription2());
                 cardEffects.Add(activateClass2);
+
+                string EffectDiscription2()
+                {
+                    return "[Your Turn] When any of your Digimon or Tamers with the [CS] trait would be played, by returning this Tamer to the bottom of the deck, reduce the play cost by 2.";
+                }
+
+                bool PlayCardCondition(CardSource cardSource)
+                {
+                    return (cardSource.IsDigimon
+                            || cardSource.IsTamer)
+                        && cardSource.HasCSTraits
+                        && cardSource.Owner == card.Owner;
+                }
+
+                bool CanUseCondition2(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, PlayCardCondition)
+                        && CardEffectCommons.IsExistOnBattleArea(card);
+                }
+
+                bool CanActivateCondition2(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.IsOwnerTurn(card);
+                }
+
+                IEnumerator ActivateCoroutine2(Hashtable _hashtable)
+                {
+                    Permanent bounceTargetPermanent = card.PermanentOfThisCard();
+
+                    if (bounceTargetPermanent != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeckBouncePeremanentAndProcessAccordingToResult(
+                            targetPermanents: new List<Permanent>() { bounceTargetPermanent },
+                            activateClass: activateClass2,
+                            successProcess: SuccessProcess(),
+                            failureProcess: null));
+
+                        IEnumerator SuccessProcess()
+                        {
+                            ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
+
+                            ChangeCostClass changeCostClass = new ChangeCostClass();
+                            changeCostClass.SetUpICardEffect("Cost -2", CanUseChangeCostCondition, card);
+                            changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                            card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
+
+                            bool CanUseChangeCostCondition(Hashtable hashtable)
+                            {
+                                return true;
+                            }
+
+                            int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                            {
+                                if (CardSourceCondition(cardSource)
+                                && RootCondition(root)
+                                && PermanentsCondition(targetPermanents))
+                                {
+                                    Cost -= 2;
+                                }
+
+                                return Cost;
+                            }
+
+                            bool PermanentsCondition(List<Permanent> targetPermanents)
+                            {
+                                return targetPermanents != null;
+                            }
+
+                            bool CardSourceCondition(CardSource cardSource)
+                            {
+                                if (cardSource != null)
+                                {
+                                    return cardSource.Owner == card.Owner;
+                                }
+
+                                return false;
+                            }
+
+                            bool RootCondition(SelectCardEffect.Root root) => true;
+
+                            bool isUpDown() => true;
+                        }
+                    }
+                }
             }
 
             #endregion
@@ -216,7 +211,7 @@ namespace DCGO.CardEffects.BT22
             }
 
             #endregion
-            
+
             #endregion
 
             #region Security
