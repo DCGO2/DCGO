@@ -123,12 +123,12 @@ namespace DCGO.CardEffects.BT15
                     {
                         if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner))
                         {
-                            ICardEffect effect = CardEffectCommons.GetCardEffectFromHashtable(hashtable);
-                            if (effect != null)
-                            {
-                                return true;
-                            }
-                            //if (!GManager.instance.attackProcess.DoSecurityCheck)
+                            //ICardEffect effect = CardEffectCommons.GetCardEffectFromHashtable(hashtable);
+                            //if (effect != null)
+                            //{
+                            //    return true;
+                            //}
+                            return !GManager.instance.attackProcess.DoSecurityCheck;
                         }
                     }
 
