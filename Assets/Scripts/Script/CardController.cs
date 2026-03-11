@@ -3710,7 +3710,8 @@ public class ISecurityCheck
 
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: brokenSecurityCard.Owner,
-                            refSkillInfos: ref triggeredSkillInfos).ReduceSecurity());
+                            refSkillInfos: ref triggeredSkillInfos,
+                            null).ReduceSecurity());
 
                         #region security effect
 
@@ -4959,7 +4960,7 @@ public class ReturnToLibraryBottomDigivolutionCardsClass
 
 public class IReduceSecurity
 {
-    public IReduceSecurity(Player player, ref List<SkillInfo> refSkillInfos, ICardEffect cardEffect = null)
+    public IReduceSecurity(Player player, ref List<SkillInfo> refSkillInfos, ICardEffect cardEffect)
     {
         _player = player;
         _refSkillInfos = refSkillInfos;
