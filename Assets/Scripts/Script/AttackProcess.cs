@@ -28,7 +28,8 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         Counter,
         Block,
         Battle,
-        End
+        End,
+        CleanUp
     }
 
     public bool ActiveAttack()
@@ -51,6 +52,9 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                 break;
             case AttackState.End:
                 yield return ContinuousController.instance.StartCoroutine(EndAttack());
+                break;
+            case AttackState.CleanUp:
+                yield return ContinuousController.instance.StartCoroutine(Cleanup());
                 break;
             default:
                 yield break;
@@ -490,17 +494,21 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
 
     #region End Attack
-    IEnumerator EndAttack()
+    public IEnumerator EndAttack()
     {
+        IsEndAttack = true;
+
         // [On End Attack] effect
         if (AttackingPermanent != null && AttackingPermanent.TopCard != null)
         {
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(EffectHashtable, EffectTiming.OnEndAttack));
         }
-        
-        // activate cutin effects
-        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
+        State = AttackState.CleanUp;
+    }
+
+    IEnumerator Cleanup()
+    {
         #region reset effects which continues until the end of attack
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
@@ -521,6 +529,8 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         IsEndAttack = false;
         CounterEffectHashtable = null;
         State = AttackState.None;
+
+        yield return null;
     }
 
     public IEnumerator SwitchDefender(ICardEffect cardEffect, bool isBlock, Permanent newDefendingPermanent)
