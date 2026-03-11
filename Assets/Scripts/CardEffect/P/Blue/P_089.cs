@@ -296,7 +296,7 @@ public class P_089 : CEntity_Effect
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
 
-                            GManager.instance.attackProcess.IsEndAttack = true;
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.EndAttack());
                         }
                     }
                 }
