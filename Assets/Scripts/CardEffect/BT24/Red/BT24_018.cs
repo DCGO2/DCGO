@@ -140,7 +140,8 @@ namespace DCGO.CardEffects.BT24
                             {
                                 yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                     player: card.Owner.Enemy,
-                                    refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                                    refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                    activateClass).ReduceSecurity());
                             }
                         }
 

@@ -25,7 +25,7 @@ public class BT1_087 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Look at your security stackÅCthen reveal 1 card in it and add it to your hand. If that card is yellowÅCger <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.) Then shuffle your security stack.";
+                return "[On Play] Look at your security stack, then reveal 1 card in it and add it to your hand. If that card is yellow, <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.) Then shuffle your security stack.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -92,7 +92,8 @@ public class BT1_087 : CEntity_Effect
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                 player: card.Owner,
-                                refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                                refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                activateClass).ReduceSecurity());
                         }
 
                         yield return null;
