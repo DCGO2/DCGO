@@ -233,7 +233,8 @@ namespace DCGO.CardEffects.LM
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: card.Owner.Enemy,
-                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                            activateClass).ReduceSecurity());
                     }
 
                     if (card.Owner.MemoryForPlayer <= 1 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
@@ -332,7 +333,8 @@ namespace DCGO.CardEffects.LM
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: card.Owner.Enemy,
-                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                            activateClass).ReduceSecurity());
                     }
 
                     if (card.Owner.MemoryForPlayer <= 1 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))

@@ -114,7 +114,8 @@ namespace DCGO.CardEffects.P
 
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: card.Owner,
-                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                            activateClass).ReduceSecurity());
                     }
 
                     // Place this card face up as the bottom security card

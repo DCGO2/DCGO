@@ -31,7 +31,7 @@ public class BT9_043 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] If [Magnadramon] or [X Antibody] is in this DigimonÅfs digivolution cards, all of your opponentÅfs Digimon and Security Digimon get -1000 DP for the turn for each card in your security stack.";
+                return "[When Digivolving] If [Magnadramon] or [X Antibody] is in this DigimonÔøΩfs digivolution cards, all of your opponentÔøΩfs Digimon and Security Digimon get -1000 DP for the turn for each card in your security stack.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -122,7 +122,8 @@ public class BT9_043 : CEntity_Effect
 
                     yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                         player: card.Owner,
-                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                        activateClass).ReduceSecurity());
 
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
