@@ -211,17 +211,12 @@ namespace DCGO.CardEffects.AD1
                                 canNoSelect: true,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
+                                selectCardCoroutine: null,
                                 afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
+                                mode: SelectHandEffect.Mode.PlayForFree,
                                 cardEffect: activateClass);
 
-                            selectHandEffect2.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-
                             yield return StartCoroutine(selectHandEffect2.Activate());
-
-                            if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.PlayPermanentCards(new List<CardSource>() { selectedCard }, activateClass, false, false, SelectCardEffect.Root.Hand, true));
                         }
                         else
                         {
@@ -232,24 +227,20 @@ namespace DCGO.CardEffects.AD1
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
+                                selectCardCoroutine: null,
                                 afterSelectCardCoroutine: null,
                                 message: "Select 1 card to play.",
                                 maxCount: 1,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
+                                mode: SelectCardEffect.Mode.PlayForFree,
                                 root: SelectCardEffect.Root.Trash,
                                 customRootCardList: null,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                            if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.PlayPermanentCards(new List<CardSource>() { selectedCard }, activateClass, false, false, SelectCardEffect.Root.Trash, true));
+                                
+                            yield return StartCoroutine(selectCardEffect.Activate());
                         }
                         #endregion
                     }
