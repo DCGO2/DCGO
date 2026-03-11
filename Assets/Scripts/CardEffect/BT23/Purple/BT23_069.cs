@@ -276,7 +276,7 @@ namespace DCGO.CardEffects.BT23
 
                         if (endAttack)
                         {
-                            GManager.instance.attackProcess.IsEndAttack = true;
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.EndAttack());
                         }
                     }
                 }
