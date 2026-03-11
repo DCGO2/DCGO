@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.P
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get <Secirity A. -1>.", "The opponent is selecting 1 Digimon that will get <Secirity A. -1>.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get <security A. -1>.", "The opponent is selecting 1 Digimon that will get <security A. -1>.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
