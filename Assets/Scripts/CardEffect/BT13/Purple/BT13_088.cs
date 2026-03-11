@@ -428,9 +428,9 @@ namespace DCGO.CardEffects.BT13
                             mode: SelectHandEffect.Mode.Discard,
                             cardEffect: activateClass);
 
-                        yield return StartCoroutine(selectHandEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        GManager.instance.attackProcess.IsEndAttack = true;
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.EndAttack());
                     }
                 }
             }
