@@ -432,15 +432,8 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         #endregion
 
         #region there is Defending Permanent
-        else
+        else if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent) && CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(AttackingPermanent))
         {
-            if (!CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent) || !CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(AttackingPermanent))
-            {
-                State = AttackState.End;
-
-                yield break;
-            }
-
             DefendingPermanent.TopCard.Owner.securityObject.securityBreakGlass.gameObject.SetActive(false);
 
             DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
@@ -449,23 +442,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             // battle
             IBattle battle = new IBattle(AttackingPermanent: AttackingPermanent, DefendingPermanent: DefendingPermanent, null);
             yield return ContinuousController.instance.StartCoroutine(battle.Battle());
-
-            //TODO: Reimplement the below to ensure full correctness of battle by effect. 
-            //Will need bool AttackProcess.WasDigimonDestroyedInBattle and change to piercing to check it
-            /*#region effect when determine whether to do security check
-            Hashtable hashtable = new Hashtable()
-            {
-                {"battle", battle}
-            };
-
-            List<SkillInfo> skillInfos_Pierce = AutoProcessing.GetSkillInfos(hashtable, EffectTiming.OnDetermineDoSecurityCheck)
-                .Filter(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.CanActivate(skillInfo.Hashtable));
-
-            if (skillInfos_Pierce.Count >= 1)
-            {
-                GManager.instance.autoProcessing.PutStackedSkill(skillInfos_Pierce[0]);
-            }
-            #endregion*/
             
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.TriggeredSkillProcess(true, null));
             GManager.instance.turnStateMachine.IsSelecting = true;
