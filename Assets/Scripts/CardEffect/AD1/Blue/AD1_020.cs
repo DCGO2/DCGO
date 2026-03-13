@@ -22,8 +22,7 @@ namespace DCGO.CardEffects.AD1
             bool IsHybridCard(CardSource cardSource)
             {
                 return cardSource.ContainsTraits("Hybrid")
-                    && cardSource.Owner == card.Owner
-                    && cardSource.CardColors.Any(c => card.CardColors.Contains(c));
+                    && cardSource.Owner == card.Owner;
             }
 
             bool SharedCanActivateCondition(Hashtable hashtable)
@@ -52,7 +51,7 @@ namespace DCGO.CardEffects.AD1
                     if (selectedCards.Contains(cardSource)) return false;
                     if (selectedCards.Count > 0)
                     {
-                        return !cardSource.CardColors.Any(c => selectedColors.Contains(c));
+                        return cardSource.CardColors.Any(c => !selectedColors.Contains(c));
                     }
                     return true;
                 }
@@ -74,6 +73,7 @@ namespace DCGO.CardEffects.AD1
                     {
                         selectionElements.Add(new(message: "from Trash", value: 2, spriteIndex: 0));
                     }
+                    selectionElements.Add(new(message: "Do not place", value: 0, spriteIndex: 0));
 
                     GManager.instance.userSelectionManager.SetIntSelection(
                         selectionElements: selectionElements,
@@ -152,13 +152,10 @@ namespace DCGO.CardEffects.AD1
                     yield return ContinuousController.instance.StartCoroutine(
                         card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
 
-                    if (card.Owner.LibraryCards.Count() > 0)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(
-                            card.Owner,
-                            1,
-                            activateClass).Draw());
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(
+                        card.Owner,
+                        1,
+                        activateClass).Draw());
                 }
 
                 int hybridCountUnderTamer = card.PermanentOfThisCard().DigivolutionCards.Count(IsHybridCard);
@@ -246,46 +243,33 @@ namespace DCGO.CardEffects.AD1
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        Permanent thisPermanent = card.PermanentOfThisCard();
-                        if (!GManager.instance.attackProcess.IsAttacking)
-                        {
-                            return HasHybridOrTenWarriors(thisPermanent)
-                                && thisPermanent.CanAttack(activateClass);
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && HasHybridOrTenWarriors(card.PermanentOfThisCard())
+                        && card.PermanentOfThisCard().CanAttack(activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     Permanent thisPermanent = card.PermanentOfThisCard();
 
-                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(thisPermanent))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.ChangeDigimonSAttack(
-                                targetPermanent: thisPermanent,
-                                changeValue: 1,
-                                effectDuration: EffectDuration.UntilEndAttack,
-                                activateClass: activateClass));
+                    SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                        if (thisPermanent.CanAttack(activateClass))
-                        {
-                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                    selectAttackEffect.SetUp(
+                        attacker: thisPermanent,
+                        canAttackPlayerCondition: () => true,
+                        defenderCondition: (permanent) => true,
+                        cardEffect: activateClass);
 
-                            selectAttackEffect.SetUp(
-                                attacker: thisPermanent,
-                                canAttackPlayerCondition: () => true,
-                                defenderCondition: (permanent) => true,
-                                cardEffect: activateClass);
+                    selectAttackEffect.SetCanNotSelectNotAttack();
 
-                            selectAttackEffect.SetCanNotSelectNotAttack();
+                    yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
 
-                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.ChangeDigimonSAttack(
+                            targetPermanent: thisPermanent,
+                            changeValue: 1,
+                            effectDuration: EffectDuration.UntilEndAttack,
+                            activateClass: activateClass));
                 }
             }
 
