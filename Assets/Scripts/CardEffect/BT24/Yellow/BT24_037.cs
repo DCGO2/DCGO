@@ -158,8 +158,6 @@ namespace DCGO.CardEffects.BT24
                 }
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnDigimon))
                 {
-                    Permanent selectedAttacker = null;
-                
                     #region Select attacker
                     bool CanSelectAttackPermanentCondition(Permanent permanent)
                     {
@@ -195,9 +193,15 @@ namespace DCGO.CardEffects.BT24
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        selectedAttacker = permanent;
+                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                        yield return null;
+                        selectAttackEffect.SetUp(
+                            attacker: permanent,
+                            canAttackPlayerCondition: () => true,
+                            defenderCondition: (_) => true,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                     }
                     #endregion
 
@@ -239,19 +243,6 @@ namespace DCGO.CardEffects.BT24
                                     activateClass: activateClass));
                             }
                         }
-                    }
-
-                    if (selectedAttacker != null)
-                    {
-                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                        selectAttackEffect.SetUp(
-                            attacker: selectedAttacker,
-                            canAttackPlayerCondition: () => true,
-                            defenderCondition: (permanent) => true,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                     }
                 }
             }
