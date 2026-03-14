@@ -387,7 +387,7 @@ namespace DCGO.CardEffects.AD1
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
