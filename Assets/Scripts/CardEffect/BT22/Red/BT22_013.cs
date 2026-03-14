@@ -63,7 +63,8 @@ namespace DCGO.CardEffects.BT22
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card) && 
-                           targetPermanent.TopCard.EqualsCardName("Agumon");
+                           targetPermanent.TopCard.EqualsCardName("Agumon") &&
+                           card.CanPlayCardTargetFrame(targetPermanent.PermanentFrame, true, activateClass, fixedCost: 6, ignore: CardEffectCommons.IgnoreRequirement.All);
                 }
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
