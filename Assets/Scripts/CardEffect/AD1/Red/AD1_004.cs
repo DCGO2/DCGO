@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// WarGreymon
 namespace DCGO.CardEffects.AD1
 {
     public class AD1_004 : CEntity_Effect
