@@ -18,12 +18,11 @@ namespace DCGO.CardEffects.BT25
             {
                 bool Condition(Permanent permanent)
                 {
-                    return permanent.TopCard.IsLevel3
-                        && (permanent.TopCard.HasText("Three Musketeers")
-                            || permanent.TopCard.EqualsTraits("TS"));
+                    return permanent.TopCard.HasText("Three Musketeers")
+                            || permanent.TopCard.EqualsTraits("TS");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(Condition, 2, false, card, null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 3, permanentCondition: Condition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
 
             #endregion
@@ -49,7 +48,6 @@ namespace DCGO.CardEffects.BT25
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                CardSource selectCard = null;
                 SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
                 int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, TraitedTamer));
 
@@ -68,7 +66,9 @@ namespace DCGO.CardEffects.BT25
                     cardEffect: activateClass);
 
                 selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");         
+                selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                return null;
             }
 
             #endregion
@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.BT25
 
             #endregion
 
-            #region On Play
+            #region Inherited When Attacking
 
             if (timing == EffectTiming.OnAllyAttack)
             {
@@ -165,18 +165,19 @@ namespace DCGO.CardEffects.BT25
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && (card.Owner.HandCards.Count(CanSelectCardCondition) + card.Owner.TrashCards.Count(CanSelectCardCondition) >= 1);
+                        && (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition)
+                            || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool canSelectHand = card.Owner.HandCards.Count(CanSelectCardCondition) >= 1;
+                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                     bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
 
                     if (canSelectHand || canSelectTrash)
