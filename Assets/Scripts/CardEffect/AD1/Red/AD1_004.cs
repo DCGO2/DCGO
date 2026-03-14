@@ -79,14 +79,7 @@ namespace DCGO.CardEffects.AD1
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -155,14 +148,7 @@ namespace DCGO.CardEffects.AD1
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -212,9 +198,9 @@ namespace DCGO.CardEffects.AD1
                     Permanent thisPermanent = card.PermanentOfThisCard();
 
                     if (Condition())
-                        thisPermanent.AddBoost(new Permanent.DPBoost("P_182", count(), Condition));
+                        thisPermanent.AddBoost(new Permanent.DPBoost("AD1_004", count(), Condition));
                     else
-                        thisPermanent.RemoveBoost("P_182");
+                        thisPermanent.RemoveBoost("AD1_004");
 
                 }
 
@@ -299,7 +285,8 @@ namespace DCGO.CardEffects.AD1
 
                 bool IsYourDigimon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent.CanAttack(activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -337,7 +324,7 @@ namespace DCGO.CardEffects.AD1
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -400,17 +387,7 @@ namespace DCGO.CardEffects.AD1
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (card.PermanentOfThisCard().TopCard.ContainsCardName("Omnimon") || card.PermanentOfThisCard().TopCard.ContainsCardName("Greymon"))
-                        {
-                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -427,7 +404,7 @@ namespace DCGO.CardEffects.AD1
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
+                    if ((card.PermanentOfThisCard().TopCard.ContainsCardName("Omnimon") || card.PermanentOfThisCard().TopCard.ContainsCardName("Greymon")) && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
