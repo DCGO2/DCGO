@@ -115,13 +115,13 @@ namespace DCGO.CardEffects.BT25
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, TraitedTamerPermanent);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, TraitedTamerPermanent);
                 }
 
                 bool TraitedTamerPermanent(Permanent permanent)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && permanent.IsTamer
+                    return permanent.IsTamer
                         && permanent.TopCard.HasText("Three Musketeers");
                 }
 
