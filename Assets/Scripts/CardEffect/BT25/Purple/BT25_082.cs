@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.BT25
             bool SharedCanActivateCondition(Hashtable hashtable)
             {
                 return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                    && CardEffectCommons.HasMatchConditionOwnersHand(card,TraitedTamer)
+                    && CardEffectCommons.HasMatchConditionOwnersHand(card, TraitedTamer)
                     && CardEffectCommons.MatchConditionOwnersPermanentCount(card, permanent => permanent.IsTamer) <= 1;
             }
 
@@ -62,32 +62,13 @@ namespace DCGO.CardEffects.BT25
                     canNoSelect: true,
                     canEndNotMax: false,
                     isShowOpponent: true,
-                    selectCardCoroutine: SelectCardCoroutine,
+                    selectCardCoroutine: null,
                     afterSelectCardCoroutine: null,
-                    mode: SelectHandEffect.Mode.Custom,
+                    mode: SelectHandEffect.Mode.PlayForFree,
                     cardEffect: activateClass);
 
                 selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                IEnumerator SelectCardCoroutine(CardSource cardSource)
-                {
-                    selectCard = cardSource;
-                    yield return null;
-                }
-
-                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                if (selectCard != null)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                    new List<CardSource>() { selectCard },
-                    activateClass: activateClass,
-                    payCost: false,
-                    isTapped: false,
-                    root: SelectCardEffect.Root.Hand,
-                    activateETB: true));
-                }
+                selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");         
             }
 
             #endregion
