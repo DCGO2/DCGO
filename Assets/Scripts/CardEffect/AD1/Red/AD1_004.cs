@@ -261,7 +261,7 @@ namespace DCGO.CardEffects.AD1
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect<Func<int>>(changeValue: () => count(), isInheritedEffect: false, card: card, condition: Condition));
+                cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect<Func<int>>(changeValue: count, isInheritedEffect: false, card: card, condition: Condition));
             }
 
             #endregion
