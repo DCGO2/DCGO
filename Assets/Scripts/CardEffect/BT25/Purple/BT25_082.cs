@@ -115,8 +115,7 @@ namespace DCGO.CardEffects.BT25
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, TraitedTamerPermanent);
+                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, TraitedTamerPermanent);
                 }
 
                 bool TraitedTamerPermanent(Permanent permanent)
