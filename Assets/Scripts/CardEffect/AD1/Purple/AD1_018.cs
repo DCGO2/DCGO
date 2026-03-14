@@ -186,7 +186,7 @@ namespace DCGO.CardEffects.AD1
                     permanent.UntilOpponentTurnEndEffects.Add((_timing) => PermanentEffectFactory.DigimonEffectImmunity(permanent));
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(permanent));
-                    #endregion                }
+                    #endregion
                 }
             }
             #endregion
