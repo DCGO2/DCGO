@@ -30,17 +30,15 @@ namespace DCGO.CardEffects.AD1
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if (targetPermanent.TopCard.IsLevel5)
+                    if (targetPermanent.TopCard.ContainsCardName("Greymon") || targetPermanent.TopCard.EqualsTraits("ADVENTURE") || targetPermanent.TopCard.EqualsTraits("HERO"))
                     {
-                        if (targetPermanent.TopCard.ContainsCardName("Greymon") || targetPermanent.TopCard.EqualsTraits("ADVENTURE") || targetPermanent.TopCard.EqualsTraits("HERO"))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                     return false;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    level: 5,
                     permanentCondition: PermanentCondition,
                     digivolutionCost: 3,
                     ignoreDigivolutionRequirement: false,
