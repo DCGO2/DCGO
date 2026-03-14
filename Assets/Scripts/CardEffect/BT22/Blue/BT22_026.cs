@@ -55,7 +55,8 @@ namespace DCGO.CardEffects.BT22
                 bool IsGabumon(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.TopCard.EqualsCardName("Gabumon");
+                           permanent.TopCard.EqualsCardName("Gabumon") &&
+                           card.CanPlayCardTargetFrame(permanent.PermanentFrame, true, activateClass, fixedCost: 6, ignore: CardEffectCommons.IgnoreRequirement.All);
                 }
 
                 bool IsMetalGarurumon(CardSource cardSource)
