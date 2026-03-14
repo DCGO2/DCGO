@@ -137,7 +137,7 @@ namespace DCGO.CardEffects.BT19
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 play cost 4 or lower [Xros Heart] Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
