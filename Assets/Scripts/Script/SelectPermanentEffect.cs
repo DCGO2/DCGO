@@ -73,6 +73,11 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         _customBackButtonMessage = CustomBackButtonMessage;
     }
 
+    public void SetDegenerationCount(int degenerationCount)
+    {
+        _degenerationCount = degenerationCount;
+    }
+
     //Player to select
     Player _selectPlayer = null;
     //Conditions of units that can be selected
@@ -97,6 +102,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
     ICardEffect _cardEffect = null;
     bool _isLocal = false;
     bool _isdigiXros = false;
+    int _degenerationCount = 1;
 
     public enum Mode
     {
@@ -106,6 +112,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         Bounce,
         PutLibraryBottom,
         PutLibraryTop,
+        Degenerate,
         Custom
     }
 
@@ -224,6 +231,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         List<Permanent> libraryBottomPermanents = new List<Permanent>();
         List<Permanent> libraryTopPermanents = new List<Permanent>();
         List<Permanent> handBouncePermanents = new List<Permanent>();
+        List<Permanent> degeneratePermanents = new List<Permanent>();
 
         _noSelect = false;
 
@@ -302,6 +310,10 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
                         case Mode.PutLibraryTop:
                             message = "Select cards to put on top of the deck.";
+                            break;
+
+                        case Mode.Degenerate:
+                            message = $"Select cards to De-Digivolve {_degenerationCount}.";
                             break;
 
                         case Mode.Custom:
@@ -831,6 +843,10 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                             case Mode.PutLibraryTop:
                                 libraryTopPermanents.Add(targetPermanent);
                                 break;
+
+                            case Mode.Degenerate:
+                                degeneratePermanents.Add(targetPermanent);
+                                break;
                         }
                         #endregion
 
@@ -883,6 +899,14 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                     if (handBouncePermanents.Count > 0)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new HandBounceClaass(handBouncePermanents, hashtable).Bounce());
+                    }
+
+                    if (degeneratePermanents.Count > 0)
+                    {
+                        foreach (Permanent selectedPermanent in degeneratePermanents)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, _degenerationCount, _cardEffect).Degeneration());
+                        }
                     }
                 }
             }

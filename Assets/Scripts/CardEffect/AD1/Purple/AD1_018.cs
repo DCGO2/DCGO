@@ -263,8 +263,6 @@ namespace DCGO.CardEffects.AD1
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    Permanent selectedPermanent = null;
-
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectPermanentCondition));
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -276,22 +274,15 @@ namespace DCGO.CardEffects.AD1
                         maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Degenerate,
+                        cardEffect: activateClass);
 
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        selectedPermanent = permanent;
-                        yield return null;
-                    }
+                    selectPermanentEffect.SetDegenerationCount(2);
 
                     selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to De-Digivolve", "The opponent is selecting 1 Digimon to De-Digivolve");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    if (selectedPermanent != null) yield return ContinuousController.instance.StartCoroutine(
-                        new IDegeneration(selectedPermanent, 2, activateClass).Degeneration());
                 }
             }
             #endregion
@@ -334,8 +325,6 @@ namespace DCGO.CardEffects.AD1
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    Permanent selectedPermanent = null;
-
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectPermanentCondition));
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -347,22 +336,13 @@ namespace DCGO.CardEffects.AD1
                         maxCount: maxCount,
                         canNoSelect: false,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        selectedPermanent = permanent;
-                        yield return null;
-                    }
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Degenerate,
+                        cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to De-Digivolve", "The opponent is selecting 1 Digimon to De-Digivolve");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    if (selectedPermanent != null) yield return ContinuousController.instance.StartCoroutine(
-                        new IDegeneration(selectedPermanent, 1, activateClass).Degeneration());
 
                     int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectPermanentCondition1));
 
