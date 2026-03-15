@@ -31,7 +31,7 @@ public class BT9_081 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] If this Digimon has [Dorugoramon] in its digivolution cards or is digivolving from the trash, delete all of your opponentÅ's Digimon with the lowest level.";
+                return "[When Digivolving] If this Digimon has [Dorugoramon] in its digivolution cards or is digivolving from the trash, delete all of your opponent's Digimon with the lowest level.";
             }
 
             bool PermanentCondition(Permanent permanent)
