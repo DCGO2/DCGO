@@ -21,7 +21,7 @@ public class P_070 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Security] At the end of the battle, reveal the top card of your deck. If itÅ's a black Digimon card with a play cost of 4 or less, you may play it without paying its memory cost. Add the remaining cards to your hand. Then, add this card to its ownerÅ's hand.";
+                return "[Security] At the end of the battle, reveal the top card of your deck. If it's a black Digimon card with a play cost of 4 or less, you may play it without paying its memory cost. Add the remaining cards to your hand. Then, add this card to its owner's hand.";
             }
 
 
@@ -53,7 +53,7 @@ public class P_070 : CEntity_Effect
 
                 string EffectDiscription1()
                 {
-                    return "Reveal the top card of your deck. If itÅ's a black Digimon card with a play cost of 4 or less, you may play it without paying its memory cost. Add the remaining cards to your hand. Then, add this card to its ownerÅ's hand.";
+                    return "Reveal the top card of your deck. If it's a black Digimon card with a play cost of 4 or less, you may play it without paying its memory cost. Add the remaining cards to your hand. Then, add this card to its owner's hand.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
