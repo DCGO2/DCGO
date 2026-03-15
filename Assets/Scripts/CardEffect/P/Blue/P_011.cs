@@ -22,7 +22,7 @@ public class P_011 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] If you have a blue TamerÅ, you may trash the top 3 cards of your deck to give this Digimon +2000 DP for the turn.";
+                return "[When Attacking] If you have a blue Tamer, you may trash the top 3 cards of your deck to give this Digimon +2000 DP for the turn.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
