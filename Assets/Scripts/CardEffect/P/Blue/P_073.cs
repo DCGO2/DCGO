@@ -57,7 +57,7 @@ public class P_073 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] If you have a Tamer in play, return 2 of your opponent's level 3 Digimon to their owners' hands.";
+                return "[When Digivolving] If you have a Tamer in play, return 2 of your opponent's level 3 Digimon to their owners' hands.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
