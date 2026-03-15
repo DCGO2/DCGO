@@ -105,7 +105,7 @@ public class BT3_091 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn][Once Per Turn] When you use an Option cardCain 2 memory.";
+                return "[Your Turn][Once Per Turn] When you use an Option card, gain 2 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
