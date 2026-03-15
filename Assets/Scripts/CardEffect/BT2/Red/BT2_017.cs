@@ -21,7 +21,7 @@ public class BT2_017 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] If you have a red Tamer in playÅ, delete 1 of your opponent's Digimon with 3000 DP or less.";
+                return "[When Digivolving] If you have a red Tamer in play, delete 1 of your opponent's Digimon with 3000 DP or less.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
