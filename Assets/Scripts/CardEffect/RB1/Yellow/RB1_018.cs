@@ -152,7 +152,7 @@ public class RB1_018 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] on] 1 of your opponentÅ's Digimon gets -3000 DP and gains <Security Attack -1> until the end of their turn.";
+                return "[On Play] on] 1 of your opponent's Digimon gets -3000 DP and gains <Security Attack -1> until the end of their turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -219,7 +219,7 @@ public class RB1_018 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] on] 1 of your opponentÅ's Digimon gets -3000 DP and gains <Security Attack -1> until the end of their turn.";
+                return "[When Digivolving] on] 1 of your opponent's Digimon gets -3000 DP and gains <Security Attack -1> until the end of their turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
