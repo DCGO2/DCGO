@@ -21,7 +21,7 @@ public class BT1_076 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] If your opponent has 2 or more suspended DigimonÅ, gain 1 memory.";
+                return "[When Attacking] If your opponent has 2 or more suspended Digimon, gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
