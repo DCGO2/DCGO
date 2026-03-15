@@ -21,7 +21,7 @@ public class BT9_100 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Suspend 1 of your opponent's Digimon. Then, you may unsuspend 1 of your Digimon with [Insectoid] in its traits, and it attacks your opponentÅ's Digimon.";
+                return "[Main] Suspend 1 of your opponent's Digimon. Then, you may unsuspend 1 of your Digimon with [Insectoid] in its traits, and it attacks your opponent's Digimon.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
