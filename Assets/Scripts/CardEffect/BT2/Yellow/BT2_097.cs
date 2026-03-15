@@ -22,7 +22,7 @@ public class BT2_097 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] 3 of your opponentÅ's level 3 Digimon get -4000 DP for the turn.";
+                return "[Main] 3 of your opponent's level 3 Digimon get -4000 DP for the turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
