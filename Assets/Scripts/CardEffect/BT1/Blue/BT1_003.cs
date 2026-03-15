@@ -22,7 +22,7 @@ public class BT1_003 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking][Once Per Turn] If your opponent has a Digimon with no digivolution cards in playÅ, trigger <Draw 1> (Draw 1 card from your deck).";
+                return "[When Attacking][Once Per Turn] If your opponent has a Digimon with no digivolution cards in play, trigger <Draw 1> (Draw 1 card from your deck).";
             }
 
             bool CanUseCondition(Hashtable hashtable)
