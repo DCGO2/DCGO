@@ -31,7 +31,7 @@ public class BT9_056 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] If a card with [Leomon] in its name or [X Antibody] is in this DigimonÅ's digivolution cards, suspend 1 of your opponentÅfDigimon or Tamers.";
+                return "[When Attacking] If a card with [Leomon] in its name or [X Antibody] is in this Digimon's digivolution cards, suspend 1 of your opponent's Digimon or Tamers.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -101,7 +101,7 @@ public class BT9_056 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn][Once Per Turn] When an opponentÅf Digimon or Tamer becomes suspended, you may unsuspend this Digimon.";
+                return "[Your Turn][Once Per Turn] When an opponent's Digimon or Tamer becomes suspended, you may unsuspend this Digimon.";
             }
 
             bool PermanentCondition(Permanent permanent)
