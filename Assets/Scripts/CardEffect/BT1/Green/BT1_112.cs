@@ -21,7 +21,7 @@ public class BT1_112 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] 1 of your Digimon gains the following effect for the turn: When this Digimon deletes an opponent's Digimon in battle and survivesÅ, unsuspend it.";
+                return "[Main] 1 of your Digimon gains the following effect for the turn: When this Digimon deletes an opponent's Digimon in battle and survives, unsuspend it.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -73,7 +73,7 @@ public class BT1_112 : CEntity_Effect
 
                         string EffectDiscription1()
                         {
-                            return "When this Digimon deletes an opponent's Digimon in battle and survivesÅ, unsuspend it.";
+                            return "When this Digimon deletes an opponent's Digimon in battle and survives¬Å, unsuspend it.";
                         }
 
                         bool CanUseCondition1(Hashtable hashtable1)
