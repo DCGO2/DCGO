@@ -64,7 +64,7 @@ public class BT9_031 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn][Once Per Turn] When this Digimon becomes unsuspended, if [MetalGarurumon] or [X Antibody] is in its digivolution cards, return all of your opponent's Digimon with the lowest level to their ownersf hands.";
+                return "[Your Turn][Once Per Turn] When this Digimon becomes unsuspended, if [MetalGarurumon] or [X Antibody] is in its digivolution cards, return all of your opponent's Digimon with the lowest level to their owners' hands.";
             }
 
             bool PermanentCondition(Permanent permanent)
