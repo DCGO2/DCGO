@@ -86,7 +86,7 @@ public class BT9_084 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When one of your red or yellow Digimon attacks, you may suspend this Tamer to have all of your opponentÅ's Security Digimon get -2000 DP for the turn.";
+                return "[Your Turn] When one of your red or yellow Digimon attacks, you may suspend this Tamer to have all of your opponent's Security Digimon get -2000 DP for the turn.";
             }
 
             bool PermanentCondition(Permanent permanent)
