@@ -57,7 +57,7 @@ public class P_073 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] If you have a Tamer in play, return 2 of your opponentÅ's level 3 Digimon to their ownersÅfands.";
+                return "[When Digivolving] If you have a Tamer in play, return 2 of your opponent¬Å's level 3 Digimon to their owners' hands.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -140,7 +140,7 @@ public class P_073 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[All Turns] If this Digimon has [Garurumon] or [Omnimon] in its name and would be deleted in battle, you may trash 2 cards of the same level from this DigimonÅf digivolution cards to prevent the deletion.";
+                return "[All Turns] If this Digimon has [Garurumon] or [Omnimon] in its name and would be deleted in battle, you may trash 2 cards of the same level from this Digimon's digivolution cards to prevent the deletion.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
