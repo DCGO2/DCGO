@@ -74,7 +74,7 @@ public class BT9_089 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When one of your Digimon digivolves into a black level 6 Digimon, it gains <Blocker> until the end of your opponent's turn. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)";
+                return "[Your Turn] When one of your Digimon digivolves into a black level 6 Digimon, it gains <Blocker> until the end of your opponent's turn. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)";
             }
 
             bool PermanentCondition(Permanent permanent)
