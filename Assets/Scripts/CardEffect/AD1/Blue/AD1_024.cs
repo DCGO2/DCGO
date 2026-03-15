@@ -110,7 +110,7 @@ namespace DCGO.CardEffects.AD1
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
                 activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), 1, false, SharedEffectDescription("When Attacking"));
-                
+                activateClass.SetHashString(SharedHashString);
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
