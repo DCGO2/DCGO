@@ -140,7 +140,11 @@ namespace DCGO.CardEffects.AD1
                             || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsDigimonCondition));
                 }
 
-                bool IsDigimonCondition(Permanent permanent) => permanent.IsDigimon;
+                bool IsDigimonCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && permanent.IsDigimon;
+                }
 
                 bool IsOpponentsDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
