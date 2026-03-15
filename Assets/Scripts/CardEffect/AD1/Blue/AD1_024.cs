@@ -141,9 +141,8 @@ namespace DCGO.CardEffects.AD1
                 }
 
                 bool IsDigimonCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && permanent.IsDigimon;
+                { 
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool IsOpponentsDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
