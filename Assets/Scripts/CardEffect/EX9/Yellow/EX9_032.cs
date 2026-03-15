@@ -204,7 +204,7 @@ namespace DCGO.CardEffects.EX9
 
             #endregion
 
-            #region Ess
+            #region ESS
 
             if (timing == EffectTiming.WhenRemoveField)
             {
@@ -217,7 +217,7 @@ namespace DCGO.CardEffects.EX9
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] [Once Per Turn] When this Digimon would leave the battle area other than by your effects, by deleting 1 of your Tokens or other [Puppet] trait trait Digimon, prevent it from leaving.";
+                    return "[All Turns] [Once Per Turn] When this Digimon would leave the battle area other than by your effects, by deleting 1 of your Tokens or other [Puppet] trait Digimon, prevent it from leaving.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

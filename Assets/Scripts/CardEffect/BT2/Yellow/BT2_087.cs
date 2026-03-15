@@ -21,7 +21,7 @@ public class BT2_087 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Start of Your Turn] If you have 3 or fewer security cardsÅCgain 1 memory.";
+                return "[Start of Your Turn] If you have 3 or fewer security cardsÅ, gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)

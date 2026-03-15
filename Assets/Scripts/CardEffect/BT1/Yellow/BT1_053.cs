@@ -20,7 +20,7 @@ public class BT1_053 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When you play a level 3 yellow DigimonCif this Digimon is suspendedCtrigger <Draw 1> (Draw 1 card from your deck).";
+                return "[Your Turn] When you play a level 3 yellow Digimon, if this Digimon is suspended, trigger <Draw 1> (Draw 1 card from your deck).";
             }
 
             bool PermanentCondition(Permanent permanent)

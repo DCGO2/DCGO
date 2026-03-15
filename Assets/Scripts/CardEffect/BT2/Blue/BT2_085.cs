@@ -21,7 +21,7 @@ public class BT2_085 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When one of your opponent's digivolution cards is trashedÅCyou may suspend this Tamer to gain 1 memory.";
+                return "[Your Turn] When one of your opponent's digivolution cards is trashedÅ, you may suspend this Tamer to gain 1 memory.";
             }
 
             bool PermanentCondition(Permanent permanent)

@@ -165,7 +165,7 @@ public class ST10_12 : CEntity_Effect
         if (timing == EffectTiming.None)
         {
             AddSkillClass addSkillClass = new AddSkillClass();
-            addSkillClass.SetUpICardEffect("Your yellow Digimons gain Retaliation", CanUseCondition, card);
+            addSkillClass.SetUpICardEffect("Your yellow Digimon gain Retaliation", CanUseCondition, card);
             addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
             addSkillClass.SetIsInheritedEffect(true);
             cardEffects.Add(addSkillClass);

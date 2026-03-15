@@ -21,7 +21,7 @@ public class BT9_096 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Return 1 of your opponentfs level 4 or lower Digimon to its ownerfs hand. Then, if you have a Digimon with [Jellymon] in its name or with [Jellymon] in its digivolution cards, return 1 of your opponentfs Tamers to its ownerfnd.";
+                return "[Main] Return 1 of your opponent's level 4 or lower Digimon to its owner's hand. Then, if you have a Digimon with [Jellymon] in its name or with [Jellymon] in its digivolution cards, return 1 of your opponent's Tamers to its owner's hand.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

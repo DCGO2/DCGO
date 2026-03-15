@@ -20,7 +20,7 @@ public class BT1_082 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Opponent's Turn] When an opponent's Digimon attacks a playerCif this Digimon is suspendedCspend 1 of your opponent's Digimon.";
+                return "[Opponent's Turn] When an opponent's Digimon attacks a player, if this Digimon is suspended, spend 1 of your opponent's Digimon.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

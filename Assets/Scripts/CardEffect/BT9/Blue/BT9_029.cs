@@ -259,7 +259,7 @@ public class BT9_029 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] Return 1 of your opponentfs level 4 or lower Digimon to its ownerfhand.";
+                return "[When Attacking] Return 1 of your opponent's level 4 or lower Digimon to its owner's hand.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

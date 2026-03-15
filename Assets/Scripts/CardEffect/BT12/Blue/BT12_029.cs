@@ -105,7 +105,7 @@ namespace DCGO.CardEffects.BT12
 
                 string EffectDiscription()
                 {
-                    return "[All Turns][Once Per Turn] If this Digimon becomes unsuspended, if you have a blue Tamer in play or this Digimon has [UlforceVeedramon] in its digivolution cards, return 1 of your opponentÅfs Digimon with the lowest level to its ownerÅfhand.";
+                    return "[All Turns][Once Per Turn] If this Digimon becomes unsuspended, if you have a blue Tamer in play or this Digimon has [UlforceVeedramon] in its digivolution cards, return 1 of your opponentÅ's Digimon with the lowest level to its owner's hand.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

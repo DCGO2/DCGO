@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT11
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend Digimons and opponent's 1 Digimon can't unsuspend", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend Digimon and opponent's 1 Digimon can't unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -141,7 +141,7 @@ namespace DCGO.CardEffects.BT11
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend Digimons and opponent's 1 Digimon can't unsuspend", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend Digimon and opponent's 1 Digimon can't unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

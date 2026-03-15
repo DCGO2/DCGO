@@ -19,7 +19,7 @@ public class BT3_050 : CEntity_Effect
             activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
-            activateClass.SetHashString("Memmory+1_BT3_050");
+            activateClass.SetHashString("Memory+1_BT3_050");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()

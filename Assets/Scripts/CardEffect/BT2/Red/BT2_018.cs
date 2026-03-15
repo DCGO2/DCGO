@@ -20,7 +20,7 @@ public class BT2_018 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete oppponent's all Digimons with 4000 DP or less", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Delete opponent's all Digimon with 4000 DP or less", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

@@ -21,7 +21,7 @@ public class P_070 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Security] At the end of the battle, reveal the top card of your deck. If itÅfs a black Digimon card with a play cost of 4 or less, you may play it without paying its memory cost. Add the remaining cards to your hand. Then, add this card to its ownerÅfs hand.";
+                return "[Security] At the end of the battle, reveal the top card of your deck. If itÅ's a black Digimon card with a play cost of 4 or less, you may play it without paying its memory cost. Add the remaining cards to your hand. Then, add this card to its ownerÅ's hand.";
             }
 
 
@@ -53,7 +53,7 @@ public class P_070 : CEntity_Effect
 
                 string EffectDiscription1()
                 {
-                    return "Reveal the top card of your deck. If itÅfs a black Digimon card with a play cost of 4 or less, you may play it without paying its memory cost. Add the remaining cards to your hand. Then, add this card to its ownerÅfs hand.";
+                    return "Reveal the top card of your deck. If itÅ's a black Digimon card with a play cost of 4 or less, you may play it without paying its memory cost. Add the remaining cards to your hand. Then, add this card to its ownerÅ's hand.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -108,7 +108,7 @@ public class P_070 : CEntity_Effect
                         };
 
                             string selectPlayerMessage = "Will you play the revealed card?";
-                            string notSelectPlayerMessage = "The opponent is choosing wheter to play the revealed card.";
+                            string notSelectPlayerMessage = "The opponent is choosing whether to play the revealed card.";
 
                             GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 

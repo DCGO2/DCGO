@@ -22,7 +22,7 @@ public class BT1_006 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] If you have 5 or more security cardsÅCtrigger <Draw 1> (Draw 1 card from your deck).";
+                return "[When Attacking] If you have 5 or more security cardsÅ, trigger <Draw 1> (Draw 1 card from your deck).";
             }
 
             bool CanUseCondition(Hashtable hashtable)

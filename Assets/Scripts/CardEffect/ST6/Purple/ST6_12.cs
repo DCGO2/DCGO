@@ -15,7 +15,7 @@ public class ST6_12 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Your 2 Digimons gain Retaliation", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Your 2 Digimon gain Retaliation", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -68,7 +68,7 @@ public class ST6_12 : CEntity_Effect
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select Digimons that will get Retaliation.", "The opponent is selecting Digimons that will get Retaliation.");
+                    selectPermanentEffect.SetUpCustomMessage("Select Digimon that will get Retaliation.", "The opponent is selecting Digimon that will get Retaliation.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

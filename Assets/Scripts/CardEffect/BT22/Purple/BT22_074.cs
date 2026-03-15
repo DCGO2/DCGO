@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Pay 3, Delete 1 level 5 or lower digimon, if it didnt Sec +1. then it may attack", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Pay 3, Delete 1 level 5 or lower digimon, if it didn't Sec +1. then it may attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("BT22_074_Main");
                 cardEffects.Add(activateClass);

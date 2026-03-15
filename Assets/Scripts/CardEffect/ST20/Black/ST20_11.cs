@@ -103,8 +103,8 @@ namespace DCGO.CardEffects.ST20
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon for every 2 tamer colours you have that will not be affected by the effects of your opponent's Digimon.",
-                            "The opponent is selecting 1 Digimon for every 2 tamer colours they have that will not be affected by the effects of your Digimon.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon for every 2 tamer colors you have that will not be affected by the effects of your opponent's Digimon.",
+                            "The opponent is selecting 1 Digimon for every 2 tamer colors they have that will not be affected by the effects of your Digimon.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -218,8 +218,8 @@ namespace DCGO.CardEffects.ST20
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon for every 2 tamer colours you have that will not be affected by the effects of your opponent's Digimon.",
-                            "The opponent is selecting 1 Digimon for every 2 tamer colours they have that will not be affected by the effects of your Digimon.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon for every 2 tamer colors you have that will not be affected by the effects of your opponent's Digimon.",
+                            "The opponent is selecting 1 Digimon for every 2 tamer colors they have that will not be affected by the effects of your Digimon.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

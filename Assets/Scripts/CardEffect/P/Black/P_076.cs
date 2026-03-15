@@ -59,14 +59,14 @@ public class P_076 : CEntity_Effect
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete Digimons with 3000 DP or less", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Delete Digimon with 3000 DP or less", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[When Attacking] For each of this DigimonÅfs colors, delete 1 of your opponent's Digimon with 3000 DP or less.";
+                return "[When Attacking] For each of this DigimonÅ's colors, delete 1 of your opponent's Digimon with 3000 DP or less.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

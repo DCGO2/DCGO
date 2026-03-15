@@ -21,7 +21,7 @@ public class BT9_030 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] You may play 1 Digimon card with [Piranimon] in its name from this DigimonÅfs digivolution cards without paying its memory cost.";
+                return "[When Attacking] You may play 1 Digimon card with [Piranimon] in its name from this DigimonÅ's digivolution cards without paying its memory cost.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

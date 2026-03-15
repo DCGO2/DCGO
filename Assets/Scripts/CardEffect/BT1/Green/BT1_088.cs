@@ -20,7 +20,7 @@ public class BT1_088 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] If you have a level 5 or higher green Digimon in playÅCyou can suspend this Tamer to reveal the top card of your deck. If that card is a Digimon cardÅCadd it to your hand. Otherwise place it at the bottom of your deck.";
+                return "[Main] If you have a level 5 or higher green Digimon in playÅ, you can suspend this Tamer to reveal the top card of your deck. If that card is a Digimon cardÅ, add it to your hand. Otherwise place it at the bottom of your deck.";
             }
 
             bool CardCondition(CardSource cardSource)

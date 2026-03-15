@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.BT11
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete Digimons with 4000 DP or less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete Digimon with 4000 DP or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

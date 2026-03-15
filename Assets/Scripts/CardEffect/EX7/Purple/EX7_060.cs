@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.EX7
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play Digimons from trash", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play Digimon from trash", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

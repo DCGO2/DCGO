@@ -76,7 +76,7 @@ namespace DCGO.CardEffects.LM
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Bottom deck 1 digimon, if you didnt, Sec +1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Bottom deck 1 digimon, if you didn't, Sec +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("BottomDeck_LM_039");
                 cardEffects.Add(activateClass);
@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.LM
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Bottom deck 1 digimon, if you didnt, Sec +1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Bottom deck 1 digimon, if you didn't, Sec +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("BottomDeck_LM_039");
                 cardEffects.Add(activateClass);

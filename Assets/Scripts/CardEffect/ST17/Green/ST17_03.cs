@@ -48,7 +48,7 @@ public class ST17_03 : CEntity_Effect
         if(timing == EffectTiming.OnDeclaration)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Your Digimons gain Alliance", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Your Digimon gain Alliance", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

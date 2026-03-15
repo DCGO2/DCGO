@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.EX9
 
             #region Static Effects
 
-            #region Alernative Digivolution Cost
+            #region Alternative Digivolution Cost
 
             if (timing == EffectTiming.None)
             {
@@ -69,7 +69,7 @@ namespace DCGO.CardEffects.EX9
                     condition: CanUseAllTurnsCondition));
 
                 AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("Your Digimons gain Alliance", CanUseCondition, card);
+                addSkillClass.SetUpICardEffect("Your Digimon gain Alliance", CanUseCondition, card);
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
                 cardEffects.Add(addSkillClass);
 

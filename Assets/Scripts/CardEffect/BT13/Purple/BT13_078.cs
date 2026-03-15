@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.BT13
 
                 string EffectDiscription()
                 {
-                    return "[End of OpponentÅfs Turn][Once Per Turn] <Draw 1>. Then, trash 1 card in your hand.";
+                    return "[End of OpponentÅ's Turn][Once Per Turn] <Draw 1>. Then, trash 1 card in your hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

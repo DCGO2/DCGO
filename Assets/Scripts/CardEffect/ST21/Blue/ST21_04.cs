@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.ST21
             }
             #endregion
 
-            #region When Digivolgin
+            #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();

@@ -14,7 +14,7 @@ public class BT6_028 : CEntity_Effect
         if (timing == EffectTiming.OnDeclaration)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Your all Digimons gain unblockable", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Your all Digimon gain unblockable", CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
