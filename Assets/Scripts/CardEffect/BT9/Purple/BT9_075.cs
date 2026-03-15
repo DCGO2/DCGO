@@ -137,7 +137,7 @@ public class BT9_075 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] If this Digimon has [Dorugamon] in its digivolution cards or is digivolving from the trash, 1 of your Digimon gains <Blocker> and <Retaliation> until the end of your opponentÅ's turn.";
+                return "[When Digivolving] If this Digimon has [Dorugamon] in its digivolution cards or is digivolving from the trash, 1 of your Digimon gains <Blocker> and <Retaliation> until the end of your opponent's turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
