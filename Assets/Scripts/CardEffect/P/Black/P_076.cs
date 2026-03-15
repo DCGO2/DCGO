@@ -66,7 +66,7 @@ public class P_076 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] For each of this DigimonÅ's colors, delete 1 of your opponent's Digimon with 3000 DP or less.";
+                return "[When Attacking] For each of this Digimon's colors, delete 1 of your opponent's Digimon with 3000 DP or less.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
