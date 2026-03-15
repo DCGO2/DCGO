@@ -31,7 +31,7 @@ public class BT9_031 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Unsuspend this Digimon, and it gains <Blocker> until the end of your opponentÅ's turn. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)";
+                return "[When Digivolving] Unsuspend this Digimon, and it gains <Blocker> until the end of your opponent's turn. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)";
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -64,7 +64,7 @@ public class BT9_031 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn][Once Per Turn] When this Digimon becomes unsuspended, if [MetalGarurumon] or [X Antibody] is in its digivolution cards, return all of your opponentÅ's Digimon with the lowest level to their ownersÅf hands.";
+                return "[Your Turn][Once Per Turn] When this Digimon becomes unsuspended, if [MetalGarurumon] or [X Antibody] is in its digivolution cards, return all of your opponent¬Å's Digimon with the lowest level to their owners¬Åf hands.";
             }
 
             bool PermanentCondition(Permanent permanent)
