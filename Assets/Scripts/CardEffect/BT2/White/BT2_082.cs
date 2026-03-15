@@ -21,7 +21,7 @@ public class BT2_082 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] You may play 1 [Diaboromon] Token without paying its memory cost. (Diaboromon Tokens are level 6 white Digimon with a memory cost of 14, 3000 DP, and are Mega formÅ, Unidentified type, and Unknown attribute.)";
+                return "[When Attacking] You may play 1 [Diaboromon] Token without paying its memory cost. (Diaboromon Tokens are level 6 white Digimon with a memory cost of 14, 3000 DP, and are Mega form, Unidentified type, and Unknown attribute.)";
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -58,7 +58,7 @@ public class BT2_082 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[All Turns] When this Digimon would be deleted in battleÅ, you may delete one of your other [Diaboromon] to prevent this Digimon from being deleted. ";
+                return "[All Turns] When this Digimon would be deleted in battle¬Å, you may delete one of your other [Diaboromon] to prevent this Digimon from being deleted. ";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
