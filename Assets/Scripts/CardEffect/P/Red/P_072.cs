@@ -134,7 +134,7 @@ public class P_072 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[All Turns] When this Digimon has [Greymon] or [Omnimon] in its name and an effect would delete it or return it to your hand or deck, you may trash 2 cards of the same level in this DigimonÅfigivolution cards to prevent it from leaving play.";
+                return "[All Turns] When this Digimon has [Greymon] or [Omnimon] in its name and an effect would delete it or return it to your hand or deck, you may trash 2 cards of the same level in this DigimonÅ's digivolution cards to prevent it from leaving play.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

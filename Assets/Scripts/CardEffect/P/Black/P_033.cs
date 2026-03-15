@@ -15,7 +15,7 @@ public class P_033 : CEntity_Effect
         if (timing == EffectTiming.None)
         {
             AddSkillClass addSkillClass = new AddSkillClass();
-            addSkillClass.SetUpICardEffect("Your Digimons gain Pierce", CanUseCondition, card);
+            addSkillClass.SetUpICardEffect("Your Digimon gain Pierce", CanUseCondition, card);
             addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
             cardEffects.Add(addSkillClass);
 

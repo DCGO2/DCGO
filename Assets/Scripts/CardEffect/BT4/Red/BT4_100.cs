@@ -129,7 +129,7 @@ public class BT4_100 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete 1 Digimon with 6000 DP or less and Play 1 Tamer fromn hand");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete 1 Digimon with 6000 DP or less and Play 1 Tamer from hand");
         }
 
         return cardEffects;

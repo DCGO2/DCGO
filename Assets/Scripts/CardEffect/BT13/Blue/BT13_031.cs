@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT13
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Return 1 of your opponentÅfs Tamers to the hand.";
+                    return "[When Digivolving] Return 1 of your opponentÅ's Tamers to the hand.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

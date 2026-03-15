@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT22
 
             #region Alternate Digivolution
 
-            //Level 5 CS trait/graymon in name
+            //Level 5 CS trait/greymon in name
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT22
             #endregion
 
             #region Warp Effect
-            //Warp from Augumon
+            //Warp from Agumon
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();

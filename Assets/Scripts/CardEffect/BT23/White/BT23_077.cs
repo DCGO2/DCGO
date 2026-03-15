@@ -149,8 +149,8 @@ namespace DCGO.CardEffects.BT23
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to dedigivolve.",
-                        "The opponent is selecting 1 Digimon to dedigivolve.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to de-digivolve.",
+                        "The opponent is selecting 1 Digimon to de-digivolve.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

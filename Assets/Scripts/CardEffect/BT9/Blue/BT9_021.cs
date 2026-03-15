@@ -84,7 +84,7 @@ public class BT9_021 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn][Once Per Turn] When an effect adds a card to your hand, return 1 of your opponentfs level 3 Digimon to its ownerfs hand.";
+                return "[Your Turn][Once Per Turn] When an effect adds a card to your hand, return 1 of your opponent's level 3 Digimon to its owner's hand.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

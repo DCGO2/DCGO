@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.BT14
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 card from hand to delete Digimons", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1 card from hand to delete Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

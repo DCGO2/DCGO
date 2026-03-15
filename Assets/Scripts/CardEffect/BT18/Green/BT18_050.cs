@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT18
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("unspending 1 of your digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("unsuspend 1 of your digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -97,7 +97,7 @@ namespace DCGO.CardEffects.BT18
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("unspending 1 of your digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("unsuspend 1 of your digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

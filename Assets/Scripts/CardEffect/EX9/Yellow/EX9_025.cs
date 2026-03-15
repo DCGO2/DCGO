@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.EX9
 
             #region Static Effects
 
-            #region Alernative Digivolution Cost
+            #region Alternative Digivolution Cost
 
             if (timing == EffectTiming.None)
             {

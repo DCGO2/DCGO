@@ -32,7 +32,7 @@ public class BT9_050 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[All Turns] When this Digimon would be deleted in battle, you may play 1 [Leomon] from this DigimonÅfigivolution cards without paying its memory cost.";
+                return "[All Turns] When this Digimon would be deleted in battle, you may play 1 [Leomon] from this DigimonÅ's digivolution cards without paying its memory cost.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

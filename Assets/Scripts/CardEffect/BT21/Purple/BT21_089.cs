@@ -134,7 +134,7 @@ namespace DCGO.CardEffects.BT21
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain <Blocker> and 2k DP if 10+ cards in trashs.", "The opponent is selecting 1 Digimon that will gain <Blocker> and 2k DP if 10+ cards in trashs.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain <Blocker> and 2k DP if 10+ cards in trash.", "The opponent is selecting 1 Digimon that will gain <Blocker> and 2k DP if 10+ cards in trash.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

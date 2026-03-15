@@ -51,13 +51,13 @@ public class P_073 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Return level 3 Digimons to hand", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Return level 3 Digimon to hand", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[When Digivolving] If you have a Tamer in play, return 2 of your opponentÅfs level 3 Digimon to their ownersÅfands.";
+                return "[When Digivolving] If you have a Tamer in play, return 2 of your opponentÅ's level 3 Digimon to their ownersÅfands.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

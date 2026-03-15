@@ -21,7 +21,7 @@ public class BT1_007 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] If you've digivolved this turnÅCthis Digimon gets +1000 DP for the turn.";
+                return "[When Attacking] If you've digivolved this turnÅ, this Digimon gets +1000 DP for the turn.";
             }
 
             bool CanUseCondition(Hashtable hashtable)

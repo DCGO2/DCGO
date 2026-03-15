@@ -33,7 +33,7 @@ public class BT2_093 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Delete 1 of your opponent's Digimon with 5000 DP or less. If you have a red Tamer in playÅCdelete 1 of your opponent's Digimon with 8000 DP or less instead.";
+                return "[Main] Delete 1 of your opponent's Digimon with 5000 DP or less. If you have a red Tamer in playÅ, delete 1 of your opponent's Digimon with 8000 DP or less instead.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

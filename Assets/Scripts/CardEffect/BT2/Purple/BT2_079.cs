@@ -26,7 +26,7 @@ public class BT2_079 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Opponent's Turn] When one of your opponent's Digimon becomes suspendedÅCgain 1 memory.";
+                return "[Opponent's Turn] When one of your opponent's Digimon becomes suspendedÅ, gain 1 memory.";
             }
 
             bool PermanentCondition(Permanent permanent)

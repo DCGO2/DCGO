@@ -21,7 +21,7 @@ public class BT2_084 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When one of your red Digimon attacks a playerÅCyou may suspend this Tamer to give that Digimon +2000 DP for the turn.";
+                return "[Your Turn] When one of your red Digimon attacks a playerÅ, you may suspend this Tamer to give that Digimon +2000 DP for the turn.";
             }
 
             bool PermanentCondition(Permanent permanent)

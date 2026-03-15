@@ -173,7 +173,7 @@ public class BT6_016 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Thid Digimon gains DP +3000 and Pierce", CanUseCondition, card);
+            activateClass.SetUpICardEffect("This Digimon gains DP +3000 and Pierce", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetHashString("GetEffects_BT6_016");
             cardEffects.Add(activateClass);

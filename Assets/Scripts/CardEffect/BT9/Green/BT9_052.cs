@@ -35,7 +35,7 @@ public class BT9_052 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] If [Okuwamon] or [X Antibody] is in this DigimonÅfs digivolution cards, suspend 1 of your opponentÅfs Digimon. Then, if this Digimon is attacking, you may switch the target of attack to 1 of your opponentÅfuspended Digimon.";
+                return "[When Digivolving] If [Okuwamon] or [X Antibody] is in this DigimonÅ's digivolution cards, suspend 1 of your opponentÅ's Digimon. Then, if this Digimon is attacking, you may switch the target of attack to 1 of your opponentÅ's unsuspended Digimon.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

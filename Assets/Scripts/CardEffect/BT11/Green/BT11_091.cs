@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.BT11
                     isInheritedEffect: false,
                     card: card,
                     condition: Condition,
-                    effectName: () => "Your Digimons gain DP +1000"));
+                    effectName: () => "Your Digimon gain DP +1000"));
             }
 
             if (timing == EffectTiming.BeforePayCost)

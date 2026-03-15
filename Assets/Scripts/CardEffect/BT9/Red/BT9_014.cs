@@ -24,7 +24,7 @@ public class BT9_014 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Opponent Digimons get effect and delete Digimons whose total DP adds up to 6000 or less", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Opponent Digimon get effect and delete Digimon whose total DP adds up to 6000 or less", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -99,7 +99,7 @@ public class BT9_014 : CEntity_Effect
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select Digimons to get effects.", "The opponent is selecting Digimons to get effects.");
+                            selectPermanentEffect.SetUpCustomMessage("Select Digimon to get effects.", "The opponent is selecting Digimon to get effects.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

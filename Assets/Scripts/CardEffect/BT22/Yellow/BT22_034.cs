@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.BT22
                         };
 
                     string selectPlayerMessage = "Trash top security to -6K DP instead of 3K?";
-                    string notSelectPlayerMessage = "The opponent is choosing to trash top secuirty.";
+                    string notSelectPlayerMessage = "The opponent is choosing to trash top security.";
 
                     GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());

@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.BT20
                         {
                         new JogressConditionElement(PermanentCondition1, "a [Fenriloogamon]"),
 
-                        new JogressConditionElement(PermanentCondition2, "a Yellow Lv.6 w/[Pulsemon] in textn"),
+                        new JogressConditionElement(PermanentCondition2, "a Yellow Lv.6 w/[Pulsemon] in text"),
                         };
 
                         JogressCondition jogressCondition = new JogressCondition(elements, 0);

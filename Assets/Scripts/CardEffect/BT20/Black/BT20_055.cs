@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("<De-Digivolve 2> 1 opponent's Digimon, flip their security card faceup, then delete 1 Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 2> 1 opponent's Digimon, flip their security card face up, then delete 1 Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -147,7 +147,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("<De-Digivolve 2> 1 opponent's Digimon, flip their security card faceup, then delete 1 Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 2> 1 opponent's Digimon, flip their security card face up, then delete 1 Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

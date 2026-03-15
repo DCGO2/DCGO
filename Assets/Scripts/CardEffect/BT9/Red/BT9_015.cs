@@ -31,7 +31,7 @@ public class BT9_015 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] This Digimon gains <Security Attack +1> (This Digimon checks 1 additional security card) until the end of your opponent's turn. Then, if this Digimon has [MetalGreymon] or [X Antibody] in its digivolution cards, this Digimon gets +3000 DP until the end of your opponentÅfs next turn.";
+                return "[When Digivolving] This Digimon gains <Security Attack +1> (This Digimon checks 1 additional security card) until the end of your opponent's turn. Then, if this Digimon has [MetalGreymon] or [X Antibody] in its digivolution cards, this Digimon gets +3000 DP until the end of your opponentÅ's next turn.";
             }
 
             bool CanUseCondition(Hashtable hashtable)

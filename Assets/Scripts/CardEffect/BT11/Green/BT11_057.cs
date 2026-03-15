@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.BT11
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash cards from hand to suspend opponent's Digimons and gain Memory", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash cards from hand to suspend opponent's Digimon and gain Memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

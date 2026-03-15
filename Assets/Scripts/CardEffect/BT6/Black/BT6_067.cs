@@ -15,7 +15,7 @@ public class BT6_067 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete oppponent's all Digimons with the lowest play cost", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Delete opponent's all Digimon with the lowest play cost", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

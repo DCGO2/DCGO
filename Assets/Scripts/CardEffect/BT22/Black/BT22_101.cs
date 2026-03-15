@@ -99,7 +99,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnUnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digivolve into [Alphamon] for 2 reducded cost", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digivolve into [Alphamon] for 2 reduced cost", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT22_101_Digivolve");
                 cardEffects.Add(activateClass);

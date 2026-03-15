@@ -23,7 +23,7 @@ public class P_046 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn][Once Per Turn] When you use an Option cardÅCgain 1 memory.";
+                return "[Your Turn][Once Per Turn] When you use an Option cardÅ, gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)

@@ -113,7 +113,7 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash top security, place this as faceup top of security", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash top security, place this as face up top of security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

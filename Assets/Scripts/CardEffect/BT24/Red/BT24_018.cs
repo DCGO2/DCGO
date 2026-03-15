@@ -263,7 +263,7 @@ namespace DCGO.CardEffects.BT24
                 List<Permanent> removedPermanents = new List<Permanent>();
 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delte an opponent's Digimon, to prevent [Reptile] or [Dragonkin] trait digimon from leaving the battle area", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete an opponent's Digimon, to prevent [Reptile] or [Dragonkin] trait digimon from leaving the battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("BT24_018_AT_Prevent_Deletion");
                 cardEffects.Add(activateClass);

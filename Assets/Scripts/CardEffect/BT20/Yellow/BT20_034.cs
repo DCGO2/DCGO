@@ -9,7 +9,7 @@ namespace DCGO.CardEffects.BT20
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alt Digivovle Cost
+            #region Alt Digivolve Cost
 
             if (timing == EffectTiming.None)
             {
@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnAddDigivolutionCards)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("1 of your opponet's Digimon can't activate [When Digivolving] effects", CanUseCondition, card);
+                activateClass.SetUpICardEffect("1 of your opponent's Digimon can't activate [When Digivolving] effects", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
