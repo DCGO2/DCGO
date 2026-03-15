@@ -21,7 +21,7 @@ public class BT3_107 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Trigger Å<De-Digivolve 1> on 1 of your opponent's Digimon. (Trash a card from the top of one of your opponent's Digimon. If it has no digivolution cardsÅCor becomes a level 3 DigimonÅ, you can't trash any more cards.) ThenÅ, if that Digimon's play cost is 4 or lessÅC it.";
+                return "[Main] Trigger <De-Digivolve 1> on 1 of your opponent's Digimon. (Trash a card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.) Then, if that Digimon's play cost is 4 or less, delete it.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
