@@ -22,7 +22,7 @@ public class RB1_016 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] You may trash up to 2 blue cards in your hand. For each one, trash any 1 card under your opponentÅ's Digimon or Tamers. Then, you may return 1 of your opponentÅfDigimon with no digivolution cards to the bottom of the deck.";
+                return "[When Attacking] You may trash up to 2 blue cards in your hand. For each one, trash any 1 card under your opponent¬Å's Digimon or Tamers. Then, you may return 1 of your opponent's Digimon with no digivolution cards to the bottom of the deck.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -169,7 +169,7 @@ public class RB1_016 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] You may trash up to 2 blue cards in your hand. For each one, trash any 1 card under your opponentÅ's Digimon or Tamers. Then, you may return 1 of your opponentÅfDigimon with no digivolution cards to the bottom of the deck.";
+                return "[When Digivolving] You may trash up to 2 blue cards in your hand. For each one, trash any 1 card under your opponent¬Å's Digimon or Tamers. Then, you may return 1 of your opponent's Digimon with no digivolution cards to the bottom of the deck.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
