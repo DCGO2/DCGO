@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.BT13
 
                 string EffectDiscription()
                 {
-                    return "[All Turns][Once Per Turn] When an opponentÅ's Digimon or Tamer becomes suspended, suspend 1 of your opponentÅ's Digimon or Tamers.";
+                    return "[All Turns][Once Per Turn] When an opponent's Digimon or Tamer becomes suspended, suspend 1 of your opponent's Digimon or Tamers.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
