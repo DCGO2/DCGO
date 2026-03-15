@@ -73,7 +73,7 @@ public class BT1_112 : CEntity_Effect
 
                         string EffectDiscription1()
                         {
-                            return "When this Digimon deletes an opponent's Digimon in battle and survives, unsuspend it.";
+                            return "When this Digimon deletes an opponent's Digimon in battle and survives, unsuspend it.";
                         }
 
                         bool CanUseCondition1(Hashtable hashtable1)
