@@ -58,7 +58,7 @@ public class BT2_082 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[All Turns] When this Digimon would be deleted in battle, you may delete one of your other [Diaboromon] to prevent this Digimon from being deleted. ";
+                return "[All Turns] When this Digimon would be deleted in battle, you may delete one of your other [Diaboromon] to prevent this Digimon from being deleted. ";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
