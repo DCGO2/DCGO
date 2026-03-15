@@ -89,7 +89,7 @@ public class BT9_112 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] <De-Digivolve 1> all of your opponentÅ's Digimon. Then, delete all of your opponentÅ's level 4 or lower Digimon.";
+                return "[On Play] <De-Digivolve 1> all of your opponent's Digimon. Then, delete all of your opponent's level 4 or lower Digimon.";
             }
 
             bool PermanentCondition(Permanent permanent)
@@ -147,7 +147,7 @@ public class BT9_112 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] <De-Digivolve 1> all of your opponentÅ's Digimon. Then, delete all of your opponentÅ's level 4 or lower Digimon.";
+                return "[When Digivolving] <De-Digivolve 1> all of your opponent's Digimon. Then, delete all of your opponent's level 4 or lower Digimon.";
             }
 
             bool PermanentCondition(Permanent permanent)
@@ -206,7 +206,7 @@ public class BT9_112 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[End of OpponentÅ's Turn][Once Per Turn] Delete all of your opponent's Digimon with the lowest play cost.";
+                return "[End of Opponent's Turn][Once Per Turn] Delete all of your opponent's Digimon with the lowest play cost.";
             }
 
             bool PermanentCondition(Permanent permanent)
