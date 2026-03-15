@@ -58,7 +58,7 @@ public class BT1_041 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] If your opponent has a Digimon with no digivolution cards in playÅ, gain 1 memory.";
+                return "[When Attacking] If your opponent has a Digimon with no digivolution cards in play, gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
