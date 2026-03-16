@@ -203,7 +203,7 @@ namespace DCGO.CardEffects.AD1
 
                 string EffectDescription()
                 {
-                    return "[End of Your Turn]  1 of your Digimon may attack.";
+                    return "[End of Your Turn] 1 of your Digimon may attack.";
                 }
 
                 bool IsYourDigimon(Permanent permanent)
