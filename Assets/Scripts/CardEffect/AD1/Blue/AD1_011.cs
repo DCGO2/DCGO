@@ -127,7 +127,7 @@ namespace DCGO.CardEffects.AD1
                 string EffectDescription()
                     => "[When Attacking] This Digimon may digivolve into a Digimon card with [Imperialdramon] in its name in the hand with the digivolution cost reduced by 2.";
 
-                bool CanSelectCardCondition(CardSource cardSource) => cardSource.CardNames.Contains("Imperialdramon");
+                bool CanSelectCardCondition(CardSource cardSource) => cardSource.ContainsCardName("Imperialdramon");
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
