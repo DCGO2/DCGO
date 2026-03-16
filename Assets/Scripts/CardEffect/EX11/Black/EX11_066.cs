@@ -278,12 +278,12 @@ namespace DCGO.CardEffects.EX11
                                         else
                                         {
                                             digivolutionCards_fixed.AddRange(selectedCards);
+                                            selectedCards.Clear();
+
                                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(digivolutionCards_fixed, "Digivolution Cards", true, true));
                                             yield return ContinuousController.instance.StartCoroutine(selectedPermament.AddDigivolutionCardsBottom(digivolutionCards_fixed, activateClass));
                                         }
                                     }
-                                    
-                                selectedCards.Clear();
                                 }
                             }
                         }
@@ -301,8 +301,6 @@ namespace DCGO.CardEffects.EX11
                             remainingCardsPlace: RemainingCardsPlace.Trash,
                             activateClass: activateClass
                             ));
-                            
-                        selectedCards.Clear();
                         }
                     }
                 }
