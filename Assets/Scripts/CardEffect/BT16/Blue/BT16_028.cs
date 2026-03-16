@@ -229,9 +229,9 @@ namespace DCGO.CardEffects.BT16
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsOpponentDigimon)
                             || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsOpponentDigimon))
-                        && CardEffectCommons.IsByEffect(hashtable, null))
-                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasTamer))
-                        && card.Owner.HandCards.Count(HasFighterMode) >= 1);
+                        && CardEffectCommons.IsByEffect(hashtable, null)
+                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasTamer)
+                        && card.Owner.HandCards.Count(HasFighterMode) >= 1;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
