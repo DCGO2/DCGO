@@ -12,7 +12,29 @@ namespace DCGO.CardEffects.AD1
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-
+            
+            #region Name Rule
+            if (timing == EffectTiming.None)
+            {
+                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
+                changeCardNamesClass.SetUpICardEffect("[Rule] Name: Also treated as [Tommy Himi]/[Takuya Kanbara]/[Zoe Orimoto].", _ => true, card);
+                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: ChangeCardNames);
+                cardEffects.Add(changeCardNamesClass);
+            
+                List<string> ChangeCardNames(CardSource cardSource, List<string> cardNames)
+                {
+                    if (cardSource == card)
+                    {
+                        cardNames.Add("Tommy Himi");
+                        cardNames.Add("Takuya Kanbara");
+                        cardNames.Add("Zoe Orimoto");
+                    }
+            
+                    return cardNames;
+                }
+            }
+            #endregion
+            
             #region Shared OP/SOMP
 
             string SharedEffectName = "Place up to 2 [Hybrid] cards with different colors under, if so <Draw 1> and if 4 or more under gain 2 memory";
