@@ -102,15 +102,9 @@ namespace DCGO.CardEffects.AD1
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionPermanent(WouldPlayCondition);
+                    return card.Owner.GetBattleAreaDigimons().Count((permanent) => permanent.TopCard.ContainsCardName("Knightmon") || permanent.TopCard.ContainsCardName("Lucemon")) >= 1;
                 }
-
-                bool WouldPlayCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
-                            && (permanent.TopCard.ContainsCardName("Knightmon") || permanent.TopCard.ContainsCardName("Lucemon"));
-                }
-
+          
                 int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
                         List<Permanent> targetPermanents)
                 {
