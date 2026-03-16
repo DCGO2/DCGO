@@ -498,6 +498,8 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         GManager.instance.turnStateMachine.IsSelecting = true;
         #endregion
 
+        GManager.instance.OffTargetArrow();
+
         DoSecurityCheck = false;
         IsBlocking = false;
         SecurityDigimon = null;
