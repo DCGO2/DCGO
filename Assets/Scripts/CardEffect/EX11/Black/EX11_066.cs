@@ -159,6 +159,8 @@ namespace DCGO.CardEffects.EX11
                         && permanent.TopCard.HasText("Vemmon");
                 }
 
+                bool IsVemmon (CardSource cardSource) => cardSource.EqualsCardName("Vemmon");
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent> { card.PermanentOfThisCard() }, hashtable).Tap());
@@ -239,7 +241,7 @@ namespace DCGO.CardEffects.EX11
                                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                                             selectCardEffect.SetUp(
-                                                canTargetCondition: (cardSource) => true,
+                                                canTargetCondition: IsVemmon,
                                                 canTargetCondition_ByPreSelecetedList: null,
                                                 canEndSelectCondition: CanEndSelectCondition,
                                                 canNoSelect: () => false,
