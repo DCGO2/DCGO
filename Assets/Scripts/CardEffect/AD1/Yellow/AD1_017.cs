@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.AD1
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, WouldPlayCondition) >= 4;
+                    return card.Owner.TrashCards.Count(WouldPlayCondition) >= 4;
                 }
 
                 bool WouldPlayCondition(CardSource cardSource)
