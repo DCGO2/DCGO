@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -51,7 +52,7 @@ namespace DCGO.CardEffects.AD1
                     if (selectedCards.Contains(cardSource)) return false;
                     if (selectedCards.Count > 0)
                     {
-                        return cardSource.CardColors.Any(c => !selectedColors.Contains(c));
+                        return cardSource.CardColors.Any(c => !selectedCards[0].CardColors.Contains(c));
                     }
                     return true;
                 }
@@ -62,7 +63,9 @@ namespace DCGO.CardEffects.AD1
                     List<CardSource> validTrashCards = card.Owner.TrashCards.Filter(CanSelectCardCondition).ToList();
 
                     if (validHandCards.Count == 0 && validTrashCards.Count == 0)
-                        break;
+                    {
+                        goto END_LOOP;
+                    }
 
                     List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
                     if (validHandCards.Count > 0)
@@ -73,7 +76,7 @@ namespace DCGO.CardEffects.AD1
                     {
                         selectionElements.Add(new(message: "from Trash", value: 2, spriteIndex: 0));
                     }
-                    selectionElements.Add(new(message: "Do not place", value: 0, spriteIndex: 0));
+                    selectionElements.Add(new(message: "Do not place", value: 3, spriteIndex: 1));
 
                     GManager.instance.userSelectionManager.SetIntSelection(
                         selectionElements: selectionElements,
@@ -141,11 +144,15 @@ namespace DCGO.CardEffects.AD1
                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                             break;
                         }
+                        default:
+                            goto END_LOOP;
                     }
 
                     if (selectedCards.Count == prevCount)
                         break;
                 }
+
+                END_LOOP:;
 
                 if (selectedCards.Count > 0)
                 {
