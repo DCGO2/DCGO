@@ -78,6 +78,15 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         _degenerationCount = degenerationCount;
     }
 
+    public void SetCanNotAttackPlayer()
+    {
+        _canAttackPlayer = false;
+    }
+    public void SetDefenderCondition(Func<Permanent, bool> defenderCondition)
+    {
+        _defenderCondition = defenderCondition;
+    }
+
     //Player to select
     Player _selectPlayer = null;
     //Conditions of units that can be selected
@@ -103,6 +112,8 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
     bool _isLocal = false;
     bool _isdigiXros = false;
     int _degenerationCount = 1;
+    bool _canAttackPlayer = true;
+    Func<Permanent, bool> _defenderCondition = (permanent) => true;
 
     public enum Mode
     {
@@ -113,6 +124,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         PutLibraryBottom,
         PutLibraryTop,
         Degenerate,
+        Attack,
         Custom
     }
 
@@ -232,6 +244,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         List<Permanent> libraryTopPermanents = new List<Permanent>();
         List<Permanent> handBouncePermanents = new List<Permanent>();
         List<Permanent> degeneratePermanents = new List<Permanent>();
+        List<Permanent> attackPermanents = new List<Permanent>();
 
         _noSelect = false;
 
@@ -314,6 +327,10 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
                         case Mode.Degenerate:
                             message = $"Select cards to De-Digivolve {_degenerationCount}.";
+                            break;
+
+                        case Mode.Attack:
+                            message = "Select a Digimon to attack with.";
                             break;
 
                         case Mode.Custom:
@@ -847,6 +864,10 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                             case Mode.Degenerate:
                                 degeneratePermanents.Add(targetPermanent);
                                 break;
+
+                            case Mode.Attack:
+                                attackPermanents.Add(targetPermanent);
+                                break;
                         }
                         #endregion
 
@@ -906,6 +927,27 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                         foreach (Permanent selectedPermanent in degeneratePermanents)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, _degenerationCount, _cardEffect).Degeneration());
+                        }
+                    }
+
+                    if (attackPermanents.Count > 0)
+                    {
+                        foreach (Permanent selectedPermanent in degeneratePermanents)
+                        {
+                            if (selectedPermanent.CanAttack(_cardEffect))
+                            {
+                                SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+
+                                selectAttackEffect.SetUp(
+                                    attacker: selectedPermanent,
+                                    canAttackPlayerCondition: () => _canAttackPlayer,
+                                    defenderCondition: _defenderCondition,
+                                    cardEffect: _cardEffect);
+
+                                if (!_canNoSelect) selectAttackEffect.SetCanNotSelectNotAttack();
+
+                                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                            }
                         }
                     }
                 }
