@@ -277,7 +277,14 @@ public class CEntity_EffectController : MonoBehaviour
     #region Remove a use of the effect this turn
     public void RemoveUseEffectThisTurn(ICardEffect cardEffect)
     {
-        UseEffectsThisTurn.Remove(cardEffect);
+        foreach(ICardEffect cardEffect1 in UseEffectsThisTurn)
+        {
+            if (cardEffect.IsSameEffect(cardEffect1));
+            {
+                UseEffectsThisTurn.Remove(cardEffect1);
+                break;
+            }
+        }
     }
     #endregion
 }
