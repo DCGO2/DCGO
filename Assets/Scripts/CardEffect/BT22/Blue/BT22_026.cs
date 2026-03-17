@@ -112,7 +112,9 @@ namespace DCGO.CardEffects.BT22
                                 isHand: true,
                                 activateClass: activateClass,
                                 successProcess: null,
-                                failedProcess: OnFail()));
+                                failedProcess: OnFail(),
+                                isOptional: false,
+                                ignoreRequirements: CardEffectCommons.IgnoreRequirement.All));
 
                             IEnumerator OnFail()
                             {
