@@ -92,7 +92,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 1 opponent's level 6 or lower Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
