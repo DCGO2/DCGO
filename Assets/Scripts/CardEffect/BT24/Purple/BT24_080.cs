@@ -68,7 +68,7 @@ namespace DCGO.CardEffects.BT24
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && (permanent.TopCard.EqualsTraits("Dark Dragon")
                             || permanent.TopCard.EqualsTraits("Evil Dragon"))
                         && card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass);
