@@ -35,22 +35,10 @@ public abstract class ICardEffect
         SetIsCounterEffect(false);
         SetIsDigimonEffect(false);
         SetIsTamerEffect(false);
+        SetIsOptionEffect(false);
         SetChainActivationCount(-1);
         SetIsBackgroundProcess(false);
         SetNotShowUI(false);
-
-        if (!(this is ActivateICardEffect))
-        {
-            if (IsInheritedEffect || IsLinkedEffect)
-            {
-                SetIsDigimonEffect(true);
-            }
-            else if (card != null && CardEffectCommons.IsExistOnBattleArea(card))
-            {
-                SetIsDigimonEffect(card.PermanentOfThisCard().IsDigimon);
-                SetIsTamerEffect(card.PermanentOfThisCard().IsTamer);
-            }
-        }
     }
 
     #endregion
@@ -629,6 +617,23 @@ public abstract class ICardEffect
     public void SetIsTamerEffect(bool isTamerEffect)
     {
         IsTamerEffect = isTamerEffect;
+    }
+
+    #endregion
+
+    #region Whether this is specifically an Option Card effect, overriding anything settign it as a Digimon or Tamer effect
+
+    bool _isOptionEffect = false;
+
+    public bool IsOptionEffect
+    {
+        get { return _isOptionEffect; }
+        private set { _isOptionEffect = value; }
+    }
+
+    public void SetIsOptionEffect(bool isOptionEffect)
+    {
+        IsOptionEffect = isOptionEffect;
     }
 
     #endregion

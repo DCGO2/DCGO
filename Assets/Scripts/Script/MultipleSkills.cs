@@ -92,26 +92,29 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
 
                         if (card != null)
                         {
-                            if (skillInfo.CardEffect.IsInheritedEffect || skillInfo.CardEffect.IsLinkedEffect)
+                            if (!skillInfo.CardEffect.IsDigimonEffect)
                             {
-                                skillInfo.CardEffect.SetIsDigimonEffect(true);
-                            }
-                            else
-                            {
-                                if (card.PermanentOfThisCard() != null)
-                                {
-                                    skillInfo.CardEffect.SetIsDigimonEffect(card.PermanentOfThisCard().IsDigimon);
-                                    skillInfo.CardEffect.SetIsTamerEffect(card.PermanentOfThisCard().IsTamer);
-                                }
-
-                                else
-                                {
-                                    skillInfo.CardEffect.SetIsTamerEffect(card.IsTamer);
-                                }
-
-                                if (card == GManager.instance.attackProcess.SecurityDigimon)
+                                if (skillInfo.CardEffect.IsInheritedEffect || skillInfo.CardEffect.IsLinkedEffect)
                                 {
                                     skillInfo.CardEffect.SetIsDigimonEffect(true);
+                                }
+                                else
+                                {
+                                    if (card.PermanentOfThisCard() != null)
+                                    {
+                                        skillInfo.CardEffect.SetIsDigimonEffect(card.PermanentOfThisCard().IsDigimon);
+                                        skillInfo.CardEffect.SetIsTamerEffect(card.PermanentOfThisCard().IsTamer);
+                                    }
+
+                                    else
+                                    {
+                                        skillInfo.CardEffect.SetIsTamerEffect(card.IsTamer);
+                                    }
+
+                                    if (card == GManager.instance.attackProcess.SecurityDigimon)
+                                    {
+                                        skillInfo.CardEffect.SetIsDigimonEffect(true);
+                                    }
                                 }
                             }
                         }
