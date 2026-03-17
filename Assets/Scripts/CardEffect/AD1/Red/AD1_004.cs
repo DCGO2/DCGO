@@ -132,7 +132,7 @@ namespace DCGO.CardEffects.AD1
                     if(Condition())
                         thisPermanent.AddBoost(new Permanent.DPBoost("AD1_004", count(), Condition));
                     else
-                        thisPermanent.RemoveBoost("P_182");
+                        thisPermanent.RemoveBoost("AD1_004");
                 }
                 
                 int count()
