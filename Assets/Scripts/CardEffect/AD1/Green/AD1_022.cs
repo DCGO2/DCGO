@@ -39,6 +39,7 @@ namespace DCGO.CardEffects.AD1
                 bool PermanentCondition(Permanent permanent)
                 {
                     return permanent != card.PermanentOfThisCard()
+                        && CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
                         && (permanent.IsDigimon || permanent.IsTamer)
                         && permanent.TopCard.EqualsTraits("ADVENTURE");
                 }
