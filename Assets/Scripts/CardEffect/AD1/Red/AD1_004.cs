@@ -124,6 +124,17 @@ namespace DCGO.CardEffects.AD1
 
             if (timing != EffectTiming.None)
             {
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                {
+                    Permanent thisPermanent = card.PermanentOfThisCard();
+
+                    
+                    if(Condition())
+                        thisPermanent.AddBoost(new Permanent.DPBoost("AD1_004", count(), Condition));
+                    else
+                        thisPermanent.RemoveBoost("P_182");
+                }
+                
                 int count()
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
