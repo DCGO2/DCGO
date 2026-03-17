@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reveal top 3, add 1 [Glowing Dawn] card to hand, bottom deck the rest", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Reveal top 3, add 1 [Glowing Dawn] card to hand, bottom deck the rest, place in battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
