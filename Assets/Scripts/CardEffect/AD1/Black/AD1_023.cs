@@ -106,8 +106,6 @@ namespace DCGO.CardEffects.AD1
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                    int prevCount = selectedCards.Count;
-
                     switch (GManager.instance.userSelectionManager.SelectedIntValue)
                     {
                         case 1:
