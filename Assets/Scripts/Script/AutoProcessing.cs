@@ -64,42 +64,45 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         CardSource card = skillInfo.CardEffect.EffectSourceCard;
         Permanent permanent = card.PermanentOfThisCard();
 
-        //Inherited and Link effects can only ever be digimon effects
-        if (skillInfo.CardEffect.IsInheritedEffect || skillInfo.CardEffect.IsLinkedEffect)
+        if (!skillInfo.CardEffect.IsOptionEffect) //If explicitly set to be an option effect, override setting it to any other kind
         {
-            skillInfo.CardEffect.SetIsDigimonEffect(true);
-        }
-        else
-        {
-            #region set the flag whether it is Digimon's effect
-            if (permanent != null)
-            {
-                if (permanent.IsDigimon)
-                {
-                    skillInfo.CardEffect.SetIsDigimonEffect(true);
-                }
-            }
-
-            if (card == GManager.instance.attackProcess.SecurityDigimon)
+            //Inherited and Link effects can only ever be digimon effects
+            if (skillInfo.CardEffect.IsInheritedEffect || skillInfo.CardEffect.IsLinkedEffect)
             {
                 skillInfo.CardEffect.SetIsDigimonEffect(true);
             }
-            #endregion
-
-            #region set the flag whether it is Tamer's effect
-            if (permanent != null)
+            else
             {
-                if (permanent.IsTamer)
+                #region set the flag whether it is Digimon's effect
+                if (permanent != null)
+                {
+                    if (permanent.IsDigimon)
+                    {
+                        skillInfo.CardEffect.SetIsDigimonEffect(true);
+                    }
+                }
+
+                if (card == GManager.instance.attackProcess.SecurityDigimon)
+                {
+                    skillInfo.CardEffect.SetIsDigimonEffect(true);
+                }
+                #endregion
+
+                #region set the flag whether it is Tamer's effect
+                if (permanent != null)
+                {
+                    if (permanent.IsTamer)
+                    {
+                        skillInfo.CardEffect.SetIsTamerEffect(true);
+                    }
+                }
+
+                else if (card.IsTamer)
                 {
                     skillInfo.CardEffect.SetIsTamerEffect(true);
                 }
+                #endregion
             }
-
-            else if (card.IsTamer)
-            {
-                skillInfo.CardEffect.SetIsTamerEffect(true);
-            }
-            #endregion
         }
 
         #region set permanent and topCard when triggered
