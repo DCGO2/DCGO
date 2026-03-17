@@ -29,8 +29,7 @@ namespace DCGO.CardEffects.BT24
 
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card)
-                        && targetPermanent.TopCard.EqualsCardName("Lamiamon");
+                    return targetPermanent.TopCard.EqualsCardName("Lamiamon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

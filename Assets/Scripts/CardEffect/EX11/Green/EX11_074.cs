@@ -30,8 +30,7 @@ namespace DCGO.CardEffects.EX11
 
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card)
-                        && targetPermanent.TopCard.EqualsCardName("GrandGalemon");
+                    return targetPermanent.TopCard.EqualsCardName("GrandGalemon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
