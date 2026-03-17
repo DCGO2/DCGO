@@ -78,7 +78,7 @@ namespace DCGO.CardEffects.BT10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return opponent's all Digimon with the highest level to the bottom of deck", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return all opponent's Digimon with the highest level to the bottom of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
