@@ -166,7 +166,8 @@ namespace DCGO.CardEffects.P
             #region When Digivolving/Attacking OPT Shared
 
             bool CanSelectPermanentOptionCondition(Permanent permanent)
-                => permanent.TopCard.IsOption;
+                => CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                && permanent.IsOption;
 
             bool CanSelectPermanentDigimonCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
