@@ -115,6 +115,7 @@ namespace DCGO.CardEffects.BT22
                             activateClass: activateClass,
                             successProcess: null,
                             failedProcess: OnFail(),
+                            isOptional: false,
                             ignoreRequirements: CardEffectCommons.IgnoreRequirement.All));
                     }
 
