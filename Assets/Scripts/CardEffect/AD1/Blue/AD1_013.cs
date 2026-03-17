@@ -122,7 +122,8 @@ namespace DCGO.CardEffects.AD1
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card)
+                        && !CardEffectCommons.IsLeavingForDigiXros(hashtable);
                 }
 
                 bool CanSelectSourceCardCondition(CardSource cardSource)
