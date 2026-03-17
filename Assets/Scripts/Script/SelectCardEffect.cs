@@ -830,11 +830,11 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                                     && (_reduceCostTuple.Value.reduceCostCardCondition == null || _reduceCostTuple.Value.reduceCostCardCondition(cardSource));
                             }
 
-                            int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                            int ChangeCost(CardSource cardSource, int Cost, Root root, List<Permanent> targetPermanents)
                             {
                                 if (PermanentsCondition(targetPermanents))
                                 {
-                                    Cost += _reduceCostTuple.Value.reduceCost;
+                                    Cost -= _reduceCostTuple.Value.reduceCost;
                                 }
 
                                 return Cost;
@@ -845,6 +845,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                             ChangeCostClass changeCostClass = new ChangeCostClass();
                             changeCostClass.SetUpICardEffect($"Play Cost -{_reduceCostTuple.Value.reduceCost}", CanUseCondition, _cardEffect.EffectSourceCard);
                             changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                            getChangeCostEffect = GetCardEffect;
 
                             ICardEffect GetCardEffect(EffectTiming _timing)
                             {
@@ -858,7 +859,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
                             if (getChangeCostEffect != null)
                             {
-                                _selectPlayer.UntilCalculateFixedCostEffect.Add(GetCardEffect);
+                                _selectPlayer.UntilCalculateFixedCostEffect.Add(getChangeCostEffect);
                             }
                         }
 
@@ -889,8 +890,9 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                             bool isUpDown() => false;
 
                             ChangeCostClass changeCostClass = new ChangeCostClass();
-                            changeCostClass.SetUpICardEffect($"Play Cost -{_reduceCostTuple.Value.reduceCost}", CanUseCondition, _cardEffect.EffectSourceCard);
+                            changeCostClass.SetUpICardEffect($"Play Cost {_fixedCostTuple.Value.fixedCost}", CanUseCondition, _cardEffect.EffectSourceCard);
                             changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                            getFixedCostEffect = GetCardEffect;
 
                             ICardEffect GetCardEffect(EffectTiming _timing)
                             {
@@ -902,9 +904,9 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                                 return null;
                             }
 
-                            if (getChangeCostEffect != null)
+                            if (getFixedCostEffect != null)
                             {
-                                _selectPlayer.UntilCalculateFixedCostEffect.Add(GetCardEffect);
+                                _selectPlayer.UntilCalculateFixedCostEffect.Add(getFixedCostEffect);
                             }
                         }
 
