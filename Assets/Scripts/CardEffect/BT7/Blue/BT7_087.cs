@@ -268,7 +268,7 @@ public class BT7_087 : CEntity_Effect
         if (timing == EffectTiming.OnAddHand)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Memory +1 and getin unblockable", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Memory +1 and gain unblockable", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
             activateClass.SetHashString("Memory+1_BT7_087");

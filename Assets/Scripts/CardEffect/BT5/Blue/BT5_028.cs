@@ -16,7 +16,7 @@ public class BT5_028 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Trash digivolution cards from opponent's all Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Trash digivolution cards from opponent's all Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

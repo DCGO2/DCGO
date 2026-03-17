@@ -22,7 +22,7 @@ public class P_002 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When this Digimon deletes one of your opponent's Digimon in battle and survivesÅCtrigger <Draw 1>. (Draw 1 card from your deck.)";
+                return "[Your Turn] When this Digimon deletes one of your opponent's Digimon in battle and survives, trigger <Draw 1>. (Draw 1 card from your deck.)";
             }
 
             bool CanUseCondition(Hashtable hashtable)

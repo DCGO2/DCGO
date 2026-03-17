@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.EX9
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region ignoring colours
+            #region ignoring colors
 
             if (timing == EffectTiming.None)
             {
@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.EX9
 
             #endregion
 
-            #region Main/Secuirty Shared
+            #region Main/Security Shared
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {

@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashing 1 card in hand, your opponent may delete a digimon or tamer. if they didnt Recover +1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By trashing 1 card in hand, your opponent may delete a digimon or tamer. if they didn't Recover +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashing 1 card in hand, your opponent may delete a digimon or tamer. if they didnt Recover +1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By trashing 1 card in hand, your opponent may delete a digimon or tamer. if they didn't Recover +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -191,7 +191,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Your opponent may delete a digimon or tamer, if they dont this cards doesnt leave", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Your opponent may delete a digimon or tamer, if they don't this cards doesn't leave", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("EX10_052_RemoveField");
                 cardEffects.Add(activateClass);

@@ -160,7 +160,7 @@ namespace DCGO.CardEffects.EX8
             }
             #endregion
 
-            #region Security Effet
+            #region Security Effect
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();

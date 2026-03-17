@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Deletion] Return all Tamers to thier owner's hands. Then, you may play 1 Tamer card from your hand and 1 [Ukkomon] from your trash without paying the cost.";
+                    return "[On Deletion] Return all Tamers to their owner's hands. Then, you may play 1 Tamer card from your hand and 1 [Ukkomon] from your trash without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

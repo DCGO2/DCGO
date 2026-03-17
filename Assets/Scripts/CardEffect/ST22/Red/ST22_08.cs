@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.ST22
         ActivateClass SecurityEffect(CardSource card)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect($"Delete opponent's lowest dp Digimon and add this card to hand", CanUseCondition, card);
+            activateClass.SetUpICardEffect($"Delete opponent's lowest DP Digimon and add this card to hand", CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
             activateClass.SetIsSecurityEffect(true);
 
@@ -179,7 +179,7 @@ namespace DCGO.CardEffects.ST22
 
                 #region Select Digimon to Compare
 
-                // Comparing to our highest dp is just used as a fast way to check if there is a least 1 vaild selection.
+                // Comparing to our highest DP is just used as a fast way to check if there is a least 1 valid selection.
                 if (ownerDigimonList.Count > 0 && opponentDigimonList.Any(x => x.DP <= highestDp))
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();

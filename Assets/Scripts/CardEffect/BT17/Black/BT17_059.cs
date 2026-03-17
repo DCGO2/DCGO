@@ -174,7 +174,7 @@ namespace DCGO.CardEffects.BT17
             }
             #endregion
 
-            #region Opponets Turn
+            #region Opponents Turn
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();

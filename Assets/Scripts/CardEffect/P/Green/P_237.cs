@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Ignore Color Requirment
+            #region Ignore Color Requirement
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.UseRequirements(card, HasMaquinamonInText));

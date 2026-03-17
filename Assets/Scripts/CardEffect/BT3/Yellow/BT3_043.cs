@@ -68,7 +68,7 @@ public class BT3_043 : CEntity_Effect
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select Digimons that will get Security Attack -2.", "The opponent is selecting Digimons that will get Security Attack -2.");
+                    selectPermanentEffect.SetUpCustomMessage("Select Digimon that will get Security Attack -2.", "The opponent is selecting Digimon that will get Security Attack -2.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

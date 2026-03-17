@@ -161,7 +161,7 @@ namespace DCGO.CardEffects.BT19
                     }
                     else
                     {
-                        // if only 0-1 of targets is on the field, effect ends here & we dont unsuspend anything
+                        // if only 0-1 of targets is on the field, effect ends here & we don't unsuspend anything
                         var digimonPresent = card.Owner.GetBattleAreaDigimons().Filter(x => (IsUnsuspendedStarmonCondition(x) || IsUnsuspendedShoutmonCondition(x))).ToList();
                         if (digimonPresent.Count <= 1) yield break;
 

@@ -154,7 +154,7 @@ namespace DCGO.CardEffects.BT24
 
             #region On Play / When Digivolving Shared
 
-            string SharedEffectName = "Trash 1 Digimons sources. 2 Digimon or Tamers can't Suspend or Activate When Digivolving";
+            string SharedEffectName = "Trash 1 Digimon sources. 2 Digimon or Tamers can't Suspend or Activate When Digivolving";
 
             string SharedEffectDescription(string tag) => $"[{tag}] Trash all digivolution cards of 1 of your opponent's Digimon. Then, until your opponent's turn ends, 2 of their Digimon or Tamers can't suspend or activate [When Digivolving] effects.";
 

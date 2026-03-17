@@ -38,7 +38,7 @@ public class BT7_017 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Place a card in digivolution cards to delete Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Place a card in digivolution cards to delete Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 

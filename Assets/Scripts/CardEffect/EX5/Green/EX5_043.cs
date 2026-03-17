@@ -513,7 +513,7 @@ public class EX5_043 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] [Once Per Turn] When one of your Digimon is played, you may return 1 of your opponentÅfs 5000 DP or lower Digimon to the hand. For each of your other Digimon, add 3000 to the maximum DP this effect can choose.";
+                return "[Your Turn] [Once Per Turn] When one of your Digimon is played, you may return 1 of your opponentÅ's 5000 DP or lower Digimon to the hand. For each of your other Digimon, add 3000 to the maximum DP this effect can choose.";
             }
 
             int maxDP()

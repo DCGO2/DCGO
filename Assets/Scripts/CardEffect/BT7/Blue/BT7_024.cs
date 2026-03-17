@@ -14,7 +14,7 @@ public class BT7_024 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Draw 1 for each opponent's Digimons with no digivolution cards", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Draw 1 for each opponent's Digimon with no digivolution cards", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

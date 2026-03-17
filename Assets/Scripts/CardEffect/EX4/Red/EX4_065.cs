@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.EX4
 
             if (timing == EffectTiming.SecuritySkill)
             {
-                CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete oppponent's 1 Digimon with the highest DP and trash the top card of opponent's security");
+                CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete opponent's 1 Digimon with the highest DP and trash the top card of opponent's security");
             }
 
             return cardEffects;

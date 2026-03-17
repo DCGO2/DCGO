@@ -61,7 +61,7 @@ public class BT5_091 : CEntity_Effect
         if (timing == EffectTiming.None)
         {
             AddSkillClass addSkillClass = new AddSkillClass();
-            addSkillClass.SetUpICardEffect("Lv3 Digimons gain \"[When Attacking] Lose 1 memory.\"", CanUseCondition, card);
+            addSkillClass.SetUpICardEffect("Lv3 Digimon gain \"[When Attacking] Lose 1 memory.\"", CanUseCondition, card);
             addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
             cardEffects.Add(addSkillClass);
 

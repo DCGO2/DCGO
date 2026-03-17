@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.ST22
 
             #region Static Effects
 
-            #region Ignore Colour Requirement
+            #region Ignore Color Requirement
 
             if (timing == EffectTiming.None)
             {
@@ -67,7 +67,7 @@ namespace DCGO.CardEffects.ST22
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete opponent's lowest dp Digimon and add this card to hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete opponent's lowest DP Digimon and add this card to hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
