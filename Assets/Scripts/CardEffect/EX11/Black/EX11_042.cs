@@ -178,7 +178,8 @@ namespace DCGO.CardEffects.EX11
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerWhenLinked(hashtable, PermanentCondition, null);
+                        && CardEffectCommons.CanTriggerWhenLinked(hashtable, PermanentCondition, null)
+                        && CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool PermanentCondition(Permanent permanent) => permanent == card.PermanentOfThisCard();
