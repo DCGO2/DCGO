@@ -160,11 +160,11 @@ namespace DCGO.CardEffects.AD1
                            card.PermanentOfThisCard().TopCard == card;
                 }
 
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect<Func<int>>(
-                    changeValue: count,
-                    isInheritedEffect: false,
-                    card: card,
-                    condition: Condition));
+                //cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect<Func<int>>(
+                //    changeValue: count,
+                //    isInheritedEffect: false,
+                //    card: card,
+                //    condition: Condition));
             }
 
             if (timing == EffectTiming.None)
