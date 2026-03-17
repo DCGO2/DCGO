@@ -80,7 +80,7 @@ namespace DCGO.CardEffects.BT22
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -112,7 +112,9 @@ namespace DCGO.CardEffects.BT22
                                 isHand: true,
                                 activateClass: activateClass,
                                 successProcess: null,
-                                failedProcess: OnFail()));
+                                failedProcess: OnFail(),
+                                isOptional: false,
+                                ignoreRequirements: CardEffectCommons.IgnoreRequirement.All));
 
                             IEnumerator OnFail()
                             {
