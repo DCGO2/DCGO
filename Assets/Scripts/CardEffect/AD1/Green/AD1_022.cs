@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.AD1
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
-                    => "[Your Turn] When any of your other [ADVENTURE] trait Digimon orTamers are played, by suspending this Tamer, 1 of your Digimon may digivolve into an [ADVENTURE] trait Digimon in the hand. For every 2 of your Tamers' colors, reduce this effect's digivolution cost by 1.";
+                    => "[Your Turn] When any of your other [ADVENTURE] trait Digimon or Tamers are played, by suspending this Tamer, 1 of your Digimon may digivolve into an [ADVENTURE] trait Digimon in the hand. For every 2 of your Tamers' colors, reduce this effect's digivolution cost by 1.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -55,35 +55,62 @@ namespace DCGO.CardEffects.AD1
                         && cardSource.EqualsTraits("ADVENTURE");
                 }
 
+                bool IsYourDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(
                         new List<Permanent>() { card.PermanentOfThisCard() },
                         CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                    List<CardSource> tamerCards = new List<CardSource>();
-
-                    foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourDigimon) && CardEffectCommons.HasMatchConditionOwnersHand(card, IsAdventureDigimon))
                     {
-                        if (permanent.IsTamer)
+                        List<CardSource> tamerCards = new List<CardSource>();
+
+                        foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
                         {
-                            tamerCards.Add(permanent.TopCard);
+                            if (permanent.IsTamer)
+                            {
+                                tamerCards.Add(permanent.TopCard);
+                            }
+                        }
+
+                        int reduceCost = Combinations.GetUniqueColorCardCount(tamerCards) / 2;
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsYourDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to digivolve.", "The opponent is selecting 1 Digimon to digivolve.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                permanent,
+                                IsAdventureDigimon,
+                                payCost: true,
+                                reduceCostTuple: (reduceCost, null),
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: -1,
+                                isHand: true,
+                                activateClass,
+                                successProcess: null
+                            ));
                         }
                     }
-
-                    int reduceCost = Combinations.GetUniqueColorCardCount(tamerCards) / 2;
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                        card.PermanentOfThisCard(),
-                        IsAdventureDigimon,
-                        payCost: true,
-                        reduceCostTuple: (reduceCost, null),
-                        fixedCostTuple: null,
-                        ignoreDigivolutionRequirementFixedCost: -1,
-                        isHand: true,
-                        activateClass,
-                        successProcess: null
-                    ));
                 }
             }
             #endregion
