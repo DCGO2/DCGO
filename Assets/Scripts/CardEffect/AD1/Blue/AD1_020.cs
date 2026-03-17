@@ -168,10 +168,7 @@ namespace DCGO.CardEffects.AD1
                         }
                         default:
                             goto END_LOOP;
-                    }
-
-                    if (selectedCards.Count == prevCount)
-                        break;
+                    }                
                 }
 
                 END_LOOP:;
