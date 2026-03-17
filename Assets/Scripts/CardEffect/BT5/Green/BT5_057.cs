@@ -15,7 +15,7 @@ public class BT5_057 : CEntity_Effect
         if (timing == EffectTiming.OnDeclaration)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Gain Security Attack +1 to your Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Gain Security Attack +1 to your Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

@@ -109,7 +109,7 @@ public class BT9_101 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Return 1 suspended Deigimon and 1 suspended Tamer to the bottom of deck");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Return 1 suspended Digimon and 1 suspended Tamer to the bottom of deck");
         }
 
         return cardEffects;

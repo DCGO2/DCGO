@@ -29,7 +29,7 @@ public class BT8_051 : CEntity_Effect
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("DP -3000 to a suspended Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("DP -3000 to a suspended Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

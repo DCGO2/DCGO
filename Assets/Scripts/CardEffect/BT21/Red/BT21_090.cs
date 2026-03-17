@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region ignoring colours
+            #region ignoring colors
 
             if (timing == EffectTiming.None)
             {
@@ -215,7 +215,7 @@ namespace DCGO.CardEffects.BT21
 
             #endregion
 
-            #region Secuity
+            #region Security
 
             if (timing == EffectTiming.SecuritySkill)
             {

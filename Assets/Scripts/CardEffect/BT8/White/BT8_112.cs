@@ -207,7 +207,7 @@ public class BT8_112 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Trash digivolution cards and return Digimons to the bottom of deck", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Trash digivolution cards and return Digimon to the bottom of deck", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -456,7 +456,7 @@ public class BT8_112 : CEntity_Effect
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Trash digivolution cards and return Digimons to the bottom of deck", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Trash digivolution cards and return Digimon to the bottom of deck", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

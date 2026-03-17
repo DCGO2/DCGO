@@ -21,7 +21,7 @@ public class BT2_053 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When you play another Digimon with the same name as this DigimonÅCtrigger <Draw 1>. (Draw 1 card from your deck.)";
+                return "[Your Turn] When you play another Digimon with the same name as this Digimon, trigger <Draw 1>. (Draw 1 card from your deck.)";
             }
 
             bool PermanentCondition(Permanent permanent)

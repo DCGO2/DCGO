@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.EX9
 
             #endregion
 
-            #region When Digiolving
+            #region When Digivolving
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {

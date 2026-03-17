@@ -10,11 +10,11 @@ namespace DCGO.CardEffects.BT17
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Opponenets Turn
+            #region Opponents Turn
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digivole Into [Infermon]", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digivolve Into [Infermon]", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

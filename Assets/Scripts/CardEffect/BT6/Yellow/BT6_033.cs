@@ -15,7 +15,7 @@ public class BT6_033 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Trash your security and gaim Memory", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Trash your security and gain Memory", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 

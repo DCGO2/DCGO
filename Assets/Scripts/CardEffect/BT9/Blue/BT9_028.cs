@@ -31,7 +31,7 @@ public class BT9_028 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Unsuspend this Digimon. Then, if [WereGarurumon] or [X Antibody] is in this DigimonÅfs digivolution cards, return 1 of your opponentÅfs level 4 or lower Digimon to its ownerÅfand.";
+                return "[When Digivolving] Unsuspend this Digimon. Then, if [WereGarurumon] or [X Antibody] is in this Digimon's digivolution cards, return 1 of your opponent's level 4 or lower Digimon to its owner's hand.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

@@ -15,7 +15,7 @@ public class P_045 : CEntity_Effect
         if (timing == EffectTiming.None)
         {
             AddSkillClass addSkillClass = new AddSkillClass();
-            addSkillClass.SetUpICardEffect("Your Digimons gain Decoy", CanUseCondition, card);
+            addSkillClass.SetUpICardEffect("Your Digimon gain Decoy", CanUseCondition, card);
             addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
             addSkillClass.SetIsInheritedEffect(true);
             cardEffects.Add(addSkillClass);

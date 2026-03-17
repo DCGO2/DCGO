@@ -243,7 +243,7 @@ namespace DCGO.CardEffects.BT15
 
             #endregion
 
-            #region Inerited Effect
+            #region Inherited Effect
 
             if (timing == EffectTiming.OnAllyAttack)
             {

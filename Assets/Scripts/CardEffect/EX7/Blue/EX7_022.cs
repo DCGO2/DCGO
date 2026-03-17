@@ -161,7 +161,7 @@ namespace DCGO.CardEffects.EX7
             {
                 CanNotSwitchAttackTargetClass canNotSwitchAttackTargetClass = new CanNotSwitchAttackTargetClass();
                 canNotSwitchAttackTargetClass.SetUpICardEffect(
-                    "All of your Digimon with the [NSp] trait trait can't have their attack targets switched.", CanUseCondition, card);
+                    "All of your Digimon with the [NSp] trait can't have their attack targets switched.", CanUseCondition, card);
                 canNotSwitchAttackTargetClass.SetUpCanNotSwitchAttackTargetClass(PermanentCondition: PermanentCondition);
                 cardEffects.Add(canNotSwitchAttackTargetClass);
 

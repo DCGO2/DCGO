@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT21
 
             #region OP/WD Shared
 
-            string SharedEffectName = "Trash 1 Digimons sources. 2 Digimon or Tamers can't Suspend or Activate When Digivolving";
+            string SharedEffectName = "Trash 1 Digimon sources. 2 Digimon or Tamers can't Suspend or Activate When Digivolving";
 
             string SharedEffectDescription(string tag) => $"[{tag}] Reveal the top 3 cards of your deck. Add 1 card with [Vemmon] in its text among them to the hand. Trash the rest. Then, you may place up to 2 [Vemmon] from your trash as 1 of your Digimon's bottom digivolution cards.";
 

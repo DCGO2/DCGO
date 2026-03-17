@@ -94,7 +94,7 @@ public class BT8_032 : CEntity_Effect
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Unsuspend and suspend Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Unsuspend and suspend Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetHashString("UnsuspendSuspend_BT8_032");
             cardEffects.Add(activateClass);

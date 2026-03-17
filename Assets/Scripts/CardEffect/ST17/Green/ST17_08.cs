@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.ST17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend Digimons and Tamers and give effects", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend Digimon and Tamers and give effects", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetHashString("SuspendAndGiveEffects_ST17_08");
                 cardEffects.Add(activateClass);

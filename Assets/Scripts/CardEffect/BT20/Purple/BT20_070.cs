@@ -9,7 +9,7 @@ namespace DCGO.CardEffects.BT20
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alt Digivovle Cost
+            #region Alt Digivolve Cost
 
             if (timing == EffectTiming.None)
             {

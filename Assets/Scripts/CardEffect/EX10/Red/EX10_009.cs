@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete all lowest DP Digimon. if this didnt happen, trash their top 5 deck cards", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete all lowest DP Digimon. if this didn't happen, trash their top 5 deck cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete all lowest DP Digimon. if this didnt happen, trash their top 5 deck cards", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete all lowest DP Digimon. if this didn't happen, trash their top 5 deck cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

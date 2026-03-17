@@ -15,7 +15,7 @@ public class EX5_028 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Play 1 yello Tamer from hand", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Play 1 yellow Tamer from hand", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 

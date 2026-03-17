@@ -493,7 +493,7 @@ namespace DCGO.CardEffects.BT13
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Your Digimons gain Blocker", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Your Digimon gain Blocker", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("GetEffects_BT13_056");
                 cardEffects.Add(activateClass);

@@ -91,8 +91,8 @@ namespace DCGO.CardEffects.ST20
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Select 1 Digimon that will gain <Security A. +1>, and +2000DP per 2 colours of tamers you have.",
-                            "The opponent is selecting 1 Digimon that will gain <Security A. +1>, and +2000DP per 2 colours of tamers they have.");
+                            "Select 1 Digimon that will gain <Security A. +1>, and +2000DP per 2 colors of tamers you have.",
+                            "The opponent is selecting 1 Digimon that will gain <Security A. +1>, and +2000DP per 2 colors of tamers they have.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -154,8 +154,8 @@ namespace DCGO.CardEffects.ST20
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Select 1 Digimon that will gain <Security A. +1>, and +2000DP per 2 colours of tamers you have.",
-                            "The opponent is selecting 1 Digimon that will gain <Security A. +1>, and +2000DP per 2 colours of tamers they have.");
+                            "Select 1 Digimon that will gain <Security A. +1>, and +2000DP per 2 colors of tamers you have.",
+                            "The opponent is selecting 1 Digimon that will gain <Security A. +1>, and +2000DP per 2 colors of tamers they have.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

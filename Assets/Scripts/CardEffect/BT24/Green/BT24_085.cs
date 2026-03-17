@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.BT24
                             root: SelectCardEffect.Root.Hand));
                         #endregion
 
-                        #region Digimon atttacks
+                        #region Digimon attacks
                         Permanent selectedPermanent = null;
 
                         int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));

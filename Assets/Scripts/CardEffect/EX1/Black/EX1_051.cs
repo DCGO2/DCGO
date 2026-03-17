@@ -104,7 +104,7 @@ namespace DCGO.CardEffects.EX1
                     isInheritedEffect: true,
                     card: card,
                     condition: Condition,
-                    effectName: () => "Your other Digimons with the same name as this Digimon gain DP +2000"));
+                    effectName: () => "Your other Digimon with the same name as this Digimon gain DP +2000"));
             }
 
             return cardEffects;

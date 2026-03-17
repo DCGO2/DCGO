@@ -115,7 +115,7 @@ namespace DCGO.CardEffects.P
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Selcect 1 Digimon that will get effects.", "The opponent is selecting 1 Digimon that will get effects.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get effects.", "The opponent is selecting 1 Digimon that will get effects.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
@@ -227,7 +227,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnAttackTargetChanged)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash top secuity card", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash top security card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("trashsec_P_183");
                 cardEffects.Add(activateClass);

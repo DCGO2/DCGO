@@ -111,7 +111,7 @@ public class BT9_029 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand to place 1 of your opponentÅf level 4 or lower Digimon at the bottom of its owner's deck.";
+                return "[When Digivolving] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand to place 1 of your opponent's level 4 or lower Digimon at the bottom of its owner's deck.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -259,7 +259,7 @@ public class BT9_029 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] Return 1 of your opponentÅfs level 4 or lower Digimon to its ownerÅfhand.";
+                return "[When Attacking] Return 1 of your opponent's level 4 or lower Digimon to its owner's hand.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

@@ -74,7 +74,7 @@ public class BT2_051 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When this Digimon deletes one of your opponent's Digimon in battle and survivesÅCsuspend 1 of your opponent's Digimon.";
+                return "[Your Turn] When this Digimon deletes one of your opponent's Digimon in battle and survives, suspend 1 of your opponent's Digimon.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

@@ -20,7 +20,7 @@ public class P_005 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] If you have 1 or fewer security cardsÅCtrigger <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)";
+                return "[On Play] If you have 1 or fewer security cards, trigger <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)";
             }
 
             bool CanUseCondition(Hashtable hashtable)

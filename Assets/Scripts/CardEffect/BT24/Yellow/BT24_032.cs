@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.BT24
             if (timing == EffectTiming.WhenLinked)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("1 of your opponent's Digimon gets -2k dp for the turn", CanUseCondition, card);
+                activateClass.SetUpICardEffect("1 of your opponent's Digimon gets -2k DP for the turn", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);

@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.BT22
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Ignore Color Requirment
+            #region Ignore Color Requirement
             if (timing == EffectTiming.None)
             {
                 IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
@@ -129,7 +129,7 @@ namespace DCGO.CardEffects.BT22
                         {
                             Permanent selectedDigimon = null;
 
-                            #region Select Permament Link Target
+                            #region Select Permanent Link Target
 
                             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, OwnPermamentCondition));
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
