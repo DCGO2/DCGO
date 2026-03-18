@@ -6,8 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -122,9 +122,28 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base PetrificationToken { get; private set; }
     public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
 
-    void LoadBanList()
+
+    async Task LoadBanListOnline()
     {
-        BanList = DataBase.ENGBanList;
+        string url = "https://www.dcgo.online/Banlist.json";
+        UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url);
+
+        UnityWebRequestAsyncOperation operation = jsonWebRequest.SendWebRequest();
+
+        while (!operation.isDone)
+        {
+            await Task.Yield(); // Keep the method asynchronous without blocking
+        }
+
+        if (jsonWebRequest.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(jsonWebRequest.error);
+        }
+        else
+        {
+            BanList root = JsonUtility.FromJson<BanList>(jsonWebRequest.downloadHandler.text);
+            BanList = root.ConvertToCardRestriction();
+        }
     }
 
     async Task CreateTokenData()
@@ -512,7 +531,7 @@ public class ContinuousController : MonoBehaviour
             ReverseCard_Digitama = reverseDigieggCardSprite;
         }
 
-        LoadBanList();
+        await LoadBanListOnline();
 
         // deck data
         //DeckDatas = PlayerPrefsUtil.LoadList<DeckData>(DeckDatasPlayerPrefsKey);
