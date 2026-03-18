@@ -17,12 +17,20 @@ namespace DCGO.CardEffects.ST24
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsCardName("Koromon")
-                            || (targetPermanent.TopCard.IsLevel2
-                        && targetPermanent.TopCard.EqualsTraits("DATA SQUAD"));
+                    return targetPermanent.TopCard.EqualsCardName("Koromon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("DATA SQUAD");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 2, permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
 
             #endregion
