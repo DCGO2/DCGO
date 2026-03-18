@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -199,6 +200,43 @@ public class DeckBuildingRule : MonoBehaviour
         return true;
     }
 }
+
+#region Banlist
+[Serializable]
+public class BanList
+{
+    public List<Pair> BannedPair;
+    public List<Restrictions> Restrictions;
+
+    public CardRestriction ConvertToCardRestriction()
+    {
+        List<CardLimitCount> CardLimit = new List<CardLimitCount>();
+        List<BannedPair> BannedPairs = new List<BannedPair>();
+
+        foreach (Pair pair in BannedPair)
+            BannedPairs.Add(new BannedPair(pair.id, pair.pairs));
+
+        foreach (Restrictions restrict in Restrictions)
+            CardLimit.Add(new CardLimitCount(restrict.id, restrict.limit));
+
+        return new CardRestriction(CardLimit, BannedPairs);
+    }
+}
+
+[Serializable]
+public class Pair
+{
+    public string id;
+    public List<string> pairs;
+}
+
+[Serializable]
+public class Restrictions
+{
+    public string id;
+    public int limit;
+}
+#endregion
 
 public class CardRestriction
 {
