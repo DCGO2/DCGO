@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.EX11
 
             string SharedEffectName() => "Suspend 1 Digimon.";
 
-            string SharedEffectDescription(string tag) => $"[{tag}] [On Play] [When Digivolving] You may suspend 1 Digimon.";
+            string SharedEffectDescription(string tag) => $"[{tag}] You may suspend 1 Digimon.";
 
             bool SharedCanActivateCondition(Hashtable hashtable)
             {
