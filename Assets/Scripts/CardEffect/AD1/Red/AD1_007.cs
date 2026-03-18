@@ -19,11 +19,11 @@ namespace DCGO.CardEffects.AD1
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel5
-                        && (targetPermanent.TopCard.HasText("Gammamon"));
+                    return targetPermanent.TopCard.HasText("Gammamon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    level: 5,
                     permanentCondition: PermanentCondition,
                     digivolutionCost: 3,
                     ignoreDigivolutionRequirement: false,
