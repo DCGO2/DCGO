@@ -253,7 +253,7 @@ namespace DCGO.CardEffects.AD1
 
                 #region Immunity
                 CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects", CanUseCondition, card);
+                canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's effects", CanUseCondition, card);
                 canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
                 cardEffects.Add(canNotAffectedClass);
 
