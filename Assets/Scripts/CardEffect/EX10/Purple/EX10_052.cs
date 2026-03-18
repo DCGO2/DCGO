@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.EX10
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel3 && targetPermanent.TopCard.EqualsCardName("Lucemon");
+                    return targetPermanent.TopCard.EqualsCardName("Lucemon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
