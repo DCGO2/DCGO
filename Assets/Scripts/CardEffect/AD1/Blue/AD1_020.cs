@@ -1,5 +1,3 @@
-
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,11 +68,13 @@ namespace DCGO.CardEffects.AD1
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
+                    List<CardSource> concat = selectedCards.Concat(new List<CardSource>() { cardSource }).ToList();
+
                     if (!IsHybridCard(cardSource)) return false;
                     if (selectedCards.Contains(cardSource)) return false;
                     if (selectedCards.Count > 0)
                     {
-                        return cardSource.CardColors.Any(c => !selectedCards[0].CardColors.Contains(c));
+                        return Combinations.GetDifferenetColorCardCount(concat) >= concat.Count;
                     }
                     return true;
                 }
