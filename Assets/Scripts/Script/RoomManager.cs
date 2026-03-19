@@ -131,19 +131,20 @@ public class RoomManager : MonoBehaviourPunCallbacks
             roomOptions.CustomRoomProperties = new Hashtable()
             {
                 { "RoomCreator",PhotonNetwork.NickName },
-
+                { "UseBanlist", ContinuousController.instance.useBanlist }
             };
 
             //Display custom property information in the lobby
             roomOptions.CustomRoomPropertiesForLobby = new string[]
             {
                 "RoomCreator",
+                "UseBanlist"
             };
 
             string RoomName = StringUtils.GeneratePassword_Num(5);
 
             //Create Room
-            PhotonNetwork.CreateRoom(RoomName, roomOptions, null);
+            PhotonNetwork.CreateRoom(RoomName + "-" + ContinuousController.instance.useBanlist, roomOptions, null);
 
             while (true)
             {
