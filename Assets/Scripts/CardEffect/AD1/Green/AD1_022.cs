@@ -76,7 +76,7 @@ namespace DCGO.CardEffects.AD1
                             }
                         }
 
-                        int reduceCost = Combinations.GetUniqueColorCardCount(tamerCards) / 2;
+                        int reduceCost = Combinations.GetDifferenetColorCardCount(tamerCards) / 2;
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
