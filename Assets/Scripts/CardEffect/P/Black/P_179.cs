@@ -195,7 +195,7 @@ namespace DCGO.CardEffects.P
                         mode: SelectPermanentEffect.Mode.Destroy,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select [Device] option to trash", "The opponent is selecting 1 [Device] option to trash");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 option to trash", "The opponent is selecting 1 option to trash");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
