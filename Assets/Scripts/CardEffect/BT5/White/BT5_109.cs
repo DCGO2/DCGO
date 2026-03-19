@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
 
+// Mega Digimon Fusion
 public class BT5_109 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
@@ -53,7 +52,7 @@ public class BT5_109 : CEntity_Effect
                 activateClass3.SetUpICardEffect("Bottom deck the Digimon", CanUseCondition2, playedPermanent.TopCard);
                 activateClass3.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine3, -1, false, EffectDiscription2());
                 activateClass3.SetEffectSourcePermanent(playedPermanent);
-                playedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                playedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect2);
 
                 #region Reduce evo cost
 
@@ -229,15 +228,15 @@ public class BT5_109 : CEntity_Effect
                     {
                         yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(
                         new List<Permanent>() { playedPermanent },
-                        CardEffectCommons.CardEffectHashtable(activateClass1)).DeckBounce());
+                        CardEffectCommons.CardEffectHashtable(activateClass3)).DeckBounce());
                     }
                 }
 
-                ICardEffect GetCardEffect(EffectTiming _timing)
+                ICardEffect GetCardEffect2(EffectTiming _timing)
                 {
                     if (_timing == EffectTiming.OnEndTurn)
                     {
-                        return activateClass1;
+                        return activateClass3;
                     }
 
                     return null;
