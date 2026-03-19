@@ -211,7 +211,7 @@ namespace DCGO.CardEffects.AD1
                                 canNoSelect: true,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
-                                selectCardCoroutine: null,
+                                selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
                                 mode: SelectHandEffect.Mode.PlayForFree,
                                 cardEffect: activateClass);
@@ -227,7 +227,7 @@ namespace DCGO.CardEffects.AD1
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 canNoSelect: () => true,
-                                selectCardCoroutine: null,
+                                selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
                                 message: "Select 1 card to play.",
                                 maxCount: 1,
