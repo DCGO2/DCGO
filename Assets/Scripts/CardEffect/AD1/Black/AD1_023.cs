@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.AD1
                     if (selectedCards.Contains(cardSource)) return false;
                     if (selectedCards.Count > 0)
                     {
-                        return cardSource.CardColors.Any(c => !selectedCards[0].CardColors.Contains(c));
+                        return cardSource.CardColors.Any(color1 => selectedCards[0].CardColors.Any(color2 => color2 != color1));
                     }
                     return true;
                 }
