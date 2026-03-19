@@ -203,12 +203,12 @@ namespace DCGO.CardEffects.AD1
                 bool ToTop = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                 selectCardEffect.SetUp(
-                    canTargetCondition: (cardSource) => true,
+                    canTargetCondition: _ => true,
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
                     canNoSelect: () => false,
-                    selectCardCoroutine: selectCardCoroutine,
-                    afterSelectCardCoroutine: AfterSelectCardCoroutine1,
+                    selectCardCoroutine: null,
+                    afterSelectCardCoroutine: AfterSelectCardCoroutine,
                     message: "Specify the order to place the cards in the digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
                     maxCount: selectedCards.Count,
                     canEndNotMax: false,
@@ -223,15 +223,12 @@ namespace DCGO.CardEffects.AD1
                 selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Cards");
 
                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                IEnumerator selectCardCoroutine (CardSource cardSource)
+                
+                IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                 {
-                    fixedCards.Add(cardSource);
-                    return null;
-                }
+                    fixedCards = cardSources.Clone();
+                    fixedCards.Reverse();
 
-                IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
-                {
                     if (ToTop)
                     {
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(fixedCards, activateClass));
