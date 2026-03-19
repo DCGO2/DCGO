@@ -189,14 +189,6 @@ namespace DCGO.CardEffects.AD1
 
                     if (doPlay)
                     {
-                        CardSource selectedCard = null;
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCard = cardSource;
-                            yield return null;
-                        }
-
                         #region Hand/Trash Card Selection & Play
                         if (fromHand)
                         {
