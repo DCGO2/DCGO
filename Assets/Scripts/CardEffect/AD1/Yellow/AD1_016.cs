@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.AD1
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
                         int changeAmount = -3000 * card.Owner.GetBattleAreaPermanents().Count(IsDigimonOrTamerPermanent); 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: changeAmount, effectDuration: EffectDuration.UntilOwnerTurnEnd, activateClass: activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: changeAmount, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                     }
                 }
             }
