@@ -19,11 +19,11 @@ namespace DCGO.CardEffects.AD1
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel5
-                        && (targetPermanent.TopCard.HasText("Gammamon"));
+                    return targetPermanent.TopCard.HasText("Gammamon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    level: 5,
                     permanentCondition: PermanentCondition,
                     digivolutionCost: 3,
                     ignoreDigivolutionRequirement: false,
@@ -197,6 +197,9 @@ namespace DCGO.CardEffects.AD1
                 SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                List<CardSource> fixedCards = new List<CardSource>();
+
                 bool ToTop = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                 selectCardEffect.SetUp(
@@ -204,7 +207,7 @@ namespace DCGO.CardEffects.AD1
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
                     canNoSelect: () => false,
-                    selectCardCoroutine: null,
+                    selectCardCoroutine: selectCardCoroutine,
                     afterSelectCardCoroutine: AfterSelectCardCoroutine1,
                     message: "Specify the order to place the cards in the digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
                     maxCount: selectedCards.Count,
@@ -221,15 +224,21 @@ namespace DCGO.CardEffects.AD1
 
                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
+                IEnumerator selectCardCoroutine (CardSource cardSource)
+                {
+                    fixedCards.Add(cardSource);
+                    return null;
+                }
+
                 IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
                 {
                     if (ToTop)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(selectedCards, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(fixedCards, activateClass));
                     }
                     else
                     {
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(fixedCards, activateClass));
                     }
 
                     yield return null;
