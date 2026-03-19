@@ -932,7 +932,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
                     if (attackPermanents.Count > 0)
                     {
-                        foreach (Permanent selectedPermanent in degeneratePermanents)
+                        foreach (Permanent selectedPermanent in attackPermanents)
                         {
                             if (selectedPermanent.CanAttack(_cardEffect))
                             {
