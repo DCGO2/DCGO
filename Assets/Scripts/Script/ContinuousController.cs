@@ -120,7 +120,8 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base AthoRenePorToken { get; private set; }
     public CEntity_Base HinukamuyToken { get; private set; }
     public CEntity_Base PetrificationToken { get; private set; }
-    public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
+    //public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
+    public BanList BanList { get; private set; } = new BanList();
 
 
     async Task LoadBanListOnline()
@@ -138,11 +139,11 @@ public class ContinuousController : MonoBehaviour
         if (jsonWebRequest.result != UnityWebRequest.Result.Success)
         {
             Debug.Log(jsonWebRequest.error);
+            useBanlist = false;
         }
         else
         {
-            BanList root = JsonUtility.FromJson<BanList>(jsonWebRequest.downloadHandler.text);
-            BanList = root.ConvertToCardRestriction();
+            BanList = JsonUtility.FromJson<BanList>(jsonWebRequest.downloadHandler.text);
         }
     }
 
@@ -873,6 +874,21 @@ public class ContinuousController : MonoBehaviour
     public void LoadAutoHatch()
     {
         autoHatch = PlayerPrefsUtil.GetBool(_autoHatchKey, false);
+    }
+    #endregion
+
+    #region Use Banlist
+    public bool useBanlist = true;
+    string _useBanlistKey = "UseBanlist";
+
+    public void SaveUseBanlist()
+    {
+        PlayerPrefsUtil.SetBool(_useBanlistKey, useBanlist);
+        PlayerPrefs.Save();
+    }
+    public void LoadUseBanlist()
+    {
+        useBanlist = PlayerPrefsUtil.GetBool(_useBanlistKey, false);
     }
     #endregion
 

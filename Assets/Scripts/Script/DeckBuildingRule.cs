@@ -1,3 +1,4 @@
+using DCGO.CardEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,11 +67,11 @@ public class DeckBuildingRule : MonoBehaviour
             //‹K’è–‡”ˆÈã‚ÌƒJ[ƒh‚ð”²‚­
             foreach (CEntity_Base cEntity_Base in DistinctDeckCards1)
             {
-                foreach (CardLimitCount cardLimitCount in ContinuousController.instance.BanList.CardLimitCounts)
+                foreach (Restrictions restriction in ContinuousController.instance.BanList.Restrictions)
                 {
-                    if (cEntity_Base.CardID == cardLimitCount.CardID)
+                    if (cEntity_Base.CardID == restriction.id)
                     {
-                        while (cEntity_Base.SameCardIDCount(deckCards) > cardLimitCount.LimitCount)
+                        while (cEntity_Base.SameCardIDCount(deckCards) > restriction.limit)
                         {
                             CEntity_Base removeCard = deckCards.Find(cEntity_Base1 => cEntity_Base1.CardID == cEntity_Base.CardID);
 
@@ -82,15 +83,14 @@ public class DeckBuildingRule : MonoBehaviour
                     }
                 }
 
-                foreach (BannedPair bannedPair in ContinuousController.instance.BanList.BannedPairs)
+                foreach (Pair bannedPair in ContinuousController.instance.BanList.BannedPair)
                 {
-                    if (cEntity_Base.CardID == bannedPair.CardID_A)
+                    if (cEntity_Base.CardID == bannedPair.id)
                     {
-                        UnityEngine.Debug.Log($"Banned Pair Found: {deckCards.Some(cEntity_Base1 => bannedPair.CardIDs_B.Contains(cEntity_Base1.CardID))}");
-                        while (deckCards.Some(cEntity_Base1 => bannedPair.CardIDs_B.Contains(cEntity_Base1.CardID)))
+                        while (deckCards.Some(cEntity_Base1 => bannedPair.pairs.Contains(cEntity_Base1.CardID)))
                         {
-                            CEntity_Base removeCard = deckCards.Find(cEntity_Base1 => bannedPair.CardIDs_B.Contains(cEntity_Base1.CardID));
-                            UnityEngine.Debug.Log($"Banned Pair: {removeCard.CardID}");
+                            CEntity_Base removeCard = deckCards.Find(cEntity_Base1 => bannedPair.pairs.Contains(cEntity_Base1.CardID));
+
                             if (removeCard != null)
                             {
                                 deckCards.Remove(removeCard);
@@ -98,12 +98,12 @@ public class DeckBuildingRule : MonoBehaviour
                         }
                     }
 
-                    if (bannedPair.CardIDs_B.Contains(cEntity_Base.CardID))
+                    if (bannedPair.pairs.Contains(cEntity_Base.CardID))
                     {
-                        while (deckCards.Some(cEntity_Base1 => cEntity_Base1.CardID == bannedPair.CardID_A))
+                        while (deckCards.Some(cEntity_Base1 => cEntity_Base1.CardID == bannedPair.id))
                         {
-                            CEntity_Base removeCard = deckCards.Find(cEntity_Base1 => bannedPair.CardID_A.Contains(cEntity_Base1.CardID));
-                            UnityEngine.Debug.Log($"Banned Pair: {removeCard.CardID}");
+                            CEntity_Base removeCard = deckCards.Find(cEntity_Base1 => bannedPair.id.Contains(cEntity_Base1.CardID));
+
                             if (removeCard != null)
                             {
                                 deckCards.Remove(removeCard);
@@ -132,11 +132,11 @@ public class DeckBuildingRule : MonoBehaviour
     {
         int count = cEntity_Base.MaxCountInDeck;
 
-        foreach (CardLimitCount cardLimitCount in ContinuousController.instance.BanList.CardLimitCounts)
+        foreach (Restrictions restriction in ContinuousController.instance.BanList.Restrictions)
         {
-            if (cEntity_Base.CardID == cardLimitCount.CardID)
+            if (cEntity_Base.CardID == restriction.id)
             {
-                count = cardLimitCount.LimitCount;
+                count = restriction.limit;
                 break;
             }
         }
@@ -167,30 +167,30 @@ public class DeckBuildingRule : MonoBehaviour
             }
         }
 
-        foreach (CardLimitCount cardLimitCount in ContinuousController.instance.BanList.CardLimitCounts)
+        foreach (Restrictions restriction in ContinuousController.instance.BanList.Restrictions)
         {
-            if (cEntity_Base.CardID == cardLimitCount.CardID)
+            if (cEntity_Base.CardID == restriction.id)
             {
-                if (cEntity_Base.SameCardIDCount(deckData.AllDeckCards()) >= cardLimitCount.LimitCount)
+                if (cEntity_Base.SameCardIDCount(deckData.AllDeckCards()) >= restriction.limit)
                 {
                     return false;
                 }
             }
         }
 
-        foreach (BannedPair bannedPair in ContinuousController.instance.BanList.BannedPairs)
+        foreach (Pair bannedPair in ContinuousController.instance.BanList.BannedPair)
         {
-            if (cEntity_Base.CardID == bannedPair.CardID_A)
+            if (cEntity_Base.CardID == bannedPair.id)
             {
-                if (deckData.AllDeckCards().Some(cEntity_Base1 => bannedPair.CardIDs_B.Contains(cEntity_Base1.CardID)))
+                if (deckData.AllDeckCards().Some(cEntity_Base1 => bannedPair.pairs.Contains(cEntity_Base1.CardID)))
                 {
                     return false;
                 }
             }
 
-            if (bannedPair.CardIDs_B.Contains(cEntity_Base.CardID))
+            if (bannedPair.pairs.Contains(cEntity_Base.CardID))
             {
-                if (deckData.AllDeckCards().Some(cEntity_Base1 => cEntity_Base1.CardID == bannedPair.CardID_A))
+                if (deckData.AllDeckCards().Some(cEntity_Base1 => cEntity_Base1.CardID == bannedPair.id))
                 {
                     return false;
                 }
@@ -207,6 +207,14 @@ public class BanList
 {
     public List<Pair> BannedPair;
     public List<Restrictions> Restrictions;
+
+    public BanList()
+    {
+        BannedPair = new List<Pair>();
+        Restrictions = new List<Restrictions>();
+    }
+
+    
 
     public CardRestriction ConvertToCardRestriction()
     {
