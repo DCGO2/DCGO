@@ -190,13 +190,6 @@ namespace DCGO.CardEffects.AD1
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCards.Add(cardSource);
-
-                            yield return null;
-                        }
-
                         if (fromHand)
                         {
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
@@ -303,7 +296,7 @@ namespace DCGO.CardEffects.AD1
 
                         if (selectedPermanent != null)
                         {
-                            List<CardSource> selectedCards = new List<CardSource>();
+                            List<CardSource> selectedCards1 = new List<CardSource>();
 
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -316,14 +309,14 @@ namespace DCGO.CardEffects.AD1
                                 canNoSelect: true,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
-                                selectCardCoroutine: null,
+                                selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
                                 mode: SelectHandEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
                             IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {
-                                selectedCards.Add(cardSource);
+                                selectedCards1.Add(cardSource);
 
                                 yield return null;
                             }
@@ -332,9 +325,9 @@ namespace DCGO.CardEffects.AD1
 
                             yield return StartCoroutine(selectHandEffect.Activate());
 
-                            if (selectedCards.Count > 0)
+                            if (selectedCards1.Count > 0)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(selectedCards, activateClass));
+                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(selectedCards1, activateClass));
 
                                 yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
                             }
