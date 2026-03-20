@@ -159,8 +159,6 @@ namespace DCGO.CardEffects.EX11
                         && permanent.TopCard.HasText("Vemmon");
                 }
 
-                bool IsVemmon (CardSource cardSource) => cardSource.EqualsCardName("Vemmon");
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent> { card.PermanentOfThisCard() }, hashtable).Tap());
@@ -235,13 +233,18 @@ namespace DCGO.CardEffects.EX11
 
                                     if (selectedPermament != null)
                                     {
+                                        bool CanEndNotMax = false;
+
+                                        if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, targetPermanents.Contains) > 1) CanEndNotMax = true;
+
                                         List<CardSource> digivolutionCards_fixed = new List<CardSource>();
+
                                         if (selectedCards.Count > 1)
                                         {
                                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                                             selectCardEffect.SetUp(
-                                                canTargetCondition: IsVemmon,
+                                                canTargetCondition: (cardSource) => true,
                                                 canTargetCondition_ByPreSelecetedList: null,
                                                 canEndSelectCondition: CanEndSelectCondition,
                                                 canNoSelect: () => false,
@@ -249,7 +252,7 @@ namespace DCGO.CardEffects.EX11
                                                 afterSelectCardCoroutine: AfterSelectCardCoroutine,
                                                 message: "Specify the order to place the cards in the digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
                                                 maxCount: selectedCards.Count,
-                                                canEndNotMax: true,
+                                                canEndNotMax: CanEndNotMax,
                                                 isShowOpponent: true,
                                                 mode: SelectCardEffect.Mode.Custom,
                                                 root: SelectCardEffect.Root.Custom,
