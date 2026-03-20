@@ -728,7 +728,8 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanentCondition);
+            return CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanentCondition)
+                || CardEffectCommons.HasMatchConditionOwnersBreedingPermanent(card, permanentCondition);
         }
 
         bool CardCondition(CardSource cardSource)
