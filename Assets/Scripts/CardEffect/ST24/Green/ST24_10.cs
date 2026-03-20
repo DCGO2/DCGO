@@ -142,7 +142,7 @@ namespace DCGO.CardEffects.ST24
 
                 string EffectDescription()
                 {
-                    return "[All Turns] [Once Per Turn] When this Digimon with [ShineGreymon] in its name or the [DATA SQUAD] trait would leave the battle area, by trashing the bottom face-down card from under any of your Tamers, it doesn't leave";
+                    return "[All Turns] [Once Per Turn] When this Digimon with [Rosemon] in its name or the [DATA SQUAD] trait would leave the battle area, by trashing the bottom face-down card from under any of your Tamers, it doesn't leave";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
