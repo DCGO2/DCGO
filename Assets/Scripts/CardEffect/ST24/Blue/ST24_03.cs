@@ -40,8 +40,7 @@ namespace DCGO.CardEffects.ST24
             bool CanSelectOpponentLevel3Digimon(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && permanent.TopCard.HasLevel
-                    && permanent.TopCard.Level == 3;
+                    && permanent.TopCard.IsLevel3;
             }
 
             bool CanSelectOwnDataSquadTamer(Permanent permanent)
