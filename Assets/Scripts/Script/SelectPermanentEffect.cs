@@ -41,6 +41,8 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         _customMessage_Enemy = null;
 
         _customBackButtonMessage = null;
+
+        _degenerationCount = 1;
     }
 
     public void SetIsLocal()
