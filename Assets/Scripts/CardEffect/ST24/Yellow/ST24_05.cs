@@ -77,7 +77,7 @@ namespace DCGO.CardEffects.ST24
                     mode: SelectHandEffect.Mode.PlayForFree,
                     cardEffect: activateClass);
 
-                return null;
+                yield return StartCoroutine(selectHandEffect.Activate());
             }
             #endregion
 
