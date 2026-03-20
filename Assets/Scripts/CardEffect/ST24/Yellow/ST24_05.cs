@@ -50,14 +50,14 @@ namespace DCGO.CardEffects.ST24
                     && permanent.IsTamer;
             }
 
-            bool HasTamerInHand(CardSource source)
-            {
-                return source.EqualsTraits("DATA SQUAD")
-                    && CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass);
-            }
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool HasTamerInHand(CardSource source)
+                {
+                    return source.EqualsTraits("DATA SQUAD")
+                        && CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass);
+                }
+
                 List<CardSource> selectedCards = new List<CardSource>();
 
                 SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
