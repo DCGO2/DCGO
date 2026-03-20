@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.ST24
                     canNoSelect: false,
                     canEndNotMax: false,
                     isShowOpponent: true,
-                    selectCardCoroutine: SelectCardCoroutine,
+                    selectCardCoroutine: null,
                     afterSelectCardCoroutine: null,
                     mode: SelectHandEffect.Mode.PlayForFree,
                     cardEffect: activateClass);
