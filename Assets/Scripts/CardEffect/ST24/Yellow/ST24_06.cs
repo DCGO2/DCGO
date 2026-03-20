@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.ST24
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 4, permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
-           
+
             #endregion
 
             #region Shared OP/WD/WA
@@ -74,7 +74,7 @@ namespace DCGO.CardEffects.ST24
             bool CanSelectTrashSourceCardCondition(CardSource cardSource)
             {
                 return cardSource.IsFlipped;
-            }            
+            }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -125,10 +125,10 @@ namespace DCGO.CardEffects.ST24
                     {
                         Permanent selectedPermanent = null;
 
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
                         int maxCount1 = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource));
 
-                        selectPermanentEffect.SetUp(
+                        selectPermanentEffect1.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: TamerWithOneFaceDownSource,
                             canTargetCondition_ByPreSelecetedList: null,
@@ -136,21 +136,21 @@ namespace DCGO.CardEffects.ST24
                             maxCount: maxCount1,
                             canNoSelect: false,
                             canEndNotMax: true,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            selectPermanentCoroutine: SelectPermanentCoroutine1,
                             afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Tamer to trash 1 bottom face-down card from", "The opponent is selecting 1 Tamer to trash 1 bottom face-down card from");
+                        selectPermanentEffect1.SetUpCustomMessage("Select 1 Tamer to trash 1 bottom face-down card from", "The opponent is selecting 1 Tamer to trash 1 bottom face-down card from");
 
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 
                         bool CanEndSelectCondition(List<Permanent> permanents)
                         {
                             return permanents.Count == 2 || (permanents.Count > 0 && permanents[0].DigivolutionCards.Count(CanSelectTrashSourceCardCondition) >= 2);
                         }
 
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        IEnumerator SelectPermanentCoroutine1(Permanent permanent)
                         {
                             selectedPermanent = permanent;
 
@@ -182,7 +182,7 @@ namespace DCGO.CardEffects.ST24
                         CardSource selectCard = null;
                         List<CardSource> selectedCards = null;
 
-                        int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
+                        int maxCount2 = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
 
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -191,7 +191,7 @@ namespace DCGO.CardEffects.ST24
                             canTargetCondition: CanSelectCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: maxCount2,
                             canNoSelect: true,
                             canEndNotMax: false,
                             isShowOpponent: true,
@@ -204,7 +204,7 @@ namespace DCGO.CardEffects.ST24
                         selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
                         yield return StartCoroutine(selectHandEffect.Activate());
-                            
+
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectCard = cardSource;
@@ -265,7 +265,7 @@ namespace DCGO.CardEffects.ST24
                             || card.PermanentOfThisCard().TopCard.EqualsTraits("DATA SQUAD"))
                         && CardEffectCommons.HasMatchConditionPermanent(TamerWithOneFaceDownSource);
                 }
-                
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(TamerWithOneFaceDownSource))
