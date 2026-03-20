@@ -130,7 +130,7 @@ namespace DCGO.CardEffects.AD1
                     {
 
                         List<CardSource> cards = card.Owner.GetBattleAreaPermanents()
-                        .Concat(card.Owner.Enemy.GetBattleAreaPermanents()).ToList()
+                        .Concat(card.Owner.GetBattleAreaPermanents()).ToList()
                         .Map(card => card.TopCard)
                         .Where(x => x.IsTamer).ToList();
 
