@@ -66,7 +66,7 @@ namespace DCGO.CardEffects.ST24
 
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: null,
+                        canTargetCondition: _ => true,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.ST24
             #endregion
 
             #region Inherited
-            if (timing == EffectTiming.OnUnTappedAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("If you have 7 or fewer cards in hand, <Draw 1>.", CanUseCondition, card);
@@ -146,13 +146,13 @@ namespace DCGO.CardEffects.ST24
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
-                 => "[Your Turn] [Once Per Turn] When this Digimon unsuspends, if you have 7 or fewer cards in your hand, <Draw 1>.";
+                 => "[When Attacking] [Once Per Turn] If your hand has 7 or fewer cards, <Draw 1>. (Draw 1 card from your deck.)";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
                         CardEffectCommons.IsOwnerTurn(card) &&
-                        CardEffectCommons.CanTriggerWhenPermanentUnsuspends(hashtable, permanent => permanent == card.PermanentOfThisCard());
+                        CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
