@@ -55,6 +55,7 @@ namespace DCGO.CardEffects.ST24
                 bool HasTamerInHand(CardSource source)
                 {
                     return source.EqualsTraits("DATA SQUAD")
+                        && source.IsTamer
                         && CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass);
                 }
 
@@ -73,19 +74,10 @@ namespace DCGO.CardEffects.ST24
                     isShowOpponent: true,
                     selectCardCoroutine: SelectCardCoroutine,
                     afterSelectCardCoroutine: null,
-                    mode: SelectHandEffect.Mode.Custom,
+                    mode: SelectHandEffect.Mode.PlayForFree,
                     cardEffect: activateClass);
 
-                yield return StartCoroutine(selectHandEffect.Activate());
-
-                IEnumerator SelectCardCoroutine(CardSource cardSource)
-                {
-                    selectedCards.Add(cardSource);
-
-                    yield return null;
-                }
-
-                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
+                return null;
             }
             #endregion
 
