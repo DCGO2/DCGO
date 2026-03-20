@@ -233,12 +233,7 @@ namespace DCGO.CardEffects.EX11
 
                                     if (selectedPermament != null)
                                     {
-                                        bool CanEndNotMax = false;
-
-                                        if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, targetPermanents.Contains) > 1) CanEndNotMax = true;
-
                                         List<CardSource> digivolutionCards_fixed = new List<CardSource>();
-
                                         if (selectedCards.Count > 1)
                                         {
                                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -252,7 +247,7 @@ namespace DCGO.CardEffects.EX11
                                                 afterSelectCardCoroutine: AfterSelectCardCoroutine,
                                                 message: "Specify the order to place the cards in the digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
                                                 maxCount: selectedCards.Count,
-                                                canEndNotMax: CanEndNotMax,
+                                                canEndNotMax: true,
                                                 isShowOpponent: true,
                                                 mode: SelectCardEffect.Mode.Custom,
                                                 root: SelectCardEffect.Root.Custom,
