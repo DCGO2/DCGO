@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.AD1
                         }
                     }
 
-                    int suspendCount = Combinations.GetUniqueColorCardCount(tamerCards) / 2;
+                    int suspendCount = Combinations.GetDifferenetColorCardCount(tamerCards) / 2;
 
                     if (suspendCount > 0)
                     {
