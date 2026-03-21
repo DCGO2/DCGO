@@ -228,7 +228,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     #endregion
 
-    #region Room information is acquired and reflected in the UI
+    #region Room information is acquired and reflected in the UIs
     public IEnumerator ShowRoomInfo()
     {
         yield return new WaitWhile(() => !PhotonNetwork.IsConnectedAndReady);
@@ -236,7 +236,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         #region RoomName
         string RoomName = PhotonNetwork.CurrentRoom.Name;
-        RoomIDText.text = RoomName;
+        RoomIDText.text = RoomName.Substring(0,5);
         #endregion
     }
     #endregion
@@ -798,7 +798,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.InRoom)
         {
             #region クリップボードにデッキコードをコピー
-            GUIUtility.systemCopyBuffer = PhotonNetwork.CurrentRoom.Name;
+            GUIUtility.systemCopyBuffer = PhotonNetwork.CurrentRoom.Name.Substring(0, 5);
             #endregion
 
             List<UnityAction> Commands = new List<UnityAction>()

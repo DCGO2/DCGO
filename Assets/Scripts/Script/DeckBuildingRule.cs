@@ -65,6 +65,9 @@ public class DeckBuildingRule : MonoBehaviour
             }
 
             //ãKíËñáêîà»è„ÇÃÉJÅ[ÉhÇî≤Ç≠
+            if (!ContinuousController.instance.useBanlist)
+                return deckCards;
+
             foreach (CEntity_Base cEntity_Base in DistinctDeckCards1)
             {
                 foreach (Restrictions restriction in ContinuousController.instance.BanList.Restrictions)
@@ -132,6 +135,9 @@ public class DeckBuildingRule : MonoBehaviour
     {
         int count = cEntity_Base.MaxCountInDeck;
 
+        if (!ContinuousController.instance.useBanlist)
+            return count;
+
         foreach (Restrictions restriction in ContinuousController.instance.BanList.Restrictions)
         {
             if (cEntity_Base.CardID == restriction.id)
@@ -166,6 +172,9 @@ public class DeckBuildingRule : MonoBehaviour
                 return false;
             }
         }
+
+        if (!ContinuousController.instance.useBanlist)
+            return true;
 
         foreach (Restrictions restriction in ContinuousController.instance.BanList.Restrictions)
         {
