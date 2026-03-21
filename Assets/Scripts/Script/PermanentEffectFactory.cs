@@ -97,4 +97,35 @@ public partial class PermanentEffectFactory
         }
     }
     #endregion
+
+    #region At end of turn lose 3 memory
+    public static ActivateClass EoTLose3Memory(Permanent permanent)
+    {
+        ActivateClass activateClass1 = new ActivateClass();
+        activateClass1.SetUpICardEffect("Memory -3", CanUseCondition1, permanent.TopCard);
+        activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
+        CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: permanent.TopCard, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
+        return activateClass1;
+
+        string EffectDiscription1()
+        {
+            return "Lose 3 memory.";
+        }
+
+        bool CanUseCondition1(Hashtable hashtable)
+        {
+            return true;
+        }
+
+        bool CanActivateCondition1(Hashtable hashtable)
+        {
+            return true;
+        }
+
+        IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
+        {
+            yield return ContinuousController.instance.StartCoroutine(permanent.TopCard.Owner.AddMemory(-3, activateClass1));
+        }
+    }
+    #endregion
 }
