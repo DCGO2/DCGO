@@ -193,7 +193,7 @@ MonoBehaviour:
   _fontMaterial_JPN: {fileID: 0}
   _font_ENG: {fileID: 12800000, guid: 31e9027949eff3b40a1e5d085e0a9935, type: 3}
   _font_JPN: {fileID: 12800000, guid: 2f11c82edd19dad4bab7cebf6c7e61af, type: 3}
-  _fontSize_ENG: 150
+  _fontSize_ENG: 120
   _fontSize_JPN: 120
   _text_ENG: Enable Banlist - Disables random matchmaking
   _text_JPN: "\u7981\u6B62\u30EA\u30B9\u30C8\u3092\u6709\u52B9\u5316 \u2014 \u30E9\u30F3\u30C0\u30E0\u30DE\u30C3\u30C1\u30E1\u30A4\u30AD\u30F3\u30B0\u3092\u7121\u52B9\u306B\u3057\u307E\u3059"
