@@ -40,11 +40,21 @@ namespace DCGO.CardEffects.BT1
 
                     thisPermanent.UntilEachTurnEndEffects.Add(GetCardEffect);
 
+                    ICardEffect GetCardEffect(EffectTiming _timing)
+                    {
+                        if (_timing == EffectTiming.OnEndTurn)
+                        {
+                            return activateClass;
+                        }
+
+                        return null;
+                    }
+
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(thisPermanent));
                 }
-
-                return cardEffects;
             }
+
+            return cardEffects;
         }
     }
 }
