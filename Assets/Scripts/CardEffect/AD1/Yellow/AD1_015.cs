@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.AD1
             CardEffectFactory.ActivateClassesForSharedEffects
                 (ref cardEffects, timing, card,
                     DPReductionEffectName,
-                    PlayTamerActivateCoroutine,
+                    DPReductionActivateCoroutine,
                     DPReductionEffectDescription,
                     optional: false,
                     whenDigivolving: true,
