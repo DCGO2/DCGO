@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-// Gekkomon
+// Habakirimon
 namespace DCGO.CardEffects.ST23
 {
     public class ST23_05 : CEntity_Effect
