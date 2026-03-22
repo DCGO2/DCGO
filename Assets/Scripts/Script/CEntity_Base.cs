@@ -37,7 +37,7 @@ public class CEntity_Base : ScriptableObject
     [TextArea] public string LinkEffect = "";
     [TextArea] public string LinkRequirement = "";
 
-    public string dualEffect = "";
+    [TextArea] public string dualEffect = "";
     public List<CardColor> OptionCardColorRequirements = new List<CardColor>();
     [TextArea] public string OptionEffect = "";
 
@@ -74,7 +74,7 @@ public class CEntity_Base : ScriptableObject
     public bool IsACE => OverflowMemory >= 1;
     public bool IsStandardValid => true;
 
-    public bool IsDualCard => !dualEffect.IsNullOrEmpty();
+    public bool IsDualCard => !String.IsNullOrEmpty(dualEffect);
 
     #region regulation mark
     public string RegulationMark

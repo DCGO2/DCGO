@@ -511,3 +511,11 @@ public interface IVortexCanAttackPlayersEffect
     bool VortexCanAttackPlayersPermanent(Permanent Attacker);
 }
 #endregion
+
+#region "Instead of trashing after use" effects
+public interface IOptionResolutionEffect
+{
+    bool CanResolve();
+    IEnumerator Resolve();
+}
+#endregion
