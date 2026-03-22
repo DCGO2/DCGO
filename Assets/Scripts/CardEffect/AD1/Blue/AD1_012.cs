@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-// CresGararumon
+// CresGarurumon
 namespace DCGO.CardEffects.AD1
 {
     public class AD1_012 : CEntity_Effect
