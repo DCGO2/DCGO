@@ -93,7 +93,8 @@ namespace DCGO.CardEffects.EX3
                             selectCardCoroutine: null),
                         },
                         remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                        activateClass: activateClass
+                        activateClass: activateClass,
+                        mutualConditions: true
                     ));
                 }
             }
