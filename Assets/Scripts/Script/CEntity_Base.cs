@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebSocketSharp;
+using UnityEngine;
 
 [CreateAssetMenu(menuName = "Create/CEntity_Base")]
 public class CEntity_Base : ScriptableObject
@@ -36,7 +36,7 @@ public class CEntity_Base : ScriptableObject
     [TextArea] public string LinkEffect = "";
     [TextArea] public string LinkRequirement = "";
 
-    public string dualEffect = "";
+    [TextArea] public string dualEffect = "";
     public List<CardColor> OptionCardColorRequirements = new List<CardColor>();
     [TextArea] public string OptionEffect = "";
 
@@ -73,7 +73,7 @@ public class CEntity_Base : ScriptableObject
     public bool IsACE => OverflowMemory >= 1;
     public bool IsStandardValid => true;
 
-    public bool IsDualCard => !dualEffect.IsNullOrEmpty();
+    public bool IsDualCard => !String.IsNullOrEmpty(dualEffect);
 
     #region regulation mark
     public string RegulationMark
