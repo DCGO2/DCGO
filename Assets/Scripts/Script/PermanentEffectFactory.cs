@@ -104,7 +104,6 @@ public partial class PermanentEffectFactory
         ActivateClass activateClass1 = new ActivateClass();
         activateClass1.SetUpICardEffect("Memory -3", CanUseCondition1, permanent.TopCard);
         activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
-        CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: permanent.TopCard, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
         return activateClass1;
 
         string EffectDiscription1()
