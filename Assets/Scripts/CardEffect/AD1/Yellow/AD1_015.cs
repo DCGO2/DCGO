@@ -40,10 +40,17 @@ namespace DCGO.CardEffects.AD1
             #region DPReduction WD / WA / WA ESS
 
             string DPReductionEffectName = "Give 1 Opponent's digimon -4k DP";
+            
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    DPReductionEffectName,
+                    PlayTamerActivateCoroutine,
+                    DPReductionEffectDescription,
+                    optional: false,
+                    whenDigivolving: true,
+                    whenAttacking: true);
 
             string DPReductionEffectDescription(string tag) => $"[{tag}] 1 of your opponent's Digimon gets -4000 DP for the turn.";
-
-            bool DPReductionCanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleArea(card);
 
             bool IsEnemyDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
@@ -76,39 +83,7 @@ namespace DCGO.CardEffects.AD1
                     }
                 }
             }
-            #endregion
-
-            #region When Digivolving
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(DPReductionEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(DPReductionCanActivateCondition, hash => DPReductionActivateCoroutine(hash, activateClass), -1, false, DPReductionEffectDescription("When Digivolving"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-            }
-            #endregion
-
-            #region When Attacking
-            if (timing == EffectTiming.OnAllyAttack)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(DPReductionEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(DPReductionCanActivateCondition, hash => DPReductionActivateCoroutine(hash, activateClass), -1, false, DPReductionEffectDescription("When Attacking"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
-            }
-            #endregion
+            #endregion        
 
             #region When Attacking - ESS
             if (timing == EffectTiming.OnAllyAttack)
@@ -131,6 +106,16 @@ namespace DCGO.CardEffects.AD1
 
             string PlayTamerEffectName = "You may play 1 Yellow / Black / Purple Tamer with inherited effects, then by placing a hybrid card under a tamer: draw 2";
 
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    PlayTamerEffectName,
+                    PlayTamerActivateCoroutine,
+                    PlayTamerEffectDescription,
+                    additionalActivateCondition: PlayTamerCanActivateCondition,
+                    optional: false,
+                    endOfAttack: true,
+                    onDeletion: true);
+
             string PlayTamerEffectDescription(string tag) => $"[{tag}] You may play 1 yellow, black or purple Tamer card with inherited effects from your hand or trash without paying the cost. Then, by placing 1 [Hybrid] or [Ten Warriors] trait card from your hand under this Digimon or your Tamers, <Draw 2>.";
 
             bool CanPlayTamerCondition(CardSource cardSource)
@@ -152,10 +137,9 @@ namespace DCGO.CardEffects.AD1
 
             bool PlayTamerCanActivateCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card)
-                    && (CardEffectCommons.HasMatchConditionOwnersHand(card, CanPlayTamerCondition)
+                return CardEffectCommons.HasMatchConditionOwnersHand(card, CanPlayTamerCondition)
                         || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlayTamerCondition)
-                        || CardEffectCommons.HasMatchConditionOwnersHand(card, CanPlaceCardCondition));
+                        || CardEffectCommons.HasMatchConditionOwnersHand(card, CanPlaceCardCondition);
             }
 
             IEnumerator PlayTamerActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
@@ -334,34 +318,6 @@ namespace DCGO.CardEffects.AD1
                         }
                     }
                 }
-            }
-            #endregion
-
-            #region End of Attack
-            if (timing == EffectTiming.OnEndAttack)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(PlayTamerEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(PlayTamerCanActivateCondition, hash => PlayTamerActivateCoroutine(hash, activateClass), -1, false, PlayTamerEffectDescription("End of Attack"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
-            }
-            #endregion
-
-            #region On deletion
-            if (timing == EffectTiming.OnDestroyedAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(PlayTamerEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(PlayTamerCanActivateCondition, hash => PlayTamerActivateCoroutine(hash, activateClass), -1, false, PlayTamerEffectDescription("On Deletion"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
             }
             #endregion
 
