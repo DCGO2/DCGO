@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-// MetalGararumon
+// MetalGarurumon
 namespace DCGO.CardEffects.AD1
 {
     public class AD1_014 : CEntity_Effect
