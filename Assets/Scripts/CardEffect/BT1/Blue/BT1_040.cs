@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT1
 
                     Permanent thisPermanent = card.PermanentOfThisCard();
 
-                    thisPermanent.UntilEachTurnEndEffects.Add((_timing) => PermanentEffectFactory.EoTLose3Memory(thisPermanent));
+                    thisPermanent.UntilEachTurnEndEffects.Add(GetCardEffect);
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(thisPermanent));
                 }
