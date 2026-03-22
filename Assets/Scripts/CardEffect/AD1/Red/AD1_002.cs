@@ -94,15 +94,21 @@ namespace DCGO.CardEffects.AD1
             #endregion
 
             #region Shared EoA/OD
-            string SharedEffectName()
-            {
-                return "May trash 1 [Hybrid]/[Ten Warriors] card, if so <Draw 2>, then may play 1 R/U/G tamer with inherits from hand or trash for free";
-            }
+            string SharedEffectName = "May trash 1 [Hybrid]/[Ten Warriors] card, if so <Draw 2>, then may play 1 R/U/G tamer with inherits from hand or trash for free";
+
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    SharedEffectName,
+                    SharedActivateCoroutine,
+                    SharedEffectDescription,
+                    optional: false,
+                    endOfAttack: true,
+                    onDeletion: true);
 
             string SharedEffectDescription(string tag)
             {
                 return $"[{tag}] You may trash 1 [Hybrid] or [Ten Warriors] trait card from your hand. If this effect trashed, <Draw 2>. Then, you may play 1 red, blue or green Tamer card with inherited effects from your hand or trash without paying the cost.";
-            }
+            }        
 
             bool CanSelectTrashCondition(CardSource cardSource)
             {
@@ -238,48 +244,7 @@ namespace DCGO.CardEffects.AD1
                     }
                 }
             }
-            #endregion
-
-            #region End of Attack
-            if (timing == EffectTiming.OnEndAttack)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, SharedEffectDescription("End of Attack"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-            }
-            #endregion
-
-            #region On Deletion
-            if (timing == EffectTiming.OnDestroyedAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, SharedEffectDescription("On Deletion"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanActivateOnDeletion(card);
-                }
-            }
-            #endregion
+            #endregion         
 
             #region Your Turn - ESS
             if (timing == EffectTiming.None)
