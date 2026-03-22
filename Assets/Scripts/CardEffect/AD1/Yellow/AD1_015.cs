@@ -90,14 +90,19 @@ namespace DCGO.CardEffects.AD1
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(DPReductionEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(DPReductionCanActivateCondition, hash => DPReductionActivateCoroutine(hash, activateClass), -1, false, DPReductionEffectDescription("When Attacking"));
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => DPReductionActivateCoroutine(hash, activateClass), -1, false, DPReductionEffectDescription("When Attacking"));
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
             }
             #endregion
