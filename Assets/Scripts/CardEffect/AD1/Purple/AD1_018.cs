@@ -215,6 +215,7 @@ namespace DCGO.CardEffects.AD1
                 activateClass.SetUpICardEffect("<De-Digivolve 1> 1 enemy Digimon, delete 1 enemy Digimon with play cost of 3 or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
