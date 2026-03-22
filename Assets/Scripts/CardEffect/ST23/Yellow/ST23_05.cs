@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.ST23
 
             #region shared WD / WA
 
-            string SharedHashString = "ST23-05_WD_WA";
+            string SharedHashString = "ST23_05_WD_WA";
 
             string SharedEffectName = "Place 1 opponent's lowest DP Digimon on top of security. Then may trash top security from the player with most security to Recover +1";
 
