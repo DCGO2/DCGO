@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT1
                     {
                         if (_timing == EffectTiming.OnEndTurn)
                         {
-                            return PermanentEffectFactory.EoTLose3Memory(thisPermanent);
+                            return CardEffectFactory.EoTLose3Memory(thisPermanent);
                         }
 
                         return null;
