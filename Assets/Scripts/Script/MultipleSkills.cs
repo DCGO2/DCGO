@@ -260,7 +260,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                     {
                         if (player.isYou)
                         {
-                            int skillIndex = 0;
+                            int skillIndex = -1;
 
                             if (!ContinuousController.instance.autoEffectOrder)
                             {
@@ -284,14 +284,6 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                                 if (GManager.instance.selectCardPanel.SelectedIndex.Count > 0)
                                 {
                                     skillIndex = GManager.instance.selectCardPanel.SelectedIndex[0];
-                                }
-                                else
-                                {
-                                    foreach(SkillInfo skillInfo in skillInfos_active)
-                                    {
-                                        StackedSkillInfos.Remove(skillInfo);
-                                    }
-                                    continue;
                                 }
                             }
 
