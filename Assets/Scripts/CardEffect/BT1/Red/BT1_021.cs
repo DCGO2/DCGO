@@ -45,7 +45,7 @@ public class BT1_021 : CEntity_Effect
                     return null;
                 }
 
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(card));
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(card.PermanentOfThisCard()));
             }
         }
 
