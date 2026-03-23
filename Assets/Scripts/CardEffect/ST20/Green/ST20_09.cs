@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.ST20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Unsuspend, then for every 2 colours in adventure tamers, suspend opposing digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Unsuspend, then for every 2 colors in adventure tamers, suspend opposing digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -112,8 +112,8 @@ namespace DCGO.CardEffects.ST20
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Select 1 Digimon to suspend per 2 colours of ADVENTURE Tamers you have",
-                            "The opponent is selecting 1 Digimon to suspend per 2 colours of ADVENTURE Tamers they have.");
+                            "Select 1 Digimon to suspend per 2 colors of ADVENTURE Tamers you have",
+                            "The opponent is selecting 1 Digimon to suspend per 2 colors of ADVENTURE Tamers they have.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.ST20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Unsuspend, then for every 2 colours in adventure tamers, suspend opposing digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Unsuspend, then for every 2 colors in adventure tamers, suspend opposing digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -178,8 +178,8 @@ namespace DCGO.CardEffects.ST20
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Select 1 Digimon to suspend per 2 colours of ADVENTURE Tamers you have",
-                            "The opponent is selecting 1 Digimon to suspend per 2 colours of ADVENTURE Tamers they have.");
+                            "Select 1 Digimon to suspend per 2 colors of ADVENTURE Tamers you have",
+                            "The opponent is selecting 1 Digimon to suspend per 2 colors of ADVENTURE Tamers they have.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }

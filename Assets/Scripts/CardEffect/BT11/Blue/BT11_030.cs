@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT11
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 card to digivolution cards and return Digimons to the bottom of deck", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 card to digivolution cards and return Digimon to the bottom of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -373,7 +373,7 @@ namespace DCGO.CardEffects.BT11
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 card to digivolution cards and return Digimons to the bottom of deck", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 card to digivolution cards and return Digimon to the bottom of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

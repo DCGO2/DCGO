@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.LM
 
             #endregion
 
-            #region Retallation
+            #region Retaliation
 
             if (timing == EffectTiming.OnDestroyedAnyone)
             {

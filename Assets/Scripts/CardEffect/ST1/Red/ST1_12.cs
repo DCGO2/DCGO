@@ -44,7 +44,7 @@ public class ST1_12 : CEntity_Effect
                 isInheritedEffect: false,
                 card: card,
                 condition: Condition,
-                effectName: () => "Your Digimons gain DP +1000"));
+                effectName: () => "Your Digimon gain DP +1000"));
         }
 
         if (timing == EffectTiming.SecuritySkill)

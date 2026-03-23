@@ -176,7 +176,7 @@ namespace DCGO.CardEffects.EX2
                     isInheritedEffect: true,
                     card: card,
                     condition: Condition,
-                    effectName: () => "Your Digimons with [D-Reaper] in their traits gain DP +1000"));
+                    effectName: () => "Your Digimon with [D-Reaper] in their traits gain DP +1000"));
             }*/
 
             #region All Turns - ESS

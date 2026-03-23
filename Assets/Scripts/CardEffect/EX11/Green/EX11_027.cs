@@ -273,7 +273,7 @@ namespace DCGO.CardEffects.EX11
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
+                                root: SelectCardEffect.Root.LinkedCards,
                                 customRootCardList: card.PermanentOfThisCard().LinkedCards,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,

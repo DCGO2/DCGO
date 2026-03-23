@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.EX4
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("De-Digivolve 3 on 1 Digimon and delete Digimons so that their play cost total is up to 6", CanUseCondition, card);
+                activateClass.SetUpICardEffect("De-Digivolve 3 on 1 Digimon and delete Digimon so that their play cost total is up to 6", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

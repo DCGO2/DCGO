@@ -15,7 +15,7 @@ public class BT3_014 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Change origin DP to 1000", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Change original DP to 1000", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -83,7 +83,7 @@ public class BT3_014 : CEntity_Effect
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to chagne origin DP.", "The opponent is selecting 1 Digimon to chagne origin DP.");
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to change original DP.", "The opponent is selecting 1 Digimon to change original DP.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

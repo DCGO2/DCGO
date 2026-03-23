@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Choos 1 of both players' Digimon, delete the rest, then bottom deck 1 opponents Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Choose 1 of both players' Digimon, delete the rest, then bottom deck 1 opponents Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -186,7 +186,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Choos 1 of both players' Digimon, delete the rest, then bottom deck 1 opponents Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Choose 1 of both players' Digimon, delete the rest, then bottom deck 1 opponents Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

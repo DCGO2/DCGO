@@ -329,7 +329,7 @@ namespace DCGO.CardEffects.EX6
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] [Once Per Turn] Your opponent may trash 1 card in their hand. If they don't, you may play 1 purple level 3 Digimon card from your trash wihtout paying the cost.";
+                    return "[When Attacking] [Once Per Turn] Your opponent may trash 1 card in their hand. If they don't, you may play 1 purple level 3 Digimon card from your trash without paying the cost.";
                 }
 
 

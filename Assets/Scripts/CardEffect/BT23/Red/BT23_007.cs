@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.BT23
 
             #endregion
 
-            #region Secuity
+            #region Security
 
             if (timing == EffectTiming.SecuritySkill)
             {

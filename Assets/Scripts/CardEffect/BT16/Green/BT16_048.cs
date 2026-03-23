@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving][Once Per Turn] You may play 1 Digimon card with the [Insectiod] or [Larva] trait from your hand with the play cost reduced by 8.";
+                    return "[When Digivolving][Once Per Turn] You may play 1 Digimon card with the [Insectoid] or [Larva] trait from your hand with the play cost reduced by 8.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

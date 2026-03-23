@@ -29,7 +29,7 @@ public class EX5_041 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Suspend Digimons and opponent's Digimon can't unsuspend", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Suspend Digimon and opponent's Digimon can't unsuspend", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -115,7 +115,7 @@ public class EX5_041 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Suspend Digimons and opponent's Digimon can't unsuspend", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Suspend Digimon and opponent's Digimon can't unsuspend", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

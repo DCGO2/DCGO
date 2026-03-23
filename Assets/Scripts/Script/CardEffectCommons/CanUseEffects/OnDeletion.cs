@@ -47,6 +47,37 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Can trigger "when permanent leaves the battle area" effect
+    public static bool CanTriggerOnPermanentLeave(Hashtable hashtable, Func<Permanent, bool> permanentCondition)
+    {
+        List<Hashtable> hashtables = GetHashtablesFromHashtable(hashtable);
+
+        if (hashtables != null)
+        {
+            foreach (Hashtable hashtable1 in hashtables)
+            {
+                Permanent permanent = GetPermanentFromHashtable(hashtable1);
+
+                if (permanent != null)
+                {
+                    if (permanent.TopCard != null)
+                    {
+                        if (permanentCondition != null)
+                        {
+                            if (permanentCondition(permanent))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+    #endregion
+
     #region Can trigger "when permanent is deleted by battle" effects
     public static bool IsByBattle(Hashtable hashtable)
     {

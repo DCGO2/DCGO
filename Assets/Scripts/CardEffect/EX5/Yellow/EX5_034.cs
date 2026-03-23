@@ -297,7 +297,7 @@ public class EX5_034 : CEntity_Effect
                         cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage(
-                        "Selcect 1 Digimon that will gain DP -4000 and Security Attack -1.",
+                        "Select 1 Digimon that will gain DP -4000 and Security Attack -1.",
                         "The opponent is selecting 1 Digimon that will gain DP -4000 and Security Attack -1.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());

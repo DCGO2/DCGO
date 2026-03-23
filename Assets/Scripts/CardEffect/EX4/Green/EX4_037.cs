@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.EX4
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Your Digimons gain Blocker and Reboot", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Your Digimon gain Blocker and Reboot", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.EX4
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 2 Digimons to gain Blocker and Reboot.", "The opponent is selecting 2 Digimons to gain Blocker and Reboot.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 2 Digimon to gain Blocker and Reboot.", "The opponent is selecting 2 Digimon to gain Blocker and Reboot.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

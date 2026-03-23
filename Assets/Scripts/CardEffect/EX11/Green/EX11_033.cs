@@ -42,18 +42,15 @@ namespace DCGO.CardEffects.EX11
                 if (validHandCard || validLinkCard)
                 {
                     List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
-                    int index = 0;
                     if (validHandCard)
                     {
-                        selectionElements.Add(new (message: $"Play Maquinamon from hand", value : 1, spriteIndex: index));
-                        index++;
+                        selectionElements.Add(new (message: $"Play Maquinamon from hand", value : 1, spriteIndex: 0));
                     }
                     if (validLinkCard)
                     {
-                        selectionElements.Add(new (message: $"Play Maquinamon from this Digimon's Link Cards", value : 2, spriteIndex: index));
-                        index++;
+                        selectionElements.Add(new (message: $"Play Maquinamon from this Digimon's Link Cards", value : 2, spriteIndex: 0));
                     };
-                    selectionElements.Add( new (message: $"Don't link", value: 3, spriteIndex: index));
+                    selectionElements.Add( new (message: $"Don't link", value: 3, spriteIndex: 1));
 
                     string selectPlayerMessage = "Will you play a Maquinamon?";
                     string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
@@ -186,7 +183,8 @@ namespace DCGO.CardEffects.EX11
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerWhenLinked(hashtable, PermanentCondition, null);
+                        && CardEffectCommons.CanTriggerWhenLinked(hashtable, PermanentCondition, null)
+                        && CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool PermanentCondition(Permanent permanent) => permanent == card.PermanentOfThisCard();

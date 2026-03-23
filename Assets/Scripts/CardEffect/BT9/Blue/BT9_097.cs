@@ -77,7 +77,7 @@ public class BT9_097 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Return 1 of your opponentÅfs level 6 or lower Digimon to its ownerÅfhand. Then, unsuspend 1 of your Digimon with [Garurumon] in its name.";
+                return "[Main] Return 1 of your opponent's level 6 or lower Digimon to its owner's hand. Then, unsuspend 1 of your Digimon with [Garurumon] in its name.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

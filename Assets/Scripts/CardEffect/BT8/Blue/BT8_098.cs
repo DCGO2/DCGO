@@ -99,7 +99,7 @@ public class BT8_098 : CEntity_Effect
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select Digimons that will get effects.", "The opponent is selecting Digimons that will get effects.");
+                    selectPermanentEffect.SetUpCustomMessage("Select Digimon that will get effects.", "The opponent is selecting Digimon that will get effects.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -127,7 +127,7 @@ public class BT8_098 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Trash digivolution cards and opponent's Digimons can't Attack or Block");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Trash digivolution cards and opponent's Digimon can't Attack or Block");
         }
 
         return cardEffects;

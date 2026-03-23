@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.BT14
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return Digimons to hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return Digimon to hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.BT14
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return Digimons to hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return Digimon to hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

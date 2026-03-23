@@ -219,7 +219,7 @@ public class BT5_111 : CEntity_Effect
                             {
                                 if (selectedCards.Count == 2)
                                 {
-                                    GManager.instance.attackProcess.IsEndAttack = true;
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.EndAttack());
                                 }
 
                                 yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(

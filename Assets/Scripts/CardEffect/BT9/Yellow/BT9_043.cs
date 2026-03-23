@@ -25,13 +25,13 @@ public class BT9_043 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Reduce DP for opponent's all Digimons and opponent's Security Digimon", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Reduce DP for opponent's all Digimon and opponent's Security Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[When Digivolving] If [Magnadramon] or [X Antibody] is in this DigimonÅfs digivolution cards, all of your opponentÅfs Digimon and Security Digimon get -1000 DP for the turn for each card in your security stack.";
+                return "[When Digivolving] If [Magnadramon] or [X Antibody] is in this Digimon's digivolution cards, all of your opponent's Digimon and Security Digimon get -1000 DP for the turn for each card in your security stack.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -122,7 +122,8 @@ public class BT9_043 : CEntity_Effect
 
                     yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                         player: card.Owner,
-                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                        activateClass).ReduceSecurity());
 
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {

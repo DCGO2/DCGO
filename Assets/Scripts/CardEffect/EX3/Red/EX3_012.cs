@@ -12,7 +12,7 @@ namespace DCGO.CardEffects.EX3
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete oppponent's all Digimons with the lowest DP or opponent can't play Digimon with 5000 DP or less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete opponent's all Digimon with the lowest DP or opponent can't play Digimon with 5000 DP or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

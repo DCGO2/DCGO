@@ -51,7 +51,7 @@ public class BT6_106 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete opponent's all Digimons with the highest play cost");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete opponent's all Digimon with the highest play cost");
         }
 
         return cardEffects;

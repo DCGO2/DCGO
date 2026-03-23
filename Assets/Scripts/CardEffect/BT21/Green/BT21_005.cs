@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn][Oncer Per Turn] When this Digimon gets linked, <Draw 1>.";
+                    return "[Your Turn][Once Per Turn] When this Digimon gets linked, <Draw 1>.";
                 }
 
                 bool PermanentCondition(Permanent permanent)

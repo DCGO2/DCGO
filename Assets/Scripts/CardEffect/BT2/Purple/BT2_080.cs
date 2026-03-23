@@ -19,7 +19,7 @@ public class BT2_080 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Play Digimons from trash", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Play Digimon from trash", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 

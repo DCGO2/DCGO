@@ -90,7 +90,7 @@ namespace DCGO.CardEffects.EX10
                     {
                         yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(permanent, selectedCards, activateClass).TrashDigivolutionCards());
 
-                        GManager.instance.attackProcess.IsEndAttack = true;
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.EndAttack());
                     }                        
                 }
             }

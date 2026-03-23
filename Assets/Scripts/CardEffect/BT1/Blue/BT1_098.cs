@@ -52,7 +52,7 @@ public class BT1_098 : CEntity_Effect
                     mode: SelectPermanentEffect.Mode.Custom,
                     cardEffect: activateClass);
 
-                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon taht will gain Jamming.", "The opponent is selecting 1 Digimon taht will gain Jamming.");
+                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain Jamming.", "The opponent is selecting 1 Digimon that will gain Jamming.");
 
                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

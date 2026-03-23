@@ -135,7 +135,8 @@ namespace DCGO.CardEffects.LM
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                         player: card.Owner.Enemy,
-                                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                        activateClass).ReduceSecurity());
                                 }
                             }
 
@@ -213,7 +214,7 @@ namespace DCGO.CardEffects.LM
                     selectedCategory = (CardKind)actionID;
 
                     if(!card.Owner.isYou)
-                        GManager.instance.commandText.OpenCommandText($"The opponent has choosen to use: {selectedCategory}.");
+                        GManager.instance.commandText.OpenCommandText($"The opponent has chosen to use: {selectedCategory}.");
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
                         revealCount: 1,

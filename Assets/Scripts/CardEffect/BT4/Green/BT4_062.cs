@@ -15,7 +15,7 @@ public class BT4_062 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Suspend Digimons and return Digimons to deck", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Suspend Digimon and return Digimon to deck", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 

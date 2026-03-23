@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("This Digimon gains Rush and opponent's Digimons can't attack and block", CanUseCondition, card);
+                activateClass.SetUpICardEffect("This Digimon gains Rush and opponent's Digimon can't attack and block", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -93,7 +93,7 @@ namespace DCGO.CardEffects.BT10
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select Digimons that will get effects.", "The opponent is selecting Digimons that will get effects.");
+                            selectPermanentEffect.SetUpCustomMessage("Select Digimon that will get effects.", "The opponent is selecting Digimon that will get effects.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

@@ -39,7 +39,7 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play [Royal Base] Digimon from faceup security", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play [Royal Base] Digimon from face up security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("PlayDigimon_BT19_053");
                 cardEffects.Add(activateClass);

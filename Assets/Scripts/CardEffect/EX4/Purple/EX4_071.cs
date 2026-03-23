@@ -200,7 +200,7 @@ namespace DCGO.CardEffects.EX4
 
                 string EffectDiscription()
                 {
-                    return "[Security] Delete 1 of your opponentÅfigimon with the lowest level.";
+                    return "[Security] Delete 1 of your opponentÅ's Digimon with the lowest level.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

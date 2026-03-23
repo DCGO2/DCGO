@@ -466,6 +466,8 @@ public class Permanent
                     }
                 }
             }
+            
+            DP += LinkedDP;
 
             foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown)
             {
@@ -485,8 +487,6 @@ public class Permanent
                 DP += boost.DP;
             }
             #endregion
-
-            DP += LinkedDP;
 
             if (DP < 0)
             {
@@ -635,6 +635,8 @@ public class Permanent
                         }
                     }
                 }
+                
+                DP += LinkedDP;
 
                 foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown)
                 {
@@ -654,8 +656,6 @@ public class Permanent
                     DP += boost.DP;
                 }
                 #endregion
-
-                DP += LinkedDP;
 
                 if (DP < 0)
                 {
@@ -1144,7 +1144,6 @@ public class Permanent
                 {
                     yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(addedDigivolutionCard, trashCard: false));
                 }
-
                 else if (addedDigivolutionCard == TopCard)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(addedDigivolutionCard));
@@ -1480,27 +1479,28 @@ public class Permanent
                     if (!cardSource.IsFlipped)
                     {
                         bool isTopCard = cardSource == TopCard;
-                        bool isDigimon = IsDigimon;
+                        
+                        if (!isTopCard)
+                        {
+                            if (!IsDigimon)
+                            {
+                                continue;
+                            }
+                        }
 
                         foreach (ICardEffect cardEffect in cardSource.cEntity_EffectController.GetCardEffects(timing, cardSource))
                         {
                             if (cardEffect != null)
                             {
-                                if (cardEffect.IsEffectOfCard)
-                                {
-                                    _EffectList.Add(cardEffect);
-                                    continue;
-                                }
-
                                 #region Entity, Inherited and Link effects
 
-                                if (cardEffect.IsInheritedEffect && !isTopCard && isDigimon)
+                                if (cardEffect.IsInheritedEffect && !isTopCard)
                                 {
                                     _EffectList.Add(cardEffect);
                                     continue;
                                 }
 
-                                if (cardEffect.IsLinkedEffect && cardSource.IsLinked && isDigimon)
+                                if (cardEffect.IsLinkedEffect && cardSource.IsLinked)
                                 {
                                     _EffectList.Add(cardEffect);
                                     continue;
@@ -2058,7 +2058,7 @@ public class Permanent
     #endregion
 
     #region このパーマネントが攻撃できるかどうか
-    public bool CanAttack(ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false)
+    public bool CanAttack(ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false, bool isExecute = false)
     {
         // can not attack with empty cards
         if (TopCard == null)
@@ -2077,10 +2077,10 @@ public class Permanent
             return false;
 
         // can not attack to player
-        if (!CanAttackTargetDigimon(null, cardEffect, withoutTap, isVortex))
+        if (!CanAttackTargetDigimon(null, cardEffect, withoutTap, isVortex, isExecute))
         {
             // can not attack to opponent's Digimon
-            if (TopCard.Owner.Enemy.GetFieldPermanents().Count((permanent) => CanAttackTargetDigimon(permanent, cardEffect, withoutTap, isVortex)) == 0)
+            if (TopCard.Owner.Enemy.GetFieldPermanents().Count((permanent) => CanAttackTargetDigimon(permanent, cardEffect, withoutTap, isVortex, isExecute)) == 0)
             {
                 return false;
             }
@@ -2182,7 +2182,7 @@ public class Permanent
     #endregion
 
     #region 対象のパーマネントを攻撃できるか
-    public bool CanAttackTargetDigimon(Permanent Defender, ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false)
+    public bool CanAttackTargetDigimon(Permanent Defender, ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false, bool isExecute = false)
     {
         if (TopCard != null)
         {
@@ -2279,7 +2279,7 @@ public class Permanent
                     {
                         if (Defender.IsDigimon && Defender.TopCard.Owner.GetBattleAreaPermanents().Contains(Defender))
                         {
-                            if (Defender.IsSuspended)
+                            if (Defender.IsSuspended || isExecute)
                             {
                                 return true;
                             }

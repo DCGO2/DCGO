@@ -71,7 +71,8 @@ namespace DCGO.CardEffects.BT19
 
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: card.Owner,
-                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                            activateClass).ReduceSecurity());
                     }                        
 
                     if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Wizardmon") || cardSource.EqualsCardName("X Antibody")) >= 1)
@@ -183,7 +184,8 @@ namespace DCGO.CardEffects.BT19
 
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: card.Owner,
-                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                            activateClass).ReduceSecurity());
                     }
 
                     if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Wizardmon") || cardSource.EqualsCardName("X Antibody")) >= 1)
