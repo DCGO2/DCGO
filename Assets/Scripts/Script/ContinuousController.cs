@@ -350,7 +350,7 @@ public class ContinuousController : MonoBehaviour
             Attribute_ENG = new List<string>(),
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
-            CardSpriteName = "BT19-091-token",
+            CardSpriteName = "BT19-091-token-1",
             cardKind = CardKind.Digimon,
             DP = 6000
         };
@@ -370,7 +370,7 @@ public class ContinuousController : MonoBehaviour
             Attribute_ENG = new List<string>(),
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
-            CardSpriteName = "BT19-091-token",
+            CardSpriteName = "BT19-091-token-2",
             cardKind = CardKind.Digimon,
             DP = 6000
         };
@@ -390,7 +390,7 @@ public class ContinuousController : MonoBehaviour
             Attribute_ENG = new List<string>(),
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
-            CardSpriteName = "BT19-091-token",
+            CardSpriteName = "BT19-091-token-3",
             cardKind = CardKind.Digimon,
             DP = 6000
         };
