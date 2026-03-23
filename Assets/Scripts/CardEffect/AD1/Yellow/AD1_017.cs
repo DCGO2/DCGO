@@ -209,6 +209,7 @@ namespace DCGO.CardEffects.AD1
                 activateClass.SetUpICardEffect("Give 1 enemy Digimon <Sec A. -1>, -3K DP 1 enemy Digimon until end of your turn", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

@@ -276,13 +276,17 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                             {
                                 yield return StartCoroutine(GManager.instance.selectCardPanel.OpenSelectCardPanel(
                                 Message: "Multiple effects are triggered.\nChoose which effect to process.",
+                                NotSelectButtonMessage: "Don't activate these effects.",
+                                EndSelectButtonMessage: "End Selection", 
+                                _OnClickNotSelectButtonAction: null, 
+                                _OnClickEndSelectButtonAction: null,
                                 RootCardSources: RootCardSources,
                                 _CanTargetCondition: (cardSource) => true,
                                 _CanTargetCondition_ByPreSelecetedList: null,
                                 _CanEndSelectCondition: null,
                                 _MaxCount: 1,
                                 _CanEndNotMax: false,
-                                _CanNoSelect: () => false,
+                                _CanNoSelect: () => skillInfos_active.All(skillInfo => skillInfo.CardEffect.IsOptional),
                                 CanLookReverseCard: true,
                                 skillInfos: skillInfos_active,
                                 root: SelectCardEffect.Root.None));
@@ -290,6 +294,14 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                                 if (GManager.instance.selectCardPanel.SelectedIndex.Count > 0)
                                 {
                                     skillIndex = GManager.instance.selectCardPanel.SelectedIndex[0];
+                                }
+                                else
+                                {
+                                    foreach(SkillInfo skillInfo in skillInfos_active)
+                                    {
+                                        StackedSkillInfos.Remove(skillInfo);
+                                    }
+                                    continue;
                                 }
                             }
 

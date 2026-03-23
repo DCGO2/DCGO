@@ -1,11 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using Photon;
-using System;
-using Photon.Pun;
 
+// Pulsemon
 public class BT7_032 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
@@ -15,8 +11,9 @@ public class BT7_032 : CEntity_Effect
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Memory +2", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+            activateClass.SetUpICardEffect("If you have 3 security cards, gain 2 memory", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+            activateClass.SetIsOptionalOverride(_ => card.Owner.SecurityCards.Count != 3);//Effect is optional while you do not have 3 mem to whiff
             activateClass.SetIsInheritedEffect(true);
             activateClass.SetHashString("Memory+2_BT7_032");
             cardEffects.Add(activateClass);
@@ -28,25 +25,21 @@ public class BT7_032 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                return CardEffectCommons.IsExistOnBattleArea(card)
+                    && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (card.Owner.SecurityCards.Count == 3)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleArea(card);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
+                if (card.Owner.SecurityCards.Count == 3)
+                { 
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
+                }
             }
         }
 

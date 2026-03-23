@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.AD1
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionPermanent(WouldPlayCondition);
+                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, WouldPlayCondition);
                 }
 
                 bool WouldPlayCondition(Permanent permanent)
@@ -112,7 +112,6 @@ namespace DCGO.CardEffects.AD1
             }
             #endregion
                 
-
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -215,6 +214,7 @@ namespace DCGO.CardEffects.AD1
                 activateClass.SetUpICardEffect("<De-Digivolve 1> 1 enemy Digimon, delete 1 enemy Digimon with play cost of 3 or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
