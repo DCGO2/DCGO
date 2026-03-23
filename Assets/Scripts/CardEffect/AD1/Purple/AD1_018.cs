@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.AD1
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionPermanent(WouldPlayCondition);
+                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, WouldPlayCondition);
                 }
 
                 bool WouldPlayCondition(Permanent permanent)
@@ -112,7 +112,6 @@ namespace DCGO.CardEffects.AD1
             }
             #endregion
                 
-
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
