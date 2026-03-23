@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.P
 
                         bool canSelect() => (canSelectTamer() || canSelectTrash()) && maxSelectCardCount() >= 1;
 
-                        while (canSelect())
+                        while (canSelect() && digivolutionCards.Count <2)
                         {
                             bool fromTrash = false;
                             bool noSelect = false;
