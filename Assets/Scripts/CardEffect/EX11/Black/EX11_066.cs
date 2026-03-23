@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.EX11
 
             #region Shared OP / SOYMP
 
-            string SharedEffectName = "Trash 1 Vemmon in text to Draw 1, Gain 1 Memory";
+            string SharedEffectName = "Trash 1 [Vemmon] in text to <Draw 1> and gain 1 memory";
 
             string SharedEffectDescription(string tag) => $"[{tag}] By trashing 1 card with [Vemmon] in its text from your hand, <Draw 1> and gain 1 memory.";
 
@@ -134,7 +134,7 @@ namespace DCGO.CardEffects.EX11
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reveal 2. Place All Vemmon under played or Digivolved digimon, trash the rest.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Reveal 2. Place all [Vemmon] under played or digivolved digimon, trash the rest.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 

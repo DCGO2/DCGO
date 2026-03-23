@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.EX9
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By Deleting a token or [Puppet] digimon, digivolve into a [puppet] in hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By deleting a token or [Puppet] digimon, digivolve into a [Puppet] in hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
