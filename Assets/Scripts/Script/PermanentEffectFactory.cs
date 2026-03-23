@@ -102,7 +102,7 @@ public partial class PermanentEffectFactory
     public static ActivateClass EoTLose3Memory(Permanent permanent)
     {
         ActivateClass activateClass1 = new ActivateClass();
-        activateClass1.SetUpICardEffect("Memory -3", CanUseCondition1, permanent.TopCard);
+        activateClass1.SetUpICardEffect("Memory -3", CanUseCondition1, card);
         activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
         return activateClass1;
 
