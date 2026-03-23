@@ -46,6 +46,7 @@ namespace DCGO.CardEffects.P
                 activateClass.SetUpICardEffect("Delete 1 digimon with 7k DP or lower", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

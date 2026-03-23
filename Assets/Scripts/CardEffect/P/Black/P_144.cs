@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.P
             }
             #endregion
 
-            #region When Target Changed - Unsuspened Blocker
+            #region When Target Changed - Unsuspended Blocker
             if (timing == EffectTiming.OnAttackTargetChanged)
             {
                 ActivateClass activateClass = new ActivateClass();

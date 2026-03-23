@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.BT23
 
             #region Static Effects
 
-            #region Alt Digivovle Cost
+            #region Alt Digivolve Cost
 
             if (timing == EffectTiming.None)
             {
@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete all highest level digimon, then if with [Belphemon] in name is in sources, atttack without suspending", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete all highest level digimon, then if with [Belphemon] in name is in sources, attack without suspending", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

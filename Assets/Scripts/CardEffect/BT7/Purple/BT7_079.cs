@@ -15,7 +15,7 @@ public class BT7_079 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Play 1 Tamer from trash and delete Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Play 1 Tamer from trash and delete Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -166,7 +166,7 @@ public class BT7_079 : CEntity_Effect
         if (timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Play level 3 Digimons from trash", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Play level 3 Digimon from trash", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 

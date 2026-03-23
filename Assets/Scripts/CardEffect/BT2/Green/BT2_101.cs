@@ -52,7 +52,7 @@ public class BT2_101 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Suspend opponent's all Digimons with 6000 DP or less");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Suspend opponent's all Digimon with 6000 DP or less");
         }
 
         return cardEffects;

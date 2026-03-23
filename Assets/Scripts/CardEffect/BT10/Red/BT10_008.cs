@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.BT10
 
                 string EffectDiscription()
                 {
-                    return "[On Play] Reveal the top 3 cards of your deck. Add 1 Digimon card and 1 Tamer cardÅ\both with [Xros Heart] in their traitsÅ\among them to your hand. Place the rest at the bottom of your deck in any order.";
+                    return "[On Play] Reveal the top 3 cards of your deck. Add 1 Digimon card and 1 Tamer card both with [Xros Heart] in their traits among them to your hand. Place the rest at the bottom of your deck in any order.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

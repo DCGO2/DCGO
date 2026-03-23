@@ -84,12 +84,8 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card)
+                        && CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -230,21 +226,12 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsOpponentDigimon) || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsOpponentDigimon))
-                    {
-                        if (CardEffectCommons.IsByEffect(hashtable, null))
-                        {
-                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasTamer))
-                            {
-                                if (card.Owner.HandCards.Count(HasFighterMode) >= 1)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsOpponentDigimon)
+                            || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsOpponentDigimon))
+                        && CardEffectCommons.IsByEffect(hashtable, null)
+                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasTamer)
+                        && card.Owner.HandCards.Count(HasFighterMode) >= 1;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

@@ -70,8 +70,6 @@ namespace DCGO.CardEffects.EX11
                     }
                     else if (validTargets.Count > 1)
                     {
-                        Permanent selectedPermament = null;
-
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -91,7 +89,7 @@ namespace DCGO.CardEffects.EX11
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            selectedPermament = permanent;
+                            selectedPermanent = permanent;
                             yield return null;
                         }
 

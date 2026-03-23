@@ -387,15 +387,16 @@ public partial class CardEffectCommons
 
     #endregion
 
-    #region Play 1 [Petrification] Token
+    #region Play [Petrification] Token(s)
 
-    public static IEnumerator PlayPetrificationToken(ICardEffect activateClass)
+    public static IEnumerator PlayPetrificationToken(ICardEffect activateClass, int quantity = 1)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
             tokenData: ContinuousController.instance.PetrificationToken,
             activateClass: activateClass,
             isOwnerPermanent: false,
-            isTapped: false
+            isTapped: false,
+            quantity
             ));
     }
 
@@ -410,6 +411,32 @@ public partial class CardEffectCommons
         yield return ContinuousController.instance.StartCoroutine(card1.Owner.brainStormObject.CloseBrainstrorm(card1));
 
         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { card1 }, false, activateClass));
+    }
+
+    #endregion
+
+    #region Suspend target permanents, and the effect determines whether the permanent has been suspended or not
+
+    public static IEnumerator SuspendPeremanentAndProcessAccordingToResult(List<Permanent> targetPermanents, ICardEffect activateClass, Func<List<Permanent>, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
+    {
+        SuspendPermanentsClass suspendPermanentsClass = new SuspendPermanentsClass(targetPermanents, CardEffectHashtable(activateClass));
+
+        yield return ContinuousController.instance.StartCoroutine(suspendPermanentsClass.Tap());
+
+        if (targetPermanents.Some((permanent) => suspendPermanentsClass.IsSuspended(permanent)))
+        {
+            if (successProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(successProcess(suspendPermanentsClass.SuspendedPermanents));
+            }
+        }
+        else
+        {
+            if (failureProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(failureProcess());
+            }
+        }
     }
 
     #endregion
@@ -557,6 +584,36 @@ public partial class CardEffectCommons
             if (successProcess != null)
             {
                 yield return ContinuousController.instance.StartCoroutine(successProcess(destroySecurity.DestroyedSecurity));
+            }
+        }
+        else
+        {
+            if (failureProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(failureProcess());
+            }
+        }
+    }
+
+    #endregion
+
+    #region Place in security with callbacks for success or failure
+    public static IEnumerator PlacePermanentInSecurityAndProcessAccordingToResult(Permanent targetPermanent, ICardEffect activateClass, bool toTop, Func<CardSource, IEnumerator> successProcess, Func<IEnumerator> failureProcess = null, bool isFaceUp = false)
+    {
+        IPutSecurityPermanent putSecurityPermanent = new IPutSecurityPermanent(targetPermanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop, isFaceUp);
+
+        CardSource topCard = targetPermanent.TopCard;
+        if (activateClass.EffectSourceCard != null 
+            && activateClass.EffectSourceCard.Owner.CanAddSecurity(activateClass))
+        {
+            yield return ContinuousController.instance.StartCoroutine(putSecurityPermanent.PutSecurity());
+        }
+
+        if (putSecurityPermanent.IsPlacedSecurity)
+        {
+            if (successProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(successProcess(topCard));
             }
         }
         else

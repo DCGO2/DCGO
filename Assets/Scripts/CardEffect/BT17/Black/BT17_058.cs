@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 level 5 or lower digimon wiht [Machine] trait", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 level 5 or lower digimon with [Machine] trait", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("EndOfAttack_BT17_058");
                 cardEffects.Add(activateClass);

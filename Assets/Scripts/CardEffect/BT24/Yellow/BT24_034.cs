@@ -67,7 +67,7 @@ namespace DCGO.CardEffects.BT24
                 CardSource topCard = card.Owner.SecurityCards[0];
 
                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
-                yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(player: card.Owner, refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(player: card.Owner, refSkillInfos: ref ContinuousController.instance.nullSkillInfos, activateClass).ReduceSecurity());
 
                 if (card.Owner.HandCards.Contains(topCard) && card.Owner.HandCards.Count((cardSource) => ValidTamer(cardSource, activateClass)) >= 1)
                 {

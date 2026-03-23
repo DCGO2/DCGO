@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 [Royal Base] faceup as bottom security, delete up to 8 play cost total", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 [Royal Base] face up as bottom security, delete up to 8 play cost total", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -167,7 +167,7 @@ namespace DCGO.CardEffects.BT19
             #region Security Effect
             if (timing == EffectTiming.SecuritySkill)
             {
-                CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete opponent's all Digimons with the highest play cost");
+                CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete opponent's all Digimon with the highest play cost");
             }
             #endregion
 

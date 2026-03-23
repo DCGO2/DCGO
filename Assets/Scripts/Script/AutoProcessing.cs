@@ -64,35 +64,46 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         CardSource card = skillInfo.CardEffect.EffectSourceCard;
         Permanent permanent = card.PermanentOfThisCard();
 
-        #region set the flag whether it is Digimon's effect
-        if (permanent != null)
+        if (!skillInfo.CardEffect.IsOptionEffect) //If explicitly set to be an option effect, override setting it to any other kind
         {
-            if (permanent.IsDigimon)
+            //Inherited and Link effects can only ever be digimon effects
+            if (skillInfo.CardEffect.IsInheritedEffect || skillInfo.CardEffect.IsLinkedEffect)
             {
                 skillInfo.CardEffect.SetIsDigimonEffect(true);
             }
-        }
-
-        if (card == GManager.instance.attackProcess.SecurityDigimon)
-        {
-            skillInfo.CardEffect.SetIsDigimonEffect(true);
-        }
-        #endregion
-
-        #region set the flag whether it is Tamer's effect
-        if (permanent != null)
-        {
-            if (permanent.IsTamer)
+            else
             {
-                skillInfo.CardEffect.SetIsTamerEffect(true);
+                #region set the flag whether it is Digimon's effect
+                if (permanent != null)
+                {
+                    if (permanent.IsDigimon)
+                    {
+                        skillInfo.CardEffect.SetIsDigimonEffect(true);
+                    }
+                }
+
+                if (card == GManager.instance.attackProcess.SecurityDigimon)
+                {
+                    skillInfo.CardEffect.SetIsDigimonEffect(true);
+                }
+                #endregion
+
+                #region set the flag whether it is Tamer's effect
+                if (permanent != null)
+                {
+                    if (permanent.IsTamer)
+                    {
+                        skillInfo.CardEffect.SetIsTamerEffect(true);
+                    }
+                }
+
+                else if (card.IsTamer)
+                {
+                    skillInfo.CardEffect.SetIsTamerEffect(true);
+                }
+                #endregion
             }
         }
-
-        else if (card.IsTamer)
-        {
-            skillInfo.CardEffect.SetIsTamerEffect(true);
-        }
-        #endregion
 
         #region set permanent and topCard when triggered
         ((ActivateICardEffect)skillInfo.CardEffect).PermanentWhenTriggered = permanent;
@@ -460,7 +471,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     IEnumerator DigimonLackDPProcess()
     {
         List<Permanent> LackPowerPermanents = GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
-            .Map(player => player.GetFieldPermanents()
+            .Map(player => player.GetBattleAreaPermanents()
             .Filter(IsDigimonLackDP)).Flat();
 
         if (LackPowerPermanents.Count >= 1)
@@ -621,7 +632,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     #region Check end of turn
     public IEnumerator EndTurnCheck()
     {
-        if (GManager.instance.turnStateMachine.gameContext.TurnPhase != GameContext.phase.End)
+        if (GManager.instance.turnStateMachine.gameContext.TurnPhase != GameContext.phase.End && !GManager.instance.attackProcess.ActiveAttack())
         {
             if (GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.MemoryForPlayer >= TurnEndMinMemory)
             {
@@ -693,6 +704,16 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
             //Automatic processing check timing
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+
+            //Handle attack steps
+            while (GManager.instance.attackProcess.ActiveAttack())
+            {
+                Debug.Log($"Active Attack, {Enum.GetName(typeof(AttackProcess.AttackState),GManager.instance.attackProcess.State)} Step");
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.ProcessNextState());
+
+                //自動処理チェックタイミング
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+            }
 
             if (GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.MemoryForPlayer >= TurnEndMinMemory)
             {

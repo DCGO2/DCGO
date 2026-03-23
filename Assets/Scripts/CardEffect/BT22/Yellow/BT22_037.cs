@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     Permanent selectedPermament = null;
 
-                    #region Select Permament
+                    #region Select Permanent
 
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentDigimon));
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();

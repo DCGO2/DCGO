@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT22
 
             #region Alternate Digivolution
 
-            //Level 5 CS trait/graymon in name
+            //Level 5 CS trait/greymon in name
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT22
             #endregion
 
             #region Warp Effect
-            //Warp from Augumon
+            //Warp from Agumon
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -63,7 +63,8 @@ namespace DCGO.CardEffects.BT22
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card) && 
-                           targetPermanent.TopCard.EqualsCardName("Agumon");
+                           targetPermanent.TopCard.EqualsCardName("Agumon") &&
+                           card.CanPlayCardTargetFrame(targetPermanent.PermanentFrame, true, activateClass, fixedCost: 6, ignore: CardEffectCommons.IgnoreRequirement.All);
                 }
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
@@ -83,7 +84,7 @@ namespace DCGO.CardEffects.BT22
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
@@ -114,6 +115,7 @@ namespace DCGO.CardEffects.BT22
                             activateClass: activateClass,
                             successProcess: null,
                             failedProcess: OnFail(),
+                            isOptional: false,
                             ignoreRequirements: CardEffectCommons.IgnoreRequirement.All));
                     }
 

@@ -178,7 +178,7 @@ namespace DCGO.CardEffects.P
                             };
 
                                 string selectPlayerMessage = "Will you select cards from trash?";
-                                string notSelectPlayerMessage = "The opponent is choosing wheter to select cards from trash.";
+                                string notSelectPlayerMessage = "The opponent is choosing whether to select cards from trash.";
 
                                 GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
@@ -206,7 +206,7 @@ namespace DCGO.CardEffects.P
                             };
 
                                 string selectPlayerMessage = "Will you select cards from under Tamer?";
-                                string notSelectPlayerMessage = "The opponent is choosing wheter to select cards from under Tamer.";
+                                string notSelectPlayerMessage = "The opponent is choosing whether to select cards from under Tamer.";
 
                                 GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 

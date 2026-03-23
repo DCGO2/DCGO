@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine;
 
 [CreateAssetMenu(menuName = "Create/CEntity_Base")]
 public class CEntity_Base : ScriptableObject
@@ -63,11 +63,7 @@ public class CEntity_Base : ScriptableObject
 
     public async Task<Sprite> GetCardSprite()
     {
-        if (!HasLoadStarted)
-        {
-            await LoadCardImage();
-        }
-
+        if (!HasLoadStarted) await LoadCardImage();
         return CardSprite;
     }
     public bool IsACE => OverflowMemory >= 1;

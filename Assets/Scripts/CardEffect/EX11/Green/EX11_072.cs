@@ -209,7 +209,7 @@ namespace DCGO.CardEffects.EX11
                         {
                             Permanent selectedDigimon = null;
 
-                            #region Select Permament
+                            #region Select Permanent
 
                             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, PermanentCondition));
 

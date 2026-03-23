@@ -453,9 +453,7 @@ namespace DCGO.CardEffects.EX6
 
                             IEnumerator SuccessProcess()
                             {
-                                GManager.instance.attackProcess.IsEndAttack = true;
-
-                                yield return null;
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.EndAttack());
                             }
                         }
                     }

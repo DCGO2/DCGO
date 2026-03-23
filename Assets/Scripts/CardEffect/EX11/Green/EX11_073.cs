@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.EX11
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDescription() => "[when Digivolving] If DNA Digivolving, you may link up to 3 [Maquinamon] from your hand, trash or this Digimon's digivolution cards to this Digimon without paying the cost.";
+                string EffectDescription() => "[When Digivolving] If DNA Digivolving, you may link up to 3 [Maquinamon] from your hand, trash or this Digimon's digivolution cards to this Digimon without paying the cost.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

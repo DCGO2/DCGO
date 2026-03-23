@@ -16,7 +16,7 @@ public class BT5_056 : CEntity_Effect
         if (timing == EffectTiming.OnDeclaration)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("DP +2000 to your all Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("DP +2000 to your all Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

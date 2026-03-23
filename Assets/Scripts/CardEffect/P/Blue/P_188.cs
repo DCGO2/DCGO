@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-//P_188 Demivee
+//P_188 Demiveemon
 namespace DCGO.CardEffects.P
 {
     public class P_188 : CEntity_Effect

@@ -29,7 +29,7 @@ public class BT8_039 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Suspend Digimons and opponent Digimons gain DP -5000", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Suspend Digimon and opponent Digimon gain DP -5000", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -136,7 +136,7 @@ public class BT8_039 : CEntity_Effect
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select Digimons to DP -5000.", "The opponent is selecting Digimons to DP -5000.");
+                    selectPermanentEffect.SetUpCustomMessage("Select Digimon to DP -5000.", "The opponent is selecting Digimon to DP -5000.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

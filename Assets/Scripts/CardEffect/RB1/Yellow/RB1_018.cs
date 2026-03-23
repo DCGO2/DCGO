@@ -152,7 +152,7 @@ public class RB1_018 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] on] 1 of your opponentÅfs Digimon gets -3000 DP and gains <Security Attack -1> until the end of their turn.";
+                return "[On Play] on] 1 of your opponent's Digimon gets -3000 DP and gains <Security Attack -1> until the end of their turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -197,7 +197,7 @@ public class RB1_018 : CEntity_Effect
                     mode: SelectPermanentEffect.Mode.Custom,
                     cardEffect: activateClass);
 
-                selectPermanentEffect.SetUpCustomMessage("Selcect 1 Digimon that will get DP -3000 and Security Attack -1.", "The opponent is selecting 1 Digimon that will get DP -3000 and Security Attack -1.");
+                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get DP -3000 and Security Attack -1.", "The opponent is selecting 1 Digimon that will get DP -3000 and Security Attack -1.");
 
                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -219,7 +219,7 @@ public class RB1_018 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] on] 1 of your opponentÅfs Digimon gets -3000 DP and gains <Security Attack -1> until the end of their turn.";
+                return "[When Digivolving] on] 1 of your opponent's Digimon gets -3000 DP and gains <Security Attack -1> until the end of their turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -264,7 +264,7 @@ public class RB1_018 : CEntity_Effect
                     mode: SelectPermanentEffect.Mode.Custom,
                     cardEffect: activateClass);
 
-                selectPermanentEffect.SetUpCustomMessage("Selcect 1 Digimon that will get DP -3000 and Security Attack -1.", "The opponent is selecting 1 Digimon that will get DP -3000 and Security Attack -1.");
+                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get DP -3000 and Security Attack -1.", "The opponent is selecting 1 Digimon that will get DP -3000 and Security Attack -1.");
 
                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

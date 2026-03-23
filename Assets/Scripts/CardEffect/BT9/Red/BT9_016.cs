@@ -31,7 +31,7 @@ public class BT9_016 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[All Turns] When a card is removed from your opponentÅfs security stack, gain 1 memory.";
+                return "[All Turns] When a card is removed from your opponent's security stack, gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -81,14 +81,14 @@ public class BT9_016 : CEntity_Effect
             }
 
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete 1 Digimon with DP less than or equal to this DigimonÅfs DP", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Delete 1 Digimon with DP less than or equal to this Digimon¬Å's DP", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetHashString("Delete_BT9_016");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[End of Attack][Once Per Turn] If [WarGreymon] or [X Antibody] is in this DigimonÅfs digivolution cards, delete 1 of your opponentÅfs Digimon with DP less than or equal to this DigimonÅfs DP.";
+                return "[End of Attack][Once Per Turn] If [WarGreymon] or [X Antibody] is in this Digimon's digivolution cards, delete 1 of your opponent¬Å's Digimon with DP less than or equal to this Digimon's DP.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

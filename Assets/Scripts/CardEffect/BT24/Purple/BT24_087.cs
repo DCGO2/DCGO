@@ -113,7 +113,7 @@ namespace DCGO.CardEffects.BT24
                         {
                             Permanent selectedPermanent = null;
 
-                            #region Select App Fuse Permament Target
+                            #region Select App Fuse Permanent Target
 
                             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanSelectPermanent));
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();

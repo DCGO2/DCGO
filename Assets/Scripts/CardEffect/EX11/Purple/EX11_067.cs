@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.EX11
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend this tamer to gain 1 memory", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription() 
@@ -161,6 +161,7 @@ namespace DCGO.CardEffects.EX11
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition);
                 }
 

@@ -106,7 +106,8 @@ namespace DCGO.CardEffects.BT18
 
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: card.Owner,
-                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                            activateClass).ReduceSecurity());
                     }
                 }
             }
@@ -192,7 +193,7 @@ namespace DCGO.CardEffects.BT18
 
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
 
-                        yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(player: card.Owner, refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                        yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(player: card.Owner, refSkillInfos: ref ContinuousController.instance.nullSkillInfos, activateClass).ReduceSecurity());
                     }
                 }
             }

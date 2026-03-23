@@ -129,7 +129,7 @@ namespace DCGO.CardEffects.EX5
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete opponent's all Digimons with the highest DP", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete opponent's all Digimon with the highest DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

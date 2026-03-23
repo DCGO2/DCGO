@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT13
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete opponent's all level 5 or lower Digimons and this Digimon gets effects", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete opponent's all level 5 or lower Digimon and this Digimon gets effects", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

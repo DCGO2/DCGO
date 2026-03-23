@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.BT12
 
                 string EffectDiscription()
                 {
-                    return "When you would play this card from your hand, by placing 1 of your [Shoutmon] as a digivolution card under this Digimon, reduce its play cost by 1 and place the cards in your trash as digivolution cards for a DigiXros.";
+                    return "When you would play this card, by placing 1 [Shoutmon] as a digivolution card under this Digimon, reduce its play cost by 1 and place the cards in your trash as digivolution cards for a DigiXros.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

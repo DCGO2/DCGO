@@ -12,7 +12,7 @@ namespace DCGO.CardEffects.BT14
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return all level 3 Digimons to hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return all level 3 Digimon to hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.BT14
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return all level 3 Digimons to hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return all level 3 Digimon to hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

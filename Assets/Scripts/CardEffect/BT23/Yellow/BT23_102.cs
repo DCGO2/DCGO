@@ -354,7 +354,7 @@ namespace DCGO.CardEffects.BT23
                     {
                         Permanent selectedPermament = null;
 
-                        #region Select Opponent Permament
+                        #region Select Opponent Permanent
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));

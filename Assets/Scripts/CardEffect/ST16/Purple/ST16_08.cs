@@ -36,7 +36,7 @@ public class ST16_08 : CEntity_Effect
         if (timing == EffectTiming.SecuritySkill)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Play 1 [Gabumon] or 1 Tamer card with [Matt Ishida] from hand or tarsh", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Play 1 [Gabumon] or 1 Tamer card with [Matt Ishida] from hand or trash", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             activateClass.SetIsSecurityEffect(true);
             cardEffects.Add(activateClass);

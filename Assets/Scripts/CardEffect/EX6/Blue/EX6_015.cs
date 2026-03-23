@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
-                    "Place digvolution cards and activate effects", CanUseCondition, card);
+                    "Place digivolution cards and activate effects", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
                     EffectDescription());
                 cardEffects.Add(activateClass);
@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
-                    "Place digvolution cards and activate effects", CanUseCondition, card);
+                    "Place digivolution cards and activate effects", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
                     EffectDescription());
                 cardEffects.Add(activateClass);

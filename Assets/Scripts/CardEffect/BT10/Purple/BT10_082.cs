@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.BT10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 3 cards from deck top and delete level 4 or lower Digimons", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 3 cards from deck top and delete level 4 or lower Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.BT10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 3 cards from deck top and delete level 4 or lower Digimons", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 3 cards from deck top and delete level 4 or lower Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

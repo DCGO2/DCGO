@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.EX3
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Your 1 Digimon gets Bloker and unsuspend the Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Your 1 Digimon gets Blocker and unsuspend the Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -76,7 +76,7 @@ namespace DCGO.CardEffects.EX3
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon taht will gain Blocker.", "The opponent is selecting 1 Digimon taht will gain Blocker.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain Blocker.", "The opponent is selecting 1 Digimon that will gain Blocker.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
