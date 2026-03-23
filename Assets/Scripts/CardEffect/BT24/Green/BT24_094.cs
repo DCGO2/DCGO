@@ -70,8 +70,8 @@ namespace DCGO.CardEffects.BT24
             {
                 bool HasOXII(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsCardName("Neptunemon")
-                        || permanent.TopCard.EqualsCardName("Venusmon");
+                    return permanent.TopCard.EqualsCardName("Merukimon")
+                        || permanent.TopCard.EqualsCardName("Minervamon");
                 }
 
                 bool Condition()
