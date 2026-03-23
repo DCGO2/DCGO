@@ -36,8 +36,6 @@ namespace DCGO.CardEffects.BT1
                 {
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(3, activateClass));
 
-                    Permanent thisPermanent = card.PermanentOfThisCard();
-
                     card.Owner.UntilEachTurnEndEffects.Add(GetCardEffect);
 
                     ICardEffect GetCardEffect(EffectTiming _timing)
