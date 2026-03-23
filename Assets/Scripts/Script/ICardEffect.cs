@@ -16,6 +16,7 @@ public abstract class ICardEffect
         SetEffectSourcePermanent(null);
         SetMaxCountPerTurn(-1);
         SetEffectName(effectName);
+        SetEffectTargets(null);
         SetEffectDiscription("");
         SetHashString("");
         SetOnProcessCallbuck(null);
@@ -25,24 +26,19 @@ public abstract class ICardEffect
         SetCanActivateCondition(null);
 
         SetIsOptional(false);
+        SetIsOptionalOverride(null);
         SetUseOptional(false);
         SetIsDeclarative(false);
         SetIsInheritedEffect(false);
         SetIsLinkedEffect(false);
-        SetIsEffectOfCard(false);
         SetIsSecurityEffect(false);
         SetIsCounterEffect(false);
         SetIsDigimonEffect(false);
         SetIsTamerEffect(false);
+        SetIsOptionEffect(false);
         SetChainActivationCount(-1);
         SetIsBackgroundProcess(false);
         SetNotShowUI(false);
-
-        if (!(this is ActivateICardEffect))
-        {
-            SetIsDigimonEffect(card != null && CardEffectCommons.IsExistOnBattleArea(card) && card.PermanentOfThisCard().IsDigimon);
-            SetIsTamerEffect(card != null && CardEffectCommons.IsExistOnBattleArea(card) && card.PermanentOfThisCard().IsTamer);
-        }
     }
 
     #endregion
@@ -139,6 +135,26 @@ public abstract class ICardEffect
     internal void SetEffectName(string effectName)
     {
         EffectName = effectName;
+    }
+
+    #endregion
+
+    #region Effect Target, used to display a detail of what card triggered this / will be targetted by the effect if performed
+
+    Func<Hashtable, List<Permanent>> _effectTargets = null;
+
+    public Func<Hashtable, List<Permanent>> EffectTargets
+    {
+        get { return _effectTargets; }
+        private set
+        {
+            _effectTargets = value;
+        }
+    }
+
+    internal void SetEffectTargets(Func<Hashtable, List<Permanent>> effectTargets)
+    {
+        EffectTargets = effectTargets;
     }
 
     #endregion
@@ -266,6 +282,29 @@ public abstract class ICardEffect
     }
 
     #endregion
+
+    #region Override IsOptional with a function
+
+    Func<Hashtable, bool> _isOptionalFunction = null;
+
+    public Func<Hashtable, bool> IsOptionalOverride
+    {
+        get { return _isOptionalFunction; }
+        private set { _isOptionalFunction = value; }
+    }
+
+    public void SetIsOptionalOverride(Func<Hashtable, bool> isOptionalOverride)
+    {
+        _isOptionalFunction = isOptionalOverride;
+    }
+
+    #endregion
+
+    public bool IsOptionalCondition(Hashtable hashtable)
+    {
+        if (IsOptionalOverride != null) return IsOptionalOverride(hashtable);
+        return IsOptional;
+    }
 
     #region Whether this triggering effect triggers
 
@@ -514,23 +553,6 @@ public abstract class ICardEffect
 
     #endregion
 
-    #region Whether this is a static effect on a card itself
-
-    bool _isEffectOfCard = false;
-
-    public bool IsEffectOfCard
-    {
-        get { return _isEffectOfCard; }
-        private set { _isEffectOfCard = value; }
-    }
-
-    public void SetIsEffectOfCard(bool isEffectOfCard)
-    {
-        IsEffectOfCard = isEffectOfCard;
-    }
-
-    #endregion
-
     #region Whether this effect is an Security Effect
 
     bool _isSecurityEffect = false;
@@ -595,6 +617,23 @@ public abstract class ICardEffect
     public void SetIsTamerEffect(bool isTamerEffect)
     {
         IsTamerEffect = isTamerEffect;
+    }
+
+    #endregion
+
+    #region Whether this is specifically an Option Card effect, overriding anything settign it as a Digimon or Tamer effect
+
+    bool _isOptionEffect = false;
+
+    public bool IsOptionEffect
+    {
+        get { return _isOptionEffect; }
+        private set { _isOptionEffect = value; }
+    }
+
+    public void SetIsOptionEffect(bool isOptionEffect)
+    {
+        IsOptionEffect = isOptionEffect;
     }
 
     #endregion
@@ -954,7 +993,8 @@ public enum EffectTiming
     RulesTiming,
     OnRemovedField,
     OnLinkCardDiscarded,
-    OnFaceUpSecurityIncreased
+    OnFaceUpSecurityIncreased,
+    OnLeaveFieldAnyone
 }
 
 #endregion
@@ -973,11 +1013,11 @@ public static class ActivateICardEffectExtensionClass
 {
     #region Optional
 
-    public static IEnumerator Activate_Optional(this ActivateICardEffect activateICardEffect)
+    public static IEnumerator Activate_Optional(this ActivateICardEffect activateICardEffect, Hashtable hash)
     {
-        if (((ICardEffect)activateICardEffect).IsOptional)
+        if (((ICardEffect)activateICardEffect).IsOptionalCondition(hash))
         {
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<OptionalSkill>().SelectOptional((ICardEffect)activateICardEffect));
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<OptionalSkill>().SelectOptional((ICardEffect)activateICardEffect, hash));
         }
     }
 
@@ -1041,7 +1081,7 @@ public static class ActivateICardEffectExtensionClass
 
     public static IEnumerator Activate_Execute(this ActivateICardEffect activateICardEffect, Hashtable hash)
     {
-        if (((ICardEffect)activateICardEffect).UseOptional || !((ICardEffect)activateICardEffect).IsOptional)
+        if (((ICardEffect)activateICardEffect).UseOptional || !((ICardEffect)activateICardEffect).IsOptionalCondition(hash))
         {
             ((ICardEffect)activateICardEffect).OnProcessCallbuck?.Invoke();
             ((ICardEffect)activateICardEffect).SetOnProcessCallbuck(null);
@@ -1115,11 +1155,11 @@ public static class ActivateICardEffectExtensionClass
         {
             UnityEngine.Debug.Log($"Activate_Optional_Effect_Execute: {((ICardEffect)activateICardEffect).EffectSourceCard.BaseENGCardNameFromEntity}");
             //Optional effect activation selection
-            if (((ICardEffect)activateICardEffect).IsOptional)
+            if (((ICardEffect)activateICardEffect).IsOptionalCondition(hash))
             {
                 if (isCheckOptional)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(Activate_Optional(activateICardEffect));
+                    yield return ContinuousController.instance.StartCoroutine(Activate_Optional(activateICardEffect, hash));
                 }
                 else
                 {
@@ -1170,7 +1210,7 @@ public static class ActivateICardEffectExtensionClass
     public static IEnumerator Activate_Effect_Execute(this ActivateICardEffect activateICardEffect, Hashtable hash, UnityAction<ICardEffect> useEffectCallback)
     {
         //cost → effect processing
-        if (((ICardEffect)activateICardEffect).UseOptional || !((ICardEffect)activateICardEffect).IsOptional)
+        if (((ICardEffect)activateICardEffect).UseOptional || !((ICardEffect)activateICardEffect).IsOptionalCondition(hash))
         {
             useEffectCallback?.Invoke((ICardEffect)activateICardEffect);
 

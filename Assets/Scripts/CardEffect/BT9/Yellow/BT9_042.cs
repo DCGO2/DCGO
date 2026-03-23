@@ -112,7 +112,7 @@ public class BT9_042 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand to have 1 of your opponentÅfs Digimon get -4000 DP for the turn.";
+                return "[When Digivolving] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand to have 1 of your opponent's Digimon get -4000 DP for the turn.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

@@ -92,7 +92,7 @@ public class BT5_105 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"De-Digivolve 3 to 1 Digimon and Delete oppponent's all Digimons whose play cost is 3 or less");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"De-Digivolve 3 to 1 Digimon and Delete opponent's all Digimon whose play cost is 3 or less");
         }
 
         return cardEffects;

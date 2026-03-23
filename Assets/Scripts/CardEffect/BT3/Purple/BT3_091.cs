@@ -20,7 +20,7 @@ public class BT3_091 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] If you have 10 or more cards in your trashÅCou may return up to 2 purple Option cards from your trash to your hand.";
+                return "[When Digivolving] If you have 10 or more cards in your trash, you may return up to 2 purple Option cards from your trash to your hand.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -105,7 +105,7 @@ public class BT3_091 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn][Once Per Turn] When you use an Option cardÅCain 2 memory.";
+                return "[Your Turn][Once Per Turn] When you use an Option card, gain 2 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)

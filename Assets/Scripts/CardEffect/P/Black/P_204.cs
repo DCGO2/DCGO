@@ -113,7 +113,7 @@ namespace DCGO.CardEffects.P
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.EqualsCardName("Grademon") || permanent.TopCard.HasChronicleTraits;
+                        && (permanent.TopCard.EqualsCardName("Grademon") || permanent.TopCard.HasChronicleTraits);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

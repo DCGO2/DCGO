@@ -15,7 +15,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
     public bool IsOnlyHandEffectStacked => StackedSkillInfos.Every(skillInfo =>
         skillInfo.CardEffect != null && skillInfo.CardEffect.EffectSourceCard != null && CardEffectCommons.IsExistOnHand(skillInfo.CardEffect.EffectSourceCard) && skillInfo.CardEffect.EffectDiscription.Contains("[Hand]"));
 
-    bool IsOnlyOptionalEffectStacked => StackedSkillInfos.Every(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.IsOptional);
+    bool IsOnlyOptionalEffectStacked => StackedSkillInfos.Every(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.IsOptionalCondition(null));
     bool IsEachStackedEffectHasDistinctSourceCard => StackedSkillInfos.Filter(skillInfo1 => skillInfo1.CardEffect != null && skillInfo1.CardEffect.EffectSourceCard != null)
         .Every(skillInfo => StackedSkillInfos.Filter(skillInfo1 => skillInfo1.CardEffect != null && skillInfo1.CardEffect.EffectSourceCard != null)
             .Count(otherSkillInfo => otherSkillInfo != skillInfo && skillInfo.CardEffect.EffectSourceCard == otherSkillInfo.CardEffect.EffectSourceCard) == 0);
@@ -92,20 +92,30 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
 
                         if (card != null)
                         {
-                            if (card.PermanentOfThisCard() != null)
+                            if (!skillInfo.CardEffect.IsDigimonEffect)
                             {
-                                skillInfo.CardEffect.SetIsDigimonEffect(card.PermanentOfThisCard().IsDigimon);
-                                skillInfo.CardEffect.SetIsTamerEffect(card.PermanentOfThisCard().IsTamer);
-                            }
+                                if (skillInfo.CardEffect.IsInheritedEffect || skillInfo.CardEffect.IsLinkedEffect)
+                                {
+                                    skillInfo.CardEffect.SetIsDigimonEffect(true);
+                                }
+                                else
+                                {
+                                    if (card.PermanentOfThisCard() != null)
+                                    {
+                                        skillInfo.CardEffect.SetIsDigimonEffect(card.PermanentOfThisCard().IsDigimon);
+                                        skillInfo.CardEffect.SetIsTamerEffect(card.PermanentOfThisCard().IsTamer);
+                                    }
 
-                            else
-                            {
-                                skillInfo.CardEffect.SetIsTamerEffect(card.IsTamer);
-                            }
+                                    else
+                                    {
+                                        skillInfo.CardEffect.SetIsTamerEffect(card.IsTamer);
+                                    }
 
-                            if (card == GManager.instance.attackProcess.SecurityDigimon)
-                            {
-                                skillInfo.CardEffect.SetIsDigimonEffect(true);
+                                    if (card == GManager.instance.attackProcess.SecurityDigimon)
+                                    {
+                                        skillInfo.CardEffect.SetIsDigimonEffect(true);
+                                    }
+                                }
                             }
                         }
                     }

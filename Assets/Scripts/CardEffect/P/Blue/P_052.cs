@@ -15,7 +15,7 @@ public class P_052 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Opponent's Digimons with no Digivolution cards can't attack", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Opponent's Digimon with no Digivolution cards can't attack", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -82,7 +82,7 @@ public class P_052 : CEntity_Effect
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select Digimons that will get effects.", "The opponent is selecting Digimons that will get effects.");
+                    selectPermanentEffect.SetUpCustomMessage("Select Digimon that will get effects.", "The opponent is selecting Digimon that will get effects.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

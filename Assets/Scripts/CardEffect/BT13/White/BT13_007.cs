@@ -300,7 +300,7 @@ namespace DCGO.CardEffects.BT13
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reveal the top card of your Digi - Egg deck and place your Digimons under this Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Reveal the top card of your Digi - Egg deck and place your Digimon under this Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

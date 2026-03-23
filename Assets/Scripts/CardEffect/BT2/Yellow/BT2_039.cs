@@ -21,7 +21,7 @@ public class BT2_039 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] If you have 3 or fewer security cardsÅCtrigger ÅÉRecovery +2 (Deck)ÅÑ. (Place the top 2 cards of your deck on top of your security stack.)";
+                return "[On Play] If you have 3 or fewer security cards, trigger <Recovery +2 (Deck)>. (Place the top 2 cards of your deck on top of your security stack.)";
             }
 
             bool CanUseCondition(Hashtable hashtable)

@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.ST21
             if(timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Bottom-deck level 4 + tamer colours/2", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Bottom-deck level 4 + tamer colors/2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -94,7 +94,7 @@ namespace DCGO.CardEffects.ST21
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Bottom-deck level 4 + tamer colours/2", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Bottom-deck level 4 + tamer colors/2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 

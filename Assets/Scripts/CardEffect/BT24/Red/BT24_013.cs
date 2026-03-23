@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT24
 
             string SharedEffectDescription(string tag)
             {
-                return $"[{tag}] [Once Per Turn] By trashing 1 card in your hand, delete 1 of your opponent's Digimon wiuth 6000 DP or less.";
+                return $"[{tag}] [Once Per Turn] By trashing 1 card in your hand, delete 1 of your opponent's Digimon with 6000 DP or less.";
             }
 
             bool SharedCanActivateCondition(Hashtable hashtable)

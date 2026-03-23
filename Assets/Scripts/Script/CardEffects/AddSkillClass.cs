@@ -19,7 +19,10 @@ public class AddSkillClass : ICardEffect, IAddSkillEffect
             getCardEffect = _getEffects(card, getCardEffect, timing);
         }
 
-        SetEffectSourceCard(card);
+        foreach (ICardEffect effect in getCardEffect)
+        {
+            effect.SetEffectSourceCard(card);
+        }
 
         return getCardEffect;
     }

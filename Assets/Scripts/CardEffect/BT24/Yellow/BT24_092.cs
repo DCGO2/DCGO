@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.BT24
 
             #region Static Effects
 
-            #region Ignore Colour Requirement
+            #region Ignore Color Requirement
 
             if (timing == EffectTiming.None)
             {

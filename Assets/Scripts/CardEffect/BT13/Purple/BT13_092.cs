@@ -180,7 +180,8 @@ namespace DCGO.CardEffects.BT13
 
                                     yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                         player: card.Owner.Enemy,
-                                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                        activateClass).ReduceSecurity());
                                 }
                             }
                         }
@@ -247,7 +248,7 @@ namespace DCGO.CardEffects.BT13
                     canNoSelect: () => true,
                     selectCardCoroutine: null,
                     afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                    message: "Select 1 card in oppopnent's trash to place at the bottom of the deck.",
+                    message: "Select 1 card in opponent's trash to place at the bottom of the deck.",
                     maxCount: maxCount,
                     canEndNotMax: false,
                     isShowOpponent: false,

@@ -92,7 +92,7 @@ public class BT4_107 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Reveal the top 3 cards of deck and suspend Digimons");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Reveal the top 3 cards of deck and suspend Digimon");
         }
 
         return cardEffects;

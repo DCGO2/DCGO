@@ -75,7 +75,7 @@ namespace DCGO.CardEffects.BT10
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select Digimons that will get Security Attack -1.", "The opponent is selecting Digimons that will get Security Attack -1.");
+                        selectPermanentEffect.SetUpCustomMessage("Select Digimon that will get Security Attack -1.", "The opponent is selecting Digimon that will get Security Attack -1.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

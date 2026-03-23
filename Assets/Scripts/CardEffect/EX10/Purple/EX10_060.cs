@@ -252,7 +252,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("your opponent may delete a digimon or tamer. if they didnt trash their top security & unsuspend", CanUseCondition, card);
+                activateClass.SetUpICardEffect("your opponent may delete a digimon or tamer. if they didn't trash their top security & unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), 1, false, EffectDiscription());
                 activateClass.SetHashString("EX10_060_WDWA");
                 cardEffects.Add(activateClass);
@@ -281,7 +281,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("your opponent may delete a digimon or tamer. if they didnt trash their top security & unsuspend", CanUseCondition, card);
+                activateClass.SetUpICardEffect("your opponent may delete a digimon or tamer. if they didn't trash their top security & unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), 1, false, EffectDiscription());
                 activateClass.SetHashString("EX10_060_WDWA");
                 cardEffects.Add(activateClass);

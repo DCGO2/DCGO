@@ -278,7 +278,7 @@ namespace DCGO.CardEffects.BT20
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("If would be deleted, DNA Digivolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                activateClass.SetHashString("Dna Digivolve into Imperialdramon Dragon Mode");
+                activateClass.SetHashString("DNA Digivolve into Imperialdramon Dragon Mode");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

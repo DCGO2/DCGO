@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.BT18
                         {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message:"Select 1 card with [Milleniummon] in its name.",
+                            message:"Select 1 card with [Millenniummon] in its name.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),

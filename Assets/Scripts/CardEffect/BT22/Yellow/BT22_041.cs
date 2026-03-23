@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 yellow card from hand as top secuity card", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 yellow card from hand as top security card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -197,7 +197,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 yellow card from hand as top secuity card", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 yellow card from hand as top security card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

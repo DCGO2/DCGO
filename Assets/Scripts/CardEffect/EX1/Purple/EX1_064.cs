@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.EX1
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete level 4 or lower unsuspended Digimons", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete level 4 or lower unsuspended Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

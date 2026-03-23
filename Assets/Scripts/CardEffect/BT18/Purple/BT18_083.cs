@@ -158,7 +158,7 @@ namespace DCGO.CardEffects.BT18
             if (timing == EffectTiming.None)
             {
                 AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("Your Digimons gain Collision", CanUseCondition, card);
+                addSkillClass.SetUpICardEffect("Your Digimon gain Collision", CanUseCondition, card);
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
                 cardEffects.Add(addSkillClass);
 

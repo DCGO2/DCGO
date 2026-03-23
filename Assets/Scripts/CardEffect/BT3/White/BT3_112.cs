@@ -16,7 +16,7 @@ public class BT3_112 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("De-Digivolve 1 and delete opponent's all Digimons with 5000 DP or less", CanUseCondition, card);
+            activateClass.SetUpICardEffect("De-Digivolve 1 and delete opponent's all Digimon with 5000 DP or less", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

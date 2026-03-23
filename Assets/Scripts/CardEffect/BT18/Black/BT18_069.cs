@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.BT18
 
                 string EffectDiscription()
                 {
-                    return "[End of Opponentfs Turn] [Once Per Turn] You may choose 1 of your opponent's Digimon. Your opponent attacks with the chosen Digimon.";
+                    return "[End of Opponent's Turn] [Once Per Turn] You may choose 1 of your opponent's Digimon. Your opponent attacks with the chosen Digimon.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -157,7 +157,7 @@ namespace DCGO.CardEffects.BT18
                     isInheritedEffect: true,
                     card: card,
                     condition: Condition,
-                    effectName: () => "Your Digimons with [Knightmon] in text traits gain DP +2000"));
+                    effectName: () => "Your Digimon with [Knightmon] in text traits gain DP +2000"));
             }
             #endregion
 

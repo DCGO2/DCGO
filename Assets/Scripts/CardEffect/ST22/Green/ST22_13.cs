@@ -157,7 +157,7 @@ namespace DCGO.CardEffects.ST22
                 
                 string EffectDescription()
                 {
-                    return "[When Attacking] If your opponent has no unsuepended Digimon, this Digimon with the [Vortex Warriors] trait may unsuspend.";
+                    return "[When Attacking] If your opponent has no unsuspended Digimon, this Digimon with the [Vortex Warriors] trait may unsuspend.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
