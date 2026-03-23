@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.EX2
                     isInheritedEffect: false,
                     card: card,
                     condition: Condition,
-                    effectName: () => "Your Digimons with Blocker gain DP +2000"));
+                    effectName: () => "Your Digimon with Blocker gain DP +2000"));
             }
 
             return cardEffects;

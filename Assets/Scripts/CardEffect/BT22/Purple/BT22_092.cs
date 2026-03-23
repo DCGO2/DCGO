@@ -209,9 +209,9 @@ namespace DCGO.CardEffects.BT22
                                         {
                                             if (selectedEffect.CanUse(null))
                                             {
-                                                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-
                                                 yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(null));
+
+                                                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                                             }
                                         }
                                     }

@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.EX2
 
                                 else
                                 {
-                                    GManager.instance.commandText.OpenCommandText("The opponent is choosing wheter to trash the top cards of deck.");
+                                    GManager.instance.commandText.OpenCommandText("The opponent is choosing whether to trash the top cards of deck.");
 
                                     #region AIモード
                                     if (GManager.instance.IsAI)
@@ -309,7 +309,7 @@ namespace DCGO.CardEffects.EX2
 
                                 else
                                 {
-                                    GManager.instance.commandText.OpenCommandText("The opponent is choosing wheter to trash the top cards of deck.");
+                                    GManager.instance.commandText.OpenCommandText("The opponent is choosing whether to trash the top cards of deck.");
 
                                     #region AIモード
                                     if (GManager.instance.IsAI)

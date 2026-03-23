@@ -233,7 +233,7 @@ namespace DCGO.CardEffects.BT23
                             canEndNotMax: false,
                             isShowOpponent: true,
                             mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Custom,
+                            root: SelectCardEffect.Root.DigivolutionCards,
                             customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
                             canLookReverseCard: true,
                             selectPlayer: card.Owner,

@@ -142,7 +142,7 @@ namespace DCGO.CardEffects.BT13
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete opponent's all level 4 or lower Digimons", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete opponent's all level 4 or lower Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

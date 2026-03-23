@@ -98,7 +98,7 @@ public class BT8_099 : CEntity_Effect
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select Digimons to return to the bottom of deck.", "The opponent is selecting Digimons to return to the bottom of deck.");
+                    selectPermanentEffect.SetUpCustomMessage("Select Digimon to return to the bottom of deck.", "The opponent is selecting Digimon to return to the bottom of deck.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

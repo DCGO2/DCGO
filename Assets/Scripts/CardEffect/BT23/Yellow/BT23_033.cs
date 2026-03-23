@@ -138,8 +138,8 @@ namespace DCGO.CardEffects.BT23
                             canEndNotMax: false,
                             isShowOpponent: true,
                             mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Custom,
-                            customRootCardList: thisPermament.StackCards,
+                            root: SelectCardEffect.Root.DigivolutionCards,
+                            customRootCardList: thisPermament.DigivolutionCards,
                             canLookReverseCard: true,
                             selectPlayer: card.Owner,
                             cardEffect: activateClass);
@@ -188,7 +188,7 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("link 1 level 4- digimon from trash or digivoultion sources to this digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("link 1 level 4- digimon from trash or digivolution sources to this digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -216,7 +216,7 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("link 1 level 4- digimon from trash or digivoultion sources to this digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("link 1 level 4- digimon from trash or digivolution sources to this digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

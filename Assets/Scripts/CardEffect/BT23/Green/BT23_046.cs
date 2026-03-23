@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.BT23
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectCantUnsuspendPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Tap,
+                        mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon/Tamer that can't unsuspend.", "The opponent is selecting 1 Digimon/Tamer that can't unsuspend.");

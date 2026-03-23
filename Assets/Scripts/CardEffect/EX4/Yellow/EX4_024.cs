@@ -90,7 +90,7 @@ namespace DCGO.CardEffects.EX4
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select Digimons that will get effects.", "The opponent is selecting Digimons that will get effects.");
+                    selectPermanentEffect.SetUpCustomMessage("Select Digimon that will get effects.", "The opponent is selecting Digimon that will get effects.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

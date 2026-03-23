@@ -51,13 +51,13 @@ public class P_073 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Return level 3 Digimons to hand", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Return level 3 Digimon to hand", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[When Digivolving] If you have a Tamer in play, return 2 of your opponentÅfs level 3 Digimon to their ownersÅfands.";
+                return "[When Digivolving] If you have a Tamer in play, return 2 of your opponent's level 3 Digimon to their owners' hands.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -140,7 +140,7 @@ public class P_073 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[All Turns] If this Digimon has [Garurumon] or [Omnimon] in its name and would be deleted in battle, you may trash 2 cards of the same level from this DigimonÅf digivolution cards to prevent the deletion.";
+                return "[All Turns] If this Digimon has [Garurumon] or [Omnimon] in its name and would be deleted in battle, you may trash 2 cards of the same level from this Digimon's digivolution cards to prevent the deletion.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

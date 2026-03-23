@@ -163,7 +163,7 @@ public class BT5_082 : CEntity_Effect
                                                 break;
 
                                             case 2:
-                                                message = "Delete Digimons";
+                                                message = "Delete Digimon";
                                                 break;
                                         }
 
@@ -245,7 +245,7 @@ public class BT5_082 : CEntity_Effect
                                 {
                                     new Command_SelectCommand("Memory +1", () => photonView.RPC("SetEffectIndex", RpcTarget.All, 0), 0),
                                     new Command_SelectCommand("DP +2000", () => photonView.RPC("SetEffectIndex", RpcTarget.All, 1), 0),
-                                    new Command_SelectCommand("Delete Digimons", () => photonView.RPC("SetEffectIndex", RpcTarget.All, 2), 0),
+                                    new Command_SelectCommand("Delete Digimon", () => photonView.RPC("SetEffectIndex", RpcTarget.All, 2), 0),
                                 };
 
                         GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);

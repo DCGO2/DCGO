@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Play] If you have 3 or more security cards, 1 of your opponent's Digimon gets -4000 DP until the end of thier turn. If you have 3 or fewer security cards, 1 of your opponent's Digimon gains [Security A-2] until the end of their turn.";
+                    return "[On Play] If you have 3 or more security cards, 1 of your opponent's Digimon gets -4000 DP until the end of their turn. If you have 3 or fewer security cards, 1 of your opponent's Digimon gains [Security A-2] until the end of their turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -153,7 +153,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Play] If you have 3 or more security cards, 1 of your opponent's Digimon gets -4000 DP until the end of thier turn. If you have 3 or fewer security cards, 1 of your opponent's Digimon gains [Security A-2] until the end of their turn.";
+                    return "[On Play] If you have 3 or more security cards, 1 of your opponent's Digimon gets -4000 DP until the end of their turn. If you have 3 or fewer security cards, 1 of your opponent's Digimon gains [Security A-2] until the end of their turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

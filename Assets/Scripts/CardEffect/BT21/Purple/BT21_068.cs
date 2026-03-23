@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDescription()
                 {
-                    return "[On Play] Delete 1 of your opponent's Digimon with 4000 DP or less. If this effect didn't delete, trash the top 2 cards of your deck.";
+                    return "[When Digivolving] Delete 1 of your opponent's Digimon with 4000 DP or less. If this effect didn't delete, trash the top 2 cards of your deck.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

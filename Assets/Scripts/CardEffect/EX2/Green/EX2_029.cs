@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.EX2
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend Digimons and it can't unsuspend", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend Digimon and it can't unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

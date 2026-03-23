@@ -228,7 +228,7 @@ namespace DCGO.CardEffects.BT13
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash the top card of this Digimon an ussuspend your all Digimons", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash the top card of this Digimon and unsuspend all your Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

@@ -260,7 +260,7 @@ namespace DCGO.CardEffects.BT21
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
+                                root: SelectCardEffect.Root.DigivolutionCards,
                                 customRootCardList: permanent.DigivolutionCards,
                                 canLookReverseCard: false,
                                 selectPlayer: card.Owner,

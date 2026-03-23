@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.ST22
 
             #region Static Effects
 
-            #region Ignore Colour Requirement
+            #region Ignore Color Requirement
 
             if (timing == EffectTiming.None)
             {

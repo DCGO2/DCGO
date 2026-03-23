@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.EX4
 
             if (timing == EffectTiming.SecuritySkill)
             {
-                CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Select Digimons and delete the others");
+                CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Select Digimon and delete the others");
             }
 
             return cardEffects;

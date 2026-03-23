@@ -157,7 +157,7 @@ namespace DCGO.CardEffects.P
 
                 string EffectDiscription()
                 {
-                    return "You may play 1 level 4 or lower Digimon card with [Avian], [Bird], [Beast], [Animal] or [Sovereign] in any of its traits (other than [Sea Animal]) or the [TS] trait from your trash without paying the cost.";
+                    return "[When Attacking] [Once Per Turn] You may play 1 level 4 or lower Digimon card with [Avian], [Bird], [Beast], [Animal] or [Sovereign], other than [Sea Animal], in any of its traits or the [TS] trait from your trash without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

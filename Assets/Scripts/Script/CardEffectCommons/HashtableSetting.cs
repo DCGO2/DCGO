@@ -67,20 +67,21 @@ public partial class CardEffectCommons
     #endregion
 
     #region Hashtable used when check whether the permanent would remove field effect
-    public static Hashtable WhenPermanentWouldRemoveFieldCheckHashtable(List<Permanent> permanents, ICardEffect cardEffect, IBattle battle)
+    public static Hashtable WhenPermanentWouldRemoveFieldCheckHashtable(List<Permanent> permanents, ICardEffect cardEffect, IBattle battle, bool isDigixros = false)
     {
         Hashtable hashtable = new Hashtable()
         {
             {"CardEffect", cardEffect},
             {"Permanents", permanents},
-            {"battle", battle}
+            {"battle", battle},
+            {"digixros", isDigixros}
         };
 
         return hashtable;
     }
     #endregion
 
-    #region Hashtable used when check whether the permanent can activate [On Deletion] or "Permanent returned to hand" effect
+    #region Hashtable used when check whether the permanent can activate [On Deletion], "Permanent leaves" or "Permanent returned to hand" effect
     public static Hashtable OnDeletionHashtable(List<Permanent> permanents, ICardEffect cardEffect, IBattle battle, bool isDPZero)
     {
         Hashtable hashtable = new Hashtable();

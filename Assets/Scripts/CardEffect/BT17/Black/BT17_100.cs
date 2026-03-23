@@ -321,7 +321,7 @@ namespace DCGO.CardEffects.BT17
             }
             #endregion
 
-            #region Secutiry Effect
+            #region Security Effect
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();

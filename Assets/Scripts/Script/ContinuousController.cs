@@ -1007,7 +1007,7 @@ public class ContinuousController : MonoBehaviour
     }
     public void LoadServerRegion()
     {
-        serverRegion = PlayerPrefs.GetString(_serverRegionKey, "us");
+        //serverRegion = PlayerPrefs.GetString(_serverRegionKey, "us");
     }
     public string LastConnectServerRegion = "";
     #endregion

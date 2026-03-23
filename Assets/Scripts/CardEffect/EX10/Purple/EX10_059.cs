@@ -186,7 +186,7 @@ namespace DCGO.CardEffects.EX10
                         {
                             Permanent selectedPermanent = null;
 
-                            #region Select Enemy Permament to add source
+                            #region Select Enemy Permanent to add source
 
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentPermament));
@@ -268,7 +268,7 @@ namespace DCGO.CardEffects.EX10
 
                             if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentPermamentWithSources))
                             {
-                                #region Select Enemy Permament to delete
+                                #region Select Enemy Permanent to delete
 
                                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                                 int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentPermamentWithSources));
@@ -399,7 +399,7 @@ namespace DCGO.CardEffects.EX10
                         {
                             Permanent selectedPermanent = null;
 
-                            #region Select Enemy Permament to add source
+                            #region Select Enemy Permanent to add source
 
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentPermament));
@@ -481,7 +481,7 @@ namespace DCGO.CardEffects.EX10
 
                             if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentPermamentWithSources))
                             {
-                                #region Select Enemy Permament to delete
+                                #region Select Enemy Permanent to delete
 
                                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                                 int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentPermamentWithSources));

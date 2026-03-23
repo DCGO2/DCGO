@@ -79,7 +79,7 @@ public class BT5_099 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"DP -3000 for each your Digimons");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"DP -3000 for each your Digimon");
         }
 
         return cardEffects;

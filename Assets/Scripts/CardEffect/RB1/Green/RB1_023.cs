@@ -32,7 +32,7 @@ public class RB1_023 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Suspend 1 of your opponent's Digimon with DP less than or equal to this Digimon's DP. Digimon suspended by this effect donÅft unsuspend until the end of your opponentÅfturn.";
+                return "[When Digivolving] Suspend 1 of your opponent's Digimon with DP less than or equal to this Digimon's DP. Digimon suspended by this effect don't unsuspend until the end of your opponent's turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

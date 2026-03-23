@@ -395,201 +395,194 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
+            #region Shared OP / WD
+
+            string SharedEffectName = "Play 1 [Dark Masters] from sources, give <Rush>, Delete them at end of turn";
+
+            string SharedEffectDescription(string tag)
+                =>  $"[{tag}] You may play 1 of each [Dark Masters] trait card with different names from this Digimon's digivolution cards without paying the costs. Then, all of your [Dark Masters] trait Digimon gain <Rush> for the turn. At turn end, delete the Digimon this effect played.";
+
+            bool SharedCanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+
+            bool CanPlayDarkMaster(CardSource cardSource, ActivateClass activateClass)
+            {
+                return cardSource.IsDigimon &&
+                        cardSource.EqualsTraits("Dark Masters") &&
+                        CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, root:SelectCardEffect.Root.DigivolutionCards);
+            }
+
+            bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
+            {
+                List<string> cardNames = GetNamesList(cardSources);
+
+                foreach (string name in cardNames)
+                {
+                    if (cardSource.CardNames.Contains(name))
+                        return false;
+                }
+
+                return true;
+            }
+
+            List<string> GetNamesList(List<CardSource> cardSources)
+            {
+                List<string> cardNames = new List<string>();
+
+                foreach (CardSource cardName in cardSources)
+                {
+                    foreach (string name in cardName.CardNames)
+                    {
+                        if (!cardNames.Contains(name))
+                        {
+                            cardNames.Add(name);
+                        }
+                    }
+                }
+
+                return cardNames;
+            }
+
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
+            {
+                Permanent selectedPermanent = card.PermanentOfThisCard();
+
+                if (selectedPermanent.DigivolutionCards.Count(cardSource => CanPlayDarkMaster(cardSource, activateClass)) >= 1)
+                {
+                    int maxCount = Math.Min(4, selectedPermanent.DigivolutionCards.Count(cardSource => CanPlayDarkMaster(cardSource, activateClass)));
+
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                                canTargetCondition: cardSource => CanPlayDarkMaster(cardSource, activateClass),
+                                canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 digivolution card to play.",
+                                maxCount: maxCount,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: selectedPermanent.DigivolutionCards,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                    selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to play.", "The opponent is selecting 1 digivolution card to play.");
+                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                    yield return StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    {
+                        selectedCards.Add(cardSource);
+
+                        yield return null;
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                cardSources: selectedCards,
+                                activateClass: activateClass,
+                                payCost: false,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.DigivolutionCards,
+                                activateETB: true));
+
+                    bool PermanentCondition(Permanent permanent)
+                    {
+                        return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                                permanent.TopCard.EqualsTraits("Dark Masters");
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRushPlayerEffect(
+                                permanentCondition: PermanentCondition,
+                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                activateClass: activateClass));
+
+                    #region Delete Digimon Played
+
+                    List<Permanent> playedPermanents = selectedCards.Map(cardSource => cardSource.PermanentOfThisCard());
+
+                    ActivateClass activateClass1 = new ActivateClass();
+
+                    Func<EffectTiming, ICardEffect> cardEffectFunction = GetCardEffect;
+
+                    activateClass1.SetUpICardEffect("Delete the played Digimon", CanUseCondition2, card);
+                    activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDescription1());
+                    activateClass1.SetIsDigimonEffect(true);
+
+                    card.Owner.PermanentEffects.Add(cardEffectFunction);
+
+                    foreach(Permanent playedPermanent in playedPermanents)
+                    {
+                        if (!playedPermanent.TopCard.CanNotBeAffected(activateClass))
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(playedPermanent));
+                        }
+                    }
+
+                    string EffectDescription1()
+                    {
+                        return "[End of Your Turn] Delete the Digimon that were played by Apocalymon.";
+                    }
+
+                    bool CanUseCondition2(Hashtable hashtable1)
+                    {
+                        return true;
+                    }
+
+                    bool CanActivateCondition1(Hashtable hashtable1)
+                    {
+                        return true;
+                    }
+
+                    IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                            playedPermanents,
+                            CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
+                        
+                        playedPermanents = playedPermanents.Filter(permanent => CardEffectCommons.IsPermanentExistsOnBattleArea(permanent));
+
+                        if (playedPermanents.Count() <= 0)//Remove effect from activating every turn once all permanents deleted
+                        {
+                            card.Owner.PermanentEffects.Remove(cardEffectFunction);
+                        }
+                    }
+
+                    ICardEffect GetCardEffect(EffectTiming _timing)
+                    {
+                        if (_timing == EffectTiming.OnEndTurn)
+                        {
+                            return activateClass1;
+                        }
+
+                        return null;
+                    }
+
+                    #endregion
+                }
+            }
+
+            #endregion 
+
             #region On Play
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 [Dark Masters] from sources, give <Rush>, Delete them at end of turn", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("On Play"));
                 cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[On Play] You may play 1 of each [Dark Masters] trait card with different names from this Digimon's digivolution cards without paying the costs. Then, all of your [Dark Masters] trait Digimon gain <Rush> for the turn. At turn end, delete the Digimon this effect played.";
-                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return cardSource.IsDigimon &&
-                           cardSource.EqualsTraits("Dark Masters") &&
-                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, root:SelectCardEffect.Root.DigivolutionCards);
-                }
-
-                bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
-                {
-                    List<string> cardNames = GetNamesList(cardSources);
-
-                    foreach (string name in cardNames)
-                    {
-                        if (cardSource.CardNames.Contains(name))
-                            return false;
-                    }
-
-                    return true;
-                }
-
-                List<string> GetNamesList(List<CardSource> cardSources)
-                {
-                    List<string> cardNames = new List<string>();
-
-                    foreach (CardSource cardName in cardSources)
-                    {
-                        foreach (string name in cardName.CardNames)
-                        {
-                            if (!cardNames.Contains(name))
-                            {
-                                cardNames.Add(name);
-                            }
-                        }
-                    }
-
-                    return cardNames;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    Permanent selectedPermanent = card.PermanentOfThisCard();
-
-                    if (selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
-                    {
-                        int maxCount = Math.Min(4, selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition));
-
-                        List<CardSource> selectedCards = new List<CardSource>();
-
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 digivolution card to play.",
-                                    maxCount: maxCount,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Custom,
-                                    customRootCardList: selectedPermanent.DigivolutionCards,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                        selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to play.", "The opponent is selecting 1 digivolution card to play.");
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                        yield return StartCoroutine(selectCardEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCards.Add(cardSource);
-
-                            yield return null;
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                    cardSources: selectedCards,
-                                    activateClass: activateClass,
-                                    payCost: false,
-                                    isTapped: false,
-                                    root: SelectCardEffect.Root.DigivolutionCards,
-                                    activateETB: true));
-
-                        bool PermanentCondition(Permanent permanent)
-                        {
-                            return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                                   permanent.TopCard.EqualsTraits("Dark Masters");
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRushPlayerEffect(
-                                    permanentCondition: PermanentCondition,
-                                    effectDuration: EffectDuration.UntilEachTurnEnd,
-                                    activateClass: activateClass));
-
-                        #region Delete Digimon Played
-
-                        foreach (CardSource source in selectedCards)
-                        {
-                            Permanent playedPermanent = source.PermanentOfThisCard();
-
-                            ActivateClass activateClass1 = new ActivateClass();
-                            activateClass1.SetUpICardEffect($"[{source.BaseENGCardNameFromEntity}] Delete the Digimon", CanUseCondition2, playedPermanent.TopCard);
-                            activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
-                            activateClass1.SetEffectSourcePermanent(selectedPermanent);
-                            playedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
-
-                            if (!playedPermanent.TopCard.CanNotBeAffected(activateClass))
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(playedPermanent));
-                            }
-
-                            string EffectDiscription1()
-                            {
-                                return "[End of Your Turn] Delete this Digimon.";
-                            }
-
-                            bool CanUseCondition2(Hashtable hashtable1)
-                            {
-                                if (CardEffectCommons.IsOwnerTurn(card))
-                                {
-                                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(playedPermanent, playedPermanent.TopCard))
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
-                            }
-
-                            bool CanActivateCondition1(Hashtable hashtable1)
-                            {
-                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedPermanent))
-                                {
-                                    if (!playedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
-                            }
-
-                            IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
-                            {
-                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedPermanent))
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                                    new List<Permanent>() { playedPermanent },
-                                    CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
-                                }
-                            }
-
-                            ICardEffect GetCardEffect(EffectTiming _timing)
-                            {
-                                if (_timing == EffectTiming.OnEndTurn)
-                                {
-                                    return activateClass1;
-                                }
-
-                                return null;
-                            }
-                        }
-
-                        #endregion
-                    }
                 }
             }
 
@@ -600,196 +593,14 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 [Dark Masters] from sources, give <Rush>, Delete them at end of turn", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("When Digivolving"));
                 cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[When Digivolving] You may play 1 of each [Dark Masters] trait card with different names from this Digimon's digivolution cards without paying the costs. Then, all of your [Dark Masters] trait Digimon gain <Rush> for the turn. (This Digimon can attack the turn it comes into play.) At turn end, delete the Digimon this effect played.";
-                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return cardSource.IsDigimon &&
-                           cardSource.EqualsTraits("Dark Masters") &&
-                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, root:SelectCardEffect.Root.DigivolutionCards);
-                }
-
-                bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
-                {
-                    List<string> cardNames = GetNamesList(cardSources);
-
-                    foreach (string name in cardNames)
-                    {
-                        if (cardSource.CardNames.Contains(name))
-                            return false;
-                    }
-
-                    return true;
-                }
-
-                List<string> GetNamesList(List<CardSource> cardSources)
-                {
-                    List<string> cardNames = new List<string>();
-
-                    foreach (CardSource cardName in cardSources)
-                    {
-                        foreach (string name in cardName.CardNames)
-                        {
-                            if (!cardNames.Contains(name))
-                            {
-                                cardNames.Add(name);
-                            }
-                        }
-                    }
-
-                    return cardNames;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    Permanent selectedPermanent = card.PermanentOfThisCard();
-
-                    if (selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
-                    {
-                        int maxCount = Math.Min(4, selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition));
-
-                        List<CardSource> selectedCards = new List<CardSource>();
-
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 digivolution card to play.",
-                                    maxCount: maxCount,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Custom,
-                                    customRootCardList: selectedPermanent.DigivolutionCards,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                        selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to play.", "The opponent is selecting 1 digivolution card to play.");
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                        yield return StartCoroutine(selectCardEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCards.Add(cardSource);
-
-                            yield return null;
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                    cardSources: selectedCards,
-                                    activateClass: activateClass,
-                                    payCost: false,
-                                    isTapped: false,
-                                    root: SelectCardEffect.Root.DigivolutionCards,
-                                    activateETB: true));
-
-                        bool PermanentCondition(Permanent permanent)
-                        {
-                            return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                                   permanent.TopCard.EqualsTraits("Dark Masters");
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRushPlayerEffect(
-                                    permanentCondition: PermanentCondition,
-                                    effectDuration: EffectDuration.UntilEachTurnEnd,
-                                    activateClass: activateClass));
-
-                        #region Delete Digimon Played
-
-                        foreach (CardSource source in selectedCards)
-                        {
-                            Permanent playedPermanent = source.PermanentOfThisCard();
-
-                            ActivateClass activateClass1 = new ActivateClass();
-                            activateClass1.SetUpICardEffect("Delete the Digimon", CanUseCondition2, playedPermanent.TopCard);
-                            activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
-                            activateClass1.SetEffectSourcePermanent(selectedPermanent);
-                            playedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
-
-                            if (!playedPermanent.TopCard.CanNotBeAffected(activateClass))
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(playedPermanent));
-                            }
-
-                            string EffectDiscription1()
-                            {
-                                return "[End of Your Turn] Delete this Digimon.";
-                            }
-
-                            bool CanUseCondition2(Hashtable hashtable1)
-                            {
-                                if (CardEffectCommons.IsOwnerTurn(card))
-                                {
-                                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(playedPermanent, playedPermanent.TopCard))
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
-                            }
-
-                            bool CanActivateCondition1(Hashtable hashtable1)
-                            {
-                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedPermanent))
-                                {
-                                    if (!playedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
-                            }
-
-                            IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
-                            {
-                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedPermanent))
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                                    new List<Permanent>() { playedPermanent },
-                                    CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
-                                }
-                            }
-
-                            ICardEffect GetCardEffect(EffectTiming _timing)
-                            {
-                                if (_timing == EffectTiming.OnEndTurn)
-                                {
-                                    return activateClass1;
-                                }
-
-                                return null;
-                            }
-                        }
-
-                        #endregion
-                    }
                 }
             }
 

@@ -154,7 +154,7 @@ namespace DCGO.CardEffects.P
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to dottom deck a Digimon with as high or lower level.", "The opponent is selecting 1 Digimon to bottom deck.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 of your Digimon to use to compare levels.", "The opponent is selecting 1 of their Digimon to use to compare levels.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -315,7 +315,7 @@ namespace DCGO.CardEffects.P
                                         canEndNotMax: false,
                                         isShowOpponent: true,
                                         mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Custom,
+                                        root: SelectCardEffect.Root.DigivolutionCards,
                                         customRootCardList: selectedPermanent.DigivolutionCards,
                                         canLookReverseCard: true,
                                         selectPlayer: card.Owner,

@@ -405,30 +405,29 @@ namespace DCGO.CardEffects.BT18
                                     CardSource securityCard = selectedPermanent.TopCard;
 
                                     yield return ContinuousController.instance.StartCoroutine(
-                                        new IPutSecurityPermanent(selectedPermanent,
-                                            CardEffectCommons.CardEffectHashtable(activateClass),
-                                            toTop: true).PutSecurity());
+                                        CardEffectCommons.PlacePermanentInSecurityAndProcessAccordingToResult(
+                                            selectedPermanent,
+                                            activateClass,
+                                            true,
+                                            SuccessProcess));
 
-                                    if (selectedPermanent.TopCard == null)
+                                    IEnumerator SuccessProcess(CardSource cardSource)
                                     {
-                                        if (securityCard.Owner.SecurityCards.Contains(securityCard) 
-                                            || (securityCard.IsToken && !CardEffectCommons.IsExistOnBattleArea(securityCard)))
+                                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsCardLucemonChaosModeCondition))
                                         {
-                                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsCardLucemonChaosModeCondition))
-                                            {
-                                                yield return ContinuousController.instance.StartCoroutine(
-                                                CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                                    targetPermanent: card.PermanentOfThisCard(),
-                                                    cardCondition: IsCardLucemonChaosModeCondition,
-                                                    payCost: false,
-                                                    reduceCostTuple: null,
-                                                    fixedCostTuple: null,
-                                                    ignoreDigivolutionRequirementFixedCost: -1,
-                                                    isHand: false,
-                                                    activateClass: activateClass,
-                                                    successProcess: null));
-                                            }
+                                            yield return ContinuousController.instance.StartCoroutine(
+                                            CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                                targetPermanent: card.PermanentOfThisCard(),
+                                                cardCondition: IsCardLucemonChaosModeCondition,
+                                                payCost: false,
+                                                reduceCostTuple: null,
+                                                fixedCostTuple: null,
+                                                ignoreDigivolutionRequirementFixedCost: -1,
+                                                isHand: false,
+                                                activateClass: activateClass,
+                                                successProcess: null));
                                         }
+                                        yield return null;
                                     }
                                 }
                             }

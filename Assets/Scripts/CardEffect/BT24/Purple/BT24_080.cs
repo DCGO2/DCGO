@@ -57,18 +57,18 @@ namespace DCGO.CardEffects.BT24
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.IsExistOnTrash(card)
-                        && card.Owner.HandCards.Count <= 4;
+                        && CardEffectCommons.IsExistOnTrash(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnTrash(card);
+                    return CardEffectCommons.IsExistOnTrash(card)
+                        && card.Owner.HandCards.Count <= 4;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return permanent.IsDigimon
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && (permanent.TopCard.EqualsTraits("Dark Dragon")
                             || permanent.TopCard.EqualsTraits("Evil Dragon"))
                         && card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass);

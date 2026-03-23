@@ -15,7 +15,7 @@ public class BT8_070 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete Digimons and Tamers", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Delete Digimon and Tamers", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

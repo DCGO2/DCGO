@@ -78,7 +78,7 @@ namespace DCGO.CardEffects.BT10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return oppponent's all Digimons with the highest level to the bottom of deck", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return all opponent's Digimon with the highest level to the bottom of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -357,7 +357,8 @@ namespace DCGO.CardEffects.BT10
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                         player: card.Owner.Enemy,
-                                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                        activateClass).ReduceSecurity());
                                 }
                             }
 
@@ -539,7 +540,8 @@ namespace DCGO.CardEffects.BT10
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                         player: card.Owner.Enemy,
-                                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                        activateClass).ReduceSecurity());
                                 }
                             }
 

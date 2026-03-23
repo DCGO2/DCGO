@@ -22,7 +22,7 @@ public class MindLinkClass
             {
                 if (!permanent.IsToken)
                 {
-                    if (permanent.DigivolutionCards.Count(cardSource => cardSource.IsTamer) == 0)
+                    if (permanent.DigivolutionCards.Count(cardSource => cardSource.IsTamer && !cardSource.IsFlipped) == 0)
                     {
                         if (_digimonCondition == null || _digimonCondition(permanent))
                         {

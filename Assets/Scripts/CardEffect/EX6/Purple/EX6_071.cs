@@ -80,7 +80,7 @@ namespace DCGO.CardEffects.EX6
                             mode: SelectPermanentEffect.Mode.Destroy,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon tto delete.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
@@ -90,7 +90,7 @@ namespace DCGO.CardEffects.EX6
             }
             #endregion
 
-            #region Secuirty Effect
+            #region Security Effect
             if (timing == EffectTiming.SecuritySkill)
             {
                 CardEffectCommons.AddActivateMainOptionSecurityEffect(
