@@ -99,7 +99,7 @@ public partial class PermanentEffectFactory
     #endregion
 
     #region At end of turn lose 3 memory
-    public static ActivateClass EoTLose3Memory(Permanent permanent)
+    public static ActivateClass EoTLose3Memory(CardSource card)
     {
         ActivateClass activateClass1 = new ActivateClass();
         activateClass1.SetUpICardEffect("Memory -3", CanUseCondition1, card);
