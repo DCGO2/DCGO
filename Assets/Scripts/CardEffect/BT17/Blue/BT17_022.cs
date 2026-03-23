@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.BT17
             {
                 bool Condition()
                 {
-                    return card.Owner.HandCards.Contains(card);
+                    return true;
                 }
 
                 bool PermanentCondition(Permanent targetPermanent)
