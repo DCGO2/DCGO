@@ -123,7 +123,7 @@ public partial class PermanentEffectFactory
 
         IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
         {
-            yield return ContinuousController.instance.StartCoroutine(permanent.TopCard.Owner.AddMemory(-3, activateClass1));
+            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-3, activateClass1));
         }
     }
     #endregion
