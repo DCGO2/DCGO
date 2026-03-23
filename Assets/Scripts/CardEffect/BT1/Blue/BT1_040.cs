@@ -42,13 +42,13 @@ namespace DCGO.CardEffects.BT1
                     {
                         if (_timing == EffectTiming.OnEndTurn)
                         {
-                            return CardEffectFactory.EoTLose3Memory(thisPermanent);
+                            return CardEffectFactory.EoTLose3Memory(card);
                         }
 
                         return null;
                     }
 
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(thisPermanent));
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(card));
                 }
             }
 
