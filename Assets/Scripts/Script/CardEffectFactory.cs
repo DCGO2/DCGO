@@ -1432,4 +1432,34 @@ public partial class CardEffectFactory
     }
 
     #endregion
+
+    #region At end of turn lose 3 memory
+    public static ActivateClass EoTLose3Memory(CardSource card)
+    {
+        ActivateClass activateClass1 = new ActivateClass();
+        activateClass1.SetUpICardEffect("Memory -3", CanUseCondition1, card);
+        activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
+        return activateClass1;
+
+        string EffectDiscription1()
+        {
+            return "Lose 3 memory.";
+        }
+
+        bool CanUseCondition1(Hashtable hashtable)
+        {
+            return true;
+        }
+
+        bool CanActivateCondition1(Hashtable hashtable)
+        {
+            return true;
+        }
+
+        IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
+        {
+            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-3, activateClass1));
+        }
+    }
+    #endregion
 }
