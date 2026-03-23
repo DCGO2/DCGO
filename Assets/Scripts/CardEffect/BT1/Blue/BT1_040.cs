@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT1
 
                     Permanent thisPermanent = card.PermanentOfThisCard();
 
-                    thisPermanent.UntilEachTurnEndEffects.Add(GetCardEffect);
+                    card.Owner.UntilEachTurnEndEffects.Add(GetCardEffect);
 
                     ICardEffect GetCardEffect(EffectTiming _timing)
                     {
