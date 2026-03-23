@@ -161,8 +161,6 @@ namespace DCGO.CardEffects.ST23
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    CardSource secCard = card.Owner.SecurityCards[0];
-
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashSecurityAndProcessAccordingToResult(
                         player: card.Owner,
                         trashAmount: 1,
