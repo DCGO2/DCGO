@@ -11,8 +11,9 @@ namespace DCGO.Tools.Repair
 {
     public class FixForDualTypings : MonoBehaviour
     {
+        
         static FixForDualTypings instance;
-        string baseURL = "https://raw.githubusercontent.com/TakaOtaku/Digimon-Cards/main/src/";
+        string baseURL = "https://raw.githubusercontent.com/TakaOtaku/Digimon-Card-App/main/src/";
         public List<CardData> _cardData;
 
         [MenuItem("Window/DCGO/Repair/Fix Card Kind Data")]
@@ -20,8 +21,6 @@ namespace DCGO.Tools.Repair
         {
             instance = new FixForDualTypings();
             EditorCoroutineUtility.StartCoroutine(instance.FixCardKinds(), instance);
-
-            List<CEntity_Base> List = GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/");
 
             Debug.Log("Fixed all CardKind in CardBaseEntity");
             return;
