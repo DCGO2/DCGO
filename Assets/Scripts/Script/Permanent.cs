@@ -2885,6 +2885,10 @@ public class Permanent
     {
         get
         {
+            Hashtable hashtable = new Hashtable(){
+                {"AttackingPermanent", this}
+            };
+            
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
             {
                 foreach (Permanent permanent in player.GetFieldPermanents())
@@ -2892,14 +2896,11 @@ public class Permanent
                     #region Permanent Effects
                     foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.OnAllyAttack))
                     {
-                        if (cardEffect is IAllianceEffect)
+                        if (cardEffect.EffectName == "Alliance")
                         {
-                            if (cardEffect.CanTrigger(null))
+                            if (cardEffect.CanTrigger(hashtable))
                             {
-                                if (((IAllianceEffect)cardEffect).HasAlliance(this))
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
@@ -2914,14 +2915,11 @@ public class Permanent
 
                     foreach (ICardEffect cardEffect in source.EffectList(EffectTiming.OnAllyAttack))
                     {
-                        if (cardEffect is IAllianceEffect)
+                        if (cardEffect.EffectName == "Alliance")
                         {
-                            if (cardEffect.CanTrigger(null))
+                            if (cardEffect.CanTrigger(hashtable))
                             {
-                                if (((IAllianceEffect)cardEffect).HasAlliance(this))
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
@@ -2931,14 +2929,11 @@ public class Permanent
                 #region Player Effects
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.OnAllyAttack))
                 {
-                    if (cardEffect is IAllianceEffect)
+                    if (cardEffect.EffectName == "Alliance")
                     {
-                        if (cardEffect.CanTrigger(null))
+                        if (cardEffect.CanTrigger(hashtable))
                         {
-                            if (((IAllianceEffect)cardEffect).HasAlliance(this))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
