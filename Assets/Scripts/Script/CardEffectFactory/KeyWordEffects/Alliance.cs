@@ -71,37 +71,26 @@ public partial class CardEffectFactory
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)
         {
-            return CardEffectCommons.AllianceProcess(_hashtable, activateClass, card);
+            return CardEffectCommons.AllianceProcess(_hashtable, activateClass, targetPermanent, card);
         }
 
         return activateClass;
     }
     #endregion
 
-    #region Static effect of [Alliance]
-    public static AllianceClass AllianceStaticEffect(Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition)
+    #region Static effect of [Alliance] to all PermanentCondition Digimon
+    public static ActivateClass AllianceStaticEffect(Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition)
     {
-        string effectName = "Alliance";
-
-        AllianceClass allianceClass = new AllianceClass();
-        allianceClass.SetUpICardEffect(effectName, CanUseCondition, card);
-        allianceClass.SetUpAllianceClass(PermanentCondition: PermanentCondition);
-
-        if (isInheritedEffect)
-        {
-            allianceClass.SetIsInheritedEffect(true);
-        }
+        ActivateClass activateClass = new ActivateClass();
+        activateClass.SetUpICardEffect("Alliance", CanUseCondition, card);
+        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, DataBase.AllianceEffectDiscription());
+        activateClass.SetIsInheritedEffect(isInheritedEffect);
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            return condition == null || condition();
-        }
-
-        bool PermanentCondition(Permanent permanent)
-        {
-            if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+            if (CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, permanentCondition))
             {
-                if (permanentCondition == null || permanentCondition(permanent))
+                if (condition == null || condition())
                 {
                     return true;
                 }
@@ -110,7 +99,28 @@ public partial class CardEffectFactory
             return false;
         }
 
-        return allianceClass;
+        bool CanActivateCondition(Hashtable hashtable)
+        {
+            Permanent attackingPermanent = CardEffectCommons.GetAttackerFromHashtable(hashtable);
+
+            bool CanSelectPermanentCondition(Permanent permanent)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    && permanent != attackingPermanent
+                    && CardEffectCommons.CanActivateSuspendCostEffect(permanent.TopCard);
+            }
+
+            return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(attackingPermanent, card)
+                && CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition);
+        }
+
+        IEnumerator ActivateCoroutine(Hashtable hashtable)
+        {
+            Permanent attackingPermanent = CardEffectCommons.GetAttackerFromHashtable(hashtable);
+            return CardEffectCommons.AllianceProcess(hashtable, activateClass, attackingPermanent, card);
+        }
+
+        return activateClass;
     }
     #endregion
 }
