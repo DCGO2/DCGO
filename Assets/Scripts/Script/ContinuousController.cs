@@ -550,6 +550,7 @@ public class ContinuousController : MonoBehaviour
         LoadAutoMinDigivolutionCost();
         LoadAutoMaxCardCount();
         LoadAutoHatch();
+        //LoadUseBanlist();
         LoadShowCutInAnimation();
         LoadReverseOpponentsCards();
         LoadTurnSuspendedCards();
