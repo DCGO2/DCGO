@@ -51,13 +51,6 @@ public interface IRebootEffect
 }
 #endregion
 
-#region "Target permanent gains Alliance" effect
-public interface IAllianceEffect
-{
-    bool HasAlliance(Permanent permanent);
-}
-#endregion
-
 #region "Target permanent gains Scapegoat" effect
 public interface IScapegoatEffect
 {
