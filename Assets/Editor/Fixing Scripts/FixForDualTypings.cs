@@ -36,7 +36,7 @@ namespace DCGO.Tools.Repair
             {
                 if (card.cardKind.Count > 0)
                     continue;
-
+                Debug.Log($"Missing file: {card.CardID}");
                 CardData data = _cardData.Where(x => x.id == card.CardID).First();
 
                 card.cardKind = DictionaryUtility.GetCardKind(data.cardType.Replace("-", ""), DataBase.CardKindENNameDictionary);
