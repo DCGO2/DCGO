@@ -111,7 +111,8 @@ public partial class CardEffectFactory
             }
 
             return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(attackingPermanent, card)
-                && CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition);
+                && CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition)
+                && (condition == null || condition());
         }
 
         IEnumerator ActivateCoroutine(Hashtable hashtable)
