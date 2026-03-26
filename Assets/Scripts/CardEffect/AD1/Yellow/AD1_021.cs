@@ -122,7 +122,6 @@ namespace DCGO.CardEffects.AD1
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 Marcus Damon is also a 6k Digimon, gains Rush & can't digivolve. Then, 1 of your Digimon may attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
-                activateClass.SetIsOptionalOverride(_ => !CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition));//Effect is optional while you do not have an Agumon or Greymon
                 activateClass.SetHashString("AD1_021_EoYT");
                 cardEffects.Add(activateClass);
 
@@ -158,6 +157,7 @@ namespace DCGO.CardEffects.AD1
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool activated = false;
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -181,6 +181,8 @@ namespace DCGO.CardEffects.AD1
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
+                            activated = true;
+
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BecomeDigimonThatCantDigivolve(
                                 targetPermanent: permanent, 
                                 DP: 6000, 
@@ -216,6 +218,8 @@ namespace DCGO.CardEffects.AD1
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
+                            activated = true;
+
                             SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
                             selectAttackEffect.SetUp(
@@ -227,6 +231,7 @@ namespace DCGO.CardEffects.AD1
                             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
                     }
+                    if (!activated) activateClass.RemoveUse();
                 }
             }
             #endregion
