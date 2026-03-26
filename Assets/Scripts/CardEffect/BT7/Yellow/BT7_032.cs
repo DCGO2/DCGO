@@ -12,8 +12,7 @@ public class BT7_032 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("If you have 3 security cards, gain 2 memory", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-            activateClass.SetIsOptionalOverride(_ => card.Owner.SecurityCards.Count != 3);//Effect is optional while you do not have 3 mem to whiff
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
             activateClass.SetHashString("Memory+2_BT7_032");
             cardEffects.Add(activateClass);
@@ -34,11 +33,15 @@ public class BT7_032 : CEntity_Effect
                 return CardEffectCommons.IsExistOnBattleArea(card);
             }
 
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            IEnumerator ActivateCoroutine(Hashtable hashtable)
             {
                 if (card.Owner.SecurityCards.Count == 3)
                 { 
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
+                }
+                else
+                {
+                    activateClass.RemoveUse();
                 }
             }
         }
