@@ -286,7 +286,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                                 _CanEndSelectCondition: null,
                                 _MaxCount: 1,
                                 _CanEndNotMax: false,
-                                _CanNoSelect: () => skillInfos_active.All(skillInfo => skillInfo.CardEffect.IsOptional),
+                                _CanNoSelect: () => skillInfos_active.All(skillInfo => skillInfo.CardEffect.IsOptionalCondition(skillInfo.Hashtable)),
                                 CanLookReverseCard: true,
                                 skillInfos: skillInfos_active,
                                 root: SelectCardEffect.Root.None));
@@ -294,6 +294,13 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                                 if (GManager.instance.selectCardPanel.SelectedIndex.Count > 0)
                                 {
                                     skillIndex = GManager.instance.selectCardPanel.SelectedIndex[0];
+                                }
+                                else
+                                {
+                                    foreach (FieldPermanentCard fieldPermanentCard in player.FieldPermanentObjects)
+                                    {
+                                        fieldPermanentCard.OffPermanentIndexText();
+                                    }
                                 }
                             }
 
