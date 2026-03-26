@@ -988,6 +988,7 @@ public enum EffectTiming
     OnReturnCardsToHandFromTrash,
     AfterEffectsActivate,
     WhenWouldDigivolutionCardDiscarded,
+    WhenWouldLink,
     WhenLinked,
     WhenTopCardTrashed,
     RulesTiming,
