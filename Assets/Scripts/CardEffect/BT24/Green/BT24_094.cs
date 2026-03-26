@@ -69,7 +69,7 @@ namespace DCGO.CardEffects.BT24
                 bool PermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && (permanent.TopCard.CardColors.Contains(CardColor.Blue) || permanent.TopCard.CardColors.Contains(CardColor.Yellow))
+                        && (permanent.TopCard.CardColors.Contains(CardColor.Green) || permanent.TopCard.CardColors.Contains(CardColor.Yellow))
                         && permanent.TopCard.HasTSTraits;
                 }
 
