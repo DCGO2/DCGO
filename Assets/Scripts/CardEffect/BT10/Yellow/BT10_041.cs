@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT10
                             return true;
                         }
 
-                        if (cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.HasCardColor(CardColor.Yellow))
                         {
                             if (cardSource.GetCostItself <= 5)
                             {

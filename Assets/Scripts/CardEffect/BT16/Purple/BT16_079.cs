@@ -68,12 +68,12 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnHand(cardSource))
                     {
-                        if (cardSource.Level <= 4 && cardSource.CardColors.Contains(CardColor.Yellow) && cardSource.IsDigimon)
+                        if (cardSource.Level <= 4 && cardSource.HasCardColor(CardColor.Yellow) && cardSource.IsDigimon)
                         {
                             return true;
                         }
 
-                        if (cardSource.Level <= 4 && cardSource.CardColors.Contains(CardColor.Green) && cardSource.IsDigimon)
+                        if (cardSource.Level <= 4 && cardSource.HasCardColor(CardColor.Green) && cardSource.IsDigimon)
                         {
                             return true;
                         }
@@ -86,12 +86,12 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnTrash(cardSource))
                     {
-                        if (cardSource.Level <= 4 && cardSource.CardColors.Contains(CardColor.Yellow) && cardSource.IsDigimon)
+                        if (cardSource.Level <= 4 && cardSource.HasCardColor(CardColor.Yellow) && cardSource.IsDigimon)
                         {
                             return true;
                         }
 
-                        if (cardSource.Level <= 4 && cardSource.CardColors.Contains(CardColor.Green) && cardSource.IsDigimon)
+                        if (cardSource.Level <= 4 && cardSource.HasCardColor(CardColor.Green) && cardSource.IsDigimon)
                         {
                             return true;
                         }
@@ -246,12 +246,12 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnHand(cardSource))
                     {
-                        if (cardSource.Level <= 4 && cardSource.CardColors.Contains(CardColor.Yellow) && cardSource.IsDigimon)
+                        if (cardSource.Level <= 4 && cardSource.HasCardColor(CardColor.Yellow) && cardSource.IsDigimon)
                         {
                             return true;
                         }
 
-                        if (cardSource.Level <= 4 && cardSource.CardColors.Contains(CardColor.Green) && cardSource.IsDigimon)
+                        if (cardSource.Level <= 4 && cardSource.HasCardColor(CardColor.Green) && cardSource.IsDigimon)
                         {
                             return true;
                         }
@@ -264,12 +264,12 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnTrash(cardSource))
                     {
-                        if (cardSource.Level <= 4 && cardSource.CardColors.Contains(CardColor.Yellow) && cardSource.IsDigimon)
+                        if (cardSource.Level <= 4 && cardSource.HasCardColor(CardColor.Yellow) && cardSource.IsDigimon)
                         {
                             return true;
                         }
 
-                        if (cardSource.Level <= 4 && cardSource.CardColors.Contains(CardColor.Green) && cardSource.IsDigimon)
+                        if (cardSource.Level <= 4 && cardSource.HasCardColor(CardColor.Green) && cardSource.IsDigimon)
                         {
                             return true;
                         }

@@ -119,7 +119,7 @@ public class BT6_054 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Green))
+                    if (cardSource.HasCardColor(CardColor.Green))
                     {
                         if (cardSource.Level <= 4)
                         {

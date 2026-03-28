@@ -364,12 +364,12 @@ namespace DCGO.CardEffects.EX5
                             {
                                 if (cardSource.GetCostItself <= 3)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Black))
+                                    if (cardSource.HasCardColor(CardColor.Black))
                                     {
                                         return true;
                                     }
 
-                                    if (cardSource.CardColors.Contains(CardColor.Yellow))
+                                    if (cardSource.HasCardColor(CardColor.Yellow))
                                     {
                                         return true;
                                     }

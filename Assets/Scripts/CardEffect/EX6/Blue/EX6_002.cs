@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (cardSource.IsLevel3)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Blue))
+                            if (cardSource.HasCardColor(CardColor.Blue))
                             {
                                 return true;
                             }

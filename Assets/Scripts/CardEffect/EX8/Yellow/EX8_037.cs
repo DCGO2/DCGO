@@ -103,6 +103,16 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (cardSource.IsOption)
                     {
+                        if (cardSource.IsDigimon)//Dual Card
+                        {
+                            if (cardSource.DualCardColors.Count == 1 && cardSource.GetCostItself <= 5)
+                            {
+                                if (!cardSource.CanNotPlayThisOption)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
                         if (cardSource.CardColors.Count == 1 && cardSource.GetCostItself <= 5)
                         {
                             if (!cardSource.CanNotPlayThisOption)

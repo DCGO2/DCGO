@@ -64,7 +64,7 @@ public class BT4_096 : CEntity_Effect
 
                 IEnumerator RevealedCardsCoroutine(List<CardSource> revealedCards)
                 {
-                    if (revealedCards.Every(cardSource => cardSource.CardColors.Contains(CardColor.Black)))
+                    if (revealedCards.Every(cardSource => cardSource.HasCardColor(CardColor.Black)))
                     {
                         yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                     }

@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT24
                 bool CardSourceCondition(CardSource cardSource)
                 {
                     return cardSource.HasTSTraits
-                        && cardSource.CardColors.Contains(CardColor.Blue);
+                        && cardSource.HasCardColor(CardColor.Blue);
                 }
 
                 bool RootCondition(SelectCardEffect.Root root)

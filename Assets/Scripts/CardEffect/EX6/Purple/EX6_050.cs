@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Purple))
                         {
                             if (cardSource.IsDigimon)
                             {

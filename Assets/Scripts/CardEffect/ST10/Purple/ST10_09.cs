@@ -39,7 +39,7 @@ public class ST10_09 : CEntity_Effect
                         {
                             if (cardSource.Level <= 5)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Purple))
+                                if (cardSource.HasCardColor(CardColor.Purple))
                                 {
                                     if (cardSource.HasLevel)
                                     {

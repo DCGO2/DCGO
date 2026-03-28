@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.EX11
                 bool CanSelectCardCondition(CardSource cardSource, int DP)
                 {
                     return cardSource.IsDigimon
-                        && cardSource.CardColors.Contains(CardColor.Green)
+                        && cardSource.HasCardColor(CardColor.Green)
                         && cardSource.HasDP
                         && cardSource.CardDP <= DP
                         && (cardSource.ContainsTraits("Avian")

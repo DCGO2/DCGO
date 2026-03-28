@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT17
             {
                 if (source.IsDigimon)
                 {
-                    if (source.CardColors.Contains(CardColor.Black))
+                    if (source.HasCardColor(CardColor.Black))
                     {
                         if (source.HasLevel && source.Level <= 5)
                             return true;

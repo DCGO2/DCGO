@@ -33,7 +33,7 @@ public class BT3_093 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Blue))
+                    if (cardSource.HasCardColor(CardColor.Blue))
                     {
                         return true;
                     }
@@ -46,7 +46,7 @@ public class BT3_093 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Green))
+                    if (cardSource.HasCardColor(CardColor.Green))
                     {
                         return true;
                     }

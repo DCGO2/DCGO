@@ -28,7 +28,7 @@ public class BT7_064 : CEntity_Effect
             {
                 if (cardSource.HasXAntibodyTraits)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Black))
+                    if (cardSource.HasCardColor(CardColor.Black))
                     {
                         return true;
                     }

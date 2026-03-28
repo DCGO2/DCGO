@@ -28,7 +28,7 @@ public class BT2_038 : CEntity_Effect
             {
                 if (cardSource.IsTamer)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
+                    if (cardSource.HasCardColor(CardColor.Yellow))
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {

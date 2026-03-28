@@ -27,7 +27,7 @@ public class EX5_033 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Contains(CardColor.Yellow))
+                if (cardSource.HasCardColor(CardColor.Yellow))
                 {
                     if (cardSource.Level <= 4)
                     {
@@ -140,7 +140,7 @@ public class EX5_033 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Contains(CardColor.Yellow))
+                if (cardSource.HasCardColor(CardColor.Yellow))
                 {
                     if (cardSource.Level <= 4)
                     {

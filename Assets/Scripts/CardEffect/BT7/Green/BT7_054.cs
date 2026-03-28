@@ -101,7 +101,7 @@ public class BT7_054 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Contains(CardColor.Green))
+                if (cardSource.HasCardColor(CardColor.Green))
                 {
                     if (cardSource.Level <= 4)
                     {

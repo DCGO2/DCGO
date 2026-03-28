@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.BT15
 
                         if (cardSource.PermanentOfThisCard().DigivolutionCards.Count((CS) => CS.CardNames.Contains("X Antibody") || CS.CardNames.Contains("XAntibody")) >= 1)
                         {
-                            return cardSource.Level == 5 && cardSource.CardColors.Contains(CardColor.Purple);
+                            return cardSource.Level == 5 && cardSource.HasCardColor(CardColor.Purple);
                         }
                     }
 

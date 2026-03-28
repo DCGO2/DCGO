@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsTamer && cardSource.GetCostItself <= 4 && cardSource.CardColors.Contains(CardColor.Purple) && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
+                    return cardSource.IsTamer && cardSource.GetCostItself <= 4 && cardSource.HasCardColor(CardColor.Purple) && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

@@ -40,7 +40,7 @@ public class BT4_023 : CEntity_Effect
             {
                 if (cardSource.IsTamer)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Blue))
+                    if (cardSource.HasCardColor(CardColor.Blue))
                     {
                         return true;
                     }

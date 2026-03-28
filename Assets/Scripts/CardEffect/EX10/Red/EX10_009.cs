@@ -132,7 +132,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanSelectCardCondition(CardSource card)
                 {
                     return card.IsDigimon
-                        && (card.CardColors.Contains(CardColor.Red) || card.CardColors.Contains(CardColor.Purple))
+                        && (card.HasCardColor(CardColor.Red) || card.HasCardColor(CardColor.Purple))
                         && card.BaseCardDP <= 5000
                         && CardEffectCommons.CanPlayAsNewPermanent(card, false, activateClass, isBreedingArea: true);
                 }

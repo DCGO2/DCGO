@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT15
                             {
                                 if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Red))
+                                    if (cardSource.HasCardColor(CardColor.Red))
                                     {
                                         return true;
                                     }
@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.BT15
                             {
                                 if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Red))
+                                    if (cardSource.HasCardColor(CardColor.Red))
                                     {
                                         return true;
                                     }

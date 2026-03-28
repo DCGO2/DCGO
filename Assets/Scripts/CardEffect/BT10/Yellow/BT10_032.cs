@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT10
                 {
                     if (cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.HasCardColor(CardColor.Yellow))
                         {
                             return true;
                         }

@@ -187,7 +187,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (source.IsTamer)
                     {
-                        if (source.CardColors.Contains(CardColor.Red))
+                        if (source.HasCardColor(CardColor.Red))
                         {
                             if (source.HasInheritedEffect)
                             {
@@ -340,7 +340,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (source.IsTamer)
                     {
-                        if (source.CardColors.Contains(CardColor.Red))
+                        if (source.HasCardColor(CardColor.Red))
                         {
                             if (source.HasInheritedEffect)
                             {

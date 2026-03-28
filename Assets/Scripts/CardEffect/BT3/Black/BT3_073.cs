@@ -42,12 +42,12 @@ public class BT3_073 : CEntity_Effect
                     {
                         if (cardSource.Level <= 5 && cardSource.HasLevel)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Red))
+                            if (cardSource.HasCardColor(CardColor.Red))
                             {
                                 return true;
                             }
 
-                            if (cardSource.CardColors.Contains(CardColor.Black))
+                            if (cardSource.HasCardColor(CardColor.Black))
                             {
                                 return true;
                             }

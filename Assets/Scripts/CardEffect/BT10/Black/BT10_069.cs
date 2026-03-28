@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.BT10
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Black) || cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Black) || cardSource.HasCardColor(CardColor.Purple))
                         {
                             if (!cardSource.EqualsCardName("DarkKnightmon (X Antibody)"))
                             {

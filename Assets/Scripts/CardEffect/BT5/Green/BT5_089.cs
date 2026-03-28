@@ -76,7 +76,7 @@ public class BT5_089 : CEntity_Effect
                 {
                     if (cardSource.Level == 6)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Green))
+                        if (cardSource.HasCardColor(CardColor.Green))
                         {
                             if (GManager.instance.attackProcess.AttackingPermanent != null)
                             {

@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT12
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Blue))
+                        if (cardSource.HasCardColor(CardColor.Blue))
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
@@ -184,7 +184,7 @@ namespace DCGO.CardEffects.BT12
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Blue))
+                        if (cardSource.HasCardColor(CardColor.Blue))
                         {
                             if (cardSource.Level <= 4)
                             {

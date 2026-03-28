@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.BT12
                         {
                             if (cardSource.Owner == card.Owner)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Green))
+                                if (cardSource.HasCardColor(CardColor.Green))
                                 {
                                     if (cardSource.Level <= 4)
                                     {

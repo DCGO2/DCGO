@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.LM
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Yellow) || cardSource.HasCardColor(CardColor.Purple))
                         {
                             return true;
                         }

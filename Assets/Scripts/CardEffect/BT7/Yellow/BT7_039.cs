@@ -28,7 +28,7 @@ public class BT7_039 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
+                    if (cardSource.HasCardColor(CardColor.Yellow))
                     {
                         if (cardSource.Level <= 4)
                         {

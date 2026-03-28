@@ -100,7 +100,7 @@ public class BT9_076 : CEntity_Effect
 
                     if (selectedCards.Count >= 1)
                     {
-                        if (selectedCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Purple)) >= 1)
+                        if (selectedCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Purple)) >= 1)
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
@@ -125,7 +125,7 @@ public class BT9_076 : CEntity_Effect
                             }
                         }
 
-                        if (selectedCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Yellow)) >= 1)
+                        if (selectedCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Yellow)) >= 1)
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                             {
@@ -250,7 +250,7 @@ public class BT9_076 : CEntity_Effect
 
                     if (selectedCards.Count >= 1)
                     {
-                        if (selectedCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Purple)) >= 1)
+                        if (selectedCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Purple)) >= 1)
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
@@ -275,7 +275,7 @@ public class BT9_076 : CEntity_Effect
                             }
                         }
 
-                        if (selectedCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Yellow)) >= 1)
+                        if (selectedCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Yellow)) >= 1)
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                             {
