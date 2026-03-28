@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.AD1
             if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Draw 1, 1 Digimon my digivolve into a yellow Digimon with [Greymon] in name for -3", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Draw 1, 1 Digimon may digivolve into a yellow Digimon with [Greymon] in name for -3", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
