@@ -110,6 +110,44 @@ namespace DCGO.CardEffects.ST24
 
                     if (trash)
                     {
+                        SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        int maxCount1 = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource));
+
+                        selectPermanentEffect1.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: TamerWithOneFaceDownSource,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: CanEndSelectCondition,
+                            maxCount: maxCount1,
+                            canNoSelect: false,
+                            canEndNotMax: true,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect1.SetUpCustomMessage("Select 1 Tamer to trash 1 bottom face-down card from", "The opponent is selecting 1 Tamer to trash 1 bottom face-down card from");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+
+                        bool CanEndSelectCondition(List<Permanent> permanents)
+                        {
+                            return permanents.Count == 2 || (permanents.Count > 0 && permanents[0].DigivolutionCards.Count(CanSelectTrashSourceCardCondition) >= 2);
+                        }
+
+                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                        {
+                            if (permanents.Count == 1)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 2, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
+                            }
+                            else
+                            {
+                                foreach (Permanent selectedPermanent in permanents)
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 1, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
+                            }
+                        }
+
                         bool CanSelectCardCondition(CardSource cardSource)
                         {
                             return cardSource.EqualsTraits("DATA SQUAD")
@@ -147,15 +185,15 @@ namespace DCGO.CardEffects.ST24
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && (card.PermanentOfThisCard().TopCard.ContainsCardName("Rosemon")
+                            || card.PermanentOfThisCard().TopCard.EqualsTraits("DATA SQUAD"))
+                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && (card.PermanentOfThisCard().TopCard.ContainsCardName("Rosemon")
-                            || card.PermanentOfThisCard().TopCard.EqualsTraits("DATA SQUAD"))
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)                
                         && CardEffectCommons.HasMatchConditionPermanent(TamerWithOneFaceDownSource);
                 }
 
