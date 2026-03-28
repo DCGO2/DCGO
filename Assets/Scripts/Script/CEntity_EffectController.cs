@@ -273,6 +273,13 @@ public class CEntity_EffectController : MonoBehaviour
         UseEffectsThisTurn.Add(cardEffect);
     }
     #endregion
+
+    #region Remove a use of the effect this turn
+    public void RemoveUseEffectThisTurn(ICardEffect cardEffect)
+    {
+        UseEffectsThisTurn.Remove(cardEffect);
+    }
+    #endregion
 }
 
 public class EmptyEffectClass : CEntity_Effect
