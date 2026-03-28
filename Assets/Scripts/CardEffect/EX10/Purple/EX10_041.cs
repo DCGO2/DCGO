@@ -33,6 +33,7 @@ namespace DCGO.CardEffects.EX10
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Give 1 digimon Sec Atk -1 until their turn ends", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -61,6 +62,7 @@ namespace DCGO.CardEffects.EX10
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Give 1 digimon Sec Atk -1 until their turn ends", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
