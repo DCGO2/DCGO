@@ -123,8 +123,6 @@ namespace DCGO.CardEffects.ST24
 
                     if (trash)
                     {
-                        Permanent selectedPermanent = null;
-
                         SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
                         int maxCount1 = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource));
 
@@ -136,7 +134,7 @@ namespace DCGO.CardEffects.ST24
                             maxCount: maxCount1,
                             canNoSelect: false,
                             canEndNotMax: true,
-                            selectPermanentCoroutine: SelectPermanentCoroutine1,
+                            selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
@@ -150,13 +148,6 @@ namespace DCGO.CardEffects.ST24
                             return permanents.Count == 2 || (permanents.Count > 0 && permanents[0].DigivolutionCards.Count(CanSelectTrashSourceCardCondition) >= 2);
                         }
 
-                        IEnumerator SelectPermanentCoroutine1(Permanent permanent)
-                        {
-                            selectedPermanent = permanent;
-
-                            return null;
-                        }
-
                         IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                         {
                             if (permanents.Count == 1)
@@ -165,7 +156,8 @@ namespace DCGO.CardEffects.ST24
                             }
                             else
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 1, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
+                                foreach (Permanent selectedPermanent in permanents)
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 1, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
                             }
                         }
 
@@ -208,29 +200,31 @@ namespace DCGO.CardEffects.ST24
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectCard = cardSource;
-                            selectedCards.Add(cardSource);
                             yield return null;
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        if (selectCard != null && selectCard.IsOption)
+                        if (selectCard != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
-                                cardSources: selectedCards,
-                                activateClass: activateClass,
-                                payCost: false,
-                                root: SelectCardEffect.Root.Hand));
-                        }
-                        else if (selectedCards[0] != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                new List<CardSource>() { selectCard },
-                                activateClass: activateClass,
-                                payCost: false,
-                                isTapped: false,
-                                root: SelectCardEffect.Root.Hand,
-                                activateETB: true));
+                            if (selectCard.IsOption)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
+                                    cardSources: selectedCards,
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    root: SelectCardEffect.Root.Hand));
+                            }
+                            else
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                    new List<CardSource>() { selectCard },
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    isTapped: false,
+                                    root: SelectCardEffect.Root.Hand,
+                                    activateETB: true));
+                            }
                         }
                     }
                 }
@@ -254,15 +248,15 @@ namespace DCGO.CardEffects.ST24
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && (card.PermanentOfThisCard().TopCard.ContainsCardName("ShineGreymon")
+                            || card.PermanentOfThisCard().TopCard.EqualsTraits("DATA SQUAD"))
+                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && (card.PermanentOfThisCard().TopCard.ContainsCardName("ShineGreymon")
-                            || card.PermanentOfThisCard().TopCard.EqualsTraits("DATA SQUAD"))
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)                      
                         && CardEffectCommons.HasMatchConditionPermanent(TamerWithOneFaceDownSource);
                 }
 
