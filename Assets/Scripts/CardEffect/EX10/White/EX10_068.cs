@@ -190,7 +190,7 @@ namespace DCGO.CardEffects.EX10
                                         {
                                             foreach (CardSource item in selectedCards)
                                             {
-                                                if (cardSource.CardColors.Any(x => item.CardColors.Contains(x)))
+                                                if (cardSource.CardColors.Any(x => item.HasCardColor(x)))
                                                         return true;
                                             }
                                         }

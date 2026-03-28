@@ -140,7 +140,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (cardSource.HasDP && cardSource.CardDP <= 11000)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Red))
+                            if (cardSource.HasCardColor(CardColor.Red))
                             {
                                 if (cardSource.HasAvianBeastAnimalTraits)
                                 {

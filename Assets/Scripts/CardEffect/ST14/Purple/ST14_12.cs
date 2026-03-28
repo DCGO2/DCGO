@@ -117,7 +117,7 @@ public class ST14_12 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Contains(CardColor.Purple))
+                if (cardSource.HasCardColor(CardColor.Purple))
                 {
                     if (cardSource.IsDigimon)
                     {

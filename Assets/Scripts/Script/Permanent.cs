@@ -3818,6 +3818,13 @@ public class Permanent
                         cardColors.Add(cardColor);
                     }
                 }
+                foreach (CardColor cardColor in cardSource.DualCardColors)
+                {
+                    if (!cardColors.Contains(cardColor))
+                    {
+                        cardColors.Add(cardColor);
+                    }
+                }
             }
 
             return cardColors.Distinct().ToList();

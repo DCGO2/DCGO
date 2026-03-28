@@ -98,7 +98,7 @@ namespace DCGO.CardEffects.EX6
                         {
                             if (cardSource.HasLevel && cardSource.Level <= 4)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Green) || cardSource.CardColors.Contains(CardColor.Yellow))
+                                if (cardSource.HasCardColor(CardColor.Green) || cardSource.HasCardColor(CardColor.Yellow))
                                 {
                                     return true;
                                 }
@@ -236,7 +236,7 @@ namespace DCGO.CardEffects.EX6
                         {
                             if(cardSource.HasLevel && cardSource.Level <= 4)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Green) || cardSource.CardColors.Contains(CardColor.Yellow))
+                                if (cardSource.HasCardColor(CardColor.Green) || cardSource.HasCardColor(CardColor.Yellow))
                                 {
                                     return true;
                                 }

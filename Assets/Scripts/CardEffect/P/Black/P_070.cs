@@ -64,7 +64,7 @@ public class P_070 : CEntity_Effect
                         {
                             if (cardSource.GetCostItself <= 4)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Black))
+                                if (cardSource.HasCardColor(CardColor.Black))
                                 {
                                     return true;
                                 }

@@ -276,7 +276,7 @@ public class CardSource : MonoBehaviour
 
                 bool matchColorRequirement = colorsToCheck.Every(cardColor =>
                     Owner.GetFieldPermanents().Some(permanent =>
-                        permanent.TopCard.IsPermanent && permanent.TopCard.HasCardColor(cardColor)));
+                        permanent.TopCard.IsPermanent && permanent.TopCard.CardColors.Contains(cardColor)));
 
                 if (!matchColorRequirement)
                 {

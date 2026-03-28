@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.EX3
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
+                    if (cardSource.HasCardColor(CardColor.Yellow))
                     {
                         if (cardSource.HasAngelTraits)
                         {

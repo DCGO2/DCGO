@@ -264,7 +264,7 @@ namespace DCGO.CardEffects.BT18
                             {
                                 if (cardSource.Level <= 4)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Blue))
+                                    if (cardSource.HasCardColor(CardColor.Blue))
                                     {
                                         if (cardSource.HasLevel)
                                         {

@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if(source.HasLevel && source.Level == 3)
                         {
-                            if(source.CardColors.Contains(CardColor.Green) || source.CardColors.Contains(CardColor.Yellow))
+                            if(source.HasCardColor(CardColor.Green) || source.HasCardColor(CardColor.Yellow))
                             {
                                 if (CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass))
                                 {

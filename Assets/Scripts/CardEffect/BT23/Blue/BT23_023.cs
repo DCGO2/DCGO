@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.BT23
                 {
                     return cardSource.IsDigimon
                         && cardSource.HasLevel && cardSource.Level <= 4
-                        && (cardSource.HasCSTraits || cardSource.CardColors.Contains(CardColor.Blue))
+                        && (cardSource.HasCSTraits || cardSource.HasCardColor(CardColor.Blue))
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 

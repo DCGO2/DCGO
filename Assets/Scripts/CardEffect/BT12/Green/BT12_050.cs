@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT12
                         {
                             bool CardCondition(CardSource cardSource)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Blue))
+                                if (cardSource.HasCardColor(CardColor.Blue))
                                 {
                                     if (cardSource.IsDigimon)
                                     {

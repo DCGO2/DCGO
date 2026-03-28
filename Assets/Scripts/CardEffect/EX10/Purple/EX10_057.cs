@@ -362,7 +362,7 @@ namespace DCGO.CardEffects.EX10
                 bool FaceUpPurple(CardSource card)
                 {
                     return !card.IsFlipped &&
-                           card.CardColors.Contains(CardColor.Purple);
+                           card.HasCardColor(CardColor.Purple);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

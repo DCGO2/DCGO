@@ -25,7 +25,7 @@ public class BT4_016 : CEntity_Effect
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => (cardSource.CardTraits.Contains("Hybrid") && cardSource.IsDigimon) || (cardSource.CardColors.Contains(CardColor.Red) && cardSource.IsTamer)) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => (cardSource.CardTraits.Contains("Hybrid") && cardSource.IsDigimon) || (cardSource.HasCardColor(CardColor.Red) && cardSource.IsTamer)) >= 1)
                         {
                             return true;
                         }

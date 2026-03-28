@@ -82,7 +82,7 @@ public class BT9_068 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Black)) >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Black)) >= 1)
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -90,7 +90,7 @@ public class BT9_068 : CEntity_Effect
                         }
                     }
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Red)) >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Red)) >= 1)
                     {
                         if (CardEffectCommons.CanActivateBlitz(card, activateClass))
                         {
@@ -106,7 +106,7 @@ public class BT9_068 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Black)) >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Black)) >= 1)
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -139,7 +139,7 @@ public class BT9_068 : CEntity_Effect
                         }
                     }
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Red)) >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Red)) >= 1)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BlitzProcess(card, activateClass));
                     }

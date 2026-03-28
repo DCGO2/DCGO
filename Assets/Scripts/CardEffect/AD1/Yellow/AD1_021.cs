@@ -68,7 +68,7 @@ namespace DCGO.CardEffects.AD1
 
                 bool CanSelectGreymonCard(CardSource cardSource)
                 {
-                    return cardSource.CardColors.Contains(CardColor.Yellow)
+                    return cardSource.HasCardColor(CardColor.Yellow)
                         && cardSource.ContainsCardName("Greymon");
                 }
 

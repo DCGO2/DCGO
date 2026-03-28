@@ -93,7 +93,7 @@ public class BT9_081 : CEntity_Effect
             {
                 if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Purple) || cardSource.CardColors.Contains(CardColor.Black))
+                    if (cardSource.HasCardColor(CardColor.Purple) || cardSource.HasCardColor(CardColor.Black))
                     {
                         if (cardSource.Level == 3)
                         {

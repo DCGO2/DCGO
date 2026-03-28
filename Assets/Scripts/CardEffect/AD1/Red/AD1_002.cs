@@ -158,9 +158,9 @@ namespace DCGO.CardEffects.AD1
                 bool CanSelectPlayCondition(CardSource cardSource)
                 {
                     return cardSource.IsTamer
-                        && (cardSource.CardColors.Contains(CardColor.Red)
-                            || cardSource.CardColors.Contains(CardColor.Blue)
-                            || cardSource.CardColors.Contains(CardColor.Green))
+                        && (cardSource.HasCardColor(CardColor.Red)
+                            || cardSource.HasCardColor(CardColor.Blue)
+                            || cardSource.HasCardColor(CardColor.Green))
                         && cardSource.HasInheritedEffect
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }

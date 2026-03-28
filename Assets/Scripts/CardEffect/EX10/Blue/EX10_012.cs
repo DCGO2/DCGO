@@ -496,7 +496,7 @@ namespace DCGO.CardEffects.EX10
                 bool FaceUpBlue(CardSource card)
                 {
                     return !card.IsFlipped &&
-                           card.CardColors.Contains(CardColor.Blue);
+                           card.HasCardColor(CardColor.Blue);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
