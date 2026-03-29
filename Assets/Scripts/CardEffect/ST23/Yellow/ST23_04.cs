@@ -22,7 +22,13 @@ namespace DCGO.CardEffects.ST23
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 4, permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
+            #endregion
 
+            #region Alliance
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: false, card: card, condition: null));
+            }
             #endregion
 
             #region Shared OP/WD
@@ -34,7 +40,7 @@ namespace DCGO.CardEffects.ST23
                     SharedActivateCoroutine,
                     SharedEffectDescription,
                     optional: false,
-                    maxCountPerTurn: 1,
+                    maxCountPerTurn: -1,
                     onPlay: true,
                     whenDigivolving: true);
 
@@ -247,7 +253,7 @@ namespace DCGO.CardEffects.ST23
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                     new List<CardSource>() { selectCard },
                                     activateClass: activateClass,
-                                    payCost: false,
+                                    payCost: true,
                                     isTapped: false,
                                     root: SelectCardEffect.Root.Hand,
                                     activateETB: true));
