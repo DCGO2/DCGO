@@ -50,6 +50,7 @@ namespace DCGO.CardEffects.ST23
                     {
                         return (cardSource.IsDigimon
                                 || cardSource.IsTamer)
+                            && cardSource.HasPlayCost
                             && cardSource.EqualsTraits("BEATBREAK")
                             && cardSource.GetCostItself <= 4
                             && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
@@ -145,7 +146,7 @@ namespace DCGO.CardEffects.ST23
                 CardEffectCommons.AddActivateMainOptionSecurityEffect(
                     card: card,
                     cardEffects: ref cardEffects,
-                    effectName: "[Security] [Main] You may play 1 [DATA SQUAD] trait card with a play cost of 4 or less from your hand or trash without paying the cost. Then, place this card in the battle area.");
+                    effectName: "[Security] You may play 1 [DATA SQUAD] trait card with a play cost of 4 or less from your hand or trash without paying the cost. Then, place this card in the battle area.");
             }
             #endregion
 
@@ -154,7 +155,7 @@ namespace DCGO.CardEffects.ST23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place this card under 1 [BEATBREAK] tamer face down to <Draw 1> and gain 1 memory", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
