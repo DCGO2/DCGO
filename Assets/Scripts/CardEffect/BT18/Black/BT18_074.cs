@@ -106,7 +106,7 @@ namespace DCGO.CardEffects.BT18
                         {
                             if (cardSource.HasPlayCost)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Black))
+                                if (cardSource.HasCardColor(CardColor.Black))
                                 {
                                     return true;
                                 }
@@ -193,7 +193,7 @@ namespace DCGO.CardEffects.BT18
                         {
                             if (cardSource.HasPlayCost)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Black))
+                                if (cardSource.HasCardColor(CardColor.Black))
                                 {
                                     return true;
                                 }
@@ -287,7 +287,7 @@ namespace DCGO.CardEffects.BT18
                             {
                                 if (cardSource.Level <= 4)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Black))
+                                    if (cardSource.HasCardColor(CardColor.Black))
                                     {
                                         if (cardSource.HasLevel)
                                         {

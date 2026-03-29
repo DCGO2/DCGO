@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT14
                 {
                     if (cardSource.CardTraits.Contains("Vaccine"))
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.HasCardColor(CardColor.Yellow))
                         {
                             if (cardSource.IsDigimon)
                             {
@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.BT14
                 {
                     if (cardSource.CardTraits.Contains("Vaccine"))
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.HasCardColor(CardColor.Yellow))
                         {
                             return true;
                         }

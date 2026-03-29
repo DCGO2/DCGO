@@ -144,7 +144,7 @@ public class BT5_081 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Purple))
+                    if (cardSource.HasCardColor(CardColor.Purple))
                     {
                         if (cardSource.Level == 3)
                         {

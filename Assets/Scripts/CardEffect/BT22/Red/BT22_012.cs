@@ -67,7 +67,7 @@ namespace DCGO.CardEffects.BT22
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass))
                         {
-                            if (cardSource.BasePlayCostFromEntity <= 4 && (cardSource.CardColors.Contains(CardColor.Red) || cardSource.CardColors.Contains(CardColor.Black)))
+                            if (cardSource.BasePlayCostFromEntity <= 4 && (cardSource.HasCardColor(CardColor.Red) || cardSource.HasCardColor(CardColor.Black)))
                             {
                                 return true;
                             }

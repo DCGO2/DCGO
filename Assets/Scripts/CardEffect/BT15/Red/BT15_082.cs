@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.BT15
                 {
                     if (cardSource.Owner == card.Owner)
                     {
-                        return cardSource.CardColors.Contains(CardColor.Red);
+                        return cardSource.HasCardColor(CardColor.Red);
                     }
 
                     return false;
@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.BT15
                     int subAmount = card.Owner.Enemy.SecurityCards.Count * 2000;
                     int cardDP = 13000 - subAmount;
 
-                    if (cardSource.CardDP <= cardDP && cardSource.CardColors.Contains(CardColor.Red) && cardSource.Owner == card.Owner)
+                    if (cardSource.CardDP <= cardDP && cardSource.HasCardColor(CardColor.Red) && cardSource.Owner == card.Owner)
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
                                 cardEffect: activateClass))

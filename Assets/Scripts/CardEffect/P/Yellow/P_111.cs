@@ -204,12 +204,12 @@ public class P_111 : CEntity_Effect
                         {
                             if (cardSource.HasLevel)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Yellow))
+                                if (cardSource.HasCardColor(CardColor.Yellow))
                                 {
                                     return true;
                                 }
 
-                                if (cardSource.CardColors.Contains(CardColor.Black))
+                                if (cardSource.HasCardColor(CardColor.Black))
                                 {
                                     return true;
                                 }

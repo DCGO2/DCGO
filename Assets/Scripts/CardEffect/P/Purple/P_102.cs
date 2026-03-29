@@ -241,12 +241,12 @@ public class P_102 : CEntity_Effect
                         {
                             if (cardSource.HasLevel)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Purple))
+                                if (cardSource.HasCardColor(CardColor.Purple))
                                 {
                                     return true;
                                 }
 
-                                if (cardSource.CardColors.Contains(CardColor.Red))
+                                if (cardSource.HasCardColor(CardColor.Red))
                                 {
                                     return true;
                                 }
@@ -344,12 +344,12 @@ public class P_102 : CEntity_Effect
                         {
                             if (cardSource.HasLevel)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Purple))
+                                if (cardSource.HasCardColor(CardColor.Purple))
                                 {
                                     return true;
                                 }
 
-                                if (cardSource.CardColors.Contains(CardColor.Red))
+                                if (cardSource.HasCardColor(CardColor.Red))
                                 {
                                     return true;
                                 }

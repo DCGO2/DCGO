@@ -65,7 +65,7 @@ public class P_071 : CEntity_Effect
                         {
                             if (cardSource.Owner == card.Owner)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Purple))
+                                if (cardSource.HasCardColor(CardColor.Purple))
                                 {
                                     if (cardSource.Level == 3)
                                     {

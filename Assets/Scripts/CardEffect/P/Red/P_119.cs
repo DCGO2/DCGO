@@ -28,12 +28,12 @@ public class P_119 : CEntity_Effect
             {
                 if (cardSource.CardColors.Count >= 2)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Red))
+                    if (cardSource.HasCardColor(CardColor.Red))
                     {
                         return true;
                     }
 
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
+                    if (cardSource.HasCardColor(CardColor.Yellow))
                     {
                         return true;
                     }

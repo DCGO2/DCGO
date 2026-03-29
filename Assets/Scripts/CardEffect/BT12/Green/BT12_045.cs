@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT12
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Green))
+                    if (cardSource.HasCardColor(CardColor.Green))
                     {
                         if (cardSource.IsDigimon)
                         {

@@ -68,7 +68,7 @@ public class CreateNewDeckButton : MonoBehaviour
 
         foreach (CEntity_Base cEntity_Base in AllDeckCards)
         {
-            if (cEntity_Base.cardKind == CardKind.DigiEgg)
+            if (cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
             {
                 digitamaDeckCards.Add(cEntity_Base);
             }

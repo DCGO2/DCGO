@@ -301,6 +301,7 @@ public class PlayCardClass
     {
         bool burstDigivolved = false;
         bool appFusion = false;
+        bool isEvolution = false;
 
         List<CardSource> playedCards_fixed = new List<CardSource>();
 
@@ -388,8 +389,6 @@ public class PlayCardClass
             #endregion
 
             #region Determine if Evolution
-
-            bool isEvolution = false;
 
             if (targetPermanents.Count >= 1)
             {
@@ -997,8 +996,9 @@ public class PlayCardClass
 
         #region filter cards
 
-        List<CardSource> permanentCards = playedCards_fixed.Filter(cardSource => cardSource.IsPermanent);
-        List<CardSource> optionCards = playedCards_fixed.Filter(cardSource => !cardSource.IsPermanent);
+        bool isDualCardAsOption(CardSource cardSource) => cardSource.IsDigimon && cardSource.IsOption && !isEvolution;
+        List<CardSource> permanentCards = playedCards_fixed.Filter(cardSource => cardSource.IsPermanent && !isDualCardAsOption(cardSource));
+        List<CardSource> optionCards = playedCards_fixed.Filter(cardSource => !cardSource.IsPermanent || isDualCardAsOption(cardSource));
 
         #region play permanent
 
@@ -1751,6 +1751,100 @@ public class UseOptionClass
             }
 
             #endregion
+
+            if(card.Owner.ExecutingCards.Contains(card))
+            {
+                List<OptionResolutionClass> optionResolutionEffects = new List<OptionResolutionClass>();
+                foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+                {
+                    #region Effects of permanents in play
+                    foreach (Permanent permanent in player.GetFieldPermanents())
+                    {
+                        foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                        {
+                            if (cardEffect is OptionResolutionClass)
+                            {
+                                if (cardEffect.CanTrigger(null))
+                                {
+                                    optionResolutionEffects.Add((OptionResolutionClass)cardEffect);
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region Effects on the Player
+                    foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is OptionResolutionClass)
+                        {
+                            if (cardEffect.CanTrigger(null))
+                            {
+                                optionResolutionEffects.Add((OptionResolutionClass)cardEffect);
+                            }
+                        }
+                    }
+                    #endregion
+                }
+
+                foreach (ICardEffect cardEffect in card.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is OptionResolutionClass)
+                    {
+                        if (cardEffect.CanTrigger(null))
+                        {
+                            optionResolutionEffects.Add((OptionResolutionClass)cardEffect);
+                        }
+                    }
+                }
+
+                while (card.Owner.ExecutingCards.Contains(card) && optionResolutionEffects.Count(effect => effect.CanResolve()) > 0)
+                {
+                    List<OptionResolutionClass> possibleEffects = optionResolutionEffects.Filter(effect => effect.CanResolve());
+                    if (possibleEffects.Count() == 1)
+                    {
+                        OptionResolutionClass currentEffect = possibleEffects[0];
+                        if (currentEffect != null) yield return ContinuousController.instance.StartCoroutine(currentEffect.Resolve());
+                        optionResolutionEffects.Remove(currentEffect);
+                    }
+                    else
+                    {
+                        List<SkillInfo> skillInfos = possibleEffects.Map(effect => new SkillInfo(effect, null, EffectTiming.None));
+                        List<CardSource> rootCardSources = skillInfos.Map(skillInfo => skillInfo.CardEffect.EffectSourceCard);
+
+                        int skillIndex = -1;
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectCardPanel.OpenSelectCardPanel(
+                                Message: "Option has multiple resolutions instead of going to trash.\nChoose which to process.",
+                                RootCardSources: rootCardSources,
+                                _CanTargetCondition: _ => true,
+                                _CanTargetCondition_ByPreSelecetedList: null,
+                                _CanEndSelectCondition: null,
+                                _MaxCount: 1,
+                                _CanEndNotMax: false,
+                                _CanNoSelect: () => false,
+                                CanLookReverseCard: true,
+                                skillInfos: skillInfos,
+                                root: SelectCardEffect.Root.None));
+
+                        if (GManager.instance.selectCardPanel.SelectedIndex.Count > 0)
+                        {
+                            skillIndex = GManager.instance.selectCardPanel.SelectedIndex[0];
+                        }
+
+                        if (skillIndex >= 0)
+                        {
+                            OptionResolutionClass currentEffect = possibleEffects[skillIndex];
+                            if (currentEffect != null) yield return ContinuousController.instance.StartCoroutine(currentEffect.Resolve());
+                            optionResolutionEffects.Remove(currentEffect);
+                        }
+                        else
+                        {
+                            break; // Should not happen, unless we later allow denying all by no select
+                        }
+                    }
+                }
+            }
 
             if (card.Owner.ExecutingCards.Contains(card))
             {

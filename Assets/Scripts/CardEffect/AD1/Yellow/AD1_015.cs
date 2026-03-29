@@ -126,9 +126,9 @@ namespace DCGO.CardEffects.AD1
             bool CanPlayTamerCondition(CardSource cardSource)
             {
                 return cardSource.IsTamer
-                    && (cardSource.CardColors.Contains(CardColor.Yellow)
-                        || cardSource.CardColors.Contains(CardColor.Black)
-                        || cardSource.CardColors.Contains(CardColor.Purple))
+                    && (cardSource.HasCardColor(CardColor.Yellow)
+                        || cardSource.HasCardColor(CardColor.Black)
+                        || cardSource.HasCardColor(CardColor.Purple))
                     && cardSource.HasInheritedEffect;
             }
 

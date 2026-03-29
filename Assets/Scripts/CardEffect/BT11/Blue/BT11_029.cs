@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.BT11
                 {
                     if (cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Blue))
+                        if (cardSource.HasCardColor(CardColor.Blue))
                         {
                             return true;
                         }

@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Red))
+                        if (cardSource.HasCardColor(CardColor.Red))
                         {
                             return true;
                         }
@@ -183,7 +183,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Red))
+                        if (cardSource.HasCardColor(CardColor.Red))
                         {
                             return true;
                         }
@@ -371,7 +371,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (cardSource.IsDigimon)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Red))
+                            if (cardSource.HasCardColor(CardColor.Red))
                             {
                                 return true;
                             }

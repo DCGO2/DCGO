@@ -17,6 +17,7 @@ namespace DCGO.CardEntities
         public List<AlternateArt> JAAs;
 
         public string aceEffect;
+        public string assembly;
         public string attribute;
         public List<string> block;
         public string burstDigivolve;
@@ -30,6 +31,7 @@ namespace DCGO.CardEntities
         public string digivolveEffect;
         public string dnaDigivolve;
         public string dp;
+        public string dualEffect;
         public string effect;
         public string form;
         public string id;
@@ -39,6 +41,8 @@ namespace DCGO.CardEntities
         public string linkRequirement;
         public CardName name;
         public string notes;
+        public string optionCardColourRequirement;
+        public string optionCardEffect;
         public string playCost;
         public string rarity;
         public Restriction restrictions;

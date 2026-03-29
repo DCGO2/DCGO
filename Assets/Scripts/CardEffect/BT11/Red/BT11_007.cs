@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT11
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Red))
+                        if (cardSource.HasCardColor(CardColor.Red))
                         {
                             if (cardSource.CardTraits.Contains("Vaccine"))
                             {
@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.BT11
                 {
                     if (cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Red))
+                        if (cardSource.HasCardColor(CardColor.Red))
                         {
                             return true;
                         }

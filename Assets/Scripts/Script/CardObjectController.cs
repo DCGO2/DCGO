@@ -62,7 +62,7 @@ public class CardObjectController : MonoBehaviour
 
                 foreach (CEntity_Base cEntity_Base in ContinuousController.instance.CardList)
                 {
-                    if (cEntity_Base.cardKind != CardKind.DigiEgg)
+                    if (!cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
                     {
                         mainDeckCandidates.Add(cEntity_Base);
                     }

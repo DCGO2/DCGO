@@ -142,7 +142,7 @@ namespace DCGO.CardEffects.BT22
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, IsYellowCard);
                 }
 
-                bool IsYellowCard(CardSource cardSource) => cardSource.CardColors.Contains(CardColor.Yellow);
+                bool IsYellowCard(CardSource cardSource) => cardSource.HasCardColor(CardColor.Yellow);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
@@ -218,7 +218,7 @@ namespace DCGO.CardEffects.BT22
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, IsYellowCard);
                 }
 
-                bool IsYellowCard(CardSource cardSource) => cardSource.CardColors.Contains(CardColor.Yellow);
+                bool IsYellowCard(CardSource cardSource) => cardSource.HasCardColor(CardColor.Yellow);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {

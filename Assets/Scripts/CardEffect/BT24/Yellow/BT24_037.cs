@@ -318,7 +318,7 @@ namespace DCGO.CardEffects.BT24
                     {
                         return cardSource.IsDigimon
                             && cardSource.HasLevel && cardSource.Level <= 4
-                            && (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Red) || cardSource.HasTSTraits)
+                            && (cardSource.HasCardColor(CardColor.Yellow) || cardSource.HasCardColor(CardColor.Red) || cardSource.HasTSTraits)
                             && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                     }
 
@@ -412,7 +412,7 @@ namespace DCGO.CardEffects.BT24
                     {
                         return cardSource.IsDigimon
                             && cardSource.HasLevel && cardSource.Level <= 4
-                            && (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Red) || cardSource.HasTSTraits)
+                            && (cardSource.HasCardColor(CardColor.Yellow) || cardSource.HasCardColor(CardColor.Red) || cardSource.HasTSTraits)
                             && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                     }
 

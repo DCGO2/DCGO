@@ -31,7 +31,7 @@ public class BT7_089 : CEntity_Effect
 
             bool CardSourceCondition(CardSource cardSource)
             {
-                return cardSource.IsDigimon && cardSource.CardColors.Contains(CardColor.Green);
+                return cardSource.IsDigimon && cardSource.HasCardColor(CardColor.Green);
             }
 
             bool RootCondition(SelectCardEffect.Root root)

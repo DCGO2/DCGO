@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.BT10
                         return true;
                     }
 
-                    if (cardSource.CardColors.Contains(CardColor.Black))
+                    if (cardSource.HasCardColor(CardColor.Black))
                     {
                         if (cardSource.ContainsCardName("Knightmon"))
                         {
