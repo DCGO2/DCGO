@@ -154,7 +154,7 @@ namespace DCGO.CardEffects.ST24
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place this card under 1 [DATA SQUAD] tamer face down to <Draw 1> and gain 1 memory", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
