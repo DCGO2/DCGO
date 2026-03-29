@@ -3405,6 +3405,56 @@ public class IPlacePermanentToLinkCards
 
 #endregion
 
+#region Link a Card to a Permanent
+public class ILinkCard
+{
+    public ILinkCard(bool payCost, CardSource card, Permanent permanent, ICardEffect cardEffect)
+    {
+        _payCost = payCost;
+        _linkCard = _linkCard;
+        _permanent = permanent;
+        _cardEffect = cardEffect;
+    }
+
+    bool _payCost = false;
+    CardSource _linkCard = null;
+    Permanent _permanent = null;
+    ICardEffect _cardEffect = null;
+    public bool WasLinked = false;
+
+    public IEnumerator LinkCard()
+    {
+        if (_linkCard == null) yield break;
+        if (_permanent == null || _permanent.TopCard == null) yield break;
+        if (_cardEffect == null) yield break;
+
+        #region Trigger When Would Link effects
+        SelectCardEffect.Root root = CardEffectCommons.IsExistOnHand(_linkCard) ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.None;
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
+            CardEffectCommons.WouldLinkHashtable(_linkCard, _permanent, root, null),
+            EffectTiming.WhenWouldLink));
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, null));
+        #endregion
+
+        if (_payCost)
+        {
+            int Cost = _linkCard.GetChangedLinkCost(_permanent, root);
+
+            yield return ContinuousController.instance.StartCoroutine(_linkCard.Owner.AddMemory(-1 * Cost, _cardEffect));
+        }
+
+        if(root == SelectCardEffect.Root.Hand)
+            yield return ContinuousController.instance.StartCoroutine(_permanent.AddLinkCard(_linkCard, _cardEffect));
+        else
+            yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToLinkCards(new List<Permanent[]>() { new Permanent[] { _linkCard.PermanentOfThisCard(), _permanent } }, _cardEffect).PlacePermanentToLinkCards());
+
+        WasLinked = _permanent.LinkedCards.Contains(_linkCard);
+    }
+}
+#endregion
+
 #region Place permanents to security
 
 public class IPutSecurityPermanent

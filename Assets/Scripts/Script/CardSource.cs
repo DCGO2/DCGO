@@ -3042,15 +3042,8 @@ public class CardSource : MonoBehaviour
     {
         if (linkCondition != null)
         {
-            if (PayCost)
-            {
-                int cost = linkCondition.cost;
+            SelectCardEffect.Root root = CardEffectCommons.IsExistOnHand(this) ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.None;
 
-                if (Owner.MaxMemoryCost < cost)
-                {
-                    return false;
-                }
-            }
             if (allowBreeding)
             {
                 if (Owner.GetFieldPermanents().Count >= 1)
@@ -3061,7 +3054,19 @@ public class CardSource : MonoBehaviour
                         {
                             if (linkCondition.digimonCondition(digimon))
                             {
-                                return true;
+                                if (PayCost)
+                                {
+                                    int cost = GetChangedLinkCost(digimon, root);
+
+                                    if (Owner.MaxMemoryCost >= cost)
+                                    {
+                                        return true;
+                                    }
+                                }
+                                else
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -3077,7 +3082,19 @@ public class CardSource : MonoBehaviour
                         {
                             if (linkCondition.digimonCondition(digimon))
                             {
-                                return true;
+                                if (PayCost)
+                                {
+                                    int cost = GetChangedLinkCost(digimon, root);
+
+                                    if (Owner.MaxMemoryCost >= cost)
+                                    {
+                                        return true;
+                                    }
+                                }
+                                else
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -3146,6 +3163,76 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region Get Link Cost Accounting for Cost Reduction
+
+    public int GetChangedLinkCost(Permanent targetPermanent, SelectCardEffect.Root root)
+    {
+        if (linkCondition == null) return 0;
+
+        int Cost = linkCondition.cost;
+
+        List<ICardEffect> changeLinkCostCardEffects = new List<ICardEffect>();
+
+        #region the effects of permanents
+
+        changeLinkCostCardEffects = changeLinkCostCardEffects
+            .Concat(
+            GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+                .Map(player => player.GetFieldPermanents())
+                .Flat()
+                .Filter(permanent => permanent != PermanentOfThisCard())
+                .Map(permanent => permanent.EffectList(EffectTiming.None))
+                .Flat()
+                .Filter(cardEffect => cardEffect is IChangeLinkCostEffect && cardEffect.CanUse(null)
+                    && ((IChangeLinkCostEffect)cardEffect).CardCondition(this)
+                    && ((IChangeLinkCostEffect)cardEffect).PermanentCondition(targetPermanent)))
+                .ToList();
+
+        #endregion
+
+        #region the effects of players
+
+        changeLinkCostCardEffects = changeLinkCostCardEffects
+            .Concat(
+            GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+                .Map(player => player.EffectList(EffectTiming.None))
+                .Flat()
+                .Filter(cardEffect => cardEffect is IChangeLinkCostEffect && cardEffect.CanUse(null)
+                    && ((IChangeLinkCostEffect)cardEffect).CardCondition(this)
+                    && ((IChangeLinkCostEffect)cardEffect).PermanentCondition(targetPermanent)))
+                .ToList();
+
+        #endregion
+
+        #region the effects of itself
+
+        changeLinkCostCardEffects = changeLinkCostCardEffects
+        .Concat(
+        EffectList(EffectTiming.None)
+        .Filter(cardEffect => cardEffect is IChangeLinkCostEffect && cardEffect.CanUse(null)
+                && ((IChangeLinkCostEffect)cardEffect).CardCondition(this)
+                    && ((IChangeLinkCostEffect)cardEffect).PermanentCondition(targetPermanent)))
+        .ToList();
+
+        #endregion
+
+        List<ICardEffect> changeLinkCostCardEffects_NotIsUpDown = changeLinkCostCardEffects
+            .Filter(cardEffect => !((IChangeLinkCostEffect)cardEffect).IsUpDown());
+
+        List<ICardEffect> changeLinkCostCardEffects_IsUpDown = changeLinkCostCardEffects
+            .Filter(cardEffect => ((IChangeLinkCostEffect)cardEffect).IsUpDown());
+
+        changeLinkCostCardEffects_NotIsUpDown
+            .ForEach(cardEffect => Cost = ((IChangeLinkCostEffect)cardEffect).GetCost(Cost, this, targetPermanent, root));
+
+        changeLinkCostCardEffects_IsUpDown
+            .ForEach(cardEffect => Cost = ((IChangeLinkCostEffect)cardEffect).GetCost(Cost, this, targetPermanent, root));
+
+        return Math.Max(0, Cost);
+    }
+
+    #endregion
+
     #region whether target permanent can Link into this card
 
     public bool CanLinkToTargetPermanent(Permanent targetPermanent, bool PayCost, bool allowBreeding = false)
@@ -3156,7 +3243,7 @@ public class CardSource : MonoBehaviour
             {
                 if(allowBreeding || !targetPermanent.TopCard.Owner.GetBreedingAreaPermanents().Contains(targetPermanent))
                 {
-                    if (this.CanLink(PayCost, allowBreeding))
+                    if (this.CanLink(false, allowBreeding)) // Don't check PayCost in CanLink since this method will check again anyway
                     {
                         if (linkCondition != null)
                         {
@@ -3164,9 +3251,9 @@ public class CardSource : MonoBehaviour
                             {
                                 if (PayCost)
                                 {
-                                    int cost = linkCondition.cost;
+                                    SelectCardEffect.Root root = CardEffectCommons.IsExistOnHand(this) ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.None;
 
-                                    cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
+                                    int cost = GetChangedLinkCost(targetPermanent, root);
 
                                     if (Owner.MaxMemoryCost < cost)
                                     {

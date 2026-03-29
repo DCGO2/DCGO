@@ -99,20 +99,39 @@ namespace DCGO.CardEffects.P
                             || cardSource.EqualsTraits("Navi")
                             || cardSource.EqualsTraits("Tool")
                             || cardSource.EqualsTraits("Leviathan"))
-                        && cardSource.CanLink(false)
-                        && card.Owner.MaxMemoryCost >= cardSource.linkCondition.cost - 2;
+                        && cardSource.CanLink(true);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent, CardSource cardSource)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && cardSource.CanLinkToTargetPermanent(permanent, false);
+                        && cardSource.CanLinkToTargetPermanent(permanent, true);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
                     
+                    #region Link Cost Reduction
+                    ICardEffect GetCardEffect(EffectTiming _timing)
+                    {
+                        if (_timing == EffectTiming.None)
+                        {
+                            return CardEffectFactory.GrantedReduceLinkCostClass(
+                                card: card, 
+                                reducedCost: 2,
+                                cardSourceCondition: _ => true,
+                                permanentCondition: _ => true,
+                                rootCondition: _ => true
+                            );
+                        }
+
+                        return null;
+                    }
+
+                    card.Owner.UntilCalculateFixedCostEffect.Add(GetCardEffect);
+                    #endregion
+
                     if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                     {
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
@@ -160,13 +179,15 @@ namespace DCGO.CardEffects.P
 
                                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-Math.Max(0,cardSource.linkCondition.cost - 2), activateClass));
-
-                                     yield return ContinuousController.instance.StartCoroutine(permanent.AddLinkCard(cardSource, activateClass));
+                                    yield return ContinuousController.instance.StartCoroutine(new ILinkCard(true, cardSource, permanent, activateClass).LinkCard());
                                 }
                             }
                         }
                     }
+
+                    #region Remove Link Cost Reduction
+                    card.Owner.UntilCalculateFixedCostEffect.Remove(GetCardEffect);
+                    #endregion
                 }
             }
             #endregion
