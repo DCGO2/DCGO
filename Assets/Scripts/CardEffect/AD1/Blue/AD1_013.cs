@@ -194,7 +194,9 @@ namespace DCGO.CardEffects.AD1
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && (card.PermanentOfThisCard().TopCard.EqualsTraits("Blue Flare")
+                            || card.PermanentOfThisCard().TopCard.EqualsTraits("Xros Heart"));
                 }
 
                 int changeDP()

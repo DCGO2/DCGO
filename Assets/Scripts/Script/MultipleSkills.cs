@@ -270,7 +270,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                     {
                         if (player.isYou)
                         {
-                            int skillIndex = 0;
+                            int skillIndex = -1;
 
                             if (!ContinuousController.instance.autoEffectOrder)
                             {
@@ -286,7 +286,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                                 _CanEndSelectCondition: null,
                                 _MaxCount: 1,
                                 _CanEndNotMax: false,
-                                _CanNoSelect: () => skillInfos_active.All(skillInfo => skillInfo.CardEffect.IsOptional),
+                                _CanNoSelect: () => skillInfos_active.All(skillInfo => skillInfo.CardEffect.IsOptionalCondition(skillInfo.Hashtable)),
                                 CanLookReverseCard: true,
                                 skillInfos: skillInfos_active,
                                 root: SelectCardEffect.Root.None));
@@ -297,11 +297,10 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                                 }
                                 else
                                 {
-                                    foreach(SkillInfo skillInfo in skillInfos_active)
+                                    foreach (FieldPermanentCard fieldPermanentCard in player.FieldPermanentObjects)
                                     {
-                                        StackedSkillInfos.Remove(skillInfo);
+                                        fieldPermanentCard.OffPermanentIndexText();
                                     }
-                                    continue;
                                 }
                             }
 

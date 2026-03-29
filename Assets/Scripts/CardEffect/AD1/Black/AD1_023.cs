@@ -259,6 +259,11 @@ namespace DCGO.CardEffects.AD1
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { card.Owner.SecurityCards[0] }, false, activateClass));
 
+                    yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
+                        player: card.Owner,
+                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                        activateClass).ReduceSecurity());
+
                     card.PermanentOfThisCard().willBeRemoveField = false;
 
                     card.PermanentOfThisCard().HideDeleteEffect();

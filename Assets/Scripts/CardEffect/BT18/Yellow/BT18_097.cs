@@ -43,6 +43,8 @@ namespace DCGO.CardEffects.BT18
 
                 List<string> GetNamesList(List<CardSource> cardSources)
                 {
+	                selectedNames.Clear();
+
                     foreach (CardSource cardName in cardSources)
                     {
                         foreach (string name in cardName.CardNames)
