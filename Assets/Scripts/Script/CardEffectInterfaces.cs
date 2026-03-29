@@ -258,6 +258,16 @@ public interface IChangeCostEffect
 }
 #endregion
 
+#region "Change target card's cost" effect
+public interface IChangeLinkCostEffect
+{
+    int GetCost(int cost, CardSource cardSource, Permanent permanent, SelectCardEffect.Root root);
+    bool CardCondition(CardSource cardSource);
+    bool PermanentCondition(Permanent permanent);
+    bool IsUpDown();
+}
+#endregion
+
 #region "Change the maximum DP of DP-based deletion effect" effect
 public interface IChangeDPDeleteEffectMaxDPEffect
 {

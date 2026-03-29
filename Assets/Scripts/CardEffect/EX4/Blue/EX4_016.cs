@@ -93,7 +93,8 @@ namespace DCGO.CardEffects.EX4
                             selectCardCoroutine: null),
                         },
                         remainingCardsPlace: RemainingCardsPlace.Trash,
-                        activateClass: activateClass
+                        activateClass: activateClass,
+                        mutualConditions: true
                     ));
                 }
             }

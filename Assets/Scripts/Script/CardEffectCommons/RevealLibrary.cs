@@ -187,7 +187,8 @@ public partial class CardEffectCommons
         bool canEndNotMax = false,
         bool isSendAllCardsToSamePlace = false,
         bool isOpponentDeck = false,
-        Func<List<CardSource>, IEnumerator> revealedCardsCoroutine = null)
+        Func<List<CardSource>, IEnumerator> revealedCardsCoroutine = null,
+        bool mutualConditions = false)
     {
         if (revealCount <= 0) yield break;
         if (activateClass == null) yield break;
@@ -220,7 +221,8 @@ public partial class CardEffectCommons
             activateClass: activateClass,
             isSendAllCardsToSamePlace: isSendAllCardsToSamePlace,
             isOpponentDeck: isOpponentDeck,
-            revealedCardsCoroutine: revealedCardsCoroutine
+            revealedCardsCoroutine: revealedCardsCoroutine,
+            mutualConditions: mutualConditions
         ));
     }
 
@@ -232,7 +234,8 @@ public partial class CardEffectCommons
         bool canNoAction = false,
         bool isSendAllCardsToSamePlace = false,
         bool isOpponentDeck = false,
-        Func<List<CardSource>, IEnumerator> revealedCardsCoroutine = null)
+        Func<List<CardSource>, IEnumerator> revealedCardsCoroutine = null,
+        bool mutualConditions = false)
     {
         if (revealCount <= 0) yield break;
         if (activateClass == null) yield break;
@@ -253,10 +256,12 @@ public partial class CardEffectCommons
 
         List<CardSource> remainingCards = revealedCards.Clone();
 
+        List<CardSource> chosenCards = new List<CardSource>();
+
         bool doAction = true;
 
-        // ƒo[ƒjƒ“ƒOƒXƒ^[ƒNƒ‰ƒbƒVƒƒ[(BT10-096)
-        // ƒuƒŒƒCƒWƒ“ƒOEƒƒ‚ƒŠ[ƒu[ƒXƒg
+        // ï¿½oï¿½[ï¿½jï¿½ï¿½ï¿½Oï¿½Xï¿½^ï¿½[ï¿½Nï¿½ï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½[(BT10-096)
+        // ï¿½uï¿½ï¿½ï¿½Cï¿½Wï¿½ï¿½ï¿½Oï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½uï¿½[ï¿½Xï¿½g
         if (selectCardConditions.Length >= 2)
         {
             if (canNoAction)
@@ -282,17 +287,32 @@ public partial class CardEffectCommons
         {
             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
+            bool firstSelection = true;
+
             foreach(SelectCardConditionClass selectCondition in selectCardConditions)
             {
                 int maxCount = Math.Min(selectCondition.MaxCount, revealedCards.Count(selectCondition.CanTargetCondition));
 
                 if (maxCount >= 1)
                 {
+                    bool canNoSelect = selectCondition.CanNoSelect;
+                    if (firstSelection)
+                    {
+                        firstSelection = false;
+                    }
+                    else if (mutualConditions //If both conditions are chosen at once (per card game rules)
+                          && chosenCards.Count == 1 //And first condition lets you select 1
+                          && selectCondition.CanTargetCondition(chosenCards[0]) //If that one also fulfills the second condition
+                          && !revealedCards.Any(selectCardConditions[0].CanTargetCondition)) //And was the only card that could fulfill the first condition
+                    {
+                        canNoSelect = true; // Can no select on the basis of choosing it as the second condition, leaving no valid targets for the first
+                    }
+
                     selectCardEffect.SetUp(
                         canTargetCondition: selectCondition.CanTargetCondition,
                         canTargetCondition_ByPreSelecetedList: selectCondition.CanTargetCondition_ByPreSelecetedList,
                         canEndSelectCondition: selectCondition.CanEndSelectCondition,
-                        canNoSelect: () => selectCondition.CanNoSelect,
+                        canNoSelect: () => canNoSelect,
                         selectCardCoroutine: selectCondition.SelectCardCoroutine,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         message: selectCondition.Message,
@@ -313,6 +333,7 @@ public partial class CardEffectCommons
                 {
                     foreach (CardSource cardSource in cardSources)
                     {
+                        chosenCards.Add(cardSource);
                         revealedCards.Remove(cardSource);
                     }
 
@@ -743,7 +764,7 @@ public class RevealLibraryClass
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(RevealedCards, "Revealed Cards", true, true));
         }
 
-        #region ƒƒO’Ç‰Á
+        #region ï¿½ï¿½ï¿½Oï¿½Ç‰ï¿½
         if (RevealedCards.Count >= 1)
         {
             string log = "";
