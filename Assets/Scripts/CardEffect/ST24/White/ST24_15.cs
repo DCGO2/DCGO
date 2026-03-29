@@ -145,7 +145,7 @@ namespace DCGO.CardEffects.ST24
                 CardEffectCommons.AddActivateMainOptionSecurityEffect(
                     card: card,
                     cardEffects: ref cardEffects,
-                    effectName: "[Security] [Main] You may play 1 [DATA SQUAD] trait card with a play cost of 4 or less from your hand or trash without paying the cost. Then, place this card in the battle area.");
+                    effectName: "[Security] You may play 1 [DATA SQUAD] trait card with a play cost of 4 or less from your hand or trash without paying the cost. Then, place this card in the battle area.");
             }
             #endregion
 
