@@ -82,12 +82,44 @@ namespace DCGO.CardEffects.ST24
                     maxCount: maxCount,
                     canNoSelect: false,
                     canEndNotMax: false,
-                    selectPermanentCoroutine: null,
+                    selectPermanentCoroutine: SelectPermanentCoroutine,
                     afterSelectPermanentCoroutine: null,
-                    mode: SelectPermanentEffect.Mode.Tap,
+                    mode: SelectPermanentEffect.Mode.Custom,
                     cardEffect: activateClass);
 
-                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon/Tamer to suspend", "The opponent is selecting 1 Digimon/Tamer to suspend");
+                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon/Tamer to suspend and give can't unsuspend", "The opponent is selecting 1 Digimon/Tamer to suspend and give can't unsuspend");
+
+                IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                {
+                    List<Permanent> _targetPermanents = new List<Permanent>();
+                    Permanent selectedPermanent = permanent;
+
+                    if (selectedPermanent != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(_targetPermanents, hashtable).Tap());
+
+                        CanNotUnsuspendClass canNotUnsuspendClass = new CanNotUnsuspendClass();
+                        canNotUnsuspendClass.SetUpICardEffect("Can't Unsuspend", CanUseCondition1, card);
+                        canNotUnsuspendClass.SetUpCanNotUntapClass(PermanentCondition: PermanentCondition);
+                        selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotUnsuspendClass);
+
+                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                        }
+
+                        bool CanUseCondition1(Hashtable hashtable)
+                        {
+                            return selectedPermanent.TopCard != null
+                                && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
+                        }
+
+                        bool PermanentCondition(Permanent permanent)
+                        {
+                            return permanent == selectedPermanent;
+                        }
+                    }
+                }
 
                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -150,8 +182,7 @@ namespace DCGO.CardEffects.ST24
 
                         bool CanSelectCardCondition(CardSource cardSource)
                         {
-                            return cardSource.EqualsTraits("DATA SQUAD")
-                                && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
+                            return cardSource.EqualsTraits("DATA SQUAD");
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
@@ -193,7 +224,7 @@ namespace DCGO.CardEffects.ST24
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)                
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionPermanent(TamerWithOneFaceDownSource);
                 }
 
