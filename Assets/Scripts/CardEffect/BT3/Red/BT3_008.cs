@@ -99,7 +99,8 @@ public class BT3_008 : CEntity_Effect
                             selectCardCoroutine: null),
                     },
                     remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                    activateClass: activateClass
+                    activateClass: activateClass,
+                    mutualConditions: true
                 ));
 
                 #region old
@@ -114,7 +115,7 @@ public class BT3_008 : CEntity_Effect
 
                                             int maxCount = 2;
 
-                                            #region Å‘å–‡”
+                                            #region ï¿½Å‘å–‡ï¿½ï¿½
                                             List<CardSource[]> cardsList = ParameterComparer.Enumerate(revealLibrary.revealedCards, maxCount).ToList();
 
                                             List<int> maxCounts = new List<int>() { 0 };
@@ -212,7 +213,7 @@ public class BT3_008 : CEntity_Effect
 
                                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                                            #region ƒŠƒXƒg‚É‚æ‚é‘I‘ğğŒ
+                                            #region ï¿½ï¿½ï¿½Xï¿½gï¿½É‚ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                                             bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
                                             {
                                                 List<CardSource> _cardSources = new List<CardSource>();
@@ -264,7 +265,7 @@ public class BT3_008 : CEntity_Effect
                                             }
                                             #endregion
 
-                                            #region ‘I‘ğğŒ
+                                            #region ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                                             bool CanEndSelectCondition(List<CardSource> cardSources)
                                             {
                                                 List<CardSource[]> cardsList = ParameterComparer.Enumerate(cardSources, cardSources.Count).ToList();

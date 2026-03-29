@@ -101,7 +101,8 @@ namespace DCGO.CardEffects.BT12
                             selectCardCoroutine: null),
                         },
                         remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                        activateClass: activateClass
+                        activateClass: activateClass,
+                        mutualConditions: true
                     ));
                 }
             }

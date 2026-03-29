@@ -34,8 +34,9 @@ namespace DCGO.CardEffects.BT24
 
             #endregion
 
-            #region All Turns - Security DP
+            #region All Turns - Security
 
+            #region All Turns - Security DP
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent permanent)
@@ -60,136 +61,34 @@ namespace DCGO.CardEffects.BT24
                     effectName: () => "All of your green or yellow [TS] trait Digimon get +2000 DP."));
                 #endregion
             }
+            #endregion
 
             #region All Turns - Security Alliance
-            string GrantedAllianceHashstring(CardSource cardSource) => $"BT24_090_Alliance_On_{cardSource.CardIndex}_From_{card.CardIndex}";//Get unique reference of this card granting to particular cardsource
-
-            /// Alliance effect which is granted to all of your Digimon while this card is face up in security
-            /// The effect itself tracks if the card granting it is still present and if the conditions for granting are still met
-            ICardEffect GetAllianceEffect(CardSource cardSource)
+            if (timing == EffectTiming.OnAllyAttack)
             {
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && (permanent.TopCard.CardColors.Contains(CardColor.Green) || permanent.TopCard.CardColors.Contains(CardColor.Yellow))
+                        && permanent.TopCard.HasTSTraits;
+                }
+
                 bool HasOXII(Permanent permanent)
                 {
                     return permanent.TopCard.EqualsCardName("Merukimon")
                         || permanent.TopCard.EqualsCardName("Minervamon");
                 }
 
-                bool Condition()
-                {
-                    return CardEffectCommons.IsExistInSecurity(card, false) //Is this card that provides the effect still providing the effect
-                        && cardSource == cardSource.PermanentOfThisCard().TopCard //Added effects don't check if it is inherited or not so have to check that this is the topcard
-                        && (cardSource.CardColors.Contains(CardColor.Blue) || cardSource.CardColors.Contains(CardColor.Yellow))
-                        && cardSource.HasTSTraits // Does this card meet conditions
-                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasOXII); // Is the condition for granting met
-                }
-
-                ICardEffect cardEffect = CardEffectFactory.AllianceSelfEffect(false, cardSource, Condition);
-                cardEffect.SetHashString(GrantedAllianceHashstring(cardSource)); // Unique identifier using exact card object references
-                return cardEffect;
-            }
-
-            ///Grant all cards in a permanent the effect permanently
-            ///Grants to every card so effect can survive through degeneration
-            ///The effect's CanUseCondition will deactivate when the conditions for granting are not met
-            void GrantEffect(List<Permanent> permanents)
-            {
-                foreach (Permanent permanent in permanents)
-                {
-                    foreach (CardSource cardSource in permanent.cardSources)
-                    {
-                        if (!cardSource.HasDP || permanent.EffectList_ForCard(EffectTiming.OnAllyAttack, cardSource).Any(effect => effect.HashString == GrantedAllianceHashstring(cardSource)))
-                            continue; // if the card could not be a relevant top card or if it already has the effect, don't grant the effect
-
-                        Func<EffectTiming, ICardEffect> getCardEffect = CardEffectCommons.GetCardEffectByEffectTiming(timing: EffectTiming.OnAllyAttack, cardEffect: GetAllianceEffect(cardSource));
-
-                        permanent.PermanentEffects.Add(getCardEffect);
-                    }
-                }
-            }
-
-            string SharedEffectDescription() => "(Security) [All Turns] All of your blue or yellow [TS] trait Digimon gain <Blocker>. While you have [Neptunemon] or [Venusmon], all of your blue or yellow [TS] trait Digimon gain <Alliance>.";
-
-            bool IsYourPermanent(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card);
-
-            #region Give permanents conditional Alliance on card added to security
-            if (timing == EffectTiming.OnAddSecurity)
-            {
-                ActivateClass activateClass = new();
-                activateClass.SetUpICardEffect("Set Up Alliance", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, SharedEffectDescription());
-                activateClass.SetIsBackgroundProcess(true);
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
+                bool CanUseCondition()
                 {
                     return CardEffectCommons.IsExistInSecurity(card, false)
-                        && CardEffectCommons.GetCardSourcesFromHashtable(hashtable).Contains(card);
+                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasOXII);
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    List<Permanent> permanents = card.Owner.GetBattleAreaPermanents();
-                    GrantEffect(permanents);
-                    yield return null;
-                }
+                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(PermanentCondition, false, card, CanUseCondition));
             }
             #endregion
 
-            #region Give permanents conditional Alliance on permanent enter
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new();
-                activateClass.SetUpICardEffect("Set Up Alliance", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, SharedEffectDescription());
-                activateClass.SetIsBackgroundProcess(true);
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistInSecurity(card, false)
-                        && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsYourPermanent)
-                            || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsYourPermanent));
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    List<Permanent> permanents = CardEffectCommons.GetHashtablesFromHashtable(hashtable)
-                            .Map(CardEffectCommons.GetPermanentFromHashtable)
-                            .Filter(IsYourPermanent);
-                    GrantEffect(permanents);
-                    yield return null;
-                }
-            }
-            #endregion
-
-            #region Give permanents conditional Alliance on card added to permanent stack
-            if (timing == EffectTiming.OnAddDigivolutionCards)
-            {
-                ActivateClass activateClass = new();
-                activateClass.SetUpICardEffect("Set Up Alliance", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, SharedEffectDescription());
-                activateClass.SetIsBackgroundProcess(true);
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistInSecurity(card, false)
-                        && CardEffectCommons.CanTriggerOnAddDigivolutionCard(
-                                hashtable: hashtable,
-                                permanentCondition: IsYourPermanent,
-                                cardEffectCondition: null,
-                                cardCondition: null);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    List<Permanent> permanents = new List<Permanent>() { CardEffectCommons.GetPermanentFromHashtable(hashtable) };
-                    GrantEffect(permanents);
-                    yield return null;
-                }
-            }
-            #endregion
-            #endregion
             #endregion
 
             #region Main Effect

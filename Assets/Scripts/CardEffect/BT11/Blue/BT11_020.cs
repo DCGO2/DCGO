@@ -87,7 +87,8 @@ namespace DCGO.CardEffects.BT11
                             selectCardCoroutine: null),
                         },
                         remainingCardsPlace: RemainingCardsPlace.Trash,
-                        activateClass: activateClass
+                        activateClass: activateClass,
+                        mutualConditions: true
                     ));
                 }
             }
