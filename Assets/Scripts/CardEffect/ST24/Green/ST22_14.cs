@@ -148,6 +148,8 @@ namespace DCGO.CardEffects.ST24
                         new List<Permanent>() { card.PermanentOfThisCard() },
                         CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -155,7 +157,7 @@ namespace DCGO.CardEffects.ST24
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: 1,
+                        maxCount: maxCount,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
