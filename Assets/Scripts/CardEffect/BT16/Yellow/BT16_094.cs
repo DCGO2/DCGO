@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.EqualsTraits("Four Great Dragons"))
+                    if (cardSource.HasCardColor(CardColor.Yellow) || cardSource.EqualsTraits("Four Great Dragons"))
                     {
                         return true;
                     }
@@ -87,7 +87,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[Main] <Delay>\r\n• Place 1 [Trial of the Four Great Dragons] from your hand in the battle area, or you may trash 1 card with the [Four Great Dragons] trait in your hand. If you did either, 1 of your opponent's Digimon gets -7000 DP for the turn.";
+                    return "[Main] <Delay>\r\nï¿½ Place 1 [Trial of the Four Great Dragons] from your hand in the battle area, or you may trash 1 card with the [Four Great Dragons] trait in your hand. If you did either, 1 of your opponent's Digimon gets -7000 DP for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

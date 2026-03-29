@@ -26,7 +26,7 @@ public class P_027 : CEntity_Effect
             bool CanSelectCardCondition(CardSource cardSource)
             {
                 return cardSource.IsOption &&
-                       cardSource.CardColors.Contains(CardColor.Purple) &&
+                       cardSource.HasCardColor(CardColor.Purple) &&
                        cardSource.HasUseCost && cardSource.GetCostItself <= 7 &&
                        !cardSource.CanNotPlayThisOption;
             }

@@ -26,7 +26,7 @@ public class BT8_112 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Contains(CardColor.White))
+                if (cardSource.HasCardColor(CardColor.White))
                 {
                     if (cardSource.Level == 7)
                     {
@@ -220,7 +220,7 @@ public class BT8_112 : CEntity_Effect
             {
                 if (cardSource != null)
                 {
-                    if (cardSource.CardColors.Count == 2)
+                    if (cardSource.CardColors.Count == 2 || cardSource.DualCardColors.Count >= 2)
                     {
                         if (cardSource.Owner == card.Owner)
                         {
@@ -467,7 +467,7 @@ public class BT8_112 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.CardColors.Count == 2;
+                return cardSource.CardColors.Count == 2 || cardSource.DualCardColors.Count == 2;
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

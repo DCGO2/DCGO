@@ -64,7 +64,7 @@ public class BT8_082 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Some((cardSource) => cardSource.CardColors.Contains(CardColor.Purple)))
+                    if (card.PermanentOfThisCard().DigivolutionCards.Some((cardSource) => cardSource.HasCardColor(CardColor.Purple)))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -72,7 +72,7 @@ public class BT8_082 : CEntity_Effect
                         }
                     }
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Some((cardSource) => cardSource.CardColors.Contains(CardColor.Yellow)))
+                    if (card.PermanentOfThisCard().DigivolutionCards.Some((cardSource) => cardSource.HasCardColor(CardColor.Yellow)))
                     {
                         if (card.Owner.LibraryCards.Count >= 1)
                         {
@@ -91,7 +91,7 @@ public class BT8_082 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Some((cardSource) => cardSource.CardColors.Contains(CardColor.Purple)))
+                    if (card.PermanentOfThisCard().DigivolutionCards.Some((cardSource) => cardSource.HasCardColor(CardColor.Purple)))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -119,7 +119,7 @@ public class BT8_082 : CEntity_Effect
 
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Some((cardSource) => cardSource.CardColors.Contains(CardColor.Yellow)))
+                    if (card.PermanentOfThisCard().DigivolutionCards.Some((cardSource) => cardSource.HasCardColor(CardColor.Yellow)))
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                     }
@@ -143,7 +143,7 @@ public class BT8_082 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Purple) || cardSource.CardColors.Contains(CardColor.Yellow))
+                    if (cardSource.HasCardColor(CardColor.Purple) || cardSource.HasCardColor(CardColor.Yellow))
                     {
                         if (cardSource.Level <= 4)
                         {

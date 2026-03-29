@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT18
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
-                            if (cardSource.Level == 3 && cardSource.CardColors.Contains(CardColor.Blue))
+                            if (cardSource.Level == 3 && cardSource.HasCardColor(CardColor.Blue))
                             {
                                 if (cardSource.HasLevel)
                                 {

@@ -10,6 +10,7 @@ using UnityEngine.Networking;
 using System.Drawing.Text;
 using System.Net;
 using System.Data;
+using WebSocketSharp;
 
 namespace DCGO.CardEntities
 {
@@ -123,16 +124,16 @@ namespace DCGO.CardEntities
         void CreateScriptableObject(CardData card, string imageID)
         {
             Debug.Log($"creating: {card.name.english} - {card.cardType}");
-            // CardEntity‚ instance created
+            // CardEntityï¿½ instance created
             CEntity_Base cardEntity = CreateInstance<CEntity_Base>();
-
+            
             cardEntity.cardColors = GetCardColors(card.color);
 
             cardEntity.PlayCost = intParse(card.playCost);
             cardEntity.EvoCosts = GetEvoCosts(card.digivolveCondition,cardEntity.cardColors);
 
             cardEntity.Level = levelParse(card.cardLv);
-            cardEntity.CardName_ENG = card.name.english;
+            cardEntity.CardName_ENG = GetName(card.name.english);
 
             cardEntity.Form_ENG = GetCardInfo(card.form);
             cardEntity.Attribute_ENG = GetCardInfo(card.attribute);
@@ -158,9 +159,16 @@ namespace DCGO.CardEntities
             cardEntity.LinkEffect = card.linkEffect;
             cardEntity.LinkRequirement = card.linkRequirement;
 
+            if(!card.dualEffect.IsNullOrEmpty())
+                cardEntity.dualEffect = GetName(card.name.english, false);
+
+            Debug.Log(card.optionCardColourRequirement);
+            cardEntity.OptionCardColorRequirements = GetCardColors(card.optionCardColourRequirement);
+            cardEntity.OptionEffect = card.optionCardEffect;
+
             cardEntity.name = cardEntity.CardSpriteName.Replace("-Errata","").Replace("-","_");
 
-            if (cardEntity.cardKind == CardKind.DigiEgg && cardEntity.PlayCost == 0)
+            if (cardEntity.cardKind.Contains(CardKind.DigiEgg) && cardEntity.PlayCost == 0)
                 cardEntity.PlayCost = -1;
 
             if (!debugMode)
@@ -195,7 +203,7 @@ namespace DCGO.CardEntities
             string folderName_CardColor = entity.cardColors.Count > 0 ? $"{DataBase.CardColorNameDictionary[entity.cardColors[0]]}" : "Unknown";
             folderName_CardColor = char.ToUpper(folderName_CardColor[0]) + folderName_CardColor.Substring(1);
 
-            string folderName_CardKind = $"{DataBase.CardKindENNameDictionary[entity.cardKind]}";
+            string folderName_CardKind = $"{DataBase.CardKindENNameDictionary[entity.cardKind[0]]}";
             string folderPath = $"Assets/CardBaseEntity/{folderName_SetID}/{folderName_CardColor}/{folderName_CardKind}";
             string filePath = $"{folderPath}/{fileName}".Trim().Replace("\t", "").Replace("\n", "").Replace("\r", "").Replace(" ", "");
 
@@ -290,6 +298,17 @@ namespace DCGO.CardEntities
                 .Replace(")", "");
 
             return name;
+        }
+
+        //Parse Names
+        string GetName(string str, bool isCardName = true)
+        {
+            string[] stringSplits = str.Split('/');
+
+            if (isCardName)
+                return stringSplits[0];
+            else
+                return stringSplits[1];
         }
 
         //Parse effect description
@@ -432,7 +451,7 @@ namespace DCGO.CardEntities
         List<CardColor> GetCardColors(string colors)
         {
             List<CardColor> cardColors = new List<CardColor>();
-
+            Debug.Log(colors);
             foreach (string cardColorName in colors.Split("/"))
             {
                 foreach (string cardColorNameValues in DataBase.CardColorNameDictionary.Values)

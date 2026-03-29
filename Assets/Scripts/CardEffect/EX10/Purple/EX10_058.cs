@@ -296,7 +296,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanSelectTrashCard(CardSource source)
                 {
                     return source.IsDigimon &&
-                           source.CardColors.Contains(CardColor.Purple) &&
+                           source.HasCardColor(CardColor.Purple) &&
                            source.HasLevel && source.Level <= 4 &&
                            CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.Trash);
                 }

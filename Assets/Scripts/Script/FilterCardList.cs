@@ -222,28 +222,28 @@ public class FilterCardList : MonoBehaviour
                         switch (cardKindDropdown.value)
                         {
                             case 1:
-                                if (cEntity_Base.cardKind == CardKind.Digimon)
+                                if (cEntity_Base.cardKind.Contains(CardKind.Digimon))
                                 {
                                     OK_CardKind = true;
                                 }
                                 break;
 
                             case 2:
-                                if (cEntity_Base.cardKind == CardKind.DigiEgg)
+                                if (cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
                                 {
                                     OK_CardKind = true;
                                 }
                                 break;
 
                             case 3:
-                                if (cEntity_Base.cardKind == CardKind.Tamer)
+                                if (cEntity_Base.cardKind.Contains(CardKind.Tamer))
                                 {
                                     OK_CardKind = true;
                                 }
                                 break;
 
                             case 4:
-                                if (cEntity_Base.cardKind == CardKind.Option)
+                                if (cEntity_Base.cardKind.Contains(CardKind.Option))
                                 {
                                     OK_CardKind = true;
                                 }

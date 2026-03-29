@@ -74,7 +74,7 @@ public class BT4_113 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Red))
+                    if (cardSource.HasCardColor(CardColor.Red))
                     {
                         if (cardSource.Level <= 4)
                         {

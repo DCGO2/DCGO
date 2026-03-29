@@ -82,7 +82,7 @@ namespace DCGO.CardEffects.BT15
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && cardSource.HasLevel && cardSource.CardColors.Contains(CardColor.Black) && (cardSource.HasGreymonName || cardSource.HasGarurumonName);
+                    return cardSource.IsDigimon && cardSource.HasLevel && cardSource.HasCardColor(CardColor.Black) && (cardSource.HasGreymonName || cardSource.HasGarurumonName);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

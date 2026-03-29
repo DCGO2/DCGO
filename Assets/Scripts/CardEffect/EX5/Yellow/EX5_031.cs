@@ -72,7 +72,7 @@ public class EX5_031 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.CardColors.Contains(CardColor.Yellow);
+                return cardSource.HasCardColor(CardColor.Yellow);
             }
 
             bool CanUseCondition(Hashtable hashtable)

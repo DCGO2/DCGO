@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.BT22
                     return CardEffectCommons.IsExistOnHand(cardSource)
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass)
                         && cardSource.IsTamer
-                        && cardSource.CardColors.Contains(CardColor.Blue);
+                        && cardSource.HasCardColor(CardColor.Blue);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -213,7 +213,7 @@ namespace DCGO.CardEffects.BT22
                     return CardEffectCommons.IsExistOnHand(cardSource)
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass)
                         && cardSource.IsTamer
-                        && cardSource.CardColors.Contains(CardColor.Blue);
+                        && cardSource.HasCardColor(CardColor.Blue);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

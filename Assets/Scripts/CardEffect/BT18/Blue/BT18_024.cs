@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.BT18
                     {
                         if (cardSource.IsLevel3)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Blue))
+                            if (cardSource.HasCardColor(CardColor.Blue))
                             {
                                 return true;
                             }
@@ -202,7 +202,7 @@ namespace DCGO.CardEffects.BT18
                     {
                         if (cardSource.IsLevel3)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Blue))
+                            if (cardSource.HasCardColor(CardColor.Blue))
                             {
                                 return true;
                             }

@@ -28,7 +28,7 @@ public class BT5_045 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
+                    if (cardSource.HasCardColor(CardColor.Yellow))
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {

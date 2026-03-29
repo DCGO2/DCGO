@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.BT11
                     {
                         if (cardSource.GetCostItself <= 4)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Blue) || cardSource.CardColors.Contains(CardColor.Green))
+                            if (cardSource.HasCardColor(CardColor.Blue) || cardSource.HasCardColor(CardColor.Green))
                             {
                                 if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                                 {

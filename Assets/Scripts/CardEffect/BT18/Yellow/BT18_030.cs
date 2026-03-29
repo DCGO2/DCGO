@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return (cardSource.CardTraits.Contains("Data") && cardSource.CardColors.Contains(CardColor.Yellow));
+                    return (cardSource.CardTraits.Contains("Data") && cardSource.HasCardColor(CardColor.Yellow));
                 }
 
                 bool CanSelectCardCondition1(CardSource cardSource)

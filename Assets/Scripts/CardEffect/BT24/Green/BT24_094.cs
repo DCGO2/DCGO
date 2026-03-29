@@ -113,7 +113,7 @@ namespace DCGO.CardEffects.BT24
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon
-                        && (cardSource.CardColors.Contains(CardColor.Green) || cardSource.CardColors.Contains(CardColor.Yellow))
+                        && (cardSource.HasCardColor(CardColor.Green) || cardSource.HasCardColor(CardColor.Yellow))
                         && cardSource.HasTSTraits
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 3);
                 }
@@ -196,8 +196,8 @@ namespace DCGO.CardEffects.BT24
                         bool CardSourceCondition(CardSource cardSource)
                         {
                             return cardSource.IsDigimon
-                                && (cardSource.CardColors.Contains(CardColor.Green) 
-                                    || cardSource.CardColors.Contains(CardColor.Yellow))
+                                && (cardSource.HasCardColor(CardColor.Green) 
+                                    || cardSource.HasCardColor(CardColor.Yellow))
                                 && cardSource.HasTSTraits;
                         }
 
@@ -255,7 +255,7 @@ namespace DCGO.CardEffects.BT24
                 bool CanPlayCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon && cardSource.HasLevel && cardSource.Level <= 4
-                        && (cardSource.CardColors.Contains(CardColor.Green) || cardSource.CardColors.Contains(CardColor.Yellow))
+                        && (cardSource.HasCardColor(CardColor.Green) || cardSource.HasCardColor(CardColor.Yellow))
                         && cardSource.HasTSTraits
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }

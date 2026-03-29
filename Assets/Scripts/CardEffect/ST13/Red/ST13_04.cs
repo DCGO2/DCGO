@@ -33,7 +33,7 @@ public class ST13_04 : CEntity_Effect
                         return true;
                     }
 
-                    if (cardSource.CardColors.Contains(CardColor.Black))
+                    if (cardSource.HasCardColor(CardColor.Black))
                     {
                         return true;
                     }

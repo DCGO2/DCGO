@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.BT18
                             {
                                 if (cardSource.Level <= 4)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Green))
+                                    if (cardSource.HasCardColor(CardColor.Green))
                                     {
                                         if (cardSource.HasLevel)
                                         {

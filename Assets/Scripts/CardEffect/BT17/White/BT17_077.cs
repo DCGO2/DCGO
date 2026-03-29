@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.BT17
             #region On Play/When Digivolving Shared
             bool HasWhiteLevelSeven(CardSource source)
             {
-                if (source.CardColors.Contains(CardColor.White))
+                if (source.HasCardColor(CardColor.White))
                     return source.HasLevel && source.Level == 7;
 
                 return false;

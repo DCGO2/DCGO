@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.BT17
                             root: SelectCardEffect.Root.Hand, isBreedingArea: false, isPlayOption: false))
                     {
                         if (cardSource.IsTamer)
-                            if (cardSource.CardColors.Contains(CardColor.White) && cardSource.GetCostItself <= 4)
+                            if (cardSource.HasCardColor(CardColor.White) && cardSource.GetCostItself <= 4)
                                 return true;
                     }
 
@@ -291,7 +291,7 @@ namespace DCGO.CardEffects.BT17
                             root: SelectCardEffect.Root.Hand, isBreedingArea: false, isPlayOption: false))
                     {
                         if (cardSource.IsTamer)
-                            if (cardSource.CardColors.Contains(CardColor.White) && cardSource.GetCostItself <= 4)
+                            if (cardSource.HasCardColor(CardColor.White) && cardSource.GetCostItself <= 4)
                                 return true;
                     }
 

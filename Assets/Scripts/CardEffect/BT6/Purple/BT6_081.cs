@@ -33,7 +33,7 @@ public class BT6_081 : CEntity_Effect
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Purple))
+                            if (cardSource.HasCardColor(CardColor.Purple))
                             {
                                 if (cardSource.Level <= 4)
                                 {

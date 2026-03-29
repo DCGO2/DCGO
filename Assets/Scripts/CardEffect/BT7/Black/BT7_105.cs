@@ -28,7 +28,7 @@ public class BT7_105 : CEntity_Effect
             {
                 if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Black))
+                    if (cardSource.HasCardColor(CardColor.Black))
                     {
                         if (cardSource.GetCostItself <= 4)
                         {
