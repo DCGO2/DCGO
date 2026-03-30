@@ -200,6 +200,7 @@ namespace DCGO.CardEffects.ST24
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectCard = cardSource;
+                            selectedCards.Add(cardSource);
                             yield return null;
                         }
 
