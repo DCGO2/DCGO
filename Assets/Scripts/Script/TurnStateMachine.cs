@@ -224,7 +224,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         #region 乱数列初期化
         if (PhotonNetwork.IsMasterClient)
         {
-            ContinuousController.instance.GetComponent<PhotonView>().RPC("SetRandom", RpcTarget.All, RandomUtility.getRamdom());
+            ContinuousController.instance.GetComponent<PhotonView>().RPC("SetRandom", RpcTarget.All, RandomUtility.GetSecureRandom());
         }
 
         yield return new WaitWhile(() => !ContinuousController.instance.DoneSetRandom);
@@ -256,7 +256,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         #region Deciding whether to attack first or last
-        gameContext.TurnPlayer = gameContext.PlayerFromID(UnityEngine.Random.Range(0, 2));
+        gameContext.TurnPlayer = gameContext.PlayerFromID(GameRandom.Range(0, 2));
 
         #region get first player from room custom property
         int firstPlayerId = -1;
