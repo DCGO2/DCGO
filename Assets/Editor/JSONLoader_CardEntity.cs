@@ -153,7 +153,7 @@ namespace DCGO.CardEntities
             cardEntity.rarity = card.rarity.Equals("-") ? Rarity.None : (Rarity)Enum.Parse(typeof(Rarity), card.rarity);
             cardEntity.OverflowMemory = GetOverflowMemory(card.aceEffect);
             cardEntity.CardID = card.id;
-            cardEntity.MaxCountInDeck = GetMaxCount(card.restrictions.japanese, card.rule);
+            cardEntity.MaxCountInDeck = GetMaxCount(card.rule);
 
             cardEntity.LinkDP = dpParse(card.linkDP);
             cardEntity.LinkEffect = card.linkEffect;
@@ -484,18 +484,12 @@ namespace DCGO.CardEntities
         }
 
         //Parse Max count in deck
-        int GetMaxCount(string restriction, string rule)
+        int GetMaxCount(string rule)
         {
             int value = 4;
 
             if (!String.IsNullOrEmpty(rule))
                 value = GetRuleMaxCount(rule);
-
-            if (restriction == "Banned")
-                value = 0;
-
-            if(restriction.StartsWith("Restricted"))
-                value = int.Parse(restriction.Substring(restriction.Length-1));
 
             return value;
         }
