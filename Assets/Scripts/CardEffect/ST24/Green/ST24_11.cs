@@ -200,7 +200,7 @@ namespace DCGO.CardEffects.ST24
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => true, cardSource => true);
+                        && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => cardEffect != null, cardSource => true);
                 }
 
                 bool PermanentCondition(Permanent permanent)
