@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace DCGO.CardEffects.ST24
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-            
+
             #region Name Rule
             if (timing == EffectTiming.None)
             {
@@ -18,7 +19,7 @@ namespace DCGO.CardEffects.ST24
                 changeCardNamesClass.SetUpICardEffect("[Rule] Name: Also treated as [Yoshino Fujieda]/[Keenan Crier].", _ => true, card);
                 changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: ChangeCardNames);
                 cardEffects.Add(changeCardNamesClass);
-            
+
                 List<string> ChangeCardNames(CardSource cardSource, List<string> cardNames)
                 {
                     if (cardSource == card)
@@ -26,24 +27,26 @@ namespace DCGO.CardEffects.ST24
                         cardNames.Add("Yoshino Fujieda");
                         cardNames.Add("Keenan Crier");
                     }
-            
+
                     return cardNames;
                 }
             }
             #endregion
-            
+
             #region Shared OP/SOMP
             string SharedEffectName = "Place top card of deck face down under this tamer, then if enemy has Digimon gain 1 memory";
 
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    SharedEffectName,
+                    SharedActivateCoroutine,
+                    SharedEffectDescription,
+                    optional: false,
+                    onPlay: true,
+                    startOfYourMainPhase: true);
+
             string SharedEffectDescription(string tag) =>
                 $"[{tag}] You may place the top card of your deck face down under this tamer. Then, if your opponent has a Digimon, gain 1 memory.";
-
-            bool SharedCanActivateCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.IsExistOnBattleArea(card)
-                    && (card.Owner.LibraryCards.Count >= 1
-                        || card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1);
-            }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -53,7 +56,7 @@ namespace DCGO.CardEffects.ST24
 
                     selectionElements.Add(new(message: $"Yes", value: 1, spriteIndex: 0));
                     selectionElements.Add(new(message: $"No", value: 2, spriteIndex: 1));
-                    
+
                     string selectPlayerMessage = "Will you place the top card from your deck under this Tamer face down?";
                     string notSelectPlayerMessage = "The opponent is choosing whether to place the top card from their deck under their Tamer face down.";
 
@@ -77,42 +80,6 @@ namespace DCGO.CardEffects.ST24
             }
             #endregion
 
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition,
-                    hash => SharedActivateCoroutine(hash, activateClass), -1, false,
-                    SharedEffectDescription("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-            }
-            #endregion
-
-            #region Start of Your Main Phase
-            if (timing == EffectTiming.OnStartMainPhase)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition,
-                    hash => SharedActivateCoroutine(hash, activateClass), -1, false,
-                    SharedEffectDescription("Start of Your Main Phase"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.IsOwnerTurn(card);
-                }
-            }
-            #endregion
-
             #region All Turns
             if (timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
@@ -129,7 +96,7 @@ namespace DCGO.CardEffects.ST24
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && //trigger condition goes here;
+                        && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, permanent => permanent == card.PermanentOfThisCard(), effect => effect != null, cardSource => true);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -137,7 +104,7 @@ namespace DCGO.CardEffects.ST24
                     return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
-                bool CanSelectPermanentCondition (Permanent permanent)
+                bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
