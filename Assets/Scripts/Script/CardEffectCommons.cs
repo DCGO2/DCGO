@@ -703,6 +703,28 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Activate Main of Dual Cards Option Side
+    public static IEnumerator ActivateMainOfOptionSide(CardSource card, ICardEffect activateClass, Func<ICardEffect, IEnumerator> afterMainEffect = null, bool asEffectOfThisDigimon = false)
+    {
+        ActivateClass mainActivateClass = OptionMainEffect(card);
+
+        #region Set as option effect unless explicitly effect of the digimon
+        mainActivateClass.SetIsDigimonEffect(asEffectOfThisDigimon);
+        mainActivateClass.SetIsTamerEffect(false);
+        #endregion
+
+        if (mainActivateClass != null)
+        {
+            yield return ContinuousController.instance.StartCoroutine(mainActivateClass.Activate(CardEffectCommons.OptionMainCheckHashtable(card)));
+        }
+
+        if (afterMainEffect != null)
+        {
+            yield return ContinuousController.instance.StartCoroutine(afterMainEffect(activateClass));
+        }
+    }
+    #endregion
+
     #region Target permanent Digivolves into Digimon card from hand or trash
 
     public static IEnumerator DigivolveIntoHandOrTrashCard(
