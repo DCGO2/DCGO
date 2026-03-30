@@ -159,8 +159,7 @@ namespace DCGO.CardEntities
             cardEntity.LinkEffect = card.linkEffect;
             cardEntity.LinkRequirement = card.linkRequirement;
 
-            if(!card.dualEffect.IsNullOrEmpty())
-                cardEntity.dualEffect = GetName(card.name.english, false);
+           cardEntity.dualEffect = GetName(card.name.english, card.dualEffect.Equals("-"));
 
             Debug.Log(card.optionCardColourRequirement);
             cardEntity.OptionCardColorRequirements = GetCardColors(card.optionCardColourRequirement);
