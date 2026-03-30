@@ -45,6 +45,7 @@ public partial class CardEffectCommons
             isInheritedEffect: false, 
             card: card, 
             condition: CanUseCondition);
+        changeBaseDPClass.SetActivatedTime(DateTime.Now);
 
         AddEffectToPermanent(
             targetPermanent: targetPermanent, 

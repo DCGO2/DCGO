@@ -215,6 +215,7 @@ namespace DCGO.CardEffects.BT25
                     isInheritedEffect: false, 
                     card: card, 
                     condition: MakeDigimonCondition);
+                changeBaseDPClass.SetActivatedTime(card.Owner.TurnStartTime, card.ChangedLocationTime);
 
                 cardEffects.Add(changeBaseDPClass);
                 #endregion
