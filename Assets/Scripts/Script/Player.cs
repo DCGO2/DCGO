@@ -948,6 +948,23 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region Timestamp of the last time the player's turn started, for continuous effects.
+
+    DateTime _turnStartTime = DateTime.MinValue;
+
+    public DateTime TurnStartTime
+    {
+        get { return _turnStartTime; }
+        private set { _turnStartTime = value; }
+    }
+
+    public void SetTurnStartTime()
+    {
+        TurnStartTime = DateTime.Now;
+    }
+
+    #endregion
+
     #region トラッシュのカードオブジェクト
     public HandCard TrashHandCard;
     #endregion

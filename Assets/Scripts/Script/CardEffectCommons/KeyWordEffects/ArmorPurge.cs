@@ -64,6 +64,8 @@ public partial class CardEffectCommons
 
                         _permanent.HideDeleteEffect();
 
+                        _permanent.TopCard.SetChangedLocationTime();//register that the new topcard just became a top card for the purpose of the start of timestamped continuous effects
+
                         #region "When Top Card is Trashed" effect
                         #region Hashtable Setting
                         System.Collections.Hashtable hashtable = new System.Collections.Hashtable()
