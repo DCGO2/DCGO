@@ -6,8 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -120,11 +120,31 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base AthoRenePorToken { get; private set; }
     public CEntity_Base HinukamuyToken { get; private set; }
     public CEntity_Base PetrificationToken { get; private set; }
-    public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
+    //public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
+    public BanList BanList { get; private set; } = new BanList();
 
-    void LoadBanList()
+
+    async Task LoadBanListOnline()
     {
-        BanList = DataBase.ENGBanList;
+        string url = "https://www.dcgo.online/Banlist.json";
+        UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url);
+
+        UnityWebRequestAsyncOperation operation = jsonWebRequest.SendWebRequest();
+
+        while (!operation.isDone)
+        {
+            await Task.Yield(); // Keep the method asynchronous without blocking
+        }
+
+        if (jsonWebRequest.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(jsonWebRequest.error);
+            useBanlist = false;
+        }
+        else
+        {
+            BanList = JsonUtility.FromJson<BanList>(jsonWebRequest.downloadHandler.text);
+        }
     }
 
     async Task CreateTokenData()
@@ -512,7 +532,7 @@ public class ContinuousController : MonoBehaviour
             ReverseCard_Digitama = reverseDigieggCardSprite;
         }
 
-        LoadBanList();
+        await LoadBanListOnline();
 
         // deck data
         //DeckDatas = PlayerPrefsUtil.LoadList<DeckData>(DeckDatasPlayerPrefsKey);
@@ -530,6 +550,7 @@ public class ContinuousController : MonoBehaviour
         LoadAutoMinDigivolutionCost();
         LoadAutoMaxCardCount();
         LoadAutoHatch();
+        //LoadUseBanlist();
         LoadShowCutInAnimation();
         LoadReverseOpponentsCards();
         LoadTurnSuspendedCards();
@@ -854,6 +875,21 @@ public class ContinuousController : MonoBehaviour
     public void LoadAutoHatch()
     {
         autoHatch = PlayerPrefsUtil.GetBool(_autoHatchKey, false);
+    }
+    #endregion
+
+    #region Use Banlist
+    public bool useBanlist = true;
+    string _useBanlistKey = "UseBanlist";
+
+    public void SaveUseBanlist()
+    {
+        PlayerPrefsUtil.SetBool(_useBanlistKey, useBanlist);
+        PlayerPrefs.Save();
+    }
+    public void LoadUseBanlist()
+    {
+        useBanlist = PlayerPrefsUtil.GetBool(_useBanlistKey, false);
     }
     #endregion
 
