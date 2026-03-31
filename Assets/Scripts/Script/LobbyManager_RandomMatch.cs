@@ -98,6 +98,8 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         yield return new WaitWhile(() => PhotonNetwork.InRoom);
         #endregion
 
+        yield return ContinuousController.instance.StartCoroutine(PhotonUtility.DisconnectCoroutine());
+
         OffLobby();
 
         yield return ContinuousController.instance.StartCoroutine(disconnectLoadingObject.EndLoading());
