@@ -68,7 +68,7 @@ public class EnterRoom : MonoBehaviourPunCallbacks
     {
         if (CanClickEnterRoomButton() && canClick)
         {
-            ContinuousController.instance.StartCoroutine(JoinRoomCoroutine());
+            PhotonNetwork.JoinRoom(RoomIDInputField.text);
         }
     }
 

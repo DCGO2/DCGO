@@ -61,16 +61,18 @@ public class SelectBattleMode : MonoBehaviour
 
         Opening.instance.battle.selectBattleDeck.Off();
 
+        yield return ContinuousController.instance.StartCoroutine(loadingObject.StartLoading("Connecting"));
+
         connecting = true;
 
-        if (PhotonNetwork.IsConnected)
-        {
-            yield return ContinuousController.instance.StartCoroutine(loadingObject.StartLoading("Disconnecting"));
-            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.DisconnectCoroutine());
-            yield return ContinuousController.instance.StartCoroutine(loadingObject.EndLoading());
-        }
+        yield return ContinuousController.instance.StartCoroutine(PhotonUtility.ConnectToLobbyCoroutine());
+
+        // ContinuousController.instance.BattleDeckData = null;
+        yield return ContinuousController.instance.StartCoroutine(PhotonUtility.DeleteBattleDeckData());
 
         connecting = false;
+
+        yield return ContinuousController.instance.StartCoroutine(loadingObject.EndLoading());
 
         this.gameObject.SetActive(true);
 

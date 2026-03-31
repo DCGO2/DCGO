@@ -306,6 +306,21 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
     }
     #endregion
 
+    #region Callback when joining a room fails
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        if (this.gameObject.activeSelf && !DoneCompleteMatching)
+        {
+            Debug.Log($"[RandomMatch] Join room failed: [{returnCode}] {message}, retrying...");
+            RandomRoomName = null;
+            startJoin = false;
+            m = false;
+            n = false;
+            StartRandomMatch();
+        }
+    }
+    #endregion
+
     #region Process to create a room
     public IEnumerator CreateRoomCoroutine(bool isRandomMatch)
     {
