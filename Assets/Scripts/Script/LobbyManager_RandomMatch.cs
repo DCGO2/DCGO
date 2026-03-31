@@ -316,6 +316,12 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
             startJoin = false;
             m = false;
             n = false;
+
+            if (!PhotonNetwork.InLobby)
+            {
+                PhotonNetwork.JoinLobby();
+            }
+
             StartRandomMatch();
         }
     }
