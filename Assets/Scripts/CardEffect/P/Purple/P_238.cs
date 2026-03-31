@@ -11,16 +11,15 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Ignore Color Requirment
+            #region Ignore Color Requirement
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.UseRequirements(card, PermanentCondition));
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsOwnerPermanent(permanent, card)
-                        && permanent.TopCard.HasCSTraits
-                        && (permanent.IsDigimon || permanent.IsTamer);
+                    return (permanent.IsDigimon || permanent.IsTamer)
+                        && permanent.TopCard.HasCSTraits;
                 }
             }
             #endregion
