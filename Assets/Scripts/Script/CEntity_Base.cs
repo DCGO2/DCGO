@@ -396,6 +396,7 @@ public enum Rarity
     U,
     R,
     SR,
+    UR,
     SEC,
     P,
     None,

@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.BT22
             {
                 ActivateClass activateClass2 = new ActivateClass();
                 activateClass2.SetUpICardEffect("Reduce play cost", CanUseCondition2, card);
-                activateClass2.SetUpActivateClass(CanActivateCondition2, ActivateCoroutine2, 1, true, EffectDiscription2());
+                activateClass2.SetUpActivateClass(CanActivateCondition2, ActivateCoroutine2, -1, true, EffectDiscription2());
                 cardEffects.Add(activateClass2);
 
                 string EffectDiscription2()

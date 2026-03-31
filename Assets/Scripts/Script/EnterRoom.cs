@@ -105,6 +105,7 @@ public class EnterRoom : MonoBehaviourPunCallbacks
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
+        Debug.Log($"{returnCode} - {message}");
         Opening.instance.PlayDecisionSE();
         Opening.instance.SetUpActiveYesNoObject(
             new List<UnityAction>() { null },
