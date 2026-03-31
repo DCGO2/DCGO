@@ -1560,23 +1560,50 @@ public class PhotonUtility
     #region Connect to Photon server
     public static IEnumerator ConnectToMasterServerCoroutine()
     {
-        if (!PhotonNetwork.IsConnected || ContinuousController.instance.LastConnectServerRegion != ContinuousController.instance.serverRegion)
-        {
-            if (PhotonNetwork.IsConnected)
-            {
-                yield return ContinuousController.instance.StartCoroutine(DisconnectCoroutine());
+        int maxRetries = 5;
+        float retryDelay = 3f;
 
-                yield return new WaitWhile(() => PhotonNetwork.IsConnected);
+        for (int attempt = 0; attempt <= maxRetries; attempt++)
+        {
+            if (!PhotonNetwork.IsConnected || ContinuousController.instance.LastConnectServerRegion != ContinuousController.instance.serverRegion)
+            {
+                if (PhotonNetwork.IsConnected)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(DisconnectCoroutine());
+
+                    yield return new WaitWhile(() => PhotonNetwork.IsConnected);
+                }
+
+                PhotonNetwork.NetworkingClient.AppId = PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime;
+                PhotonNetwork.ConnectToRegion(ContinuousController.instance.serverRegion);
+                PhotonNetwork.NickName = ContinuousController.instance.PlayerName;
+                PhotonNetwork.GameVersion = ContinuousController.instance.GameVerString;
+                ContinuousController.instance.LastConnectServerRegion = ContinuousController.instance.serverRegion;
             }
 
-            PhotonNetwork.NetworkingClient.AppId = PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime;
-            PhotonNetwork.ConnectToRegion(ContinuousController.instance.serverRegion);
-            PhotonNetwork.NickName = ContinuousController.instance.PlayerName;
-            PhotonNetwork.GameVersion = ContinuousController.instance.GameVerString;
-            ContinuousController.instance.LastConnectServerRegion = ContinuousController.instance.serverRegion;
-        }
+            yield return new WaitUntil(() =>
+                PhotonNetwork.IsConnectedAndReady ||
+                PhotonNetwork.NetworkingClient.State == Photon.Realtime.ClientState.Disconnected);
 
-        yield return new WaitWhile(() => !PhotonNetwork.IsConnectedAndReady);
+            if (PhotonNetwork.IsConnectedAndReady)
+            {
+                yield break;
+            }
+
+            var cause = PhotonNetwork.NetworkingClient.DisconnectedCause;
+            Debug.LogWarning($"[Photon] Connection failed: {cause} (attempt {attempt + 1}/{maxRetries + 1})");
+
+            if (cause == Photon.Realtime.DisconnectCause.MaxCcuReached && attempt < maxRetries)
+            {
+                Debug.Log($"[Photon] Server full, retrying in {retryDelay}s...");
+                yield return new WaitForSeconds(retryDelay);
+                retryDelay += 2f;
+                continue;
+            }
+
+            Debug.LogError($"[Photon] Connection failed permanently: {cause}");
+            yield break;
+        }
     }
     #endregion
     #region Connect to Photon Server and Lobby
