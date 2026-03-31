@@ -46,7 +46,7 @@ public class BT4_106 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"DP -3000 to opponent's all Digimons");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"DP -3000 to opponent's all Digimon");
         }
 
         return cardEffects;

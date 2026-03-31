@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+// Namakemon
 namespace DCGO.CardEffects.BT16
 {
     public class BT16_055 : CEntity_Effect
@@ -32,18 +33,26 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
-            #region On Play/When Digivolving Shared
-            Permanent selectedPermanent = null;
+            #region Shared OP/WD
+            string SharedEffectName() => "Conditionally 1 of your Digimon can't be DP reduced or De-Digivolved, Conditionally 1 of your Digimon gains <Blocker> and <Reboot>";
+
+            string SharedEffectDescription(string tag) => $"[{tag}] If you have 3 or more security cards, 1 of your Digimon can't have its DP reduced by your opponent's effects, and isn't affected by <De-Digivolve> effects until the end of your opponent's turn. If you have 3 or fewer security cards, 1 of your Digimon gains <Blocker> and <Reboot> until the end of your opponent's turn.";
+
+            bool SharedCanActivateCondition(Hashtable hashtable)
+            {
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+            }
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
             }
+            
+            Permanent selectedPermanent1 = null;
 
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.IsExistOnBattleArea(card);
-            }
+            #region Can't Be De-Digivolved
+
+            Permanent selectedPermanent = null;
 
             IEnumerator AfterSelectPermanent(List<Permanent> permanents)
             {
@@ -52,13 +61,6 @@ namespace DCGO.CardEffects.BT16
 
                 yield return null;
             }
-
-            bool CardEffectCondition(ICardEffect cardEffect)
-            {
-                return CardEffectCommons.IsOpponentEffect(cardEffect, card);
-            }
-
-            #region Can't Be De-Digivolved
 
             void ActivateDeDigivolveProtection()
             {
@@ -70,46 +72,18 @@ namespace DCGO.CardEffects.BT16
 
             bool CanUseDeDigivolveCondition(Hashtable hashtable1)
             {
-                if (selectedPermanent.TopCard != null)
-                {
-                    return true;
-                }
-
-                return false;
+                return selectedPermanent.TopCard != null;
             }
 
             bool PermanentDeDigivolveCondition(Permanent permanent)
             {
-                if (permanent == selectedPermanent)
-                {
-                    return true;
-                }
-
-                return false;
+                return permanent == selectedPermanent;
             }
             #endregion
 
-            #endregion
-
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digimon can't be DP reduced or De-Digivolved, Digimon gains <Rush> and <Blocker>", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[On Play] If you have 3 or more security cards, 1 of your Digimon can't have its DP reduced by your opponent's effects, and isn't affected by <De-Digivolve> effects until the end of your opponent's turn. If you have 3 or fewer security cards, 1 of your Digimon gains <Blocker> and <Reboot> until the end of your opponent's turn.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                if (card.Owner.SecurityCards.Count >= 3)
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -127,43 +101,81 @@ namespace DCGO.CardEffects.BT16
                             cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage(
-                                "Select Digimon that will get effects.",
-                                "The opponent is selecting Digimon that will get effects.");
+                                "Select 1 Digimon that can't have its DP reduced by your opponent's effects and isn't affected by <De-Digivolve> effects until the end of your opponent's turn.",
+                                "The opponent is selecting 1 Digimon that can't have its DP reduced by your opponent's effects and isn't affected by <De-Digivolve> effects until the end of your turn.");
 
-                    if (card.Owner.SecurityCards.Count >= 3)
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    if (selectedPermanent != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        ActivateDeDigivolveProtection();
 
-                        if (selectedPermanent != null)
-                        {
-                            ActivateDeDigivolveProtection();
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainImmuneFromDPMinus(
+                            targetPermanent: selectedPermanent,
+                            cardEffectCondition: cardEffect => CardEffectCommons.IsOpponentEffect(cardEffect, card),
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass,
+                            effectName: "Can't have DP reduced"));
+                    }
+                }
+                if (card.Owner.SecurityCards.Count <= 3)
+                {
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainImmuneFromDPMinus(
-                                targetPermanent: selectedPermanent,
-                                cardEffectCondition: CardEffectCondition,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass,
-                                effectName: "Can't have DP reduced"));
-                        }
+                    selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage(
+                                "Select 1 Digimon that gains <Blocker> and <Reboot> until the end of your opponent's turn.",
+                                "The opponent is selecting 1 Digimon that gains <Blocker> and <Reboot> until the end of your turn.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        selectedPermanent1 = permanent;
+
+                        yield return null;
                     }
 
-                    if (card.Owner.SecurityCards.Count <= 3)
+                    if (selectedPermanent1 != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainReboot(
+                            targetPermanent: selectedPermanent1,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass));
 
-                        if (selectedPermanent != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainReboot(
-                                targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass));
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
-                                targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
+                            targetPermanent: selectedPermanent1,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass));
                     }
+                }
+            }
+            #endregion
+
+            #region On Play
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("On Play"));
+                cardEffects.Add(activateClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
             }
             #endregion
@@ -172,75 +184,14 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digimon can't be DP reduced or De-Digivolved, Digimon gains <Rush> and <Blocker>", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("When Digivolving"));
                 cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[When Digivolving] If you have 3 or more security cards, 1 of your Digimon can't have its DP reduced by your opponent's effects, and isn't affected by <De-Digivolve> effects until the end of your opponent's turn. If you have 3 or fewer security cards, 1 of your Digimon gains <Blocker> and <Reboot> until the end of your opponent's turn.";
-                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: AfterSelectPermanent,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage(
-                                "Select Digimon that will get effects.",
-                                "The opponent is selecting Digimon that will get effects.");
-
-                    if (card.Owner.SecurityCards.Count >= 3)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        if (selectedPermanent != null)
-                        {
-                            ActivateDeDigivolveProtection();
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainImmuneFromDPMinus(
-                                targetPermanent: selectedPermanent,
-                                cardEffectCondition: CardEffectCondition,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass,
-                                effectName: "Can't have DP reduced"));
-                        }
-                    }
-
-                    if (card.Owner.SecurityCards.Count <= 3)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        if (selectedPermanent != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainReboot(
-                                targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass));
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
-                                targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass));
-                        }
-                    }
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
             }
             #endregion

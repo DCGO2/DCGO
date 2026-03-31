@@ -220,7 +220,7 @@ namespace DCGO.CardEffects.BT10
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Black))
+                    if (cardSource.HasCardColor(CardColor.Black))
                     {
                         if (cardSource.IsTamer)
                         {

@@ -268,7 +268,7 @@ namespace DCGO.CardEffects.BT13
                     return false;
                 }
 
-                string EffectName() => $"Your Digimons gain DP+{1000 * count()}";
+                string EffectName() => $"Your Digimon gain DP+{1000 * count()}";
 
                 cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect<Func<int>>(
                     permanentCondition: PermanentCondition,

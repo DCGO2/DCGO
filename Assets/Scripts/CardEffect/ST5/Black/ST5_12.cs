@@ -71,7 +71,7 @@ public class ST5_12 : CEntity_Effect
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select up to 2 Digimons to gain Reboot.", "The opponent is selecting up to 2 Digimons to gain Reboot.");
+                            selectPermanentEffect.SetUpCustomMessage("Select up to 2 Digimon to gain Reboot.", "The opponent is selecting up to 2 Digimon to gain Reboot.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

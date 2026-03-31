@@ -116,8 +116,8 @@ namespace DCGO.CardEffects.BT22
             {
                 bool SourceCondition(CardSource source)
                 {
-                    return (source.CardColors.Contains(CardColor.Red) || 
-                           source.CardColors.Contains(CardColor.Black)) &&
+                    return (source.HasCardColor(CardColor.Red) || 
+                           source.HasCardColor(CardColor.Black)) &&
                            source.HasLevel && source.IsLevel3;
                 }
 
@@ -130,8 +130,8 @@ namespace DCGO.CardEffects.BT22
             {
                 bool SourceCondition(CardSource source)
                 {
-                    return (source.CardColors.Contains(CardColor.Blue) ||
-                           source.CardColors.Contains(CardColor.Yellow)) &&
+                    return (source.HasCardColor(CardColor.Blue) ||
+                           source.HasCardColor(CardColor.Yellow)) &&
                            source.HasLevel && source.IsLevel3;
                 }
 

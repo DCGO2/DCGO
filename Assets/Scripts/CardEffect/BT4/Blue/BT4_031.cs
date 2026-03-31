@@ -38,7 +38,7 @@ public class BT4_031 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Return Digimons to hand", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Return Digimon to hand", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 

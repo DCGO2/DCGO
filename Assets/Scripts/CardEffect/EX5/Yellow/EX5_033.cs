@@ -27,7 +27,7 @@ public class EX5_033 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Contains(CardColor.Yellow))
+                if (cardSource.HasCardColor(CardColor.Yellow))
                 {
                     if (cardSource.Level <= 4)
                     {
@@ -140,7 +140,7 @@ public class EX5_033 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Contains(CardColor.Yellow))
+                if (cardSource.HasCardColor(CardColor.Yellow))
                 {
                     if (cardSource.Level <= 4)
                     {
@@ -241,7 +241,7 @@ public class EX5_033 : CEntity_Effect
         if (timing == EffectTiming.None)
         {
             AddSkillClass addSkillClass = new AddSkillClass();
-            addSkillClass.SetUpICardEffect("Your yellow Digimons gain Barrier", CanUseCondition, card);
+            addSkillClass.SetUpICardEffect("Your yellow Digimon gain Barrier", CanUseCondition, card);
             addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
             cardEffects.Add(addSkillClass);
 

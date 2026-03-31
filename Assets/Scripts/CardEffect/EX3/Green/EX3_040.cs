@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.EX3
                                         {
                                             if (Card.IsDigimon)
                                             {
-                                                if (Card.CardColors.Contains(CardColor.Green))
+                                                if (Card.HasCardColor(CardColor.Green))
                                                 {
                                                     if (Card.Owner == card.Owner)
                                                     {
@@ -139,7 +139,7 @@ namespace DCGO.CardEffects.EX3
 
                     bool CardSourceCondition(CardSource cardSource)
                     {
-                        return cardSource.CardColors.Contains(CardColor.Green);
+                        return cardSource.HasCardColor(CardColor.Green);
                     }
 
                     bool RootCondition(SelectCardEffect.Root root)
@@ -223,7 +223,7 @@ namespace DCGO.CardEffects.EX3
                     {
                         if (cardSource.IsDigimon)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Green))
+                            if (cardSource.HasCardColor(CardColor.Green))
                             {
                                 return true;
                             }

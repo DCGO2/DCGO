@@ -145,7 +145,7 @@ namespace DCGO.CardEffects.BT18
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return a Digimon or play a Digimon from this Digimons digivolution sources to hand.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return a Digimon or play a Digimon from this Digimon digivolution sources to hand.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.BT18
                             {
                                 if (cardSource.Level <= 4)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Green))
+                                    if (cardSource.HasCardColor(CardColor.Green))
                                     {
                                         if (cardSource.HasLevel)
                                         {

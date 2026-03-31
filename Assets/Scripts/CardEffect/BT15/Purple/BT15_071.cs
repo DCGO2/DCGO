@@ -169,7 +169,7 @@ namespace DCGO.CardEffects.BT15
                 activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("Meory+1_BT15_075");
+                activateClass.SetHashString("Memory+1_BT15_071");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

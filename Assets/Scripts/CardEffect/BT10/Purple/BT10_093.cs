@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT10
                                 hashtable: hashtable,
                                 permanentCondition: permanent => permanent == card.PermanentOfThisCard(),
                                 cardEffectCondition: null,
-                                cardCondition: cardSource => cardSource.CardColors.Contains(CardColor.Purple)))
+                                cardCondition: cardSource => cardSource.HasCardColor(CardColor.Purple)))
                         {
                             return true;
                         }
@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.BT10
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer && permanent.DigivolutionCards.Count((cardSource) => cardSource.IsDigimon && cardSource.CardColors.Contains(CardColor.Purple) && GManager.instance.GetComponent<SelectDigiXrosClass>().GetAddDigivolutionCardInfos(CardEffectCommons.GetCardFromHashtable(hashtable)).Count((addDigivolutionCardInfo) => addDigivolutionCardInfo.cardSources.Contains(cardSource)) == 0) >= 1))
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer && permanent.DigivolutionCards.Count((cardSource) => cardSource.IsDigimon && cardSource.HasCardColor(CardColor.Purple) && GManager.instance.GetComponent<SelectDigiXrosClass>().addDigivolutionCardInfos.Count((addDigivolutionCardInfo) => addDigivolutionCardInfo.cardSources.Contains(cardSource)) == 0) >= 1))
                     {
                         return true;
                     }
@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.BT10
 
             IEnumerator ActivateCoroutine2(Hashtable _hashtable)
             {
-                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer && permanent.DigivolutionCards.Count((cardSource) => cardSource.IsDigimon && cardSource.CardColors.Contains(CardColor.Purple)) >= 1))
+                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer && permanent.DigivolutionCards.Count((cardSource) => cardSource.IsDigimon && cardSource.HasCardColor(CardColor.Purple)) >= 1))
                 {
                     List<CardSource> digivolutionCards = new List<CardSource>();
 
@@ -133,9 +133,9 @@ namespace DCGO.CardEffects.BT10
                     {
                         if (!digivolutionCards.Contains(cardSource))
                         {
-                            if (GManager.instance.GetComponent<SelectDigiXrosClass>().GetAddDigivolutionCardInfos(CardEffectCommons.GetCardFromHashtable(_hashtable)).Count((addDigivolutionCardInfo) => addDigivolutionCardInfo.cardSources.Contains(cardSource)) == 0)
+                            if (GManager.instance.GetComponent<SelectDigiXrosClass>().addDigivolutionCardInfos.Count((addDigivolutionCardInfo) => addDigivolutionCardInfo.cardSources.Contains(cardSource)) == 0)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Purple))
+                                if (cardSource.HasCardColor(CardColor.Purple))
                                 {
                                     if (cardSource.IsDigimon)
                                     {
@@ -280,7 +280,7 @@ namespace DCGO.CardEffects.BT10
 
                     if (digivolutionCards.Count >= 1)
                     {
-                        GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(CardEffectCommons.GetCardFromHashtable(_hashtable), new AddDigivolutionCardsInfo(activateClass2, digivolutionCards));
+                        GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(new AddDigivolutionCardsInfo(activateClass2, digivolutionCards));
 
                         int reduceCount = 2 * digivolutionCards.Count;
 
@@ -415,7 +415,7 @@ namespace DCGO.CardEffects.BT10
                                 {
                                     if (permanent.IsTamer)
                                     {
-                                        maxCount += permanent.DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Purple) && cardSource.IsDigimon);
+                                        maxCount += permanent.DigivolutionCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Purple) && cardSource.IsDigimon);
                                     }
 
                                     if (maxCount >= 3)

@@ -100,7 +100,7 @@ namespace DCGO.CardEffects.BT15
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Opponent's 3 Digimons or Tamers can't suspend", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Opponent's 3 Digimon or Tamers can't suspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -161,8 +161,8 @@ namespace DCGO.CardEffects.BT15
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select Digimons or Tamers that will get unable to suspend.",
-                        "The opponent is selecting Digimons or Tamers that will get unable to suspend.");
+                        selectPermanentEffect.SetUpCustomMessage("Select Digimon or Tamers that will get unable to suspend.",
+                        "The opponent is selecting Digimon or Tamers that will get unable to suspend.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

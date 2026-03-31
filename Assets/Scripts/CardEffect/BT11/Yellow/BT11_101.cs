@@ -117,7 +117,7 @@ namespace DCGO.CardEffects.BT11
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select Digimons to DP -5000 and Security Attack -1.", "The opponent is selecting Digimons to DP -5000 and Security Attack -1.");
+                        selectPermanentEffect.SetUpCustomMessage("Select Digimon to DP -5000 and Security Attack -1.", "The opponent is selecting Digimon to DP -5000 and Security Attack -1.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -138,7 +138,7 @@ namespace DCGO.CardEffects.BT11
                 CardEffectCommons.AddActivateMainOptionSecurityEffect(
                     card: card,
                     cardEffects: ref cardEffects,
-                    effectName: $"Opponent's 3 Digimons get DP -5000 and Security Attack -1");
+                    effectName: $"Opponent's 3 Digimon get DP -5000 and Security Attack -1");
             }
 
             return cardEffects;

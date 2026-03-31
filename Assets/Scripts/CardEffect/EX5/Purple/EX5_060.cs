@@ -269,7 +269,7 @@ public class EX5_060 : CEntity_Effect
                     {
                         if (cardSource.IsDigimon)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Purple))
+                            if (cardSource.HasCardColor(CardColor.Purple))
                             {
                                 if (cardSource.Level <= maxLevel)
                                 {
@@ -320,7 +320,7 @@ public class EX5_060 : CEntity_Effect
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Purple))
                         {
                             if (cardSource.Level <= maxLevel)
                             {

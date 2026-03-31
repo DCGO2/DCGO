@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.BT11
                 CardEffectCommons.AddActivateMainOptionSecurityEffect(
                     card: card,
                     cardEffects: ref cardEffects,
-                    effectName: $"Opponent's Digimons get effect");
+                    effectName: $"Opponent's Digimon get effect");
             }
 
             return cardEffects;

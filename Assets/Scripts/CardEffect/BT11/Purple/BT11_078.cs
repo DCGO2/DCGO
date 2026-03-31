@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT11
                     isInheritedEffect: false,
                     card: card,
                     condition: Condition,
-                    effectName: () => "Your Digimons with Retaliation gain DP +2000"));
+                    effectName: () => "Your Digimon with Retaliation gain DP +2000"));
             }
 
             return cardEffects;

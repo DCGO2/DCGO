@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.EX3
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Security Attack -2 ang gain Memory +2", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Security Attack -2 and gain Memory +2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

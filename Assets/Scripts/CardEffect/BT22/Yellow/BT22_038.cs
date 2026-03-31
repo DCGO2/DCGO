@@ -220,7 +220,7 @@ namespace DCGO.CardEffects.BT22
                         {
                             Permanent selectedPermanent = null;
 
-                            #region Select Permament
+                            #region Select Permanent
 
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 

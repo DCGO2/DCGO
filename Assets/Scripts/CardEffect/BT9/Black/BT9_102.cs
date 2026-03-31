@@ -107,7 +107,7 @@ public class BT9_102 : CEntity_Effect
                                                 activateClass: activateClass));
 
                         AddSkillClass addSkillClass = new AddSkillClass();
-                        addSkillClass.SetUpICardEffect("Your Digimons get Blitz", CanUseCondition1, card);
+                        addSkillClass.SetUpICardEffect("Your Digimon get Blitz", CanUseCondition1, card);
                         addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
                         CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: addSkillClass, timing: EffectTiming.None);
 

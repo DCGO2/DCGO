@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.EX4
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("DP -5000 to opponent's all Digimons", CanUseCondition, card);
+                activateClass.SetUpICardEffect("DP -5000 to opponent's all Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.EX4
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("DP -5000 to opponent's all Digimons", CanUseCondition, card);
+                activateClass.SetUpICardEffect("DP -5000 to opponent's all Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -107,7 +107,7 @@ namespace DCGO.CardEffects.EX4
             if (timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete Digimons, Recovery +1 (Deck) and hatch 1 Digiegg", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete Digimon, Recovery +1 (Deck) and hatch 1 Digiegg", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

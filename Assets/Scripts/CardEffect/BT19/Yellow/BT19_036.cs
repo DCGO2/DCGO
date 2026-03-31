@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (cardSource.IsOption)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Yellow) || cardSource.HasCardColor(CardColor.Purple))
                         {
                             if(cardSource.HasUseCost && cardSource.GetCostItself <= 5)
                             {
@@ -71,7 +71,8 @@ namespace DCGO.CardEffects.BT19
 
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: card.Owner,
-                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                            activateClass).ReduceSecurity());
                     }                        
 
                     if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Wizardmon") || cardSource.EqualsCardName("X Antibody")) >= 1)
@@ -156,7 +157,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (cardSource.IsOption)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Yellow) || cardSource.HasCardColor(CardColor.Purple))
                         {
                             if (cardSource.HasUseCost && cardSource.GetCostItself <= 5)
                             {
@@ -183,7 +184,8 @@ namespace DCGO.CardEffects.BT19
 
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: card.Owner,
-                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                            activateClass).ReduceSecurity());
                     }
 
                     if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Wizardmon") || cardSource.EqualsCardName("X Antibody")) >= 1)

@@ -97,7 +97,7 @@ public class ST14_10 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Unsuspend this Digimon ang gain Memory +3", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Unsuspend this Digimon and gain Memory +3", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.EX4
                     isInheritedEffect: false,
                     card: card,
                     condition: Condition,
-                    effectName: "Your Digimons with [Knightmon] or [Knightsmon] in their names are unblockable"));
+                    effectName: "Your Digimon with [Knightmon] or [Knightsmon] in their names are unblockable"));
             }
 
             return cardEffects;

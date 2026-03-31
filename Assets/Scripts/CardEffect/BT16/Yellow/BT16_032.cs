@@ -64,9 +64,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    GManager.instance.attackProcess.IsEndAttack = true;
-
-                    yield return null;
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.EndAttack());
                 }
             }
 

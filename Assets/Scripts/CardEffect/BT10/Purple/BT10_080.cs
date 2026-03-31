@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.BT10
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Purple))
                         {
                             if (cardSource.CardTraits.Contains("Undead"))
                             {

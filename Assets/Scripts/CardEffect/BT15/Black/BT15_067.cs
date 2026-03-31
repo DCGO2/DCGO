@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT15
 
                 string EffectDiscription()
                 {
-                    return "[All Turns][Once per turn] When this Digimon becomes suspeneded, you may play 1 Digimon card with the [Beast Dragon] or [DigiPolice] trait and 5000DP or less from your hand without paying the cost";
+                    return "[All Turns][Once per turn] When this Digimon becomes suspended, you may play 1 Digimon card with the [Beast Dragon] or [DigiPolice] trait and 5000DP or less from your hand without paying the cost";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

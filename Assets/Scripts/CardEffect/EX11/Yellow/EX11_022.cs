@@ -161,31 +161,8 @@ namespace DCGO.CardEffects.EX11
 
                     if (selectedCard != null)
                     {
-
-                        Permanent selectedPermanent = selectedCard.PermanentOfThisCard();
-
-                        ActivateClass activateClass1 = new ActivateClass();
-                        activateClass1.SetUpICardEffect("Delete this Digimon", CanUseCondition2, card);
-                        activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "");
-                        activateClass1.SetEffectSourcePermanent(selectedPermanent);
-                        CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
-
-                        bool CanUseCondition2(Hashtable hashtable)
-                        {
-                            return true;
-                        }
-
-                        bool CanActivateCondition1(Hashtable hashtable)
-                        {
-                            return selectedPermanent.TopCard != null
-                                && selectedPermanent.CanBeDestroyedBySkill(activateClass1)
-                                && !selectedPermanent.TopCard.CanNotBeAffected(activateClass1);
-                        }
-
-                        IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent>() { selectedPermanent }, CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.AddSelfDeleteEffect(selectedCard.PermanentOfThisCard(), CardEffectCommons.DeleteTiming.AtTurnEnd));
                     }
 
                     #endregion
@@ -246,7 +223,7 @@ namespace DCGO.CardEffects.EX11
 
                 string EffectDescription()
                 {
-                    return "[All Turns] [Once Per Turn] When this Digimon would leave the battle area other than by your effects, by deleting 1 of your Tokens or other [Puppet] trait trait Digimon, prevent it from leaving.";
+                    return "[All Turns] [Once Per Turn] When this Digimon would leave the battle area other than by your effects, by deleting 1 of your Tokens or other [Puppet] trait Digimon, prevent it from leaving.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

@@ -66,7 +66,7 @@ public class BT1_061 : CEntity_Effect
                     mode: SelectPermanentEffect.Mode.Custom,
                     cardEffect: activateClass);
 
-                selectPermanentEffect.SetUpCustomMessage("Select Digimons to DP -3000.", "The opponent is selecting Digimons to DP -3000.");
+                selectPermanentEffect.SetUpCustomMessage("Select Digimon to DP -3000.", "The opponent is selecting Digimon to DP -3000.");
 
                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

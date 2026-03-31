@@ -130,49 +130,13 @@ namespace DCGO.CardEffects.BT16
 
                     if (selectedPermanent != null)
                     {
-                        CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                        canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effect", CanUseUnaffectedCondition, card);
-                        canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardUnaffectedCondition, SkillCondition: SkillCondition);
-                        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotAffectedClass);
+                        #region Give Digimon Effect Immunity
+
+                        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => PermanentEffectFactory.DigimonEffectImmunity(selectedPermanent));
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(selectedPermanent));
 
-                        bool CanUseUnaffectedCondition(Hashtable hashtable)
-                        {
-                            return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
-                        }
-
-                        bool CardUnaffectedCondition(CardSource cardSource)
-                        {
-                            if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
-                            {
-                                if (cardSource == selectedPermanent.TopCard)
-                                {
-                                    return true;
-                                }
-                            }
-
-                            return false;
-                        }
-
-                        bool SkillCondition(ICardEffect cardEffect)
-                        {
-                            if (cardEffect != null)
-                            {
-                                if (cardEffect.EffectSourceCard != null)
-                                {
-                                    if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
-                                    {
-                                        if (cardEffect.IsDigimonEffect)
-                                        {
-                                            return true;
-                                        }
-                                    }
-                                }
-                            }
-
-                            return false;
-                        }
+                        #endregion
                     }
 
                     if (CardEffectCommons.IsJogress(hashtable))

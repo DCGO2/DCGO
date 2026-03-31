@@ -366,7 +366,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash digivolution cards and destory 1 Digimon without digivolution cards", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash digivolution cards and destroy 1 Digimon without digivolution cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -455,7 +455,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash digivolution cards and destory 1 Digimon without digivolution cards", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash digivolution cards and destroy 1 Digimon without digivolution cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

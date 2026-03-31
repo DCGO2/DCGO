@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT15
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 card from hand so that the opponent's 1 Digimon gains Secuirty Attack -1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1 card from hand so that the opponent's 1 Digimon gains Security Attack -1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -148,7 +148,7 @@ namespace DCGO.CardEffects.BT15
                                     cardEffect: activateClass);
 
                                 selectPermanentEffect.SetUpCustomMessage(
-                                    "Selcect 1 Digimon that will get Security Attack -1.",
+                                    "Select 1 Digimon that will get Security Attack -1.",
                                     "The opponent is selecting 1 Digimon that will get Security Attack -1.");
 
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
@@ -174,7 +174,7 @@ namespace DCGO.CardEffects.BT15
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 card from hand so that the opponent's 1 Digimon gains Secuirty Attack -1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1 card from hand so that the opponent's 1 Digimon gains Security Attack -1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -279,7 +279,7 @@ namespace DCGO.CardEffects.BT15
                                     cardEffect: activateClass);
 
                                 selectPermanentEffect.SetUpCustomMessage(
-                                    "Selcect 1 Digimon that will get Security Attack -1.",
+                                    "Select 1 Digimon that will get Security Attack -1.",
                                     "The opponent is selecting 1 Digimon that will get Security Attack -1.");
 
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
@@ -362,7 +362,7 @@ namespace DCGO.CardEffects.BT15
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Selcect 1 Digimon that will get Security Attack -1.",
+                            "Select 1 Digimon that will get Security Attack -1.",
                             "The opponent is selecting 1 Digimon that will get Security Attack -1.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());

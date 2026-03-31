@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.EX11
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alernative Digivolution Cost
+            #region Alternative Digivolution Cost
 
             if (timing == EffectTiming.None)
             {

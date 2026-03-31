@@ -63,7 +63,7 @@ public class BT1_110 : CEntity_Effect
         if (timing == EffectTiming.SecuritySkill)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect($"Suspend opponent's all Digimons without Blocker", CanUseCondition, card);
+            activateClass.SetUpICardEffect($"Suspend opponent's all Digimon without Blocker", CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
             activateClass.SetIsSecurityEffect(true);
             cardEffects.Add(activateClass);

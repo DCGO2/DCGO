@@ -14,7 +14,7 @@ public class P_075 : CEntity_Effect
         if (timing == EffectTiming.BeforePayCost)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Opponent's Digimons gain effect", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Opponent's Digimon gain effect", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             activateClass.SetHashString("Debuff_P_075");
             cardEffects.Add(activateClass);

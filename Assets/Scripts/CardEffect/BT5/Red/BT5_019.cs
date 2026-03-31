@@ -19,7 +19,7 @@ public class BT5_019 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Place a Card to digivolution cards and Delete Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Place a Card to digivolution cards and Delete Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -30,7 +30,7 @@ public class BT5_019 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Contains(CardColor.Red))
+                if (cardSource.HasCardColor(CardColor.Red))
                 {
                     if (cardSource.IsDigimon)
                     {

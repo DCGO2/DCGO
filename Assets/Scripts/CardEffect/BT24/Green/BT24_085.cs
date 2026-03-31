@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Dan Yuki & Kanan Yuki
 namespace DCGO.CardEffects.BT24
@@ -78,7 +77,8 @@ namespace DCGO.CardEffects.BT24
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasTSTraits;
+                        && permanent.TopCard.HasTSTraits
+                        && permanent.CanAttack(activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.BT24
                             root: SelectCardEffect.Root.Hand));
                         #endregion
 
-                        #region Digimon atttacks
+                        #region Digimon attacks
                         Permanent selectedPermanent = null;
 
                         int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));

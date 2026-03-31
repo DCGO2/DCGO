@@ -216,7 +216,7 @@ namespace DCGO.CardEffects.EX6
 
                     if(cardSource.IsDigimon || cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Purple))
                         {
                             if (cardSource.GetCostItself <= maxCost)
                             {

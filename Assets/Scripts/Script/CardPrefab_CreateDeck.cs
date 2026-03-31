@@ -242,7 +242,7 @@ public class CardPrefab_CreateDeck : MonoBehaviour
 
             if (LevelIcons != null)
             {
-                if ((cEntity_Base.cardKind == CardKind.Digimon || cEntity_Base.cardKind == CardKind.DigiEgg) && cEntity_Base.Level >= 1)
+                if ((cEntity_Base.cardKind.Contains(CardKind.Digimon) || cEntity_Base.cardKind.Contains(CardKind.DigiEgg)) && cEntity_Base.Level >= 1)
                 {
                     if (LevelIcons.Count >= 1)
                     {
@@ -278,7 +278,7 @@ public class CardPrefab_CreateDeck : MonoBehaviour
 
             if (EvoCostIcons != null)
             {
-                if (cEntity_Base.cardKind == CardKind.Digimon)
+                if (cEntity_Base.cardKind.Contains(CardKind.Digimon))
                 {
                     if (EvoCostIcons.Count >= 1)
                     {
@@ -452,7 +452,7 @@ public class CardPrefab_CreateDeck : MonoBehaviour
 
         if (cEntity_Base != null)
         {
-            if (cEntity_Base.cardKind == CardKind.DigiEgg)
+            if (cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
             {
                 if (cEntity_Base.SameCardIDCount(deckData.DigitamaDeckCards()) >= cEntity_Base.MaxCountInDeck)
                 {

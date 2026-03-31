@@ -151,7 +151,7 @@ public class BT8_097 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete Digimons with 6000 DP or less and opponent can't play Digimon by effect");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete Digimon with 6000 DP or less and opponent can't play Digimon by effect");
         }
 
         return cardEffects;

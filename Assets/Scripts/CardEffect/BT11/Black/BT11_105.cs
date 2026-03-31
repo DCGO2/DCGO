@@ -303,7 +303,7 @@ namespace DCGO.CardEffects.BT11
                             new SelectionElement<bool>(message: $"Not reveal", value : false, spriteIndex: 1),
                         };
 
-                    string selectPlayerMessage = "Wll you reveal your deck?";
+                    string selectPlayerMessage = "Will you reveal your deck?";
                     string notSelectPlayerMessage = "The opponent is choosing whether to reveal deck.";
 
                     GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);

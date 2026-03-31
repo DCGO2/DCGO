@@ -15,7 +15,7 @@ public class BT6_042 : CEntity_Effect
         if (timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Play Digimons from hand", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Play Digimon from hand", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -41,7 +41,7 @@ public class BT6_042 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
+                    if (cardSource.HasCardColor(CardColor.Yellow))
                     {
                         if (cardSource.Level == 3)
                         {

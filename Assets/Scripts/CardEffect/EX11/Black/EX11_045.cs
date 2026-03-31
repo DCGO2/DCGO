@@ -228,7 +228,7 @@ namespace DCGO.CardEffects.EX11
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.HasText("Maquinamon")
-                        && cardSource.CardColors.Contains(CardColor.Green);
+                        && cardSource.HasCardColor(CardColor.Green);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -295,7 +295,7 @@ namespace DCGO.CardEffects.EX11
                             return cardSource != null
                                 && cardSource.Owner == card.Owner
                                 && cardSource.IsDigimon
-                                && cardSource.CardColors.Contains(CardColor.Black)
+                                && cardSource.HasCardColor(CardColor.Black)
                                 && cardSource.HasText("Maquinamon");
                         }
 

@@ -40,12 +40,12 @@ namespace DCGO.CardEffects.EX4
                 {
                     if (cardSource.HasDigiXros)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Blue))
+                        if (cardSource.HasCardColor(CardColor.Blue))
                         {
                             return true;
                         }
 
-                        if (cardSource.CardColors.Contains(CardColor.Black))
+                        if (cardSource.HasCardColor(CardColor.Black))
                         {
                             return true;
                         }
@@ -93,7 +93,8 @@ namespace DCGO.CardEffects.EX4
                             selectCardCoroutine: null),
                         },
                         remainingCardsPlace: RemainingCardsPlace.Trash,
-                        activateClass: activateClass
+                        activateClass: activateClass,
+                        mutualConditions: true
                     ));
                 }
             }

@@ -38,13 +38,13 @@ public partial class CardEffectCommons
     #endregion
 
     #region Effect process of [Alliance]
-    public static IEnumerator AllianceProcess(Hashtable hashtable, ICardEffect activateClass, CardSource card)
+    public static IEnumerator AllianceProcess(Hashtable hashtable, ICardEffect activateClass, Permanent targetPermanent, CardSource card)
     {
         bool CanSelectPermanentCondition(Permanent permanent)
         {
             if (IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
             {
-                if (permanent != card.PermanentOfThisCard())
+                if (permanent != targetPermanent)
                 {
                     if (CanActivateSuspendCostEffect(permanent.TopCard))
                     {
@@ -106,18 +106,18 @@ public partial class CardEffectCommons
                             {
                                 if (tapPermanent.IsSuspended)
                                 {
-                                    if (IsExistOnBattleArea(card))
+                                    if (IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card))
                                     {
                                         int plusDP = tapPermanent.DP;
 
                                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                            targetPermanent: card.PermanentOfThisCard(),
+                                            targetPermanent: targetPermanent,
                                             changeValue: plusDP,
                                             effectDuration: EffectDuration.UntilEndAttack,
                                             activateClass: activateClass));
 
                                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
-                                            targetPermanent: card.PermanentOfThisCard(),
+                                            targetPermanent: targetPermanent,
                                             changeValue: 1,
                                             effectDuration: EffectDuration.UntilEndAttack,
                                             activateClass: activateClass));
@@ -205,9 +205,9 @@ public partial class CardEffectCommons
             return true;
         }
 
-        AllianceClass alliance = CardEffectFactory.AllianceStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, condition: CanUseCondition);
+        ICardEffect alliance = CardEffectFactory.AllianceStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, condition: CanUseCondition);
 
-        AddEffectToPlayer(effectDuration: effectDuration, card: card, cardEffect: alliance, timing: EffectTiming.None);
+        AddEffectToPlayer(effectDuration: effectDuration, card: card, cardEffect: alliance, timing: EffectTiming.OnAllyAttack);
 
         foreach (Permanent permanent in GManager.instance.turnStateMachine.gameContext.PermanentsForTurnPlayer)
         {

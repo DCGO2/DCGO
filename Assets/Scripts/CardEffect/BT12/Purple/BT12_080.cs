@@ -25,12 +25,12 @@ namespace DCGO.CardEffects.BT12
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Black))
+                        if (cardSource.HasCardColor(CardColor.Black))
                         {
                             return true;
                         }
 
-                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Purple))
                         {
                             return true;
                         }
@@ -93,12 +93,12 @@ namespace DCGO.CardEffects.BT12
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Black))
+                        if (cardSource.HasCardColor(CardColor.Black))
                         {
                             return true;
                         }
 
-                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Purple))
                         {
                             return true;
                         }

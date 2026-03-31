@@ -17,10 +17,11 @@ namespace DCGO.CardEffects.EX6
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("Seven Great Demon Lords") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level >= 5;
+                    return targetPermanent.TopCard.ContainsTraits("Seven Great Demon Lords");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    minLevel: 5,
                     permanentCondition: PermanentCondition, 
                     digivolutionCost: 6, 
                     ignoreDigivolutionRequirement: false, 

@@ -18,7 +18,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     public bool DoSecurityCheck { get; set; } = false;
     public bool IsEndAttack { get; set; } = false;
 
-    public bool UsedBlitz { get; set; } = false;
     public Hashtable EffectHashtable { get; set; } = null;
 
     public Hashtable CounterEffectHashtable { get; set; } = null;
@@ -29,7 +28,8 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         Counter,
         Block,
         Battle,
-        End
+        End,
+        CleanUp
     }
 
     public bool ActiveAttack()
@@ -52,6 +52,9 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                 break;
             case AttackState.End:
                 yield return ContinuousController.instance.StartCoroutine(EndAttack());
+                break;
+            case AttackState.CleanUp:
+                yield return ContinuousController.instance.StartCoroutine(Cleanup());
                 break;
             default:
                 yield break;
@@ -96,9 +99,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         CounterEffectHashtable = CardEffectCommons.OnAttackCheckHashtableOfPermanent(new Permanent(AttackingPermanent.cardSources), attackEffect);
 
         IsAttacking = true;
-
-        // check timing
-        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
         GManager.instance.turnStateMachine.IsSelecting = true;
 
@@ -154,24 +154,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
             PlayLog.OnAddLog?.Invoke(log);
 
-            /*List<SkillInfo> stackedSkillInfos = new List<SkillInfo>();
-
-            if (GManager.instance.autoProcessing.executingMultipleSkills != null)
-            {
-                if (GManager.instance.autoProcessing.executingMultipleSkills.StackedSkillInfos.Count >= 1)
-                {
-                    foreach (SkillInfo skillInfo in GManager.instance.autoProcessing.executingMultipleSkills.StackedSkillInfos)
-                    {
-                        stackedSkillInfos.Add(skillInfo);
-                    }
-                }
-
-                foreach (SkillInfo skillInfo in stackedSkillInfos)
-                {
-                    GManager.instance.autoProcessing.executingMultipleSkills.StackedSkillInfos.Remove(skillInfo);
-                }
-            }*/
-
             // suspend
             if (!withoutTap)
             {
@@ -205,10 +187,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                 }
             }
 
-            // activate cutin effects
-            // yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(true, null));
-
             // callback that is processed before [On Attack]
             if (beforeOnAttackCoroutine != null)
             {
@@ -216,21 +194,9 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             }
 
             // trigger [On Attack] effect
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
                 EffectHashtable,
                 EffectTiming.OnAllyAttack));
-
-            // activate cutin effects
-            // yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(true, null));
-
-            /*if (stackedSkillInfos.Count >= 1)
-            {
-                foreach (SkillInfo skillInfo in stackedSkillInfos)
-                {
-                    GManager.instance.autoProcessing.PutStackedSkill(skillInfo);
-                }
-            }*/
 
             GManager.instance.turnStateMachine.IsSelecting = true;
 
@@ -248,9 +214,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                     DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
                 }
             }
-
-            // check timing
-            // yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
             GManager.instance.turnStateMachine.IsSelecting = true;
 
@@ -469,15 +432,8 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         #endregion
 
         #region there is Defending Permanent
-        else
+        else if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent) && CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(AttackingPermanent))
         {
-            if (!CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent) || !CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(AttackingPermanent))
-            {
-                State = AttackState.End;
-
-                yield break;
-            }
-
             DefendingPermanent.TopCard.Owner.securityObject.securityBreakGlass.gameObject.SetActive(false);
 
             DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
@@ -486,23 +442,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             // battle
             IBattle battle = new IBattle(AttackingPermanent: AttackingPermanent, DefendingPermanent: DefendingPermanent, null);
             yield return ContinuousController.instance.StartCoroutine(battle.Battle());
-
-            //TODO: Reimplement the below to ensure full correctness of battle by effect. 
-            //Will need bool AttackProcess.WasDigimonDestroyedInBattle and change to piercing to check it
-            /*#region effect when determine whether to do security check
-            Hashtable hashtable = new Hashtable()
-            {
-                {"battle", battle}
-            };
-
-            List<SkillInfo> skillInfos_Pierce = AutoProcessing.GetSkillInfos(hashtable, EffectTiming.OnDetermineDoSecurityCheck)
-                .Filter(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.CanActivate(skillInfo.Hashtable));
-
-            if (skillInfos_Pierce.Count >= 1)
-            {
-                GManager.instance.autoProcessing.PutStackedSkill(skillInfos_Pierce[0]);
-            }
-            #endregion*/
             
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.TriggeredSkillProcess(true, null));
             GManager.instance.turnStateMachine.IsSelecting = true;
@@ -531,17 +470,21 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
 
     #region End Attack
-    IEnumerator EndAttack()
+    public IEnumerator EndAttack()
     {
+        IsEndAttack = true;
+
         // [On End Attack] effect
         if (AttackingPermanent != null && AttackingPermanent.TopCard != null)
         {
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(EffectHashtable, EffectTiming.OnEndAttack));
         }
-        
-        // activate cutin effects
-        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
+        State = AttackState.CleanUp;
+    }
+
+    IEnumerator Cleanup()
+    {
         #region reset effects which continues until the end of attack
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
@@ -555,6 +498,8 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         GManager.instance.turnStateMachine.IsSelecting = true;
         #endregion
 
+        GManager.instance.OffTargetArrow();
+
         DoSecurityCheck = false;
         IsBlocking = false;
         SecurityDigimon = null;
@@ -562,6 +507,8 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         IsEndAttack = false;
         CounterEffectHashtable = null;
         State = AttackState.None;
+
+        yield return null;
     }
 
     public IEnumerator SwitchDefender(ICardEffect cardEffect, bool isBlock, Permanent newDefendingPermanent)

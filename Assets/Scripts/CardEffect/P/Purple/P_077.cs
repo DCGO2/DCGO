@@ -62,7 +62,7 @@ public class P_077 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.CardColors.Contains(CardColor.Purple);
+                return cardSource.HasCardColor(CardColor.Purple);
             }
 
             bool CanUseCondition(Hashtable hashtable)

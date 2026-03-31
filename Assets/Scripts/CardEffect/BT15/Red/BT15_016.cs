@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT15
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Opponent's 1 Digimon with 8000 DP or more can't attak and delete 1 Digimon with 6000 DP or less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Opponent's 1 Digimon with 8000 DP or more can't attack and delete 1 Digimon with 6000 DP or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -147,7 +147,7 @@ namespace DCGO.CardEffects.BT15
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Opponent's 1 Digimon with 8000 DP or more can't attak and delete 1 Digimon with 6000 DP or less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Opponent's 1 Digimon with 8000 DP or more can't attack and delete 1 Digimon with 6000 DP or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
