@@ -1385,6 +1385,23 @@ public class ContinuousController : MonoBehaviour
 
     void OnGUI()
     {
+        if (!string.IsNullOrEmpty(PhotonUtility.RetryStatus))
+        {
+            GUIStyle retryStyle = new GUIStyle(GUI.skin.label);
+            retryStyle.fontSize = 20;
+            retryStyle.richText = true;
+            retryStyle.fontStyle = FontStyle.Bold;
+            retryStyle.alignment = TextAnchor.MiddleCenter;
+
+            float boxW = 500;
+            float boxH = 40;
+            float x = (Screen.width - boxW) / 2;
+            float y = (Screen.height - boxH) / 2;
+
+            GUI.Box(new Rect(x - 10, y - 10, boxW + 20, boxH + 20), "");
+            GUI.Label(new Rect(x, y, boxW, boxH), $"<color=#FFAA00>{PhotonUtility.RetryStatus}</color>", retryStyle);
+        }
+
         if (!_showPhotonDebug) return;
 
         string status;
@@ -1525,6 +1542,8 @@ public static class RandomUtility
 #region Manage connections to Photon
 public class PhotonUtility
 {
+    public static string RetryStatus { get; set; } = null;
+
     #region Disconnected from Photon
     public static IEnumerator DisconnectCoroutine()
     {
@@ -1587,6 +1606,7 @@ public class PhotonUtility
 
             if (PhotonNetwork.IsConnectedAndReady)
             {
+                RetryStatus = null;
                 yield break;
             }
 
@@ -1595,12 +1615,20 @@ public class PhotonUtility
 
             if (cause == Photon.Realtime.DisconnectCause.MaxCcuReached && attempt < maxRetries)
             {
+                RetryStatus = LocalizeUtility.GetLocalizedString(
+                    EngMessage: $"Server full. Retrying... ({attempt + 1}/{maxRetries})",
+                    JpnMessage: $"サーバーが満員です。再接続中... ({attempt + 1}/{maxRetries})"
+                );
                 Debug.Log($"[Photon] Server full, retrying in {retryDelay}s...");
                 yield return new WaitForSeconds(retryDelay);
                 retryDelay += 2f;
                 continue;
             }
 
+            RetryStatus = LocalizeUtility.GetLocalizedString(
+                EngMessage: "Connection failed. Please try again later.",
+                JpnMessage: "接続に失敗しました。後でもう一度お試しください。"
+            );
             Debug.LogError($"[Photon] Connection failed permanently: {cause}");
             yield break;
         }
