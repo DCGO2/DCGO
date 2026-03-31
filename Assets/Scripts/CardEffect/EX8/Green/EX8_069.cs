@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.EX8
                 }
 
                 AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("Your Digimons gain Alliance", CanUseCondition, card);
+                addSkillClass.SetUpICardEffect("Your Digimon gain Alliance", CanUseCondition, card);
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
                 cardEffects.Add(addSkillClass);
 

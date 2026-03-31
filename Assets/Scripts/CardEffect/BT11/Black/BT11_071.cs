@@ -251,7 +251,7 @@ namespace DCGO.CardEffects.BT11
                                     mode: SelectPermanentEffect.Mode.Custom,
                                     cardEffect: activateClass);
 
-                                selectPermanentEffect.SetUpCustomMessage("Select Digimons to De-Digivolve.", "The opponent is selecting Digimons to De-Digivolve.");
+                                selectPermanentEffect.SetUpCustomMessage("Select Digimon to De-Digivolve.", "The opponent is selecting Digimon to De-Digivolve.");
 
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -458,7 +458,7 @@ namespace DCGO.CardEffects.BT11
                                     mode: SelectPermanentEffect.Mode.Custom,
                                     cardEffect: activateClass);
 
-                                selectPermanentEffect.SetUpCustomMessage("Select Digimons to De-Digivolve.", "The opponent is selecting Digimons to De-Digivolve.");
+                                selectPermanentEffect.SetUpCustomMessage("Select Digimon to De-Digivolve.", "The opponent is selecting Digimon to De-Digivolve.");
 
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -490,7 +490,7 @@ namespace DCGO.CardEffects.BT11
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Black) || cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Black) || cardSource.HasCardColor(CardColor.Purple))
                         {
                             return true;
                         }

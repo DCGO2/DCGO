@@ -113,7 +113,7 @@ namespace DCGO.CardEffects.BT11
                             {
                                 if (cardSource.HasPlayCost)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Green) || cardSource.CardColors.Contains(CardColor.Black))
+                                    if (cardSource.HasCardColor(CardColor.Green) || cardSource.HasCardColor(CardColor.Black))
                                     {
                                         return true;
                                     }

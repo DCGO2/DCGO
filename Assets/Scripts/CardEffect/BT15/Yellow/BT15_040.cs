@@ -137,7 +137,7 @@ namespace DCGO.CardEffects.BT15
 
                 string EffectDiscription()
                 {
-                    return "[All Turns][Once per turn] When another of your Digimon is played, for each of your Digimon, 1 of your opponent's Digimon gets -2000 DP unti the end of your opponent's turn";
+                    return "[All Turns][Once per turn] When another of your Digimon is played, for each of your Digimon, 1 of your opponent's Digimon gets -2000 DP until the end of your opponent's turn";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -199,7 +199,7 @@ namespace DCGO.CardEffects.BT15
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Selcect 1 Digimon that will get DP " + maxDP + ".", "The opponent is selecting 1 Digimon that will get DP " + maxDP + ".");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get DP " + maxDP + ".", "The opponent is selecting 1 Digimon that will get DP " + maxDP + ".");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

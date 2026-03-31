@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.EX3
                         {
                             if (cardSource.HasLevel)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Red))
+                                if (cardSource.HasCardColor(CardColor.Red))
                                 {
                                     if (cardSource.CardTraits.Contains("Free"))
                                     {

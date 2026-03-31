@@ -105,7 +105,7 @@ namespace DCGO.CardEffects.BT23
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermamentCondition))
                     {
-                        #region Select Permament & Destroy
+                        #region Select Permanent & Destroy
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermamentCondition));

@@ -123,7 +123,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("DNA Digivole into [DS] trait, then attack", CanUseCondition, card);
+                activateClass.SetUpICardEffect("DNA Digivolve into [DS] trait, then attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("DNA_EX8-027");
                 cardEffects.Add(activateClass);

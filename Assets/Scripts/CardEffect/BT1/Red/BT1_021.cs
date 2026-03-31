@@ -1,10 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using Photon;
-using System;
-using Photon.Pun;
 
 public class BT1_021 : CEntity_Effect
 {
@@ -31,42 +26,26 @@ public class BT1_021 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    return true;
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleArea(card);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
                 yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(3, activateClass));
 
-                        ActivateClass activateClass1 = new ActivateClass();
-                        activateClass1.SetUpICardEffect("Memory -3", CanUseCondition1, card);
-                        activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
-                        CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
+                card.Owner.UntilEachTurnEndEffects.Add(GetCardEffect);
 
-                        string EffectDiscription1()
-                        {
-                            return "Lose 3 memory.";
-                        }
+                ICardEffect GetCardEffect(EffectTiming _timing)
+                {
+                    if (_timing == EffectTiming.OnEndTurn)
+                    {
+                        return CardEffectFactory.EoTLose3Memory(card);
+                    }
 
-                        bool CanUseCondition1(Hashtable hashtable)
-                        {
-                            return true;
-                        }
+                    return null;
+                }
 
-                        bool CanActivateCondition1(Hashtable hashtable)
-                        {
-                            return true;
-                        }
-
-                        IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-3, activateClass1));
-                        }
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(card.PermanentOfThisCard()));
             }
         }
 

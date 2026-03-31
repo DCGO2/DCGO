@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.BT13
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 card from trash to digivolution cards so that opponent Digimons can't attack", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 card from trash to digivolution cards so that opponent Digimon can't attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -150,7 +150,7 @@ namespace DCGO.CardEffects.BT13
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 card from trash to digivolution cards so that opponent Digimons can't attack", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 card from trash to digivolution cards so that opponent Digimon can't attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

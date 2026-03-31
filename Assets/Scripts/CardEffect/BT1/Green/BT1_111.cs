@@ -103,7 +103,7 @@ public class BT1_111 : CEntity_Effect
             CardEffectCommons.AddActivateMainOptionSecurityEffect(
                 card: card,
                 cardEffects: ref cardEffects,
-                effectName: $"Suspend Digimons");
+                effectName: $"Suspend Digimon");
         }
 
         return cardEffects;

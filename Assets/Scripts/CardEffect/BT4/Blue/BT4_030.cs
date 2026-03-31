@@ -26,7 +26,7 @@ public class BT4_030 : CEntity_Effect
                     return true;
                 }
 
-                if (cardSource.CardColors.Contains(CardColor.Blue) && cardSource.IsTamer)
+                if (cardSource.HasCardColor(CardColor.Blue) && cardSource.IsTamer)
                 {
                     return true;
                 }

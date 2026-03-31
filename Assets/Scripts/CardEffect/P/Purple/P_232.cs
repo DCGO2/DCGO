@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.P
                         {
                             Permanent selectedDigimon = null;
 
-                            #region Select Permament
+                            #region Select Permanent
 
                             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, PermanentCondition));
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();

@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.EX9
                         cardEffect: activateClass);
 
                     selectHandEffect.SetUpCustomMessage("Select 1 card to add as face down source", "The opponent is selecting 1 card to add as face down source");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
                     yield return StartCoroutine(selectHandEffect.Activate());
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)

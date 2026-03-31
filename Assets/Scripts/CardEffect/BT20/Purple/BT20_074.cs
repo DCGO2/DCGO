@@ -226,7 +226,7 @@ namespace DCGO.CardEffects.BT20
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("If returned, DNA Digivolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine, -1, true, EffectDiscription());
-                activateClass.SetHashString("Dna Digivolve into Imperialdramon");
+                activateClass.SetHashString("DNA Digivolve into Imperialdramon");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription(){

@@ -71,12 +71,12 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsExistOnHand(cardSource))
                     {
-                        if (cardSource.IsDigimon && cardSource.Level == 3 && cardSource.CardColors.Contains(CardColor.Green))
+                        if (cardSource.IsDigimon && cardSource.Level == 3 && cardSource.HasCardColor(CardColor.Green))
                         {
                             return true;
                         }
 
-                        if (cardSource.IsDigimon && cardSource.Level == 3 && cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.IsDigimon && cardSource.Level == 3 && cardSource.HasCardColor(CardColor.Yellow))
                         {
                             return true;
                         }

@@ -28,7 +28,7 @@ public class RB1_002 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.CardColors.Contains(CardColor.Blue);
+                return cardSource.HasCardColor(CardColor.Blue);
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

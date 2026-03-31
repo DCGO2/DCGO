@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend 1 Digimon and give opponent's Digimon Sec-1 if there's a Tamer in the Digivolutions", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend 1 Digimon and give opponent's Digimon Sec-1 if there's a Tamer in the Digivolution cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

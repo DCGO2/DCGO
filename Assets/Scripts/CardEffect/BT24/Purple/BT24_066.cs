@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.BT24
                         || card.EqualsTraits("Evil Dragon")
                         || card.EqualsTraits("Dark Knight")
                         || (card.IsTamer
-                            && card.CardColors.Contains(CardColor.Purple));
+                            && card.HasCardColor(CardColor.Purple));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

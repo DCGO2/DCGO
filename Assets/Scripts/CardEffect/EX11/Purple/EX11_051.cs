@@ -215,7 +215,7 @@ namespace DCGO.CardEffects.EX11
 
                 bool CanSelectPermanentCondition1(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.EqualsTraits("Ghost");
                 }
 

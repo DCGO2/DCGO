@@ -68,7 +68,7 @@ public class BT3_031 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Unsuspend all your Digimons with Jamming", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Unsuspend all your Digimon with Jamming", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

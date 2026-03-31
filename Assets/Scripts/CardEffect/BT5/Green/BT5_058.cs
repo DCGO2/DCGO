@@ -278,7 +278,7 @@ public class BT5_058 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Suspend Oppponent's all Tamers", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Suspend Opponent's all Tamers", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

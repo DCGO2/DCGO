@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT24
 
                 string EffectDescription()
                 {
-                    return "[Your Turn] [Oncer Per Turn] When this Digimon gets linked, <Draw 1> and trash 1 card in your hand.";
+                    return "[Your Turn] [Once Per Turn] When this Digimon gets linked, <Draw 1> and trash 1 card in your hand.";
                 }
 
                 bool PermanentCondition(Permanent permanent)

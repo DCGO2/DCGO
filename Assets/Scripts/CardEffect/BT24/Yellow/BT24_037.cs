@@ -158,8 +158,6 @@ namespace DCGO.CardEffects.BT24
                 }
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnDigimon))
                 {
-                    Permanent selectedAttacker = null;
-                
                     #region Select attacker
                     bool CanSelectAttackPermanentCondition(Permanent permanent)
                     {
@@ -195,9 +193,15 @@ namespace DCGO.CardEffects.BT24
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        selectedAttacker = permanent;
+                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                        yield return null;
+                        selectAttackEffect.SetUp(
+                            attacker: permanent,
+                            canAttackPlayerCondition: () => true,
+                            defenderCondition: (_) => true,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                     }
                     #endregion
 
@@ -240,19 +244,6 @@ namespace DCGO.CardEffects.BT24
                             }
                         }
                     }
-
-                    if (selectedAttacker != null)
-                    {
-                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                        selectAttackEffect.SetUp(
-                            attacker: selectedAttacker,
-                            canAttackPlayerCondition: () => true,
-                            defenderCondition: (permanent) => true,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                    }
                 }
             }
             
@@ -282,7 +273,7 @@ namespace DCGO.CardEffects.BT24
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), -1, false, SharedEffectDescription("when Digivolving"));
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), -1, false, SharedEffectDescription("When Digivolving"));
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -327,7 +318,7 @@ namespace DCGO.CardEffects.BT24
                     {
                         return cardSource.IsDigimon
                             && cardSource.HasLevel && cardSource.Level <= 4
-                            && (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Red) || cardSource.HasTSTraits)
+                            && (cardSource.HasCardColor(CardColor.Yellow) || cardSource.HasCardColor(CardColor.Red) || cardSource.HasTSTraits)
                             && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                     }
 
@@ -421,7 +412,7 @@ namespace DCGO.CardEffects.BT24
                     {
                         return cardSource.IsDigimon
                             && cardSource.HasLevel && cardSource.Level <= 4
-                            && (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Red) || cardSource.HasTSTraits)
+                            && (cardSource.HasCardColor(CardColor.Yellow) || cardSource.HasCardColor(CardColor.Red) || cardSource.HasTSTraits)
                             && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                     }
 

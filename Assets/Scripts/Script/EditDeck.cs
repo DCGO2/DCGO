@@ -1200,7 +1200,7 @@ public class EditDeck : MonoBehaviour
     #region remove cards from deck
     public IEnumerator RemoveDeckCards(CEntity_Base cEntity_Base)
     {
-        if (cEntity_Base.cardKind == CardKind.DigiEgg)
+        if (cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
         {
             if (EdittingDeckData.DigitamaDeckCards().Count((cardData) => cardData.CardID == cEntity_Base.CardID) <= 0)
             {

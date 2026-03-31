@@ -193,7 +193,7 @@ namespace DCGO.CardEffects.EX11
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.HasText("Maquinamon")
-                        && cardSource.CardColors.Contains(CardColor.Black);
+                        && cardSource.HasCardColor(CardColor.Black);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -260,7 +260,7 @@ namespace DCGO.CardEffects.EX11
                             return cardSource != null
                                 && cardSource.Owner == card.Owner
                                 && cardSource.IsDigimon
-                                && cardSource.CardColors.Contains(CardColor.Green)
+                                && cardSource.HasCardColor(CardColor.Green)
                                 && cardSource.HasText("Maquinamon");
                         }
 
@@ -284,7 +284,7 @@ namespace DCGO.CardEffects.EX11
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 Digimon, then this may attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("EX11_036_YT_ESS");
                 cardEffects.Add(activateClass);

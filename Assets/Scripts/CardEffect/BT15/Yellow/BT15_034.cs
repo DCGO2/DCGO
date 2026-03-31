@@ -106,7 +106,7 @@ namespace DCGO.CardEffects.BT15
                     {
                         if (cardSource.ContainsTraits("Vaccine"))
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Yellow))
+                            if (cardSource.HasCardColor(CardColor.Yellow))
                             {
                                 return true;
                             }
@@ -160,7 +160,8 @@ namespace DCGO.CardEffects.BT15
 
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: card.Owner,
-                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                            activateClass).ReduceSecurity());
                     }
 
                     if (card.Owner.SecurityCards.Count <= 2)

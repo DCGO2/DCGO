@@ -157,7 +157,7 @@ public class RB1_010 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn][Once Per Turn] When an opponentÅfs Digimon is deleted, you may unsuspend this Digimon.";
+                return "[Your Turn][Once Per Turn] When an opponent's Digimon is deleted, you may unsuspend this Digimon.";
             }
 
             bool PermanentCondition(Permanent permanent)

@@ -25,7 +25,7 @@ public class BT9_083 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete opponent's Digimons and return cards from trash to deck", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Delete opponent's Digimon and return cards from trash to deck", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

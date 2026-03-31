@@ -151,7 +151,7 @@ namespace DCGO.CardEffects.EX10
                         canNoSelect: () => true,
                         selectCardCoroutine: null,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        message: "Select 1 card in oppopnent's trash to place at the bottom of the deck.",
+                        message: "Select 1 card in opponent's trash to place at the bottom of the deck.",
                         maxCount: 1,
                         canEndNotMax: false,
                         isShowOpponent: false,
@@ -190,7 +190,7 @@ namespace DCGO.CardEffects.EX10
                                         {
                                             foreach (CardSource item in selectedCards)
                                             {
-                                                if (cardSource.CardColors.Any(x => item.CardColors.Contains(x)))
+                                                if (cardSource.CardColors.Any(x => item.HasCardColor(x)))
                                                         return true;
                                             }
                                         }

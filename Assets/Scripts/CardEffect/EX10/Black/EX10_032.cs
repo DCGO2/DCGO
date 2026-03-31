@@ -192,7 +192,7 @@ namespace DCGO.CardEffects.EX10
             {
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermamentTrashDigivolution))
                 {
-                    #region Select Permament to trash Digivoltuion Cards
+                    #region Select Permanent to trash Digivolution Cards
 
                     Permanent selectedPermanment = null;
 

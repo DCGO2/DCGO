@@ -8,6 +8,8 @@ using Photon.Pun;
 
 public partial class CardEffectCommons
 {
+    #region DNA With Hand Or Trash Card into Hand or Trash Card
+
     /// <summary>
     /// Creates a temporary permanent. Calling method can later ensure clear the frame
     /// </summary>
@@ -448,6 +450,10 @@ public partial class CardEffectCommons
         }
     }
 
+    #endregion
+
+    #region digivolve Permanents on Field into Hand or Trash Card
+
     public static IEnumerator DNADigivolvePermanentsIntoHandOrTrashCard(
         Func<CardSource, bool> canSelectDNACardCondition,
         bool payCost,
@@ -598,6 +604,36 @@ public partial class CardEffectCommons
         }
     }
 
+    #endregion
+
+    #region Create Jogress Conditions from Permanent Conditions
+
+    public static JogressCondition GetJogressConditions(Func<Permanent, bool> permanentCondition1, string description1, Func<Permanent, bool> permanentCondition2, string description2, CardSource card, int cost = 0)
+    {
+        JogressConditionElement[] elements = 
+            {
+                new JogressConditionElement(permanentCondition1, description1),
+                new JogressConditionElement(permanentCondition2, description2)
+            };
+
+        JogressCondition jogressCondition = new (elements, cost);
+
+        return jogressCondition;
+
+        bool PermanentCondition(Permanent permanent)
+        {
+            return permanent != null
+                && permanent.TopCard != null
+                && permanent.TopCard.Owner == card.Owner
+                && permanent.IsDigimon
+                && CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+        }
+
+        bool FullPermanentCondition1(Permanent permanent) => PermanentCondition(permanent) && permanentCondition1 != null && permanentCondition1(permanent);
+
+        bool FullPermanentCondition2(Permanent permanent) => PermanentCondition(permanent) && permanentCondition2 != null && permanentCondition2(permanent);
+    }
+
     //Private class used to register the callback so this doesn't need to be defined in every card that uses DNA by effect
     private class SetJogressEvoRootsController : MonoBehaviourPunCallbacks
     {
@@ -611,4 +647,6 @@ public partial class CardEffectCommons
             EndSelect = true;
         }
     } 
+
+    #endregion
 }

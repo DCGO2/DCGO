@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT14
                 {
                     if (cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Green))
+                        if (cardSource.HasCardColor(CardColor.Green))
                         {
                             if (cardSource.Owner.HandCards.Contains(cardSource))
                             {
@@ -197,7 +197,7 @@ namespace DCGO.CardEffects.BT14
 
                     bool CardSourceCondition(CardSource cardSource)
                     {
-                        return cardSource.CardColors.Contains(CardColor.Green) && cardSource.IsTamer;
+                        return cardSource.HasCardColor(CardColor.Green) && cardSource.IsTamer;
                     }
 
                     bool RootCondition(SelectCardEffect.Root root)
@@ -307,7 +307,7 @@ namespace DCGO.CardEffects.BT14
                     {
                         if (cardSource.IsTamer)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Green))
+                            if (cardSource.HasCardColor(CardColor.Green))
                             {
                                 if (cardSource.Owner.HandCards.Contains(cardSource))
                                 {

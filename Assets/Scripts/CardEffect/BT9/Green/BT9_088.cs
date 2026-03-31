@@ -81,7 +81,7 @@ public class BT9_088 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[All Turns] When one of your green or blue Digimon deletes an opponentÅfs Digimon in battle and survives, you may suspend this Tamer to <Draw 1>. (Draw 1 card from your deck.)";
+                return "[All Turns] When one of your green or blue Digimon deletes an opponent's Digimon in battle and survives, you may suspend this Tamer to <Draw 1>. (Draw 1 card from your deck.)";
             }
 
             bool PermanentCondition(Permanent permanent)

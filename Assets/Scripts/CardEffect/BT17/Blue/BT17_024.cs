@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT17
             {
                 return cardSource.IsDigimon &&
                        cardSource.IsLevel3 &&
-                       cardSource.CardColors.Contains(CardColor.Blue);
+                       cardSource.HasCardColor(CardColor.Blue);
             }
 
             #endregion

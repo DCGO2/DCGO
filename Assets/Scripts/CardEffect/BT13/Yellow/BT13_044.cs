@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.BT13
                 {
                     if (cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.HasCardColor(CardColor.Yellow))
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {

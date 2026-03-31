@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.EX2
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (!cardSource.CardColors.Contains(CardColor.White))
+                        if (!cardSource.HasCardColor(CardColor.White))
                         {
                             foreach (Permanent permanent in card.Owner.GetBattleAreaDigimons())
                             {

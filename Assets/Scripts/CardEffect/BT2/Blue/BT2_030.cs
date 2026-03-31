@@ -14,7 +14,7 @@ public class BT2_030 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Return level 4 or lower Digimons to hand", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Return level 4 or lower Digimon to hand", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

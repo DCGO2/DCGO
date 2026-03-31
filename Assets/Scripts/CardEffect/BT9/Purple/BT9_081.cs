@@ -25,13 +25,13 @@ public class BT9_081 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete oppponent's all Digimons with the lowest Level", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Delete opponent's all Digimon with the lowest Level", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[When Digivolving] If this Digimon has [Dorugoramon] in its digivolution cards or is digivolving from the trash, delete all of your opponentÅfs Digimon with the lowest level.";
+                return "[When Digivolving] If this Digimon has [Dorugoramon] in its digivolution cards or is digivolving from the trash, delete all of your opponent's Digimon with the lowest level.";
             }
 
             bool PermanentCondition(Permanent permanent)
@@ -93,7 +93,7 @@ public class BT9_081 : CEntity_Effect
             {
                 if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Purple) || cardSource.CardColors.Contains(CardColor.Black))
+                    if (cardSource.HasCardColor(CardColor.Purple) || cardSource.HasCardColor(CardColor.Black))
                     {
                         if (cardSource.Level == 3)
                         {

@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT13
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Selcect 1 Digimon that will get Security Attack -2.",
+                            "Select 1 Digimon that will get Security Attack -2.",
                             "The opponent is selecting 1 Digimon that will get Security Attack -2.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());

@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.EX3
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete Digimons and Blitz", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete Digimon and Blitz", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

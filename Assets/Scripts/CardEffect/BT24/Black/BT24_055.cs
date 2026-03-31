@@ -210,14 +210,15 @@ namespace DCGO.CardEffects.BT24
 
                 string EffectDescription()
                 {
-                    return "[All Turns] [Once Per Turn] When this Digimon suspendeds, suspend 1 of your opponent's Digimon or Tamers with as high or lower a playcost as this digimon.";
+                    return "[All Turns] [Once Per Turn] When this Digimon suspends, suspend 1 of your opponent's Digimon or Tamers with as high or lower a playcost as this digimon.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                        && permanent.TopCard.HasPlayCost
                         && (permanent.IsDigimon
-                        || permanent.IsTamer)
+                            || permanent.IsTamer)
                         && permanent.TopCard.GetCostItself <= card.PermanentOfThisCard().TopCard.GetCostItself;
                 }
 

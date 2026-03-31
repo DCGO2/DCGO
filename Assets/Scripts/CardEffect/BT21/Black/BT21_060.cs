@@ -291,7 +291,7 @@ namespace DCGO.CardEffects.BT21
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(selectedCards, "Deck Bottom Cards", true, true));
 
-                        GManager.instance.attackProcess.IsEndAttack = true;
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.EndAttack());
                     }
                 }
             }

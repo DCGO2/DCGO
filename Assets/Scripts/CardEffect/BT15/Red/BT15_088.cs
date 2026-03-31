@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT15
                 {
                     if (cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Red))
+                        if (cardSource.HasCardColor(CardColor.Red))
                         {
                             if (cardSource.GetCostItself <= 4)
                             {
@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.BT15
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Red))
+                        if (cardSource.HasCardColor(CardColor.Red))
                         {
                             return true;
                         }

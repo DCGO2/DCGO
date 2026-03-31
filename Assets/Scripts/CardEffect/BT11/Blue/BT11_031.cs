@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT11
                 {
                     if (cardSource != null)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Blue))
+                        if (cardSource.HasCardColor(CardColor.Blue))
                         {
                             if (cardSource.Owner == card.Owner)
                             {
@@ -140,7 +140,7 @@ namespace DCGO.CardEffects.BT11
                 {
                     if (cardSource != null)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Blue))
+                        if (cardSource.HasCardColor(CardColor.Blue))
                         {
                             if (cardSource.Owner == card.Owner)
                             {

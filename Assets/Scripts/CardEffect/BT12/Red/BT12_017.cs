@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT12
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Delete 1 of your opponent's Digimon with 6000 DP or less. If this Digimon has a red Tamer in its digivolution cards, delete 1 of your opponentfs Digimon with DP less than or equal to this Digimonfnstead.";
+                    return "[When Digivolving] Delete 1 of your opponent's Digimon with 6000 DP or less. If this Digimon has a red Tamer in its digivolution cards, delete 1 of your opponent's Digimon with DP less than or equal to this Digimon instead.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT12
                     {
                         if (CardEffectCommons.IsExistOnBattleArea(card)
                         && card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) =>
-                        cardSource.IsTamer && cardSource.CardColors.Contains(CardColor.Red)) >= 1)
+                        cardSource.IsTamer && cardSource.HasCardColor(CardColor.Red)) >= 1)
                         {
                             if (permanent.DP <= card.PermanentOfThisCard().DP)
                             {

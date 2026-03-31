@@ -27,20 +27,8 @@ public class P_122 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Count >= 2)
-                {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
-                    {
-                        return true;
-                    }
-
-                    if (cardSource.CardColors.Contains(CardColor.Black))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return (cardSource.CardColors.Count >= 2 && (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Black)))
+                    || (cardSource.DualCardColors.Count >= 2 && (cardSource.DualCardColors.Contains(CardColor.Yellow) || cardSource.DualCardColors.Contains(CardColor.Black)));
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -100,7 +88,8 @@ public class P_122 : CEntity_Effect
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: card.Owner,
-                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                            activateClass).ReduceSecurity());
                     }
 
                     yield return null;

@@ -156,7 +156,7 @@ namespace DCGO.CardEffects.EX2
                             foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(PermanentCondition))
                             {
                                 AddSkillClass addSkillClass = new AddSkillClass();
-                                addSkillClass.SetUpICardEffect("Your Digimons get Blitz", CanUseCondition1, card);
+                                addSkillClass.SetUpICardEffect("Your Digimon get Blitz", CanUseCondition1, card);
                                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
                                 CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: addSkillClass, timing: EffectTiming.None);
 

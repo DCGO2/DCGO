@@ -22,7 +22,7 @@ public class ST15_04 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.CardColors.Contains(CardColor.Black);
+                return cardSource.HasCardColor(CardColor.Black);
             }
 
             bool CanUseCondition(Hashtable hashtable)

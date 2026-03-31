@@ -466,6 +466,8 @@ public class Permanent
                     }
                 }
             }
+            
+            DP += LinkedDP;
 
             foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown)
             {
@@ -485,8 +487,6 @@ public class Permanent
                 DP += boost.DP;
             }
             #endregion
-
-            DP += LinkedDP;
 
             if (DP < 0)
             {
@@ -635,6 +635,8 @@ public class Permanent
                         }
                     }
                 }
+                
+                DP += LinkedDP;
 
                 foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown)
                 {
@@ -654,8 +656,6 @@ public class Permanent
                     DP += boost.DP;
                 }
                 #endregion
-
-                DP += LinkedDP;
 
                 if (DP < 0)
                 {
@@ -2058,7 +2058,7 @@ public class Permanent
     #endregion
 
     #region このパーマネントが攻撃できるかどうか
-    public bool CanAttack(ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false)
+    public bool CanAttack(ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false, bool isExecute = false)
     {
         // can not attack with empty cards
         if (TopCard == null)
@@ -2077,10 +2077,10 @@ public class Permanent
             return false;
 
         // can not attack to player
-        if (!CanAttackTargetDigimon(null, cardEffect, withoutTap, isVortex))
+        if (!CanAttackTargetDigimon(null, cardEffect, withoutTap, isVortex, isExecute))
         {
             // can not attack to opponent's Digimon
-            if (TopCard.Owner.Enemy.GetFieldPermanents().Count((permanent) => CanAttackTargetDigimon(permanent, cardEffect, withoutTap, isVortex)) == 0)
+            if (TopCard.Owner.Enemy.GetFieldPermanents().Count((permanent) => CanAttackTargetDigimon(permanent, cardEffect, withoutTap, isVortex, isExecute)) == 0)
             {
                 return false;
             }
@@ -2182,7 +2182,7 @@ public class Permanent
     #endregion
 
     #region 対象のパーマネントを攻撃できるか
-    public bool CanAttackTargetDigimon(Permanent Defender, ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false)
+    public bool CanAttackTargetDigimon(Permanent Defender, ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false, bool isExecute = false)
     {
         if (TopCard != null)
         {
@@ -2279,7 +2279,7 @@ public class Permanent
                     {
                         if (Defender.IsDigimon && Defender.TopCard.Owner.GetBattleAreaPermanents().Contains(Defender))
                         {
-                            if (Defender.IsSuspended)
+                            if (Defender.IsSuspended || isExecute)
                             {
                                 return true;
                             }
@@ -2885,6 +2885,10 @@ public class Permanent
     {
         get
         {
+            Hashtable hashtable = new Hashtable(){
+                {"AttackingPermanent", this}
+            };
+            
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
             {
                 foreach (Permanent permanent in player.GetFieldPermanents())
@@ -2892,14 +2896,11 @@ public class Permanent
                     #region Permanent Effects
                     foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.OnAllyAttack))
                     {
-                        if (cardEffect is IAllianceEffect)
+                        if (cardEffect.EffectName == "Alliance")
                         {
-                            if (cardEffect.CanTrigger(null))
+                            if (cardEffect.CanTrigger(hashtable))
                             {
-                                if (((IAllianceEffect)cardEffect).HasAlliance(this))
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
@@ -2914,14 +2915,11 @@ public class Permanent
 
                     foreach (ICardEffect cardEffect in source.EffectList(EffectTiming.OnAllyAttack))
                     {
-                        if (cardEffect is IAllianceEffect)
+                        if (cardEffect.EffectName == "Alliance")
                         {
-                            if (cardEffect.CanTrigger(null))
+                            if (cardEffect.CanTrigger(hashtable))
                             {
-                                if (((IAllianceEffect)cardEffect).HasAlliance(this))
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
@@ -2931,14 +2929,11 @@ public class Permanent
                 #region Player Effects
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.OnAllyAttack))
                 {
-                    if (cardEffect is IAllianceEffect)
+                    if (cardEffect.EffectName == "Alliance")
                     {
-                        if (cardEffect.CanTrigger(null))
+                        if (cardEffect.CanTrigger(hashtable))
                         {
-                            if (((IAllianceEffect)cardEffect).HasAlliance(this))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
@@ -3817,6 +3812,13 @@ public class Permanent
                     continue;
 
                 foreach (CardColor cardColor in cardSource.CardColors)
+                {
+                    if (!cardColors.Contains(cardColor))
+                    {
+                        cardColors.Add(cardColor);
+                    }
+                }
+                foreach (CardColor cardColor in cardSource.DualCardColors)
                 {
                     if (!cardColors.Contains(cardColor))
                     {

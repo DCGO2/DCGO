@@ -22,7 +22,7 @@ public class P_067 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Security] At the end of the battle, <Draw 2>. (Draw 2 cards from your deck.) Then, add this card to its ownerÅfs hand.";
+                return "[Security] At the end of the battle, <Draw 2>. (Draw 2 cards from your deck.) Then, add this card to its ownerÅ's hand.";
             }
 
 
@@ -54,7 +54,7 @@ public class P_067 : CEntity_Effect
 
                 string EffectDiscription1()
                 {
-                    return "<Draw 2>. (Draw 2 cards from your deck.) Then, add this card to its ownerÅfs hand.";
+                    return "<Draw 2>. (Draw 2 cards from your deck.) Then, add this card to its ownerÅ's hand.";
                 }
 
                 bool CanUseCondition1(Hashtable hashtable)
