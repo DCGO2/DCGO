@@ -10,20 +10,17 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region ignoring colours
-
+            #region Ignore Color Requirement
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.UseRequirements(card, PermanentCondition));
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return permanent.TopCard.Owner == card.Owner
-                        && (permanent.IsTamer || permanent.IsDigimon) 
+                    return (permanent.IsTamer || permanent.IsDigimon) 
                         && permanent.TopCard.EqualsTraits("DATA SQUAD");
                 }
             }
-
             #endregion
 
             #region Main
