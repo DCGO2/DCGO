@@ -90,7 +90,7 @@ public class EnterRoom : MonoBehaviourPunCallbacks
 
         yield return new WaitUntil(() => PhotonNetwork.InLobby && PhotonNetwork.IsConnectedAndReady);
 
-        PhotonNetwork.JoinRoom(RoomIDInputField.text);
+        PhotonNetwork.JoinRoom(RoomIDInputField.text + "-" + ContinuousController.instance.useBanlist);
 
         canClick = true;
     }
