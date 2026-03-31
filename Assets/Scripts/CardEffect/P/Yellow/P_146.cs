@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Ignore Color Requirment
+            #region Ignore Color Requirement
             if (timing == EffectTiming.None)
             {
                 IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.P
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get <Secirity A. -1>.", "The opponent is selecting 1 Digimon that will get <Secirity A. -1>.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get <security A. -1>.", "The opponent is selecting 1 Digimon that will get <security A. -1>.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -249,7 +249,7 @@ namespace DCGO.CardEffects.P
                         message: "Select 1 card to put in security.",
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Custom,
+                        root: SelectCardEffect.Root.DigivolutionCards,
                         customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
                         canLookReverseCard: false,
                         cardEffect: activateClass);

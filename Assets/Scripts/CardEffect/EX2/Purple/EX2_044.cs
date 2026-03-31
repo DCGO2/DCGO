@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.EX2
                                 };
 
                                 string selectPlayerMessage = "Will you trash the top cards of your deck?";
-                                string notSelectPlayerMessage = "The opponent is choosing wheter to trash the top cards of deck.";
+                                string notSelectPlayerMessage = "The opponent is choosing whether to trash the top cards of deck.";
 
                                 GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
@@ -285,7 +285,7 @@ namespace DCGO.CardEffects.EX2
                                 };
 
                                 string selectPlayerMessage = "Will you trash the top cards of your deck?";
-                                string notSelectPlayerMessage = "The opponent is choosing wheter to trash the top cards of deck.";
+                                string notSelectPlayerMessage = "The opponent is choosing whether to trash the top cards of deck.";
 
                                 GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 

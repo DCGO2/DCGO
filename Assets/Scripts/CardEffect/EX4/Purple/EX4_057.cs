@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.EX4
                         {
                             if (cardSource.Owner == card.Owner)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Green))
+                                if (cardSource.HasCardColor(CardColor.Green))
                                 {
                                     if (cardSource.Level == 3)
                                     {
@@ -153,7 +153,7 @@ namespace DCGO.CardEffects.EX4
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Green))
+                        if (cardSource.HasCardColor(CardColor.Green))
                         {
                             return true;
                         }

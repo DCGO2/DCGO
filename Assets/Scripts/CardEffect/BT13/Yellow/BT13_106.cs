@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.BT13
 
             if (timing == EffectTiming.SecuritySkill)
             {
-                CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"DP -3000 and opponent's all Digimons gain Security Attack -1");
+                CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"DP -3000 and opponent's all Digimon gain Security Attack -1");
             }
 
             return cardEffects;

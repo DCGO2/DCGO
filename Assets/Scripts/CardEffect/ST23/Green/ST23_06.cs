@@ -17,11 +17,10 @@ namespace DCGO.CardEffects.ST23
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel2
-                        && targetPermanent.TopCard.EqualsTraits("Glowing Dawn");
+                    return targetPermanent.TopCard.EqualsTraits("Glowing Dawn");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 2, permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
 
             #endregion

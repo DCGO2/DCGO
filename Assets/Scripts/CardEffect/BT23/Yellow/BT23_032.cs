@@ -279,7 +279,7 @@ namespace DCGO.CardEffects.BT23
                 {
                     return cardSource.IsDigimon
                         && cardSource.HasLevel && cardSource.Level <= 4
-                        && (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Black) || cardSource.HasCSTraits)
+                        && (cardSource.HasCardColor(CardColor.Yellow) || cardSource.HasCardColor(CardColor.Black) || cardSource.HasCSTraits)
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 

@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete a level 4 digimon, or 5 if tamers have 2+ colour", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete a level 4 digimon, or 5 if tamers have 2+ color", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -107,7 +107,7 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete a level 4 digimon, or 5 if tamers have 2+ colour", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete a level 4 digimon, or 5 if tamers have 2+ color", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

@@ -43,12 +43,12 @@ public class P_091 : CEntity_Effect
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Red))
+                            if (cardSource.HasCardColor(CardColor.Red))
                             {
                                 return true;
                             }
 
-                            if (cardSource.CardColors.Contains(CardColor.Purple))
+                            if (cardSource.HasCardColor(CardColor.Purple))
                             {
                                 return true;
                             }

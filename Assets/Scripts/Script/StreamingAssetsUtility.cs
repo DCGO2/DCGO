@@ -1,8 +1,8 @@
 
-using UnityEngine;
-using System.IO;
 using System;
+using System.IO;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Networking;
 using WebP;
 
@@ -45,7 +45,7 @@ public class StreamingAssetsUtility
                 {
                     return await GetCardImageData(fileName, path);
                 }
-                else 
+                else
                 {
                     return await GetCardImageDataLocal(path);
                 }
@@ -61,7 +61,7 @@ public class StreamingAssetsUtility
     {
         string path = Path.Combine(GetStreamingAssetPath("Textures", isLauncher), $"{fileName}.jpg").Replace("\\", "/");
 
-        if(!File.Exists(path))
+        if (!File.Exists(path))
             path = Path.Combine(GetStreamingAssetPath("Textures", isLauncher), $"{fileName}.png").Replace("\\", "/");
 
         if (File.Exists(path))
@@ -117,8 +117,29 @@ public class StreamingAssetsUtility
 
     public static async Task<Sprite> GetCardImageData(string fileName, string filePath)
     {
-        //string urlPath = $"https://raw.githubusercontent.com/TakaOtaku/Digimon-Cards/main/src/assets/images/cards/{fileName}.webp";
-        string urlPath = $"https://raw.githubusercontent.com/TakaOtaku/Digimon-Card-App/main/src/assets/images/cards/{fileName}.webp";
+        Sprite sprite;
+
+        // Attempt to get the card image from repo
+        sprite = await HandleCardImage(fileName, filePath);
+
+        if (sprite != null) return sprite;
+        else
+        {
+
+            // Attempt to get the card image from repo, this time with the sample suffix
+            sprite = await HandleCardImage(fileName, filePath, isSample: true);
+
+            if (sprite != null) return sprite;
+            return null;
+        }
+
+    }
+
+    public static async Task<Sprite> HandleCardImage(string fileName, string filePath, bool isSample = false)
+    {
+        string urlPath = $"https://raw.githubusercontent.com/TakaOtaku/Digimon-Card-App/main/src/assets/images/cards/{fileName}";
+        if (isSample) urlPath += $"-Sample.webp";
+        else urlPath += $".webp";
 
         UnityWebRequest webReq_CardImage = UnityWebRequest.Get(urlPath);
         UnityWebRequestAsyncOperation operation = webReq_CardImage.SendWebRequest();
@@ -136,7 +157,7 @@ public class StreamingAssetsUtility
         else
         {
             Debug.Log($"WebRequest Successful: Checking local file - {File.Exists(filePath)}");
-            if(!File.Exists(filePath))
+            if (!File.Exists(filePath))
                 File.WriteAllBytes(filePath, webReq_CardImage.downloadHandler.data);
 
             Texture2D texture = Texture2DExt.CreateTexture2DFromWebP(webReq_CardImage.downloadHandler.data, lMipmaps: true, lLinear: false, lError: out WebP.Error lError);
@@ -144,14 +165,9 @@ public class StreamingAssetsUtility
             if (lError == WebP.Error.Success)
             {
                 Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
-
                 return sprite;
             }
-            else
-            {
-                Debug.Log($"Failed to convert: {lError.ToString()}");
-            }
-
+            else Debug.Log($"Failed to convert: {lError.ToString()}");
             return null;
         }
     }

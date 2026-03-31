@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (cardSource.IsOption)
                     {
-                        if (cardSource.ContainsCardName("Plug-In") || cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.ContainsCardName("Plug-In") || cardSource.HasCardColor(CardColor.Yellow))
                         {
                             return true;
                         }
@@ -215,7 +215,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (cardSource.IsOption)
                     {
-                        if (cardSource.ContainsCardName("Plug-In") || cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.ContainsCardName("Plug-In") || cardSource.HasCardColor(CardColor.Yellow))
                         {
                             return true;
                         }

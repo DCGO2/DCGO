@@ -202,7 +202,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashing up to 3 sources, reduce 1 digimons play cost by 2 for each card", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By trashing up to 3 sources, reduce 1 digimon play cost by 2 for each card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -319,7 +319,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashing up to 3 sources, reduce 1 digimons play cost by 2 for each card", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By trashing up to 3 sources, reduce 1 digimon play cost by 2 for each card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

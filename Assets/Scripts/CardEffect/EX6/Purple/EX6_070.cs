@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.EX6
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("1 Oponnent's Digimon gains, [End of Your Turn] Delete this digimon.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("1 Opponent's Digimon gains, [End of Your Turn] Delete this digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

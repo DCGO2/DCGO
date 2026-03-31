@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region ignoring colours
+            #region ignoring colors
 
             if (timing == EffectTiming.None)
             {

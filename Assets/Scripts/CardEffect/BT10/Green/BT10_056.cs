@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.BT10
             if (timing == EffectTiming.None)
             {
                 AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("Your other Digimons gain effects", CanUseCondition, card);
+                addSkillClass.SetUpICardEffect("Your other Digimon gain effects", CanUseCondition, card);
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
                 cardEffects.Add(addSkillClass);
 

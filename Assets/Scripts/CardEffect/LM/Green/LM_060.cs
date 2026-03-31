@@ -53,8 +53,8 @@ namespace DCGO.CardEffects.LM
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardColors.Contains(targetColor)
-                        || cardSource.CardColors.Contains(targetColor1);
+                    return cardSource.HasCardColor(targetColor)
+                        || cardSource.HasCardColor(targetColor1);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -119,8 +119,8 @@ namespace DCGO.CardEffects.LM
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon 
-                        && (cardSource.CardColors.Contains(targetColor)
-                            || cardSource.CardColors.Contains(targetColor1));
+                        && (cardSource.HasCardColor(targetColor)
+                            || cardSource.HasCardColor(targetColor1));
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

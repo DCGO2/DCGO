@@ -25,7 +25,7 @@ public class BT7_043 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.CardColors.Contains(CardColor.Green);
+                return cardSource.HasCardColor(CardColor.Green);
             }
 
             bool CanUseCondition(Hashtable hashtable)

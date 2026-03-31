@@ -68,7 +68,7 @@ public class EnterRoom : MonoBehaviourPunCallbacks
     {
         if (CanClickEnterRoomButton() && canClick)
         {
-            PhotonNetwork.JoinRoom(RoomIDInputField.text);
+            PhotonNetwork.JoinRoom(RoomIDInputField.text + "-" + ContinuousController.instance.useBanlist);
         }
     }
 
@@ -105,6 +105,7 @@ public class EnterRoom : MonoBehaviourPunCallbacks
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
+        Debug.Log($"{returnCode} - {message}");
         Opening.instance.PlayDecisionSE();
         Opening.instance.SetUpActiveYesNoObject(
             new List<UnityAction>() { null },

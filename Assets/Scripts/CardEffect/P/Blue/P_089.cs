@@ -25,7 +25,7 @@ public class P_089 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.CardColors.Contains(CardColor.Blue);
+                return cardSource.HasCardColor(CardColor.Blue);
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -296,7 +296,7 @@ public class P_089 : CEntity_Effect
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
 
-                            GManager.instance.attackProcess.IsEndAttack = true;
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.EndAttack());
                         }
                     }
                 }

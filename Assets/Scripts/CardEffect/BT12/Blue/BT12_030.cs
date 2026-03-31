@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT12
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Blue)) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Blue)) >= 1)
                         {
                             if (CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard()))
                             {
@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.BT12
                             }
                         }
 
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Green)) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Green)) >= 1)
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
@@ -71,14 +71,14 @@ namespace DCGO.CardEffects.BT12
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Blue)) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Blue)) >= 1)
                         {
                             Permanent selectedPermanent = card.PermanentOfThisCard();
 
                             yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
                         }
 
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Green)) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Green)) >= 1)
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {

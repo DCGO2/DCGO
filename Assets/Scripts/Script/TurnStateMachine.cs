@@ -572,6 +572,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         // 自動処理チェックタイミング
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+        
+        //Handle attacks by effect caused in this phase
+        while (GManager.instance.attackProcess.ActiveAttack())
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.ProcessNextState());
+
+            //自動処理チェックタイミング
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+        }
 
         //ターン終了チェック
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.EndTurnCheck());
@@ -628,6 +637,18 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         //自動処理チェックタイミング
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
+        //Handle attacks by effect caused in this phase
+        while (GManager.instance.attackProcess.ActiveAttack())
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.ProcessNextState());
+
+            //自動処理チェックタイミング
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+        }
+
+        //ターン終了チェック
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.EndTurnCheck());
+
         #region アクティブフェイズ終了時までの効果をリセット
         gameContext.TurnPlayer.UntilOwnerActivePhaseEffects = new List<Func<EffectTiming, ICardEffect>>();
         foreach(Permanent permanent in gameContext.TurnPlayer.GetBattleAreaDigimons())
@@ -676,6 +697,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         //自動処理チェックタイミング
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+        
+        //Handle attacks by effect caused in this phase
+        while (GManager.instance.attackProcess.ActiveAttack())
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.ProcessNextState());
+
+            //自動処理チェックタイミング
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+        }
         //ターン終了チェック
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.EndTurnCheck());
     }
@@ -802,6 +832,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         //自動処理チェックタイミング
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
+        //Handle attacks by effect caused in this phase
+        while (GManager.instance.attackProcess.ActiveAttack())
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.ProcessNextState());
+
+            //自動処理チェックタイミング
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+        }
+
         //ターン終了チェック
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.EndTurnCheck());
 
@@ -913,6 +952,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
             //自動処理チェックタイミング
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+            //Handle attack steps
+            while (GManager.instance.attackProcess.ActiveAttack())
+            {
+                Debug.Log($"Active Attack, {Enum.GetName(typeof(AttackProcess.AttackState),GManager.instance.attackProcess.State)} Step");
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.ProcessNextState());
+
+                //自動処理チェックタイミング
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+            }
             //ターン終了チェック
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.EndTurnCheck());
 
@@ -1038,7 +1086,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                 }
 
                                 CanPlayCards = CanPlayCards
-                                    .OrderBy((value) => Array.IndexOf(DataBase.cardKinds, value.CardKind))
+                                    .OrderBy((value) => Array.IndexOf(DataBase.cardKinds, value.CardKinds))
                                     .ThenBy((value) => Array.IndexOf(new bool[] { true, false }, value.Owner.fieldCardFrames.Count((frame) => value.CanPlayCardTargetFrame(frame, true, null) && !frame.IsEmptyFrame()) >= 1))
                                     .ToList();
 
@@ -2059,7 +2107,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                 foreach (FieldCardFrame fieldCardFrame in GManager.instance.You.fieldCardFrames)
                                 {
-                                    if (fieldCardFrame.IsEmptyFrame())
+                                    if (fieldCardFrame.IsEmptyFrame() && !handCard1.cardSource.IsOption)
                                     {
                                         if (handCard1.cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null))
                                         {
@@ -2093,7 +2141,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             #endregion
 
                             #region オプション
-                            else if (handCard1.cardSource.IsOption)
+                            if (handCard1.cardSource.IsOption)
                             {
                                 GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(true);
                                 GManager.instance.You.playMatCardFrame.OnFrame_Select(DataBase.SelectColor_Blue);
@@ -2522,14 +2570,17 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                     bool CanPlayEmptyFrame = false;
 
-                                    foreach (FieldCardFrame fieldCardFrame in GManager.instance.You.fieldCardFrames)
+                                    if (!handCard.cardSource.IsOption)
                                     {
-                                        if (fieldCardFrame.IsEmptyFrame())
+                                        foreach (FieldCardFrame fieldCardFrame in GManager.instance.You.fieldCardFrames)
                                         {
-                                            if (handCard.cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null))
+                                            if (fieldCardFrame.IsEmptyFrame())
                                             {
-                                                CanPlayEmptyFrame = true;
-                                                break;
+                                                if (handCard.cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null))
+                                                {
+                                                    CanPlayEmptyFrame = true;
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
@@ -2571,7 +2622,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                 #endregion
 
                                 #region option
-                                else if (handCard.cardSource.IsOption)
+                                if (handCard.cardSource.IsOption)
                                 {
                                     #region Check for drops on the playmat
                                     if (dropAreas.Count((dropArea) => dropArea.IsChildThisDropArea(GManager.instance.You.playMatCardFrame.Frame)) > 0)

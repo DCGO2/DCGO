@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Purple))
+                    if (cardSource.HasCardColor(CardColor.Purple))
                     {
                         return true;
                     }
@@ -176,9 +176,7 @@ namespace DCGO.CardEffects.EX7
 
                             IEnumerator SuccessProcess()
                             {
-                                GManager.instance.attackProcess.IsEndAttack = true;
-
-                                yield return null;
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.EndAttack());
                             }
                         }
                     }

@@ -325,7 +325,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsTamer && cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.IsTamer && cardSource.CardColors.Contains(CardColor.Red))
+                    if (cardSource.IsTamer && cardSource.HasCardColor(CardColor.Yellow) || cardSource.IsTamer && cardSource.HasCardColor(CardColor.Red))
                     {
                         return true;
                     }

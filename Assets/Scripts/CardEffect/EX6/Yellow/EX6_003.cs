@@ -76,7 +76,8 @@ namespace DCGO.CardEffects.EX6
                         
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: card.Owner,
-                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                            activateClass).ReduceSecurity());
                         
                         if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {

@@ -15,7 +15,7 @@ public class BT6_111 : CEntity_Effect
         if (timing == EffectTiming.SecuritySkill)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Add this card to hand at the end of the battle and opponent's Digimons can't attack", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Add this card to hand at the end of the battle and opponent's Digimon can't attack", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             activateClass.SetIsSecurityEffect(true);
             cardEffects.Add(activateClass);
@@ -72,7 +72,7 @@ public class BT6_111 : CEntity_Effect
                 ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
 
                 ActivateClass activateClass1 = new ActivateClass();
-                activateClass1.SetUpICardEffect("Add this card to hand and opponent's Digimons cannot attack", CanUseCondition1, card);
+                activateClass1.SetUpICardEffect("Add this card to hand and opponent's Digimon cannot attack", CanUseCondition1, card);
                 activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
                 card.Owner.UntilEndBattleEffects.Add(GetCardEffect1);
 

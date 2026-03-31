@@ -30,7 +30,7 @@ public class BT1_078 : CEntity_Effect
                 {
                     if (cardSource.Level == 6)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Green))
+                        if (cardSource.HasCardColor(CardColor.Green))
                         {
                             if (CardEffectCommons.IsExistOnBattleArea(card))
                             {

@@ -150,7 +150,7 @@ namespace DCGO.CardEffects.BT19
             }
             #endregion
 
-            #region When Digiolving
+            #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();

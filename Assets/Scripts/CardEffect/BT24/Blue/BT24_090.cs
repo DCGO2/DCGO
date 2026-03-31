@@ -36,6 +36,7 @@ namespace DCGO.CardEffects.BT24
 
             #region All Turns - Security
 
+            #region Blocker
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent permanent)
@@ -45,32 +46,24 @@ namespace DCGO.CardEffects.BT24
                         && permanent.TopCard.HasTSTraits;
                 }
 
-                #region Blocker
                 bool CanUseCondition()
                 {
                     return CardEffectCommons.IsExistInSecurity(card, false);
                 }
 
                 cardEffects.Add(CardEffectFactory.BlockerStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, condition: CanUseCondition));
-                #endregion
+                
+            }
+            #endregion
 
-                #region Alliance
-                AddSkillClass addSkillClass1 = new AddSkillClass();
-                addSkillClass1.SetUpICardEffect("Your Digimon gain <Alliance>", CanUseCondition1, card);
-                addSkillClass1.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects1);
-                cardEffects.Add(addSkillClass1);
-
-                bool CardSourceCondition(CardSource cardSource)
+            #region Alliance
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource) &&
-                           cardSource == cardSource.PermanentOfThisCard().TopCard &&
-                           PermanentCondition(cardSource.PermanentOfThisCard());
-                }
-
-                bool CanUseCondition1(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistInSecurity(card, false) &&
-                           CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasOXII);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && (permanent.TopCard.CardColors.Contains(CardColor.Blue) || permanent.TopCard.CardColors.Contains(CardColor.Yellow))
+                        && permanent.TopCard.HasTSTraits;
                 }
 
                 bool HasOXII(Permanent permanent)
@@ -79,22 +72,15 @@ namespace DCGO.CardEffects.BT24
                         || permanent.TopCard.EqualsCardName("Venusmon");
                 }
 
-                List<ICardEffect> GetEffects1(CardSource cardSource, List<ICardEffect> effects, EffectTiming effectTiming)
+                bool CanUseCondition()
                 {
-                    if (effectTiming == EffectTiming.OnAllyAttack)
-                    {
-                        bool Condition()
-                        {
-                            return CardSourceCondition(cardSource);
-                        }
-
-                        effects.Add(CardEffectFactory.AllianceSelfEffect(false, cardSource, Condition));
-                    }
-
-                    return effects;
+                    return CardEffectCommons.IsExistInSecurity(card, false)
+                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasOXII);
                 }
-                #endregion
+
+                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(PermanentCondition, false, card, CanUseCondition));
             }
+            #endregion
 
             #endregion
 
@@ -120,7 +106,7 @@ namespace DCGO.CardEffects.BT24
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon
-                        && (cardSource.CardColors.Contains(CardColor.Blue) || cardSource.CardColors.Contains(CardColor.Yellow))
+                        && (cardSource.HasCardColor(CardColor.Blue) || cardSource.HasCardColor(CardColor.Yellow))
                         && cardSource.HasTSTraits
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 3);
                 }
@@ -203,8 +189,8 @@ namespace DCGO.CardEffects.BT24
                         bool CardSourceCondition(CardSource cardSource)
                         {
                             return cardSource.IsDigimon
-                                && (cardSource.CardColors.Contains(CardColor.Blue)
-                                    || cardSource.CardColors.Contains(CardColor.Yellow))
+                                && (cardSource.HasCardColor(CardColor.Blue)
+                                    || cardSource.HasCardColor(CardColor.Yellow))
                                 && cardSource.HasTSTraits;
                         }
 
@@ -262,7 +248,7 @@ namespace DCGO.CardEffects.BT24
                 bool CanPlayCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon && cardSource.HasLevel && cardSource.Level <= 4
-                        && (cardSource.CardColors.Contains(CardColor.Blue) || cardSource.CardColors.Contains(CardColor.Yellow))
+                        && (cardSource.HasCardColor(CardColor.Blue) || cardSource.HasCardColor(CardColor.Yellow))
                         && cardSource.HasTSTraits
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }

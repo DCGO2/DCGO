@@ -58,7 +58,8 @@ public class BT4_048 : CEntity_Effect
 
                     yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                         player: card.Owner,
-                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                        activateClass).ReduceSecurity());
 
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {

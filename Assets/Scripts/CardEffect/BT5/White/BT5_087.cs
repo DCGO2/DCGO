@@ -14,7 +14,7 @@ public class BT5_087 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Trash 3 cards from deck top and play Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Trash 3 cards from deck top and play Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -31,12 +31,12 @@ public class BT5_087 : CEntity_Effect
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Black))
+                            if (cardSource.HasCardColor(CardColor.Black))
                             {
                                 return true;
                             }
 
-                            if (cardSource.CardColors.Contains(CardColor.Purple))
+                            if (cardSource.HasCardColor(CardColor.Purple))
                             {
                                 return true;
                             }

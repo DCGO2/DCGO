@@ -127,7 +127,7 @@ namespace DCGO.CardEffects.EX10
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
+                                root: SelectCardEffect.Root.DigivolutionCards,
                                 customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
@@ -147,7 +147,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Add new links to tgus digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Add new links to this digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

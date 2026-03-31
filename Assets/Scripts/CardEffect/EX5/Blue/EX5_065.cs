@@ -75,7 +75,7 @@ public class EX5_065 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Start of Opponent's Turn] By playing 1 card with the same level as one of your [Night Claw]/[Light Fang] trait Digimon from that Digimon's digivolution cards withotu paying the cost, 2 of your Digimon may DNA Digivolve into a Digimon card in your hand. At the end of the turn, return the Digimon played by this effect to hand.";
+                return "[Start of Opponent's Turn] By playing 1 card with the same level as one of your [Night Claw]/[Light Fang] trait Digimon from that Digimon's digivolution cards without paying the cost, 2 of your Digimon may DNA Digivolve into a Digimon card in your hand. At the end of the turn, return the Digimon played by this effect to hand.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

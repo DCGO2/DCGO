@@ -26,7 +26,7 @@ public class BT8_112 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Contains(CardColor.White))
+                if (cardSource.HasCardColor(CardColor.White))
                 {
                     if (cardSource.Level == 7)
                     {
@@ -207,7 +207,7 @@ public class BT8_112 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Trash digivolution cards and return Digimons to the bottom of deck", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Trash digivolution cards and return Digimon to the bottom of deck", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -220,7 +220,7 @@ public class BT8_112 : CEntity_Effect
             {
                 if (cardSource != null)
                 {
-                    if (cardSource.CardColors.Count == 2)
+                    if (cardSource.CardColors.Count == 2 || cardSource.DualCardColors.Count >= 2)
                     {
                         if (cardSource.Owner == card.Owner)
                         {
@@ -456,7 +456,7 @@ public class BT8_112 : CEntity_Effect
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Trash digivolution cards and return Digimons to the bottom of deck", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Trash digivolution cards and return Digimon to the bottom of deck", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -467,7 +467,7 @@ public class BT8_112 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.CardColors.Count == 2;
+                return cardSource.CardColors.Count == 2 || cardSource.DualCardColors.Count == 2;
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

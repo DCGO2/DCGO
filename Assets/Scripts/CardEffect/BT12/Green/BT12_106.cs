@@ -104,7 +104,7 @@ namespace DCGO.CardEffects.BT12
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect($"Suspend opponent's all Digimons and Tamers", CanUseCondition, card);
+                activateClass.SetUpICardEffect($"Suspend opponent's all Digimon and Tamers", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);

@@ -110,7 +110,7 @@ public class BT9_094 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete Digimons whose total DP adds up to 10000 or less");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete Digimon whose total DP adds up to 10000 or less");
         }
 
         return cardEffects;

@@ -208,7 +208,7 @@ namespace DCGO.CardEffects.BT23
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Purple))
                         {
                             if (cardSource.HasLevel && cardSource.Level <= 4)
                             {

@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     return source.IsDigimon &&
                            source.HasPlayCost && source.GetCostItself <= 4 &&
-                           source.CardColors.Contains(CardColor.Black) &&
+                           source.HasCardColor(CardColor.Black) &&
                            (source.EqualsTraits("Cyborg") || source.EqualsTraits("Machine"));
                 }
 

@@ -42,7 +42,7 @@ public class BT7_065 : CEntity_Effect
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Place a Card from hand to delete Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Place a Card from hand to delete Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
             activateClass.SetHashString("PlaceDigivolutionCards_BT7_065");
             cardEffects.Add(activateClass);

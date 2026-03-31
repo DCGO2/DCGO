@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT14
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardColors.Contains(CardColor.Green) && cardSource.IsDigimon;
+                    return cardSource.HasCardColor(CardColor.Green) && cardSource.IsDigimon;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT18
             {
                 bool Condition()
                 {
-                    return card.Owner.HandCards.Contains(card);
+                    return true;
                 }
 
                 bool PermanentCondition(Permanent targetPermanent)
@@ -126,7 +126,8 @@ namespace DCGO.CardEffects.BT18
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                 player: card.Owner,
-                                refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                                refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                activateClass).ReduceSecurity());
                         }
 
                         yield return null;

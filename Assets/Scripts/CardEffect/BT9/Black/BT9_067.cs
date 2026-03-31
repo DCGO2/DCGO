@@ -433,7 +433,7 @@ public class BT9_067 : CEntity_Effect
 
                 List<CardColor> cardColors = card.PermanentOfThisCard().DigivolutionCards
                     .Filter(digivolutionCard => digivolutionCard.HasLevel && digivolutionCard.Level == 6)
-                    .Map(digivolutionCard => digivolutionCard.CardColors)
+                    .Map(digivolutionCard => digivolutionCard.CardColors.Concat(digivolutionCard.DualCardColors).ToList())
                     .Flat()
                     .Distinct()
                     .ToList();

@@ -78,7 +78,7 @@ namespace DCGO.CardEffects.EX2
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete Digimons whose total DP adds up to 6000 or less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete Digimon whose total DP adds up to 6000 or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

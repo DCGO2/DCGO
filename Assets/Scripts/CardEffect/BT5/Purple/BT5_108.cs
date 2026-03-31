@@ -145,7 +145,7 @@ public class BT5_108 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete unsuspended level 4 and 5 Digimons");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete unsuspended level 4 and 5 Digimon");
         }
 
         return cardEffects;

@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT11
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Blue))
+                    if (cardSource.HasCardColor(CardColor.Blue))
                     {
                         if (cardSource.IsTamer)
                         {
@@ -163,7 +163,7 @@ namespace DCGO.CardEffects.BT11
             if (timing == EffectTiming.OnUnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return oppponent's 1 Digimon to hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return 1 opponent's Digimon to hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("Bounce_BT11_032");
                 cardEffects.Add(activateClass);

@@ -25,7 +25,7 @@ public class BT9_017 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete oppponent's Digimon with the lowest DP or unsuspend this Digimon", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Delete opponent's Digimon with the lowest DP or unsuspend this Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

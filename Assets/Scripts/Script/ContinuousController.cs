@@ -6,8 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -120,11 +120,31 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base AthoRenePorToken { get; private set; }
     public CEntity_Base HinukamuyToken { get; private set; }
     public CEntity_Base PetrificationToken { get; private set; }
-    public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
+    //public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
+    public BanList BanList { get; private set; } = new BanList();
 
-    void LoadBanList()
+
+    async Task LoadBanListOnline()
     {
-        BanList = DataBase.ENGBanList;
+        string url = "https://www.dcgo.online/Banlist.json";
+        UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url);
+
+        UnityWebRequestAsyncOperation operation = jsonWebRequest.SendWebRequest();
+
+        while (!operation.isDone)
+        {
+            await Task.Yield(); // Keep the method asynchronous without blocking
+        }
+
+        if (jsonWebRequest.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(jsonWebRequest.error);
+            useBanlist = false;
+        }
+        else
+        {
+            BanList = JsonUtility.FromJson<BanList>(jsonWebRequest.downloadHandler.text);
+        }
     }
 
     async Task CreateTokenData()
@@ -143,7 +163,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>() { "種族不明" },
             Type_ENG = new List<string>() { "Unidentified" },
             CardSpriteName = "BT2-082-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 3000,
         };
 
@@ -163,7 +183,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT14-018-token-red",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000,
             CardEffectClassName = "BT4_038"
         };
@@ -184,7 +204,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT14-018-token-yellow",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000,
             CardEffectClassName = "BT1_031"
         };
@@ -205,7 +225,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "EX5-058-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 3000,
             CardEffectClassName = "EX5_058_token"
         };
@@ -226,7 +246,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>() { "ダークアニマル" },
             Type_ENG = new List<string>() { "Dark Animal" },
             CardSpriteName = "LM-018-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 3000,
         };
 
@@ -246,7 +266,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT16-052-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 1000,
             CardEffectClassName = "BT16_052_token"
         };
@@ -267,7 +287,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "EX7-030-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 3000,
             CardEffectClassName = "EX7_030_token"
         };
@@ -288,7 +308,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "EX7-030-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 3000,
             CardEffectClassName = "P_165_token"
         };
@@ -309,7 +329,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "EX7-058-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 5000,
             CardEffectClassName = "EX7_058_token"
         };
@@ -330,7 +350,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "EX8-037-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 9000,
             CardEffectClassName = "EX8_037_token"
         };
@@ -350,8 +370,8 @@ public class ContinuousController : MonoBehaviour
             Attribute_ENG = new List<string>(),
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
-            CardSpriteName = "BT19-091-token",
-            cardKind = CardKind.Digimon,
+            CardSpriteName = "BT19-091-token-red",
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000
         };
 
@@ -370,8 +390,8 @@ public class ContinuousController : MonoBehaviour
             Attribute_ENG = new List<string>(),
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
-            CardSpriteName = "BT19-091-token",
-            cardKind = CardKind.Digimon,
+            CardSpriteName = "BT19-091-token-yellow",
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000
         };
 
@@ -390,8 +410,8 @@ public class ContinuousController : MonoBehaviour
             Attribute_ENG = new List<string>(),
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
-            CardSpriteName = "BT19-091-token",
-            cardKind = CardKind.Digimon,
+            CardSpriteName = "BT19-091-token-green",
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000
         };
 
@@ -411,7 +431,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT19-040-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000,
             CardEffectClassName = "BT19_040_token"
         };
@@ -432,7 +452,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT20-017-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000,
             CardEffectClassName = "BT20_017_token"
         };
@@ -453,7 +473,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT23-057-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 6000,
             CardEffectClassName = "BT23_057_token"
         };
@@ -476,7 +496,7 @@ public class ContinuousController : MonoBehaviour
             Type_JPN = new List<string>(),
             Type_ENG = new List<string>(),
             CardSpriteName = "BT21-029-token",
-            cardKind = CardKind.Digimon,
+            cardKind = new List<CardKind> { CardKind.Digimon },
             DP = 3000,
             CardEffectClassName = "BT21_029_token"
         };
@@ -512,7 +532,7 @@ public class ContinuousController : MonoBehaviour
             ReverseCard_Digitama = reverseDigieggCardSprite;
         }
 
-        LoadBanList();
+        await LoadBanListOnline();
 
         // deck data
         //DeckDatas = PlayerPrefsUtil.LoadList<DeckData>(DeckDatasPlayerPrefsKey);
@@ -530,6 +550,7 @@ public class ContinuousController : MonoBehaviour
         LoadAutoMinDigivolutionCost();
         LoadAutoMaxCardCount();
         LoadAutoHatch();
+        //LoadUseBanlist();
         LoadShowCutInAnimation();
         LoadReverseOpponentsCards();
         LoadTurnSuspendedCards();
@@ -685,7 +706,7 @@ public class ContinuousController : MonoBehaviour
 
         foreach (CEntity_Base cEntity_Base in AllDeckCards)
         {
-            if (cEntity_Base.cardKind == CardKind.DigiEgg)
+            if (cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
             {
                 digitamaDeckCards.Add(cEntity_Base);
             }
@@ -857,6 +878,21 @@ public class ContinuousController : MonoBehaviour
     }
     #endregion
 
+    #region Use Banlist
+    public bool useBanlist = true;
+    string _useBanlistKey = "UseBanlist";
+
+    public void SaveUseBanlist()
+    {
+        PlayerPrefsUtil.SetBool(_useBanlistKey, useBanlist);
+        PlayerPrefs.Save();
+    }
+    public void LoadUseBanlist()
+    {
+        useBanlist = PlayerPrefsUtil.GetBool(_useBanlistKey, false);
+    }
+    #endregion
+
     #region Show CutIn Animation
     [HideInInspector] public bool showCutInAnimation = false;
     string _showCutInAnimationKey = "ShowCutInAnimation";
@@ -1007,7 +1043,7 @@ public class ContinuousController : MonoBehaviour
     }
     public void LoadServerRegion()
     {
-        serverRegion = PlayerPrefs.GetString(_serverRegionKey, "us");
+        //serverRegion = PlayerPrefs.GetString(_serverRegionKey, "us");
     }
     public string LastConnectServerRegion = "";
     #endregion

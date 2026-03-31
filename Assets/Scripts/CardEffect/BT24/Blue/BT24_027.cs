@@ -62,7 +62,7 @@ namespace DCGO.CardEffects.BT24
                 return source.IsDigimon
                     && source.EqualsTraits("TS")
                     && source.HasLevel && source.Level <= 4
-                    && source.CardColors.Contains(CardColor.Blue);
+                    && source.HasCardColor(CardColor.Blue);
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

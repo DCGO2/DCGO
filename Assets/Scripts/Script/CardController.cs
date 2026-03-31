@@ -301,6 +301,7 @@ public class PlayCardClass
     {
         bool burstDigivolved = false;
         bool appFusion = false;
+        bool isEvolution = false;
 
         List<CardSource> playedCards_fixed = new List<CardSource>();
 
@@ -388,8 +389,6 @@ public class PlayCardClass
             #endregion
 
             #region Determine if Evolution
-
-            bool isEvolution = false;
 
             if (targetPermanents.Count >= 1)
             {
@@ -997,8 +996,9 @@ public class PlayCardClass
 
         #region filter cards
 
-        List<CardSource> permanentCards = playedCards_fixed.Filter(cardSource => cardSource.IsPermanent);
-        List<CardSource> optionCards = playedCards_fixed.Filter(cardSource => !cardSource.IsPermanent);
+        bool isDualCardAsOption(CardSource cardSource) => cardSource.IsDigimon && cardSource.IsOption && !isEvolution;
+        List<CardSource> permanentCards = playedCards_fixed.Filter(cardSource => cardSource.IsPermanent && !isDualCardAsOption(cardSource));
+        List<CardSource> optionCards = playedCards_fixed.Filter(cardSource => !cardSource.IsPermanent || isDualCardAsOption(cardSource));
 
         #region play permanent
 
@@ -1752,6 +1752,100 @@ public class UseOptionClass
 
             #endregion
 
+            if(card.Owner.ExecutingCards.Contains(card))
+            {
+                List<OptionResolutionClass> optionResolutionEffects = new List<OptionResolutionClass>();
+                foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+                {
+                    #region Effects of permanents in play
+                    foreach (Permanent permanent in player.GetFieldPermanents())
+                    {
+                        foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                        {
+                            if (cardEffect is OptionResolutionClass)
+                            {
+                                if (cardEffect.CanTrigger(null))
+                                {
+                                    optionResolutionEffects.Add((OptionResolutionClass)cardEffect);
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region Effects on the Player
+                    foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is OptionResolutionClass)
+                        {
+                            if (cardEffect.CanTrigger(null))
+                            {
+                                optionResolutionEffects.Add((OptionResolutionClass)cardEffect);
+                            }
+                        }
+                    }
+                    #endregion
+                }
+
+                foreach (ICardEffect cardEffect in card.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is OptionResolutionClass)
+                    {
+                        if (cardEffect.CanTrigger(null))
+                        {
+                            optionResolutionEffects.Add((OptionResolutionClass)cardEffect);
+                        }
+                    }
+                }
+
+                while (card.Owner.ExecutingCards.Contains(card) && optionResolutionEffects.Count(effect => effect.CanResolve()) > 0)
+                {
+                    List<OptionResolutionClass> possibleEffects = optionResolutionEffects.Filter(effect => effect.CanResolve());
+                    if (possibleEffects.Count() == 1)
+                    {
+                        OptionResolutionClass currentEffect = possibleEffects[0];
+                        if (currentEffect != null) yield return ContinuousController.instance.StartCoroutine(currentEffect.Resolve());
+                        optionResolutionEffects.Remove(currentEffect);
+                    }
+                    else
+                    {
+                        List<SkillInfo> skillInfos = possibleEffects.Map(effect => new SkillInfo(effect, null, EffectTiming.None));
+                        List<CardSource> rootCardSources = skillInfos.Map(skillInfo => skillInfo.CardEffect.EffectSourceCard);
+
+                        int skillIndex = -1;
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectCardPanel.OpenSelectCardPanel(
+                                Message: "Option has multiple resolutions instead of going to trash.\nChoose which to process.",
+                                RootCardSources: rootCardSources,
+                                _CanTargetCondition: _ => true,
+                                _CanTargetCondition_ByPreSelecetedList: null,
+                                _CanEndSelectCondition: null,
+                                _MaxCount: 1,
+                                _CanEndNotMax: false,
+                                _CanNoSelect: () => false,
+                                CanLookReverseCard: true,
+                                skillInfos: skillInfos,
+                                root: SelectCardEffect.Root.None));
+
+                        if (GManager.instance.selectCardPanel.SelectedIndex.Count > 0)
+                        {
+                            skillIndex = GManager.instance.selectCardPanel.SelectedIndex[0];
+                        }
+
+                        if (skillIndex >= 0)
+                        {
+                            OptionResolutionClass currentEffect = possibleEffects[skillIndex];
+                            if (currentEffect != null) yield return ContinuousController.instance.StartCoroutine(currentEffect.Resolve());
+                            optionResolutionEffects.Remove(currentEffect);
+                        }
+                        else
+                        {
+                            break; // Should not happen, unless we later allow denying all by no select
+                        }
+                    }
+                }
+            }
+
             if (card.Owner.ExecutingCards.Contains(card))
             {
                 if (_addSecurityEndOption && card.Owner.CanAddSecurity(CardEffect))
@@ -2242,6 +2336,20 @@ public class DeckBottomBounceClass
 
         #endregion
 
+        #region "When permanents leave the battle area" effect
+
+        if (deckBounceTargetPermanents_Fixed.Count > 0) yield return ContinuousController.instance.StartCoroutine(
+            GManager.instance.autoProcessing.StackSkillInfos(
+                CardEffectCommons.OnDeletionHashtable(
+                    deckBounceTargetPermanents_Fixed,
+                    cardEffect,
+                    null,
+                    false
+                ),
+                EffectTiming.OnLeaveFieldAnyone));
+
+        #endregion
+
         #region
 
         List<CardSource> deckBottomCards = new List<CardSource>();
@@ -2391,6 +2499,20 @@ public class DeckTopBounceClass
         {
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(returnedCards, "Deck bottom cards", true, true));
         }
+
+        #endregion
+
+        #region "When permanents leave the battle area" effect
+
+        if (deckBounceTargetPermanents_Fixed.Count > 0) yield return ContinuousController.instance.StartCoroutine(
+            GManager.instance.autoProcessing.StackSkillInfos(
+                CardEffectCommons.OnDeletionHashtable(
+                    deckBounceTargetPermanents_Fixed,
+                    cardEffect,
+                    null,
+                    false
+                ),
+                EffectTiming.OnLeaveFieldAnyone));
 
         #endregion
 
@@ -2546,6 +2668,19 @@ public class HandBounceClaass
 
         #endregion
 
+        #region "When permanents leave the battle area" effect
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+            CardEffectCommons.OnDeletionHashtable(
+                bounceTargetPermanents_Fixed,
+                cardEffect,
+                null,
+                false
+            ),
+            EffectTiming.OnLeaveFieldAnyone));
+
+        #endregion
+
         #region record parameter just before bounce
 
         foreach (Permanent permanent in bounceTargetPermanents_Fixed)
@@ -2675,12 +2810,14 @@ public class IPlacePermanentToDigivolutionCards
         List<Permanent[]> permanentArrays,
         bool toTop,
         ICardEffect cardEffect,
-        bool skipEffectAndActivateSkill = false)
+        bool skipEffectAndActivateSkill = false,
+        bool isDigixros = false)
     {
         permanentArrays.Clone().ForEach(permanentArray => _permanentArrays.Add(permanentArray.CloneArray()));
         _toTop = toTop;
         _cardEffect = cardEffect;
         _skipEffectAndActivateSkill = skipEffectAndActivateSkill;
+        _isDigixros = isDigixros;
     }
 
     public void SetNotShowCards()
@@ -2693,6 +2830,7 @@ public class IPlacePermanentToDigivolutionCards
     bool _toTop = false;
     bool _notShowCards = false;
     bool _skipEffectAndActivateSkill = false;
+    bool _isDigixros = false;
     public bool Placed { get; private set; } = false;
 
     public IEnumerator PlacePermanentToDigivolutionCards()
@@ -2749,7 +2887,8 @@ public class IPlacePermanentToDigivolutionCards
         CardEffectCommons.WhenPermanentWouldRemoveFieldCheckHashtable(
                 removeFieldPermanents,
                 _cardEffect,
-                null);
+                null,
+                _isDigixros);
 
         #region  "When permanents would remove field" effect
 
@@ -3185,6 +3324,19 @@ public class IPlacePermanentToLinkCards
                 {
                     if (LinkedPermanent.TopCard != null && getLinkPermanent.TopCard != null && !getLinkPermanent.IsToken && LinkedPermanent.willBeRemoveField)
                     {
+                        #region "When permanents leave the battle area" effect
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+                            CardEffectCommons.OnDeletionHashtable(
+                                new List<Permanent> { LinkedPermanent },
+                                _cardEffect,
+                                null,
+                                false
+                            ),
+                            EffectTiming.OnLeaveFieldAnyone));
+
+                        #endregion
+
                         yield return ContinuousController.instance.StartCoroutine(LinkedPermanent.DiscardEvoRoots());
 
                         CardSource cardSource = LinkedPermanent.TopCard;
@@ -3251,6 +3403,56 @@ public class IPlacePermanentToLinkCards
     }
 }
 
+#endregion
+
+#region Link a Card to a Permanent
+public class ILinkCard
+{
+    public ILinkCard(bool payCost, CardSource card, Permanent permanent, ICardEffect cardEffect)
+    {
+        _payCost = payCost;
+        _linkCard = _linkCard;
+        _permanent = permanent;
+        _cardEffect = cardEffect;
+    }
+
+    bool _payCost = false;
+    CardSource _linkCard = null;
+    Permanent _permanent = null;
+    ICardEffect _cardEffect = null;
+    public bool WasLinked = false;
+
+    public IEnumerator LinkCard()
+    {
+        if (_linkCard == null) yield break;
+        if (_permanent == null || _permanent.TopCard == null) yield break;
+        if (_cardEffect == null) yield break;
+
+        #region Trigger When Would Link effects
+        SelectCardEffect.Root root = CardEffectCommons.IsExistOnHand(_linkCard) ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.None;
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
+            CardEffectCommons.WouldLinkHashtable(_linkCard, _permanent, root, null),
+            EffectTiming.WhenWouldLink));
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, null));
+        #endregion
+
+        if (_payCost)
+        {
+            int Cost = _linkCard.GetChangedLinkCost(_permanent, root);
+
+            yield return ContinuousController.instance.StartCoroutine(_linkCard.Owner.AddMemory(-1 * Cost, _cardEffect));
+        }
+
+        if(root == SelectCardEffect.Root.Hand)
+            yield return ContinuousController.instance.StartCoroutine(_permanent.AddLinkCard(_linkCard, _cardEffect));
+        else
+            yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToLinkCards(new List<Permanent[]>() { new Permanent[] { _linkCard.PermanentOfThisCard(), _permanent } }, _cardEffect).PlacePermanentToLinkCards());
+
+        WasLinked = _permanent.LinkedCards.Contains(_linkCard);
+    }
+}
 #endregion
 
 #region Place permanents to security
@@ -3345,6 +3547,19 @@ public class IPutSecurityPermanent
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { topCard }, "Security Bottom Card", true, true));
             }
         }
+
+        #endregion
+
+        #region "When permanents leave the battle area" effect
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+            CardEffectCommons.OnDeletionHashtable(
+                new List<Permanent> { _permanent },
+                cardEffect,
+                null,
+                false
+            ),
+            EffectTiming.OnLeaveFieldAnyone));
 
         #endregion
 
@@ -3483,6 +3698,19 @@ public class DestroyPermanentsClass
                 isDPZero
                 ),
                 EffectTiming.OnDestroyedAnyone));
+
+        #endregion
+
+        #region "When permanents leave the battle area" effect
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+            CardEffectCommons.OnDeletionHashtable(
+                destroyTargetPermanents_Fixed,
+                cardEffect,
+                battle,
+                isDPZero
+            ),
+            EffectTiming.OnLeaveFieldAnyone));
 
         #endregion
 
@@ -3710,7 +3938,8 @@ public class ISecurityCheck
 
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: brokenSecurityCard.Owner,
-                            refSkillInfos: ref triggeredSkillInfos).ReduceSecurity());
+                            refSkillInfos: ref triggeredSkillInfos,
+                            null).ReduceSecurity());
 
                         #region security effect
 
@@ -4959,7 +5188,7 @@ public class ReturnToLibraryBottomDigivolutionCardsClass
 
 public class IReduceSecurity
 {
-    public IReduceSecurity(Player player, ref List<SkillInfo> refSkillInfos, ICardEffect cardEffect = null)
+    public IReduceSecurity(Player player, ref List<SkillInfo> refSkillInfos, ICardEffect cardEffect)
     {
         _player = player;
         _refSkillInfos = refSkillInfos;
@@ -5111,7 +5340,13 @@ public class SuspendPermanentsClass
         _hashtable = hashtable;
     }
 
+    public bool IsSuspended(Permanent permanent)
+    {
+        return SuspendedPermanents.Contains(permanent);
+    }
+
     List<Permanent> _permanents { get; set; }
+    public List<Permanent> SuspendedPermanents { get; private set; } = new List<Permanent>();
     Hashtable _hashtable { get; set; }
 
     public IEnumerator Tap()
@@ -5165,6 +5400,8 @@ public class SuspendPermanentsClass
             {
                 permanent.ShowingPermanentCard.ShowPermanentData(true);
             }
+
+            SuspendedPermanents.Add(permanent);
         }
 
         if (suspendTargetPermanents.Count >= 1)
@@ -5185,10 +5422,7 @@ public class SuspendPermanentsClass
 
             #endregion
 
-            if (IsAttack)
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(_hashtable, EffectTiming.OnTappedAnyone));
-            else
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(_hashtable, EffectTiming.OnTappedAnyone));
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(_hashtable, EffectTiming.OnTappedAnyone));
 
             #endregion
 

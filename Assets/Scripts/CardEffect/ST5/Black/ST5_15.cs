@@ -55,7 +55,7 @@ public class ST5_15 : CEntity_Effect
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select Digimons to De-Digivolve.", "The opponent is selecting Digimons to De-Digivolve.");
+                    selectPermanentEffect.SetUpCustomMessage("Select Digimon to De-Digivolve.", "The opponent is selecting Digimon to De-Digivolve.");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                     bool CanEndSelectCondition(List<Permanent> permanents)
@@ -78,7 +78,7 @@ public class ST5_15 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"De-Digivolve 1 to 2 Digimons");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"De-Digivolve 1 to 2 Digimon");
         }
 
         return cardEffects;

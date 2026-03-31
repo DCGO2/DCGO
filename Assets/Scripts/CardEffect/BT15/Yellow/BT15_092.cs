@@ -66,7 +66,7 @@ namespace DCGO.CardEffects.BT15
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow) && cardSource.Level <= 4)
+                        if (cardSource.HasCardColor(CardColor.Yellow) && cardSource.Level <= 4)
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
@@ -152,7 +152,8 @@ namespace DCGO.CardEffects.BT15
                             {
                                 yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                     player: card.Owner,
-                                    refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                                    refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                    activateClass).ReduceSecurity());
                             }
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Security, activateETB: true));

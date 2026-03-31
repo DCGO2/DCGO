@@ -132,18 +132,8 @@ namespace DCGO.CardEffects.EX4
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Count == 2)
-                    {
-                        if (cardSource.CardColors.Contains(CardColor.Green))
-                        {
-                            if (cardSource.IsDigimon)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return (cardSource.CardColors.Count == 2 && cardSource.CardColors.Contains(CardColor.Green))
+                        || (cardSource.DualCardColors.Count == 2 && cardSource.DualCardColors.Contains(CardColor.Green));
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

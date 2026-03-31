@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.P
 
                         bool canSelect() => (canSelectTamer() || canSelectTrash()) && maxSelectCardCount() >= 1;
 
-                        while (canSelect())
+                        while (canSelect() && digivolutionCards.Count <2)
                         {
                             bool fromTrash = false;
                             bool noSelect = false;
@@ -178,7 +178,7 @@ namespace DCGO.CardEffects.P
                             };
 
                                 string selectPlayerMessage = "Will you select cards from trash?";
-                                string notSelectPlayerMessage = "The opponent is choosing wheter to select cards from trash.";
+                                string notSelectPlayerMessage = "The opponent is choosing whether to select cards from trash.";
 
                                 GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
@@ -206,7 +206,7 @@ namespace DCGO.CardEffects.P
                             };
 
                                 string selectPlayerMessage = "Will you select cards from under Tamer?";
-                                string notSelectPlayerMessage = "The opponent is choosing wheter to select cards from under Tamer.";
+                                string notSelectPlayerMessage = "The opponent is choosing whether to select cards from under Tamer.";
 
                                 GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 

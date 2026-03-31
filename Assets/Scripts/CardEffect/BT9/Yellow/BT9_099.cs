@@ -20,14 +20,14 @@ public class BT9_099 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] You may play 1 yellow or red Tamer card from your hand without paying its memory cost. Then, 1 of your opponentÅfs Digimon gets -3000 DP for the turn for each yellow and/or red Tamer you have in play.";
+                return "[Main] You may play 1 yellow or red Tamer card from your hand without paying its memory cost. Then, 1 of your opponent's Digimon gets -3000 DP for the turn for each yellow and/or red Tamer you have in play.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
                 if (cardSource.IsTamer)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Red))
+                    if (cardSource.HasCardColor(CardColor.Yellow) || cardSource.HasCardColor(CardColor.Red))
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {

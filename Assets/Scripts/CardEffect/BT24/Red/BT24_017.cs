@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.BT24
                             yield return null;
                         }
 
-                        selectCardEffect.SetUpCustomMessage("Select cards to bottom deck", "Your opponent is 2 cards to bottom deck");
+                        selectCardEffect.SetUpCustomMessage("Select 2 cards to bottom deck", "Your opponent is selecting 2 cards to bottom deck");
                         selectCardEffect.SetUpCustomMessage_ShowCard("Selected Cards");
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 

@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.BT17
                     return CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass) &&
                            cardSource.IsDigimon &&
                            cardSource.IsLevel3 &&
-                           (cardSource.CardColors.Contains(CardColor.Blue) || cardSource.CardColors.Contains(CardColor.Purple));
+                           (cardSource.HasCardColor(CardColor.Blue) || cardSource.HasCardColor(CardColor.Purple));
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
