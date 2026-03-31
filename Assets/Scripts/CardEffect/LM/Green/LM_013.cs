@@ -12,7 +12,7 @@ namespace DCGO.CardEffects.LM
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            //Coutner - Blast Digivolve
+            //Counter - Blast Digivolve
             if (timing == EffectTiming.OnCounterTiming)
             {
                 cardEffects.Add(CardEffectFactory.BlastDigivolveEffect(card: card, condition: null));

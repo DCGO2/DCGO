@@ -35,12 +35,12 @@ namespace DCGO.CardEffects.EX3
                 {
                     if (cardSource.HasDramonName)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Blue))
+                        if (cardSource.HasCardColor(CardColor.Blue))
                         {
                             return true;
                         }
 
-                        if (cardSource.CardColors.Contains(CardColor.Green))
+                        if (cardSource.HasCardColor(CardColor.Green))
                         {
                             return true;
                         }
@@ -93,7 +93,8 @@ namespace DCGO.CardEffects.EX3
                             selectCardCoroutine: null),
                         },
                         remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                        activateClass: activateClass
+                        activateClass: activateClass,
+                        mutualConditions: true
                     ));
                 }
             }

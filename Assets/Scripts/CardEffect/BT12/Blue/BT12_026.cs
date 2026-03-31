@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT12
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Blue))
+                    if (cardSource.HasCardColor(CardColor.Blue))
                     {
                         if (cardSource.Level <= 5)
                         {

@@ -31,7 +31,7 @@ public class ST6_10 : CEntity_Effect
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Purple))
+                            if (cardSource.HasCardColor(CardColor.Purple))
                             {
                                 return true;
                             }

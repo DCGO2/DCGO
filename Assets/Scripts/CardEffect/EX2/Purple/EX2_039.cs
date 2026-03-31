@@ -172,7 +172,8 @@ namespace DCGO.CardEffects.EX2
                             selectCardCoroutine: null),
                         },
                         remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                        activateClass: activateClass
+                        activateClass: activateClass,
+                        mutualConditions: true
                     ));
                 }
             }

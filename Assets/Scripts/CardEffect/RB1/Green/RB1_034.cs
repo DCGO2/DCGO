@@ -34,7 +34,7 @@ public class RB1_034 : CEntity_Effect
             {
                 if (cardSource.HasBeastTraits)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Green))
+                    if (cardSource.HasCardColor(CardColor.Green))
                     {
                         return true;
                     }
@@ -141,7 +141,7 @@ public class RB1_034 : CEntity_Effect
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.HasBeastTraits && cardSource.CardColors.Contains(CardColor.Green))
+                            if (cardSource.HasBeastTraits && cardSource.HasCardColor(CardColor.Green))
                             {
                                 return true;
                             }

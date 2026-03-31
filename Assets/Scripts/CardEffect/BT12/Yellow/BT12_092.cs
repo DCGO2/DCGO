@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.BT12
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.HasGreymonName && cardSource.CardColors.Contains(CardColor.Yellow);
+                    return cardSource.HasGreymonName && cardSource.HasCardColor(CardColor.Yellow);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

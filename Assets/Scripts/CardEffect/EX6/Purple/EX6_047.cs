@@ -39,7 +39,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanSelectCardCondition1(CardSource _card)
                 {
-                    if(_card.IsOption && _card.CardColors.Contains(CardColor.Purple))
+                    if(_card.IsOption && _card.HasCardColor(CardColor.Purple))
                     {
                         return true;
                     }

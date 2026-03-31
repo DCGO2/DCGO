@@ -99,7 +99,7 @@ namespace DCGO.CardEffects.EX3
 
                                 if (selectedCard != null)
                                 {
-                                    if (selectedCard.CardColors.Contains(CardColor.Yellow))
+                                    if (selectedCard.HasCardColor(CardColor.Yellow))
                                     {
                                         yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                                     }

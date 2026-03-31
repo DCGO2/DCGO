@@ -33,7 +33,7 @@ public class ST9_06 : CEntity_Effect
                         {
                             if (cardSource.Level <= 4)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Blue))
+                                if (cardSource.HasCardColor(CardColor.Blue))
                                 {
                                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                                     {
@@ -61,7 +61,7 @@ public class ST9_06 : CEntity_Effect
                         {
                             if (cardSource.Level <= 4)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Green))
+                                if (cardSource.HasCardColor(CardColor.Green))
                                 {
                                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                                     {

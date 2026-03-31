@@ -28,7 +28,7 @@ public class P_036 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Blue))
+                    if (cardSource.HasCardColor(CardColor.Blue))
                     {
                         return true;
                     }

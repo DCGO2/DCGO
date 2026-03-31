@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.BT10
 
                 string EffectDiscription()
                 {
-                    return "[Security] You may play 1 [Gammamon] from your hand or trash without payings its memory cost.";
+                    return "[Security] You may play 1 [Gammamon] from your hand or trash without paying its memory cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

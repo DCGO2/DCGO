@@ -14,7 +14,7 @@ public class P_102 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete your 1 Digimon to delete opponent's Digimons with 5000 DP or less", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Delete your 1 Digimon to delete opponent's Digimon with 5000 DP or less", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -118,7 +118,7 @@ public class P_102 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete your 1 Digimon to delete opponent's Digimons with 5000 DP or less", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Delete your 1 Digimon to delete opponent's Digimon with 5000 DP or less", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -241,12 +241,12 @@ public class P_102 : CEntity_Effect
                         {
                             if (cardSource.HasLevel)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Purple))
+                                if (cardSource.HasCardColor(CardColor.Purple))
                                 {
                                     return true;
                                 }
 
-                                if (cardSource.CardColors.Contains(CardColor.Red))
+                                if (cardSource.HasCardColor(CardColor.Red))
                                 {
                                     return true;
                                 }
@@ -344,12 +344,12 @@ public class P_102 : CEntity_Effect
                         {
                             if (cardSource.HasLevel)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Purple))
+                                if (cardSource.HasCardColor(CardColor.Purple))
                                 {
                                     return true;
                                 }
 
-                                if (cardSource.CardColors.Contains(CardColor.Red))
+                                if (cardSource.HasCardColor(CardColor.Red))
                                 {
                                     return true;
                                 }

@@ -109,10 +109,7 @@ public class BT7_091 : CEntity_Effect
             {
                 if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
                 {
-                    if (card.Owner.CanAddMemory(activateClass))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
 
                 return false;
@@ -120,7 +117,10 @@ public class BT7_091 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                if (card.Owner.CanAddMemory(activateClass))
+                {
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                }
             }
         }
 

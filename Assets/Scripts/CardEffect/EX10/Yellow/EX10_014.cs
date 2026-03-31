@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.EX10
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Secuity
+            #region Security
 
             if (timing == EffectTiming.SecuritySkill)
             {

@@ -15,7 +15,7 @@ public class BT5_081 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Delete Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -144,7 +144,7 @@ public class BT5_081 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Purple))
+                    if (cardSource.HasCardColor(CardColor.Purple))
                     {
                         if (cardSource.Level == 3)
                         {

@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT22
                             yield return null;
                         }
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Mother eater to add to digivoltuon cards", "The opponent is selecting 1 Mother eater to add to digivoltuon cards");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Mother eater to add to digivolution cards", "The opponent is selecting 1 Mother eater to add to digivolution cards");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                         if (motherEater != null) yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { card.PermanentOfThisCard(), motherEater } }, false, activateClass).PlacePermanentToDigivolutionCards());

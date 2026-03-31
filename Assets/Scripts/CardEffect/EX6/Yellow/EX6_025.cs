@@ -345,7 +345,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.HasCardColor(CardColor.Yellow))
                         {
                             return true;
                         }

@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.ST17
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Green))
+                        if (cardSource.HasCardColor(CardColor.Green))
                         {
                             return true;
                         }
@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.ST17
                 {
                     if(cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Green))
+                        if (cardSource.HasCardColor(CardColor.Green))
                         {
                             return true;
                         }

@@ -9,7 +9,7 @@ namespace DCGO.CardEffects.BT20
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alt Digivovle Cost
+            #region Alt Digivolve Cost
 
             if (timing == EffectTiming.None)
             {
@@ -76,7 +76,8 @@ namespace DCGO.CardEffects.BT20
 
                             yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                 player: card.Owner,
-                                refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                                refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                activateClass).ReduceSecurity());
                         }
                             
                     }
@@ -140,7 +141,8 @@ namespace DCGO.CardEffects.BT20
 
                             yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                 player: card.Owner,
-                                refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                                refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                activateClass).ReduceSecurity());
                         }
 
                     }

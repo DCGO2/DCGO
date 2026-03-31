@@ -18,10 +18,11 @@ namespace DCGO.CardEffects.BT19
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Lucemon") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level >= 5;
+                    return targetPermanent.TopCard.ContainsCardName("Lucemon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    minLevel: 5,
                     permanentCondition: PermanentCondition,
                     digivolutionCost: 3,
                     ignoreDigivolutionRequirement: false,
@@ -104,7 +105,7 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Opponent may trash 1 card from secuirty or Recovery +1 and delete 1 Digimon or Tamer", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Opponent may trash 1 card from security or Recovery +1 and delete 1 Digimon or Tamer", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("TrashSecurity_LucemonXAntibody_BT19_043");
                 cardEffects.Add(activateClass);

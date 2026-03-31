@@ -20,7 +20,7 @@ public class BT2_066 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("De-Digivolve 2 to 2 Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("De-Digivolve 2 to 2 Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -109,7 +109,7 @@ public class BT2_066 : CEntity_Effect
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select Digimons to De-Digivolve.", "The opponent is selecting Digimons to De-Digivolve.");
+                            selectPermanentEffect.SetUpCustomMessage("Select Digimon to De-Digivolve.", "The opponent is selecting Digimon to De-Digivolve.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

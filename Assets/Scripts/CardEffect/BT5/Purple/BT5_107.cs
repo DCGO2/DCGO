@@ -45,7 +45,7 @@ public class BT5_107 : CEntity_Effect
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Purple))
+                            if (cardSource.HasCardColor(CardColor.Purple))
                             {
                                 if (cardSource.Level <= 5)
                                 {

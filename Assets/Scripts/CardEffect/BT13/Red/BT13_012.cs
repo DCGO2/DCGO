@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.BT13
                 {
                     if (cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Red) || cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.HasCardColor(CardColor.Red) || cardSource.HasCardColor(CardColor.Yellow))
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
@@ -112,7 +112,8 @@ namespace DCGO.CardEffects.BT13
                             {
                                 yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                     player: card.Owner,
-                                    refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                                    refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                    activateClass).ReduceSecurity());
                             }
 
                             yield return null;

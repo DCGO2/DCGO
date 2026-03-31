@@ -28,7 +28,7 @@ public class BT6_083 : CEntity_Effect
             {
                 if (cardSource.IsTamer)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.White))
+                    if (cardSource.HasCardColor(CardColor.White))
                     {
                         if (cardSource.GetCostItself <= 4)
                         {
@@ -186,7 +186,7 @@ public class BT6_083 : CEntity_Effect
             {
                 if (cardSource.IsTamer)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.White))
+                    if (cardSource.HasCardColor(CardColor.White))
                     {
                         if (cardSource.GetCostItself <= 4)
                         {

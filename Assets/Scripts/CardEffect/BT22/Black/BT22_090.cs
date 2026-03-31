@@ -67,7 +67,7 @@ namespace DCGO.CardEffects.BT22
                     {
                         Permanent selectedYourPermanent = null;
 
-                        #region Destory Permanent
+                        #region Destroy Permanent
 
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsValidPermament));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();

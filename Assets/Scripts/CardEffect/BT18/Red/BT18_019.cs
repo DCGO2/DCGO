@@ -317,7 +317,7 @@ namespace DCGO.CardEffects.BT18
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play a [Milleniummon] from the trash", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play a [Millenniummon] from the trash", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

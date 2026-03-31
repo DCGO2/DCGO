@@ -15,7 +15,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
     public bool IsOnlyHandEffectStacked => StackedSkillInfos.Every(skillInfo =>
         skillInfo.CardEffect != null && skillInfo.CardEffect.EffectSourceCard != null && CardEffectCommons.IsExistOnHand(skillInfo.CardEffect.EffectSourceCard) && skillInfo.CardEffect.EffectDiscription.Contains("[Hand]"));
 
-    bool IsOnlyOptionalEffectStacked => StackedSkillInfos.Every(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.IsOptional);
+    bool IsOnlyOptionalEffectStacked => StackedSkillInfos.Every(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.IsOptionalCondition(null));
     bool IsEachStackedEffectHasDistinctSourceCard => StackedSkillInfos.Filter(skillInfo1 => skillInfo1.CardEffect != null && skillInfo1.CardEffect.EffectSourceCard != null)
         .Every(skillInfo => StackedSkillInfos.Filter(skillInfo1 => skillInfo1.CardEffect != null && skillInfo1.CardEffect.EffectSourceCard != null)
             .Count(otherSkillInfo => otherSkillInfo != skillInfo && skillInfo.CardEffect.EffectSourceCard == otherSkillInfo.CardEffect.EffectSourceCard) == 0);
@@ -92,20 +92,30 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
 
                         if (card != null)
                         {
-                            if (card.PermanentOfThisCard() != null)
+                            if (!skillInfo.CardEffect.IsDigimonEffect)
                             {
-                                skillInfo.CardEffect.SetIsDigimonEffect(card.PermanentOfThisCard().IsDigimon);
-                                skillInfo.CardEffect.SetIsTamerEffect(card.PermanentOfThisCard().IsTamer);
-                            }
+                                if (skillInfo.CardEffect.IsInheritedEffect || skillInfo.CardEffect.IsLinkedEffect)
+                                {
+                                    skillInfo.CardEffect.SetIsDigimonEffect(true);
+                                }
+                                else
+                                {
+                                    if (card.PermanentOfThisCard() != null)
+                                    {
+                                        skillInfo.CardEffect.SetIsDigimonEffect(card.PermanentOfThisCard().IsDigimon);
+                                        skillInfo.CardEffect.SetIsTamerEffect(card.PermanentOfThisCard().IsTamer);
+                                    }
 
-                            else
-                            {
-                                skillInfo.CardEffect.SetIsTamerEffect(card.IsTamer);
-                            }
+                                    else
+                                    {
+                                        skillInfo.CardEffect.SetIsTamerEffect(card.IsTamer);
+                                    }
 
-                            if (card == GManager.instance.attackProcess.SecurityDigimon)
-                            {
-                                skillInfo.CardEffect.SetIsDigimonEffect(true);
+                                    if (card == GManager.instance.attackProcess.SecurityDigimon)
+                                    {
+                                        skillInfo.CardEffect.SetIsDigimonEffect(true);
+                                    }
+                                }
                             }
                         }
                     }
@@ -260,19 +270,23 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                     {
                         if (player.isYou)
                         {
-                            int skillIndex = 0;
+                            int skillIndex = -1;
 
                             if (!ContinuousController.instance.autoEffectOrder)
                             {
                                 yield return StartCoroutine(GManager.instance.selectCardPanel.OpenSelectCardPanel(
                                 Message: "Multiple effects are triggered.\nChoose which effect to process.",
+                                NotSelectButtonMessage: "Don't activate these effects.",
+                                EndSelectButtonMessage: "End Selection", 
+                                _OnClickNotSelectButtonAction: null, 
+                                _OnClickEndSelectButtonAction: null,
                                 RootCardSources: RootCardSources,
                                 _CanTargetCondition: (cardSource) => true,
                                 _CanTargetCondition_ByPreSelecetedList: null,
                                 _CanEndSelectCondition: null,
                                 _MaxCount: 1,
                                 _CanEndNotMax: false,
-                                _CanNoSelect: () => false,
+                                _CanNoSelect: () => skillInfos_active.All(skillInfo => skillInfo.CardEffect.IsOptionalCondition(skillInfo.Hashtable)),
                                 CanLookReverseCard: true,
                                 skillInfos: skillInfos_active,
                                 root: SelectCardEffect.Root.None));
@@ -280,6 +294,13 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                                 if (GManager.instance.selectCardPanel.SelectedIndex.Count > 0)
                                 {
                                     skillIndex = GManager.instance.selectCardPanel.SelectedIndex[0];
+                                }
+                                else
+                                {
+                                    foreach (FieldPermanentCard fieldPermanentCard in player.FieldPermanentObjects)
+                                    {
+                                        fieldPermanentCard.OffPermanentIndexText();
+                                    }
                                 }
                             }
 

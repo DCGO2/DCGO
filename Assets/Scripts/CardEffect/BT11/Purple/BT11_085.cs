@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT11
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Purple) || cardSource.CardColors.Contains(CardColor.Blue))
+                        if (cardSource.HasCardColor(CardColor.Purple) || cardSource.HasCardColor(CardColor.Blue))
                         {
                             if (cardSource.Level == 3)
                             {
@@ -185,7 +185,7 @@ namespace DCGO.CardEffects.BT11
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Purple) || cardSource.CardColors.Contains(CardColor.Blue))
+                        if (cardSource.HasCardColor(CardColor.Purple) || cardSource.HasCardColor(CardColor.Blue))
                         {
                             if (cardSource.Level == 3)
                             {

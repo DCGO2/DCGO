@@ -116,7 +116,7 @@ namespace DCGO.CardEffects.BT12
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage($"Select Digimons that will get DP -{minusDP}.", $"The opponent is selecting Digimons that will get DP -{minusDP}.");
+                            selectPermanentEffect.SetUpCustomMessage($"Select Digimon that will get DP -{minusDP}.", $"The opponent is selecting Digimon that will get DP -{minusDP}.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.BT12
 
             if (timing == EffectTiming.SecuritySkill)
             {
-                CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Play 1 [Marcus Damon] from hand and opponent's Digimons reduce DP");
+                CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Play 1 [Marcus Damon] from hand and opponent's Digimon reduce DP");
             }
 
             return cardEffects;

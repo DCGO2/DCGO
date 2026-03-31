@@ -81,7 +81,7 @@ public class ST1_15 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete up to 2 Digimons with 4000 DP or less");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Delete up to 2 Digimon with 4000 DP or less");
         }
 
         return cardEffects;

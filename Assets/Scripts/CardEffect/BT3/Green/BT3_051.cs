@@ -96,7 +96,8 @@ public class BT3_051 : CEntity_Effect
                             selectCardCoroutine: null),
                     },
                     remainingCardsPlace: RemainingCardsPlace.Trash,
-                    activateClass: activateClass
+                    activateClass: activateClass,
+                    mutualConditions: true
                 ));
             }
         }

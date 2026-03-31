@@ -27,7 +27,7 @@ public class ST10_04 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
+                    if (cardSource.HasCardColor(CardColor.Yellow))
                     {
                         return true;
                     }
@@ -40,7 +40,7 @@ public class ST10_04 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Purple))
+                    if (cardSource.HasCardColor(CardColor.Purple))
                     {
                         return true;
                     }
@@ -88,7 +88,8 @@ public class ST10_04 : CEntity_Effect
                             selectCardCoroutine: null),
                     },
                     remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                    activateClass: activateClass
+                    activateClass: activateClass,
+                    mutualConditions: true
                 ));
             }
         }

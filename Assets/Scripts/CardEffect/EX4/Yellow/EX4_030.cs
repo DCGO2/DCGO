@@ -159,12 +159,12 @@ namespace DCGO.CardEffects.EX4
 
                             if (cardSource.HasLevel && cardSource.Level <= 4)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Blue))
+                                if (cardSource.HasCardColor(CardColor.Blue))
                                 {
                                     return true;
                                 }
 
-                                if (cardSource.CardColors.Contains(CardColor.Yellow))
+                                if (cardSource.HasCardColor(CardColor.Yellow))
                                 {
                                     return true;
                                 }

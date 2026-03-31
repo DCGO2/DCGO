@@ -31,7 +31,7 @@ public class BT5_098 : CEntity_Effect
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Yellow))
+                            if (cardSource.HasCardColor(CardColor.Yellow))
                             {
                                 if (cardSource.ContainsCardName("Starmon"))
                                 {

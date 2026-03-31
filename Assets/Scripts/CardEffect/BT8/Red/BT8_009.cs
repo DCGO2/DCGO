@@ -27,7 +27,7 @@ public class BT8_009 : CEntity_Effect
             {
                 if (cardSource.CardColors.Count == 2)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Red))
+                    if (cardSource.HasCardColor(CardColor.Red))
                     {
                         return true;
                     }

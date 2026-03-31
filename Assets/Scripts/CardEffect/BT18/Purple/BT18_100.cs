@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.BT18
                 string EffectDescription()
                 {
                     return
-                        "[Main] <Delay> ・ By digivolving 1 of your Digimon with [Lucemon] in its name into a Digimon card with [Lucemon] in its namefrom your trash with the digivolution cost reduced by 3, trash 1 Option card in your opponent's battle area.";
+                        "[Main] <Delay> ・ By digivolving 1 of your Digimon with [Lucemon] in its name into a Digimon card with [Lucemon] in its name from your trash with the digivolution cost reduced by 3, trash 1 Option card in your opponent's battle area.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

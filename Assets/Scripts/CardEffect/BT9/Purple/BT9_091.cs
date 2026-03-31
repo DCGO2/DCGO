@@ -28,12 +28,12 @@ public class BT9_091 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Purple))
+                    if (cardSource.HasCardColor(CardColor.Purple))
                     {
                         return true;
                     }
 
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
+                    if (cardSource.HasCardColor(CardColor.Yellow))
                     {
                         return true;
                     }

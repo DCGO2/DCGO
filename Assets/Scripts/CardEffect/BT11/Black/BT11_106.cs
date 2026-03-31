@@ -130,7 +130,7 @@ namespace DCGO.CardEffects.BT11
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Selcect 1 Digimon that will get effects.",
+                            "Select 1 Digimon that will get effects.",
                             "The opponent is selecting 1 Digimon that will get effects.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
@@ -225,7 +225,7 @@ namespace DCGO.CardEffects.BT11
                             {
                                 if (cardSource.IsDigimon)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Black))
+                                    if (cardSource.HasCardColor(CardColor.Black))
                                     {
                                         return true;
                                     }
