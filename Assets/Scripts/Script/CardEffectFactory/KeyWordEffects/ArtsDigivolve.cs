@@ -11,8 +11,11 @@ public partial class CardEffectFactory
     {
         if (card == null) return null;
         OptionResolutionClass artsDigivolutionClass = new();
+        artsDigivolutionClass.SetUpICardEffect("Arts Digivolve", CanUseCondition, card);
         artsDigivolutionClass.SetUpOptionResolutionClass(ResolutionCoroutine(), CanResolveCondition);
         return artsDigivolutionClass;
+
+        bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnExecutingArea(card);
 
         bool CanResolveCondition() => CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition);
 
