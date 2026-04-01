@@ -14,11 +14,11 @@ namespace DCGO.CardEffects.P
             #region Ignore Color Requirement
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.UseRequirements(card, HasMaquinamonInText));
+                cardEffects.Add(CardEffectFactory.UseRequirements(card, CardCondition));
 
-                bool HasMaquinamonInText(Permanent permanent)
+                bool CardCondition(CardSource cardSource)
                 {
-                    return permanent.TopCard.HasText("Maquinamon");
+                    return cardSource.HasText("Maquinamon");
                 }
             }
             #endregion

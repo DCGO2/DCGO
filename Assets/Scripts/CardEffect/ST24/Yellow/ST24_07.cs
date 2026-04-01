@@ -270,11 +270,11 @@ namespace DCGO.CardEffects.ST24
             #region Ignore Colour Requirement
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.UseRequirements(card, PermanentCondition));
+                cardEffects.Add(CardEffectFactory.UseRequirements(card, CardCondition));
 
-                bool PermanentCondition(Permanent permanent)
+                bool CardCondition(CardSource cardSource)
                 {
-                    return permanent.TopCard.EqualsTraits("DATA SQUAD");
+                    return cardSource.EqualsTraits("DATA SQUAD");
                 }
             }
             #endregion
