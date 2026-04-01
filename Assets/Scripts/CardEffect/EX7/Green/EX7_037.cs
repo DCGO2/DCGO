@@ -175,9 +175,9 @@ namespace DCGO.CardEffects.EX7
 
                     bool CanTargetConditionByPreSelectedList(List<CardSource> cardSources, CardSource cardSource)
                     {
-                        List<CardSource> concat = cardSources.Concat(new List<CardSource>() { cardSource }).ToList();
+                        if (cardSources.Count == 0) return true;
 
-                        return Combinations.GetDifferenetColorCardCount(concat) >= concat.Count;
+                        return cardSource.CardColors.Any(color1 => cardSources[0].CardColors.Any(color2 => color2 != color1));
                     }
 
                     bool CanEndSelectCondition(List<CardSource> cardSources)
