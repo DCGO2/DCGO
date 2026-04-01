@@ -14,13 +14,11 @@ namespace DCGO.CardEffects.ST24
             #region Ignore Color Requirement
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.UseRequirements(card, PermanentCondition));
+                cardEffects.Add(CardEffectFactory.UseRequirements(card, CardCondition));
 
-                bool PermanentCondition(Permanent permanent)
+                bool CardCondition(CardSource cardSource)
                 {
-                    return CardEffectCommons.IsOwnerPermanent(permanent, card)
-                        && permanent.TopCard.EqualsTraits("DATA SQUAD")
-                        && (permanent.IsDigimon || permanent.IsTamer);
+                    return cardSource.EqualsTraits("DATA SQUAD");
                 }
             }
             #endregion     
@@ -218,7 +216,7 @@ namespace DCGO.CardEffects.ST24
                         {
                             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
-                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass, false, true));
 
                             yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
 

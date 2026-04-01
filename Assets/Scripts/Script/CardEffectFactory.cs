@@ -719,17 +719,26 @@ public partial class CardEffectFactory
     #endregion
 
     #region Use Requirements
-    public static IgnoreColorConditionClass UseRequirements(CardSource card, Func<Permanent, bool> permanentCondition)
+    public static IgnoreColorConditionClass UseRequirements(CardSource card, Func<CardSource, bool> cardCondition)
     {
         IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
         ignoreColorConditionClass.SetUpICardEffect("Ignore color requirements", CanUseCondition, card);
         ignoreColorConditionClass.SetUpIgnoreColorConditionClass(cardCondition: CardCondition);
         return ignoreColorConditionClass;
 
+        bool PermanentCondition(Permanent permanent)
+        {
+            if (cardCondition == null)
+                return false;
+
+            // If it is confirmed that only Digimon and tamers should count, we can put that in here instead of in each individual condition
+            return CardEffectCommons.IsOwnerPermanent(permanent, card)
+                && cardCondition(permanent.TopCard); 
+        }
+
         bool CanUseCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanentCondition)
-                || CardEffectCommons.HasMatchConditionOwnersBreedingPermanent(card, permanentCondition);
+            return CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition);
         }
 
         bool CardCondition(CardSource cardSource)
