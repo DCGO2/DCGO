@@ -78,7 +78,7 @@ namespace DCGO.CardEffects.BT15
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Selcect 1 Digimon that will gain DP -3000 and effects.",
+                            "Select 1 Digimon that will gain DP -3000 and effects.",
                             "The opponent is selecting 1 Digimon that will gain DP -3000 and effects.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -209,7 +209,7 @@ namespace DCGO.CardEffects.BT15
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Selcect 1 Digimon that will gain DP -3000 and effects.",
+                            "Select 1 Digimon that will gain DP -3000 and effects.",
                             "The opponent is selecting 1 Digimon that will gain DP -3000 and effects.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

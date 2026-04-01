@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.ST17
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Aleternate Digivolution Condition
+            #region Alternate Digivolution Condition
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.ST17
 
                     if (cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Green))
+                        if (cardSource.HasCardColor(CardColor.Green))
                         {
                             return true;
                         }

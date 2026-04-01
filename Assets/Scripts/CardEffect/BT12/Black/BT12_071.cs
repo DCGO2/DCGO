@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.BT12
                         {
                             if (cardSource.HasPlayCost)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Black))
+                                if (cardSource.HasCardColor(CardColor.Black))
                                 {
                                     return true;
                                 }
@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.BT12
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Black))
+                        if (cardSource.HasCardColor(CardColor.Black))
                         {
                             if (cardSource.Level <= 4)
                             {

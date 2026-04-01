@@ -256,7 +256,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Purple) || cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.HasCardColor(CardColor.Purple) || cardSource.HasCardColor(CardColor.Yellow))
                         {
                             if (cardSource.CardDP <= 6000)
                             {
@@ -404,7 +404,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Purple) || cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.HasCardColor(CardColor.Purple) || cardSource.HasCardColor(CardColor.Yellow))
                         {
                             if (cardSource.CardDP <= 6000)
                             {

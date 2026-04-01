@@ -18,7 +18,7 @@ public class BT8_096 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.TopCard.CardColors.Count >= 2 || permanent.DigivolutionCards.Some((cardSource) => cardSource.CardColors.Count >= 2))
+                    if (permanent.TopCard.CardColors.Count >= 2 || permanent.DigivolutionCards.Some((cardSource) => cardSource.CardColors.Count >= 2 || cardSource.DualCardColors.Count >= 2))
                     {
                         return true;
                     }

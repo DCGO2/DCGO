@@ -80,7 +80,7 @@ public class BT9_087 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When one of your Digimon digivolves into a yellow or green Digimon, you may suspend this Tamer to have 1 of your opponentÅfs Digimon get -1000 DP until the end of your opponentÅfturn.";
+                return "[Your Turn] When one of your Digimon digivolves into a yellow or green Digimon, you may suspend this Tamer to have 1 of your opponent's Digimon get -1000 DP until the end of your opponent's turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

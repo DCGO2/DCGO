@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermamentCondition))
                     {
-                        #region Destory Enemy Digimon
+                        #region Destroy Enemy Digimon
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectPermamentCondition));

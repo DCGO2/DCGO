@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.EX7
                 string EffectDiscription()
                 {
                     return
-                        "[Main] Reveal Reveal the top 3 cards of your deck. Add 1 card with the [LIBERATOR] trait among them to the hand. Return the rest to the bottom of the deck. Then, 1 of your Digimon may digivolve into a Digimon card in your hand with the digivolution cost reduced by 4.";
+                        "[Main] Reveal the top 3 cards of your deck. Add 1 card with the [LIBERATOR] trait among them to the hand. Return the rest to the bottom of the deck. Then, 1 of your Digimon may digivolve into a Digimon card in your hand with the digivolution cost reduced by 4.";
                 }
 
                 bool IsLiberatorTraitCardCondition(CardSource cardSource)

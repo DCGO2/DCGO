@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.EX1
                         {
                             if (cardSource.Owner == card.Owner)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Purple))
+                                if (cardSource.HasCardColor(CardColor.Purple))
                                 {
                                     if (cardSource.Level <= 4)
                                     {

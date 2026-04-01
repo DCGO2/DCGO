@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.EX11
 
             #region Shared OP / WD
 
-            string SharedEffectName = "Flip security card face up, Dedigivolve 1. Then Digivolve on their turn";
+            string SharedEffectName = "Flip security card face up, De-digivolve 1. Then Digivolve on their turn";
 
             string SharedEffectDescription(string tag) => $"[{tag}] Flip your opponent's top face-down security card face up and <De-Digivolve 1> 1 of their Digimon. Then, if it's their turn, this Digimon may digivolve into [Invisimon] in the hand without paying the cost.";
 

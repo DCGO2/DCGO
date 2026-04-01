@@ -171,7 +171,7 @@ namespace DCGO.CardEffects.BT12
                         
                         if (GManager.instance.userSelectionManager.SelectedIntValue == 0)
                         {
-                            #region êReduce Cost
+                            #region ÔøΩReduce Cost
 
                             ChangeCostClass changeCostClass = new ChangeCostClass();
                             changeCostClass.SetUpICardEffect("Digivolution Cost -3", CanUseCondition1, card);

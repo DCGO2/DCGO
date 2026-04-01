@@ -39,7 +39,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Black) && cardSource.Level <=4)
+                    if (cardSource.HasCardColor(CardColor.Black) && cardSource.Level <=4)
                     {
                         if (CardEffectCommons.IsExistOnBattleArea(card))
                         {

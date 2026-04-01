@@ -33,12 +33,12 @@ public class ST10_15 : CEntity_Effect
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Yellow))
+                            if (cardSource.HasCardColor(CardColor.Yellow))
                             {
                                 return true;
                             }
 
-                            if (cardSource.CardColors.Contains(CardColor.Purple))
+                            if (cardSource.HasCardColor(CardColor.Purple))
                             {
                                 return true;
                             }

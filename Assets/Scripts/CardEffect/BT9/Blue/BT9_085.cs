@@ -81,7 +81,7 @@ public class BT9_085 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When one of your blue or red Digimon becomes unsuspended, you may suspend this Tamer to return 1 of your opponentfs level 3 Digimon to its ownerfs hand.";
+                return "[Your Turn] When one of your blue or red Digimon becomes unsuspended, you may suspend this Tamer to return 1 of your opponent's level 3 Digimon to its owner's hand.";
             }
 
             bool PermanentCondition(Permanent permanent)

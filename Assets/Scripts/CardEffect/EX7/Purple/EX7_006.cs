@@ -9,7 +9,7 @@ namespace DCGO.CardEffects.EX7
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region When Attaking
+            #region When Attacking
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();

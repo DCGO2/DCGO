@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.BT20
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alt Digivovle Cost
+            #region Alt Digivolve Cost
 
             if (timing == EffectTiming.None)
             {
@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnAddDigivolutionCards)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Activate [When Digiolving] effect, Then may attack", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Activate [When Digivolving] effect, Then may attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

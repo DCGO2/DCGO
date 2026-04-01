@@ -113,7 +113,7 @@ namespace DCGO.CardEffects.EX7
                 string EffectDescription()
                 {
                     return
-                        "[All Turns][Once Per Turn] When this Digimon would leave the battle area other than by one of your effects, by deleting 1 of your Tokens or 1 of your other Digimon with the [Puppet] trait trait, prevent it from leaving.";
+                        "[All Turns][Once Per Turn] When this Digimon would leave the battle area other than by one of your effects, by deleting 1 of your Tokens or 1 of your other Digimon with the [Puppet] trait, prevent it from leaving.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

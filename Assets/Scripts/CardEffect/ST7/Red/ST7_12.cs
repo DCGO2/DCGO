@@ -113,7 +113,7 @@ public class ST7_12 : CEntity_Effect
         if (timing == EffectTiming.SecuritySkill)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect($"Delete Digimons whose total DP adds up to 8000 or less", CanUseCondition, card);
+            activateClass.SetUpICardEffect($"Delete Digimon whose total DP adds up to 8000 or less", CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
             activateClass.SetIsSecurityEffect(true);
             cardEffects.Add(activateClass);

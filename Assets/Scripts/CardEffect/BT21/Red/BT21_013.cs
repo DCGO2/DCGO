@@ -299,7 +299,7 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (source.EqualsTraits("Hybrid") || source.EqualsTraits("Hero"))
                         {
-                            if (source.CardColors.Contains(CardColor.Red))
+                            if (source.HasCardColor(CardColor.Red))
                             {
                                 return true;
                             }

@@ -17,11 +17,10 @@ namespace DCGO.CardEffects.AD1
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel5
-                        && targetPermanent.TopCard.EqualsTraits("Hero");
+                    return targetPermanent.TopCard.EqualsTraits("Hero");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 5, permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
             if (timing == EffectTiming.None)
             {
@@ -110,7 +109,7 @@ namespace DCGO.CardEffects.AD1
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
                 activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), 1, false, SharedEffectDescription("When Attacking"));
-                
+                activateClass.SetHashString(SharedHashString);
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -140,7 +139,7 @@ namespace DCGO.CardEffects.AD1
                             || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsDigimonCondition));
                 }
 
-                bool IsDigimonCondition(Permanent permanent) => permanent.IsDigimon;
+                bool IsDigimonCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
 
                 bool IsOpponentsDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
@@ -183,7 +182,7 @@ namespace DCGO.CardEffects.AD1
 
                         List<SelectionElement<bool>> command_SelectCommands = new List<SelectionElement<bool>>()
                         {
-                            new SelectionElement<bool>(message: $"Yes", value: false, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"Yes", value: true, spriteIndex: 0),
                             new SelectionElement<bool>(message: $"No", value: false, spriteIndex: 1),
                         };
 

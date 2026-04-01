@@ -43,7 +43,7 @@ public class BT4_066 : CEntity_Effect
                 isInheritedEffect: false,
                 card: card,
                 condition: Condition,
-                effectName: () => "Your black Digimons gain DP +1000"));
+                effectName: () => "Your black Digimon gain DP +1000"));
         }
 
         return cardEffects;

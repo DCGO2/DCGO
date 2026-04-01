@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT14
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Purple))
                         {
                             if (cardSource.CardTraits.Contains("Dark Animal"))
                             {
@@ -137,7 +137,7 @@ namespace DCGO.CardEffects.BT14
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Purple))
                         {
                             if (cardSource.CardTraits.Contains("Dark Animal"))
                             {

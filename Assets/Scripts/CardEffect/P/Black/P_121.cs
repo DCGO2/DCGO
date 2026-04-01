@@ -26,20 +26,8 @@ public class P_121 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Count >= 2)
-                {
-                    if (cardSource.CardColors.Contains(CardColor.Black))
-                    {
-                        return true;
-                    }
-
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return (cardSource.CardColors.Count >= 2 && (cardSource.CardColors.Contains(CardColor.Black) || cardSource.CardColors.Contains(CardColor.Yellow)))
+                    || (cardSource.DualCardColors.Count >= 2 && (cardSource.DualCardColors.Contains(CardColor.Black) || cardSource.DualCardColors.Contains(CardColor.Yellow)));
             }
 
             bool CanSelectCardCondition1(CardSource cardSource)

@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.BT17
                      if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass, 
                                 root: SelectCardEffect.Root.Hand, isBreedingArea: false, isPlayOption: false, fixedCost: 2))
                         {
-                            if (cardSource.IsTamer && cardSource.CardColors.Contains(CardColor.White) && cardSource.GetCostItself <= 4)
+                            if (cardSource.IsTamer && cardSource.HasCardColor(CardColor.White) && cardSource.GetCostItself <= 4)
                                 return true;
 
                             if (cardSource.IsDigimon && cardSource.Level <= 5 && cardSource.EqualsCardName("Eosmon"))

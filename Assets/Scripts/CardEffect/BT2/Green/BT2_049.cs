@@ -15,7 +15,7 @@ public class BT2_049 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Suspend 1 Digimon and make opponent's all Digimons impossible to unsuspend", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Suspend 1 Digimon and make opponent's all Digimon impossible to unsuspend", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

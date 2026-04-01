@@ -145,7 +145,7 @@ namespace DCGO.CardEffects.BT23
                 Permanent attackingPermament = null;
 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By deleting this digimon, delete 1 level 6 or lower digimon. if you didnt delete, you may end the attack", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By deleting this digimon, delete 1 level 6 or lower digimon. if you didn't delete, you may end the attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -211,7 +211,7 @@ namespace DCGO.CardEffects.BT23
                         {
                             Permanent selectedPermament = null;
 
-                            #region Select Opponent Permament
+                            #region Select Opponent Permanent
 
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));

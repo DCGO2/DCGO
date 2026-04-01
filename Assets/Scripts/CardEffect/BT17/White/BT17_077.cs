@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return 1 to bottom of deck, unsusped this digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return 1 to bottom of deck, unsuspend this digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.BT17
             #region On Play/When Digivolving Shared
             bool HasWhiteLevelSeven(CardSource source)
             {
-                if (source.CardColors.Contains(CardColor.White))
+                if (source.HasCardColor(CardColor.White))
                     return source.HasLevel && source.Level == 7;
 
                 return false;

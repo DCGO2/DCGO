@@ -12,7 +12,7 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region ignoring colours
+            #region ignoring colors
 
             if (timing == EffectTiming.None)
             {
@@ -111,7 +111,7 @@ namespace DCGO.CardEffects.P
                 {
                     var digimonColours = card.Owner.GetFieldPermanents()
                         .Filter(x => x.IsDigimon)
-                        .SelectMany(digimon => digimon.TopCard.BaseCardColors).Distinct();
+                        .SelectMany(digimon => digimon.TopCard.CardColors).Distinct();
 
                     return cardSource.IsTamer
                         && cardSource.BaseCardColors.Exists(x => digimonColours.Contains(x))
@@ -251,6 +251,7 @@ namespace DCGO.CardEffects.P
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("you may play 1 3 cost or less digimon from hand or trash, then add this card to hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

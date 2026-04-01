@@ -16,6 +16,7 @@ public static class OptionUtility
     public static void OnToggleChanged(bool value, Toggle toggle, UnityAction<bool> onToggleChanged, ref bool settingRef, UnityAction saveAction)
     {
         if (toggle == null) return;
+        if (!toggle.interactable) return;
         if (saveAction == null) return;
 
         toggle.onValueChanged.RemoveAllListeners();

@@ -66,7 +66,7 @@ namespace DCGO.CardEffects.BT15
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow) && cardSource.Level <= 4)
+                        if (cardSource.HasCardColor(CardColor.Yellow) && cardSource.Level <= 4)
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {

@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Blue))
+                        if (cardSource.HasCardColor(CardColor.Blue))
                         {
                             return true;
                         }
@@ -124,7 +124,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Blue))
+                        if (cardSource.HasCardColor(CardColor.Blue))
                         {
                             return true;
                         }

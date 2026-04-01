@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT15
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    return !cardSource.CardColors.Contains(CardColor.White);
+                    return !cardSource.HasCardColor(CardColor.White);
                 }
 
                 cardEffects.Add(CardEffectFactory.CanNotDigivolveStaticSelfEffect(
@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.BT15
 
             string SharedEffectName()
             {
-                return "Delete 1 unsuspened Digimon.";
+                return "Delete 1 unsuspended Digimon.";
             }
 
             string SharedEffectDescription(string tag)

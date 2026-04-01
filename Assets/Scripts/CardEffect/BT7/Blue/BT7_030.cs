@@ -15,7 +15,7 @@ public class BT7_030 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Trash digivolution cards and Draw 2 for each opponent's Digimons with no digivolution cards", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Trash digivolution cards and Draw 2 for each opponent's Digimon with no digivolution cards", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -103,7 +103,7 @@ public class BT7_030 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Blue))
+                    if (cardSource.HasCardColor(CardColor.Blue))
                     {
                         if (cardSource.Level <= 4)
                         {

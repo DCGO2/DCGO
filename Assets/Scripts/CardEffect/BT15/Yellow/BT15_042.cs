@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.BT15
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
+                    if (cardSource.HasCardColor(CardColor.Yellow))
                     {
                         return true;
                     }

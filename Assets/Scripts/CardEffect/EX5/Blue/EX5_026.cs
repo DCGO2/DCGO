@@ -27,7 +27,7 @@ public class EX5_026 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Opponent's Digimons gain effects", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Opponent's Digimon gain effects", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

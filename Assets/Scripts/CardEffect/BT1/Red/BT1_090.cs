@@ -21,7 +21,7 @@ public class BT1_090 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Gain 2 memory. At end of turnÅClose 2 memory.";
+                return "[Main] Gain 2 memory. At end of turn, lose 2 memory.";
             }
             bool CanUseCondition(Hashtable hashtable)
             {

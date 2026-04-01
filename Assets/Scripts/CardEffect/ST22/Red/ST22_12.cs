@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.ST22
                 bool CanSelectCardConditionShared(CardSource source)
                 {
                     return source.IsDigimon &&
-                           source.CanLinkToTargetPermanent(card.PermanentOfThisCard(), false) &&
+                           source.CanLinkToTargetPermanent(card.PermanentOfThisCard(), true) &&
                            (source.ContainsTraits("Social") || source.ContainsTraits("Navi") || source.ContainsTraits("Tool"));
                 }
 
@@ -104,6 +104,27 @@ namespace DCGO.CardEffects.ST22
                 {
                     bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardConditionShared);
                     bool canSelectSources = card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)).Count > 0;
+
+                    #region Link Cost Reduction
+                    ICardEffect GetCardEffect(EffectTiming _timing)
+                    {
+                        if (_timing == EffectTiming.None)
+                        {
+                            return CardEffectFactory.GrantedReduceLinkCostClass(
+                                card: card, 
+                                reducedCost: 2,
+                                cardSourceCondition: _ => true,
+                                permanentCondition: _ => true,
+                                rootCondition: _ => true
+                            );
+                        }
+
+                        return null;
+                    }
+
+                    card.Owner.UntilCalculateFixedCostEffect.Add(GetCardEffect);
+                    #endregion
+
                     if (canSelectHand || canSelectSources)
                     {
                         if (canSelectHand && canSelectSources)
@@ -189,11 +210,13 @@ namespace DCGO.CardEffects.ST22
 
                         if (selectedCard != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-Mathf.Max(0,selectedCard.linkCondition.cost - 2), activateClass));
-
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCard, activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(new ILinkCard(true, selectedCard, card.PermanentOfThisCard(), activateClass).LinkCard());
                         }
                     }
+
+                    #region Remove Link Cost Reduction
+                    card.Owner.UntilCalculateFixedCostEffect.Remove(GetCardEffect);
+                    #endregion
                 }
             }
 

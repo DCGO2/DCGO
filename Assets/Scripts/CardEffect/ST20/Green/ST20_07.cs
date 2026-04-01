@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.ST20
             }
             #endregion
 
-            #region Can't reduce digivoluion costs
+            #region Can't reduce digivolution costs
             if (timing == EffectTiming.None)
             {
                 CannotReduceCostClass cannotReduceCostClass = new CannotReduceCostClass();

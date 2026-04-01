@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.EX4
                         {
                             if (cardSource.Owner == card.Owner)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Green))
+                                if (cardSource.HasCardColor(CardColor.Green))
                                 {
                                     return true;
                                 }

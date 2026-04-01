@@ -140,7 +140,7 @@ namespace DCGO.CardEffects.BT15
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When an effect suspends another Digimon or Tamer, if this Digimon has a Tamer card with the [DigiPolice] trait in it's digivolution cards, you may digivole this Digimon into a Digimon card with the [Beast Dragon] or [DigiPolice] trait from your hand without paying the cost.";
+                    return "[All Turns] When an effect suspends another Digimon or Tamer, if this Digimon has a Tamer card with the [DigiPolice] trait in it's digivolution cards, you may digivolve this Digimon into a Digimon card with the [Beast Dragon] or [DigiPolice] trait from your hand without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

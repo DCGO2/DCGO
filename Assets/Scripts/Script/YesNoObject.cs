@@ -26,10 +26,7 @@ public class YesNoObject : MonoBehaviour
         for (int i = 0; i < Buttons.Count; i++)
         {
             Buttons[i].OnClickAction = null;
-        }
 
-        for (int i = 0; i < Buttons.Count; i++)
-        {
             if (i < OnClickActions.Count)
             {
                 Buttons[i].gameObject.SetActive(true);
@@ -40,6 +37,9 @@ public class YesNoObject : MonoBehaviour
 
                 Buttons[i].OnClickAction = () => 
                 {
+                    if (!Buttons[k].GetComponent<Button>().interactable)
+                        return;
+
                     OnClickActions[k]?.Invoke();
                     
                     if(this.CloseOnButtonClicked)

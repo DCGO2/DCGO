@@ -156,7 +156,7 @@ namespace DCGO.CardEffects.BT23
                 {
                     return cardSource.IsTamer
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass)
-                        && (cardSource.CardColors.Contains(CardColor.Red) || cardSource.HasCSTraits);
+                        && (cardSource.HasCardColor(CardColor.Red) || cardSource.HasCSTraits);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

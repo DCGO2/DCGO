@@ -45,8 +45,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card)
-                        && targetPermanent.TopCard.EqualsCardName("MarineBullmon");
+                    return targetPermanent.TopCard.EqualsCardName("MarineBullmon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

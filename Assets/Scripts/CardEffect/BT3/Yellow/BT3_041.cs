@@ -32,7 +32,7 @@ public class BT3_041 : CEntity_Effect
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Yellow))
+                            if (cardSource.HasCardColor(CardColor.Yellow))
                             {
                                 return true;
                             }

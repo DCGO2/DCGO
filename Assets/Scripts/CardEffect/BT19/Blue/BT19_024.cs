@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT19
             {
                 bool SourceCondition(CardSource source)
                 {
-                    return source.CardColors.Contains(CardColor.Blue) && source.HasLevel && source.IsLevel4;
+                    return source.HasCardColor(CardColor.Blue) && source.HasLevel && source.IsLevel4;
                 }
 
                 string[] decodeStrings = { "(Blue Lv.4)", "Blue Level 4" };

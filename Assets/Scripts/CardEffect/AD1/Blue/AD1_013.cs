@@ -18,12 +18,11 @@ namespace DCGO.CardEffects.AD1
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel5
-                        && (targetPermanent.TopCard.EqualsTraits("Blue Flare")
-                            || targetPermanent.TopCard.EqualsTraits("Xros Heart"));
+                    return targetPermanent.TopCard.EqualsTraits("Blue Flare")
+                            || targetPermanent.TopCard.EqualsTraits("Xros Heart");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 5, permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
 
             #endregion
@@ -122,7 +121,8 @@ namespace DCGO.CardEffects.AD1
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card)
+                        && !CardEffectCommons.IsLeavingForDigiXros(hashtable);
                 }
 
                 bool CanSelectSourceCardCondition(CardSource cardSource)
@@ -194,7 +194,9 @@ namespace DCGO.CardEffects.AD1
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && (card.PermanentOfThisCard().TopCard.EqualsTraits("Blue Flare")
+                            || card.PermanentOfThisCard().TopCard.EqualsTraits("Xros Heart"));
                 }
 
                 int changeDP()

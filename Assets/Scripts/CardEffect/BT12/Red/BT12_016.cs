@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.BT12
                 activateClass.SetUpICardEffect("Memory +2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("Meory+2_BT12_016");
+                activateClass.SetHashString("Memory+2_BT12_016");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

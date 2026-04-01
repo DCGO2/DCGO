@@ -138,7 +138,10 @@ namespace DCGO.CardEffects.EX10
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            selectedPermamentToSource = permanent;
+                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                            {
+                                selectedPermamentToSource = permanent;
+                            }
                             yield return null;
                         }
 
@@ -160,7 +163,7 @@ namespace DCGO.CardEffects.EX10
                             {
                                 Permanent selectedPermanent = null;
 
-                                #region Select Enemy Permament to add source
+                                #region Select Enemy Permanent to add source
 
                                 SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
                                 int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsEnemyPermanent));
@@ -269,7 +272,10 @@ namespace DCGO.CardEffects.EX10
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            selectedPermamentToSource = permanent;
+                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                            {
+                                selectedPermamentToSource = permanent;
+                            }
                             yield return null;
                         }
 
@@ -291,7 +297,7 @@ namespace DCGO.CardEffects.EX10
                             {
                                 Permanent selectedPermanent = null;
 
-                                #region Select Enemy Permament to add source
+                                #region Select Enemy Permanent to add source
 
                                 SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
                                 int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsEnemyPermanent));

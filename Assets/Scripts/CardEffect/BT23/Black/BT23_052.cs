@@ -142,7 +142,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[When Digivlving] 1 of your opponent's Digimon can't attack players until their turn ends.";
+                    return "[When Digivolving] 1 of your opponent's Digimon can't attack players until their turn ends.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
