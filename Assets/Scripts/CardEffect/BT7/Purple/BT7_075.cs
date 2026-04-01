@@ -71,7 +71,7 @@ public class BT7_075 : CEntity_Effect
             {
                 if (cardSource.IsTamer)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Purple))
+                    if (cardSource.HasCardColor(CardColor.Purple))
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {

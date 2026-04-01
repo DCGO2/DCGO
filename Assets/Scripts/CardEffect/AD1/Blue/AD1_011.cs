@@ -16,12 +16,11 @@ namespace DCGO.CardEffects.AD1
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel4
-                        && (targetPermanent.TopCard.EqualsTraits("Free")
-                            || targetPermanent.TopCard.EqualsTraits("Hero"));
+                    return targetPermanent.TopCard.EqualsTraits("Free")
+                            || targetPermanent.TopCard.EqualsTraits("Hero");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 4, permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
             #endregion
 
@@ -127,7 +126,7 @@ namespace DCGO.CardEffects.AD1
                 string EffectDescription()
                     => "[When Attacking] This Digimon may digivolve into a Digimon card with [Imperialdramon] in its name in the hand with the digivolution cost reduced by 2.";
 
-                bool CanSelectCardCondition(CardSource cardSource) => cardSource.CardNames.Contains("Imperialdramon");
+                bool CanSelectCardCondition(CardSource cardSource) => cardSource.ContainsCardName("Imperialdramon");
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

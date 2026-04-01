@@ -184,7 +184,7 @@ namespace DCGO.CardEffects.BT13
 
                 string EffectDiscription()
                 {
-                    return "[End of OpponentÅfs Turn] Choose 1 of your opponent's Digimon. Your opponent attacks with the chosen Digimon.";
+                    return "[End of Opponent's Turn] Choose 1 of your opponent's Digimon. Your opponent attacks with the chosen Digimon.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

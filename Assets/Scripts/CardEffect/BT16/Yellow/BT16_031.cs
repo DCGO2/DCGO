@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardToReturnToHand(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Count == 2 && (cardSource.CardColors.Contains(CardColor.Red) || cardSource.CardColors.Contains(CardColor.Purple)))
+                    if (cardSource.CardColors.Count == 2 && (cardSource.HasCardColor(CardColor.Red) || cardSource.HasCardColor(CardColor.Purple)))
                     {
                         if (cardSource.HasLevel && cardSource.Level <= 6)
                         {
@@ -203,7 +203,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardToReturnToHand(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Count == 2 && (cardSource.CardColors.Contains(CardColor.Red) || cardSource.CardColors.Contains(CardColor.Purple)))
+                    if (cardSource.CardColors.Count == 2 && (cardSource.HasCardColor(CardColor.Red) || cardSource.HasCardColor(CardColor.Purple)))
                     {
                         if (cardSource.HasLevel && cardSource.Level <= 6)
                         {

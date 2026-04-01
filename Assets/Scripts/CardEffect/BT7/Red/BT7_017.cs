@@ -38,7 +38,7 @@ public class BT7_017 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Place a card in digivolution cards to delete Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Place a card in digivolution cards to delete Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -59,12 +59,12 @@ public class BT7_017 : CEntity_Effect
                             {
                                 if (cardSource.CardTraits.Contains("Cyborg"))
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Red))
+                                    if (cardSource.HasCardColor(CardColor.Red))
                                     {
                                         return true;
                                     }
 
-                                    if (cardSource.CardColors.Contains(CardColor.Black))
+                                    if (cardSource.HasCardColor(CardColor.Black))
                                     {
                                         return true;
                                     }
@@ -141,7 +141,7 @@ public class BT7_017 : CEntity_Effect
                             {
                                 GManager.instance.commandText.OpenCommandText("The opponent is choosing from which area to place a card in digivolution cards.");
 
-                                #region AIÉÇÅ[Éh
+                                #region AIÔøΩÔøΩÔøΩ[ÔøΩh
                                 if (GManager.instance.IsAI)
                                 {
                                     SetFromHand(RandomUtility.IsSucceedProbability(0.5f));

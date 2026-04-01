@@ -111,7 +111,7 @@ namespace DCGO.CardEffects.BT18
                             {
                                 if (cardSource.Level <= 4)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Red))
+                                    if (cardSource.HasCardColor(CardColor.Red))
                                     {
                                         if (cardSource.HasLevel)
                                         {

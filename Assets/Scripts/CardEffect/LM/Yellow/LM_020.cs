@@ -214,7 +214,7 @@ namespace DCGO.CardEffects.LM
                     selectedCategory = (CardKind)actionID;
 
                     if(!card.Owner.isYou)
-                        GManager.instance.commandText.OpenCommandText($"The opponent has choosen to use: {selectedCategory}.");
+                        GManager.instance.commandText.OpenCommandText($"The opponent has chosen to use: {selectedCategory}.");
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
                         revealCount: 1,
@@ -236,7 +236,7 @@ namespace DCGO.CardEffects.LM
                     {
                         GManager.instance.commandText.CloseCommandText();
 
-                        if (revealedCards[0].CardKind.Equals(selectedCategory))
+                        if (revealedCards[0].CardKinds.Contains(selectedCategory))
                         {
                             CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
                             canNotAffectedClass.SetUpICardEffect($"Isn't affected by opponent's {selectedCategory}'s effects", CanUseCondition, card);

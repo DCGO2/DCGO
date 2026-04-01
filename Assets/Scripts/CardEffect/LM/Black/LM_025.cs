@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardColors.Contains(CardColor.Black) && cardSource.IsTamer &&
+                    return cardSource.HasCardColor(CardColor.Black) && cardSource.IsTamer &&
                            cardSource.HasPlayCost && cardSource.GetCostItself <= 4 &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
@@ -158,7 +158,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardColors.Contains(CardColor.Black) && cardSource.IsTamer &&
+                    return cardSource.HasCardColor(CardColor.Black) && cardSource.IsTamer &&
                            cardSource.HasPlayCost && cardSource.GetCostItself <= 4 &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }

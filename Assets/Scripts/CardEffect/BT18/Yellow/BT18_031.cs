@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanSelectTamerCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardColors.Contains(CardColor.Yellow) && cardSource.IsTamer && cardSource.HasInheritedEffect;
+                    return cardSource.HasCardColor(CardColor.Yellow) && cardSource.IsTamer && cardSource.HasInheritedEffect;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

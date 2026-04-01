@@ -15,7 +15,7 @@ public class BT4_114 : CEntity_Effect
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Unsuspend Digimons", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Unsuspend Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetHashString("Unsuspend_BT4_114");
             cardEffects.Add(activateClass);
@@ -110,7 +110,7 @@ public class BT4_114 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Blue))
+                    if (cardSource.HasCardColor(CardColor.Blue))
                     {
                         if (cardSource.Level <= 4)
                         {

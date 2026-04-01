@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT18
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play Digimons from digivolution cards", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play Digimon from digivolution cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT18
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
-                            if (cardSource.Level == 3 && cardSource.CardColors.Contains(CardColor.Blue))
+                            if (cardSource.Level == 3 && cardSource.HasCardColor(CardColor.Blue))
                             {
                                 if (cardSource.HasLevel)
                                 {

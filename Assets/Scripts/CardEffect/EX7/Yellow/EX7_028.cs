@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.EX7
                     return cardSource.IsDigimon &&
                            cardSource.HasPlayCost &&
                            cardSource.GetCostItself <= 4 &&
-                           (cardSource.CardColors.Contains(CardColor.Yellow) ||
+                           (cardSource.HasCardColor(CardColor.Yellow) ||
                             cardSource.ContainsTraits("NSp"));
                 }
 

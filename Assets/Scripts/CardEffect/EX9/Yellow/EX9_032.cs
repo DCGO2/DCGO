@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.EX9
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By Deleting a token or [Puppet] digimon, digivolve into a [puppet] in hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By deleting a token or [Puppet] digimon, digivolve into a [Puppet] in hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -204,7 +204,7 @@ namespace DCGO.CardEffects.EX9
 
             #endregion
 
-            #region Ess
+            #region ESS
 
             if (timing == EffectTiming.WhenRemoveField)
             {
@@ -217,7 +217,7 @@ namespace DCGO.CardEffects.EX9
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] [Once Per Turn] When this Digimon would leave the battle area other than by your effects, by deleting 1 of your Tokens or other [Puppet] trait trait Digimon, prevent it from leaving.";
+                    return "[All Turns] [Once Per Turn] When this Digimon would leave the battle area other than by your effects, by deleting 1 of your Tokens or other [Puppet] trait Digimon, prevent it from leaving.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

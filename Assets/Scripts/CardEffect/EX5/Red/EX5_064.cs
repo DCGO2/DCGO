@@ -22,7 +22,7 @@ public class EX5_064 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] By suspending this Tamer and placing the top top card of one of your [Light Fang]/[Night Claw] trait Digimon as that Digimon's bottom digivolution card, 1 of your Digimon may digivolve into a Digimon card in your hand without paying the cost.";
+                return "[On Play] By suspending this Tamer and placing the top card of one of your [Light Fang]/[Night Claw] trait Digimon as that Digimon's bottom digivolution card, 1 of your Digimon may digivolve into a Digimon card in your hand without paying the cost.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -221,7 +221,7 @@ public class EX5_064 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] By suspending this Tamer and placing the top top card of one of your [Light Fang]/[Night Claw] trait Digimon as that Digimon's bottom digivolution card, 1 of your Digimon may digivolve into a Digimon card in your hand without paying the cost.";
+                return "[Main] By suspending this Tamer and placing the top card of one of your [Light Fang]/[Night Claw] trait Digimon as that Digimon's bottom digivolution card, 1 of your Digimon may digivolve into a Digimon card in your hand without paying the cost.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

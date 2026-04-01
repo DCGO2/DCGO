@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectCardToDigivolveInto(CardSource cardSource)
                 {
-                    return cardSource.CardColors.Contains(CardColor.Yellow) &&
+                    return cardSource.HasCardColor(CardColor.Yellow) &&
                            cardSource.ContainsCardName("RizeGreymon") &&
                            cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
                 }

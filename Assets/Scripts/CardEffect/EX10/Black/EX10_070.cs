@@ -10,7 +10,7 @@ namespace DCGO.CardEffects.EX10
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Ignore Color Requirment
+            #region Ignore Color Requirement
 
             if (timing == EffectTiming.None)
             {

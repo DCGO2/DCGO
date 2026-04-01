@@ -31,7 +31,7 @@ public class BT9_055 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Suspend 1 of your opponent's Digimon. Then, if this Digimon is attacking, you may switch the target of attack to 1 of your opponentÅfs suspended Digimon.";
+                return "[When Digivolving] Suspend 1 of your opponent's Digimon. Then, if this Digimon is attacking, you may switch the target of attack to 1 of your opponent's suspended Digimon.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -159,7 +159,7 @@ public class BT9_055 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[End of Attack][Once Per Turn] If [GranKuwagamon] or [X Antibody] is in this DigimonÅfs digivolution cards, suspend 1 of your opponentÅfs Digimon and unsuspend this Digimon.";
+                return "[End of Attack][Once Per Turn] If [GranKuwagamon] or [X Antibody] is in this Digimon's digivolution cards, suspend 1 of your opponent's Digimon and unsuspend this Digimon.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

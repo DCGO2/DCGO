@@ -22,7 +22,7 @@ public class BT2_097 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] 3 of your opponentÅfs level 3 Digimon get -4000 DP for the turn.";
+                return "[Main] 3 of your opponent's level 3 Digimon get -4000 DP for the turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -70,7 +70,7 @@ public class BT2_097 : CEntity_Effect
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select Digimons to DP -4000.", "The opponent is selecting Digimons to DP -4000.");
+                    selectPermanentEffect.SetUpCustomMessage("Select Digimon to DP -4000.", "The opponent is selecting Digimon to DP -4000.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -84,7 +84,7 @@ public class BT2_097 : CEntity_Effect
 
         if (timing == EffectTiming.SecuritySkill)
         {
-            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Opponent's 3 Digimons get DP -4000");
+            CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Opponent's 3 Digimon get DP -4000");
         }
 
         return cardEffects;

@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.BT13
                     {
                         if (cardSource.HasPlayCost)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Red))
+                            if (cardSource.HasCardColor(CardColor.Red))
                             {
                                 if (cardSource.IsTamer)
                                 {
@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.BT13
                     {
                         if (cardSource.HasPlayCost)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Red))
+                            if (cardSource.HasCardColor(CardColor.Red))
                             {
                                 if (cardSource.IsTamer)
                                 {

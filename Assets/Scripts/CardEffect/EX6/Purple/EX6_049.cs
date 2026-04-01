@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.EX6
 
                 string EffectDiscription()
                 {
-                    return "[On Play] If your opponent has 5 or fewer cards in their hand, delete 1 of your oppoennt's level 3 Digimon. If your opponent has 7 or more cards in their hand, your opponent trashes 1 card in their hand.";
+                    return "[On Play] If your opponent has 5 or fewer cards in their hand, delete 1 of your opponent's level 3 Digimon. If your opponent has 7 or more cards in their hand, your opponent trashes 1 card in their hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.EX6
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] If your opponent has 5 or fewer cards in their hand, delete 1 of your oppoennt's level 3 Digimon. If your opponent has 7 or more cards in their hand, your opponent trashes 1 card in their hand.";
+                    return "[When Digivolving] If your opponent has 5 or fewer cards in their hand, delete 1 of your opponent's level 3 Digimon. If your opponent has 7 or more cards in their hand, your opponent trashes 1 card in their hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

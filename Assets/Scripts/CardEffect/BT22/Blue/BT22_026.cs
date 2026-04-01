@@ -55,7 +55,8 @@ namespace DCGO.CardEffects.BT22
                 bool IsGabumon(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.TopCard.EqualsCardName("Gabumon");
+                           permanent.TopCard.EqualsCardName("Gabumon") &&
+                           card.CanPlayCardTargetFrame(permanent.PermanentFrame, true, activateClass, fixedCost: 6, ignore: CardEffectCommons.IgnoreRequirement.All);
                 }
 
                 bool IsMetalGarurumon(CardSource cardSource)
@@ -79,7 +80,7 @@ namespace DCGO.CardEffects.BT22
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -111,7 +112,9 @@ namespace DCGO.CardEffects.BT22
                                 isHand: true,
                                 activateClass: activateClass,
                                 successProcess: null,
-                                failedProcess: OnFail()));
+                                failedProcess: OnFail(),
+                                isOptional: false,
+                                ignoreRequirements: CardEffectCommons.IgnoreRequirement.All));
 
                             IEnumerator OnFail()
                             {

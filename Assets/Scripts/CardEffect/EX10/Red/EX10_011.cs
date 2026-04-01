@@ -209,7 +209,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 2 unsuspened Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 2 unsuspended Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), 1, false, EffectDescription());
                 activateClass.SetHashString("Delete2_EX10-011");
                 cardEffects.Add(activateClass);
@@ -227,12 +227,12 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
-            #region When Digivlving
+            #region When Digivolving
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 2 unsuspened Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 2 unsuspended Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), 1, false, EffectDescription());
                 activateClass.SetHashString("Delete2_EX10-011");
                 cardEffects.Add(activateClass);
@@ -256,7 +256,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 2 unsuspened Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 2 unsuspended Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), 1, false, EffectDescription());
                 activateClass.SetHashString("Delete2_EX10-011");
                 cardEffects.Add(activateClass);

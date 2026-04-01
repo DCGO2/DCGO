@@ -49,10 +49,11 @@ namespace DCGO.CardEffects.AD1
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
-                bool IsAdventureDigimon(CardSource cardSource)
+                bool IsAdventureDigimon(CardSource cardSource, int reduction)
                 {
                     return cardSource.HasPlayCost
-                        && cardSource.EqualsTraits("ADVENTURE");
+                        && cardSource.EqualsTraits("ADVENTURE")
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: Math.Max(0, cardSource.GetCostItself - reduction));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -65,25 +66,25 @@ namespace DCGO.CardEffects.AD1
 
                     IEnumerator SuccessProcess(List<Permanent> suspendedPermaments)
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsAdventureDigimon))
+                        List<CardSource> tamerCards = new List<CardSource>();
+
+                        foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
                         {
-                            List<CardSource> tamerCards = new List<CardSource>();
-
-                            foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
+                            if (permanent.IsTamer)
                             {
-                                if (permanent.IsTamer)
-                                {
-                                    tamerCards.Add(permanent.TopCard);
-                                }
+                                tamerCards.Add(permanent.TopCard);
                             }
+                        }
 
-                            int reduceCost = Combinations.GetUniqueColorCardCount(tamerCards) / 2;
+                        int reduceCost = Combinations.GetDifferenetColorCardCount(tamerCards) / 2;
 
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, cardSource => IsAdventureDigimon(cardSource, reduceCost)))
+                        {
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                             selectHandEffect.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: IsAdventureDigimon,
+                                canTargetCondition: cardSource => IsAdventureDigimon(cardSource, reduceCost),
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,

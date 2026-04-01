@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ public class GameplayOption : OffAnimation
     [SerializeField] Toggle _autoMinDigivolutionCostToggle;
     [SerializeField] Toggle _autoMaxCardCountToggle;
     [SerializeField] Toggle _autoHatchToggle;
+    [SerializeField] Toggle _banlistToggle;
 
     public void Close()
     {
@@ -117,6 +119,15 @@ public class GameplayOption : OffAnimation
                 onToggleChanged: OnAutoHatchToggleChanged,
                 value: ContinuousController.instance.autoHatch
             );
+
+            OptionUtility.InitToggle(
+               toggle: _banlistToggle,
+               onToggleChanged: OnUseBanlistToggleChanged,
+               value: ContinuousController.instance.useBanlist
+           );
+
+            if (ContinuousController.instance.BanList.Restrictions.Count == 0 || PhotonNetwork.InRoom)
+                _banlistToggle.interactable = false;
         }
 
         gameObject.SetActive(true);
@@ -349,6 +360,27 @@ public class GameplayOption : OffAnimation
     public void HandleAutoHatchToggle()
     {
         OnAutoHatchToggleChanged(!_autoHatchToggle.isOn);
+    }
+    #endregion
+
+    #region Use Banlist
+
+    public void OnUseBanlistToggleChanged(bool value)
+    {
+        if (ContinuousController.instance == null) return;
+
+        OptionUtility.OnToggleChanged(
+            value: value,
+            toggle: _banlistToggle,
+            onToggleChanged: OnUseBanlistToggleChanged,
+            settingRef: ref ContinuousController.instance.useBanlist,
+            saveAction: ContinuousController.instance.SaveUseBanlist
+        );
+    }
+
+    public void HandleUseBanlistToggle()
+    {
+        OnUseBanlistToggleChanged(!_banlistToggle.isOn);
     }
     #endregion
 }

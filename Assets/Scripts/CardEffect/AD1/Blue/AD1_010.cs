@@ -17,12 +17,11 @@ namespace DCGO.CardEffects.AD1
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel3
-                        && (targetPermanent.TopCard.HasText("Omnimon")
-                            || targetPermanent.TopCard.EqualsTraits("ADVENTURE"));
+                    return targetPermanent.TopCard.HasText("Omnimon")
+                            || targetPermanent.TopCard.EqualsTraits("ADVENTURE");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 3, permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
 
             #endregion

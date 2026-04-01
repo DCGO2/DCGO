@@ -17,12 +17,11 @@ namespace DCGO.CardEffects.AD1
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel5
-                        && (targetPermanent.TopCard.ContainsCardName("RizeGreymon")
-                            || targetPermanent.TopCard.EqualsTraits("DATA SQUAD"));
+                    return targetPermanent.TopCard.ContainsCardName("RizeGreymon")
+                            || targetPermanent.TopCard.EqualsTraits("DATA SQUAD");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 5, permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
             #endregion
 
@@ -94,13 +93,6 @@ namespace DCGO.CardEffects.AD1
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCards.Add(cardSource);
-
-                            yield return null;
-                        }
-
                         if (fromHand)
                         {
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
@@ -160,7 +152,7 @@ namespace DCGO.CardEffects.AD1
                         maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: null,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
@@ -170,7 +162,7 @@ namespace DCGO.CardEffects.AD1
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
                         int changeAmount = -3000 * card.Owner.GetBattleAreaPermanents().Count(IsDigimonOrTamerPermanent); 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: changeAmount, effectDuration: EffectDuration.UntilOwnerTurnEnd, activateClass: activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: changeAmount, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                     }
                 }
             }

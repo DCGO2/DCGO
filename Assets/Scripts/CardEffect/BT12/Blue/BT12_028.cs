@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.BT12
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash digivolution cards and opponent's Digimons can't attack", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash digivolution cards and opponent's Digimon can't attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -147,7 +147,7 @@ namespace DCGO.CardEffects.BT12
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select Digimons that will get effects.", "The opponent is selecting Digimons that will get effects.");
+                        selectPermanentEffect.SetUpCustomMessage("Select Digimon that will get effects.", "The opponent is selecting Digimon that will get effects.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

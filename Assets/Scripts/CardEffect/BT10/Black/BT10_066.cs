@@ -139,7 +139,7 @@ namespace DCGO.CardEffects.BT10
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Black))
+                        if (cardSource.HasCardColor(CardColor.Black))
                         {
                             if (cardSource.Level <= 4)
                             {

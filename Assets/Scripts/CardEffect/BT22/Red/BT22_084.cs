@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.BT22
                     isInheritedEffect: false,
                     card: card,
                     condition: Condition,
-                    effectName: () => "Your Digimons with [Greymon], [Garurumon] or [Omnimon] in their names get +1000 DP"));
+                    effectName: () => "Your Digimon with [Greymon], [Garurumon] or [Omnimon] in their names get +1000 DP"));
             }
 
             #endregion

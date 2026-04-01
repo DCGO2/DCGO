@@ -260,7 +260,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     return CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass) && 
                             cardSource.IsDigimon && 
-                            (cardSource.ContainsTraits("Machine Drago") || cardSource.ContainsTraits("Sky Dragon"));
+                            (cardSource.ContainsTraits("Machine Dragon") || cardSource.ContainsTraits("Sky Dragon"));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

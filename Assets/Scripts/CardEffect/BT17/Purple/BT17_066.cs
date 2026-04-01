@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.BT17
                     return CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass) &&
                            cardSource.IsDigimon &&
                            cardSource.IsLevel3 &&
-                           (cardSource.CardColors.Contains(CardColor.Purple) || cardSource.CardColors.Contains(CardColor.Yellow));
+                           (cardSource.HasCardColor(CardColor.Purple) || cardSource.HasCardColor(CardColor.Yellow));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.BT24
             {
                 return cardSource.IsTamer
                     && cardSource.GetCostItself <= 4
-                    && cardSource.CardColors.Contains(CardColor.Purple)
+                    && cardSource.HasCardColor(CardColor.Purple)
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
             }
 

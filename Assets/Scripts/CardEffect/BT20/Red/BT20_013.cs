@@ -234,7 +234,7 @@ namespace DCGO.CardEffects.BT20
                     isInheritedEffect: true,
                     card: card,
                     condition: Condition,
-                    effectName: () => "Your Digimons gain DP +1000"));
+                    effectName: () => "Your Digimon gain DP +1000"));
             }
             #endregion
 

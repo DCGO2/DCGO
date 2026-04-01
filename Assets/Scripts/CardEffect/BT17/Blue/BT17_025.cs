@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
+// Cerberusmon: Werewolf Mode
 namespace DCGO.CardEffects.BT17
 {
     public class BT17_025 : CEntity_Effect
@@ -22,7 +23,7 @@ namespace DCGO.CardEffects.BT17
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: true,
+                    permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: false,
                     card: card, condition: null));
             }
 
@@ -54,7 +55,7 @@ namespace DCGO.CardEffects.BT17
                     return CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass) &&
                            cardSource.IsDigimon &&
                            cardSource.IsLevel3 &&
-                           (cardSource.CardColors.Contains(CardColor.Blue) || cardSource.CardColors.Contains(CardColor.Purple));
+                           (cardSource.HasCardColor(CardColor.Blue) || cardSource.HasCardColor(CardColor.Purple));
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

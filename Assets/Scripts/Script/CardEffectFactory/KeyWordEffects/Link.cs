@@ -96,16 +96,60 @@ public partial class CardEffectFactory
 
             if (selectedPermanent != null)
             {
-                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-card.linkCondition.cost, activateClass));
-
-                if(CardEffectCommons.IsExistOnHand(card))
-                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkCard(card, activateClass));
-                else
-                    yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToLinkCards(new List<Permanent[]>() { new Permanent[] { card.PermanentOfThisCard(), selectedPermanent } }, activateClass).PlacePermanentToLinkCards());
+                yield return ContinuousController.instance.StartCoroutine(new ILinkCard(true, card, selectedPermanent, activateClass).LinkCard());
             }
         }
 
         return activateClass;
+    }
+    #endregion
+
+    #region Granted Link Cost Reduction
+    public static ChangeLinkCostClass GrantedReduceLinkCostClass(CardSource card, int reducedCost, Func<CardSource, bool> cardSourceCondition, Func<Permanent, bool> permanentCondition, Func<SelectCardEffect.Root, bool> rootCondition)
+    {
+        return ReduceLinkCostClass(card, _ => true, false, false, reducedCost, cardSourceCondition, permanentCondition, rootCondition);
+    }
+    #endregion
+
+    #region Get when would link granted cost reduction
+    public static ChangeLinkCostClass GrantedChangeLinkCostClass(CardSource card, string effectName, Func<CardSource, Permanent, int, SelectCardEffect.Root, int> changeCostFunc, Func<CardSource, bool> cardSourceCondition, Func<Permanent, bool> permanentCondition, Func<SelectCardEffect.Root, bool> rootCondition, Func<bool> isUpDown)
+    {
+        return ChangeLinkCostClass(card, _ => true, effectName, false, false, changeCostFunc, cardSourceCondition, permanentCondition, rootCondition, isUpDown);
+    }
+    #endregion
+
+    #region GetChangeLinkCostClass
+    public static ChangeLinkCostClass ChangeLinkCostClass(CardSource card, Func<Hashtable, bool> canUseCondition, string effectName, bool isInheritedEffect, bool isOptional, Func<CardSource, Permanent, int, SelectCardEffect.Root, int> changeCostFunc, Func<CardSource, bool> cardSourceCondition, Func<Permanent, bool> permanentCondition, Func<SelectCardEffect.Root, bool> rootCondition, Func<bool> isUpDown)
+    {
+        ChangeLinkCostClass changeLinkCostClass = new ();
+        changeLinkCostClass.SetUpICardEffect(effectName, canUseCondition, card);
+        changeLinkCostClass.SetUpChangeLinkCostClass(changeCostFunc, cardSourceCondition, permanentCondition, rootCondition, isUpDown);
+        changeLinkCostClass.SetNotShowUI(isOptional);
+        changeLinkCostClass.SetIsInheritedEffect(isInheritedEffect);
+        return changeLinkCostClass;
+    }
+    #endregion
+
+    #region GetChangeLinkCostClass for Cost Reduction
+    public static ChangeLinkCostClass ReduceLinkCostClass(CardSource card, Func<Hashtable, bool> canUseCondition, bool isInheritedEffect, bool isOptional, int reducedCost, Func<CardSource, bool> cardSourceCondition, Func<Permanent, bool> permanentCondition, Func<SelectCardEffect.Root, bool> rootCondition)
+    {
+        return ChangeLinkCostClass(card, canUseCondition, $"Link Cost -{reducedCost}", isInheritedEffect, isOptional, ChangeCost, cardSourceCondition, permanentCondition, rootCondition, () => true);
+
+        int ChangeCost(CardSource cardSource, Permanent targetPermanent, int Cost, SelectCardEffect.Root root)
+        {
+            if (cardSourceCondition(cardSource))
+            {
+                if (rootCondition(root))
+                {
+                    if (permanentCondition(targetPermanent))
+                    {
+                        Cost -= reducedCost;
+                    }
+                }
+            }
+
+            return Cost;
+        }
     }
     #endregion
 }

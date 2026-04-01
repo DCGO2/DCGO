@@ -112,7 +112,7 @@ namespace DCGO.CardEffects.EX2
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Purple))
+                            if (cardSource.HasCardColor(CardColor.Purple))
                             {
                                 if (cardSource.IsDigimon)
                                 {

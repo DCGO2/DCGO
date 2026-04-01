@@ -192,6 +192,21 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Hashtable when a card would be linked
+    public static Hashtable WouldLinkHashtable(CardSource card, Permanent targetPermanent, SelectCardEffect.Root root, ICardEffect cardEffect)
+    {
+        Hashtable hashtable = new Hashtable()
+        {
+            {"Card", card},
+            {"Root", root},
+            {"CardEffect", cardEffect},
+            {"Permanent", targetPermanent},
+        };
+
+        return hashtable;
+    }
+    #endregion
+
     #region Hashtable used when check whether the card can trigger [On Play] effect
     public static Hashtable OnPlayCheckHashtableOfCard(CardSource cardSource)
     {

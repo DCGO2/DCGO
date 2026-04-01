@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.BT10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Draw 1 and draw for each opponent's Digimons", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Draw 1 and draw for each opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

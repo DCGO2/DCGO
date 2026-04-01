@@ -163,7 +163,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place this digimon as the bottom digivolutions card", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place this digimon as the bottom digivolution card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

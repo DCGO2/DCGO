@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.BT10
             if (timing == EffectTiming.OnAddHand)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Opponent discarads hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Opponent discards hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("Discard_BT10_077");
                 cardEffects.Add(activateClass);

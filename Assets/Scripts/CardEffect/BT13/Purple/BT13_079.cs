@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.BT13
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Your 1 Digimons gains Retaliation", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Your 1 Digimon gains Retaliation", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

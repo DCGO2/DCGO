@@ -34,7 +34,7 @@ public class BT4_089 : CEntity_Effect
                         {
                             if (!cardSource.CanNotPlayThisOption)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Purple))
+                                if (cardSource.HasCardColor(CardColor.Purple))
                                 {
                                     return true;
                                 }

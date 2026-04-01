@@ -327,7 +327,7 @@ public class DeckData
     #region カードを追加する
     public void AddCard(CEntity_Base cEntity_Base)
     {
-        if (cEntity_Base.cardKind == CardKind.DigiEgg)
+        if (cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
         {
             AddDigitamaDeckCard(cEntity_Base);
         }
@@ -342,7 +342,7 @@ public class DeckData
     #region カードを除く
     public void RemoveCard(CEntity_Base cEntity_Base)
     {
-        if (cEntity_Base.cardKind == CardKind.DigiEgg)
+        if (cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
         {
             RemoveDigitamaDeckCard(cEntity_Base);
         }
@@ -474,7 +474,7 @@ public class DeckData
 
         DeckCards1 = DeckCards1
             .OrderBy(value => value.SetID)
-            .ThenBy(value => Array.IndexOf(DataBase.cardKinds, value.CardKind))
+            .ThenBy(value => Array.IndexOf(DataBase.cardKinds, value.CardKinds))
             .ThenBy(value => Array.IndexOf(DataBase.cardColors, value.BaseCardColorsFromEntity[0]))
             .ThenByDescending(value => value.BaseEvoCostsFromEntity.Count)
             .ThenByDescending(value => value.CardDP)
@@ -715,7 +715,7 @@ public class DeckData
 
         foreach (CEntity_Base cEntity_Base in AllDeckCards())
         {
-            if (cEntity_Base.cardKind != CardKind.DigiEgg)
+            if (!cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
             {
                 deckCards.Add(cEntity_Base);
             }

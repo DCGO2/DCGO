@@ -14,7 +14,7 @@ public class BT6_054 : CEntity_Effect
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Suspend Digimons without Blocker", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Suspend Digimon without Blocker", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -119,7 +119,7 @@ public class BT6_054 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Green))
+                    if (cardSource.HasCardColor(CardColor.Green))
                     {
                         if (cardSource.Level <= 4)
                         {

@@ -156,7 +156,7 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolging] You may place 1 level 5 or lower Digimon card with [Aqua] or [Sea Animal] in any of its traits from your hand as any of your Digimon's bottom digivolution card.";
+                    return "[When Digivolving] You may place 1 level 5 or lower Digimon card with [Aqua] or [Sea Animal] in any of its traits from your hand as any of your Digimon's bottom digivolution card.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

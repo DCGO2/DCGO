@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.BT11
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Black))
+                    if (cardSource.HasCardColor(CardColor.Black))
                     {
                         if (cardSource.IsTamer)
                         {
@@ -99,7 +99,8 @@ namespace DCGO.CardEffects.BT11
                             selectCardCoroutine: null),
                         },
                         remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                        activateClass: activateClass
+                        activateClass: activateClass,
+                        mutualConditions: true
                     ));
                 }
             }
@@ -133,7 +134,7 @@ namespace DCGO.CardEffects.BT11
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Black))
+                    if (cardSource.HasCardColor(CardColor.Black))
                     {
                         if (cardSource.IsTamer)
                         {

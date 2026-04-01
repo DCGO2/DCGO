@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool PurpleLevelThree(CardSource source)
                 {
-                    return source.CardColors.Contains(CardColor.Purple) &&
+                    return source.HasCardColor(CardColor.Purple) &&
                            source.IsLevel3;
                 }
 

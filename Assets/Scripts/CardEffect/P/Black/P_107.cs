@@ -28,7 +28,7 @@ public class P_107 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.CardColors.Contains(targetColor);
+                return cardSource.HasCardColor(targetColor);
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -91,7 +91,7 @@ public class P_107 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.IsDigimon && cardSource.CardColors.Contains(targetColor);
+                return cardSource.IsDigimon && cardSource.HasCardColor(targetColor);
             }
 
             bool CanUseCondition(Hashtable hashtable)

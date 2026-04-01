@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.P
                     ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
 
                     ChangeCostClass changeCostClass = new ChangeCostClass();
-                    changeCostClass.SetUpICardEffect("Digivovle Cost -1", hashtable => true, card);
+                    changeCostClass.SetUpICardEffect("Digivolve Cost -1", hashtable => true, card);
                     changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: root => true, isUpDown: () => true, isCheckAvailability: () => false, isChangePayingCost: () => true);
                     card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
 

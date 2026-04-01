@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.BT12
                 {
                     if (cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Red) || cardSource.CardColors.Contains(CardColor.Black))
+                        if (cardSource.HasCardColor(CardColor.Red) || cardSource.HasCardColor(CardColor.Black))
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
