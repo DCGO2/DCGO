@@ -3411,7 +3411,7 @@ public class ILinkCard
     public ILinkCard(bool payCost, CardSource card, Permanent permanent, ICardEffect cardEffect)
     {
         _payCost = payCost;
-        _linkCard = _linkCard;
+        _linkCard = card;
         _permanent = permanent;
         _cardEffect = cardEffect;
     }
@@ -3445,7 +3445,7 @@ public class ILinkCard
             yield return ContinuousController.instance.StartCoroutine(_linkCard.Owner.AddMemory(-1 * Cost, _cardEffect));
         }
 
-        if(root == SelectCardEffect.Root.Hand)
+        if (root == SelectCardEffect.Root.Hand)
             yield return ContinuousController.instance.StartCoroutine(_permanent.AddLinkCard(_linkCard, _cardEffect));
         else
             yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToLinkCards(new List<Permanent[]>() { new Permanent[] { _linkCard.PermanentOfThisCard(), _permanent } }, _cardEffect).PlacePermanentToLinkCards());
