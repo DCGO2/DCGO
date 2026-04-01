@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.ST24
                         if (selectedPermanent != null)
                         {
                             yield return ContinuousController.instance.StartCoroutine(
-                                selectedPermanent.AddDigivolutionCardsBottom(selectedCards, activateClass));
+                                selectedPermanent.AddDigivolutionCardsBottom(selectedCards, activateClass, false, true));
 
                             yield return ContinuousController.instance.StartCoroutine(
                                 new DrawClass(card.Owner, 2, activateClass).Draw());
