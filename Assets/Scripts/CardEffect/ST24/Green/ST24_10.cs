@@ -93,6 +93,7 @@ namespace DCGO.CardEffects.ST24
                 {
                     List<Permanent> _targetPermanents = new List<Permanent>();
                     Permanent selectedPermanent = permanent;
+                    _targetPermanents.Add(selectedPermanent);
 
                     if (selectedPermanent != null)
                     {
