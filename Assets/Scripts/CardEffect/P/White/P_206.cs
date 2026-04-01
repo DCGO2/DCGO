@@ -111,7 +111,7 @@ namespace DCGO.CardEffects.P
                 {
                     var digimonColours = card.Owner.GetFieldPermanents()
                         .Filter(x => x.IsDigimon)
-                        .SelectMany(digimon => digimon.TopCard.BaseCardColors).Distinct();
+                        .SelectMany(digimon => digimon.TopCard.CardColors).Distinct();
 
                     return cardSource.IsTamer
                         && cardSource.BaseCardColors.Exists(x => digimonColours.Contains(x))
