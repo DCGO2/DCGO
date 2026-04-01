@@ -195,11 +195,10 @@ namespace DCGO.CardEffects.ST24
                         selectHandEffect.SetUpCustomMessage("Select 1 card to play/use.", "The opponent is selecting 1 card to play/use.");
                         selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectCard = cardSource;
+                            selectedCards.Add(cardSource);
                             yield return null;
                         }
 
