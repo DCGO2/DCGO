@@ -1261,10 +1261,12 @@ public class ContinuousController : MonoBehaviour
             Application.Quit();
         }
 #endif
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.F1))
         {
             _showPhotonDebug = !_showPhotonDebug;
         }
+#endif
     }
     int _frameCount = 0;
     int _updateFrame = 40;
@@ -1338,6 +1340,7 @@ public class ContinuousController : MonoBehaviour
         Debug.Log($"random number sequence initialization,InitState:{random}");
     }
 
+#if UNITY_EDITOR
     #region Photon Debug HUD
     bool _showPhotonDebug = false;
     Photon.Realtime.IConnectionCallbacks _connectionCallbacks;
@@ -1469,6 +1472,7 @@ public class ContinuousController : MonoBehaviour
         GUI.Label(new Rect(10, 10, 800, 30), status, style);
     }
     #endregion
+#endif
 }
 
 #region Manage random numbers
