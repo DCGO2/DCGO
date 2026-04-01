@@ -156,7 +156,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanPlayCondition(CardSource cardSource)
                 {
-                    return cardSource.IsTamer && cardSource.CardColors.Contains(CardColor.Red) && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
+                    return cardSource.IsTamer && cardSource.HasCardColor(CardColor.Red) && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

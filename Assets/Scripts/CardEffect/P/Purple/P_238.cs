@@ -14,13 +14,11 @@ namespace DCGO.CardEffects.P
             #region Ignore Color Requirment
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.UseRequirements(card, PermanentCondition));
+                cardEffects.Add(CardEffectFactory.UseRequirements(card, CardCondition));
 
-                bool PermanentCondition(Permanent permanent)
+                bool CardCondition(CardSource cardSource)
                 {
-                    return CardEffectCommons.IsOwnerPermanent(permanent, card)
-                        && permanent.TopCard.HasCSTraits
-                        && (permanent.IsDigimon || permanent.IsTamer);
+                    return cardSource.HasCSTraits;
                 }
             }
             #endregion

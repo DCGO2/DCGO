@@ -122,26 +122,14 @@ namespace DCGO.CardEffects.AD1
 
             #region All Turns
 
-            if (timing != EffectTiming.None)
+            if (timing == EffectTiming.None)
             {
-                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                {
-                    Permanent thisPermanent = card.PermanentOfThisCard();
-
-                    
-                    if(Condition())
-                        thisPermanent.AddBoost(new Permanent.DPBoost("AD1_004", count(), Condition));
-                    else
-                        thisPermanent.RemoveBoost("AD1_004");
-                }
-                
                 int count()
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
 
                         List<CardSource> cards = card.Owner.GetBattleAreaPermanents()
-                        .Concat(card.Owner.Enemy.GetBattleAreaPermanents()).ToList()
                         .Map(card => card.TopCard)
                         .Where(x => x.IsTamer).ToList();
 
@@ -160,11 +148,11 @@ namespace DCGO.CardEffects.AD1
                            card.PermanentOfThisCard().TopCard == card;
                 }
 
-                //cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect<Func<int>>(
-                //    changeValue: count,
-                //    isInheritedEffect: false,
-                //    card: card,
-                //    condition: Condition));
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect<Func<int>>(
+                   changeValue: count,
+                   isInheritedEffect: false,
+                   card: card,
+                   condition: Condition));
             }
 
             if (timing == EffectTiming.None)
@@ -174,7 +162,6 @@ namespace DCGO.CardEffects.AD1
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         List<CardSource> cards = card.Owner.GetBattleAreaPermanents()
-                        .Concat(card.Owner.Enemy.GetBattleAreaPermanents()).ToList()
                         .Map(card => card.TopCard)
                         .Where(x => x.IsTamer).ToList();
 

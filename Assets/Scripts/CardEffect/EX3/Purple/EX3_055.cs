@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.EX3
                 {
                     if (cardSource.CardTraits.Contains("Free"))
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Red) || cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Red) || cardSource.HasCardColor(CardColor.Purple))
                         {
                             return true;
                         }

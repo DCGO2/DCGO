@@ -30,7 +30,7 @@ public class P_099 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] ÅÉDe-Digivolve  1ÅÑ1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards).";
+                return "[On Play] ÔøΩÔøΩDe-Digivolve  1ÔøΩÔøΩ1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards).";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -96,7 +96,7 @@ public class P_099 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] ÅÉDe-Digivolve  1ÅÑ1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards).";
+                return "[When Digivolving] ÔøΩÔøΩDe-Digivolve  1ÔøΩÔøΩ1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards).";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -170,7 +170,7 @@ public class P_099 : CEntity_Effect
             {
                 if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Black))
+                    if (cardSource.HasCardColor(CardColor.Yellow) || cardSource.HasCardColor(CardColor.Black))
                     {
                         if (cardSource.GetCostItself <= 3)
                         {

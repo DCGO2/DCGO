@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// Leviamon
 public class EX5_063 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region Security A. +1
         if (timing == EffectTiming.None)
         {
             cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(
@@ -17,7 +19,9 @@ public class EX5_063 : CEntity_Effect
                 card: card,
                 condition: null));
         }
+        #endregion
 
+        #region On Play
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -134,7 +138,9 @@ public class EX5_063 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
+        #region When Digivolving
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -251,7 +257,9 @@ public class EX5_063 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
+        #region All Turns
         if (timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -271,15 +279,8 @@ public class EX5_063 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleArea(card)
+                    && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
@@ -305,14 +306,25 @@ public class EX5_063 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
+                List<CardSource> EnemyDigimon = new List<CardSource>();
                 List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(_hashtable);
 
                 if (hashtables != null)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(hashtables.Count, activateClass));
+                    foreach (Hashtable hashtable1 in hashtables)
+                    {
+                        CardSource cardSource = CardEffectCommons.GetCardFromHashtable(_hashtable);
+                        if (cardSource.IsDigimon && cardSource.Owner.Enemy)
+                        {
+                            EnemyDigimon.Add(cardSource);
+                        }
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(EnemyDigimon.Count, activateClass));
                 }
             }
         }
+        #endregion
 
         return cardEffects;
     }

@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.BT13
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Yellow))
+                            if (cardSource.HasCardColor(CardColor.Yellow))
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource));
                             }
@@ -159,7 +159,7 @@ namespace DCGO.CardEffects.BT13
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Yellow))
+                            if (cardSource.HasCardColor(CardColor.Yellow))
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource));
                             }

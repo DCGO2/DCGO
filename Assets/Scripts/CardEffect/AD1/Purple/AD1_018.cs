@@ -13,85 +13,6 @@ namespace DCGO.CardEffects.AD1
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Reduce Play Cost
-            if (timing == EffectTiming.BeforePayCost)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reduce play cost (5)", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return "When this card would be played, if you have a Digimon with [Knightmon] or [Lucemon] in its name, reduce the play cost by 5.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, cardSource => cardSource == card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.HasMatchConditionPermanent(WouldPlayCondition);
-                }
-
-                bool WouldPlayCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
-                            && (permanent.TopCard.ContainsCardName("Knightmon") || permanent.TopCard.ContainsCardName("Lucemon"));
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (card.Owner.CanReduceCost(null, card))
-                    {
-                        ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                    }
-
-                    ChangeCostClass changeCostClass = new ChangeCostClass();
-                    changeCostClass.SetUpICardEffect("Play Cost -5", hashtable => true, card);
-                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                    card.Owner.UntilCalculateFixedCostEffect.Add(_ => changeCostClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
-
-                    int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
-                        List<Permanent> targetPermanents)
-                    {
-                        if (CardSourceCondition(cardSource) &&
-                            RootCondition(root) &&
-                            PermanentsCondition(targetPermanents))
-                        {
-                            cost -= 5;
-                        }
-
-                        return cost;
-                    }
-
-                    bool PermanentsCondition(List<Permanent> targetPermanents)
-                    {
-                        return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
-                    }
-
-                    bool CardSourceCondition(CardSource cardSource)
-                    {
-                        return cardSource == card;
-                    }
-
-                    bool RootCondition(SelectCardEffect.Root root)
-                    {
-                        return true;
-                    }
-
-                    bool isUpDown()
-                    {
-                        return true;
-                    }
-                }
-            }
-            #endregion
-
-            #region Reduce Play Cost - Not Shown
             if (timing == EffectTiming.None)
             {
                 ChangeCostClass changeCostClass = new ChangeCostClass();
@@ -102,7 +23,7 @@ namespace DCGO.CardEffects.AD1
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionPermanent(WouldPlayCondition);
+                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, WouldPlayCondition);
                 }
 
                 bool WouldPlayCondition(Permanent permanent)
@@ -191,7 +112,6 @@ namespace DCGO.CardEffects.AD1
             }
             #endregion
                 
-
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -294,6 +214,7 @@ namespace DCGO.CardEffects.AD1
                 activateClass.SetUpICardEffect("<De-Digivolve 1> 1 enemy Digimon, delete 1 enemy Digimon with play cost of 3 or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

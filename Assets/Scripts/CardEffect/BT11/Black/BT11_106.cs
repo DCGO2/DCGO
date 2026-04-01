@@ -225,7 +225,7 @@ namespace DCGO.CardEffects.BT11
                             {
                                 if (cardSource.IsDigimon)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Black))
+                                    if (cardSource.HasCardColor(CardColor.Black))
                                     {
                                         return true;
                                     }

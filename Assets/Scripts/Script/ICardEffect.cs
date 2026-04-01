@@ -988,6 +988,7 @@ public enum EffectTiming
     OnReturnCardsToHandFromTrash,
     AfterEffectsActivate,
     WhenWouldDigivolutionCardDiscarded,
+    WhenWouldLink,
     WhenLinked,
     WhenTopCardTrashed,
     RulesTiming,
@@ -1087,7 +1088,6 @@ public static class ActivateICardEffectExtensionClass
             ((ICardEffect)activateICardEffect).SetOnProcessCallbuck(null);
 
             //Handling Effect
-            ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(((ICardEffect)activateICardEffect));
             yield return ContinuousController.instance.StartCoroutine(activateICardEffect.Activate(hash));
         }
     }
@@ -1203,6 +1203,13 @@ public static class ActivateICardEffectExtensionClass
         }
     }
 
+    #endregion
+
+    #region remove a usage of an X Per Turn
+    public static void RemoveUse(this ActivateICardEffect activateICardEffect)
+    {
+        ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RemoveUseEffectThisTurn((ICardEffect)activateICardEffect);
+    }
     #endregion
 
     #region Effect → Processing

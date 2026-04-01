@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.AD1
                     if (selectedCards.Contains(cardSource)) return false;
                     if (selectedCards.Count > 0)
                     {
-                        return cardSource.CardColors.Any(c => !selectedCards[0].CardColors.Contains(c));
+                        return cardSource.CardColors.Any(color1 => selectedCards[0].CardColors.Any(color2 => color2 != color1));
                     }
                     return true;
                 }
@@ -258,6 +258,11 @@ namespace DCGO.CardEffects.AD1
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { card.Owner.SecurityCards[0] }, false, activateClass));
+
+                    yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
+                        player: card.Owner,
+                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                        activateClass).ReduceSecurity());
 
                     card.PermanentOfThisCard().willBeRemoveField = false;
 

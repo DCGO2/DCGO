@@ -26,7 +26,7 @@ public class BT7_044 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Contains(CardColor.Green))
+                if (cardSource.HasCardColor(CardColor.Green))
                 {
                     if (cardSource.IsDigimon)
                     {

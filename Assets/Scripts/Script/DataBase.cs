@@ -905,11 +905,20 @@ public class DictionaryUtility
         return pokemonType;
     }
 
-    public static CardKind GetCardKind(string CardKindName, Dictionary<CardKind, string> CardKindNameDictionary)
+    public static List<CardKind> GetCardKind(string CardKindName, Dictionary<CardKind, string> CardKindNameDictionary)
     {
-        CardKind cardKind = CardKindName.IsNullOrEmpty() ? CardKind.Tamer : CardKindNameDictionary.First(x => x.Value == CardKindName).Key;
+        List<CardKind> Typing = new List<CardKind>();
+        string[] Types = CardKindName.Split("/");
 
-        return cardKind;
+        foreach(string Type in Types)
+        {
+            CardKind cardKind = Type.IsNullOrEmpty() ? CardKind.Tamer : CardKindNameDictionary.First(x => x.Value == Type).Key;
+
+            Typing.Add(cardKind);
+        }
+        
+
+        return Typing;
     }
 
     public static Rarity GetEvoStage(string EvoStageName, Dictionary<Rarity, string> EvoStageNameDictionary)

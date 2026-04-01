@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.BT13
                     {
                         if (cardSource.CardTraits.Contains("Vaccine"))
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Yellow))
+                            if (cardSource.HasCardColor(CardColor.Yellow))
                             {
                                 return true;
                             }
@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.BT13
                 {
                     if (cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.HasCardColor(CardColor.Yellow))
                         {
                             return true;
                         }
@@ -90,7 +90,8 @@ namespace DCGO.CardEffects.BT13
                             selectCardCoroutine: null),
                         },
                         remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                        activateClass: activateClass
+                        activateClass: activateClass,
+                        mutualConditions: true
                     ));
                 }
             }
@@ -106,7 +107,7 @@ namespace DCGO.CardEffects.BT13
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking][Once per Turn] If there're 6 or fewer total cards in both players' security stacks, 1 of your opponentÅf Digimon gets -2000 DP for the turn.";
+                    return "[When Attacking][Once per Turn] If there're 6 or fewer total cards in both players' security stacks, 1 of your opponentÔøΩf Digimon gets -2000 DP for the turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

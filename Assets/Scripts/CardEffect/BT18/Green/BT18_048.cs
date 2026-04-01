@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.BT18
             {
                 bool Condition()
                 {
-                    return card.Owner.HandCards.Contains(card);
+                    return true;
                 }
 
                 bool PermanentCondition(Permanent targetPermanent)
@@ -147,7 +147,7 @@ namespace DCGO.CardEffects.BT18
                 bool DigivolveToCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon && cardSource.ContainsTraits("Hybrid") &&
-                           (cardSource.CardColors.Contains(CardColor.Green) || cardSource.CardColors.Contains(CardColor.Red));
+                           (cardSource.HasCardColor(CardColor.Green) || cardSource.HasCardColor(CardColor.Red));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

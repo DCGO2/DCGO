@@ -76,13 +76,13 @@ public partial class CardEffectFactory
         if (partitionConditions[0].HasOneColour)
         {
             sourceOneCard = sourceOneCard.Filter(source =>
-                    source.CardColors.Contains(partitionConditions[0].Color)
+                    source.HasCardColor(partitionConditions[0].Color)
                     && (source.HasLevel && source.Level == partitionConditions[0].Level));
         }
         else if (partitionConditions[0].hasTwoColor)
         {
             sourceOneCard = sourceOneCard.Filter(source =>
-                    (source.CardColors.Contains(partitionConditions[0].Color) || source.CardColors.Contains(partitionConditions[0].Color2))
+                    (source.HasCardColor(partitionConditions[0].Color) || source.HasCardColor(partitionConditions[0].Color2))
                     && (source.HasLevel && source.Level == partitionConditions[0].Level));
         }
         else if (partitionConditions[0].hasName)
@@ -98,13 +98,13 @@ public partial class CardEffectFactory
         if (partitionConditions[1].HasOneColour)
         {
             sourceTwoCard = sourceTwoCard.Filter(source =>
-                    source.CardColors.Contains(partitionConditions[1].Color)
+                    source.HasCardColor(partitionConditions[1].Color)
                     && (source.HasLevel && source.Level == partitionConditions[1].Level));
         }
         else if (partitionConditions[1].hasTwoColor)
         {
             sourceTwoCard = sourceTwoCard.Filter(source =>
-                    (source.CardColors.Contains(partitionConditions[1].Color) || source.CardColors.Contains(partitionConditions[1].Color2))
+                    (source.HasCardColor(partitionConditions[1].Color) || source.HasCardColor(partitionConditions[1].Color2))
                     && (source.HasLevel && source.Level == partitionConditions[1].Level));
         }
         else if (partitionConditions[1].hasName)

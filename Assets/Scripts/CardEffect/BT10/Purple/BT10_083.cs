@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT10
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Purple))
                         {
                             if (cardSource.Level <= 4)
                             {
@@ -150,7 +150,7 @@ namespace DCGO.CardEffects.BT10
                             return true;
                         }
 
-                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Purple))
                         {
                             if (cardSource.Level <= 5)
                             {

@@ -124,7 +124,7 @@ namespace DCGO.CardEffects.BT18
                 bool DigivolveToCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon && cardSource.ContainsTraits("Hybrid") &&
-                           (cardSource.CardColors.Contains(CardColor.Black) || cardSource.CardColors.Contains(CardColor.Yellow));
+                           (cardSource.HasCardColor(CardColor.Black) || cardSource.HasCardColor(CardColor.Yellow));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

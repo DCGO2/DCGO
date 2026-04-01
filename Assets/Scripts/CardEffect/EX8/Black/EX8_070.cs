@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using System.Diagnostics;
 
+// Zofr Kabus
 namespace DCGO.CardEffects.EX8
 {
     public class EX8_070 : CEntity_Effect
@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.EX8
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
                         permanentCondition: DigimonWithProperSource,
-                        cardCondition: HasProperTrait,
+                        cardCondition: null,
                         maxCount: 1,
                         canNoTrash: true,
                         isFromOnly1Permanent: true,

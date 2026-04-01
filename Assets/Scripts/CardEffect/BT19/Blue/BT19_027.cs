@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT19
             {
                 bool SourceCondition(CardSource source)
                 {
-                    return source.CardColors.Contains(CardColor.Blue) && source.HasLevel && source.IsLevel5;
+                    return source.HasCardColor(CardColor.Blue) && source.HasLevel && source.IsLevel5;
                 }
 
                 string[] decodeStrings = { "(Blue Lv.5)", "Blue Level 5" };
@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     return cardSource.IsDigimon &&
                            cardSource.HasLevel && cardSource.Level <= 4 &&
-                           cardSource.CardColors.Contains(CardColor.Blue) &&
+                           cardSource.HasCardColor(CardColor.Blue) &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 

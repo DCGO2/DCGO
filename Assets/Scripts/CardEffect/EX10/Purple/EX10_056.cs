@@ -138,7 +138,10 @@ namespace DCGO.CardEffects.EX10
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            selectedPermamentToSource = permanent;
+                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                            {
+                                selectedPermamentToSource = permanent;
+                            }
                             yield return null;
                         }
 
@@ -269,7 +272,10 @@ namespace DCGO.CardEffects.EX10
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            selectedPermamentToSource = permanent;
+                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                            {
+                                selectedPermamentToSource = permanent;
+                            }
                             yield return null;
                         }
 

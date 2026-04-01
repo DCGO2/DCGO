@@ -279,7 +279,7 @@ public class OfficialCardListUtility
                     }
 
                     //Inherited Effect Description
-                    if (targetCardData[i].Contains("<dt>�i��������</dt>") || (!(cEntity_Base.cardKind == CardKind.Digimon && hasAceName) && targetCardData[i].Contains("<dt>下段テキスト</dt>")))
+                    if (targetCardData[i].Contains("<dt>�i��������</dt>") || (!(cEntity_Base.cardKind.Contains(CardKind.Digimon) && hasAceName) && targetCardData[i].Contains("<dt>下段テキスト</dt>")))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
 
@@ -290,7 +290,7 @@ public class OfficialCardListUtility
                     }
 
                     //Security Effect Description
-                    if (targetCardData[i].Contains("<dt>�Z�L�����e�B����</dt>") || (!(cEntity_Base.cardKind == CardKind.Digimon || cEntity_Base.cardKind == CardKind.DigiEgg) && targetCardData[i].Contains("<dt>下段テキスト</dt>")))
+                    if (targetCardData[i].Contains("<dt>�Z�L�����e�B����</dt>") || (!(cEntity_Base.cardKind.Contains(CardKind.Digimon) || cEntity_Base.cardKind.Contains(CardKind.DigiEgg)) && targetCardData[i].Contains("<dt>下段テキスト</dt>")))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
 
@@ -301,7 +301,7 @@ public class OfficialCardListUtility
                     }
 
                     //Overflow Memory
-                    if (cEntity_Base.cardKind == CardKind.Digimon && hasAceName && targetCardData[i].Contains("<dt>下段テキスト</dt>"))
+                    if (cEntity_Base.cardKind.Contains(CardKind.Digimon) && hasAceName && targetCardData[i].Contains("<dt>下段テキスト</dt>"))
                     {
                         if (targetCardData[i + 1].Contains("overflow-5"))
                         {
@@ -414,7 +414,7 @@ public class OfficialCardListUtility
                     }
 
                     //Inherited Effect Description
-                    if (targetCardData[i].Contains("<dt>InheritedEffect</dt>") && !(cEntity_Base.cardKind == CardKind.Digimon && cEntity_Base.IsACE))
+                    if (targetCardData[i].Contains("<dt>InheritedEffect</dt>") && !(cEntity_Base.cardKind.Contains(CardKind.Digimon) && cEntity_Base.IsACE))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
 

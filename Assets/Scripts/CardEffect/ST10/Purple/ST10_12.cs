@@ -26,7 +26,7 @@ public class ST10_12 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Contains(CardColor.Yellow))
+                if (cardSource.HasCardColor(CardColor.Yellow))
                 {
                     if (cardSource.CardTraits.Contains("Angel"))
                     {
@@ -54,7 +54,7 @@ public class ST10_12 : CEntity_Effect
 
             bool CanSelectCardCondition1(CardSource cardSource)
             {
-                if (cardSource.CardColors.Contains(CardColor.Purple))
+                if (cardSource.HasCardColor(CardColor.Purple))
                 {
                     if (cardSource.CardTraits.Contains("Angel"))
                     {
@@ -155,7 +155,8 @@ public class ST10_12 : CEntity_Effect
                                     selectCardCoroutine: null),
                             },
                             remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                            activateClass: activateClass
+                            activateClass: activateClass,
+                            mutualConditions: true
                             ));
                     }
                 }

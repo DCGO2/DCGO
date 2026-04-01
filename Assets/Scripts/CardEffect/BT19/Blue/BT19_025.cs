@@ -244,7 +244,7 @@ namespace DCGO.CardEffects.BT19
                                     {
                                         if (conditionCardSource.CardNames_DigiXros.Contains("Greymon"))
                                         {
-                                            if (conditionCardSource.CardColors.Contains(CardColor.Blue))
+                                            if (conditionCardSource.HasCardColor(CardColor.Blue))
                                             {
                                                 return true;
                                             }

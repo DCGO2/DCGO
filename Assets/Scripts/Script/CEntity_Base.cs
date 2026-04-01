@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebSocketSharp;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Create/CEntity_Base")]
@@ -21,7 +22,7 @@ public class CEntity_Base : ScriptableObject
     public List<string> Type_JPN = new List<string>();
     public List<string> Type_ENG = new List<string>();
     public string CardSpriteName = "";
-    public CardKind cardKind = CardKind.Digimon;
+    public List<CardKind> cardKind = new List<CardKind> { CardKind.Digimon };
     [TextArea] public string EffectDiscription_JPN = "";
     [TextArea] public string EffectDiscription_ENG = "";
     [TextArea] public string InheritedEffectDiscription_JPN = "";
@@ -35,6 +36,10 @@ public class CEntity_Base : ScriptableObject
     public int LinkDP = 0;
     [TextArea] public string LinkEffect = "";
     [TextArea] public string LinkRequirement = "";
+
+    [TextArea] public string dualEffect = "";
+    public List<CardColor> OptionCardColorRequirements = new List<CardColor>();
+    [TextArea] public string OptionEffect = "";
 
     public bool HasInhetitedEffect => !string.IsNullOrEmpty(InheritedEffectDiscription_ENG) && !InheritedEffectDiscription_ENG.Equals("-");
     public bool HasSecutiryEffect => !string.IsNullOrEmpty(SecurityEffectDiscription_ENG) && !SecurityEffectDiscription_ENG.Equals("-");
@@ -68,6 +73,8 @@ public class CEntity_Base : ScriptableObject
     }
     public bool IsACE => OverflowMemory >= 1;
     public bool IsStandardValid => true;
+
+    public bool IsDualCard => cardKind.Count > 1;
 
     #region regulation mark
     public string RegulationMark
@@ -228,7 +235,7 @@ public class CEntity_Base : ScriptableObject
     #endregion
 
     #region whether it is permanent card
-    public bool IsPermanent => cardKind == CardKind.Digimon || cardKind == CardKind.Tamer || cardKind == CardKind.DigiEgg;
+    public bool IsPermanent => cardKind.Contains(CardKind.Digimon) || cardKind.Contains(CardKind.Tamer) || cardKind.Contains(CardKind.DigiEgg);
     #endregion
 
     #region �J�[�hIndex���f�b�L�R�[�h�ɗp���镶����ɕϊ�(256�i��)
@@ -316,7 +323,7 @@ public class CEntity_Base : ScriptableObject
                 return false;
             }
 
-            if (cardKind != CardKind.Digimon && cardKind != CardKind.DigiEgg)
+            if (!cardKind.Contains(CardKind.Digimon) && !cardKind.Contains(CardKind.DigiEgg))
             {
                 return false;
             }
@@ -331,11 +338,11 @@ public class CEntity_Base : ScriptableObject
     #endregion
 
     #region Wheter the card has play cost
-    public bool HasPlayCost => cardKind != CardKind.Option && PlayCost >= 0;
+    public bool HasPlayCost => !cardKind.Contains(CardKind.Option) && PlayCost >= 0;
     #endregion
 
     #region Wheter the card has use cost
-    public bool HasUseCost => cardKind == CardKind.Option && PlayCost >= 0;
+    public bool HasUseCost => cardKind.Contains(CardKind.Option) && PlayCost >= 0;
     #endregion
 }
 public enum CardKind
@@ -389,6 +396,7 @@ public enum Rarity
     U,
     R,
     SR,
+    UR,
     SEC,
     P,
     None,
