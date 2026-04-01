@@ -148,17 +148,6 @@ namespace DCGO.CardEffects.P
 
             if (timing != EffectTiming.None)
             {
-                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                {
-                    Permanent thisPermanent = card.PermanentOfThisCard();
-
-                    
-                    if(Condition())
-                        thisPermanent.AddBoost(new Permanent.DPBoost("P_182", count(), Condition));
-                    else
-                        thisPermanent.RemoveBoost("P_182");
-                }
-
                 int count()
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
@@ -183,6 +172,12 @@ namespace DCGO.CardEffects.P
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            card.PermanentOfThisCard().TopCard == card;
                 }
+
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect<Func<int>>(
+                   changeValue: count,
+                   isInheritedEffect: false,
+                   card: card,
+                   condition: Condition));          
             }
 
             #endregion
