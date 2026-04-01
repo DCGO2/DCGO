@@ -74,7 +74,7 @@ public class CEntity_Base : ScriptableObject
     public bool IsACE => OverflowMemory >= 1;
     public bool IsStandardValid => true;
 
-    public bool IsDualCard => !String.IsNullOrEmpty(dualEffect);
+    public bool IsDualCard => cardKind.Count > 1;
 
     #region regulation mark
     public string RegulationMark
