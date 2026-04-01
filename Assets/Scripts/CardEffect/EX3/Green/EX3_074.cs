@@ -122,7 +122,7 @@ namespace DCGO.CardEffects.EX3
                             {
                                 if (cardSource.IsDigimon)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Green) || cardSource.CardColors.Contains(CardColor.Blue))
+                                    if (cardSource.HasCardColor(CardColor.Green) || cardSource.HasCardColor(CardColor.Blue))
                                     {
                                         return true;
                                     }
@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.EX3
                             {
                                 if (cardSource.IsDigimon)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Green) || cardSource.CardColors.Contains(CardColor.Blue))
+                                    if (cardSource.HasCardColor(CardColor.Green) || cardSource.HasCardColor(CardColor.Blue))
                                     {
                                         if (cardSource.CardDP <= 12000)
                                         {

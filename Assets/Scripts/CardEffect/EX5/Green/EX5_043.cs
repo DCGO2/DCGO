@@ -59,7 +59,7 @@ public class EX5_043 : CEntity_Effect
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass))
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Green))
+                        if (cardSource.HasCardColor(CardColor.Green))
                         {
                             return true;
                         }
@@ -89,7 +89,7 @@ public class EX5_043 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                #region ìoèÍÉRÉXÉg-
+                #region ÔøΩoÔøΩÔøΩRÔøΩXÔøΩg-
                 ChangeCostClass changeCostClass = new ChangeCostClass();
                 changeCostClass.SetUpICardEffect("Reduce Play Cost", CanUseCondition1, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
@@ -151,7 +151,7 @@ public class EX5_043 : CEntity_Effect
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Green))
+                            if (cardSource.HasCardColor(CardColor.Green))
                             {
                                 if (cardSource.IsDigimon)
                                 {
@@ -217,7 +217,7 @@ public class EX5_043 : CEntity_Effect
                         activateETB: true));
                 }
 
-                #region ìoèÍÉRÉXÉg-âèú
+                #region ÔøΩoÔøΩÔøΩRÔøΩXÔøΩg-ÔøΩÔøΩÔøΩÔøΩ
                 card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
                 #endregion
             }
@@ -247,7 +247,7 @@ public class EX5_043 : CEntity_Effect
                             return true;
                         }
 
-                        if (cardSource.CardColors.Contains(CardColor.Green))
+                        if (cardSource.HasCardColor(CardColor.Green))
                         {
                             return true;
                         }
@@ -263,7 +263,7 @@ public class EX5_043 : CEntity_Effect
                 {
                     bool canPlay = false;
 
-                    #region ìoèÍÉRÉXÉg-
+                    #region ÔøΩoÔøΩÔøΩRÔøΩXÔøΩg-
                     ChangeCostClass changeCostClass = new ChangeCostClass();
                     changeCostClass.SetUpICardEffect("Reduce Play Cost", CanUseCondition1, card);
                     changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
@@ -325,7 +325,7 @@ public class EX5_043 : CEntity_Effect
                         {
                             if (cardSource.Owner == card.Owner)
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Green))
+                                if (cardSource.HasCardColor(CardColor.Green))
                                 {
                                     if (cardSource.IsDigimon)
                                     {
@@ -354,7 +354,7 @@ public class EX5_043 : CEntity_Effect
                         canPlay = true;
                     }
 
-                    #region ìoèÍÉRÉXÉg-âèú
+                    #region ÔøΩoÔøΩÔøΩRÔøΩXÔøΩg-ÔøΩÔøΩÔøΩÔøΩ
                     card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
                     #endregion
 
@@ -369,7 +369,7 @@ public class EX5_043 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                #region ìoèÍÉRÉXÉg-
+                #region ÔøΩoÔøΩÔøΩRÔøΩXÔøΩg-
                 ChangeCostClass changeCostClass = new ChangeCostClass();
                 changeCostClass.SetUpICardEffect("Reduce Play Cost", CanUseCondition1, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
@@ -431,7 +431,7 @@ public class EX5_043 : CEntity_Effect
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Green))
+                            if (cardSource.HasCardColor(CardColor.Green))
                             {
                                 if (cardSource.IsDigimon)
                                 {
@@ -497,7 +497,7 @@ public class EX5_043 : CEntity_Effect
                         activateETB: true));
                 }
 
-                #region ìoèÍÉRÉXÉg-âèú
+                #region ÔøΩoÔøΩÔøΩRÔøΩXÔøΩg-ÔøΩÔøΩÔøΩÔøΩ
                 card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
                 #endregion
             }
@@ -513,7 +513,7 @@ public class EX5_043 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] [Once Per Turn] When one of your Digimon is played, you may return 1 of your opponentÅ's 5000 DP or lower Digimon to the hand. For each of your other Digimon, add 3000 to the maximum DP this effect can choose.";
+                return "[Your Turn] [Once Per Turn] When one of your Digimon is played, you may return 1 of your opponentÔøΩ's 5000 DP or lower Digimon to the hand. For each of your other Digimon, add 3000 to the maximum DP this effect can choose.";
             }
 
             int maxDP()

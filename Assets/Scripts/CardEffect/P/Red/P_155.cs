@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.P
 
                 string EffectDiscription()
                 {
-                    return "[Main] <Delay> (By trashing this card after the placing turn, active the effect.)\r\n• By trashing 1 of your non-red option cards in your battle area, gain 1 memory.";
+                    return "[Main] <Delay> (By trashing this card after the placing turn, active the effect.)\r\nï¿½ By trashing 1 of your non-red option cards in your battle area, gain 1 memory.";
                 }
 
                 bool HasNonRedOption(Permanent permanent)

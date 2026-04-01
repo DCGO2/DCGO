@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT14
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardColors.Contains(CardColor.Green);
+                    return cardSource.HasCardColor(CardColor.Green);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

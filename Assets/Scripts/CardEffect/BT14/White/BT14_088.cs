@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.BT14
                 {
                     if (cardSource.IsTamer)
                     {
-                        if (!cardSource.CardColors.Contains(CardColor.White))
+                        if (!cardSource.HasCardColor(CardColor.White))
                         {
                             return true;
                         }

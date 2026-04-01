@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.ST24
                 activateClass.SetUpICardEffect("Digivolve into [DATA SQUAD] for 2 less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("ST24_01_WA");
+                activateClass.SetHashString("ST23_01_WA");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription() => "[When Attacking] [Once Per Turn] By trashing the bottom face-down card from under any of your Tamers, this Digimon may digivolve into a [DATA SQUAD] trait Digimon card in the hand with the cost reduced by 2.";

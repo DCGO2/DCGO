@@ -296,7 +296,7 @@ public class BT2_047 : CEntity_Effect
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Green))
+                            if (cardSource.HasCardColor(CardColor.Green))
                             {
                                 if (cardSource.Level == 3)
                                 {

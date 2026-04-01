@@ -41,6 +41,8 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         _customMessage_Enemy = null;
 
         _customBackButtonMessage = null;
+
+        _degenerationCount = 1;
     }
 
     public void SetIsLocal()
@@ -87,6 +89,11 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         _defenderCondition = defenderCondition;
     }
 
+    public void SetPlaceFaceUp()
+    {
+        _isFaceUp = true;
+    }
+
     //Player to select
     Player _selectPlayer = null;
     //Conditions of units that can be selected
@@ -114,6 +121,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
     int _degenerationCount = 1;
     bool _canAttackPlayer = true;
     Func<Permanent, bool> _defenderCondition = (permanent) => true;
+    bool _isFaceUp = false;
 
     public enum Mode
     {
@@ -123,6 +131,8 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         Bounce,
         PutLibraryBottom,
         PutLibraryTop,
+        PutSecurityBottom,
+        PutSecurityTop,
         Degenerate,
         Attack,
         Custom
@@ -242,6 +252,8 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         List<Permanent> untapPermanents = new List<Permanent>();
         List<Permanent> libraryBottomPermanents = new List<Permanent>();
         List<Permanent> libraryTopPermanents = new List<Permanent>();
+        List<Permanent> securityBottomPermanents = new List<Permanent>();
+        List<Permanent> securityTopPermanents = new List<Permanent>();
         List<Permanent> handBouncePermanents = new List<Permanent>();
         List<Permanent> degeneratePermanents = new List<Permanent>();
         List<Permanent> attackPermanents = new List<Permanent>();
@@ -323,6 +335,14 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
                         case Mode.PutLibraryTop:
                             message = "Select cards to put on top of the deck.";
+                            break;
+
+                        case Mode.PutSecurityBottom:
+                            message = "Select cards to put on bottom of security.";
+                            break;
+
+                        case Mode.PutSecurityTop:
+                            message = "Select cards to put on top of security.";
                             break;
 
                         case Mode.Degenerate:
@@ -861,6 +881,15 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                                 libraryTopPermanents.Add(targetPermanent);
                                 break;
 
+                            case Mode.PutSecurityBottom:
+
+                                securityBottomPermanents.Add(targetPermanent);
+                                break;
+
+                            case Mode.PutSecurityTop:
+                                securityTopPermanents.Add(targetPermanent);
+                                break;
+
                             case Mode.Degenerate:
                                 degeneratePermanents.Add(targetPermanent);
                                 break;
@@ -917,6 +946,28 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                         yield return ContinuousController.instance.StartCoroutine(new DeckTopBounceClass(libraryTopPermanents, hashtable).DeckBounce());
                     }
 
+                    if (securityBottomPermanents.Count > 0)
+                    {
+                        if (_cardEffect.EffectSourceCard.Owner.CanAddSecurity(_cardEffect))
+                        {
+                            foreach (Permanent targetPermanent in securityBottomPermanents)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(targetPermanent, CardEffectCommons.CardEffectHashtable(_cardEffect), false, _isFaceUp).PutSecurity());
+                            }
+                        }
+                    }
+
+                    if (securityTopPermanents.Count > 0)
+                    {
+                        if (_cardEffect.EffectSourceCard.Owner.CanAddSecurity(_cardEffect))
+                        {
+                            foreach (Permanent targetPermanent in securityTopPermanents)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(targetPermanent, CardEffectCommons.CardEffectHashtable(_cardEffect), true, _isFaceUp).PutSecurity());
+                            }
+                        }
+                    }
+
                     if (handBouncePermanents.Count > 0)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new HandBounceClaass(handBouncePermanents, hashtable).Bounce());
@@ -932,7 +983,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
                     if (attackPermanents.Count > 0)
                     {
-                        foreach (Permanent selectedPermanent in degeneratePermanents)
+                        foreach (Permanent selectedPermanent in attackPermanents)
                         {
                             if (selectedPermanent.CanAttack(_cardEffect))
                             {

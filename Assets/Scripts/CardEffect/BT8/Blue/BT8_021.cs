@@ -26,15 +26,8 @@ public class BT8_021 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardColors.Count == 2)
-                {
-                    if (cardSource.CardColors.Contains(CardColor.Blue))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return (cardSource.CardColors.Count == 2 && cardSource.CardColors.Contains(CardColor.Blue))
+                    || (cardSource.DualCardColors.Count == 2 && cardSource.DualCardColors.Contains(CardColor.Blue));
             }
 
             bool CanUseCondition(Hashtable hashtable)

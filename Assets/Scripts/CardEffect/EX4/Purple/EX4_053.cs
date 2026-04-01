@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.EX4
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Purple))
                         {
                             if (cardSource.ContainsCardName("Ravemon"))
                             {
@@ -97,7 +97,8 @@ namespace DCGO.CardEffects.EX4
                             selectCardCoroutine: null),
                         },
                         remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                        activateClass: activateClass
+                        activateClass: activateClass,
+                        mutualConditions: true
                     ));
                 }
             }

@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT12
                     {
                         if (CardEffectCommons.IsExistOnBattleArea(card)
                         && card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) =>
-                        cardSource.IsTamer && cardSource.CardColors.Contains(CardColor.Red)) >= 1)
+                        cardSource.IsTamer && cardSource.HasCardColor(CardColor.Red)) >= 1)
                         {
                             if (permanent.DP <= card.PermanentOfThisCard().DP)
                             {

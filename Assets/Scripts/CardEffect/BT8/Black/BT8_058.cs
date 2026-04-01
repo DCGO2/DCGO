@@ -73,7 +73,8 @@ public class BT8_058 : CEntity_Effect
                             selectCardCoroutine: null),
                     },
                     remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                    activateClass: activateClass
+                    activateClass: activateClass,
+                    mutualConditions: true
                 ));
             }
         }

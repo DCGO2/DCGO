@@ -34,7 +34,7 @@ public class BT8_070 : CEntity_Effect
                         {
                             if (isExistOnField(card))
                             {
-                                if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Red)) >= 1)
+                                if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Red)) >= 1)
                                 {
                                     if (permanent.IsDigimon)
                                     {
@@ -42,7 +42,7 @@ public class BT8_070 : CEntity_Effect
                                     }
                                 }
 
-                                if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Black)) >= 1)
+                                if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Black)) >= 1)
                                 {
                                     if (permanent.IsTamer)
                                     {

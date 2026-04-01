@@ -41,12 +41,12 @@ namespace DCGO.CardEffects.EX3
                         {
                             if (cardSource.CardTraits.Contains("Cyborg"))
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Red))
+                                if (cardSource.HasCardColor(CardColor.Red))
                                 {
                                     return true;
                                 }
 
-                                if (cardSource.CardColors.Contains(CardColor.Black))
+                                if (cardSource.HasCardColor(CardColor.Black))
                                 {
                                     return true;
                                 }
@@ -420,12 +420,12 @@ namespace DCGO.CardEffects.EX3
                         {
                             if (cardSource.CardTraits.Contains("Cyborg"))
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Red))
+                                if (cardSource.HasCardColor(CardColor.Red))
                                 {
                                     return true;
                                 }
 
-                                if (cardSource.CardColors.Contains(CardColor.Black))
+                                if (cardSource.HasCardColor(CardColor.Black))
                                 {
                                     return true;
                                 }

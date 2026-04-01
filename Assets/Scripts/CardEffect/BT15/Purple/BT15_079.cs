@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT15
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    return !cardSource.CardColors.Contains(CardColor.White);
+                    return !cardSource.HasCardColor(CardColor.White);
                 }
 
                 cardEffects.Add(CardEffectFactory.CanNotDigivolveStaticSelfEffect(

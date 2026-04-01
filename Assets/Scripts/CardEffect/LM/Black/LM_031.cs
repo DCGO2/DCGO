@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && cardSource.CardColors.Contains(CardColor.Black);
+                    return cardSource.IsDigimon && cardSource.HasCardColor(CardColor.Black);
                 }
 
                 bool CanSelectOwnPermanentCondition(Permanent permanent)
@@ -102,12 +102,12 @@ namespace DCGO.CardEffects.LM
 
                 string EffectDiscription()
                 {
-                    return "[Start of your Turn] If your opponent has a Digimon, <Delay>.\r\n• Return 1 black Digimon card from your trash to the top of the deck. Then, if you don't have a Digimon, you may play 1 black Digimon card with 2000 DP or less from your trash without paying the cost.";
+                    return "[Start of your Turn] If your opponent has a Digimon, <Delay>.\r\nï¿½ Return 1 black Digimon card from your trash to the top of the deck. Then, if you don't have a Digimon, you may play 1 black Digimon card with 2000 DP or less from your trash without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && cardSource.CardColors.Contains(CardColor.Black);
+                    return cardSource.IsDigimon && cardSource.HasCardColor(CardColor.Black);
                 }
 
                 bool CanSelectCardCondition1(CardSource cardSource)
@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.LM
                             {
                                 if (cardSource.IsDigimon)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Black) && cardSource.CardDP <= 2000)
+                                    if (cardSource.HasCardColor(CardColor.Black) && cardSource.CardDP <= 2000)
                                     {
                                         return true;
                                     }
@@ -278,7 +278,7 @@ namespace DCGO.CardEffects.LM
                             {
                                 if (cardSource.IsDigimon)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Black) && cardSource.CardDP <= 2000)
+                                    if (cardSource.HasCardColor(CardColor.Black) && cardSource.CardDP <= 2000)
                                     {
                                         return true;
                                     }

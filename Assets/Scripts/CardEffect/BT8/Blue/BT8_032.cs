@@ -133,7 +133,7 @@ public class BT8_032 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Blue)) >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Blue)) >= 1)
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
@@ -158,7 +158,7 @@ public class BT8_032 : CEntity_Effect
 
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Green)) >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.HasCardColor(CardColor.Green)) >= 1)
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                         {

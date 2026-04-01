@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +17,11 @@ namespace DCGO.CardEffects.AD1
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel4 &&
-                           (targetPermanent.TopCard.ContainsCardName("Growlmon")
-                            || targetPermanent.TopCard.EqualsTraits("Hero"));
+                    return targetPermanent.TopCard.ContainsCardName("Growlmon")
+                            || targetPermanent.TopCard.EqualsTraits("Hero");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 4, permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
             #endregion
 
@@ -238,6 +236,7 @@ namespace DCGO.CardEffects.AD1
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && card.PermanentOfThisCard().TopCard.ContainsCardName("Gallantmon")
                         && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card)
                         && !CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card));
                 }

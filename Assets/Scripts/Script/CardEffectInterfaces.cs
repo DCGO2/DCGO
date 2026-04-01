@@ -51,13 +51,6 @@ public interface IRebootEffect
 }
 #endregion
 
-#region "Target permanent gains Alliance" effect
-public interface IAllianceEffect
-{
-    bool HasAlliance(Permanent permanent);
-}
-#endregion
-
 #region "Target permanent gains Scapegoat" effect
 public interface IScapegoatEffect
 {
@@ -262,6 +255,16 @@ public interface IChangeCostEffect
     bool IsUpDown();
     bool IsCheckAvailability();
     bool IsChangePayingCost();
+}
+#endregion
+
+#region "Change target card's cost" effect
+public interface IChangeLinkCostEffect
+{
+    int GetCost(int cost, CardSource cardSource, Permanent permanent, SelectCardEffect.Root root);
+    bool CardCondition(CardSource cardSource);
+    bool PermanentCondition(Permanent permanent);
+    bool IsUpDown();
 }
 #endregion
 
@@ -516,5 +519,13 @@ public interface IChangeEndTurnMinMemoryEffect
 public interface IVortexCanAttackPlayersEffect
 {
     bool VortexCanAttackPlayersPermanent(Permanent Attacker);
+}
+#endregion
+
+#region "Instead of trashing after use" effects
+public interface IOptionResolutionEffect
+{
+    bool CanResolve();
+    IEnumerator Resolve();
 }
 #endregion

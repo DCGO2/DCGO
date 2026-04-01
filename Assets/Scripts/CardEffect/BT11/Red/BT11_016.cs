@@ -175,7 +175,7 @@ namespace DCGO.CardEffects.BT11
                 {
                     if (cardSource.CardDP <= maxDP())
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Red))
+                        if (cardSource.HasCardColor(CardColor.Red))
                         {
                             if (cardSource.IsDigimon)
                             {

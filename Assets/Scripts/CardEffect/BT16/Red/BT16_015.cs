@@ -136,11 +136,11 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanPlayTargetCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardKind == CardKind.Digimon)
+                    if (cardSource.CardKinds.Contains(CardKind.Digimon))
                     {
                         if (cardSource.HasDP && cardSource.CardDP <= 11000)
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Red))
+                            if (cardSource.HasCardColor(CardColor.Red))
                             {
                                 if (cardSource.HasAvianBeastAnimalTraits)
                                 {

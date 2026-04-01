@@ -106,7 +106,7 @@ namespace DCGO.CardEffects.BT15
                     {
                         if (cardSource.ContainsTraits("Vaccine"))
                         {
-                            if (cardSource.CardColors.Contains(CardColor.Yellow))
+                            if (cardSource.HasCardColor(CardColor.Yellow))
                             {
                                 return true;
                             }

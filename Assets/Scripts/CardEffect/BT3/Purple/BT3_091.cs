@@ -27,7 +27,7 @@ public class BT3_091 : CEntity_Effect
             {
                 if (cardSource.IsOption)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Purple))
+                    if (cardSource.HasCardColor(CardColor.Purple))
                     {
                         return true;
                     }

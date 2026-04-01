@@ -41,10 +41,10 @@ public class CardDistribution : MonoBehaviour
 
     public void Init()
     {
-        digitama.CardCondition = (cEntity_Base) => cEntity_Base.cardKind == CardKind.DigiEgg;
-        digimon.CardCondition = (cEntity_Base) => cEntity_Base.cardKind == CardKind.Digimon;
-        tamer.CardCondition = (cEntity_Base) => cEntity_Base.cardKind == CardKind.Tamer;
-        option.CardCondition = (cEntity_Base) => cEntity_Base.cardKind == CardKind.Option;
+        digitama.CardCondition = (cEntity_Base) => cEntity_Base.cardKind.Contains(CardKind.DigiEgg);
+        digimon.CardCondition = (cEntity_Base) => cEntity_Base.cardKind.Contains(CardKind.Digimon);
+        tamer.CardCondition = (cEntity_Base) => cEntity_Base.cardKind.Contains(CardKind.Tamer);
+        option.CardCondition = (cEntity_Base) => cEntity_Base.cardKind.Contains(CardKind.Option);
         level2.CardCondition = (cEntity_Base) => cEntity_Base.Level == 2;
         level3.CardCondition = (cEntity_Base) => cEntity_Base.Level == 3;
         level4.CardCondition = (cEntity_Base) => cEntity_Base.Level == 4;

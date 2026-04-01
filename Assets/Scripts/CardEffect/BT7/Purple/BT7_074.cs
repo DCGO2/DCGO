@@ -27,7 +27,7 @@ public class BT7_074 : CEntity_Effect
             {
                 if (cardSource.IsTamer)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Purple))
+                    if (cardSource.HasCardColor(CardColor.Purple))
                     {
                         if (cardSource.GetCostItself <= 3)
                         {

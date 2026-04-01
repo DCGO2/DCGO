@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.EX2
                 {
                     if (cardSource.IsTamer)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Black))
+                        if (cardSource.HasCardColor(CardColor.Black))
                         {
                             return true;
                         }

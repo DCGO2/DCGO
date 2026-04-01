@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (cardSource.IsOption)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Yellow) || cardSource.HasCardColor(CardColor.Purple))
                         {
                             if(cardSource.HasUseCost && cardSource.GetCostItself <= 5)
                             {
@@ -157,7 +157,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (cardSource.IsOption)
                     {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Purple))
+                        if (cardSource.HasCardColor(CardColor.Yellow) || cardSource.HasCardColor(CardColor.Purple))
                         {
                             if (cardSource.HasUseCost && cardSource.GetCostItself <= 5)
                             {
