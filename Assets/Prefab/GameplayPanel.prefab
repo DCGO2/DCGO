@@ -161,7 +161,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Enable Banlist - Disables random matchmaking
+  m_Text: Enable Banlist and Random Matchmaking
 --- !u!114 &4232169421690341382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,8 +195,8 @@ MonoBehaviour:
   _font_JPN: {fileID: 12800000, guid: 2f11c82edd19dad4bab7cebf6c7e61af, type: 3}
   _fontSize_ENG: 120
   _fontSize_JPN: 120
-  _text_ENG: Enable Banlist - Disables random matchmaking
-  _text_JPN: "\u7981\u6B62\u30EA\u30B9\u30C8\u3092\u6709\u52B9\u5316 \u2014 \u30E9\u30F3\u30C0\u30E0\u30DE\u30C3\u30C1\u30E1\u30A4\u30AD\u30F3\u30B0\u3092\u7121\u52B9\u306B\u3057\u307E\u3059"
+  _text_ENG: Enable Banlist and Random Matchmaking
+  _text_JPN: "\u7981\u6B62\u30EA\u30B9\u30C8\u3068\u30E9\u30F3\u30C0\u30E0\u30DE\u30C3\u30C1\u30E1\u30A4\u30AD\u30F3\u30B0\u3092\u6709\u52B9\u306B\u3059\u308B"
 --- !u!1 &4866768862336323155
 GameObject:
   m_ObjectHideFlags: 0
