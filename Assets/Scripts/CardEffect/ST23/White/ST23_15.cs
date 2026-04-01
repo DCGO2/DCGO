@@ -19,9 +19,8 @@ namespace DCGO.CardEffects.ST23
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsOwnerPermanent(permanent, card)
-                        && permanent.TopCard.EqualsTraits("BEATBREAK")
-                        && (permanent.IsDigimon || permanent.IsTamer);
+                    return (permanent.IsDigimon || permanent.IsTamer)
+                        && permanent.TopCard.EqualsTraits("BEATBREAK");
                 }
             }
             #endregion       
@@ -219,7 +218,7 @@ namespace DCGO.CardEffects.ST23
                         {
                             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
-                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass, false, true));
 
                             yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
 
