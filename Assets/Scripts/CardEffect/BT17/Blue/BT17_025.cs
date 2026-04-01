@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
+// Cerberusmon: Werewolf Mode
 namespace DCGO.CardEffects.BT17
 {
     public class BT17_025 : CEntity_Effect
@@ -22,7 +23,7 @@ namespace DCGO.CardEffects.BT17
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: true,
+                    permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: false,
                     card: card, condition: null));
             }
 
