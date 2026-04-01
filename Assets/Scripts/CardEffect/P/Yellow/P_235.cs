@@ -14,13 +14,11 @@ namespace DCGO.CardEffects.P
 
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.UseRequirements(card, PermanentCondition));
+                cardEffects.Add(CardEffectFactory.UseRequirements(card, CardCondition));
 
-                bool PermanentCondition(Permanent permanent)
+                bool CardCondition(CardSource cardSource)
                 {
-                    return permanent.TopCard.Owner == card.Owner
-                        && (permanent.IsTamer || permanent.IsDigimon) 
-                        && permanent.TopCard.EqualsTraits("DATA SQUAD");
+                    return cardSource.EqualsTraits("DATA SQUAD");
                 }
             }
 
