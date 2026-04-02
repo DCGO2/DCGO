@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.BT5
                     ActivateClass activateClass1 = new ActivateClass();
                     Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
                     activateClass1.SetUpICardEffect("Digivolution Cost -6 and add self bounce", CanUseCondition1, card);
-                    activateClass1.SetUpActivateClass(CanActivateCondition, ActivateCoroutine1, -1, true, EffectDiscription1());
+                    activateClass1.SetUpActivateClass(CanActivateCondition, ActivateCoroutine1, -1, false, EffectDescription1());
                     CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: null, timing: EffectTiming.None, getCardEffect: getCardEffect);
 
                     ActivateClass activateClass2 = new ActivateClass();
@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.BT5
                     CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: null, timing: EffectTiming.None, getCardEffect: getCardEffect1);
 
                     #region Reduce evo cost
-                    string EffectDiscription1()
+                    string EffectDescription1()
                     {
                         return "Reduce the memory cost of the digivolution by 6.";
                     }
@@ -82,6 +82,8 @@ namespace DCGO.CardEffects.BT5
 
                     IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                     {
+                        Permanent playedPermanent = null;
+
                         ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
 
                         ChangeCostClass changeCostClass = new ChangeCostClass();
@@ -115,6 +117,8 @@ namespace DCGO.CardEffects.BT5
                         {
                             if (targetPermanents != null)
                             {
+                                playedPermanent = targetPermanents[0];
+
                                 if (targetPermanents.Count(PermanentCondition) >= 1)
                                 {
                                     return true;
@@ -139,9 +143,6 @@ namespace DCGO.CardEffects.BT5
                         {
                             return true;
                         }
-
-                        List<Permanent> Permanents = CardEffectCommons.GetPermanentsFromHashtable(_hashtable);
-                        Permanent playedPermanent = Permanents[0];
 
                         ActivateClass activateClass3 = new ActivateClass();
                         activateClass3.SetUpICardEffect("Bottom deck the Digimon", CanUseCondition2, playedPermanent.TopCard);
