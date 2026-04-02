@@ -15,12 +15,11 @@ namespace DCGO.CardEffects.ST23
             #region Ignore Color Requirement
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.UseRequirements(card, PermanentCondition));
+                cardEffects.Add(CardEffectFactory.UseRequirements(card, CardCondition));
 
-                bool PermanentCondition(Permanent permanent)
+                bool CardCondition(CardSource cardSource)
                 {
-                    return (permanent.IsDigimon || permanent.IsTamer)
-                        && permanent.TopCard.EqualsTraits("BEATBREAK");
+                    return  cardSource.EqualsTraits("BEATBREAK");
                 }
             }
             #endregion       
