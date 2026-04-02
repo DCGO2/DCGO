@@ -525,7 +525,7 @@ public interface IVortexCanAttackPlayersEffect
 #region "Instead of trashing after use" effects
 public interface IOptionResolutionEffect
 {
-    bool CanResolve();
-    IEnumerator Resolve();
+    bool CanResolve(CardSource optionCard);
+    IEnumerator Resolve(CardSource optionCard);
 }
 #endregion
