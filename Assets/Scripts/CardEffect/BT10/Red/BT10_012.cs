@@ -1,11 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
 
+// Shoutmon X4B
 namespace DCGO.CardEffects.BT10
 {
     public class BT10_012 : CEntity_Effect
@@ -67,20 +65,7 @@ namespace DCGO.CardEffects.BT10
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon || cardSource.IsTamer)
-                    {
-                        if (cardSource.CardTraits.Contains("Xros Heart"))
-                        {
-                            return true;
-                        }
-
-                        if (cardSource.CardTraits.Contains("XrosHeart"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource.CardTraits.Contains("Xros Heart");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -355,20 +340,7 @@ namespace DCGO.CardEffects.BT10
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon || cardSource.IsTamer)
-                    {
-                        if (cardSource.CardTraits.Contains("Xros Heart"))
-                        {
-                            return true;
-                        }
-
-                        if (cardSource.CardTraits.Contains("XrosHeart"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource.CardTraits.Contains("Xros Heart");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
