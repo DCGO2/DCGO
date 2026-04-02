@@ -12,12 +12,12 @@ public partial class CardEffectFactory
         if (card == null) return null;
         OptionResolutionClass artsDigivolutionClass = new();
         artsDigivolutionClass.SetUpICardEffect("Arts Digivolve", CanUseCondition, card);
-        artsDigivolutionClass.SetUpOptionResolutionClass(ResolutionCoroutine(), CanResolveCondition);
+        artsDigivolutionClass.SetUpOptionResolutionClass(ResolutionCoroutine, CanResolveCondition);
         return artsDigivolutionClass;
 
         bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnExecutingArea(card);
 
-        bool CanResolveCondition() => CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition);
+        bool CanResolveCondition(CardSource optionCard) => CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition);
 
         bool CanSelectPermanentCondition(Permanent permanent)
         {
@@ -26,7 +26,7 @@ public partial class CardEffectFactory
                 && card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, artsDigivolutionClass, SelectCardEffect.Root.Execution);
         }
         
-        IEnumerator ResolutionCoroutine()
+        IEnumerator ResolutionCoroutine(CardSource optionCard)
         {
             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
     

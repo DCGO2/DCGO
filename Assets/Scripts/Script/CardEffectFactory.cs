@@ -1471,4 +1471,30 @@ public partial class CardEffectFactory
         }
     }
     #endregion
+
+    #region Place used Options in Security instead of trash effect
+    public static OptionResolutionClass PlaceToSecurityEffect(CardSource card, bool toTop, bool isFaceUp = false, Func<bool> Condition = null)
+    {
+        if (card == null) return null;
+        string location = toTop ? "top" : "bottom";
+        string facing = isFaceUp ? "face up" : "face down";
+        string effectName = $"Place the used Option card on {location} of security {facing}.";
+        OptionResolutionClass placeToSecurityEffect = new();
+        placeToSecurityEffect.SetUpICardEffect(effectName, CanUseCondition, card);
+        placeToSecurityEffect.SetUpOptionResolutionClass(ResolutionCoroutine, CanResolveCondition);
+        return placeToSecurityEffect;
+
+        bool CanUseCondition(Hashtable hashtable)
+        {
+            return Condition == null || Condition();
+        }
+
+        bool CanResolveCondition(CardSource optionCard) => optionCard.Owner.CanAddSecurity(placeToSecurityEffect);
+        
+        IEnumerator ResolutionCoroutine(CardSource optionCard)
+        {
+            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(optionCard, toTop, isFaceUp));
+        }
+    }
+    #endregion
 }
