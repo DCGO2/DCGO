@@ -1261,6 +1261,12 @@ public class ContinuousController : MonoBehaviour
             Application.Quit();
         }
 #endif
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            _showPhotonDebug = !_showPhotonDebug;
+        }
+#endif
     }
     int _frameCount = 0;
     int _updateFrame = 40;
@@ -1334,7 +1340,139 @@ public class ContinuousController : MonoBehaviour
         Debug.Log($"random number sequence initialization,InitState:{random}");
     }
 
+#if UNITY_EDITOR
+    #region Photon Debug HUD
+    bool _showPhotonDebug = false;
+    Photon.Realtime.IConnectionCallbacks _connectionCallbacks;
+    Photon.Realtime.IMatchmakingCallbacks _matchmakingCallbacks;
+    Photon.Realtime.ILobbyCallbacks _lobbyCallbacks;
 
+    void OnEnable()
+    {
+        var listener = new PhotonDebugListener();
+        _connectionCallbacks = listener;
+        _matchmakingCallbacks = listener;
+        _lobbyCallbacks = listener;
+        PhotonNetwork.AddCallbackTarget(listener);
+    }
+
+    void OnDisable()
+    {
+        if (_connectionCallbacks != null)
+            PhotonNetwork.RemoveCallbackTarget(_connectionCallbacks);
+    }
+
+    class PhotonDebugListener :
+        Photon.Realtime.IConnectionCallbacks,
+        Photon.Realtime.IMatchmakingCallbacks,
+        Photon.Realtime.ILobbyCallbacks
+    {
+        public void OnDisconnected(Photon.Realtime.DisconnectCause cause)
+        {
+            Debug.LogWarning($"[Photon Debug] Disconnected: {cause}");
+        }
+
+        public void OnConnected() { }
+        public void OnConnectedToMaster()
+        {
+            Debug.Log("[Photon Debug] Connected to Master");
+        }
+        public void OnRegionListReceived(Photon.Realtime.RegionHandler handler) { }
+        public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { }
+        public void OnCustomAuthenticationFailed(string debugMessage)
+        {
+            Debug.LogError($"[Photon Debug] Auth failed: {debugMessage}");
+        }
+
+        public void OnJoinedLobby()
+        {
+            Debug.Log("[Photon Debug] Joined Lobby");
+        }
+        public void OnLeftLobby()
+        {
+            Debug.Log("[Photon Debug] Left Lobby");
+        }
+        public void OnLobbyStatisticsUpdate(List<Photon.Realtime.TypedLobbyInfo> lobbyStatistics) { }
+        public void OnRoomListUpdate(List<Photon.Realtime.RoomInfo> roomList) { }
+
+        public void OnJoinedRoom()
+        {
+            Debug.Log($"[Photon Debug] Joined Room: {PhotonNetwork.CurrentRoom?.Name}");
+        }
+        public void OnJoinRoomFailed(short returnCode, string message)
+        {
+            Debug.LogError($"[Photon Debug] Join Room FAILED: [{returnCode}] {message}");
+        }
+        public void OnJoinRandomFailed(short returnCode, string message)
+        {
+            Debug.LogError($"[Photon Debug] Join Random FAILED: [{returnCode}] {message}");
+        }
+        public void OnCreateRoomFailed(short returnCode, string message)
+        {
+            Debug.LogError($"[Photon Debug] Create Room FAILED: [{returnCode}] {message}");
+        }
+        public void OnCreatedRoom()
+        {
+            Debug.Log("[Photon Debug] Created Room");
+        }
+        public void OnLeftRoom()
+        {
+            Debug.Log("[Photon Debug] Left Room");
+        }
+        public void OnFriendListUpdate(List<Photon.Realtime.FriendInfo> friendList) { }
+    }
+
+    void OnGUI()
+    {
+        if (!string.IsNullOrEmpty(PhotonUtility.RetryStatus))
+        {
+            GUIStyle retryStyle = new GUIStyle(GUI.skin.label);
+            retryStyle.fontSize = 20;
+            retryStyle.richText = true;
+            retryStyle.fontStyle = FontStyle.Bold;
+            retryStyle.alignment = TextAnchor.MiddleCenter;
+
+            float boxW = 500;
+            float boxH = 40;
+            float x = (Screen.width - boxW) / 2;
+            float y = (Screen.height - boxH) / 2;
+
+            GUI.Box(new Rect(x - 10, y - 10, boxW + 20, boxH + 20), "");
+            GUI.Label(new Rect(x, y, boxW, boxH), $"<color=#FFAA00>{PhotonUtility.RetryStatus}</color>", retryStyle);
+        }
+
+        if (!_showPhotonDebug) return;
+
+        string status;
+
+        if (!PhotonNetwork.IsConnected)
+        {
+            status = "<color=#FF4444>[Photon] Disconnected</color>";
+        }
+        else if (PhotonNetwork.InRoom)
+        {
+            string roomName = PhotonNetwork.CurrentRoom != null ? PhotonNetwork.CurrentRoom.Name : "?";
+            int players = PhotonNetwork.CurrentRoom != null ? PhotonNetwork.CurrentRoom.PlayerCount : 0;
+            status = $"<color=#44FF44>[Photon] Connected | Region: {PhotonNetwork.CloudRegion} | Room: {roomName} ({players} players)</color>";
+        }
+        else if (PhotonNetwork.InLobby)
+        {
+            status = $"<color=#44FF44>[Photon] Connected | Region: {PhotonNetwork.CloudRegion} | In Lobby</color>";
+        }
+        else
+        {
+            status = $"<color=#FFAA00>[Photon] Connected | Region: {PhotonNetwork.CloudRegion} | Not in Lobby/Room</color>";
+        }
+
+        GUIStyle style = new GUIStyle(GUI.skin.label);
+        style.fontSize = 16;
+        style.richText = true;
+        style.fontStyle = FontStyle.Bold;
+
+        GUI.Label(new Rect(10, 10, 800, 30), status, style);
+    }
+    #endregion
+#endif
 }
 
 #region Manage random numbers
@@ -1444,6 +1582,8 @@ public static class RandomUtility
 #region Manage connections to Photon
 public class PhotonUtility
 {
+    public static string RetryStatus { get; set; } = null;
+
     #region Disconnected from Photon
     public static IEnumerator DisconnectCoroutine()
     {
@@ -1479,23 +1619,59 @@ public class PhotonUtility
     #region Connect to Photon server
     public static IEnumerator ConnectToMasterServerCoroutine()
     {
-        if (!PhotonNetwork.IsConnected || ContinuousController.instance.LastConnectServerRegion != ContinuousController.instance.serverRegion)
-        {
-            if (PhotonNetwork.IsConnected)
-            {
-                yield return ContinuousController.instance.StartCoroutine(DisconnectCoroutine());
+        int maxRetries = 5;
+        float retryDelay = 3f;
 
-                yield return new WaitWhile(() => PhotonNetwork.IsConnected);
+        for (int attempt = 0; attempt <= maxRetries; attempt++)
+        {
+            if (!PhotonNetwork.IsConnected || ContinuousController.instance.LastConnectServerRegion != ContinuousController.instance.serverRegion)
+            {
+                if (PhotonNetwork.IsConnected)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(DisconnectCoroutine());
+
+                    yield return new WaitWhile(() => PhotonNetwork.IsConnected);
+                }
+
+                PhotonNetwork.NetworkingClient.AppId = PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime;
+                PhotonNetwork.ConnectToRegion(ContinuousController.instance.serverRegion);
+                PhotonNetwork.NickName = ContinuousController.instance.PlayerName;
+                PhotonNetwork.GameVersion = ContinuousController.instance.GameVerString;
+                ContinuousController.instance.LastConnectServerRegion = ContinuousController.instance.serverRegion;
             }
 
-            PhotonNetwork.NetworkingClient.AppId = PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime;
-            PhotonNetwork.ConnectToRegion(ContinuousController.instance.serverRegion);
-            PhotonNetwork.NickName = ContinuousController.instance.PlayerName;
-            PhotonNetwork.GameVersion = ContinuousController.instance.GameVerString;
-            ContinuousController.instance.LastConnectServerRegion = ContinuousController.instance.serverRegion;
-        }
+            yield return new WaitUntil(() =>
+                PhotonNetwork.IsConnectedAndReady ||
+                PhotonNetwork.NetworkingClient.State == Photon.Realtime.ClientState.Disconnected);
 
-        yield return new WaitWhile(() => !PhotonNetwork.IsConnectedAndReady);
+            if (PhotonNetwork.IsConnectedAndReady)
+            {
+                RetryStatus = null;
+                yield break;
+            }
+
+            var cause = PhotonNetwork.NetworkingClient.DisconnectedCause;
+            Debug.LogWarning($"[Photon] Connection failed: {cause} (attempt {attempt + 1}/{maxRetries + 1})");
+
+            if (cause == Photon.Realtime.DisconnectCause.MaxCcuReached && attempt < maxRetries)
+            {
+                RetryStatus = LocalizeUtility.GetLocalizedString(
+                    EngMessage: $"Server full. Retrying... ({attempt + 1}/{maxRetries})",
+                    JpnMessage: $"サーバーが満員です。再接続中... ({attempt + 1}/{maxRetries})"
+                );
+                Debug.Log($"[Photon] Server full, retrying in {retryDelay}s...");
+                yield return new WaitForSeconds(retryDelay);
+                retryDelay += 2f;
+                continue;
+            }
+
+            RetryStatus = LocalizeUtility.GetLocalizedString(
+                EngMessage: "Connection failed. Please try again later.",
+                JpnMessage: "接続に失敗しました。後でもう一度お試しください。"
+            );
+            Debug.LogError($"[Photon] Connection failed permanently: {cause}");
+            yield break;
+        }
     }
     #endregion
     #region Connect to Photon Server and Lobby
