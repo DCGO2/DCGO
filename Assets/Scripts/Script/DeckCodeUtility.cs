@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
 public class DeckCodeUtility
 {
@@ -88,11 +89,6 @@ public class DeckCodeUtility
                 {
                     CEntity_Base cEntity_Base = GetCardFromCardID(parseByComma[i]);
 
-                    if (cEntity_Base == null)
-                    {
-                        cEntity_Base = GetCardFromSpriteName(parseByComma[i]);
-                    }
-
                     if (cEntity_Base != null)
                     {
                         AllDeckCards.Add(cEntity_Base);
@@ -112,102 +108,44 @@ public class DeckCodeUtility
 
         if (!string.IsNullOrEmpty(DeckBuilderDeckCode))
         {
-            DeckBuilderDeckCode = DeckBuilderDeckCode.Replace("\r", "\n");
+            Debug.Log($"DeckCode\n{DeckBuilderDeckCode}");
 
-            string[] parseByEnter = DeckBuilderDeckCode.Split('\n');
-
-            for (int i = 0; i < parseByEnter.Length; i++)
+            using (StringReader reader = new StringReader(DeckBuilderDeckCode))
             {
-                if (!string.IsNullOrEmpty(parseByEnter[i]))
+                string line;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    if (parseByEnter[i].Length >= 5)
-                    {
-                        if (parseByEnter[i][0] == '/' && parseByEnter[i][1] == '/')
-                        {
-                            continue;
-                        }
+                    if (String.IsNullOrEmpty(line))
+                        continue;
 
+                    if (char.IsDigit(line[0]))
+                    {
                         int count = 0;
 
-                        string numberString = "";
+                        if (int.TryParse(line[0].ToString(), out value))
+                            count = value + plusCount;
 
-                        for (int j = 0; j < parseByEnter[i].Length; j++)
+                        for (int i = 0; i < 4; i++)
                         {
-                            if (int.TryParse(parseByEnter[i][j].ToString(), out value))
-                            {
-                                numberString += parseByEnter[i][j].ToString();
-                            }
+                            line = line.TrimEnd();
 
-                            else
+                            int lastSpaceIndex = line.LastIndexOf(" ");
+
+                            string cardID = line.Substring(lastSpaceIndex + 1);
+
+                            CEntity_Base cEntity_Base = GetCardFromCardID(cardID);
+
+                            if (cEntity_Base != null)
                             {
+                                for (int k = 0; k < count; k++)
+                                    AllDeckCards.Add(cEntity_Base);
+
+                                Debug.Log($"SUCCESSFULLY ADDED: {count}: {cardID}");
                                 break;
                             }
-                        }
-
-                        if (int.TryParse(numberString, out value))
-                        {
-                            count = value + plusCount;
-                        }
-
-                        if (count >= 1)
-                        {
-                            if (parseByEnter[i][numberString.Length].ToString() == " " || parseByEnter[i][numberString.Length].ToString() == "\t")
+                            else
                             {
-                                string cardIDString = "";
-
-                                for (int j = 0; j < parseByEnter[i].Length; j++)
-                                {
-                                    char targetChar = parseByEnter[i][parseByEnter[i].Length - 1 - j];
-
-                                    if (targetChar.ToString() == " " || targetChar.ToString() == "\t")
-                                    {
-                                        if (!String.IsNullOrEmpty(cardIDString))
-                                        {
-                                            break;
-                                        }
-                                    }
-
-                                    else
-                                    {
-                                        cardIDString += targetChar;
-                                    }
-                                }
-
-                                cardIDString = new string(cardIDString.Reverse().ToArray());
-
-                                string cardIDStringCopy = cardIDString;
-
-                                for (int j = 0; j < cardIDStringCopy.Length - 1; j++)
-                                {
-                                    bool result = Regex.IsMatch(cardIDStringCopy[j].ToString(), "[A-Z]");
-
-                                    if (result)
-                                    {
-                                        break;
-                                    }
-
-                                    cardIDString = cardIDStringCopy.Substring(j + 1);
-                                }
-
-                                CEntity_Base cEntity_Base = GetCardFromCardID(cardIDString);
-
-                                if (cEntity_Base == null)
-                                {
-                                    cEntity_Base = GetCardFromSpriteName(cardIDString);
-                                }
-
-                                if (cEntity_Base != null)
-                                {
-                                    for (int k = 0; k < count; k++)
-                                    {
-                                        AllDeckCards.Add(cEntity_Base);
-                                    }
-                                }
-
-                                else
-                                {
-                                    Debug.Log($"cardIDString:{cardIDString}, cardEntity = null");
-                                }
+                                line += "/" + reader.ReadLine();
                             }
                         }
                     }
@@ -220,11 +158,12 @@ public class DeckCodeUtility
 
     static CEntity_Base GetCardFromCardID(string cardID)
     {
-        return ContinuousController.instance.CardList.ToList().Find(cEntity_Base => cEntity_Base.CardID == cardID);
-    }
+        CEntity_Base card = null;
+        card = ContinuousController.instance.CardList.ToList().Find(cEntity_Base => cEntity_Base.CardID == cardID);
 
-    static CEntity_Base GetCardFromSpriteName(string cardSpriteName)
-    {
-        return ContinuousController.instance.CardList.ToList().Find(cEntity_Base => cEntity_Base.CardSpriteName == cardSpriteName);
+        if (card == null)
+            return ContinuousController.instance.CardList.ToList().Find(cEntity_Base => cEntity_Base.CardSpriteName == cardID);
+
+        return card;
     }
 }
