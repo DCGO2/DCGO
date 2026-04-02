@@ -3380,7 +3380,7 @@ public class Permanent
         {
             if (TopCard != null)
             {
-                if (TopCard.IsOption)
+                if (TopCard.IsOption && !TopCard.IsDigimon) //DualCard is never an option while it is a permanent
                 {
                     return true;
                 }
