@@ -176,7 +176,7 @@ public class DetailCard_DeckEditor : MonoBehaviour
         }
 
         //DP
-        if (cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
+        if (cEntity_Base.cardKind.Contains(CardKind.Digimon))
         {
             DPText.transform.parent.gameObject.SetActive(true);
             DPText.text = $"{cEntity_Base.DP}";
