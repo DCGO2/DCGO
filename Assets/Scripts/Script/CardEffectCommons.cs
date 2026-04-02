@@ -61,6 +61,8 @@ public partial class CardEffectCommons
     {
         if (cardSources == null) yield break;
 
+        Func<EffectTiming, ICardEffect> getEffect = null;
+
         cardSources = cardSources
         .Filter(cardSource => cardSource != null)
         .Filter(cardSource => !cardSource.CanNotPlayThisOption);
@@ -79,14 +81,29 @@ public partial class CardEffectCommons
         if (activateClass != null)
         {
             playCard.SetShowEffect();
-        }
 
-        if (setAddSecurityEndOption)
-        {
-            playCard.SetAddSecurityEndOption();
+            if (setAddSecurityEndOption)
+            {
+                getEffect = GetCardEffect;
+                activateClass.EffectSourceCard.Owner.UntilEachTurnEndEffects.Add(getEffect);
+            }
         }
 
         yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+
+        if (getEffect != null)
+        {
+            activateClass.EffectSourceCard.Owner.UntilEachTurnEndEffects.Remove(getEffect);
+        }
+
+        ICardEffect GetCardEffect(EffectTiming timing)
+        {
+            if (timing == EffectTiming.None)
+            {
+                return CardEffectFactory.PlaceToSecurityEffect(activateClass.EffectSourceCard, toTop: true);
+            }
+            return null;
+        }
     }
 
     #endregion

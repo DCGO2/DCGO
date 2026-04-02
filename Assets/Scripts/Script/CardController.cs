@@ -186,11 +186,6 @@ public class PlayCardClass
         _reducedCost = ReducedCost;
     }
 
-    public void SetAddSecurityEndOption()
-    {
-        _addSecurityEndOption = true;
-    }
-
     public void SetIsBreedingArea()
     {
         _isBreedingArea = true;
@@ -211,7 +206,6 @@ public class PlayCardClass
     int[] _jogressEvoRootsFrameIDs = null;
     int _burstTamerFrameID = -1;
     int[] _appFusionFrameIDs = null;
-    bool _addSecurityEndOption = false;
     bool _isBreedingArea = false;
 
     public bool isJogress => _jogressEvoRootsFrameIDs != null && _jogressEvoRootsFrameIDs.Length == 2;
@@ -1030,8 +1024,7 @@ public class PlayCardClass
 
         UseOptionClass useOption = new UseOptionClass(optionCards, _hashtable, Root)
         {
-            _showEffect = _showEffect,
-            _addSecurityEndOption = _addSecurityEndOption
+            _showEffect = _showEffect
         };
 
         yield return ContinuousController.instance.StartCoroutine(useOption.UseOption());
@@ -1682,7 +1675,6 @@ public class UseOptionClass
     SelectCardEffect.Root _root = SelectCardEffect.Root.None;
     Hashtable _hashtable = null;
     public bool _showEffect = false;
-    public bool _addSecurityEndOption = false;
 
     public IEnumerator UseOption()
     {
@@ -1764,7 +1756,7 @@ public class UseOptionClass
                         {
                             if (cardEffect is OptionResolutionClass)
                             {
-                                if (cardEffect.CanTrigger(null))
+                                if (cardEffect.CanUse(null))
                                 {
                                     optionResolutionEffects.Add((OptionResolutionClass)cardEffect);
                                 }
@@ -1778,7 +1770,7 @@ public class UseOptionClass
                     {
                         if (cardEffect is OptionResolutionClass)
                         {
-                            if (cardEffect.CanTrigger(null))
+                            if (cardEffect.CanUse(null))
                             {
                                 optionResolutionEffects.Add((OptionResolutionClass)cardEffect);
                             }
@@ -1787,24 +1779,30 @@ public class UseOptionClass
                     #endregion
                 }
 
+                #region effects of the card itself
                 foreach (ICardEffect cardEffect in card.EffectList(EffectTiming.None))
                 {
                     if (cardEffect is OptionResolutionClass)
                     {
-                        if (cardEffect.CanTrigger(null))
+                        if (cardEffect.CanUse(null))
                         {
                             optionResolutionEffects.Add((OptionResolutionClass)cardEffect);
                         }
                     }
                 }
+                #endregion
 
-                while (card.Owner.ExecutingCards.Contains(card) && optionResolutionEffects.Count(effect => effect.CanResolve()) > 0)
+                while (card.Owner.ExecutingCards.Contains(card))
                 {
-                    List<OptionResolutionClass> possibleEffects = optionResolutionEffects.Filter(effect => effect.CanResolve());
-                    if (possibleEffects.Count() == 1)
+                    List<OptionResolutionClass> possibleEffects = optionResolutionEffects.Filter(effect => effect.CanResolve(card));
+                    if (possibleEffects.Count() == 0)
+                    {
+                        break;
+                    }
+                    else if (possibleEffects.Count() == 1)
                     {
                         OptionResolutionClass currentEffect = possibleEffects[0];
-                        if (currentEffect != null) yield return ContinuousController.instance.StartCoroutine(currentEffect.Resolve());
+                        if (currentEffect != null) yield return ContinuousController.instance.StartCoroutine(currentEffect.Resolve(card));
                         optionResolutionEffects.Remove(currentEffect);
                     }
                     else
@@ -1835,7 +1833,7 @@ public class UseOptionClass
                         if (skillIndex >= 0)
                         {
                             OptionResolutionClass currentEffect = possibleEffects[skillIndex];
-                            if (currentEffect != null) yield return ContinuousController.instance.StartCoroutine(currentEffect.Resolve());
+                            if (currentEffect != null) yield return ContinuousController.instance.StartCoroutine(currentEffect.Resolve(card));
                             optionResolutionEffects.Remove(currentEffect);
                         }
                         else
@@ -1848,14 +1846,7 @@ public class UseOptionClass
 
             if (card.Owner.ExecutingCards.Contains(card))
             {
-                if (_addSecurityEndOption && card.Owner.CanAddSecurity(CardEffect))
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card));
-                }
-                else
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(card));
-                }
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(card));
             }
 
             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
