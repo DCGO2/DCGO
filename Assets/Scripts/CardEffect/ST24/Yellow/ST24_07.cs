@@ -18,13 +18,11 @@ namespace DCGO.CardEffects.ST24
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return permanent.TopCard.IsLevel5 
-                        && (permanent.TopCard.EqualsTraits("DATA SQUAD")
-                            || permanent.TopCard.ContainsCardName("RizeGreymon"));
-
+                    return permanent.TopCard.EqualsTraits("DATA SQUAD")
+                            || permanent.TopCard.ContainsCardName("RizeGreymon");
                 }
-
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 3, true, card, null));
+            
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 3, true, card, null, level: 5));
             }
             #endregion
 
