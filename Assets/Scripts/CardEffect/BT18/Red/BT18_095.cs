@@ -28,35 +28,6 @@ namespace DCGO.CardEffects.BT18
                         "[Main] You may place up to 5 [Hybrid] trait cards with different names from your hand or trash under 1 of your Tamers. Then, 1 of your Tamers with 5 or more cards under it may digivolve into [EmperorGreymon] in the hand or trash, ignoring digivolution requirements and without paying the cost.";
                 }
 
-                bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
-                {
-                    List<string> cardNames = GetNamesList(cardSources);
-
-                    foreach (string name in cardNames)
-                    {
-                        if (cardSource.CardNames.Contains(name))
-                            return false;
-                    }
-
-                    return true;
-                }
-
-                List<string> GetNamesList(List<CardSource> cardSources)
-                {
-                    foreach (CardSource cardName in cardSources)
-                    {
-                        foreach (string name in cardName.CardNames)
-                        {
-                            if (!selectedNames.Contains(name))
-                            {
-                                selectedNames.Add(name);
-                            }
-                        }
-                    }
-
-                    return selectedNames;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
@@ -77,7 +48,7 @@ namespace DCGO.CardEffects.BT18
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
                            permanent.IsTamer && permanent.DigivolutionCards.Count >= 5 &&
                            (card.Owner.HandCards.Where(DigivolveToCardCondition).Any(cardSource =>
-                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, ignore:CardEffectCommons.IgnoreRequirement.All)) ||
+                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, ignore: CardEffectCommons.IgnoreRequirement.All)) ||
                             card.Owner.TrashCards.Where(DigivolveToCardCondition).Any(cardSource =>
                                 cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, SelectCardEffect.Root.Trash, ignore: CardEffectCommons.IgnoreRequirement.All)));
                 }
@@ -92,12 +63,12 @@ namespace DCGO.CardEffects.BT18
                     // Place Hybrid cards under Tamer
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnTamerPermanentCondition))
                     {
+                        #region Tamer Selection 
+
                         Permanent tamerPermanent = null;
-
-                        SelectPermanentEffect selectPermanentEffect =
-                            GManager.instance.GetComponent<SelectPermanentEffect>();
-
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                         selectPermanentEffect.SetUp(
+
                             selectPlayer: card.Owner,
                             canTargetCondition: CanSelectOwnTamerPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
@@ -110,130 +81,133 @@ namespace DCGO.CardEffects.BT18
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
+                        IEnumerator SelectPermanentCoroutine1(Permanent selectedPermanent)
+                        {
+                            tamerPermanent = selectedPermanent;
+                            yield return null;
+                        }
+
                         selectPermanentEffect.SetUpCustomMessage(
                             "Select 1 of your Tamers that will add digivolution cards.",
                             "The opponent is selecting 1 of their Tamers that will add digivolution cards.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        IEnumerator SelectPermanentCoroutine1(Permanent selectedPermanent)
-                        {
-                            tamerPermanent = selectedPermanent;
-
-                            yield return null;
-                        }
+                        #endregion
 
                         if (tamerPermanent != null)
                         {
-                            List<CardSource> digivolutionCards = new List<CardSource>();
 
-                            if (CardEffectCommons.HasMatchConditionOwnersHand(card, SelectHybridCardCondition))
+                            bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, SelectHybridCardCondition);
+                            bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SelectHybridCardCondition);
+                            bool? isHand = null;
+
+                            #region Hand/Trash Selection
+
+                            if (canSelectHand || canSelectTrash)
                             {
-                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                                selectHandEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: SelectHybridCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
-                                    canEndSelectCondition: null,
-                                    maxCount: Math.Min(5,
-                                        CardEffectCommons.MatchConditionOwnersCardCountInHand(card, SelectHybridCardCondition)),
-                                    canNoSelect: true,
-                                    canEndNotMax: true,
-                                    isShowOpponent: true,
-                                    selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: SelectCardCoroutine,
-                                    mode: SelectHandEffect.Mode.Custom,
-                                    cardEffect: activateClass);
-
-                                selectHandEffect.SetUpCustomMessage("Select cards in hand to place in digivolution cards.",
-                                    "The opponent is selecting cards in hand to place in digivolution cards.");
-
-                                yield return StartCoroutine(selectHandEffect.Activate());
-                            }
-
-                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SelectHybridCardCondition))
-                            {
-                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                selectCardEffect.SetUp(
-                                    canTargetCondition: SelectHybridCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: SelectCardCoroutine,
-                                    message: "Select cards in trash to place in digivolution cards.",
-                                    maxCount: Math.Min(5 - digivolutionCards.Count,
-                                        CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, SelectHybridCardCondition)),
-                                    canEndNotMax: true,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Trash,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                            }
-
-                            IEnumerator SelectCardCoroutine(List<CardSource> cardSources)
-                            {
-                                digivolutionCards.AddRange(cardSources);
-
-                                yield return null;
-                            }
-
-                            if (digivolutionCards.Count >= 1)
-                            {
-                                List<CardSource> digivolutionCardsFixed = new List<CardSource>();
-
-                                if (digivolutionCards.Count == 1)
+                                if (canSelectHand && canSelectTrash)
                                 {
-                                    digivolutionCardsFixed.AddRange(digivolutionCards);
+                                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                                    {
+                                        new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                                        new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
+                                    };
+
+                                    string selectPlayerMessage = "From which area do you select cards?";
+                                    string notSelectPlayerMessage = "The opponent is choosing from which area to select cards.";
+
+                                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                                }
+                                else
+                                {
+                                    GManager.instance.userSelectionManager.SetBool(canSelectHand);
                                 }
 
-                                else
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                                isHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+                            }
+
+                            #endregion
+
+                            if (isHand != null)
+                            {
+                                List<CardSource> selectedCards = new List<CardSource>();
+
+                                #region Select Cards to Place
+
+                                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                                {
+                                    selectedCards.Add(cardSource);
+                                    yield return null;
+                                }
+
+                                bool SelectHybridCardConditionCustom(CardSource cardSource)
+                                {
+                                    return SelectHybridCardCondition(cardSource) &&
+                                           !selectedCards.Exists(selected =>
+                                               selected.CardNames.Exists(name =>
+                                                   cardSource.CardNames.Contains(name)));
+                                }
+
+                                if (isHand == true)
+                                {
+                                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                    selectHandEffect.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: SelectHybridCardConditionCustom,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: Math.Min(5 - selectedCards.Count,
+                                            CardEffectCommons.MatchConditionOwnersCardCountInHand(card, SelectHybridCardConditionCustom)),
+                                        canNoSelect: true,
+                                        canEndNotMax: true,
+                                        isShowOpponent: true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        mode: SelectHandEffect.Mode.Custom,
+                                        cardEffect: activateClass);
+
+                                    selectHandEffect.SetUpCustomMessage("Select cards in hand to place in digivolution cards, (cards will be placed so that cards with lower numbers are on top).",
+                                        "The opponent is selecting cards in hand to place in digivolution cards.");
+
+                                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                                }
+
+                                if (isHand == false)
                                 {
                                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                                     selectCardEffect.SetUp(
-                                        canTargetCondition: _ => true,
+                                        canTargetCondition: SelectHybridCardConditionCustom,
                                         canTargetCondition_ByPreSelecetedList: null,
                                         canEndSelectCondition: null,
-                                        canNoSelect: () => false,
-                                        selectCardCoroutine: null,
-                                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                                        message:
-                                        "Specify the order to place the cards on the bottom of the digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
-                                        maxCount: digivolutionCards.Count,
-                                        canEndNotMax: false,
-                                        isShowOpponent: false,
+                                        canNoSelect: () => true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        message: "Select cards in trash to place in digivolution cards.",
+                                        maxCount: Math.Min(5 - selectedCards.Count,
+                                            CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, SelectHybridCardConditionCustom)),
+                                        canEndNotMax: true,
+                                        isShowOpponent: true,
                                         mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Custom,
-                                        customRootCardList: digivolutionCards,
+                                        root: SelectCardEffect.Root.Trash,
+                                        customRootCardList: null,
                                         canLookReverseCard: true,
                                         selectPlayer: card.Owner,
                                         cardEffect: activateClass);
 
-                                    selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Cards");
-
+                                    selectCardEffect.SetUpCustomMessage("Select cards in trash to place in digivolution cards, (cards will be placed so that cards with lower numbers are on top).",
+                                        "The opponent is selecting cards in trash to place in digivolution cards.");
                                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                                    {
-                                        digivolutionCardsFixed.AddRange(cardSources);
-
-                                        yield return null;
-                                    }
                                 }
 
-                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(tamerPermanent))
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(tamerPermanent
-                                        .AddDigivolutionCardsBottom(digivolutionCardsFixed, activateClass));
-                                }
+                                #endregion
+
+                                if (selectedCards.Count >= 1) yield return ContinuousController.instance.StartCoroutine(tamerPermanent
+                                        .AddDigivolutionCardsBottom(selectedCards, activateClass));
                             }
                         }
                     }
