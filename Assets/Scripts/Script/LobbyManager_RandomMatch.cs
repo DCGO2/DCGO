@@ -121,7 +121,6 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         ReturnButton.SetActive(true);
         MessageText.text = "";
         TimeText.gameObject.SetActive(true);
-        StartCoroutine(TimeCountUp());
         timer = 0;
         count = true;
 
@@ -151,7 +150,6 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 
         while (!DoneCompleteMatching)
         {
-            time += (int)Time.deltaTime;
             string min = (time / 60).ToString();
             string sec = (time % 60).ToString();
 
