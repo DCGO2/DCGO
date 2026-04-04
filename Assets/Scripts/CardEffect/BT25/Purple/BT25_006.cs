@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -84,6 +85,8 @@ namespace DCGO.CardEffects.BT25
 
                     if (discarded)
                     {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -91,7 +94,7 @@ namespace DCGO.CardEffects.BT25
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: 1,
+                            maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
