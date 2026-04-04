@@ -117,7 +117,7 @@ namespace DCGO.CardEffects.BT25
 
             string SharedHashString = "BT25_104_WD_WA";
             
-            string SharedEffectName = "1 Enemy Digimon gets -15k DP, play 1 tamer.";
+            string SharedEffectName = "As an option effect, 1 Enemy Digimon gets -15k DP, play 1 tamer.";
 
             string SharedEffectDescription(string tag) => $"[{tag}] [Once Per Turn] Activate 1 [Main] effect on this card's Option side.";
 
