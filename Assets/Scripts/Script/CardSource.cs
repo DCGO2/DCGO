@@ -1108,8 +1108,12 @@ public class CardSource : MonoBehaviour
             return false;
         }
 
-        if (PayCost && frame.GetFramePermanent() == null && !IsOption)
+        if (PayCost && frame.GetFramePermanent() == null)
         {
+            if (IsOption)
+            {
+                return false;
+            }
             int cost = PayingCost(root, new List<Permanent>() { frame.GetFramePermanent() }, checkAvailability: true, FixedCost: fixedCost);
 
             if (Owner.MaxMemoryCost < cost)
