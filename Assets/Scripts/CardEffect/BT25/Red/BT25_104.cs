@@ -19,7 +19,6 @@ namespace DCGO.CardEffects.BT25
                 bool PermanentCondition(Permanent permanent)
                 {
                     return permanent.TopCard.EqualsTraits("DATA SQUAD");
-
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 5, true, card, null, level: 6));
