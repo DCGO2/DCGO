@@ -284,7 +284,7 @@ namespace DCGO.CardEffects.BT15
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking][Once Per Turn] When this Digimon attacks a player, <Draw 1>. (Draw 1 card from your deck.)";
+                    return "[When Attacking][Once Per Turn] <Draw 1>. (Draw 1 card from your deck.)";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
