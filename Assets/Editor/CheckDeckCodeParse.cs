@@ -58,9 +58,12 @@ public class CheckDeckCodeParse : MonoBehaviour
                     if(char.IsDigit(line[0]))
                     {
                         int count = 0;
+                        int spaceIndex = line.IndexOf(" ");
 
-                        if (int.TryParse(line[0].ToString(), out value))
+                        if (int.TryParse(line.Substring(0,spaceIndex).Trim(), out value))
                             count = value;
+
+                        Debug.Log($"Card Count: {count}");
 
                         for (int i = 0; i < 4; i++)
                         {

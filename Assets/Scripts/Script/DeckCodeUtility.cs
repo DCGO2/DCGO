@@ -121,8 +121,9 @@ public class DeckCodeUtility
                     if (char.IsDigit(line[0]))
                     {
                         int count = 0;
+                        int spaceIndex = line.IndexOf(" ");
 
-                        if (int.TryParse(line[0].ToString(), out value))
+                        if (int.TryParse(line.Substring(0, spaceIndex).Trim(), out value))
                             count = value + plusCount;
 
                         for (int i = 0; i < 4; i++)
