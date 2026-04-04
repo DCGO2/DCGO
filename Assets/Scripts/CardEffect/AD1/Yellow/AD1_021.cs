@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.AD1
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 Marcus Damon is also a 6k Digimon, gains Rush & can't digivolve. Then, 1 of your Digimon may attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("AD1_021_EoYT");
                 cardEffects.Add(activateClass);
 
