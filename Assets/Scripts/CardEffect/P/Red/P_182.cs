@@ -146,7 +146,7 @@ namespace DCGO.CardEffects.P
 
             #region All Turns
 
-            if (timing != EffectTiming.None)
+            if (timing == EffectTiming.None)
             {
                 int count()
                 {
