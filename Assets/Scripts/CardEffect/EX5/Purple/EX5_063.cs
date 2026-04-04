@@ -306,23 +306,36 @@ public class EX5_063 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                List<CardSource> EnemyDigimon = new List<CardSource>();
                 List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(_hashtable);
 
                 if (hashtables != null)
                 {
-                    foreach (Hashtable hashtable1 in hashtables)
-                    {
-                        CardSource cardSource = CardEffectCommons.GetCardFromHashtable(_hashtable);
-                        if (cardSource.IsDigimon && cardSource.Owner.Enemy)
-                        {
-                            EnemyDigimon.Add(cardSource);
-                        }
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(EnemyDigimon.Count, activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(hashtables.Count, activateClass));
                 }
             }
+
+            // Abandoned attempt at fixing gaining mem per your own entities deleted and per non digimon opponent entities deleted
+            //IEnumerator ActivateCoroutine(Hashtable hashtable)
+            //{
+            //    List<CardSource> EnemyDigimon = new List<CardSource>();
+            //    List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
+
+            //    if (hashtables != null)
+            //    {
+            //        foreach (Hashtable hashtable1 in hashtables)
+            //        {
+            //            CardSource cardSource = CardEffectCommons.GetCardFromHashtable(hashtable1);
+            //            if (cardSource != null
+            //             && cardSource.IsDigimon
+            //             && cardSource.Owner == card.Owner.Enemy)
+            //            {
+            //                EnemyDigimon.Add(cardSource);
+            //            }
+            //        }
+
+            //        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(EnemyDigimon.Count, activateClass));
+            //    }
+            //}
         }
         #endregion
 
