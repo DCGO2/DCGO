@@ -60,6 +60,7 @@ namespace DCGO.CardEffects.ST24
                 }
 
                 List<CardSource> selectedCards = new List<CardSource>();
+                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, HasTamerInHand));
 
                 SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -68,8 +69,8 @@ namespace DCGO.CardEffects.ST24
                     canTargetCondition: HasTamerInHand,
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
-                    maxCount: 1,
-                    canNoSelect: false,
+                    maxCount: maxCount,
+                    canNoSelect: true,
                     canEndNotMax: false,
                     isShowOpponent: true,
                     selectCardCoroutine: null,
