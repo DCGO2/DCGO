@@ -312,10 +312,14 @@ public class EditDeck : MonoBehaviour
         {
             ContinuousController.instance.DeckDatas.Remove(EdittingDeckData);
         }
-        #endregion
+        else
+        {
+            ContinuousController.instance.SaveDeckDatas();
+            ContinuousController.instance.SaveDeckData(EdittingDeckData);
+        }
+            #endregion
 
-        ContinuousController.instance.SaveDeckDatas();
-        ContinuousController.instance.SaveDeckData(EdittingDeckData);
+            
 
         for (int i = 0; i < DeckScroll.content.childCount; i++)
         {
