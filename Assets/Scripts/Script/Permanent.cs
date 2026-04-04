@@ -3312,7 +3312,7 @@ public class Permanent
                     foreach (Permanent permanent in player.GetFieldPermanents())
                     {
                         #region Effects of permanents in play
-                        foreach (ICardEffect cardEffect in permanent.EffectList_Added(EffectTiming.None))
+                        foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
                         {
                             if (cardEffect is ITreatAsDigimonEffect)
                             {

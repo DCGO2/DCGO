@@ -9,6 +9,32 @@ public partial class CardEffectFactory
     #region Static effect that changes origin DP
     public static ChangeBaseDPClass ChangeBaseDPStaticEffect<T>(Permanent targetPermanent, T changeValue, bool isInheritedEffect, CardSource card, Func<bool> condition)
     {
+        bool CanUseCondition()
+        {
+            return CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent)
+                && (condition == null || condition());
+        }
+
+        bool PermanentCondition(Permanent permanent)
+        {
+            if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+            {
+                if (permanent == targetPermanent)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return ChangeBaseDPGlobalEffect(PermanentCondition, changeValue, isInheritedEffect, card, CanUseCondition);
+    }
+    #endregion
+
+    #region Static effect that changes origin DP of Multiple Digimon
+    public static ChangeBaseDPClass ChangeBaseDPGlobalEffect<T>(Func<Permanent, bool> permanentCondition, T changeValue, bool isInheritedEffect, CardSource card, Func<bool> condition)
+    {
         bool isInt = typeof(T) == typeof(int);
         bool isIntFunc = typeof(T) == typeof(Func<int>);
 
@@ -27,14 +53,11 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent))
+            if (condition == null || condition())
             {
-                if (condition == null || condition())
-                {
-                    changeBaseDPClass.SetEffectName(effectName());
+                changeBaseDPClass.SetEffectName(effectName());
 
-                    return true;
-                }
+                return true;
             }
 
             return false;
@@ -52,18 +75,9 @@ public partial class CardEffectFactory
 
         bool PermanentCondition(Permanent permanent)
         {
-            if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
-            {
-                if (!permanent.TopCard.CanNotBeAffected(changeBaseDPClass))
-                {
-                    if (permanent == targetPermanent)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return permanentCondition != null
+                && permanentCondition(permanent)
+                && !permanent.TopCard.CanNotBeAffected(changeBaseDPClass);
         }
 
         bool _isUpDown()
