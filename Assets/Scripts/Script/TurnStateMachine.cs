@@ -2694,12 +2694,12 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             handCard.OffBurstPlayText();
                             handCard.OffAppFusionPlayText();
 
+                            bool isOnPermanentFrameAndCanEvolve = false;
+
                             #region Digimon/Tamer
                             if (handCard.cardSource.IsPermanent)
                             {
                                 #region Check if it is on the frame
-                                bool isOnPermanentFrameAndCanEvolve = false;
-
                                 foreach (FieldCardFrame fieldCardFrame in GManager.instance.You.fieldCardFrames)
                                 {
                                     int frameIndex = GManager.instance.You.fieldCardFrames.IndexOf(fieldCardFrame);
@@ -2781,10 +2781,11 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             #endregion
 
                             #region option
-                            else if (handCard.cardSource.IsOption)
+                            if (handCard.cardSource.IsOption)
                             {
                                 #region プレイマットの上にあるかチェック
-                                if (dropAreas.Count((dropArea) => dropArea.IsChildThisDropArea(GManager.instance.You.playMatCardFrame.Frame)) > 0)
+                                if (!isOnPermanentFrameAndCanEvolve && dropAreas.Count((dropArea) =>
+                                    dropArea.IsChildThisDropArea(GManager.instance.You.playMatCardFrame.Frame)) > 0)
                                 {
                                     handCard.SetPlayText("USE", new Color32(47, 255, 64, 255));
 
@@ -2971,8 +2972,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     #region Get whether the card in hand is playable
     IEnumerator SetHandCardPlayablity(CardSource cardSource)
     {
-        if (cardSource.IsOption) yield break;
-
         FieldCardFrame foundEmptyFrame = GManager.instance.You.fieldCardFrames
             .Find(fieldCardFrame => fieldCardFrame.IsEmptyFrame() && fieldCardFrame.IsBattleAreaFrame());
 
@@ -3048,7 +3047,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             }
         }
 
-        else
+        else if (cardSource.IsTamer)
         {
             for (int i = 0; i < GManager.instance.You.fieldCardFrames.Count; i++)
             {
