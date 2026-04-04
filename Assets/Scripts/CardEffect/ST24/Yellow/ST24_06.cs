@@ -139,7 +139,7 @@ namespace DCGO.CardEffects.ST24
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect1.SetUpCustomMessage("Select 1 Tamer to trash 1 bottom face-down card from", "The opponent is selecting 1 Tamer to trash 1 bottom face-down card from");
+                        selectPermanentEffect1.SetUpCustomMessage("Select Tamer(s) to trash 1 bottom face-down card from", "The opponent is selecting Tamer(s) to trash 1 bottom face-down card from");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 
@@ -171,8 +171,8 @@ namespace DCGO.CardEffects.ST24
                                 && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass)));
                         }
 
-                        CardSource selectCard = null;
-                        List<CardSource> selectedCards = null;
+                        CardSource selectedCard = null;
+                        List<CardSource> selectedCards = new List<CardSource>();
 
                         int maxCount2 = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
 
@@ -197,16 +197,16 @@ namespace DCGO.CardEffects.ST24
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            selectCard = cardSource;
                             selectedCards.Add(cardSource);
+                            selectedCard = cardSource;
                             yield return null;
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        if (selectCard != null)
+                        if (selectedCards != null)
                         {
-                            if (selectCard.IsOption)
+                            if (selectedCard.IsOption)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
                                     cardSources: selectedCards,
@@ -217,7 +217,7 @@ namespace DCGO.CardEffects.ST24
                             else
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                    new List<CardSource>() { selectCard },
+                                    cardSources: selectedCards,
                                     activateClass: activateClass,
                                     payCost: false,
                                     isTapped: false,
