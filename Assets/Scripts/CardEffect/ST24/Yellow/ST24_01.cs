@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.ST24
                             yield return null;
                         }
                     }
-                    else selectedPermanent = card.Owner.GetBattleAreaPermanents().FirstOrDefault();
+                    else selectedPermanent = card.Owner.GetBattleAreaPermanents().FirstOrDefault(CanSelectPermanentCondition);
 
                     List<CardSource> selectedCards = new List<CardSource>();
 
