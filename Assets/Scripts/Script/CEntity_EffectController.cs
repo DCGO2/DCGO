@@ -74,7 +74,7 @@ public class CEntity_EffectController : MonoBehaviour
                                                 continue;
                                             }
 
-                                            if (cardEffect.CanUse(null))
+                                            if (((IAddSkillEffect)cardEffect).ShouldAddEffect(timing) && cardEffect.CanUse(null))
                                             {
                                                 if (!card.CanNotBeAffected(cardEffect))
                                                     GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
@@ -96,7 +96,7 @@ public class CEntity_EffectController : MonoBehaviour
                             {
                                 if (cardEffect is IAddSkillEffect)
                                 {
-                                    if (cardEffect.CanUse(null))
+                                    if (((IAddSkillEffect)cardEffect).ShouldAddEffect(timing) && cardEffect.CanUse(null))
                                     {
                                         GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
                                     }
@@ -110,7 +110,7 @@ public class CEntity_EffectController : MonoBehaviour
                         {
                             if (cardEffect is IAddSkillEffect)
                             {
-                                if (cardEffect.CanUse(null))
+                                if (((IAddSkillEffect)cardEffect).ShouldAddEffect(timing) && cardEffect.CanUse(null))
                                 {
                                     GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
                                 }
@@ -156,7 +156,7 @@ public class CEntity_EffectController : MonoBehaviour
                     {
                         if (cardEffect is IAddSkillEffect)
                         {
-                            if (cardEffect.CanUse(null))
+                            if (((IAddSkillEffect)cardEffect).ShouldAddEffect(timing) && cardEffect.CanUse(null))
                             {
                                 GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
                             }
