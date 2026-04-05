@@ -97,7 +97,7 @@ namespace DCGO.CardEffects.BT25
                 bool doUse = GManager.instance.userSelectionManager.SelectedIntValue != 3;
                 bool fromHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
 
-                if (!doUse)
+                if (doUse)
                 {
                     if (fromHand)
                     {
