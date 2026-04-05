@@ -835,6 +835,7 @@ public partial class CardEffectFactory
                                                                     Func<Hashtable, bool> additionalUseCondition = null,
                                                                     Func<Hashtable, bool> additionalActivateCondition = null, 
                                                                     Func<Hashtable, bool> isOptionalFunction = null,
+                                                                    bool isSkippable = false,
                                                                     int maxCountPerTurn = -1,
                                                                     string hashValue = null,
                                                                     bool whenMoving = false,
@@ -852,51 +853,51 @@ public partial class CardEffectFactory
     {
         if (whenMoving && timing == EffectTiming.OnMove)
         {
-            cardEffects.Add(WhenMovingClass(card, effectName, activateCoroutine, effectDescription("When Moving"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue));
+            cardEffects.Add(WhenMovingClass(card, effectName, activateCoroutine, effectDescription("When Moving"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
         if (onPlay && timing == EffectTiming.OnEnterFieldAnyone)
         {
-            cardEffects.Add(OnPlayClass(card, effectName, activateCoroutine, effectDescription("On Play"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue));
+            cardEffects.Add(OnPlayClass(card, effectName, activateCoroutine, effectDescription("On Play"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
         if (whenDigivolving && timing == EffectTiming.OnEnterFieldAnyone)
         {
-            cardEffects.Add(WhenDigivolvingClass(card, effectName, activateCoroutine, effectDescription("When Digivolving"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue));
+            cardEffects.Add(WhenDigivolvingClass(card, effectName, activateCoroutine, effectDescription("When Digivolving"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
         if (whenAttacking && timing == EffectTiming.OnAllyAttack)
         {
-            cardEffects.Add(WhenAttackingClass(card, effectName, activateCoroutine, effectDescription("When Attacking"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue));
+            cardEffects.Add(WhenAttackingClass(card, effectName, activateCoroutine, effectDescription("When Attacking"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
         if (onDeletion && timing == EffectTiming.OnDestroyedAnyone)
         {
-            cardEffects.Add(OnDeletionClass(card, effectName, activateCoroutine, effectDescription("On Deletion"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue));
+            cardEffects.Add(OnDeletionClass(card, effectName, activateCoroutine, effectDescription("On Deletion"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
         if (whenLinking && timing == EffectTiming.WhenLinked)
         {
-            cardEffects.Add(WhenLinkingClass(card, effectName, activateCoroutine, effectDescription("When Linking"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue));
+            cardEffects.Add(WhenLinkingClass(card, effectName, activateCoroutine, effectDescription("When Linking"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
         if (endOfAttack && timing == EffectTiming.OnEndAttack)
         {
-            cardEffects.Add(EndOfAttackClass(card, effectName, activateCoroutine, effectDescription("End of Attack"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue));
+            cardEffects.Add(EndOfAttackClass(card, effectName, activateCoroutine, effectDescription("End of Attack"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
         if (endOfYourTurn && timing == EffectTiming.OnEndTurn)
         {
-            cardEffects.Add(EndOfYourTurnClass(card, effectName, activateCoroutine, effectDescription("End of Your Turn"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue));
+            cardEffects.Add(EndOfYourTurnClass(card, effectName, activateCoroutine, effectDescription("End of Your Turn"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
         if (endOfOpponentTurn && timing == EffectTiming.OnEndTurn)
         {
-            cardEffects.Add(EndOfYourOpponentsTurnClass(card, effectName, activateCoroutine, effectDescription("End of Opponent's Turn"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue));
+            cardEffects.Add(EndOfYourOpponentsTurnClass(card, effectName, activateCoroutine, effectDescription("End of Opponent's Turn"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
         if (endOfAllTurns && timing == EffectTiming.OnEndTurn)
         {
-            cardEffects.Add(EndOfAllTurnsClass(card, effectName, activateCoroutine, effectDescription("End of All Turns"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue));
+            cardEffects.Add(EndOfAllTurnsClass(card, effectName, activateCoroutine, effectDescription("End of All Turns"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
         if(startOfYourMainPhase && timing == EffectTiming.OnStartMainPhase)
         {
-            cardEffects.Add(StartOfYourMainPhaseClass(card, effectName, activateCoroutine, effectDescription("Start of Your Main Phase"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue));
+            cardEffects.Add(StartOfYourMainPhaseClass(card, effectName, activateCoroutine, effectDescription("Start of Your Main Phase"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
         if (counter && timing == EffectTiming.OnCounterTiming)
         {
-            cardEffects.Add(CounterClass(card, effectName, activateCoroutine, effectDescription("Counter"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue));
+            cardEffects.Add(CounterClass(card, effectName, activateCoroutine, effectDescription("Counter"), optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
 
         return cardEffects;
@@ -918,7 +919,8 @@ public partial class CardEffectFactory
                                                 string hashValue = null,
                                                 bool isInheritedEffect = false,
                                                 bool isLinkedEffect = false,
-                                                bool isSecurityEffect = false
+                                                bool isSecurityEffect = false,
+                                                bool isSkippable = false
                                                 )
     {
         ActivateClass activateClass = new ActivateClass();
@@ -927,6 +929,7 @@ public partial class CardEffectFactory
         activateClass.SetHashString(hashValue);
         activateClass.SetIsSecurityEffect(isSecurityEffect);
         activateClass.SetIsOptionalOverride(isOptionalFunction);
+        activateClass.SetIsSkippable(isSkippable);
         return activateClass;
     }
 
@@ -944,9 +947,10 @@ public partial class CardEffectFactory
                                                 Func<Hashtable, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
-                                                bool isInherited = false)
+                                                bool isInherited = false,
+                                                bool isSkippable = false)
     {
-        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, false);
+        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, false, isSkippable: isSkippable);
 
         bool PermanentCondition(Permanent permanent)
         {
@@ -981,9 +985,10 @@ public partial class CardEffectFactory
                                             Func<Hashtable, bool> additionalActivateCondition = null,
                                             int maxCountPerTurn = -1,
                                             string hashValue = null,
-                                            bool isInherited = false)
+                                            bool isInherited = false,
+                                            bool isSkippable = false)
     {
-        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, false);
+        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, false, isSkippable: isSkippable);
 
         bool CanUseCondition(Hashtable hashtable)
         {
@@ -1014,9 +1019,10 @@ public partial class CardEffectFactory
                                                         int maxCountPerTurn = -1,
                                                         string hashValue = null,
                                                         bool isInherited = false,
-                                                        bool isLinked = false)
+                                                        bool isLinked = false,
+                                                        bool isSkippable = false)
     {
-        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked);
+        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
 
         bool CanUseCondition(Hashtable hashtable)
         {
@@ -1046,9 +1052,10 @@ public partial class CardEffectFactory
                                                     int maxCountPerTurn = -1,
                                                     string hashValue = null,
                                                     bool isInherited = false,
-                                                    bool isLinked = false)
+                                                    bool isLinked = false,
+                                                    bool isSkippable = false)
     {
-        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked);
+        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
 
         bool CanUseCondition(Hashtable hashtable)
         {
@@ -1079,9 +1086,10 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false)
+                                                bool isLinked = false,
+                                                bool isSkippable = false)
     {
-        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked);
+        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
 
         bool CanUseCondition(Hashtable hashtable)
         {
@@ -1112,10 +1120,11 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false
+                                                bool isLinked = false,
+                                                bool isSkippable = false
                                                 )
     {
-        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked);
+        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
 
         bool CanUseCondition(Hashtable hashtable)
         {
@@ -1142,10 +1151,10 @@ public partial class CardEffectFactory
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
                                                 Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null)
+                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                bool isSkippable = false)
     {
-        ActivateClass activateClass = ActivateClass(card, effectName, CanUseCondition, additionalActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, -1, null, false, false);
-        activateClass.SetIsSecurityEffect(true);
+        ActivateClass activateClass = ActivateClass(card, effectName, CanUseCondition, additionalActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, -1, null, false, false, true, isSkippable);
         return activateClass;
 
         bool CanUseCondition(Hashtable hashtable)
@@ -1170,9 +1179,10 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false)
+                                                bool isLinked = false,
+                                                bool isSkippable = false)
     {
-        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked);
+        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
 
         bool CanUseCondition(Hashtable hashtable)
         {
@@ -1205,9 +1215,10 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false)
+                                                bool isLinked = false,
+                                                bool isSkippable = false)
     {
-        ActivateClass activateClass = ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked);
+        ActivateClass activateClass = ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
         activateClass.SetIsCounterEffect(true);
         return activateClass;
 
@@ -1248,9 +1259,10 @@ public partial class CardEffectFactory
                                                 bool isInherited = false,
                                                 bool isLinked = false,
                                                 bool yourTurn = false,
-                                                bool opponentTurn = false)
+                                                bool opponentTurn = false,
+                                                bool isSkippable = false)
     {
-        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked);
+        return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
 
         bool CanUseCondition(Hashtable hashtable)
         {
@@ -1283,9 +1295,10 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false)
+                                                bool isLinked = false,
+                                                bool isSkippable = false)
     {
-        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, true, false);
+        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, true, false, isSkippable);
     }
 
     public static ActivateClass StartOfYourMainPhaseClass(CardSource card,
@@ -1299,9 +1312,10 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false)
+                                                bool isLinked = false,
+                                                bool isSkippable = false)
     {
-        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, true, false);
+        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, true, false, isSkippable);
     }
 
     public static ActivateClass EndOfYourTurnClass(CardSource card,
@@ -1315,9 +1329,10 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false)
+                                                bool isLinked = false,
+                                                bool isSkippable = false)
     {
-        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, true, false);
+        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, true, false, isSkippable);
     }
 
     public static ActivateClass YourTurnClass(CardSource card,
@@ -1331,9 +1346,10 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false)
+                                                bool isLinked = false,
+                                                bool isSkippable = false)
     {
-        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, true, false);
+        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, true, false, isSkippable);
     }
 
     #endregion
@@ -1351,9 +1367,10 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false)
+                                                bool isLinked = false,
+                                                bool isSkippable = false)
     {
-        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, false, true);
+        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, false, true, isSkippable);
     }
 
     public static ActivateClass StartOfYourOpponentsMainPhaseClass(CardSource card,
@@ -1367,9 +1384,10 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false)
+                                                bool isLinked = false,
+                                                bool isSkippable = false)
     {
-        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, false, true);
+        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, false, true, isSkippable);
     }
 
     public static ActivateClass EndOfYourOpponentsTurnClass(CardSource card,
@@ -1383,9 +1401,10 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false)
+                                                bool isLinked = false,
+                                                bool isSkippable = false)
     {
-        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, false, true);
+        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, false, true, isSkippable);
     }
 
     public static ActivateClass OpponentsTurnClass(CardSource card,
@@ -1399,9 +1418,10 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false)
+                                                bool isLinked = false,
+                                                bool isSkippable = false)
     {
-        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, false, true);
+        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, false, true, isSkippable);
     }
 
     #endregion
@@ -1419,9 +1439,10 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false)
+                                                bool isLinked = false,
+                                                bool isSkippable = false)
     {
-        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, true, true);
+        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, true, true, isSkippable);
     }
 
     public static ActivateClass AllTurnsClass(CardSource card,
@@ -1435,9 +1456,10 @@ public partial class CardEffectFactory
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
-                                                bool isLinked = false)
+                                                bool isLinked = false,
+                                                bool isSkippable = false)
     {
-        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, true, true);
+        return TurnTimingClass(card, effectName, activateCoroutine, effectDescription, optional, isOptionalFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isInherited, isLinked, true, true, isSkippable);
     }
 
     #endregion

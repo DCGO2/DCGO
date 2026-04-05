@@ -286,11 +286,10 @@ public abstract class ICardEffect
     #region Override IsOptional with a function
 
     Func<Hashtable, bool> _isOptionalFunction = null;
-
-    public Func<Hashtable, bool> IsOptionalOverride
+    public bool IsOptionalCondition(Hashtable hashtable)
     {
-        get { return _isOptionalFunction; }
-        private set { _isOptionalFunction = value; }
+        if (_isOptionalFunction != null) return _isOptionalFunction(hashtable);
+        return IsOptional;
     }
 
     public void SetIsOptionalOverride(Func<Hashtable, bool> isOptionalOverride)
@@ -300,11 +299,21 @@ public abstract class ICardEffect
 
     #endregion
 
-    public bool IsOptionalCondition(Hashtable hashtable)
+    #region If effect is skippable for effects that remove the extra click with isOptional false
+
+    bool _isSkippable = false;
+
+    public bool IsSkippable(Hashtable hashtable)
     {
-        if (IsOptionalOverride != null) return IsOptionalOverride(hashtable);
-        return IsOptional;
+        return _isSkippable || IsOptionalCondition(hashtable);
     }
+
+    public void SetIsSkippable(bool isSkippable)
+    {
+        _isSkippable = isSkippable;
+    }
+
+    #endregion
 
     #region Whether this triggering effect triggers
 

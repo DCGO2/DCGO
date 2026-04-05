@@ -15,7 +15,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
     public bool IsOnlyHandEffectStacked => StackedSkillInfos.Every(skillInfo =>
         skillInfo.CardEffect != null && skillInfo.CardEffect.EffectSourceCard != null && CardEffectCommons.IsExistOnHand(skillInfo.CardEffect.EffectSourceCard) && skillInfo.CardEffect.EffectDiscription.Contains("[Hand]"));
 
-    bool IsOnlyOptionalEffectStacked => StackedSkillInfos.Every(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.IsOptionalCondition(null));
+    bool IsOnlyOptionalEffectStacked => StackedSkillInfos.Every(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.IsSkippable(null));
     bool IsEachStackedEffectHasDistinctSourceCard => StackedSkillInfos.Filter(skillInfo1 => skillInfo1.CardEffect != null && skillInfo1.CardEffect.EffectSourceCard != null)
         .Every(skillInfo => StackedSkillInfos.Filter(skillInfo1 => skillInfo1.CardEffect != null && skillInfo1.CardEffect.EffectSourceCard != null)
             .Count(otherSkillInfo => otherSkillInfo != skillInfo && skillInfo.CardEffect.EffectSourceCard == otherSkillInfo.CardEffect.EffectSourceCard) == 0);
@@ -286,7 +286,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                                 _CanEndSelectCondition: null,
                                 _MaxCount: 1,
                                 _CanEndNotMax: false,
-                                _CanNoSelect: () => skillInfos_active.All(skillInfo => skillInfo.CardEffect.IsOptionalCondition(skillInfo.Hashtable)),
+                                _CanNoSelect: () => skillInfos_active.All(skillInfo => skillInfo.CardEffect.IsSkippable(skillInfo.Hashtable)),
                                 CanLookReverseCard: true,
                                 skillInfos: skillInfos_active,
                                 root: SelectCardEffect.Root.None));
