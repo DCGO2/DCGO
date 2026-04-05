@@ -888,6 +888,10 @@ public class Permanent
     public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard && !LinkedCards.Contains(cardSource));
     #endregion
 
+    #region DigivolutionOrLinkCards
+    public List<CardSource> DigivolutionOrLinkCards => cardSources.Filter(cardSource => cardSource != TopCard);
+    #endregion
+
     #region Linked Cards
     public int LinkedMax
     {
