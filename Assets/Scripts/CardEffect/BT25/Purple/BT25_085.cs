@@ -234,7 +234,7 @@ namespace DCGO.CardEffects.BT25
                         canNoSelect: () => true,
                         selectCardCoroutine: null,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        message: "Select 1 card to place.",
+                        message: "Select 1 card to trash.",
                         maxCount: 1,
                         canEndNotMax: false,
                         isShowOpponent: true,
