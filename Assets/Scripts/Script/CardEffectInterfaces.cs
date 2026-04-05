@@ -82,6 +82,7 @@ public interface IChangeBaseCardColorEffect
 #region "Target card gains additional effects" effect
 public interface IAddSkillEffect
 {
+    bool ShouldAddEffect(EffectTiming timing);
     List<ICardEffect> GetCardEffect(CardSource card, List<ICardEffect> GetCardEffects, EffectTiming timing);
 }
 #endregion
