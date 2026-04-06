@@ -37,8 +37,8 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) 
-                        && CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, permanent => permanent == card.PermanentOfThisCard());
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.CanTriggerWhenSelfPermanentSuspends(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.BT25
                 string EffectDescription()
                 {
                     return "[Your Turn] When this Digimon attacks a player, lose 2 memory.";
-                }           
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -83,6 +83,22 @@ namespace DCGO.CardEffects.BT25
                 {
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-2, activateClass));
                 }
+            }
+            #endregion
+
+            #region All Turns - Inherited Effect
+            if (timing == EffectTiming.None)
+            {
+                bool Condition()
+                {
+                    return true;
+                }
+
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(
+                    changeValue: 1000,
+                    isInheritedEffect: true,
+                    card: card,
+                    condition: Condition));
             }
             #endregion
 
