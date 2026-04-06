@@ -778,6 +778,15 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                                 new List<CardSource> { cardSource },
                                 _cardEffect).TrashLinkCards());
                         }
+                        //After IsExistLinked, this would be digivolution cards, or topcard which should have been disbarred by selection condition. 
+                        //ITrashDigiviolutionCards also refuses to do anything with a TopCard
+                        else if (CardEffectCommons.IsExistOnBattleArea(cardSource))
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(
+                                cardSource.PermanentOfThisCard(), 
+                                new List<CardSource> { cardSource }, 
+                                _cardEffect).TrashDigivolutionCards());
+                        }
                         else
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
                     }
