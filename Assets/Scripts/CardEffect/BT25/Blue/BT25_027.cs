@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region Shared WD/WA
-            string SharedEffectName = "- 5K DP to 1 enemy Digimon for turn, by trashing 2 bottom face-down cards from your Tamers, may play/use 1 [DATA SQUAD] card with a play/use cost of 5 or less from hand for free";
+            string SharedEffectName = "May return 1 enemy lvl 4 or lower Digimon to hand, by trashing bottom face-down card from Tamer, this Digimon unsuspends";
 
             string SharedEffectHash = "BT25_027_WD_WA";
 
