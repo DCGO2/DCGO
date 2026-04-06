@@ -304,17 +304,19 @@ public class EX5_063 : CEntity_Effect
                 return false;
             }
 
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            IEnumerator ActivateCoroutine(Hashtable hashtable)
             {
                 List<CardSource> EnemyDigimon = new List<CardSource>();
-                List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(_hashtable);
+                List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
 
                 if (hashtables != null)
                 {
                     foreach (Hashtable hashtable1 in hashtables)
                     {
-                        CardSource cardSource = CardEffectCommons.GetCardFromHashtable(_hashtable);
-                        if (cardSource.IsDigimon && cardSource.Owner.Enemy)
+                        CardSource cardSource = CardEffectCommons.GetTopCardFromOneHashtable(hashtable1);
+                        if (cardSource != null
+                         && cardSource.IsDigimon
+                         && cardSource.Owner == card.Owner.Enemy)
                         {
                             EnemyDigimon.Add(cardSource);
                         }
