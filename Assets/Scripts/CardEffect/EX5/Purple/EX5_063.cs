@@ -324,7 +324,7 @@ public class EX5_063 : CEntity_Effect
             //    {
             //        foreach (Hashtable hashtable1 in hashtables)
             //        {
-            //            CardSource cardSource = CardEffectCommons.GetCardFromHashtable(hashtable1);
+            //            CardSource cardSource = CardEffectCommons.GetTopCardFromOneHashtable(hashtable1);
             //            if (cardSource != null
             //             && cardSource.IsDigimon
             //             && cardSource.Owner == card.Owner.Enemy)
