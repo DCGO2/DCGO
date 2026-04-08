@@ -19,22 +19,7 @@ public partial class CardEffectCommons
 
         CardSource card = targetPermanent.TopCard;
 
-        bool PermanentCondition(Permanent permanent) => permanent == targetPermanent;
-
-        bool CanUseCondition()
-        {
-            if (IsPermanentExistsOnBattleArea(targetPermanent))
-            {
-                if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        CollisionClass collision = CardEffectFactory.CollisionSelfStaticEffect(false, targetPermanent.TopCard, CanUseCondition);
+        CollisionClass collision = PermanentEffectFactory.CollisionEffect(targetPermanent, activateClass);
 
         AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: collision, timing: EffectTiming.OnCounterTiming);
 

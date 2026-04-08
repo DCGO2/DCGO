@@ -11,7 +11,7 @@ public partial class CardEffectCommons
         AtOpponentTurnEnd
     }
 
-    public static IEnumerator AddSelfDeleteEffect(Permanent permanent, DeleteTiming deleteTiming)
+    public static IEnumerator AddSelfDeleteEffect(Permanent permanent, DeleteTiming deleteTiming, ICardEffect activateClass)
     {
         bool deleteOnOwnturn = deleteTiming != DeleteTiming.AtOpponentTurnEnd;
         bool deleteOnOpponentsTurn = deleteTiming != DeleteTiming.AtOwnTurnEnd;
@@ -21,7 +21,7 @@ public partial class CardEffectCommons
         {
             if (timing == EffectTiming.OnEndTurn)
             {
-                return PermanentEffectFactory.DeleteSelfEffect(permanent, deleteOnOwnturn, deleteOnOpponentsTurn);
+                return PermanentEffectFactory.DeleteSelfEffect(permanent, activateClass, deleteOnOwnturn, deleteOnOpponentsTurn);
             }
             return null;
         }
