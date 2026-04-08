@@ -212,7 +212,7 @@ namespace DCGO.CardEffects.BT14
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                     {
                         if (card.Owner.CanAddSecurity(activateClass))
                         {
@@ -270,7 +270,7 @@ namespace DCGO.CardEffects.BT14
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
                     {
                         if (card.Owner.HandCards.Count >= 1)
                         {

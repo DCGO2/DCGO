@@ -104,7 +104,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                     {
                         if(CardEffectCommons.HasMatchConditionOwnersHand(card, IsLevel6Argomon))
                         {

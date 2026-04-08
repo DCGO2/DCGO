@@ -37,7 +37,7 @@ public class BT9_074 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
+                if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
                 {
                     if (card.Owner.CanAddMemory(activateClass))
                     {

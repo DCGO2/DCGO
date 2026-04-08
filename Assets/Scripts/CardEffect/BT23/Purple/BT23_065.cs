@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.BT23
 
             bool SharedCanActivateCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanActivateOnDeletion(card);
+                return CardEffectCommons.CanActivateOnDeletion(hashtable, card);
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)

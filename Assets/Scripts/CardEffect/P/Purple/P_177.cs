@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.P
                  => CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card)
+                    => CardEffectCommons.CanActivateOnDeletion( hashtable, card)
                     && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

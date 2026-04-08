@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card) &&
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) &&
                            ((CardEffectCommons.HasMatchConditionOwnersHand(card, IsTamerCardCondition) &&
                              card.Owner.GetBattleAreaPermanents().Count(permanent => permanent.IsTamer) <= 1) ||
                             CardEffectCommons.CanActivateSave(hashtable, CanSelectSaveTamerPermanentCondition));

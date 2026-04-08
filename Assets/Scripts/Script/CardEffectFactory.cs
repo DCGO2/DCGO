@@ -1099,8 +1099,7 @@ public partial class CardEffectFactory
 
         bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return ((!(isInherited || isLinked) && CardEffectCommons.CanActivateOnDeletion(card)) 
-                    || ((isInherited || isLinked) && CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card)))
+            return CardEffectCommons.CanActivateOnDeletion(hashtable, card)
                 && (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }

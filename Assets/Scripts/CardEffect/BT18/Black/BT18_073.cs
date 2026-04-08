@@ -402,7 +402,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card) &&
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) &&
                            CardEffectCommons.HasMatchConditionPermanent(HasKimeramon) &&
                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasMachinedramon) &&
                            CardEffectCommons.HasMatchConditionOwnersHand(card, HasMillenniummon);
