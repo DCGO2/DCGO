@@ -208,7 +208,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card) &&
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) &&
                            CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsOwnTamerCondition) &&
                            (CardEffectCommons.HasMatchConditionOwnersHand(card, SelectableDigimonCondition) ||
                             CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SelectableDigimonCondition));

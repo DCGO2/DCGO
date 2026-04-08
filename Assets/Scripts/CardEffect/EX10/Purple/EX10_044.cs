@@ -198,7 +198,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card);
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card);
                 }
 
                 bool CanSelectTamerCondition(Permanent permanent)

@@ -163,7 +163,7 @@ namespace DCGO.CardEffects.EX11
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card)
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card)
                         && card.Owner.SecurityCards.Count <= 1
                         && (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition)
                             || CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition)

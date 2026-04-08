@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
                         return CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, PurpleLevelThree);
                     return false;
                 }

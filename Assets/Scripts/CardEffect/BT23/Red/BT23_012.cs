@@ -213,7 +213,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card)
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, cs => SharedCanSelectCardCondition(cs, activateClass));
                 }
             }
@@ -242,7 +242,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card)
+                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, cs => SharedCanSelectCardCondition(cs, activateClass));
                 }
             }
