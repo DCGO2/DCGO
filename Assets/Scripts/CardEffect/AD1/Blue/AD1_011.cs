@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.AD1
 
                     if (CardEffectCommons.IsJogress(hashtable))
                     {
-                        card.PermanentOfThisCard().UntilEachTurnEndEffects.Add(_timing => PermanentEffectFactory.CanNotSwitchAttackTargetEffect(card.PermanentOfThisCard()));
+                        card.PermanentOfThisCard().UntilEachTurnEndEffects.Add(_timing => PermanentEffectFactory.CanNotSwitchAttackTargetEffect(card.PermanentOfThisCard(), activateClass));
                     }
                 }
             }

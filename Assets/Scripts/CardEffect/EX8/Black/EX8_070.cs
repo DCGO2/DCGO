@@ -71,37 +71,7 @@ namespace DCGO.CardEffects.EX8
 
                     if (cardsTrashed)
                     {
-                        AddSkillClass addSkillClass = new AddSkillClass();
-                        addSkillClass.SetUpICardEffect("Gain Collision", CanUseCondition1, card);
-                        addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-
-                        selectedPermanent.TopCard.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
-
-                        bool CanUseCondition1(Hashtable hashtable)
-                        {
-                            return true;
-                        }
-
-                        bool CardSourceCondition(CardSource cardSource)
-                        {
-                            return PermanentCondition(selectedPermanent);
-                        }
-
-                        bool PermanentCondition(Permanent permanent)
-                        {
-                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                            {
-                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                                {
-                                    if(permanent == selectedPermanent)
-                                        return true;
-                                }
-                            }
-
-                            return false;
-                        }
-
-                        //yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(selectedPermanent, EffectDuration.UntilOpponentTurnEnd, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(selectedPermanent, EffectDuration.UntilOpponentTurnEnd, activateClass));
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(selectedPermanent, EffectDuration.UntilOpponentTurnEnd, activateClass));
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainReboot(selectedPermanent, EffectDuration.UntilOpponentTurnEnd, activateClass));
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(selectedPermanent, 3000, EffectDuration.UntilOpponentTurnEnd, activateClass));
@@ -125,36 +95,6 @@ namespace DCGO.CardEffects.EX8
                             activateClass: activateClass,
                             effectName: "Can't return to deck by opponent's effects"));
 
-                        List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
-                        {
-                            if (_timing == EffectTiming.OnCounterTiming)
-                            {
-                                bool CardSourceCondition(CardSource cardSource)
-                                {
-                                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
-                                    {
-                                        if (cardSource == selectedPermanent.TopCard)
-                                        {
-                                            if (PermanentCondition(selectedPermanent))
-                                            {
-                                                return true;
-                                            }
-                                        }
-                                    }
-
-                                    return false;
-                                }
-
-                                bool Condition()
-                                {
-                                    return CardSourceCondition(cardSource);
-                                }
-
-                                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, cardSource, Condition));
-                            }
-
-                            return cardEffects;
-                        }
                     }
                 }
             }

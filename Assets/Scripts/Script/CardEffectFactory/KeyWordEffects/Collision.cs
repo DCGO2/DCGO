@@ -15,18 +15,9 @@ public partial class CardEffectFactory
         {
             if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
             {
-                if (card.Owner.Enemy.GetBattleAreaDigimons().Count() > 0)
+                if (condition == null || condition())
                 {
-                    if (GManager.instance.attackProcess.IsAttacking)
-                    {
-                        if (GManager.instance.attackProcess.AttackingPermanent == card.PermanentOfThisCard())
-                        {
-                            if (condition == null || condition())
-                            {
-                                return true;
-                            }
-                        }
-                    }     
+                    return true;
                 }
             }
 
@@ -64,13 +55,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (condition == null || condition())
-            {
-                if(PermanentCondition(card.PermanentOfThisCard()))
-                    return true;
-            }
-
-            return false;
+            return condition == null || condition();
         }
 
         return collisionClass;
