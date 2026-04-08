@@ -3310,13 +3310,29 @@ public class Permanent
                     return true;
                 }
 
+                #region Effect on TopCard
+                foreach (ICardEffect cardEffect in TopCard.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is ITreatAsDigimonEffect)
+                    {
+                        if (cardEffect.CanTrigger(null))
+                        {
+                            if (((ITreatAsDigimonEffect)cardEffect).IsDigimon(this))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                #endregion
+
                 #region Effect of treating it as a Digimon
                 foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
                 {
                     foreach (Permanent permanent in player.GetFieldPermanents())
                     {
                         #region Effects of permanents in play
-                        foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                        foreach (ICardEffect cardEffect in permanent.EffectList_Added(EffectTiming.None))//This can never be EffectList, as EffectList_forCard checks Isdigimon and this causes a stack overflow 
                         {
                             if (cardEffect is ITreatAsDigimonEffect)
                             {
