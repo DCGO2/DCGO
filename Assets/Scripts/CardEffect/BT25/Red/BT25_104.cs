@@ -140,48 +140,91 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region Your Turn
-            if (timing == EffectTiming.None)
+
+            //All your Marcus Damon
+            bool IsMarcusDamon(Permanent permanent)
             {
-                //All of your [Marcus Damon]s
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                        && permanent.TopCard.EqualsCardName("Marcus Damon");
-                }
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                    && permanent.TopCard.EqualsCardName("Marcus Damon");
+            }
 
-                bool Condition()
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.IsOwnerTurn(card);
-                }
+            bool MakeDigimonCondition()
+            {
+                return CardEffectCommons.IsExistOnBattleArea(card)
+                    && CardEffectCommons.IsOwnerTurn(card);
+            }
 
+            IEnumerator MarcusActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
+            {
                 #region are also treated as Digimon
                 TreatAsDigimonClass treatAsDigimonClass = CardEffectFactory.TreatAsDigimonStaticEffect(
-                    permanentCondition: PermanentCondition, 
+                    permanentCondition: IsMarcusDamon, 
                     isInheritedEffect: false, 
                     card: card, 
-                    condition: Condition);
+                    condition: MakeDigimonCondition);//Granted effect continues checking that Burst mode is on field and is idempotent, so does not have to be remove when it leaves play
 
-                cardEffects.Add(treatAsDigimonClass);
+                ICardEffect GetEffect(EffectTiming timing)
+                {
+                    if (timing == EffectTiming.None)
+                    {
+                        return treatAsDigimonClass;
+                    }
+                    return null;
+                }
+
+                card.Owner.UntilEachTurnEndEffects.Add(GetEffect);
                 #endregion
 
+                yield return null;
+            }
+
+            if(timing == EffectTiming.OnStartTurn)
+            {
+                ActivateClass activateClass = CardEffectFactory.StartOfYourTurnClass(
+                    card,
+                    "[Marcus Damon] are treated as Digimon",
+                    MarcusActivateCoroutine,
+                    "[Marcus Damon] are treated as Digimon",
+                    false
+                );
+                activateClass.SetIsBackgroundProcess(true);//Run in background at start of your turn to add effect to player
+                cardEffects.Add(activateClass);
+            }
+
+
+            //To anyone copying this effect: If this were not a dual card it would also need a matching On Play effect
+            if(timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = CardEffectFactory.WhenDigivolvingClass(
+                    card,
+                    "[Marcus Damon] are treated as Digimon",
+                    MarcusActivateCoroutine,
+                    "[Marcus Damon] are treated as Digimon",
+                    false
+                );
+                activateClass.SetIsBackgroundProcess(true);//Run in background when digivolve into this to add effect to player
+                cardEffects.Add(activateClass);
+            }
+
+            if (timing == EffectTiming.None)
+            {
                 #region with 12000 DP
                 ChangeBaseDPClass changeBaseDPClass = CardEffectFactory.ChangeBaseDPGlobalEffect(
-                    permanentCondition: PermanentCondition, 
+                    permanentCondition: IsMarcusDamon, 
                     changeValue: 12000, 
                     isInheritedEffect: false, 
                     card: card, 
-                    condition: Condition);
+                    condition: MakeDigimonCondition);
 
                 cardEffects.Add(changeBaseDPClass);
                 #endregion
 
                 #region and gain Rush
                 RushClass rushClass = CardEffectFactory.RushStaticEffect(
-                    permanentCondition: PermanentCondition, 
+                    permanentCondition: IsMarcusDamon, 
                     isInheritedEffect: false, 
                     card: card, 
-                    condition: Condition);
+                    condition: MakeDigimonCondition);
 
                 cardEffects.Add(rushClass);
                 #endregion
