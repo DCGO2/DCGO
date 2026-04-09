@@ -79,8 +79,8 @@ namespace DCGO.CardEffects.ST24
                         cardEffect: activateClass);
 
                     selectHandEffect.SetUpCustomMessage("Select 1 card to place under a tamer.",
-                        "The opponent is selecting 1 card to play.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Placed card");
+                        "The opponent is selecting 1 card to place under a tamer.");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Selected card");
 
                     yield return StartCoroutine(selectHandEffect.Activate());
 
