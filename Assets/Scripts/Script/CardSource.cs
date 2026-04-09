@@ -1481,22 +1481,75 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
-    #region whether this card has the mentioned color
-
-    public bool HasCardColor(CardColor cardColor, bool isOptionOnly = false)
+    #region All colors of a Digimon Card
+    public List<CardColor> DigimonCardColors
     {
-        if (isOptionOnly)
+        get
+        {
+            if (!IsDigimon)
+            {
+                return new List<CardColor>();
+            }
+            return CardColors;
+        }
+    }
+    #endregion
+
+    #region All Colors of an Option Card
+    public List<CardColor> OptionCardColors
+    {
+        get
         {
             if (!IsOption)
-                return false;
-            if (IsDigimon)
+                return new List<CardColor>();
+            if (IsDigimon) //Dual Card
             {
-                return DualCardColors.Contains(cardColor);
+                return DualCardColors;
             }
+            return CardColors;
         }
-        return CardColors.Contains(cardColor) || DualCardColors.Contains(cardColor);
+    }
+    #endregion
+
+    #region All colors of a card
+    public List<CardColor> AllCardColors
+    {
+        get
+        {
+            return CardColors.Concat(DualCardColors).ToList();
+        }
+    }
+    #endregion
+
+    #region whether this card has the mentioned color
+    public bool HasCardColor(CardColor cardColor, bool isOptionOnly = false, bool isDigimonOnly = false)
+    {
+        if (isOptionOnly && isDigimonOnly)
+            return false; //Shouldn't be done, just here to cover all bases with consistency
+        if (isOptionOnly)
+        {
+            return OptionCardColors.Contains(cardColor);
+        } 
+        else if (isDigimonOnly)
+        {
+            return DigimonCardColors.Contains(cardColor);
+        }
+        return AllCardColors.Contains(cardColor); //check entire card
     }
 
+    public bool HasDigimonColor(CardColor cardColor)
+    {
+        if (!IsDigimon)
+            return false;
+        return HasCardColor(cardColor, isDigimonOnly: true);
+    }
+
+    public bool HasOptionColor(CardColor cardColor)
+    {
+        if (!IsOption)
+            return false;
+        return HasCardColor(cardColor, isOptionOnly: true);
+    }
     #endregion
 
     #region whether this card has at least 1 card name that contains "Greymon"

@@ -189,10 +189,9 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanSelectOptionCard(CardSource cardSource)
                 {
-                    return cardSource.IsOption &&
-                           cardSource.HasCSTraits &&
-                           (cardSource.CardColors.Count == 1) &&
-                           !cardSource.CanNotPlayThisOption;
+                    return cardSource.HasCSTraits
+                        && cardSource.OptionCardColors.Count == 1
+                        && !cardSource.CanNotPlayThisOption;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

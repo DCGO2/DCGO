@@ -52,18 +52,9 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanSelectOptionCard(CardSource cardSource)
                 {
-                    if (cardSource.IsOption)
-                    {
-                        if (cardSource.CardColors.Count == 1 && cardSource.GetCostItself <= 5)
-                        {
-                            if (!cardSource.CanNotPlayThisOption)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return cardSource.OptionCardColors.Count == 1
+                        && cardSource.GetCostItself <= 5
+                        && !cardSource.CanNotPlayThisOption;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
