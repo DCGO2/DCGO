@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.LM
             bool CanSelectCardConditionShared(CardSource cardSource)
             {
                 return (cardSource.IsTamer && cardSource.HasCardColor(CardColor.Yellow)) ||
-                       (cardSource.IsOption && cardSource.CardColors.Count == 1 && cardSource.GetCostItself <= 5);
+                       (cardSource.OptionCardColors.Count == 1 && cardSource.GetCostItself <= 5);
             }
 
             #endregion
