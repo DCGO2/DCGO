@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.ST24
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 card under 1 [DATA SQUAD] Tame to <Draw 2>", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 card under 1 [DATA SQUAD] Tamer to <Draw 2>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
