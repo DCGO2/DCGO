@@ -2373,6 +2373,20 @@ public class Permanent
     {
         get
         {
+            #region if attacking digimon has collision
+            if (GManager.instance.attackProcess.ActiveAttack())
+            {
+                Permanent attackingPermanent = GManager.instance.attackProcess.AttackingPermanent;
+
+                if (attackingPermanent != null
+                    && attackingPermanent.TopCard.Owner != TopCard.Owner
+                    && attackingPermanent.HasCollision)
+                {
+                    return true;
+                }
+            }
+            #endregion
+
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
             {
                 #region Effects of permanents in play
@@ -2954,15 +2968,64 @@ public class Permanent
     {
         get
         {
-            foreach (ICardEffect cardEffect in this.EffectList(EffectTiming.OnAllyAttack))
+            foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
             {
-                if (cardEffect is ActivateICardEffect)
+                foreach (Permanent permanent in player.GetFieldPermanents())
                 {
-                    if (cardEffect.EffectName == "Collision")
+                    #region Permanent Effects
+                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.OnCounterTiming))
                     {
-                        return true;
+                        if (cardEffect is ICollisionEffect)
+                        {
+                            if (cardEffect.CanTrigger(null))
+                            {
+                                if (((ICollisionEffect)cardEffect).HasCollision(this))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+                }
+
+                #region Effects of faceup security
+                foreach (CardSource source in player.SecurityCards)
+                {
+                    if (source.IsFlipped)
+                        continue;
+
+                    foreach (ICardEffect cardEffect in source.EffectList(EffectTiming.OnCounterTiming))
+                    {
+                        if (cardEffect is ICollisionEffect)
+                        {
+                            if (cardEffect.CanTrigger(null))
+                            {
+                                if (((ICollisionEffect)cardEffect).HasCollision(this))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
                     }
                 }
+                #endregion
+
+                #region Player Effects
+                foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.OnCounterTiming))
+                {
+                    if (cardEffect is ICollisionEffect)
+                    {
+                        if (cardEffect.CanTrigger(null))
+                        {
+                            if (((ICollisionEffect)cardEffect).HasCollision(this))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                #endregion
             }
 
             return false;

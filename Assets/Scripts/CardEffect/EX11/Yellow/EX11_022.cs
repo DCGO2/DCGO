@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.EX11
                     if (selectedCard != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.AddSelfDeleteEffect(selectedCard.PermanentOfThisCard(), CardEffectCommons.DeleteTiming.AtTurnEnd));
+                            CardEffectCommons.AddSelfDeleteEffect(selectedCard.PermanentOfThisCard(), CardEffectCommons.DeleteTiming.AtTurnEnd, activateClass));
                     }
 
                     #endregion

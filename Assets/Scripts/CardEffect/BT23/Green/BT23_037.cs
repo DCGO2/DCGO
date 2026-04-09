@@ -176,7 +176,7 @@ namespace DCGO.CardEffects.BT23
                                 #region Delete Digimon Played
 
                                 yield return ContinuousController.instance.StartCoroutine(
-                                    CardEffectCommons.AddSelfDeleteEffect(playedDigimon, CardEffectCommons.DeleteTiming.AtOpponentTurnEnd));
+                                    CardEffectCommons.AddSelfDeleteEffect(playedDigimon, CardEffectCommons.DeleteTiming.AtOpponentTurnEnd, activateClass));
                                 
                                 #endregion
                             }
