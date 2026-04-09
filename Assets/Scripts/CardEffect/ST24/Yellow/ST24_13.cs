@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.ST24
             }
             #endregion       
 
-            #region All Turns
+            #region Your Turn
             if (timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
