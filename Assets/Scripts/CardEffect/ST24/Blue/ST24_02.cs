@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.ST24
                         maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        isShowOpponent: true,
+                        isShowOpponent: false,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
                         mode: SelectHandEffect.Mode.Custom,
