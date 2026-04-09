@@ -530,3 +530,10 @@ public interface IOptionResolutionEffect
     IEnumerator Resolve(CardSource optionCard);
 }
 #endregion
+
+#region Collision
+public interface ICollisionEffect
+{
+    bool HasCollision(Permanent permanent);
+}
+#endregion

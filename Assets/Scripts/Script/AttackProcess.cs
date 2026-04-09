@@ -352,7 +352,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                 canTargetCondition_ByPreSelecetedList: null,
                 canEndSelectCondition: null,
                 maxCount: maxCount,
-                canNoSelect: (!IsBlocking),
+                canNoSelect: !AttackingPermanent.HasCollision,
                 canEndNotMax: false,
                 selectPermanentCoroutine: SelectPermanentCoroutine,
                 afterSelectPermanentCoroutine: null,

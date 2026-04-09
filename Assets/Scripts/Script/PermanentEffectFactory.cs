@@ -11,7 +11,7 @@ public partial class PermanentEffectFactory
 {
 
     #region Effect of a Permanent to Delete Itself
-    public static ActivateClass DeleteSelfEffect(Permanent permanent, bool deleteOnOwnturn = true, bool deleteOnOpponentsTurn = true)
+    public static ActivateClass DeleteSelfEffect(Permanent permanent, ICardEffect cardEffect, bool deleteOnOwnturn = true, bool deleteOnOpponentsTurn = true)
     {
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Delete this Digimon", CanUseCondition, permanent.TopCard);
@@ -21,7 +21,9 @@ public partial class PermanentEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (permanent.TopCard != null && CardEffectCommons.IsExistOnBattleArea(permanent.TopCard))
+            if (permanent.TopCard != null
+                && CardEffectCommons.IsExistOnBattleArea(permanent.TopCard)
+                && !permanent.TopCard.CanNotBeAffected(cardEffect))
             {
                 if (CardEffectCommons.IsOwnerTurn(permanent.TopCard))
                 {
@@ -78,7 +80,7 @@ public partial class PermanentEffectFactory
     #endregion
 
     #region Cannot change Attack Target Effect
-    public static CanNotSwitchAttackTargetClass CanNotSwitchAttackTargetEffect(Permanent targetPermanent)
+    public static CanNotSwitchAttackTargetClass CanNotSwitchAttackTargetEffect(Permanent targetPermanent, ICardEffect activateClass)
     {
         CanNotSwitchAttackTargetClass canNotSwitchAttackTargetClass = new CanNotSwitchAttackTargetClass();
         canNotSwitchAttackTargetClass.SetUpICardEffect("This Digimon's attack target can't be switched.", CanUseCondition, targetPermanent.TopCard);
@@ -87,14 +89,30 @@ public partial class PermanentEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent) &&
-                    CardEffectCommons.IsOwnerTurn(targetPermanent.TopCard);
+            return CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent)
+                && CardEffectCommons.IsOwnerTurn(targetPermanent.TopCard)
+                && !targetPermanent.TopCard.CanNotBeAffected(activateClass);
         }
 
         bool PermanentCondition(Permanent permanent)
         {
             return permanent != null && permanent.TopCard && permanent == targetPermanent;
         }
+    }
+    #endregion
+
+    #region Gain Collision Effect
+    public static CollisionClass CollisionEffect(Permanent targetPermanent, ICardEffect activateClass)
+    {
+        return CardEffectFactory.CollisionStaticEffect(PermanentCondition, false, targetPermanent.TopCard, CanUseCondition);
+
+        bool CanUseCondition()
+        {
+            return CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent)
+                && !targetPermanent.TopCard.CanNotBeAffected(activateClass);
+        }
+
+        bool PermanentCondition(Permanent permanent) => permanent == targetPermanent;
     }
     #endregion
 }
