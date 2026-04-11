@@ -215,10 +215,10 @@ public class PermanentDetail : MonoBehaviour
         #endregion
 
         #region Collision
-        /*if (permanent.hascCollision)
+        if (permanent.HasCollision)
         {
             effectString += $"- Collision\n";
-        }*/
+        }
         #endregion
 
         #region Partition
