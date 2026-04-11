@@ -2379,6 +2379,8 @@ public class Permanent
                 Permanent attackingPermanent = GManager.instance.attackProcess.AttackingPermanent;
 
                 if (attackingPermanent != null
+                    && attackingPermanent.TopCard !=null
+                    && TopCard != null
                     && attackingPermanent.TopCard.Owner != TopCard.Owner
                     && attackingPermanent.HasCollision)
                 {
