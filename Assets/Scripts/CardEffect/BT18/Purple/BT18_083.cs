@@ -155,7 +155,7 @@ namespace DCGO.CardEffects.BT18
 
             #region All Turns
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnCounterTiming)
             {
                 cardEffects.Add(CardEffectFactory.CollisionStaticEffect(PermanentCondition, false, card, CanUseCondition));
 
