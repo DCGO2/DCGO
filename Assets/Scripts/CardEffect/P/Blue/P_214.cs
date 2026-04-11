@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.P
 
             bool CanTuckTargetCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                return IsPermanentExistOnOwnerBattleAreaDigimon(permanent,card)
                     && CanSelectOwnSeadramonInName(permanent)
                     && permanent != card.PermanentOfThisCard();
             }
