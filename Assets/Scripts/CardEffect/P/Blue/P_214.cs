@@ -71,8 +71,9 @@ namespace DCGO.CardEffects.P
 
             bool CanSelectOwnSeadramonInName(Permanent permanent)
             {
-                return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
-                    permanent.TopCard.HasText("Seadramon");
+                return CardEffectCommons.IsOwnerPermanent(permanent, card)
+                    && permanent.TopCard.HasText("Seadramon")
+                    && permanent.IsDigimon;
             }
 
             bool CanSelectEnemyDigimon(Permanent permanent, int level)
@@ -165,7 +166,7 @@ namespace DCGO.CardEffects.P
 
                         if (selectedPermanent != null)
                         {
-                           level = selectedPermanent.TopCard.Level;
+                            level = selectedPermanent.TopCard.Level;
                         }
 
                         yield return null;
@@ -201,7 +202,7 @@ namespace DCGO.CardEffects.P
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(new List<Permanent>() { permanent }, hashtable).DeckBounce());                         
+                        yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(new List<Permanent>() { permanent }, hashtable).DeckBounce());
                     }
                 }
 
@@ -215,7 +216,7 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition,(hash) => SharedActivateCoroutine(hash, activateClass), -1, true, SharedEffectDescription("On Play"));
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hash) => SharedActivateCoroutine(hash, activateClass), -1, true, SharedEffectDescription("On Play"));
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -230,7 +231,7 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition,(hash) => SharedActivateCoroutine(hash, activateClass), -1, true, SharedEffectDescription("When Digivolving"));
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hash) => SharedActivateCoroutine(hash, activateClass), -1, true, SharedEffectDescription("When Digivolving"));
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -258,7 +259,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (!cardSource.CanNotTrashFromDigivolutionCards(activateClass) &&
                         cardSource.HasLevel &&
-                        CardEffectCommons.IsExistOnBattleArea(card) && 
+                        CardEffectCommons.IsExistOnBattleArea(card) &&
                         card.PermanentOfThisCard().DigivolutionCards.Contains(card))
                     {
                         foreach (CardSource cardSource1 in card.PermanentOfThisCard().DigivolutionCards)
