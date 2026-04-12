@@ -222,8 +222,6 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 
         yield return ContinuousController.instance.StartCoroutine(loadingObject.EndLoading());
 
-        time = 0;
-
         ReturnButton.SetActive(true);
     }
     #endregion
