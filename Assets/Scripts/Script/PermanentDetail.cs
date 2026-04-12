@@ -228,6 +228,13 @@ public class PermanentDetail : MonoBehaviour
         }
         #endregion
 
+        #region Ascension
+        if (permanent.HasAscension)
+        {
+            effectString += $"- Ascension\n";
+        }
+        #endregion
+
         #region Security Attack Changes
         if (permanent.HasSecurityAttackChanges)
         {
