@@ -115,6 +115,7 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         m = false;
         once1 = false;
         endLoadingText = false;
+        isCoroutineRunning = false;
         time = 0;
         RandomRoomName = "";
         startJoin = false;
