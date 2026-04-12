@@ -115,6 +115,7 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         m = false;
         once1 = false;
         endLoadingText = false;
+        isCoroutineRunning = false;
         time = 0;
         RandomRoomName = "";
         startJoin = false;
@@ -221,8 +222,6 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         yield return _waitForSeconds0_1;
 
         yield return ContinuousController.instance.StartCoroutine(loadingObject.EndLoading());
-
-        time = 0;
 
         ReturnButton.SetActive(true);
     }
