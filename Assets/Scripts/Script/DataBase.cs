@@ -513,6 +513,11 @@ public class DataBase : MonoBehaviour
         return "<Alliance> (When this Digimon attacks, by suspending 1 of your other Digimon, this Digimon adds the suspended Digimon's DP and gains <Security Attack +1> for the attack.)";
     }
 
+    public static string AscensionEffectDescription()
+    {
+        return "<Ascension> (When this Digimon is deleted, you may place this card as the top security card.)";
+    }
+
     public static string PartitionEffectDiscription()
     {
         return "<Partition> (When this Digimon with 1 of each specified card in its digivolution cards would leave the battle area other than by one of your effects or in battle, you may play 1 of each card without paying their costs.)";
