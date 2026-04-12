@@ -194,6 +194,10 @@ namespace DCGO.CardEffects.BT25
                         thisPermanent.HideDeckBounceEffect();
                         thisPermanent.HideWillRemoveFieldEffect();
                     }
+                    else
+                    {
+                        activateClass.RemoveUse();
+                    }
                 }
             }
             #endregion
