@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,14 +6,16 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using System;
-using System.Linq;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 {
+    private static WaitForSeconds _waitForSeconds0_2 = new WaitForSeconds(0.2f);
+    private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
+    private static WaitForSeconds _waitForSeconds0_5 = new WaitForSeconds(0.5f);
+    private static WaitForSeconds _waitForSeconds1 = new WaitForSeconds(1f);
     [Header("message text")]
     public Text MessageText;
 
-    [Header("tiem count text")]
+    [Header("time count text")]
     public Text TimeText;
 
     [Header("return to title button")]
@@ -121,6 +123,7 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         ReturnButton.SetActive(true);
         MessageText.text = "";
         TimeText.gameObject.SetActive(true);
+        StartCoroutine(TimeCountUp());
         timer = 0;
         count = true;
 
@@ -164,9 +167,10 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
             }
 
             TimeText.text = $"{min}:{sec}";
+
             time++;
 
-            yield return new WaitForSeconds(1f);
+            yield return _waitForSeconds1;
         }
 
         TimeText.gameObject.SetActive(false);
@@ -192,7 +196,7 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 
         yield return ContinuousController.instance.StartCoroutine(Init());
 
-        yield return new WaitForSeconds(0.5f);
+        yield return _waitForSeconds0_5;
 
         endLoadingText = false;
 
@@ -208,17 +212,17 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 
         yield return ContinuousController.instance.StartCoroutine(PhotonUtility.SignUpBattleDeckData());
 
-        yield return new WaitForSeconds(0.5f);
+        yield return _waitForSeconds0_5;
 
         StartRandomMatch();
 
         yield return new WaitWhile(() => !PhotonNetwork.InRoom);
 
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForSeconds0_1;
 
         yield return ContinuousController.instance.StartCoroutine(loadingObject.EndLoading());
 
-        ContinuousController.instance.StartCoroutine(TimeCountUp());
+        time = 0;
 
         ReturnButton.SetActive(true);
     }
@@ -371,7 +375,7 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 
         endLoadingText = true;
 
-        yield return new WaitForSeconds(0.2f);
+        yield return _waitForSeconds0_2;
 
         endLoadingText = false;
 
@@ -520,7 +524,7 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         }
 
         once1 = true;
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForSeconds0_1;
 
         PhotonNetwork.CurrentRoom.IsVisible = false;
 
@@ -556,9 +560,9 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
     {
         ContinuousController.instance.StartCoroutine(Opening.instance.OpeningBGM.FadeOut(0.2f));
 
-        Debug.Log("Matching complted!");
+        Debug.Log("Matching completed!");
 
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForSeconds0_1;
 
         //Opening.instance.MainCamera.gameObject.SetActive(false);
 
@@ -567,7 +571,7 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
             camera.gameObject.SetActive(false);
         }
 
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForSeconds0_1;
         SceneManager.LoadSceneAsync("BattleScene", LoadSceneMode.Additive);
         yield return null;
     }
