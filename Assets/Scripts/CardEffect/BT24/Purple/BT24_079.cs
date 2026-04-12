@@ -140,7 +140,7 @@ namespace DCGO.CardEffects.BT24
                             List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                             {
                                 new SelectionElement<bool>(message: $"From This Digimon", value: true, spriteIndex: 0),
-                                new SelectionElement<bool>(message: $"From Hand", value: false, spriteIndex: 1),
+                                new SelectionElement<bool>(message: $"From Hand", value: false, spriteIndex: 0),
                             };
 
                             string selectPlayerMessage = "Choose where to get the digimon from";
