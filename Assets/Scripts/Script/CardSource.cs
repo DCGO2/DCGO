@@ -1345,6 +1345,11 @@ public class CardSource : MonoBehaviour
             bool isPermanent = PermanentOfThisCard() != null;
             bool isDigivolutionCard = isPermanent && thisPermanent.DigivolutionCards.Contains(this);
 
+            if (!isPermanent && _cEntity_Base.OptionCardName != null)//Dual Cards cannot reference Option card side details while a permanent
+            {
+                baseCardNames.Add(_cEntity_Base.OptionCardName);
+            }
+
             #region card effects that change base card names
 
             if (isDigivolutionCard)
@@ -2088,9 +2093,11 @@ public class CardSource : MonoBehaviour
         List<string> checkStrings = new List<string>()
         {
             DataBase.ReplaceToASCII(_cEntity_Base.CardName_ENG),
+            DataBase.ReplaceToASCII(_cEntity_Base.OptionCardName),
             DataBase.ReplaceToASCII(_cEntity_Base.EffectDiscription_ENG),
             DataBase.ReplaceToASCII(_cEntity_Base.InheritedEffectDiscription_ENG),
             DataBase.ReplaceToASCII(_cEntity_Base.SecurityEffectDiscription_ENG),
+            DataBase.ReplaceToASCII(_cEntity_Base.OptionEffect),
         };
 
         foreach (string attribute in _cEntity_Base.Attribute_ENG)

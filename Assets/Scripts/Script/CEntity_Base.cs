@@ -40,6 +40,7 @@ public class CEntity_Base : ScriptableObject
     [TextArea] public string dualEffect = "";
     public List<CardColor> OptionCardColorRequirements = new List<CardColor>();
     [TextArea] public string OptionEffect = "";
+    public string OptionCardName = null;
 
     public bool HasInhetitedEffect => !string.IsNullOrEmpty(InheritedEffectDiscription_ENG) && !InheritedEffectDiscription_ENG.Equals("-");
     public bool HasSecutiryEffect => !string.IsNullOrEmpty(SecurityEffectDiscription_ENG) && !SecurityEffectDiscription_ENG.Equals("-");
