@@ -2765,6 +2765,30 @@ public class Permanent
     }
     #endregion
 
+    #region HasAscension
+    public bool HasAscension
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in EffectList(EffectTiming.OnDestroyedAnyone))
+            {
+                if (cardEffect is ActivateICardEffect)
+                {
+                    if (cardEffect.EffectName == "Ascension")
+                    {
+                        if (cardEffect.CanTrigger(CardEffectCommons.OnDeletionCheckHashtableOfPermanent(this)))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
     #region Has Fortitude
     public bool HasFortitude
     {
