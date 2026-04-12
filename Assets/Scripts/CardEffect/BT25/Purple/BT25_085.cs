@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -214,7 +213,7 @@ namespace DCGO.CardEffects.BT25
                     maxCount: 1,
                     canNoSelect: true,
                     canEndNotMax: false,
-                    selectPermanentCoroutine: null,
+                    selectPermanentCoroutine: SelectPermanentCoroutine,
                     afterSelectPermanentCoroutine: null,
                     mode: SelectPermanentEffect.Mode.Custom,
                     cardEffect: activateClass);
@@ -239,7 +238,7 @@ namespace DCGO.CardEffects.BT25
                         canEndNotMax: false,
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Discard,
-                        root: SelectCardEffect.Root.DigivolutionCards,//This only sets behaviour, so currently is safe to use for this combined list. Will ensure pending effects show
+                        root: SelectCardEffect.Root.DigivolutionCards,//This only sets behavior, so currently is safe to use for this combined list. Will ensure pending effects show
                         customRootCardList: permanent.DigivolutionOrLinkCards,
                         canLookReverseCard: true,
                         selectPlayer: card.Owner,
