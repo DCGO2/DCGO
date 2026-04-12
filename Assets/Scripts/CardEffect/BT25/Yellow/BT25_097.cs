@@ -151,7 +151,6 @@ namespace DCGO.CardEffects.BT25
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectFactory.ReplaceBottomSecurityWithFaceUpOptionEffect(card, activateClass));
 
-                    CardSource selectedCard = null;
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
                     int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
 
@@ -254,7 +253,7 @@ namespace DCGO.CardEffects.BT25
                                 canNoSelect: true,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
-                                selectCardCoroutine: null,
+                                selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
                                 mode: SelectHandEffect.Mode.PlayForFree,
                                 cardEffect: activateClass);
