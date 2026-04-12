@@ -51,12 +51,12 @@ namespace DCGO.CardEffects.BT25
                     return CardEffectCommons.IsExistInSecurity(card, false);
                 }
 
-                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(PermanentCondition, false, card, CanUseCondition));   
+                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(PermanentCondition, false, card, CanUseCondition));
             }
             #endregion
 
             #region Scapegoat
-            if(timing == EffectTiming.None)
+            if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent permanent)
                 {
@@ -151,7 +151,6 @@ namespace DCGO.CardEffects.BT25
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectFactory.ReplaceBottomSecurityWithFaceUpOptionEffect(card, activateClass));
 
-                    CardSource selectedCard = null;
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
                     int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
 
@@ -233,13 +232,6 @@ namespace DCGO.CardEffects.BT25
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                         bool fromHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
                         bool fromTrash = GManager.instance.userSelectionManager.SelectedIntValue == 2;
-
-                        List<CardSource> selectedCards = new List<CardSource>();
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCards.Add(cardSource);
-                            yield return null;
-                        }
 
                         if (fromHand)
                         {
