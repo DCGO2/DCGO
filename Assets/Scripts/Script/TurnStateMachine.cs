@@ -2141,7 +2141,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             #endregion
 
                             #region オプション
-                            if (handCard1.cardSource.IsOption)
+                            if (handCard1.cardSource.IsOption && !handCard1.cardSource.CanNotPlayThisOption)
                             {
                                 GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(true);
                                 GManager.instance.You.playMatCardFrame.OnFrame_Select(DataBase.SelectColor_Blue);
@@ -2622,7 +2622,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                 #endregion
 
                                 #region option
-                                if (handCard.cardSource.IsOption)
+                                if (handCard.cardSource.IsOption && !handCard.cardSource.CanNotPlayThisOption)
                                 {
                                     #region Check for drops on the playmat
                                     if (dropAreas.Count((dropArea) => dropArea.IsChildThisDropArea(GManager.instance.You.playMatCardFrame.Frame)) > 0)
