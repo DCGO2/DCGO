@@ -64,16 +64,14 @@ namespace DCGO.CardEffects.P
 
             bool CanTuckTargetCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && CanSelectOwnSeadramonInName(permanent)
+                return CanSelectOwnSeadramonInName(permanent)
                     && permanent != card.PermanentOfThisCard();
             }
 
             bool CanSelectOwnSeadramonInName(Permanent permanent)
             {
-                return CardEffectCommons.IsOwnerPermanent(permanent, card)
-                    && permanent.TopCard.HasText("Seadramon")
-                    && permanent.IsDigimon;
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    && permanent.TopCard.HasText("Seadramon");
             }
 
             bool CanSelectEnemyDigimon(Permanent permanent, int level)
