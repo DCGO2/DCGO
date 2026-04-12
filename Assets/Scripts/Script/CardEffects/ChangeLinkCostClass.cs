@@ -26,12 +26,6 @@ public class ChangeLinkCostClass : ICardEffect, IChangeLinkCostEffect
         {
             int newCost = _changeCostFunc(cardSource, permanent, cost, root);
 
-            if (IsUpDown()
-                && newCost < cost)
-            {
-                newCost = cost;
-            }
-
             cost = newCost;
         }
 
