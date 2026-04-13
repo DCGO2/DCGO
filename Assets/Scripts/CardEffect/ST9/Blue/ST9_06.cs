@@ -121,7 +121,7 @@ public class ST9_06 : CEntity_Effect
                             canEndNotMax: false,
                             isShowOpponent: true,
                             mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Custom,
+                            root: SelectCardEffect.Root.DigivolutionCards,
                             customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
                             canLookReverseCard: true,
                             selectPlayer: card.Owner,
@@ -137,6 +137,10 @@ public class ST9_06 : CEntity_Effect
                         }
                     }
 
+                    List<CardSource> remainingCards = card.PermanentOfThisCard().DigivolutionCards.Filter(cardSource => !selectedCards.Contains(cardSource));
+                    bool canNoSelect = CanSelectCardCondition1(selectedCards[0]) //If first card also fulfills the second condition
+                          && !remainingCards.Any(CanSelectCardCondition);//And was the only card that could fulfill the first condition
+
                     if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => CanSelectCardCondition1(cardSource)) >= 1)
                     {
                         int maxCount = 1;
@@ -147,7 +151,7 @@ public class ST9_06 : CEntity_Effect
                             canTargetCondition: (cardSource) => CanSelectCardCondition1(cardSource),
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            canNoSelect: () => false,
+                            canNoSelect: () => canNoSelect,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
                             message: "Select 1 level 4 or lower green Digimon card to play.",
@@ -155,8 +159,8 @@ public class ST9_06 : CEntity_Effect
                             canEndNotMax: false,
                             isShowOpponent: true,
                             mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Custom,
-                            customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                            root: SelectCardEffect.Root.DigivolutionCards,
+                            customRootCardList: remainingCards,
                             canLookReverseCard: true,
                             selectPlayer: card.Owner,
                             cardEffect: activateClass);
