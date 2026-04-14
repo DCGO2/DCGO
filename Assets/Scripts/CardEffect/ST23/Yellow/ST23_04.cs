@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.ST23
             #endregion
 
             #region Shared OP/WD
-            string SharedEffectName = "- 5K DP to 1 enemy Digimon for turn, if your turn by trashing 2 bottom face-down cards from your Tamers, may play/use 1 [Glowing Dawn] card with the cost reduced by 3";
+            string SharedEffectName = "- 5K DP to 1 enemy Digimon for turn, if your turn by trashing bottom face-down card from your Tamer, may play/use 1 [Glowing Dawn] card with the cost reduced by 3";
 
             CardEffectFactory.ActivateClassesForSharedEffects
                 (ref cardEffects, timing, card,
