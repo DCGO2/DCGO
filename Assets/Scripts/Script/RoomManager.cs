@@ -108,11 +108,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
     {
         CreateRoomFailed = false;
 
-        if (!PhotonNetwork.IsConnected)
-        {
-            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.ConnectToMasterServerCoroutine());
-        }
-
         yield return new WaitWhile(() => !PhotonNetwork.IsConnectedAndReady);
 
         if (!PhotonNetwork.InLobby)

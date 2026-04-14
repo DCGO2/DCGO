@@ -100,8 +100,6 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         yield return new WaitWhile(() => PhotonNetwork.InRoom);
         #endregion
 
-        yield return ContinuousController.instance.StartCoroutine(PhotonUtility.DisconnectCoroutine());
-
         OffLobby();
 
         yield return ContinuousController.instance.StartCoroutine(disconnectLoadingObject.EndLoading());
@@ -306,27 +304,6 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
             }
         }
 
-    }
-    #endregion
-
-    #region Callback when joining a room fails
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        if (this.gameObject.activeSelf && !DoneCompleteMatching)
-        {
-            Debug.Log($"[RandomMatch] Join room failed: [{returnCode}] {message}, retrying...");
-            RandomRoomName = null;
-            startJoin = false;
-            m = false;
-            n = false;
-
-            if (!PhotonNetwork.InLobby)
-            {
-                PhotonNetwork.JoinLobby();
-            }
-
-            StartRandomMatch();
-        }
     }
     #endregion
 
