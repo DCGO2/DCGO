@@ -1,11 +1,10 @@
-using System.Collections.Generic;
-using UnityEngine;
-using System;
 using Photon.Pun;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using DCGO.CardEntities;
+using UnityEngine;
 
 public class CardSource : MonoBehaviour
 {
@@ -1536,7 +1535,7 @@ public class CardSource : MonoBehaviour
         if (isOptionOnly)
         {
             return OptionCardColors.Contains(cardColor);
-        } 
+        }
         else if (isDigimonOnly)
         {
             return DigimonCardColors.Contains(cardColor);
@@ -3307,7 +3306,7 @@ public class CardSource : MonoBehaviour
         {
             if (targetPermanent.TopCard != null && !targetPermanent.TopCard.IsToken)
             {
-                if(allowBreeding || !targetPermanent.TopCard.Owner.GetBreedingAreaPermanents().Contains(targetPermanent))
+                if (allowBreeding || !targetPermanent.TopCard.Owner.GetBreedingAreaPermanents().Contains(targetPermanent))
                 {
                     if (this.CanLink(false, allowBreeding)) // Don't check PayCost in CanLink since this method will check again anyway
                     {
@@ -3330,7 +3329,7 @@ public class CardSource : MonoBehaviour
                                 return true;
                             }
                         }
-                }
+                    }
                 }
             }
         }
@@ -4040,7 +4039,7 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Sea Beast");
-		}
+        }
     }
 
     #endregion
@@ -4064,7 +4063,7 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Angel");
-		}
+        }
     }
 
     #endregion
@@ -4100,6 +4099,30 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Dark Animal");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has Glowing Dawn trait
+
+    public bool HasGlowingDawnTraits
+    {
+        get
+        {
+            return EqualsTraits("Glowing Dawn");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has Beat Break trait
+
+    public bool HasBeatBreakTraits
+    {
+        get
+        {
+            return EqualsTraits("BEATBREAK");
         }
     }
 
@@ -4245,7 +4268,7 @@ public class AssemblyCondition
         element.ElementCount = elementCount;
         element.selectMessage = selectMessage;
         element.CanTargetCondition_ByPreSelecetedList = CanTargetCondition_ByPreSelecetedList;
-        this.elements = new List<AssemblyConditionElement>(){ element };
+        this.elements = new List<AssemblyConditionElement>() { element };
         this.elementCount = elementCount;
         this.reduceCost = reduceCost;
     }
