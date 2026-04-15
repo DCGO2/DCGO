@@ -2374,13 +2374,12 @@ public class Permanent
         get
         {
             #region if attacking digimon has collision
-            if (GManager.instance.attackProcess.ActiveAttack())
+            if (GManager.instance.attackProcess.ActiveAttack() && CardEffectCommons.IsPermanentExistsOnBattleArea(this))
             {
                 Permanent attackingPermanent = GManager.instance.attackProcess.AttackingPermanent;
 
                 if (attackingPermanent != null
                     && attackingPermanent.TopCard !=null
-                    && TopCard != null
                     && attackingPermanent.TopCard.Owner != TopCard.Owner
                     && attackingPermanent.HasCollision)
                 {
