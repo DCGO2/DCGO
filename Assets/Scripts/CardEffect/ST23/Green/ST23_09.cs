@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.ST23
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
+                    return CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
                 }
 
                 if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, PermanentCondition))
@@ -132,7 +132,7 @@ namespace DCGO.CardEffects.ST23
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend 1 digimon, bounce 1 highest DP digimon to bottom deck", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend 1 opponent's digimon, bounce 1 of their highest DP suspended digimon to bottom deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -149,8 +149,7 @@ namespace DCGO.CardEffects.ST23
                     => CardEffectCommons.IsMaxDP(permanent, card.Owner.Enemy, CanBouncePermamentCondition);
 
                 bool CanBouncePermamentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && permanent.IsSuspended;
+                    => permanent.IsSuspended;
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
