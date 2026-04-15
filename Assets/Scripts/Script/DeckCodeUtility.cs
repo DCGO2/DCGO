@@ -108,8 +108,6 @@ public class DeckCodeUtility
 
         if (!string.IsNullOrEmpty(DeckBuilderDeckCode))
         {
-            Debug.Log($"DeckCode\n{DeckBuilderDeckCode}");
-
             using (StringReader reader = new StringReader(DeckBuilderDeckCode))
             {
                 string line;
@@ -141,7 +139,6 @@ public class DeckCodeUtility
                                 for (int k = 0; k < count; k++)
                                     AllDeckCards.Add(cEntity_Base);
 
-                                Debug.Log($"SUCCESSFULLY ADDED: {count}: {cardID}");
                                 break;
                             }
                             else
