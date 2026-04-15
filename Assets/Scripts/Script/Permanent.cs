@@ -2384,7 +2384,11 @@ public class Permanent
                     && attackingPermanent.TopCard.Owner != TopCard.Owner
                     && attackingPermanent.HasCollision)
                 {
-                    return true;
+                    ActivateClass fakeCollisionClass = new();
+                    fakeCollisionClass.SetUpICardEffect("Collision", _ => true, attackingPermanent.TopCard);
+                    
+                    if (TopCard.CanNotBeAffected(fakeCollisionClass))//Check can be affected by opponent's Digimon effects
+                        return true;
                 }
             }
             #endregion
