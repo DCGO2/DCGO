@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT25
             #region Shared WM / OP
 
             bool CanSelectCardCondition(CardSource cardSource)
-                => cardSource.HasText("Three Musketeers") || cardSource.HasThreeMusketeersTraits;
+                => cardSource.HasText("Three Musketeers");
 
             string SharedEffectName = "Reveal top 3, Add 1 card with [Three Musketeers] in text to hand or place 1 [Three Musketeers] trait as bottom digivolution card ";
 
@@ -60,48 +60,45 @@ namespace DCGO.CardEffects.BT25
 
                 if (selectedCard != null)
                 {
-                    bool hasThreeMusketeersInText = selectedCard.HasText("Three Musketeers");
                     bool hasThreeMusketeersTrait = selectedCard.HasThreeMusketeersTraits;
 
-                    if (hasThreeMusketeersInText || hasThreeMusketeersTrait)
+                    if (hasThreeMusketeersTrait)
                     {
-                        if (hasThreeMusketeersInText && hasThreeMusketeersTrait)
-                        {
-                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                             {
                                 new SelectionElement<bool>(message: $"Add to hand", value : true, spriteIndex: 0),
-                                new SelectionElement<bool>(message: $"Place on digivolution cards", value : false, spriteIndex: 1),
+                                new SelectionElement<bool>(message: $"Place on digivolution cards", value : false, spriteIndex: 0),
                             };
 
-                            string selectPlayerMessage = "Which effect will you select?";
-                            string notSelectPlayerMessage = "The opponent is choosing effects.";
+                        string selectPlayerMessage = "Which effect will you select?";
+                        string notSelectPlayerMessage = "The opponent is choosing effects.";
 
-                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                        }
-                        else
-                        {
-                            GManager.instance.userSelectionManager.SetBool(hasThreeMusketeersInText);
-                        }
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                    }
+                    else
+                    {
+                        GManager.instance.userSelectionManager.SetBool(true);
+                    }
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                        bool addToHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                    bool addToHand = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                        if (addToHand)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { selectedCard }, "Cards added to hand", true, true));
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { selectedCard }, false, activateClass));
-                        }
+                    if (addToHand)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { selectedCard }, "Cards added to hand", true, true));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { selectedCard }, false, activateClass));
+                    }
 
-                        else
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { selectedCard }, "Cards placed on digivolution cards", true, true));
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
-                        }
+                    if (!addToHand)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { selectedCard }, "Cards placed on digivolution cards", true, true));
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
                     }
                 }
             }
+        }
 
-            CardEffectFactory.ActivateClassesForSharedEffects
+        CardEffectFactory.ActivateClassesForSharedEffects
                 (ref cardEffects, timing, card,
                     SharedEffectName,
                     SharedActivateCoroutine,
