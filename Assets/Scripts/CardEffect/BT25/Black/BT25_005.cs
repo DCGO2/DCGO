@@ -30,13 +30,14 @@ namespace DCGO.CardEffects.BT25
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, PermamentCondition, null, CardCondition);
+                        && CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, PermamentCondition, null, CardCondition)
+                        && CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                        
                 }
 
                 bool PermamentCondition(Permanent permanent)
