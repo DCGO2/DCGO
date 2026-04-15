@@ -88,25 +88,24 @@ namespace DCGO.CardEffects.BT25
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { selectedCard }, "Cards added to hand", true, true));
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { selectedCard }, false, activateClass));
                     }
-
-                    if (!addToHand)
+                    else
                     {
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { selectedCard }, "Cards placed on digivolution cards", true, true));
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
                     }
                 }
             }
-        }
 
-        CardEffectFactory.ActivateClassesForSharedEffects
-                (ref cardEffects, timing, card,
-                    SharedEffectName,
-                    SharedActivateCoroutine,
-                    SharedEffectDescription,
-                    optional: false,
-                    maxCountPerTurn: 1,
-                    whenMoving: true,
-                    onPlay: true);
+
+            CardEffectFactory.ActivateClassesForSharedEffects
+                    (ref cardEffects, timing, card,
+                        SharedEffectName,
+                        SharedActivateCoroutine,
+                        SharedEffectDescription,
+                        optional: false,
+                        maxCountPerTurn: 1,
+                        whenMoving: true,
+                        onPlay: true);
 
             #endregion
 
