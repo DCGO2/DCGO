@@ -84,7 +84,8 @@ namespace DCGO.CardEffects.EX10
                             activateClass: activateClass));
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.StartOfMainAttack(
-                            targetPermanent: selectedPermanment));
+                            targetPermanent: selectedPermanment,
+                            cardEffect: activateClass));
                     }
                 }
             }
