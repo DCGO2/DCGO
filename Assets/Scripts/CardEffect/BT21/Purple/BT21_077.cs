@@ -138,7 +138,8 @@ namespace DCGO.CardEffects.BT21
                                         activateClass: activateClass));
 
                                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.StartOfMainAttack(
-                                        targetPermanent: selectedPermanent));
+                                        targetPermanent: selectedPermanent,
+                                        cardEffect: activateClass));
                                 }
                             }
                         }
@@ -242,7 +243,8 @@ namespace DCGO.CardEffects.BT21
                                         activateClass: activateClass));
 
                                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.StartOfMainAttack(
-                                        targetPermanent: selectedPermanent));
+                                        targetPermanent: selectedPermanent,
+                                        cardEffect: activateClass));
                                 }
                             }
                         }

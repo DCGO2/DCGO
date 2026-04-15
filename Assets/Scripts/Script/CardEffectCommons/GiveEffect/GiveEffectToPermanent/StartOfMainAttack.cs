@@ -2,7 +2,7 @@ using System.Collections;
 
 public partial class CardEffectCommons
 {
-    public static IEnumerator StartOfMainAttack(Permanent targetPermanent)
+    public static IEnumerator StartOfMainAttack(Permanent targetPermanent, ICardEffect cardEffect)
     {
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Attack with this Digimon", CanUseCondition, targetPermanent.TopCard);
@@ -35,7 +35,7 @@ public partial class CardEffectCommons
         {
             if (IsPermanentExistsOnBattleArea(targetPermanent))
             {
-                if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
+                if (!targetPermanent.TopCard.CanNotBeAffected(cardEffect))
                 {
                     if (targetPermanent.CanAttack(activateClass))
                     {
