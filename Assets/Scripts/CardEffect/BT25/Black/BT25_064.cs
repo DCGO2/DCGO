@@ -77,6 +77,7 @@ namespace DCGO.CardEffects.BT25
                                 selectCardCoroutine: null),
                         },
                         remainingCardsPlace: RemainingCardsPlace.DeckBottom,
+                        mutualConditions: true,
                         activateClass: activateClass
                     ));
                 }
