@@ -731,14 +731,14 @@ public partial class CardEffectFactory
             if (cardCondition == null)
                 return false;
 
-            // If it is confirmed that only Digimon and tamers should count, we can put that in here instead of in each individual condition
-            return CardEffectCommons.IsOwnerPermanent(permanent, card)
+            return (permanent.IsDigimon || permanent.IsTamer)
                 && cardCondition(permanent.TopCard); 
         }
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition);
+            return CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition)
+                || CardEffectCommons.HasMatchConditionOwnersBreedingPermanent(card, PermanentCondition);
         }
 
         bool CardCondition(CardSource cardSource)
