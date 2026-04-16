@@ -15,13 +15,28 @@ public partial class CardEffectCommons
     {
         bool deleteOnOwnturn = deleteTiming != DeleteTiming.AtOpponentTurnEnd;
         bool deleteOnOpponentsTurn = deleteTiming != DeleteTiming.AtOwnTurnEnd;
+        string message = "Delete this at turn end";
+        if (deleteOnOpponentsTurn && !deleteOnOwnturn)
+            message = "Delete this at opponent's turn end";
+        if (deleteOnOwnturn && ! deleteOnOpponentsTurn)
+            message = "Delete this at your turn end.";
         permanent.PermanentEffects.Add(GetCardEffect);
+        permanent.PermanentEffects.Add(GetDetailEffect);
 
         ICardEffect GetCardEffect(EffectTiming timing)
         {
             if (timing == EffectTiming.OnEndTurn)
             {
                 return PermanentEffectFactory.DeleteSelfEffect(permanent, activateClass, deleteOnOwnturn, deleteOnOpponentsTurn);
+            }
+            return null;
+        }
+
+        ICardEffect GetDetailEffect(EffectTiming timing)
+        {
+            if (timing == EffectTiming.None)
+            {
+                return PermanentEffectFactory.AddDetailClass(permanent, message, true, activateClass);
             }
             return null;
         }
