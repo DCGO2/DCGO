@@ -275,6 +275,7 @@ namespace DCGO.CardEffects.ST23
                 activateClass.SetUpICardEffect("By trashing 1 bottom face-down card from 1 of your tamers, this [Glowing Dawn] Digimon unsuspends", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("ST23_04_Inherited");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
