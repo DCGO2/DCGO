@@ -92,6 +92,7 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    bool activated = false;
                     if (card.Owner.SecurityCards.Count > 0)
                     {
                         List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
@@ -111,6 +112,7 @@ namespace DCGO.CardEffects.BT25
 
                         if (addHand)
                         {
+                            activated = true;
                             CardSource topCard = card.Owner.SecurityCards[0];
 
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
@@ -123,7 +125,12 @@ namespace DCGO.CardEffects.BT25
                     }
 
                     if (card.Owner.SecurityCards.Count == 0)
+                    {
+
                         yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                        activated = true;
+                    }
+                    if (!activated) activateClass.RemoveUse();
                 }
             }
 
