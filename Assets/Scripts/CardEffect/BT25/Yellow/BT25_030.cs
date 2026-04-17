@@ -43,37 +43,21 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && card.Owner.SecurityCards.Count > 0;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (card.Owner.SecurityCards.Count > 0)
                     {
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                        {
-                            new SelectionElement<bool>(message: $"Add to hand", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"Not add to hand", value : false, spriteIndex: 1),
-                        };
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { card.Owner.SecurityCards[0] }, false, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
+                            player: card.Owner,
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                            activateClass).ReduceSecurity());
+                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
 
-                        string selectPlayerMessage = "Will you add the card to hand?";
-                        string notSelectPlayerMessage = "The opponent is choosing whether to add the card to hand.";
-
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                        bool addHand = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                        if (addHand)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { card.Owner.SecurityCards[0] }, false, activateClass));
-                            yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
-                                player: card.Owner,
-                                refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
-                                activateClass).ReduceSecurity());
-                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                        }
                     }
                 }
             }
