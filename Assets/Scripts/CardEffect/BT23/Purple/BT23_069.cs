@@ -142,8 +142,6 @@ namespace DCGO.CardEffects.BT23
 
             if (timing == EffectTiming.OnAllyAttack)
             {
-                Permanent attackingPermament = null;
-
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By deleting this digimon, delete 1 level 6 or lower digimon. if you didn't delete, you may end the attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());

@@ -474,19 +474,6 @@ namespace DCGO.CardEffects.BT21
                     
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (permanent == card.PermanentOfThisCard())
-                    {
-                        if (permanent.LinkedCards.Count(CanSelectCardCondition) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return true;

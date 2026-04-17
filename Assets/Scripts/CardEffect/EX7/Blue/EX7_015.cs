@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.EX7
                     cardCondition: CardCondition);
                 cardEffects.Add(cannotReduceCostClass);
                 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] Players can't reduce play costs.";
                 }
