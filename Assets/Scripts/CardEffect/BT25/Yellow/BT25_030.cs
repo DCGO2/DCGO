@@ -126,9 +126,8 @@ namespace DCGO.CardEffects.BT25
 
                     if (card.Owner.SecurityCards.Count == 0)
                     {
-
-                        yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                         activated = true;
+                        yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                     }
                     if (!activated) activateClass.RemoveUse();
                 }
