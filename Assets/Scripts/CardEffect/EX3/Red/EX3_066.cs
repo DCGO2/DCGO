@@ -147,47 +147,32 @@ namespace DCGO.CardEffects.EX3
                         {
                             if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1 && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                             {
-                                if (card.Owner.isYou)
-                                {
-                                    GManager.instance.commandText.OpenCommandText("From which area do you select a card?");
 
-                                    List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
-                                {
-                                    new Command_SelectCommand($"From hand", () => photonView.RPC("SetFromHand", RpcTarget.All, true), 0),
-                                    new Command_SelectCommand($"From trash", () => photonView.RPC("SetFromHand", RpcTarget.All, false), 1),
-                                };
-
-                                    GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
-                                }
-
-                                else
-                                {
-                                    GManager.instance.commandText.OpenCommandText("The opponent is choosing from which area to select a card.");
-
-                                    #region AIÉÇÅ[Éh
-                                    if (GManager.instance.IsAI)
+                                List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                                     {
-                                        SetFromHand(RandomUtility.IsSucceedProbability(0.5f));
-                                    }
-                                    #endregion
-                                }
+                                        new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                                        new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
+                                    };
+
+                                string selectPlayerMessage = "From which area do you select a card?";
+                                string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
+
+                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                             }
 
                             else if (card.Owner.HandCards.Count(CanSelectCardCondition) == 0 && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                             {
-                                SetFromHand(false);
+                                GManager.instance.userSelectionManager.SetBool(false);
                             }
 
                             else if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1 && card.Owner.TrashCards.Count(CanSelectCardCondition) == 0)
                             {
-                                SetFromHand(true);
+                                GManager.instance.userSelectionManager.SetBool(true);
                             }
 
-                            yield return new WaitWhile(() => !endSelect);
-                            endSelect = false;
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                            GManager.instance.commandText.CloseCommandText();
-                            yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                            bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                             List<CardSource> selectedCards = new List<CardSource>();
 
@@ -328,16 +313,6 @@ namespace DCGO.CardEffects.EX3
             }
 
             return cardEffects;
-        }
-
-        bool endSelect = false;
-        bool fromHand = false;
-
-        [PunRPC]
-        public void SetFromHand(bool fromHand)
-        {
-            this.fromHand = fromHand;
-            endSelect = true;
         }
     }
 }
