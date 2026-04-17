@@ -995,6 +995,14 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     yield break;
                 }
 
+                if (!GManager.instance.IsAI || gameContext.TurnPlayer.isYou)
+                {
+                    if (gameContext.TurnPlayer.HasMainPhaseAction())
+                    {
+                        gameContext.TurnPlayer.DequeueMainPhaseAction().Execute(this);
+                    }
+                }
+
                 #region AIモード
                 if (GManager.instance.IsAI && !gameContext.TurnPlayer.isYou)
                 {
@@ -1545,7 +1553,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                         }
                                         #endregion
 
-                                        photonView.RPC("SetActSkill", RpcTarget.All, fieldPermanentCard.ThisPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(fieldPermanentCard.ThisPermanent), cardEffects1.IndexOf(cardEffect));
+                                        QueueMainPhaseAction(gameContext.TurnPlayer, new ActivatePermanentAction(fieldPermanentCard.ThisPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(fieldPermanentCard.ThisPermanent), cardEffects1.IndexOf(cardEffect)));
                                     }
                                 }
                             }
@@ -1642,7 +1650,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                             if (doAttack)
                                             {
-                                                photonView.RPC("SetAttackingPermaent", RpcTarget.All, fieldPermanentCard.ThisPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(fieldPermanentCard.ThisPermanent), -1);
+                                                QueueMainPhaseAction(gameContext.TurnPlayer, new AttackPermanentAction(fieldPermanentCard.ThisPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(fieldPermanentCard.ThisPermanent), -1));
                                             }
 
                                             else
@@ -1736,7 +1744,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                         if (doAttack)
                                         {
-                                            photonView.RPC("SetAttackingPermaent", RpcTarget.All, fieldPermanentCard.ThisPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(fieldPermanentCard.ThisPermanent), attackTargetID);
+                                            QueueMainPhaseAction(gameContext.TurnPlayer, new AttackPermanentAction(fieldPermanentCard.ThisPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(fieldPermanentCard.ThisPermanent), attackTargetID));
                                         }
 
                                         else
@@ -1991,8 +1999,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     #endregion
 
                                                     //gameContext.NonTurnPlayer.LifeCardFrame.OffFrame_Select();
-
-                                                    photonView.RPC("SetAttackingPermaent", RpcTarget.All, gameContext.TurnPlayer.GetFieldPermanents().IndexOf(fieldPermanentCard2.ThisPermanent), gameContext.NonTurnPlayer.GetFieldPermanents().IndexOf(enemyFieldPermanentCard.ThisPermanent));
+                                                    QueueMainPhaseAction(gameContext.TurnPlayer, new AttackPermanentAction(gameContext.TurnPlayer.GetFieldPermanents().IndexOf(fieldPermanentCard2.ThisPermanent), gameContext.NonTurnPlayer.GetFieldPermanents().IndexOf(enemyFieldPermanentCard.ThisPermanent)));
                                                     return;
                                                 }
                                             }
@@ -2018,8 +2025,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     }
                                                 }
                                                 #endregion
-
-                                                photonView.RPC("SetAttackingPermaent", RpcTarget.All, gameContext.TurnPlayer.GetFieldPermanents().IndexOf(fieldPermanentCard2.ThisPermanent), -1);
+                                                QueueMainPhaseAction(gameContext.TurnPlayer, new AttackPermanentAction(gameContext.TurnPlayer.GetFieldPermanents().IndexOf(fieldPermanentCard2.ThisPermanent), -1));
                                                 return;
                                             }
                                         }
@@ -2437,7 +2443,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             IEnumerator _EndSelectCoroutine_SelectDigivolutionRoots(List<Permanent> permanents)
                                                             {
                                                                 yield return null;
-                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[] { permanents[0].PermanentFrame.FrameID, permanents[1].PermanentFrame.FrameID }, -1, new int[0]);
+                                                                QueueMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[] { permanents[0].PermanentFrame.FrameID, permanents[1].PermanentFrame.FrameID }, -1, new int[0]));
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2488,7 +2494,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             IEnumerator EndSelectCoroutine_SelectTamer(Permanent permanent)
                                                             {
                                                                 yield return null;
-                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], permanent.PermanentFrame.FrameID, new int[0]);
+                                                                QueueMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], permanent.PermanentFrame.FrameID, new int[0]));
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2539,8 +2545,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             {
                                                                 yield return null;
 
-                                                                //int sourceIndex = fieldCardFrame.GetFramePermanent().LinkedCards.IndexOf(cardSource);
-                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, new int[] { targetPermanent.PermanentFrame.FrameID, targetPermanent.LinkedCards.IndexOf(cardSource)});
+                                                                QueueMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, new int[] { targetPermanent.PermanentFrame.FrameID, targetPermanent.LinkedCards.IndexOf(cardSource) }));
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2557,7 +2562,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     #region usually evolves
                                                     void Digivolution()
                                                     {
-                                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, new int[0]);
+                                                        QueueMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, new int[0]));
                                                     }
                                                     #endregion
 
@@ -2610,7 +2615,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                             GManager.instance.You.playMatCardFrame.RemoveClickTarget();
                                             GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(false);
 
-                                            photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, handCard.cardSource.PreferredFrame().FrameID, new int[0], -1, new int[0]);
+                                            QueueMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, handCard.cardSource.PreferredFrame().FrameID, new int[0], -1, new int[0]));
                                             selected = true;
 
                                             return;
@@ -2647,7 +2652,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                         GManager.instance.You.playMatCardFrame.RemoveClickTarget();
                                         GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(false);
 
-                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, 0, new int[0], -1, new int[0]);
+                                        QueueMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, 0, new int[0], -1, new int[0]));
                                         selected = true;
 
                                         return;
@@ -2945,7 +2950,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                         handCard.GetComponent<Draggable_HandCard>().CanPointerEnterExitAction = true;
 
-                                        photonView.RPC("SetActCardSkill", RpcTarget.All, handCard.cardSource.CardIndex, cardEffects1.IndexOf(cardEffect));
+                                        QueueMainPhaseAction(gameContext.TurnPlayer, new ActivateCardAction(handCard.cardSource.CardIndex, cardEffects1.IndexOf(cardEffect)));
                                     }
                                 }
                             }
@@ -3119,11 +3124,42 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region Activation effect permanent determination
+    #region Queue Main Phase Action
+    public void QueueMainPhaseAction(Player player, MainPhaseAction action)
+    {
+        photonView.RPC("QueueMainPhaseAction_Internal", RpcTarget.All, player.PlayerID, GamePacketFactory.GetId(action.GetType()), action.Serialize());
+    }
+
     [PunRPC]
+    void QueueMainPhaseAction_Internal(int playerID, byte packetId, byte[] bytes)
+    {
+        Player player = GManager.instance.GetPlayerFromID(playerID);
+        
+        if (player == null)
+        {
+            return;
+        }
+
+        MainPhaseAction action = GamePacketFactory.Create(packetId, bytes) as MainPhaseAction;
+        if (action != null)
+        {
+            player.QueueMainPhaseAction(action);
+        }
+    }
+
+    #endregion
+
+    #region Activation effect permanent determination
     public void SetActSkill(int permanentIndex, int skillIndex)
     {
-        Permanent UseSkillPermanent = gameContext.TurnPlayer.GetFieldPermanents()[permanentIndex];
+        List<Permanent> feild = gameContext.TurnPlayer.GetFieldPermanents();
+
+        if (permanentIndex < 0 || permanentIndex >= feild.Count)
+        {
+            return;
+        }
+
+        Permanent UseSkillPermanent = feild[permanentIndex];
 
         if (0 <= skillIndex && skillIndex < UseSkillPermanent.EffectList(EffectTiming.OnDeclaration).Count)
         {
@@ -3133,9 +3169,13 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     #endregion
 
     #region Activation effect card determination
-    [PunRPC]
     public void SetActCardSkill(int cardIndex, int skillIndex)
     {
+        if (cardIndex < 0 || cardIndex >= gameContext.ActiveCardList.Count)
+        {
+            return;
+        }
+
         CardSource UseSkillCard = gameContext.ActiveCardList[cardIndex];
 
         if (0 <= skillIndex && skillIndex < UseSkillCard.EffectList(EffectTiming.OnDeclaration).Count)
@@ -3146,9 +3186,13 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     #endregion
 
     #region Play card decision
-    [PunRPC]
     public void SetPlayCard(int cardIndex, int TargetFrameID, int[] JogressEvoRootsFrameIDs, int BurstTamerFrameID, int[] AppFusionFrameIDs)
     {
+        if (cardIndex < 0 ||  cardIndex >= gameContext.ActiveCardList.Count)
+        {
+            return;
+        }
+
         PlayCard = gameContext.ActiveCardList[cardIndex];
         this.TargetFrameID = TargetFrameID;
 
@@ -3183,17 +3227,23 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     #endregion
 
     #region Attack permanent determination
-    [PunRPC]
     public void SetAttackingPermaent(int permanentIndex, int attackTargetPermanentIndex)
     {
-        Permanent AttackingPermanent = gameContext.TurnPlayer.GetFieldPermanents()[permanentIndex];
+        List<Permanent> turnPlayerField = gameContext.TurnPlayer.GetFieldPermanents();
+        List<Permanent> nonTurnPlayerFeid = gameContext.NonTurnPlayer.GetFieldPermanents();
 
-        if (0 <= attackTargetPermanentIndex && attackTargetPermanentIndex < gameContext.NonTurnPlayer.GetFieldPermanents().Count)
+        AttackingPermanent = null;
+        DefendingPermanent = null;
+
+        if (permanentIndex >= 0 && permanentIndex < turnPlayerField.Count)
         {
-            this.DefendingPermanent = gameContext.NonTurnPlayer.GetFieldPermanents()[attackTargetPermanentIndex];
+            AttackingPermanent = turnPlayerField[permanentIndex];
         }
 
-        this.AttackingPermanent = AttackingPermanent;
+        if (attackTargetPermanentIndex >= 0 && attackTargetPermanentIndex < nonTurnPlayerFeid.Count)
+        {
+            DefendingPermanent = nonTurnPlayerFeid[attackTargetPermanentIndex];
+        }        
     }
     #endregion
 
