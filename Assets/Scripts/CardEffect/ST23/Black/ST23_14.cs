@@ -80,7 +80,8 @@ namespace DCGO.CardEffects.ST23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && card.PermanentOfThisCard().CanSuspend;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
