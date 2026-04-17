@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.BT25
                     return targetPermanent.TopCard.HasTSTraits;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 2, false, card, null, level: 2));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 2, false, card, null, level: 3));
             }
             #endregion
 
@@ -34,8 +34,6 @@ namespace DCGO.CardEffects.BT25
             string SharedEffectName = "By adding your top security card to your hand, -5000 DP to an enemy Digimon.";
 
             string SharedEffectDescription(string tag) => $"[{tag}] By adding your top security card to the hand, 1 of your opponent's Digimon gets -5000 DP for the turn.";
-
-            bool SharedCanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaDigimon(card);
 
             bool CanSelectEnemyDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
@@ -87,8 +85,7 @@ namespace DCGO.CardEffects.BT25
                         optional: true,
                         maxCountPerTurn: -1,
                         onPlay: true,
-                        whenDigivolving: true,
-                        additionalActivateCondition: SharedCanActivateCondition);
+                        whenDigivolving: true);
             #endregion
 
             #region Inherited
