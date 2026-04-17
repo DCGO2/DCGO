@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.ST23
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                
+
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: card.PermanentOfThisCard(), changeValue: 3000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
 
                 if (CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource) > 0 && CardEffectCommons.IsOwnerTurn(card))
@@ -212,15 +212,15 @@ namespace DCGO.CardEffects.ST23
                             #endregion
 
                             if (selectCard.IsOption)
-                            {                       
+                            {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
                                     cardSources: selectedCards,
                                     activateClass: activateClass,
                                     payCost: true,
-                                    root: SelectCardEffect.Root.Hand));                            
+                                    root: SelectCardEffect.Root.Hand));
                             }
                             else
-                            {                            
+                            {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                     new List<CardSource>() { selectCard },
                                     activateClass: activateClass,
@@ -243,7 +243,7 @@ namespace DCGO.CardEffects.ST23
             if (timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashing a face-down card from under a tamer, Unsuspend this Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By trashing a face-down card from under a tamer, unsuspend this [Glowing Dawn] Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Unsuspend_ST24_08");
@@ -298,7 +298,10 @@ namespace DCGO.CardEffects.ST23
 
                     if (trash)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                        if (card.PermanentOfThisCard().TopCard.EqualsTraits("Glowing Dawn"))
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                        }
                     }
                     else
                     {
