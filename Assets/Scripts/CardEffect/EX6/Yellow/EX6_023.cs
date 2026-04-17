@@ -231,20 +231,7 @@ namespace DCGO.CardEffects.EX6
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
-                
-                bool CanSelectOpponentPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(6000, activateClass))
-                        {
-                            return true;
-                        }
-                    }
-                    
-                    return false;
-                }
+                }              
                 
                 bool CanActivateCondition(Hashtable hashtable)
                 {

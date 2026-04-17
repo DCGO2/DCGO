@@ -272,17 +272,7 @@ namespace DCGO.CardEffects.EX6
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
-                
-                bool CanSelectOpponentPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
-                    {
-                        return permanent.IsDigimon || permanent.IsTamer;
-                    }
-                    
-                    return false;
-                }
+                }               
                 
                 bool CanActivateCondition(Hashtable hashtable)
                 {

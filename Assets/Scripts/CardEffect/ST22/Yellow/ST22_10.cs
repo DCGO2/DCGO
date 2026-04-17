@@ -144,11 +144,6 @@ namespace DCGO.CardEffects.ST22
                             permanent.TopCard.ContainsCardName("Sakuyamon"));
                 }
 
-                bool CanSelectPermament(Permanent permanent)
-                {
-                    return removedPermanents.Contains(permanent);
-                }
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     #region Trash Card from security

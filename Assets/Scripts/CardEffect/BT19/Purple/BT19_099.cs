@@ -182,8 +182,6 @@ namespace DCGO.CardEffects.BT19
             #region All Turns - Delay
             if (timing == EffectTiming.WhenRemoveField)
             {
-                int playCostValue = -1;
-
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Wicked God] trait Digimon card from hand or trash", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());

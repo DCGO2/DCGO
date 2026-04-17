@@ -140,19 +140,6 @@ namespace DCGO.CardEffects.LM
                            CardEffectCommons.CanDeclareOptionDelayEffect(card);
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool deleted = false;

@@ -96,7 +96,6 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentDeDigi))
                     {
-                        Permanent selectedPermanent = null;
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentDeDigi));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -176,7 +175,6 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentDeDigi))
                     {
-                        Permanent selectedPermanent = null;
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentDeDigi));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 

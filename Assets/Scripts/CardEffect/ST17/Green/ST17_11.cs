@@ -154,8 +154,6 @@ namespace DCGO.CardEffects.ST17
                     {
                         if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
-                            Permanent selectedPermanent = null;
-
                             List<CardSource> selectedCards = new List<CardSource>();
 
                             int maxCount = 1;
