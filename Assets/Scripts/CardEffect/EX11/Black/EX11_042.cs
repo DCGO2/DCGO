@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.EX11
                     {
                         selectionElements.Add(new (message: $"Play Maquinamon from this Digimon's Link Cards", value : 2, spriteIndex: 0));
                     };
-                    selectionElements.Add( new (message: $"Don't link", value: 3, spriteIndex: 1));
+                    selectionElements.Add( new (message: $"Don't play", value: 3, spriteIndex: 1));
 
                     string selectPlayerMessage = "Will you play a Maquinamon?";
                     string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
