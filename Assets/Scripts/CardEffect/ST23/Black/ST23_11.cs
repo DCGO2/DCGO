@@ -6,7 +6,7 @@ using System.Linq;
 // Cougarmon
 namespace DCGO.CardEffects.ST23
 {
-    public class ST23_03 : CEntity_Effect
+    public class ST23_11 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
