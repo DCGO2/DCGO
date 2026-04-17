@@ -47,11 +47,6 @@ namespace DCGO.CardEffects.ST23
             string SharedEffectDescription(string tag)
                 => $"[{tag}] This Digimon gets +3000 DP until your opponent's turn ends. Then, if it's your turn, by trashing the bottom face-down card from under any of your Tamers, you may play or use 1 [Glowing Dawn] trait card from your hand with the cost reduced by 3.";
 
-            bool CanSelectPermanentConditionForDPMinus(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-            }
-
             bool TamerWithOneFaceDownSource(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
