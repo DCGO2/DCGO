@@ -1,9 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-// Cougarmon
+// Wolvermon
 namespace DCGO.CardEffects.ST23
 {
     public class ST23_11 : CEntity_Effect
@@ -70,7 +69,7 @@ namespace DCGO.CardEffects.ST23
 
                 bool ValidTamerCondition(Permanent permanent)
                 {
-                    return permanent.IsTamer
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
                         && permanent.DigivolutionCards.Any(FaceDownCards);
                 }
 
