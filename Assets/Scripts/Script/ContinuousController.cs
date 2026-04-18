@@ -896,7 +896,7 @@ public class ContinuousController : MonoBehaviour
     #endregion
 
     #region Show CutIn Animation
-    public bool showCutInAnimation;
+    public bool showCutInAnimation = false;
     string _showCutInAnimationKey = "ShowCutInAnimation";
 
     public void SaveShowCutInAnimation()
@@ -907,8 +907,8 @@ public class ContinuousController : MonoBehaviour
     public void LoadShowCutInAnimation()
     {
         //TODO: Setting default to false, to fix animation syncing bug, MB
-        //showCutInAnimation = false;
-        showCutInAnimation = PlayerPrefsUtil.GetBool(_showCutInAnimationKey, true);
+        showCutInAnimation = false;
+        //showCutInAnimation = PlayerPrefsUtil.GetBool(_showCutInAnimationKey, true);
     }
     #endregion
 
