@@ -1,9 +1,5 @@
 using Photon.Pun;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 public class GameplayOption : OffAnimation
 {
@@ -60,11 +56,11 @@ public class GameplayOption : OffAnimation
                 value: ContinuousController.instance.reverseOpponentsCards
             );
 
-            /*OptionUtility.InitToggle(
+            OptionUtility.InitToggle(
                 toggle: _showCutInAnimationToggle,
                 onToggleChanged: OnShowCutInAnimationToggleChanged,
                 value: ContinuousController.instance.showCutInAnimation
-            );*/
+            );
 
             OptionUtility.InitToggle(
                 toggle: _turnSuspendedCardsToggle,
