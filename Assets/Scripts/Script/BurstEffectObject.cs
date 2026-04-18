@@ -19,6 +19,8 @@ public class BurstEffectObject : EvolutionEffectObject
         {
             if (!ContinuousController.instance.showCutInAnimation)
             {
+                animTime = 2.7f;
+
                 yield break;
             }
         }

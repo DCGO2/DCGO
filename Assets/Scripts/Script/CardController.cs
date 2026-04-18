@@ -115,6 +115,8 @@ public class IDiscardHand
 
 public class PlayCardClass
 {
+    private static WaitForSeconds _waitForSeconds0_5 = new WaitForSeconds(0.5f);
+
     public PlayCardClass(List<CardSource> cardSources, Hashtable hashtable, bool payCost, Permanent targetPermanent, bool isTapped, SelectCardEffect.Root root,
     bool activateETB)
     {
@@ -533,10 +535,8 @@ public class PlayCardClass
                                         {
                                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect(card));
                                         }
-
-                                        SelectCountEffect selectCountEffect = GManager.instance.GetComponent<SelectCountEffect>();
-
-                                        if (selectCountEffect != null)
+                                   
+                                        if (GManager.instance.TryGetComponent<SelectCountEffect>(out var selectCountEffect))
                                         {
                                             selectCountEffect.SetUp(
                                                 SelectPlayer: card.Owner,
@@ -716,10 +716,7 @@ public class PlayCardClass
                 {
                     foreach (Permanent targetPermanent in targetPermanents)
                     {
-                        if (targetPermanent != null)
-                        {
-                            targetPermanent.ShowWillEvolutionEffect();
-                        }
+                        targetPermanent?.ShowWillEvolutionEffect();
                     }
                 }
 
@@ -727,10 +724,7 @@ public class PlayCardClass
 
                 foreach (Permanent targetPermanent in targetPermanents)
                 {
-                    if (targetPermanent != null)
-                    {
-                        targetPermanent.HideWillEvolutionEffect();
-                    }
+                    targetPermanent?.HideWillEvolutionEffect();
                 }
             }
 
@@ -1036,7 +1030,7 @@ public class PlayCardClass
 
     IEnumerator OffMemoryPredictionLine()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return _waitForSeconds0_5;
 
         GManager.instance.memoryObject.OffMemoryPredictionLine();
     }
@@ -1930,6 +1924,8 @@ public class DrawClass
 
 public class IAddTrashCardsFromLibraryTop
 {
+    private static WaitForSeconds _waitForSeconds0_06 = new WaitForSeconds(0.06f);
+
     public IAddTrashCardsFromLibraryTop(int addTrashCount, Player player, ICardEffect cardEffect)
     {
         _addTrashCount = addTrashCount;
@@ -1984,7 +1980,7 @@ public class IAddTrashCardsFromLibraryTop
             for (int i = 0; i < discardedCards.Count; i++)
             {
                 ContinuousController.instance.PlaySE(GManager.instance.DrawSE);
-                yield return new WaitForSeconds(0.06f);
+                yield return _waitForSeconds0_06;
             }
 
             log += "\n";
@@ -3837,6 +3833,9 @@ public class DestroyPermanentsClass
 
 public class ISecurityCheck
 {
+    private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
+    private static WaitForSeconds _waitForSeconds0_3 = new WaitForSeconds(0.3f);
+
     public ISecurityCheck(Permanent AttackingPermanent, Player player)
     {
         this.AttackingPermanent = AttackingPermanent;
@@ -3929,7 +3928,7 @@ public class ISecurityCheck
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().BreakSecurityEffect(player));
 
-                        yield return new WaitForSeconds(0.1f);
+                        yield return _waitForSeconds0_1;
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().EnterSecurityCardEffect(brokenSecurityCard));
 
@@ -3950,9 +3949,11 @@ public class ISecurityCheck
                         {
                             if (cardEffect is ActivateICardEffect)
                             {
-                                Hashtable hashtable1 = new Hashtable();
-                                hashtable1.Add("Card", brokenSecurityCard);
-                                hashtable1.Add("isFaceDown", isFaceDown);
+                                Hashtable hashtable1 = new Hashtable
+                                {
+                                    { "Card", brokenSecurityCard },
+                                    { "isFaceDown", isFaceDown }
+                                };
 
                                 if (cardEffect.CanUse(hashtable1))
                                 {
@@ -3969,7 +3970,7 @@ public class ISecurityCheck
                         {
                             if (!brokenSecurityCard.IsDigimon)
                             {
-                                yield return new WaitForSeconds(0.3f);
+                                yield return _waitForSeconds0_3;
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShrinkUpUseHandCard(GManager.instance.GetComponent<Effects>().ShowUseHandCard));
                             }
                         }
@@ -4132,7 +4133,7 @@ public class ISecurityCheck
 
                                 if (doBattle)
                                 {
-                                    yield return new WaitForSeconds(0.3f);
+                                    yield return _waitForSeconds0_3;
 
                                     yield return ContinuousController.instance.StartCoroutine(new IBattle(AttackingPermanent: AttackingPermanent, DefendingPermanent: null, DefendingCard: brokenSecurityCard).Battle());
                                 }
@@ -4192,6 +4193,9 @@ public class ISecurityCheck
 
 public class IDestroySecurity
 {
+    private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
+    private static WaitForSeconds _waitForSeconds0_5 = new WaitForSeconds(0.5f);
+
     private enum TrashMode
     {
         TopSecurity,
@@ -4295,11 +4299,11 @@ public class IDestroySecurity
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().BreakSecurityEffect(_player));
 
-                    yield return new WaitForSeconds(0.1f);
+                    yield return _waitForSeconds0_1;
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().EnterSecurityCardEffect(destroyedSecurityCard));
 
-                    yield return new WaitForSeconds(0.5f);
+                    yield return _waitForSeconds0_5;
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().DestroySecurityEffect(destroyedSecurityCard));
 
@@ -4417,7 +4421,7 @@ public class IBattle
 
     public int CompareStats()
     {
-        int statCheck = 0;
+        int statCheck;
 
         if (AttackingPermanent.HasIceclad || DefendingPermanent.HasIceclad)
             statCheck = AttackingPermanent.DigivolutionCards.Count - DefendingPermanent.DigivolutionCards.Count;
@@ -5335,6 +5339,8 @@ public class IFlipSecurity
 
 public class SuspendPermanentsClass
 {
+    private static WaitForSeconds _waitForSeconds0_3 = new WaitForSeconds(0.3f);
+
     public SuspendPermanentsClass(List<Permanent> permanents, Hashtable hashtable)
     {
         _permanents = permanents;
@@ -5427,7 +5433,7 @@ public class SuspendPermanentsClass
 
             #endregion
 
-            yield return new WaitForSeconds(0.3f);
+            yield return _waitForSeconds0_3;
         }
     }
 }
@@ -5438,6 +5444,8 @@ public class SuspendPermanentsClass
 
 public class IUnsuspendPermanents
 {
+    private static WaitForSeconds _waitForSeconds0_3 = new WaitForSeconds(0.3f);
+
     public IUnsuspendPermanents(List<Permanent> permanents, ICardEffect cardEffect)
     {
         _permanents = permanents.Clone().Filter(CardEffectCommons.IsPermanentExistsOnBattleArea);
@@ -5533,7 +5541,7 @@ public class IUnsuspendPermanents
 
             #endregion
 
-            yield return new WaitForSeconds(0.3f);
+            yield return _waitForSeconds0_3;
         }
     }
 }

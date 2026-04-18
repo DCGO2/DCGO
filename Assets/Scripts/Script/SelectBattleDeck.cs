@@ -9,6 +9,7 @@ using System.Linq;
 
 public class SelectBattleDeck : MonoBehaviour
 {
+    private static WaitForSeconds _waitForSeconds1 = new WaitForSeconds(1f);
     [Header("Deck selection object")]
     public GameObject SelectDeckObject;
 
@@ -111,7 +112,7 @@ public class SelectBattleDeck : MonoBehaviour
     IEnumerator SetOnce()
     {
         once = true;
-        yield return new WaitForSeconds(1f);
+        yield return _waitForSeconds1;
         once = false;
     }
 
@@ -178,7 +179,7 @@ public class SelectBattleDeck : MonoBehaviour
         }
         */
 
-        string message = "";
+        string message;
 
         if (ContinuousController.instance.isAI)
         {

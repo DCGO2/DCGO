@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition));
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                         {
                             return true;
                         }
