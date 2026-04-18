@@ -55,4 +55,5 @@
   <Project Path="PunDemos.DemoSlotcarEditor.csproj" />
   <Project Path="PhotonUnityNetworking.Utilities.Culling.Editor.csproj" />
   <Project Path="PunDemos.DemoHubEditor.csproj" />
+  <Project Path="ParrelSync.csproj" />
 </Solution>
