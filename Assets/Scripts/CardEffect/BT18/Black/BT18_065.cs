@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// Snatchmon
 namespace DCGO.CardEffects.BT18
 {
     public class BT18_065 : CEntity_Effect
