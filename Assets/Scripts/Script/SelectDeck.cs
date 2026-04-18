@@ -53,7 +53,7 @@ public class SelectDeck : OffAnimation
             lastBattleDeckDataIndex = ContinuousController.instance.DeckDatas.IndexOf(ContinuousController.instance.LastBattleDeckData);
         }
 
-        ContinuousController.instance.ModifyAllDeckDatas();
+        //ContinuousController.instance.ModifyAllDeckDatas();
 
         if (0 <= lastBattleDeckDataIndex && lastBattleDeckDataIndex <= ContinuousController.instance.DeckDatas.Count - 1)
         {
@@ -284,7 +284,7 @@ public class SelectDeck : OffAnimation
         }
 
         ContinuousController.instance.StartCoroutine(SetDeckList(false));
-        ContinuousController.instance.SaveDeckDatas();
+        //ContinuousController.instance.SaveDeckDatas();
     }
 
     public void OnClickDeleteAllDecksButton()
@@ -307,7 +307,7 @@ public class SelectDeck : OffAnimation
 
                 ContinuousController.instance.StartCoroutine(SetDeckList(false));
                 ResetDeckInfoPanel();
-                ContinuousController.instance.SaveDeckDatas();
+                //ContinuousController.instance.SaveDeckDatas();
                 ContinuousController.instance.DeleteAllDecks();
             }
                     ,null

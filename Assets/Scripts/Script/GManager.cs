@@ -6,8 +6,10 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Effects))]
 public class GManager : MonoBehaviourPun
 {
+    private static WaitForSeconds _waitForSeconds5 = new WaitForSeconds(5f);
     [Header("あなた")]
     public Player You;
 
@@ -343,7 +345,7 @@ public class GManager : MonoBehaviourPun
 
         yield return new WaitWhile(() => turnStateMachine == null);
 
-        yield return new WaitForSeconds(5f);
+        yield return _waitForSeconds5;
 
         while (true)
         {

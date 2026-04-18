@@ -13,6 +13,8 @@ using static UnityEngine.ParticleSystem;
 using static UnityEngine.UIElements.UxmlAttributeDescription;
 public class TurnStateMachine : MonoBehaviourPunCallbacks
 {
+    private static WaitForSeconds _waitForSeconds0_2 = new WaitForSeconds(0.2f);
+
     //Class to manage battle status
     public GameContext gameContext;
 
@@ -73,12 +75,14 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             if (!PhotonNetwork.InRoom)
             {
                 //Setting up the room to be created
-                RoomOptions roomOptions = new RoomOptions();
-                roomOptions.IsVisible = false;   //Make the room invisible in the lobby.
-                roomOptions.IsOpen = false;      //Not Allow other players to enter the room
-                roomOptions.PublishUserId = true;
+                RoomOptions roomOptions = new RoomOptions
+                {
+                    IsVisible = false,   //Make the room invisible in the lobby.
+                    IsOpen = false,      //Not Allow other players to enter the room
+                    PublishUserId = true,
 
-                roomOptions.MaxPlayers = 1;
+                    MaxPlayers = 1
+                };
 
                 string RoomName = StringUtils.GeneratePassword_AlpahabetNum(50);
 
@@ -149,8 +153,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         {
                             return "Opponent";
                         }
-
-                        return playerName;
                     }
                 }
 
@@ -235,7 +237,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         #region デッキカード生成
         yield return StartCoroutine(CardObjectController.CreatePlayerDecks(GManager.instance.CardPrefab, gameContext));
-        yield return new WaitForSeconds(0.2f);
+        yield return _waitForSeconds0_2;
         #endregion
 
         /*#region ログのクリック処理を追加
@@ -1795,7 +1797,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                         handCard1.RemoveDragTarget();
                                         handCard1.RemoveSelectEffect();
                                         handCard1.handCardCommandPanel.CloseCommandPanel();
-                                        handCard1.Outline_Select.gameObject.SetActive(false);
+                                        handCard1.Outline_Select.SetActive(false);
                                     }
 
                                     foreach (Player player in gameContext.Players)
@@ -2215,7 +2217,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                                     OffHandCardTarget(gameContext.TurnPlayer);
 
-                                                    handCard.Outline_Select.gameObject.SetActive(false);
+                                                    handCard.Outline_Select.SetActive(false);
 
                                                     foreach (Player player in gameContext.Players_ForTurnPlayer)
                                                     {
@@ -2602,7 +2604,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                             OffHandCardTarget(gameContext.TurnPlayer);
 
-                                            handCard.Outline_Select.gameObject.SetActive(false);
+                                            handCard.Outline_Select.SetActive(false);
 
                                             foreach (Player player in gameContext.Players_ForTurnPlayer)
                                             {
@@ -2639,7 +2641,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                         OffHandCardTarget(gameContext.TurnPlayer);
 
-                                        handCard.Outline_Select.gameObject.SetActive(false);
+                                        handCard.Outline_Select.SetActive(false);
 
                                         foreach (Player player in gameContext.Players_ForTurnPlayer)
                                         {
@@ -2892,7 +2894,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         #region Reset cards in hand
                         foreach (HandCard handCard1 in gameContext.TurnPlayer.HandCardObjects)
                         {
-                            handCard.Outline_Select.gameObject.SetActive(false);
+                            handCard1.Outline_Select.SetActive(false);
                             handCard1.RemoveSelectEffect();
                             handCard1.RemoveClickTarget();
                             handCard1.RemoveDragTarget();
@@ -2941,7 +2943,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                         #region Reset cards in hand
                                         foreach (HandCard handCard1 in gameContext.TurnPlayer.HandCardObjects)
                                         {
-                                            handCard.Outline_Select.gameObject.SetActive(false);
+                                            handCard1.Outline_Select.SetActive(false);
                                             handCard1.RemoveSelectEffect();
                                             handCard1.RemoveClickTarget();
                                             handCard1.RemoveDragTarget();
@@ -2961,7 +2963,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                         handCard.AddClickTarget((_fieldUnitCard) => StartCoroutine(SetMainPhase()));
 
-                        handCard.Outline_Select.gameObject.SetActive(true);
+                        handCard.Outline_Select.SetActive(true);
                         handCard.SetOrangeOutline();
                     }
 
@@ -3088,7 +3090,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 handCard.RemoveSelectEffect();
                 handCard.RemoveClickTarget();
                 handCard.RemoveDragTarget();
-                handCard.Outline_Select.gameObject.SetActive(false);
+                handCard.Outline_Select.SetActive(false);
                 handCard.transform.GetChild(0).gameObject.SetActive(true);
             }
 
@@ -3140,8 +3142,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             return;
         }
 
-        MainPhaseAction action = GamePacketFactory.Create(packetId, bytes) as MainPhaseAction;
-        if (action != null)
+        if (GamePacketFactory.Create(packetId, bytes) is MainPhaseAction action)
         {
             player.QueueMainPhaseAction(action);
         }
@@ -3349,7 +3350,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     public bool endGame { get; set; } = false;
     public void OnClickSurrenderButton()
     {
-        int localPlayerID = 0;
+        int localPlayerID;
 
         if (PhotonNetwork.IsMasterClient)
         {

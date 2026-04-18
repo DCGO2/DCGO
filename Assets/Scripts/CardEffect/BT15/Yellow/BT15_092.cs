@@ -111,8 +111,6 @@ namespace DCGO.CardEffects.BT15
                 {
                     if (card.Owner.SecurityCards.Count >= 1)
                     {
-                        bool played = false;
-
                         int maxCount = Math.Min(1, card.Owner.SecurityCards.Count(CanSelectCardCondition));
 
                         List<CardSource> selectedCards = new List<CardSource>();

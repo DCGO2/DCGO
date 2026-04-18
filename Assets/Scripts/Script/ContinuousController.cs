@@ -11,8 +11,10 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
+[RequireComponent(typeof(StarterDeck))]
 public class ContinuousController : MonoBehaviour
 {
+    private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
     [Header("game language")]
     // public Language language;
 
@@ -680,7 +682,7 @@ public class ContinuousController : MonoBehaviour
 
             sr.Close();
 
-            string deck = deckList.Substring(deckList.IndexOf("//"));
+            string deck = deckList[deckList.IndexOf("//")..];
             //Debug.Log(deckName);
 
             if(SortValue < 0)
@@ -894,7 +896,7 @@ public class ContinuousController : MonoBehaviour
     #endregion
 
     #region Show CutIn Animation
-    [HideInInspector] public bool showCutInAnimation = false;
+    [HideInInspector] public bool showCutInAnimation = true;
     string _showCutInAnimationKey = "ShowCutInAnimation";
 
     public void SaveShowCutInAnimation()
@@ -905,7 +907,7 @@ public class ContinuousController : MonoBehaviour
     public void LoadShowCutInAnimation()
     {
         //TODO: Setting default to false, to fix animation syncing bug, MB
-        showCutInAnimation = false;
+        showCutInAnimation = true;
         //showCutInAnimation = PlayerPrefsUtil.GetBool(_showCutInAnimationKey, true);
     }
     #endregion
@@ -1203,7 +1205,7 @@ public class ContinuousController : MonoBehaviour
         {
             Debug.Log("Unload from Room Match");
             yield return StartCoroutine(Opening.instance.battle.roomManager.Init(true));
-            yield return new WaitForSeconds(0.1f);
+            yield return _waitForSeconds0_1;
         }
 
         yield return new WaitWhile(() => GManager.instance != null);
@@ -1234,7 +1236,7 @@ public class ContinuousController : MonoBehaviour
 
         for (int i = 0; i < 3; i++)
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return _waitForSeconds0_1;
 
             EventSystem.current.SetSelectedGameObject(Opening.instance.battle.selectBattleMode.transform.GetChild(0).gameObject);
         }
@@ -1426,11 +1428,13 @@ public class ContinuousController : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(PhotonUtility.RetryStatus))
         {
-            GUIStyle retryStyle = new GUIStyle(GUI.skin.label);
-            retryStyle.fontSize = 20;
-            retryStyle.richText = true;
-            retryStyle.fontStyle = FontStyle.Bold;
-            retryStyle.alignment = TextAnchor.MiddleCenter;
+            GUIStyle retryStyle = new GUIStyle(GUI.skin.label)
+            {
+                fontSize = 20,
+                richText = true,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter
+            };
 
             float boxW = 500;
             float boxH = 40;
@@ -1464,10 +1468,12 @@ public class ContinuousController : MonoBehaviour
             status = $"<color=#FFAA00>[Photon] Connected | Region: {PhotonNetwork.CloudRegion} | Not in Lobby/Room</color>";
         }
 
-        GUIStyle style = new GUIStyle(GUI.skin.label);
-        style.fontSize = 16;
-        style.richText = true;
-        style.fontStyle = FontStyle.Bold;
+        GUIStyle style = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 16,
+            richText = true,
+            fontStyle = FontStyle.Bold
+        };
 
         GUI.Label(new Rect(10, 10, 800, 30), status, style);
     }
@@ -1483,10 +1489,7 @@ public static class RandomUtility
     {
         int _max = 1500000000;
 
-        if (random == null)
-        {
-            random = new System.Random((int)DateTime.Now.Ticks);
-        }
+        random ??= new System.Random((int)DateTime.Now.Ticks);
 
         return random.Next(0, _max);
     }
@@ -1532,9 +1535,7 @@ public static class RandomUtility
             int k = UnityEngine.Random.Range(0, n + 1);
 
             // Swap elements at indices i and k
-            CEntity_Base temp = CardDatas[n];
-            CardDatas[n] = CardDatas[k];
-            CardDatas[k] = temp;
+            (CardDatas[k], CardDatas[n]) = (CardDatas[n], CardDatas[k]);
         }
 
 
@@ -1688,11 +1689,7 @@ public class PhotonUtility
         #region Save the number of wins to a custom property
         Hashtable hash = PhotonNetwork.LocalPlayer.CustomProperties;
 
-        object value;
-
-        hash = PhotonNetwork.LocalPlayer.CustomProperties;
-
-        if (hash.TryGetValue(ContinuousController.WinCountKey, out value))
+        if (hash.TryGetValue(ContinuousController.WinCountKey, out object value))
         {
             hash[ContinuousController.WinCountKey] = ContinuousController.instance.WinCount;
         }
@@ -1739,11 +1736,7 @@ public class PhotonUtility
     {
         Hashtable hash = PhotonNetwork.LocalPlayer.CustomProperties;
 
-        object value;
-
-        hash = PhotonNetwork.LocalPlayer.CustomProperties;
-
-        if (hash.TryGetValue(ContinuousController.PlayerNameKey, out value))
+        if (hash.TryGetValue(ContinuousController.PlayerNameKey, out object value))
         {
             hash[ContinuousController.PlayerNameKey] = ContinuousController.instance.PlayerName;
         }

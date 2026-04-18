@@ -11,6 +11,8 @@ public class JogressEffectObject : EvolutionEffectObject
         {
             if (!ContinuousController.instance.showCutInAnimation)
             {
+                animTime = 1.65f;
+
                 yield break;
             }
         }
