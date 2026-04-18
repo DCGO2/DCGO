@@ -11,7 +11,7 @@ public class DigiXrosEffectObject : EvolutionEffectObject
         {
             if (!ContinuousController.instance.showCutInAnimation)
             {
-                animTime = 3f;
+                animTime = 2f;
 
                 yield break;
             }
