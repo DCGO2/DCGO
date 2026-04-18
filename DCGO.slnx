@@ -32,6 +32,7 @@
   <Project Path="Unity.TextMeshPro.Editor.csproj" />
   <Project Path="Unity.Burst.Editor.csproj" />
   <Project Path="UnityEditor.TestRunner.csproj" />
+  <Project Path="ParrelSync.csproj" />
   <Project Path="Unity.Rider.Editor.csproj" />
   <Project Path="Unity.RenderPipelines.Core.Editor.csproj" />
   <Project Path="Unity.SysrootPackage.Editor.csproj" />
@@ -55,5 +56,4 @@
   <Project Path="PunDemos.DemoSlotcarEditor.csproj" />
   <Project Path="PhotonUnityNetworking.Utilities.Culling.Editor.csproj" />
   <Project Path="PunDemos.DemoHubEditor.csproj" />
-  <Project Path="ParrelSync.csproj" />
 </Solution>
