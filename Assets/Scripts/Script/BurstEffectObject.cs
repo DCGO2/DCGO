@@ -25,8 +25,6 @@ public class BurstEffectObject : EvolutionEffectObject
             }
         }
 
-        animTime = 2.7f;
-
         yield return ContinuousController.instance.StartCoroutine(base.EvolutionEffectAnimation(cardSource));
     }
 
