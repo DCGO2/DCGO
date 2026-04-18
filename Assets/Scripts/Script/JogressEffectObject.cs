@@ -17,8 +17,6 @@ public class JogressEffectObject : EvolutionEffectObject
             }
         }
 
-        animTime = 1.65f;
-
         for (int i = 0; i < jogressEvoRoots.Length; i++)
         {
             if (i < jogressEvoRootImages.Length)
