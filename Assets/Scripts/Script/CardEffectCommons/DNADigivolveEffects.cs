@@ -18,7 +18,7 @@ public partial class CardEffectCommons
     /// <returns>The created Permanent</returns>
     private static Permanent PlayTempPermanent(CardSource card, bool finalCard = false)
     {
-        Permanent playedPermanent = null;
+        Permanent playedPermanent;
         if (card != null)
         {
             int frameID = card.PreferredFrame().FrameID;
@@ -205,8 +205,6 @@ public partial class CardEffectCommons
 
     private static IEnumerator SelectPermanent(Player owner, CardSource jogressTarget, Permanent firstCondition, bool isOptional, ICardEffect activateClass, bool isWithHand, Func<Permanent, IEnumerator> SelectPermanentCoroutine, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> digivolutionCardCondition = null)
     {
-        Permanent selectedPermanent = null;
-
         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
         selectPermanentEffect.SetUp(
@@ -477,12 +475,6 @@ public partial class CardEffectCommons
             yield return null;
         }
 
-        bool CanJogressCondition(CardSource cardSource)
-        {
-            return (canSelectDNACardCondition == null || canSelectDNACardCondition(cardSource))
-                && cardSource.CanPlayJogress(true);
-        }
-
         if (owner.GetBattleAreaDigimons().Count < DnaPermanentCount)
         {
             yield return ContinuousController.instance.StartCoroutine(failedProcess());
@@ -639,19 +631,6 @@ public partial class CardEffectCommons
         JogressCondition jogressCondition = new (elements, cost);
 
         return jogressCondition;
-
-        bool PermanentCondition(Permanent permanent)
-        {
-            return permanent != null
-                && permanent.TopCard != null
-                && permanent.TopCard.Owner == card.Owner
-                && permanent.IsDigimon
-                && CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-        }
-
-        bool FullPermanentCondition1(Permanent permanent) => PermanentCondition(permanent) && permanentCondition1 != null && permanentCondition1(permanent);
-
-        bool FullPermanentCondition2(Permanent permanent) => PermanentCondition(permanent) && permanentCondition2 != null && permanentCondition2(permanent);
     }
 
     //Private class used to register the callback so this doesn't need to be defined in every card that uses DNA by effect

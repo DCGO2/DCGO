@@ -12,7 +12,7 @@ public class DisableEffectClass : ICardEffect, IDisableCardEffect
         this.DisableCondition = DisableCondition;
     }
 
-    public bool IsDisabled(ICardEffect cardEffect)
+    public new bool IsDisabled(ICardEffect cardEffect)
     {
         if (DisableCondition(cardEffect))
         {

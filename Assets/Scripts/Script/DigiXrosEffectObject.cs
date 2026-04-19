@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.UI;
 
 public class DigiXrosEffectObject : EvolutionEffectObject
 {
@@ -13,11 +11,11 @@ public class DigiXrosEffectObject : EvolutionEffectObject
         {
             if (!ContinuousController.instance.showCutInAnimation)
             {
+                animTime = 2f;
+
                 yield break;
             }
         }
-
-        animTime = 2f;
 
         yield return ContinuousController.instance.StartCoroutine(base.EvolutionEffectAnimation(cardSource, jogressEvoRoots));
     }

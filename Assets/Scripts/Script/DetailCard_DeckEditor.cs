@@ -78,7 +78,7 @@ public class DetailCard_DeckEditor : MonoBehaviour
         //カード名背景
         for (int i = 0; i < cardNameBackgrounds.Count; i++)
         {
-            CardColor cardColor = CardColor.None;
+            CardColor cardColor;
 
             if (i < cEntity_Base.cardColors.Count)
             {
@@ -353,39 +353,6 @@ public class DetailCard_DeckEditor : MonoBehaviour
 
         digimonDetailObject.SetActive(levelText.gameObject.activeSelf || formText.gameObject.activeSelf || attributeText.gameObject.activeSelf  || typeText.gameObject.activeSelf);
 
-        string changeColorString(string s)
-        {
-            List<string> keyWordEffect = new List<string>()
-            {
-                "Blocker",
-                "Security Attack +",
-                "Security Attack -",
-                "Delay",
-                "Draw 1",
-                "Draw 2",
-                "Draw 3",
-                "Armor Purge",
-                "Jamming",
-                "DNA Digivolution",
-                "Save",
-                "Decoy",
-                "Digi-Burst",
-                "Piercing",
-                "Blitz",
-                "Material Save",
-                "Recovery +",
-                "Evade",
-                "Digisorption",
-                "Reboot",
-                "Rush",
-                "De-Digivolve",
-                "Retaliation",
-                "Raid",
-            };
-
-            return s;
-        }
-
         //効果テキスト
         if (ContinuousController.instance.language == Language.ENG)
         {
@@ -408,7 +375,7 @@ public class DetailCard_DeckEditor : MonoBehaviour
             #region Text Colors
             for (int i = 0; i < alternativeEffectTitleBackgrounds.Count; i++)
             {
-                CardColor cardColor = CardColor.None;
+                CardColor cardColor;
 
                 if (i < cEntity_Base.cardColors.Count)
                 {
@@ -421,7 +388,7 @@ public class DetailCard_DeckEditor : MonoBehaviour
                 }
 
                 alternativeEffectTitleBackgrounds[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
-                List<CardColor> tempColors = new List<CardColor>();
+                List<CardColor> tempColors;
 
                 if (cEntity_Base.IsDualCard)
                     tempColors = cEntity_Base.OptionCardColorRequirements;

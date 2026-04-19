@@ -11,11 +11,11 @@ public class JogressEffectObject : EvolutionEffectObject
         {
             if (!ContinuousController.instance.showCutInAnimation)
             {
+                animTime = 1.65f;
+
                 yield break;
             }
         }
-
-        animTime = 1.65f;
 
         for (int i = 0; i < jogressEvoRoots.Length; i++)
         {
