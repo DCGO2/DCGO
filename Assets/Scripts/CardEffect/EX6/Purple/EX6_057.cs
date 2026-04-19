@@ -153,14 +153,14 @@ namespace DCGO.CardEffects.EX6
                                     return null;
                                 }
 
-                                ICardEffect GetDetailEffect(EffectTiming timing)
-                                {
-                                    if (timing == EffectTiming.None)
-                                    {
-                                        return PermanentEffectFactory.AddDetailClass(permanent, "[End of your turn] Delete this Digimon", true, activateClass);
-                                    }
-                                    return null;
-                                }
+                                //ICardEffect GetDetailEffect(EffectTiming timing)
+                                //{
+                                //    if (timing == EffectTiming.None)
+                                //    {
+                                //        return PermanentEffectFactory.AddDetailClass(permanent, "[End of your turn] Delete this Digimon", true, activateClass);
+                                //    }
+                                //    return null;
+                                //}
                             }
                         }
                     }
