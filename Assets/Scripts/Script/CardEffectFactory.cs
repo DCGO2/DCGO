@@ -1519,4 +1519,14 @@ public partial class CardEffectFactory
         }
     }
     #endregion
+
+    #region Add detail for Display
+    public static AddDetailClass AddDetailClass(Func<Hashtable, bool> canUseCondition, Func<Permanent, bool> permanentCondition, string detail, bool triggerEffect, CardSource card)
+    {
+        AddDetailClass addDetailClass = new();
+        addDetailClass.SetUpICardEffect("Added Detail", canUseCondition, card);
+        addDetailClass.SetUpAddDetailClass(permanentCondition, detail, triggerEffect);
+        return addDetailClass;
+    }
+    #endregion
 }
