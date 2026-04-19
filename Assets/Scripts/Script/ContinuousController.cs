@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -516,9 +517,9 @@ public class ContinuousController : MonoBehaviour
     public async void Init()
     {
         Application.targetFrameRate = 60;
-        int random = RandomUtility.getRamdom();
-        UnityEngine.Random.InitState(random);
-        Debug.Log($"Game Initialize - random number sequence initialization,InitState:{random}");
+        long random = RandomUtility.GetSecureRandom();
+        GameRandom.Seed(random);
+        Debug.Log($"Game Initialize - random number sequence initialization, GameRandom.Seed:{random}");
 
         Sprite reverseCardSprite = await StreamingAssetsUtility.GetSprite("card_back_main");
 
@@ -1173,9 +1174,9 @@ public class ContinuousController : MonoBehaviour
 
         isAI = false;
 
-        int random = RandomUtility.getRamdom();
-        UnityEngine.Random.InitState(random);
-        Debug.Log($"random number sequence initialization, InitState:{random}");
+        long random = RandomUtility.GetSecureRandom();
+        GameRandom.Seed(random);
+        Debug.Log($"random number sequence initialization, GameRandom.Seed:{random}");
 
         var unload = SceneManager.UnloadSceneAsync("BattleScene");
         yield return unload;
@@ -1327,19 +1328,19 @@ public class ContinuousController : MonoBehaviour
     public bool DoneSetRandom { get; set; } = false;
     public bool CanSetRandom { get; set; } = false;
     [PunRPC]
-    public void SetRandom(int random)
+    public void SetRandom(long random)
     {
         StartCoroutine(SetRandomCoroutine(random));
     }
 
-    IEnumerator SetRandomCoroutine(int random)
+    IEnumerator SetRandomCoroutine(long random)
     {
         yield return new WaitWhile(() => !CanSetRandom);
 
-        UnityEngine.Random.InitState(random);
+        GameRandom.Seed(random);
         DoneSetRandom = true;
 
-        Debug.Log($"random number sequence initialization,InitState:{random}");
+        Debug.Log($"random number sequence initialization, GameRandom.Seed:{random}");
     }
 
 #if UNITY_EDITOR
@@ -1484,14 +1485,18 @@ public class ContinuousController : MonoBehaviour
 #region Manage random numbers
 public static class RandomUtility
 {
-    private static System.Random random;
-    public static int getRamdom()
+    /// <summary>
+    /// Generates a cryptographically secure 64-bit random seed.
+    /// Uses OS entropy pool via System.Security.Cryptography.
+    /// </summary>
+    public static long GetSecureRandom()
     {
-        int _max = 1500000000;
-
-        random ??= new System.Random((int)DateTime.Now.Ticks);
-
-        return random.Next(0, _max);
+        byte[] bytes = new byte[8];
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(bytes);
+        }
+        return BitConverter.ToInt64(bytes, 0);
     }
 
     #region IsSucceedProbability(float Probability)
@@ -1507,7 +1512,7 @@ public static class RandomUtility
             return false;
         }
 
-        float random = UnityEngine.Random.Range(0f, 1f);
+        float random = GameRandom.Range(0f, 1f);
 
         if (random <= Probability)
         {
@@ -1524,18 +1529,20 @@ public static class RandomUtility
         List<CEntity_Base> CardDatas = new List<CEntity_Base>();
         CardDatas.AddRange(DeckCards);
 
-        // The initial value of the integer n is the number of cards in the deck
+        // Fisher-Yates shuffle using GameRandom (Xoshiro256**)
         int n = CardDatas.Count;
 
         while (n > 0)
         {
             n--;
 
-            // Random index from 0 to i (inclusive)
-            int k = UnityEngine.Random.Range(0, n + 1);
+            // Random index from 0 to n (inclusive) — Range takes exclusive max
+            int k = GameRandom.Range(0, n + 1);
 
-            // Swap elements at indices i and k
-            (CardDatas[k], CardDatas[n]) = (CardDatas[n], CardDatas[k]);
+            // Swap elements at indices n and k
+            CEntity_Base temp = CardDatas[n];
+            CardDatas[n] = CardDatas[k];
+            CardDatas[k] = temp;
         }
 
 
@@ -1547,17 +1554,17 @@ public static class RandomUtility
         List<CardSource> CardDatas = new List<CardSource>();
         CardDatas.AddRange(DeckCards);
 
-        // The initial value of the integer n is the number of cards in the deck
+        // Fisher-Yates shuffle using GameRandom (Xoshiro256**)
         int n = CardDatas.Count;
 
         while (n > 0)
         {
             n--;
 
-            // Random index from 0 to i (inclusive)
-            int k = UnityEngine.Random.Range(0, n + 1);
+            // Random index from 0 to n (inclusive) — Range takes exclusive max
+            int k = GameRandom.Range(0, n + 1);
 
-            // Swap elements at indices i and k
+            // Swap elements at indices n and k
             CardSource temp = CardDatas[n];
 
             if (!temp.IsFlipped)
@@ -1567,7 +1574,7 @@ public static class RandomUtility
                 if(temp.Owner.SecurityCards.Contains(temp))
                     GManager.OnSecurityStackChanged?.Invoke(temp.Owner);
             }
-                
+
 
             CardDatas[n] = CardDatas[k];
             CardDatas[k] = temp;
