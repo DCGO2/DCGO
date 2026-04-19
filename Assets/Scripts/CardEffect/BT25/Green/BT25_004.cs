@@ -1,113 +1,91 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
-// Lekismon
+// Tapmon
 namespace DCGO.CardEffects.BT25
 {
-    public class BT25_024 : CEntity_Effect
+    public class BT25_004 : CEntity_Effect
     {
+        
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alt Digivolution Condition
-            if (timing == EffectTiming.None)
-            {
-                static bool PermanentCondition(Permanent targetPermanent)
-                {
-                    return targetPermanent.TopCard.HasTSTraits;
-                }
+            #region Shared Conditions
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 3, permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            bool CardCondition(CardSource cardSource)
+            {
+                return cardSource.EqualsTraits("Social")
+                    || cardSource.EqualsTraits("Tool")
+                    || cardSource.EqualsTraits("Game");
             }
+
+            bool PermanentCondition(Permanent permanent) => permanent == card.PermanentOfThisCard();
+
+            bool RootCondition(SelectCardEffect.Root root) => true;
+
             #endregion
 
-            #region Shared OP/WD
-            string SharedEffectName = "<Draw 1>";
-
-            CardEffectFactory.ActivateClassesForSharedEffects
-            (ref cardEffects, timing, card,
-                SharedEffectName,
-                SharedActivateCoroutine,
-                SharedEffectDescription,
-                optional: false,
-                onPlay: true,
-                whenDigivolving: true);
-
-            string SharedEffectDescription(string tag)
+            #region Reduce Link Cost
+            if (timing == EffectTiming.BeforePayCost)
             {
-                return $"[{tag}] <Draw 1>";
-            }
-
-            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
-            {
-                yield return ContinuousController.instance.StartCoroutine(new DrawClass(
-                    player: card.Owner,
-                    drawCount: 1,
-                    cardEffect: activateClass).Draw()
-                );
-            }
-            #endregion
-
-            #region Your Turn
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 [Mineral]/[Rock] trait card from hand or trash under played/digivolved digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                ActivateClass activateClass = new ();
+                activateClass.SetUpICardEffect("May reduce Link cost by 1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("BT25_004_YT");
                 cardEffects.Add(activateClass);
 
-                string EffectDescription() => "[Your Turn] When your Digimon are played or digivolve, if any of them are red, this Digimon may digivolve into [Crescemon] in the trash with the cost reduced by 1.";
+                string EffectDiscription()
+                {
+                    return "[Your Turn] [Once Per Turn] When a [Social], [Tool] or [Game] trait card would link to this Digimon, you may reduce the cost by 1.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.IsOwnerTurn(card)
-                        && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition)
-                            || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition));
+                        && CardEffectCommons.CanTriggerWhenWouldLink(hashtable, CardCondition, PermanentCondition)
+                        && CardEffectCommons.IsOwnerTurn(card);
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.CardColors.Contains(CardColor.Red);
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return cardSource.EqualsCardName("Crescemon")
-                        && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass); ;
-                }
+                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleArea(card);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                        targetPermanent: card.PermanentOfThisCard(),
-                        cardCondition: CanSelectCardCondition,
-                        payCost: true,
-                        reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
-                        fixedCostTuple: null,
-                        ignoreDigivolutionRequirementFixedCost: -1,
-                        isHand: false,
-                        activateClass: activateClass,
-                        successProcess: null));
+                    card.Owner.UntilCalculateFixedCostEffect.Add((timing) => CardEffectFactory.GrantedReduceLinkCostClass(
+                        card: card, 
+                        reducedCost: 1,
+                        cardSourceCondition: CardCondition,
+                        permanentCondition: PermanentCondition,
+                        rootCondition: RootCondition
+                    ));
+
+                    yield return null;
                 }
             }
             #endregion
 
-            #region Inherited Effect - Jamming
+            #region Reduce Link cost - Not Shown
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.JammingSelfStaticEffect(
+                cardEffects.Add(CardEffectFactory.ReduceLinkCostClass(
+                    card: card, 
+                    canUseCondition: CanUseCondition,
                     isInheritedEffect: true,
-                    card: card,
-                    condition: null));
+                    isOptional: true,
+                    reducedCost: 1,
+                    cardSourceCondition: CardCondition,
+                    permanentCondition: PermanentCondition,
+                    rootCondition: RootCondition
+                ));
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.IsOwnerTurn(card);
+                }
             }
             #endregion
 
