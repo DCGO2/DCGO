@@ -433,7 +433,7 @@ public class DeckData
         }
 
         DeckCards1 = DeckCards1
-            .OrderBy(value => Array.IndexOf(DataBase.cardKinds, value.cardKind))
+            .OrderBy(value => GetCardKindPriority(value.cardKind))
             .ThenBy(value => value.Level)
             .ThenBy(value => Array.IndexOf(DataBase.cardColors, value.cardColors[0]))
             .ThenByDescending(value => value.PlayCost)
@@ -442,6 +442,25 @@ public class DeckData
             .ToList();
 
         return DeckCards1;
+
+        static int GetCardKindPriority(List<CardKind> kinds)
+        {
+            if (kinds == null || kinds.Count == 0)
+                return 99;
+
+            bool hasDigimon = kinds.Contains(CardKind.Digimon);
+            bool hasOption = kinds.Contains(CardKind.Option);
+            bool hasTamer = kinds.Contains(CardKind.Tamer);
+            bool hasEgg = kinds.Contains(CardKind.DigiEgg);
+
+            if (hasEgg && kinds.Count == 1) return 0;
+            if (hasDigimon && kinds.Count == 1) return 1;
+            if (hasDigimon && hasOption && kinds.Count == 2) return 2;
+            if (hasTamer && kinds.Count == 1) return 3;
+            if (hasOption && kinds.Count == 1) return 4;
+
+            return 99;
+        }
     }
 
     public static List<CEntity_Base> SortedCardPoolList(List<CEntity_Base> DeckCards)
