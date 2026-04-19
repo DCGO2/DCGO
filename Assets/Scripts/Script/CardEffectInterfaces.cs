@@ -87,6 +87,15 @@ public interface IAddSkillEffect
 }
 #endregion
 
+#region Label additional text to appear in Permanent Details
+public interface IAddDetailEffect
+{
+    bool PermanentCondition(Permanent permanent);
+    string GetDetail();//Used to avoid any interactions already built in to effect name
+    bool TriggerEffect();//Unused for now, but could be used to display something on the card to indicate it has gained an additional triggered effect, eg. [When Attacking] Lose 3 Memory
+}
+#endregion
+
 #region "Target card cannot be affected by effects" effect
 public interface ICanNotAffectedEffect
 {

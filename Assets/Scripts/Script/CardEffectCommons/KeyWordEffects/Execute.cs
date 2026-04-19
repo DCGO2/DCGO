@@ -72,12 +72,22 @@ public partial class CardEffectCommons
             #region Delete this Digimon
 
             selectedPermanent.UntilEndAttackEffects.Add(GetCardEffect);
+            selectedPermanent.UntilEndAttackEffects.Add(GetDetailEffect);
 
             ICardEffect GetCardEffect(EffectTiming timing)
             {
                 if (timing == EffectTiming.OnEndAttack)
                 {
                     return PermanentEffectFactory.DeleteSelfEffect(selectedPermanent, activateClass);
+                }
+                return null;
+            }
+
+            ICardEffect GetDetailEffect(EffectTiming timing)
+            {
+                if (timing == EffectTiming.None)
+                {
+                    return PermanentEffectFactory.AddDetailClass(selectedPermanent, "At end of attack, delete this Digimon.", true, activateClass);
                 }
                 return null;
             }
