@@ -102,6 +102,13 @@ namespace DCGO.CardEffects.BT14
                                     cardEffect: activateClass1,
                                     timing: EffectTiming.OnTappedAnyone);
 
+                                CardEffectCommons.AddEffectToPermanent(
+                                    targetPermanent: selectedPermanent,
+                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                    card: card,
+                                    cardEffect: PermanentEffectFactory.AddDetailClass(selectedPermanent, "[All Turns] When this Digimon becomes suspended, lose 2 memory.", true, activateClass),
+                                    timing: EffectTiming.None);
+
                                 string EffectDiscription1()
                                 {
                                     return "[All Turns] When this Digimon becomes suspended, lose 2 memory.";
