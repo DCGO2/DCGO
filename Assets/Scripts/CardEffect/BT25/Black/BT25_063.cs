@@ -10,6 +10,28 @@ namespace DCGO.CardEffects.BT25
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Alternative Digivolve Condition
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("ACCEL");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 0, false, card, null, level: 2));
+            }
+
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsCardName("Missimon");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 0, false, card, null));
+            }
+            #endregion
+
             #region WM/OP Shared
             string SharedEffectName = "Reveal 3, add [Chaosmon] in name or [D-Brigade]/[ACCEL] trait to hand, return rest to top or bot";
 
@@ -30,7 +52,7 @@ namespace DCGO.CardEffects.BT25
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.ContainsCardName("Chaosmon")            
+                return cardSource.ContainsCardName("Chaosmon")
                     || cardSource.EqualsTraits("D-Brigade")
                     || cardSource.EqualsTraits("ACCEL");
             }
