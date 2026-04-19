@@ -34,7 +34,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     public bool ActiveAttack()
     {
-        return State != null && State != AttackState.None;
+        return State != AttackState.None;
     }
 
     public IEnumerator ProcessNextState()
@@ -287,7 +287,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             EffectTiming.OnCounterTiming,
             cardEffect => cardEffect.IsCounterEffect));
 
-        bool HasCounterEffect(List<SkillInfo> skillInfos, SkillInfo skillInfo)
+        static bool HasCounterEffect(List<SkillInfo> skillInfos, SkillInfo skillInfo)
         {
             return skillInfos.Count((skillInfo1) => skillInfo1.CardEffect.IsCounterEffect) >= 1;
         }

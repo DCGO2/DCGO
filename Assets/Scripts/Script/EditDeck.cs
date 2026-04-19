@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 public class EditDeck : MonoBehaviour
 {
+    private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
     [Header("Deck creation object")]
     public GameObject CreateDeckObject;
 
@@ -65,13 +66,6 @@ public class EditDeck : MonoBehaviour
     List<CEntity_Base> _oldDigitamaDeckCards = new List<CEntity_Base>();
     int _oldKeyCardId = -1;
     bool _isFromClipboard = false;
-
-    private void Start()
-    {
-#if !UNITY_EDITOR && UNITY_ANDROID
-        CardPoolScroll.content.GetComponent<GridLayoutGroup>().constraintCount = 5;
-#endif
-    }
 
     void CheckButtonEnabled()
     {
@@ -285,9 +279,8 @@ public class EditDeck : MonoBehaviour
 
         for (int i = 0; i < Opening.instance.deck.selectDeck.deckInfoPrefabParentScroll.content.childCount; i++)
         {
-            CreateNewDeckButton createNewDeckButton = Opening.instance.deck.selectDeck.deckInfoPrefabParentScroll.content.GetChild(i).GetComponent<CreateNewDeckButton>();
-
-            if (createNewDeckButton != null)
+            
+            if (Opening.instance.deck.selectDeck.deckInfoPrefabParentScroll.content.GetChild(i).TryGetComponent<CreateNewDeckButton>(out var createNewDeckButton))
             {
                 createNewDeckButton.CreateNewDeckWayObject.Close_(false);
                 break;
@@ -314,7 +307,7 @@ public class EditDeck : MonoBehaviour
         }
         else
         {
-            ContinuousController.instance.SaveDeckDatas();
+            //ContinuousController.instance.SaveDeckDatas();
             ContinuousController.instance.SaveDeckData(EdittingDeckData);
         }
             #endregion
@@ -347,7 +340,7 @@ public class EditDeck : MonoBehaviour
 
         yield return new WaitUntil(() => DeckScroll.content.childCount == 0);
 
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForSeconds0_1;
 
         CreateDeckObject.SetActive(false);
 
@@ -455,7 +448,7 @@ public class EditDeck : MonoBehaviour
     {
         yield return ContinuousController.instance.StartCoroutine(LoadingObjec.StartLoading("Now Loading"));
 
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForSeconds0_1;
 
         for (int i = 0; i < draggable_CardParent.childCount; i++)
         {
@@ -472,7 +465,7 @@ public class EditDeck : MonoBehaviour
 
         EdittingDeckData = deckData;
 
-        ContinuousController.instance.SaveDeckDatas();
+        //ContinuousController.instance.SaveDeckDatas();
         //ContinuousController.instance.SaveDeckData(EdittingDeckData);
 
         OffDetailCard();
@@ -540,7 +533,7 @@ public class EditDeck : MonoBehaviour
 
         cardDistribution.SetCardDistribution(EdittingDeckData);
 
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForSeconds0_1;
 
         for (int i = 0; i < DeckScroll.content.childCount; i++)
         {
@@ -572,10 +565,8 @@ public class EditDeck : MonoBehaviour
         cardDistribution.Init();
 
         for (int i = 0; i < CardPoolScroll.content.childCount; i++)
-        {
-            CardPrefab_CreateDeck cardPrefab_CreateDeck = CardPoolScroll.content.GetChild(i).GetComponent<CardPrefab_CreateDeck>();
-
-            if (cardPrefab_CreateDeck != null)
+        {            
+            if (CardPoolScroll.content.GetChild(i).TryGetComponent<CardPrefab_CreateDeck>(out var cardPrefab_CreateDeck))
             {
                 CardPoolCardPrefabs_CreateDeck.Add(cardPrefab_CreateDeck);
             }
@@ -627,7 +618,7 @@ public class EditDeck : MonoBehaviour
 
         yield return ContinuousController.instance.StartCoroutine(SetSprittedCardLists());
 
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForSeconds0_1;
 
         DoneSetUp = true;
     }
@@ -1056,10 +1047,8 @@ public class EditDeck : MonoBehaviour
         List<CardPrefab_CreateDeck> cardPrefabs = new List<CardPrefab_CreateDeck>();
 
         for (int i = 0; i < DeckScroll.content.childCount; i++)
-        {
-            CardPrefab_CreateDeck cardPrefab = DeckScroll.content.GetChild(i).GetComponent<CardPrefab_CreateDeck>();
-
-            if (cardPrefab != null)
+        {        
+            if (DeckScroll.content.GetChild(i).TryGetComponent<CardPrefab_CreateDeck>(out var cardPrefab))
             {
                 cardPrefabs.Add(cardPrefab);
 
@@ -1239,10 +1228,8 @@ public class EditDeck : MonoBehaviour
         List<CardPrefab_CreateDeck> cardPrefabs = new List<CardPrefab_CreateDeck>();
 
         for (int i = 0; i < DeckScroll.content.childCount; i++)
-        {
-            CardPrefab_CreateDeck cardPrefab = DeckScroll.content.GetChild(i).GetComponent<CardPrefab_CreateDeck>();
-
-            if (cardPrefab != null)
+        {         
+            if (DeckScroll.content.GetChild(i).TryGetComponent<CardPrefab_CreateDeck>(out var cardPrefab))
             {
                 cardPrefabs.Add(cardPrefab);
             }

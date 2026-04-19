@@ -106837,6 +106837,7 @@ GameObject:
   - component: {fileID: 7827412352956199575}
   - component: {fileID: 7827412352956199570}
   - component: {fileID: 7827412352956199571}
+  - component: {fileID: 7827412352956199576}
   m_Layer: 0
   m_Name: Opening
   m_TagString: Untagged
@@ -106859,6 +106860,20 @@ MonoBehaviour:
   playerInfo: {fileID: 7827412351893259071}
   loadingObject: {fileID: 1378047648}
   UpdateButtonParent: {fileID: 0}
+--- !u!114 &7827412352956199576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7827412352956199574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2a696ce2a233204c9fc6c9d84bf9750, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  URL: 
+  HashTacgs: []
 --- !u!222 &7827412353023664826
 CanvasRenderer:
   m_ObjectHideFlags: 0

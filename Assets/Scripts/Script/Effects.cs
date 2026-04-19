@@ -10,6 +10,20 @@ using TMPro;
 using Cinemachine;
 public class Effects : MonoBehaviour
 {
+    private static WaitForSeconds _waitForSeconds0_05 = new WaitForSeconds(0.05f);
+    private static WaitForSeconds _waitForSeconds0_4 = new WaitForSeconds(0.4f);
+    private static WaitForSeconds _waitForSeconds0_3 = new WaitForSeconds(0.3f);
+    private static WaitForSeconds _waitForSeconds0_17 = new WaitForSeconds(0.17f);
+    private static WaitForSeconds _waitForSeconds0_06 = new WaitForSeconds(0.06f);
+    private static WaitForSeconds _waitForSeconds0_04 = new WaitForSeconds(0.04f);
+    private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
+    private static WaitForSeconds _waitForSeconds0_12 = new WaitForSeconds(0.12f);
+    private static WaitForSeconds _waitForSeconds0_16 = new WaitForSeconds(0.16f);
+    private static WaitForSeconds _waitForSeconds0_48 = new WaitForSeconds(0.48f);
+    private static WaitForSeconds _waitForSeconds2_5 = new WaitForSeconds(2.5f);
+    private static WaitForSeconds _waitForSeconds0_25 = new WaitForSeconds(0.25f);
+    private static WaitForSeconds _waitForSeconds5 = new WaitForSeconds(5f);
+    private static WaitForSeconds _waitForSeconds0_07 = new WaitForSeconds(0.07f);
     [SerializeField] Transform effectParent;
     public void Init()
     {
@@ -151,7 +165,7 @@ public class Effects : MonoBehaviour
 
         end = false;
 
-        yield return new WaitForSeconds(0.07f);
+        yield return _waitForSeconds0_07;
 
         //card.Owner.HandCards.Remove(card);
 
@@ -176,7 +190,7 @@ public class Effects : MonoBehaviour
     #region エフェクトを削除する
     public static IEnumerator DeleteCoroutine(GameObject effect, FieldPermanentCard fieldPermanentCard)
     {
-        yield return new WaitForSeconds(5f);
+        yield return _waitForSeconds5;
 
         Destroy(effect);
 
@@ -205,7 +219,7 @@ public class Effects : MonoBehaviour
 
             permanent.ShowingPermanentCard.OnUsingSkillEffect();
 
-            yield return new WaitForSeconds(0.48f);
+            yield return _waitForSeconds0_48;
         }
     }
     #endregion
@@ -274,7 +288,7 @@ public class Effects : MonoBehaviour
             yield return new WaitWhile(() => !end);
             end = false;
 
-            yield return new WaitForSeconds(0.25f);
+            yield return _waitForSeconds0_25;
 
             sequence = DOTween.Sequence();
 
@@ -358,7 +372,7 @@ public class Effects : MonoBehaviour
                 yield return new WaitWhile(() => !end);
                 end = false;
 
-                yield return new WaitForSeconds(0.16f);
+                yield return _waitForSeconds0_16;
 
                 sequence = DOTween.Sequence();
 
@@ -429,7 +443,7 @@ public class Effects : MonoBehaviour
                 end = false;
 
                 cardSource.ShowingHandCard.GetComponent<RectTransform>().pivot = new Vector2(0.5f, targetPivotY);
-                yield return new WaitForSeconds(0.25f);
+                yield return _waitForSeconds0_25;
 
                 if (cardSource.Owner.HandTransform.GetComponent<HandContoller>() != null)
                 {
@@ -591,7 +605,7 @@ public class Effects : MonoBehaviour
             end = false;
         }
 
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForSeconds0_1;
     }
     #endregion
 
@@ -720,7 +734,7 @@ public class Effects : MonoBehaviour
                 end = false;
             }
 
-            yield return new WaitForSeconds(0.12f);
+            yield return _waitForSeconds0_12;
 
             targetFieldPermanentCard.ShowPermanentData(true);
             targetFieldPermanentCard.Parent.SetActive(true);
@@ -802,7 +816,7 @@ public class Effects : MonoBehaviour
 
                     Destroy(fieldPermanentCard.gameObject);
 
-                    yield return new WaitForSeconds(0.1f);
+                    yield return _waitForSeconds0_1;
                 }
             }
         }
@@ -996,7 +1010,7 @@ public class Effects : MonoBehaviour
 
     public IEnumerator HideShowCard()
     {
-        yield return new WaitForSeconds(2.5f);
+        yield return _waitForSeconds2_5;
 
         float timer = 0f;
 
@@ -1120,7 +1134,7 @@ public class Effects : MonoBehaviour
 
     public IEnumerator HideShowCard2()
     {
-        yield return new WaitForSeconds(2.5f);
+        yield return _waitForSeconds2_5;
 
         float timer = 0f;
 
@@ -1250,15 +1264,15 @@ public class Effects : MonoBehaviour
             StartCoroutine(DeleteCoroutine(effect2, null));
             #endregion
 
-            yield return new WaitForSeconds(0.04f);
+            yield return _waitForSeconds0_04;
         }
 
-        yield return new WaitForSeconds(0.05f);
+        yield return _waitForSeconds0_05;
 
         //縮小して上に上がる
         StartCoroutine(ShrinkUpUseHandCard(ShowUseHandCard));
 
-        yield return new WaitForSeconds(0.06f);
+        yield return _waitForSeconds0_06;
 
     }
     #endregion
@@ -1349,7 +1363,7 @@ public class Effects : MonoBehaviour
 
         GameObject effect2 = Instantiate(ShowUseHandCardEffectPrefab, ShowUseHandCardParent);
         effect2.transform.SetSiblingIndex(0);
-        effect2.transform.localRotation = Quaternion.EulerAngles(new Vector3(0, 90, 0));
+        effect2.transform.localRotation = Quaternion.Euler(new Vector3(0, 90, 0));
         StartCoroutine(DeleteCoroutine(effect2, null));
         #endregion
 
@@ -1419,7 +1433,7 @@ public class Effects : MonoBehaviour
         end = false;
         #endregion
 
-        yield return new WaitForSeconds(0.16f);
+        yield return _waitForSeconds0_16;
     }
     #endregion
 
@@ -1457,7 +1471,7 @@ public class Effects : MonoBehaviour
 
                     ContinuousController.instance.PlaySE(BuffSE);
 
-                    yield return new WaitForSeconds(0.1f);
+                    yield return _waitForSeconds0_1;
                 }
             }
         }
@@ -1500,12 +1514,12 @@ public class Effects : MonoBehaviour
 
                     if (permanent.DP <= 0)
                     {
-                        yield return new WaitForSeconds(0.4f);
+                        yield return _waitForSeconds0_4;
                     }
 
                     else
                     {
-                        yield return new WaitForSeconds(0.1f);
+                        yield return _waitForSeconds0_1;
                     }
                 }
             }
@@ -1548,7 +1562,7 @@ public class Effects : MonoBehaviour
             ContinuousController.instance.PlaySE(DigiXrosSelectCardEffectSE);
         }
 
-        yield return new WaitForSeconds(0.3f);
+        yield return _waitForSeconds0_3;
     }
     #endregion
 
@@ -1587,7 +1601,7 @@ public class Effects : MonoBehaviour
             ContinuousController.instance.PlaySE(AssemblySelectCardEffectSE);
         }
 
-        yield return new WaitForSeconds(0.3f);
+        yield return _waitForSeconds0_3;
     }
     #endregion
 
@@ -1654,7 +1668,7 @@ public class Effects : MonoBehaviour
     {
         ContinuousController.instance.StartCoroutine(player.securityObject.securityBreakGlass.BreakIenumerator());
 
-        yield return new WaitForSeconds(0.06f);
+        yield return _waitForSeconds0_06;
 
         GameObject effect2 = Instantiate(BlueEvolutionEffect, effectParent);
         effect2.transform.position = new Vector3(player.securityObject.securityBreakGlass.transform.position.x, player.securityObject.securityBreakGlass.transform.position.y, player.securityObject.securityBreakGlass.transform.position.z);
@@ -1672,7 +1686,7 @@ public class Effects : MonoBehaviour
         effect2.transform.localScale = new Vector3(5, 1, 5);
         StartCoroutine(DeleteCoroutine(effect2, null));
 
-        yield return new WaitForSeconds(0.17f);
+        yield return _waitForSeconds0_17;
     }
     #endregion
 
@@ -1703,11 +1717,10 @@ public class Effects : MonoBehaviour
         BreakGlass permanetBreakGlass = Instantiate(permanetBreakGlassPrefab, fieldPermanentCard.transform.parent);
 
         //場所を指定
-        permanetBreakGlass.transform.localPosition = fieldPermanentCard.transform.localPosition;
-        permanetBreakGlass.transform.localRotation = Quaternion.Euler(
+        permanetBreakGlass.transform.SetLocalPositionAndRotation(fieldPermanentCard.transform.localPosition, Quaternion.Euler(
             fieldPermanentCard.transform.localRotation.eulerAngles.x + 180,
             fieldPermanentCard.transform.localRotation.eulerAngles.y,
-            fieldPermanentCard.transform.localRotation.eulerAngles.z * -1);
+            fieldPermanentCard.transform.localRotation.eulerAngles.z * -1));
         permanetBreakGlass.transform.localScale = new Vector3(54, 54, 1);
 
         //ガラスを初期化
@@ -1781,10 +1794,6 @@ public class Effects : MonoBehaviour
     {
         ContinuousController.instance.PlaySE(GManager.instance.ShowPlayCardSE);
 
-        bool end = false;
-
-        var sequence = DOTween.Sequence();
-
         #region 白いカードが回転
         ShowUseHandCard.gameObject.SetActive(true);
         ShowUseHandCard.Outline_Select.SetActive(false);
@@ -1809,10 +1818,8 @@ public class Effects : MonoBehaviour
         ShowUseHandCard.ShowDP();
 
         float animTime = 0.2f;
-
-        Animator animator = ShowUseHandCard.gameObject.GetComponent<Animator>();
-
-        if (animator == null)
+   
+        if (!ShowUseHandCard.gameObject.TryGetComponent<Animator>(out var animator))
         {
             animator = ShowUseHandCard.gameObject.AddComponent<Animator>();
         }
@@ -1848,13 +1855,13 @@ public class Effects : MonoBehaviour
 
         GameObject effect2 = Instantiate(ShowUseHandCardEffectPrefab, ShowUseHandCardParent);
         effect2.transform.SetSiblingIndex(0);
-        effect2.transform.localRotation = Quaternion.EulerAngles(new Vector3(0, 90, 0));
+        effect2.transform.localRotation = Quaternion.Euler(new Vector3(0, 90, 0));
         StartCoroutine(DeleteCoroutine(effect2, null));
         #endregion
 
         #endregion
 
-        yield return new WaitForSeconds(0.17f);
+        yield return _waitForSeconds0_17;
     }
     #endregion
 
@@ -1954,8 +1961,7 @@ public class Effects : MonoBehaviour
         BreakGlass permanetBreakGlass = Instantiate(permanetBreakGlassPrefab, ShowUseHandCard.transform.parent);
 
         //場所を指定
-        permanetBreakGlass.transform.localPosition = ShowUseHandCard.transform.localPosition;
-        permanetBreakGlass.transform.localRotation = Quaternion.Euler(ShowUseHandCard.transform.localRotation.eulerAngles.x + 180, ShowUseHandCard.transform.localRotation.eulerAngles.y, ShowUseHandCard.transform.localRotation.eulerAngles.z * -1);
+        permanetBreakGlass.transform.SetLocalPositionAndRotation(ShowUseHandCard.transform.localPosition, Quaternion.Euler(ShowUseHandCard.transform.localRotation.eulerAngles.x + 180, ShowUseHandCard.transform.localRotation.eulerAngles.y, ShowUseHandCard.transform.localRotation.eulerAngles.z * -1));
         permanetBreakGlass.transform.localScale = new Vector3(30.1f, 30.1f, 1);
 
         //ガラスを初期化
@@ -2146,7 +2152,7 @@ public class Effects : MonoBehaviour
                 sequence.Kill();
             }
 
-            yield return new WaitForSeconds(0.1f);
+            yield return _waitForSeconds0_1;
 
             for (int i = 0; i < BattleAnimationObjects.Count; i++)
             {
@@ -2237,7 +2243,7 @@ public class Effects : MonoBehaviour
 
                     end = false;
 
-                    yield return new WaitForSeconds(0.17f);
+                    yield return _waitForSeconds0_17;
 
                     ShowUseHandCard.Outline_Select.SetActive(false);
 
@@ -2299,7 +2305,7 @@ public class Effects : MonoBehaviour
 
                 sequence.Kill();
 
-                yield return new WaitForSeconds(0.1f);
+                yield return _waitForSeconds0_1;
             }
         }
     }

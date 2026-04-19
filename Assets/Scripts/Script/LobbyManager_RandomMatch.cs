@@ -125,8 +125,6 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         MessageText.text = "";
         TimeText.gameObject.SetActive(true);
         StartCoroutine(TimeCountUp());
-        timer = 0;
-        count = true;
 
         if (PhotonNetwork.InLobby)
         {
@@ -337,24 +335,26 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         yield return new WaitWhile(() => !PhotonNetwork.InLobby);
 
         //Setting up the room to be created
-        RoomOptions roomOptions = new RoomOptions();
-        roomOptions.IsVisible = true;   //Make the room visible in the lobby.
-        roomOptions.IsOpen = true;      //Allow other players to enter the room
-        roomOptions.PublishUserId = true;
-
-        roomOptions.MaxPlayers = 2;
-
-        //To display room creator in room custom properties, store creator's name
-        roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
+        RoomOptions roomOptions = new RoomOptions
         {
-            { "RoomCreator",PhotonNetwork.NickName },
+            IsVisible = true,   //Make the room visible in the lobby.
+            IsOpen = true,      //Allow other players to enter the room
+            PublishUserId = true,
 
-        };
+            MaxPlayers = 2,
 
-        //Display custom property information in the lobby
-        roomOptions.CustomRoomPropertiesForLobby = new string[]
-        {
-            "RoomCreator",
+            //To display room creator in room custom properties, store creator's name
+            CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
+            {
+                { "RoomCreator",PhotonNetwork.NickName },
+
+            },
+
+            //Display custom property information in the lobby
+            CustomRoomPropertiesForLobby = new string[]
+            {
+                "RoomCreator",
+            }
         };
 
         string RoomName = StringUtils.GeneratePassword_AlpahabetNum(8);
@@ -465,8 +465,6 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         endLoadingText = true;
     }
 
-    bool count = true;
-    float timer = 0;
     Button ReturnButtonButton;
     private void Start()
     {

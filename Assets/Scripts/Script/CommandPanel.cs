@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,12 +16,10 @@ public class CommandPanel : MonoBehaviour
     [Header("É{É^Éìêe")]
     [SerializeField] Transform buttonParent;
 
-    bool first = false;
     private void Start()
     {
         if (!false)
         {
-            first = true;
 
 #if !UNITY_EDITOR && UNITY_ANDROID
             CommandPanelObject.transform.localScale *= 1.5f;

@@ -27,6 +27,8 @@ public class EvolutionEffectObject : MonoBehaviour
         {
             if (!ContinuousController.instance.showCutInAnimation)
             {
+                yield return new WaitForSeconds(animTime);
+
                 yield break;
             }
         }
