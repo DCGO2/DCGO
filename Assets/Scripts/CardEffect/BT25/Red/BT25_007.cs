@@ -111,11 +111,11 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 digimon with less then 3K DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription() => "[When Linking] Delete 1 of your opponent's Digimon with 3000 DP or less.";
+                string EffectDescription() => "[When Linking] Delete 1 of your opponent's Digimon with 3000 DP or less.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
