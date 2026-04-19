@@ -90,9 +90,9 @@ public class SpellRestoration
 
             return restoreData;
         }
-        catch (System.FormatException exception)
+        catch (System.FormatException)
         {
-            return default(T);
+            return default;
         }
     }
 }

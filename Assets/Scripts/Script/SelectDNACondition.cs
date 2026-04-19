@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System;
-using System.Linq;
 
 
 public class SelectDNACondition : MonoBehaviourPunCallbacks
@@ -17,7 +16,6 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
         _targetDNA = targetDNA;
         _selectDNACoroutine = SelectDNACoroutine;
         _notDoSync = false;
-        _isDigivolutionCost = false;
     }
 
     Player _selectPlayer = null;
@@ -27,7 +25,6 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
     public int _selectedCount = 0;
     public bool _endSelect = false;
     bool _notDoSync = false;
-    bool _isDigivolutionCost = false;
 
     public void ResetSelectDNAConditionClass()
     {
