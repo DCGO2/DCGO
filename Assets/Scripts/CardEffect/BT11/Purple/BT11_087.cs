@@ -361,6 +361,7 @@ namespace DCGO.CardEffects.BT11
                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
                             activateClass1.SetEffectSourcePermanent(selectedPermanent);
                             selectedPermanent.UntilEachTurnEndEffects.Add(GetCardEffect);
+                            selectedPermanent.UntilEachTurnEndEffects.Add(GetDetailEffect);
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
 
@@ -419,6 +420,15 @@ namespace DCGO.CardEffects.BT11
                                     return activateClass1;
                                 }
 
+                                return null;
+                            }
+
+                            ICardEffect GetDetailEffect(EffectTiming timing)
+                            {
+                                if (timing == EffectTiming.None)
+                                {
+                                    return PermanentEffectFactory.AddDetailClass(selectedPermanent, "[When Attacking] Lose 3 Memory", true, activateClass);
+                                }
                                 return null;
                             }
                         }
