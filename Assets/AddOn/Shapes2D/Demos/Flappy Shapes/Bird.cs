@@ -4,7 +4,9 @@
 	using System.Collections;
 	using UnityEngine.EventSystems;
 
-	public class Bird : MonoBehaviour {
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(Animator))]
+    public class Bird : MonoBehaviour {
 
 		Rigidbody2D rb;
 		public float force = 8;

@@ -26,10 +26,6 @@ namespace DCGO.CardEffects.BT25
 
             bool RootCondition(SelectCardEffect.Root root) => true;
 
-            bool isUpDown() => true;
-
-            int reducedCost = 1;
-
             #endregion
 
             #region Reduce Link Cost

@@ -1,10 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
-using System.Threading.Tasks;
-using System;
 public class PatchNotes : OffAnimation
 {
     [SerializeField] Animator _anim;
@@ -13,7 +9,6 @@ public class PatchNotes : OffAnimation
     [SerializeField][TextArea] string _text_ENG;
     [SerializeField][TextArea] string _text_JPN;
     [SerializeField] ScrollRect _scroll;
-    bool _isOpen = false;
 
     public void ReportBug()
     {
@@ -28,7 +23,6 @@ public class PatchNotes : OffAnimation
     public IEnumerator Open()
     {
         _verText.text = $"Patch Notes ver{ContinuousController.instance.GameVerString}";
-        _isOpen = true;
         gameObject.SetActive(true);
         _anim.SetInteger("Open", 1);
         _anim.SetInteger("Close", 0);
@@ -48,7 +42,6 @@ public class PatchNotes : OffAnimation
 
     public void ClosePatchNotesPanel()
     {
-        _isOpen = false;
         bool playSE = false;
 
         if (gameObject.activeSelf)
