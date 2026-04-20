@@ -373,8 +373,7 @@ namespace DCGO.CardEffects.BT25
             {
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1, isInheritedEffect: false, card: card, condition: null, isLinkedEffect: true));
 
-                // Need Reboot isLinkedEffect
-                //cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: null, isLinkedEffect: true));
             }
             #endregion
 
