@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using System;
-using System.Linq;
-using UnityEngine;
+using System.Collections;
 
 public partial class CardEffectFactory
 {
     #region Static effect of [Reboot] on oneself
-    public static RebootClass RebootSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition)
+    public static RebootClass RebootSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, bool isLinkedEffect = false)
     {
         bool PermanentCondition(Permanent permanent) => permanent == card.PermanentOfThisCard();
 
@@ -24,12 +21,12 @@ public partial class CardEffectFactory
             return false;
         }
 
-        return RebootStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition);
+        return RebootStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition, isLinkedEffect: isLinkedEffect);
     }
     #endregion
 
     #region Static effect of [Reboot]
-    public static RebootClass RebootStaticEffect(Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition)
+    public static RebootClass RebootStaticEffect(Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition, bool isLinkedEffect)
     {
         string effectName = "Reboot";
 
@@ -40,6 +37,11 @@ public partial class CardEffectFactory
         if (isInheritedEffect)
         {
             rebootClass.SetIsInheritedEffect(true);
+        }
+
+        if (isLinkedEffect)
+        {
+            rebootClass.SetIsLinkedEffect(true);
         }
 
         bool CanUseCondition(Hashtable hashtable)
