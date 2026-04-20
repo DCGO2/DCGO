@@ -1,0 +1,489 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+// Divine Arms Version (Omega)
+namespace DCGO.CardEffects.BT25
+{
+    public class BT25_101 : CEntity_Effect
+    {
+        public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+        {
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+            #region Ignore Color Requirement
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.UseRequirements(card, CardCondition));
+
+                bool CardCondition(CardSource cardSource)
+                {
+                    return cardSource.HasTSTraits;
+                }
+            }
+            #endregion
+
+            #region Security
+            if (timing == EffectTiming.SecuritySkill)
+            {
+                CardEffectCommons.AddActivateMainOptionSecurityEffect(
+                    card: card,
+                    cardEffects: ref cardEffects,
+                    effectName: "[Security] By trashing 1 [TS] trait card from your hand, <Draw 2>, After you may link this card or 1 [TS] trait card from your trash to 1 of your Digimon on the field without paying the cost.");
+            }
+            #endregion
+
+            #region Main
+            if (timing == EffectTiming.OptionSkill)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("By trashing 1 [TS] trait card from hand, Draw 2, then you may link this card or 1 [TS] trait card in trash to 1 of your digimon without paying cost.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[Main] By trashing 1 [TS] trait card from your hand, <Draw 2> After, you may link this card or 1 [TS] trait card from your trash to 1 of your Digimon on the field without paying the cost.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
+                }
+
+                bool IsTsTraitCard(CardSource cardSource)
+                {
+                    return cardSource.HasTSTraits;
+                }
+
+                bool CanLinkThisCardCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && CanLink(card, permanent);
+                }
+
+                bool CanLinkTrashCardCondition(CardSource cardSource)
+                {
+                    return cardSource.HasTSTraits
+                        && CardEffectCommons.HasMatchConditionOwnersPermanent(cardSource, perm => CanLink(cardSource, perm));
+                }
+
+                bool CanLink(CardSource cardSource, Permanent permanent)
+                {
+                    return cardSource.CanLinkToTargetPermanent(permanent, false, true);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsTsTraitCard))
+                    {
+                        CardSource selectedCardToTrash = null;
+
+                        #region Select Hand Card to Trash
+
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, IsTsTraitCard));
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsTsTraitCard,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCardToTrash = cardSource;
+                            yield return null;
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                        #endregion
+
+                        if (selectedCardToTrash != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashHandAndProcessAccordingToResult(
+                                player: card.Owner,
+                                hashtable: hashtable,
+                                cardToTrash: selectedCardToTrash,
+                                successProcess: SuccessProcess,
+                                failureProcess: null
+                            ));
+
+                            IEnumerator SuccessProcess(CardSource cardSource)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
+
+                                bool canSelectThisCard = CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanLinkThisCardCondition);
+                                bool canSelectTrashCard = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanLinkTrashCardCondition);
+
+                                if (canSelectThisCard || canSelectTrashCard)
+                                {
+                                    #region Setup Location Selection
+                                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+
+                                    if (canSelectThisCard) selectionElements.Add(new(message: $"This Card", value: 1, spriteIndex: 0));
+                                    if (canSelectTrashCard) selectionElements.Add(new(message: $"[TS] Trait card from trash", value: 2, spriteIndex: 0));
+                                    selectionElements.Add(new(message: $"None", value: 3, spriteIndex: 1));
+
+                                    string selectPlayerMessage = "Will you link a card to 1 digimon on your field?";
+                                    string notSelectPlayerMessage = "The opponent is choosing to link a card to 1 digimon on their field.";
+
+                                    GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                                    #endregion
+
+                                    bool doLink = GManager.instance.userSelectionManager.SelectedIntValue != 3;
+                                    bool selectThisCard = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+
+                                    if (doLink)
+                                    {
+                                        Permanent selectedPermament = null;
+                                        CardSource selectedCardToLink = null;
+
+                                        IEnumerator SelectPermamentToLinkToCoroutine(Permanent permanent)
+                                        {
+                                            selectedPermament = permanent;
+                                            yield return null;
+                                        }
+
+                                        if (selectThisCard)
+                                        {
+                                            selectedCardToLink = card;
+                                            #region Select Digimon that will gain this card as a link
+                                            if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanLinkThisCardCondition) > 1)
+                                            {
+                                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanLinkThisCardCondition));
+
+                                                selectPermanentEffect.SetUp(
+                                                    selectPlayer: card.Owner,
+                                                    canTargetCondition: CanLinkThisCardCondition,
+                                                    canTargetCondition_ByPreSelecetedList: null,
+                                                    canEndSelectCondition: null,
+                                                    maxCount: maxCount,
+                                                    canNoSelect: false,
+                                                    canEndNotMax: false,
+                                                    selectPermanentCoroutine: SelectPermamentToLinkToCoroutine,
+                                                    afterSelectPermanentCoroutine: null,
+                                                    mode: SelectPermanentEffect.Mode.Custom,
+                                                    cardEffect: activateClass);
+
+                                                selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to gain link.", "The opponent is selecting 1 Digimon to gain link.");
+                                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                            }
+                                            else selectedPermament = card.Owner.GetBattleAreaPermanents().FirstOrDefault(per => CanLink(card, per));
+                                            #endregion
+                                        }
+                                        else
+                                        {
+                                            IEnumerator SelectCardToLinkCoroutine(CardSource cardSource)
+                                            {
+                                                selectedCardToLink = cardSource;
+                                                yield return null;
+                                            }
+
+                                            #region Select Trash Card to Link
+                                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                            selectCardEffect.SetUp(
+                                                canTargetCondition: IsTsTraitCard,
+                                                canTargetCondition_ByPreSelecetedList: null,
+                                                canEndSelectCondition: null,
+                                                canNoSelect: () => true,
+                                                selectCardCoroutine: SelectCardToLinkCoroutine,
+                                                afterSelectCardCoroutine: null,
+                                                message: "Select 1 [TS] trait card to link",
+                                                maxCount: 1,
+                                                canEndNotMax: false,
+                                                isShowOpponent: true,
+                                                mode: SelectCardEffect.Mode.Custom,
+                                                root: SelectCardEffect.Root.Trash,
+                                                customRootCardList: null,
+                                                canLookReverseCard: true,
+                                                selectPlayer: card.Owner,
+                                                cardEffect: activateClass);
+
+                                            selectCardEffect.SetUpCustomMessage("Select 1 [TS] trait card from your trash to link.", "The opponent is selecting 1 [TS] trait card from their trash to link.");
+                                            selectCardEffect.SetUpCustomMessage_ShowCard("Selected card");
+                                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                                            #endregion
+
+                                            #region Select Digimon that will gain selected card as link
+                                            if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, perm => CanLink(selectedCardToLink, perm)) > 1)
+                                            {
+                                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, perm => CanLink(selectedCardToLink, perm)));
+
+                                                selectPermanentEffect.SetUp(
+                                                    selectPlayer: card.Owner,
+                                                    canTargetCondition: CanLinkThisCardCondition,
+                                                    canTargetCondition_ByPreSelecetedList: null,
+                                                    canEndSelectCondition: null,
+                                                    maxCount: maxCount,
+                                                    canNoSelect: false,
+                                                    canEndNotMax: false,
+                                                    selectPermanentCoroutine: SelectPermamentToLinkToCoroutine,
+                                                    afterSelectPermanentCoroutine: null,
+                                                    mode: SelectPermanentEffect.Mode.Custom,
+                                                    cardEffect: activateClass);
+
+                                                selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to gain link.", "The opponent is selecting 1 Digimon to gain link.");
+                                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                            }
+                                            else selectedPermament = card.Owner.GetBattleAreaPermanents().FirstOrDefault(per => CanLink(selectedCardToLink, per));
+                                            #endregion
+                                        }
+
+                                        if (selectedPermament != null && selectedCardToLink != null) yield return ContinuousController.instance.StartCoroutine(selectedPermament.AddLinkCard(selectedCardToLink, activateClass));
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    bool CanSelectPlayCondition(CardSource cardSource)
+                    {
+                        return (cardSource.IsDigimon
+                                || cardSource.IsTamer)
+                            && cardSource.HasPlayCost
+                            && cardSource.EqualsTraits("BEATBREAK")
+                            && cardSource.GetCostItself <= 4
+                            && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
+                    }
+
+                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectPlayCondition);
+                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectPlayCondition);
+
+                    if (canSelectHand || canSelectTrash)
+                    {
+                        #region Setup Location Selection
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+                        if (canSelectHand)
+                        {
+                            selectionElements.Add(new(message: $"From hand", value: 1, spriteIndex: 0));
+                        }
+                        if (canSelectTrash)
+                        {
+                            selectionElements.Add(new(message: $"From trash", value: 2, spriteIndex: 0));
+                        }
+                        selectionElements.Add(new(message: $"Do not play", value: 3, spriteIndex: 1));
+
+                        string selectPlayerMessage = "From which area do you select a card?";
+                        string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
+
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                        #endregion
+
+                        bool doPlay = GManager.instance.userSelectionManager.SelectedIntValue != 3;
+                        bool fromHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+
+                        if (doPlay)
+                        {
+                            #region Hand/Trash Card Selection & Play
+                            if (fromHand)
+                            {
+                                SelectHandEffect selectHandEffect2 = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                selectHandEffect2.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectPlayCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: true,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    selectCardCoroutine: null,
+                                    afterSelectCardCoroutine: null,
+                                    mode: SelectHandEffect.Mode.PlayForFree,
+                                    cardEffect: activateClass);
+
+                                yield return StartCoroutine(selectHandEffect2.Activate());
+                            }
+                            else
+                            {
+                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                selectCardEffect.SetUp(
+                                    canTargetCondition: CanSelectPlayCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => true,
+                                    selectCardCoroutine: null,
+                                    afterSelectCardCoroutine: null,
+                                    message: "Select 1 card to play.",
+                                    maxCount: 1,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.PlayForFree,
+                                    root: SelectCardEffect.Root.Trash,
+                                    customRootCardList: null,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
+
+                                yield return StartCoroutine(selectCardEffect.Activate());
+                            }
+                            #endregion
+                        }
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
+                }
+            }
+            #endregion
+
+            #region Link Effects
+
+            #region Link Condition
+
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsCardName("Vulcanusmon");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 3, card: card));
+            }
+
+            #endregion
+
+            #region Link
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
+            }
+            #endregion
+
+            #region Sec Atk +1/Reboot
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1, isInheritedEffect: false, card: card, condition: null, isLinkedEffect: true));
+
+                // Need Reboot isLinkedEffect
+                //cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
+            #region All Turns
+
+            if (timing == EffectTiming.WhenRemoveField)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Trash 1 link card to not leave battle field", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetHashString("BT25-101-AT");
+                activateClass.SetIsLinkedEffect(true);
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[All Turns] When this [Vulcanusmon] would leave the battle area, by trashing 1 of its link cards, it doesn't leave.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistLinked(card) &&
+                           CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card) &&
+                           card.PermanentOfThisCard().TopCard.EqualsCardName("Vulcanusmon");
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistLinked(card) &&
+                           !card.PermanentOfThisCard().HasNoLinkCards;
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return true;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    CardSource selectedLinkCard = null;
+                    Permanent thisPermanent = card.PermanentOfThisCard();
+
+                    #region Select Link Card to Trash
+
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: SelectCardCoroutine,
+                                message: "Select 1 link card to trash.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: card.PermanentOfThisCard().LinkedCards,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                    IEnumerator SelectCardCoroutine(List<CardSource> cardSources)
+                    {
+                        if (cardSources.Count > 0)
+                        {
+                            selectedLinkCard = cardSources[0];
+                            yield return null;
+                        }
+                        yield return null;
+                    }
+
+                    selectCardEffect.SetUpCustomMessage("Select 1 link card to trash.", "The opponent is selecting 1 link card to trash.");
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                    #endregion
+
+                    if (selectedLinkCard != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashLinkCardsAndProcessAccordingToResult(
+                            targetPermanent: thisPermanent,
+                            targetLinkCards: new List<CardSource>() { selectedLinkCard },
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess,
+                            failureProcess: null));
+
+                        IEnumerator SuccessProcess(List<CardSource> cardSources)
+                        {
+                            card.PermanentOfThisCard().willBeRemoveField = false;
+
+                            card.PermanentOfThisCard().HideDeleteEffect();
+                            card.PermanentOfThisCard().HideHandBounceEffect();
+                            card.PermanentOfThisCard().HideDeckBounceEffect();
+                            card.PermanentOfThisCard().HideWillRemoveFieldEffect();
+
+                            yield return null;
+                        }
+                    }
+
+                }
+            }
+
+            #endregion
+
+            #endregion
+
+            return cardEffects;
+        }
+    }
+}
