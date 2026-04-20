@@ -614,6 +614,31 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Trash Hand card and the effect determines whether the security were trashed or not
+
+    public static IEnumerator TrashHandAndProcessAccordingToResult(Player player, Hashtable hashtable, CardSource cardToTrash, Func<CardSource, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
+    {
+        IDiscardHand discardHand = new IDiscardHand(cardToTrash, hashtable);
+        yield return ContinuousController.instance.StartCoroutine(discardHand.Discard());
+
+        if (discardHand.discarded)
+        {
+            if (successProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(successProcess(cardToTrash));
+            }
+        }
+        else
+        {
+            if (failureProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(failureProcess());
+            }
+        }
+    }
+
+    #endregion
+
     #region Place in security with callbacks for success or failure
     public static IEnumerator PlacePermanentInSecurityAndProcessAccordingToResult(Permanent targetPermanent, ICardEffect activateClass, bool toTop, Func<CardSource, IEnumerator> successProcess, Func<IEnumerator> failureProcess = null, bool isFaceUp = false)
     {
