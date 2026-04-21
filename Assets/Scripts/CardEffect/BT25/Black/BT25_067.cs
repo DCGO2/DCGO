@@ -58,9 +58,8 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanSelectCardToDigivolveInto(CardSource cardSource)
                 {
-                    return (cardSource.EqualsTraits("D-Brigade")
-                            || cardSource.EqualsTraits("ACCEL"))
-                        && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass);
+                    return cardSource.EqualsTraits("D-Brigade")
+                            || cardSource.EqualsTraits("ACCEL");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
