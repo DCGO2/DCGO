@@ -13,7 +13,6 @@ namespace DCGO.CardEffects.EX11
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Name Rule
-
             if (timing == EffectTiming.None)
             {
                 ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
@@ -36,29 +35,34 @@ namespace DCGO.CardEffects.EX11
                     return CardNames;
                 }
             }
-
             #endregion
 
             #region Shared OP / SOYMP
-
             string SharedEffectName = "Trash 1 [Vemmon] in text to <Draw 1> and gain 1 memory";
+
+            CardEffectFactory.ActivateClassesForSharedEffects
+            (ref cardEffects, timing, card,
+                SharedEffectName,
+                SharedActivateCoroutine,
+                SharedEffectDescription,
+                additionalActivateCondition: AdditionalActivateCondition,
+                optional: false,
+                isSkippable: true,
+                maxCountPerTurn: -1,
+                onPlay: true,
+                startOfYourMainPhase: true);
 
             string SharedEffectDescription(string tag) => $"[{tag}] By trashing 1 card with [Vemmon] in its text from your hand, <Draw 1> and gain 1 memory.";
 
-            bool SharedCanActivateCondition(Hashtable hashtable)
+            bool AdditionalActivateCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card)
-                    && card.Owner.HandCards.Count(HasVemmonArchetype) >= 1;
+                return card.Owner.HandCards.Count(HasVemmonArchetype) >= 1;
             }
 
             bool HasVemmonArchetype(CardSource cardSource) => cardSource.HasText("Vemmon");
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                bool discarded = false;
-
-                int discardCount = 1;
-
                 SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                 selectHandEffect.SetUp(
@@ -66,7 +70,7 @@ namespace DCGO.CardEffects.EX11
                     canTargetCondition: HasVemmonArchetype,
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
-                    maxCount: discardCount,
+                    maxCount: 1,
                     canNoSelect: true,
                     canEndNotMax: false,
                     isShowOpponent: true,
@@ -83,50 +87,10 @@ namespace DCGO.CardEffects.EX11
                 {
                     if (cardSources.Count >= 1)
                     {
-                        discarded = true;
-
-                        yield return null;
+                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                     }
-                }
-
-                if (discarded)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                }
-            }
-
-            #endregion
-
-            #region Start of your Main Phase
-            if (timing == EffectTiming.OnStartMainPhase)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("Start of Your Main Phase"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.IsOwnerTurn(card);
-                }
-            }
-            #endregion
-
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
+                }               
             }
             #endregion
 
@@ -165,27 +129,27 @@ namespace DCGO.CardEffects.EX11
 
                     if (card.Owner.LibraryCards.Count >= 1)
                     {
-                        List<Permanent> playedPermanents = new List<Permanent>(); // everything played
+                        List<Permanent> playedPermanents = new List<Permanent>();
 
                         foreach (Hashtable hash in CardEffectCommons.GetHashtablesFromHashtable(hashtable))
                         {
                             playedPermanents.Add(CardEffectCommons.GetPermanentFromHashtable(hash));
                         }
 
-                        List<Permanent> targetPermanents = playedPermanents.Filter(PermanentCondition); // everything played with vemmon in text
+                        List<Permanent> targetPermanents = playedPermanents.Filter(PermanentCondition);
 
-                        List<CardSource> selectedCards = new List<CardSource>(); // revealed vemmon
+                        List<CardSource> selectedCards = new List<CardSource>();
 
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, targetPermanents.Contains)) // if vemmon in text played is still in battle area (not dead to ruin mode), otherwise just reveal and trash
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, targetPermanents.Contains))
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
                                 revealCount: 2,
                                 simplifiedSelectCardCondition:
                                 new SimplifiedSelectCardConditionClass(
-                                        canTargetCondition: cardSource => cardSource.EqualsCardName("Vemmon"), // issue is not here, stop changing it me
+                                        canTargetCondition: cardSource => cardSource.EqualsCardName("Vemmon"),
                                         message: "",
                                         mode: SelectCardEffect.Mode.Custom,
-                                        maxCount: -1, // this does not matter either
+                                        maxCount: -1,
                                         selectCardCoroutine: SelectCardCoroutine),
                                 remainingCardsPlace: RemainingCardsPlace.Trash,
                                 activateClass: activateClass
@@ -197,12 +161,12 @@ namespace DCGO.CardEffects.EX11
                                 yield return null;
                             }
 
-                            if (selectedCards.Count > 0) // more then 1 vemmon revealed, otherwise do nothing cause above already trashed 2 revealed cards
+                            if (selectedCards.Count > 0)
                             {
-                                while (selectedCards.Any()) // while there is still 1 vemmon not placed
+                                while (selectedCards.Any())
                                 {
                                     Permanent selectedPermament = null;
-                                    if (targetPermanents.Count > 1) // if 2 or more played digimon select, otherwise default to 1, issue not here
+                                    if (targetPermanents.Count > 1)
                                     {
                                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -229,24 +193,24 @@ namespace DCGO.CardEffects.EX11
                                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get the digivolution cards.", "The opponent is selecting 1 Digimon that will get the digivolution cards.");
                                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                                     }
-                                    else selectedPermament = targetPermanents[0]; // default to 1
+                                    else selectedPermament = targetPermanents[0];
 
                                     if (selectedPermament != null)
                                     {
                                         List<CardSource> digivolutionCards_fixed = new List<CardSource>();
-                                        if (selectedCards.Count > 1) // if there is more then 1 vemmon revealed, select order to place, otherwise default to 1
+                                        if (selectedCards.Count > 1)
                                         {
-                                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>(); // issue is in here somewhere. on occasion, 1 of the revealed vemmon is not selectable, it can still be worked around because you can select the other (even if not optimal order) and the catch all below grabs the second. however, if both of the revealed vemmon are not selectable, game soft locks.
+                                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                                             selectCardEffect.SetUp(
-                                                canTargetCondition: (cardSource) => true, // issue is not here, stop changing it me, with that said, something near here is the issue
+                                                canTargetCondition: (cardSource) => true,
                                                 canTargetCondition_ByPreSelecetedList: null,
                                                 canEndSelectCondition: CanEndSelectCondition,
                                                 canNoSelect: () => false,
                                                 selectCardCoroutine: null,
                                                 afterSelectCardCoroutine: AfterSelectCardCoroutine,
                                                 message: "Specify the order to place the cards in the digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
-                                                maxCount: selectedCards.Count, // this should be fine
+                                                maxCount: selectedCards.Count,
                                                 canEndNotMax: true,
                                                 isShowOpponent: true,
                                                 mode: SelectCardEffect.Mode.Custom,
@@ -256,12 +220,12 @@ namespace DCGO.CardEffects.EX11
                                                 selectPlayer: card.Owner,
                                                 cardEffect: activateClass);
 
-                                            selectCardEffect.SetUseFaceDown(); // wild shot
+                                            selectCardEffect.SetUseFaceDown(); // This seems to have fixed soft lock issue where sometimes some revealed vemmon were not selectable
                                             selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Cards");
 
                                             bool CanEndSelectCondition(List<CardSource> cardSources)
                                             {
-                                                return !CardEffectCommons.HasNoElement(cardSources); // i don't understand this code but i don't expect the issue is here
+                                                return !CardEffectCommons.HasNoElement(cardSources);
                                             }
 
                                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
@@ -310,12 +274,10 @@ namespace DCGO.CardEffects.EX11
             #endregion
 
             #region Security
-
             if (timing == EffectTiming.SecuritySkill)
             {
                 cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
             }
-
             #endregion
 
             return cardEffects;
