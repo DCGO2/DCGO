@@ -23,6 +23,20 @@ namespace DCGO.CardEffects.BT25
             }
             #endregion
 
+            #region Raid
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                cardEffects.Add(CardEffectFactory.RaidSelfEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
+            #region Fortitude
+            if (timing == EffectTiming.OnDestroyedAnyone)
+            {
+                cardEffects.Add(CardEffectFactory.FortitudeSelfEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
             #region OP/WD Shared
             string SharedEffectName = "Delete 1 enemy Digimon with 6K DP or less";
 
