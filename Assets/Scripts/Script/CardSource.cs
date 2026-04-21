@@ -4143,6 +4143,17 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+    #region whether this card has Shaman trait
+
+    public bool HasShamanTraits
+    {
+        get
+        {
+            return EqualsTraits("Shaman");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
