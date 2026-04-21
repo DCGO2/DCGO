@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class SelectAttackEffect : MonoBehaviourPunCallbacks
 {
+    const int SecurityIndex = -1;
+    const int NopIndex = -2;
+
     public void SetUp
         (
         Permanent attacker,
@@ -66,8 +69,6 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
     bool _withoutTap = false;
     bool _isVortex = false;
     bool _noSelect = false;
-
-    bool _endSelect = false;
 
     string _customMessage = null;
     string _customMessage_Enemy = null;
@@ -219,6 +220,8 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
             GManager.instance.turnStateMachine.IsSelecting = true;
 
+            Player attackOwner = _attacker?.TopCard != null ? _attacker.TopCard.Owner : null;
+
             if (_attacker != null)
             {
                 if (_attacker.TopCard != null)
@@ -352,7 +355,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                                 {
                                     if (_canSelectNotAttack)
                                     {
-                                        GManager.instance.BackButton.OpenSelectCommandButton("Not Attack", () => { photonView.RPC("SetNotAttack", RpcTarget.All); }, 0);
+                                        GManager.instance.BackButton.OpenSelectCommandButton("Not Attack", () => { photonView.RPC("SetAttackTarget", RpcTarget.All, attackOwner.PlayerID, false, NopIndex); }, 0);
                                     }
 
                                     GManager.instance.selectCommandPanel.CloseSelectCommandPanel();
@@ -380,21 +383,19 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                                     }
                                 }
 
-                                bool isPlayer = true;
                                 bool isTurnPlayer = false;
-                                int PermanentIndex = -1;
+                                int PermanentIndex = SecurityIndex;
 
                                 if (selectedPermanent != null)
                                 {
                                     if (selectedPermanent.TopCard != null)
                                     {
-                                        isPlayer = false;
                                         isTurnPlayer = selectedPermanent.TopCard.Owner == GManager.instance.turnStateMachine.gameContext.TurnPlayer;
                                         PermanentIndex = selectedPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(selectedPermanent);
                                     }
                                 }
 
-                                photonView.RPC("SetAttackTarget", RpcTarget.All, isPlayer, isTurnPlayer, PermanentIndex);
+                                photonView.RPC("SetAttackTarget", RpcTarget.All, attackOwner.PlayerID, isTurnPlayer, PermanentIndex);
 
                                 GManager.instance.BackButton.CloseSelectCommandButton();
                             }
@@ -441,21 +442,19 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                                     }
                                 }
 
-                                bool isPlayer = true;
                                 bool isTurnPlayer = false;
-                                int PermanentIndex = -1;
+                                int PermanentIndex = SecurityIndex;
 
                                 if (selectedPermanent != null)
                                 {
                                     if (selectedPermanent.TopCard != null)
                                     {
-                                        isPlayer = false;
                                         isTurnPlayer = selectedPermanent.TopCard.Owner == GManager.instance.turnStateMachine.gameContext.TurnPlayer;
                                         PermanentIndex = selectedPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(selectedPermanent);
                                     }
                                 }
 
-                                SetAttackTarget(isPlayer, isTurnPlayer, PermanentIndex);
+                                SetAttackTarget(attackOwner.PlayerID, isTurnPlayer, PermanentIndex);
                             }
                             #endregion
                         }
@@ -464,8 +463,49 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
             }
 
             //Wait until selection ends
-            yield return new WaitWhile(() => !_endSelect);
-            _endSelect = false;
+            yield return new WaitUntil(() => attackOwner.HasPlayerSelection());
+
+            _defender = null;
+            bool isTargetTurnPlayer = false;
+            int targetIndex = SecurityIndex;
+
+            PermanentSelection permanentSelection = attackOwner.DequeuePlayerSelection<PermanentSelection>();
+
+            if (permanentSelection != null)
+            {
+                if (permanentSelection.IsTurnPlayerList != null && permanentSelection.IsTurnPlayerList.Length > 0 &&
+                        permanentSelection.PermanentIDList != null && permanentSelection.PermanentIDList.Length > 0)
+                {
+                    isTargetTurnPlayer = permanentSelection.IsTurnPlayerList[0];
+                    targetIndex = permanentSelection.PermanentIDList[0];
+                }
+
+                _noSelect = targetIndex == NopIndex;
+
+                if (_noSelect)
+                {
+                    GManager.instance.selectCommandPanel.CloseSelectCommandPanel();
+                }
+                else if (targetIndex != SecurityIndex)
+                {
+                    Player player = null;
+
+                    if (isTargetTurnPlayer)
+                    {
+                        player = GManager.instance.turnStateMachine.gameContext.TurnPlayer;
+                    }
+
+                    else
+                    {
+                        player = GManager.instance.turnStateMachine.gameContext.NonTurnPlayer;
+                    }
+
+                    if (targetIndex >= 0 && targetIndex < player.GetFieldPermanents().Count)
+                    {
+                        _defender = player.GetFieldPermanents()[targetIndex];
+                    }
+                }
+            }
 
             #region Clean up visual selections and UI
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
@@ -512,52 +552,19 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
     #region ‘I‘ðŒˆ’è
     [PunRPC]
-    public void SetAttackTarget(bool isPlayer, bool isTurnPlayer, int PermanentIndex)
+    public void SetAttackTarget(int playerID, bool isTurnPlayer, int permanentIndex)
     {
-        _defender = null;
+        bool[] isTurnPlayerList = new bool[] { isTurnPlayer };
+        int[] permanentIndexList = new int[] { permanentIndex };
 
-        if (!isPlayer)
+        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
+
+        if (selectionPlayer == null)
         {
-            Player player = null;
-
-            if (isTurnPlayer)
-            {
-                player = GManager.instance.turnStateMachine.gameContext.TurnPlayer;
-            }
-
-            else
-            {
-                player = GManager.instance.turnStateMachine.gameContext.NonTurnPlayer;
-            }
-
-            Permanent permanent = null;
-
-            if (0 <= PermanentIndex && PermanentIndex <= player.GetFieldPermanents().Count - 1)
-            {
-                permanent = player.GetFieldPermanents()[PermanentIndex];
-            }
-
-            if (permanent != null)
-            {
-                _defender = permanent;
-            }
+            return;
         }
 
-        _endSelect = true;
-    }
-    #endregion
-
-    #region ‘I‘ð‚µ‚È‚¢
-    [PunRPC]
-    public void SetNotAttack()
-    {
-        GManager.instance.selectCommandPanel.CloseSelectCommandPanel();
-
-        _defender = null;
-
-        _noSelect = true;
-
-        _endSelect = true;
+        selectionPlayer.QueuePlayerSelection(new PermanentSelection(isTurnPlayerList, permanentIndexList));
     }
     #endregion
 }

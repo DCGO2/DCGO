@@ -13,44 +13,86 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
     public int SelectedIntValue => _selectedIntValue;
     public bool SelectedBoolValue => _selectedBoolValue;
 
+    Player _selectPlayer;
+
     [PunRPC]
+    public void SetIntForPlayer(int playerID, int value)
+    {
+        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
+
+        if (selectionPlayer == null)
+        {
+            return;
+        }
+
+        selectionPlayer.QueuePlayerSelection(new ValueSelection(value));
+    }
+
     public void SetInt(int value)
     {
         _selectedIntValue = value;
         _endSelect = true;
     }
 
-    protected void SetInt_RPC(int value)
+    protected void SetInt_RPC(int playerID, int value)
     {
-        photonView.RPC("SetInt", RpcTarget.All, value);
+        photonView.RPC("SetIntForPlayer", RpcTarget.All, playerID, value);
     }
 
     [PunRPC]
+    public void SetBoolForPlayer(int playerID, bool value)
+    {
+        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
+
+        if (selectionPlayer == null)
+        {
+            return;
+        }
+
+        selectionPlayer.QueuePlayerSelection(new ValueSelection(value));
+    }
+
     public void SetBool(bool value)
     {
         _selectedIntValue = getIntFromBool(value);
         _endSelect = true;
     }
 
-    protected void SetBool_RPC(bool value)
+    protected void SetBool_RPC(int playerID, bool value)
     {
-        photonView.RPC("SetBool", RpcTarget.All, value);
+        photonView.RPC("SetBoolForPlayer", RpcTarget.All, playerID, value);
     }
 
     internal int getIntFromBool(bool value)
     {
-        return value ? 0 : 1;
+        return value ? 1 : 0;
     }
 
     internal bool getBoolFromInt(int value)
     {
-        return value == 0;
+        return value != 0;
     }
 
     public IEnumerator WaitForEndSelect()
     {
-        yield return new WaitWhile(() => !_endSelect);
+        if (_selectPlayer != null)
+        {
+            yield return new WaitUntil(() => _selectPlayer.HasPlayerSelection());
+
+            ValueSelection valueSeletion = _selectPlayer.DequeuePlayerSelection<ValueSelection>();
+
+            if (valueSeletion != null)
+            {
+                _selectedIntValue = valueSeletion.ValueAsInt();
+            }
+        }
+        else
+        {
+            yield return new WaitWhile(() => !_endSelect);
+        }
+
         _endSelect = false;
+        _selectPlayer = null;
 
         GManager.instance.commandText.CloseCommandText();
         yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
@@ -60,6 +102,7 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
     {
         _endSelect = false;
         _selectedIntValue = 0;
+        _selectPlayer = selectPlayer;
 
         if (selectPlayer.isYou)
         {
@@ -69,7 +112,7 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
 
             foreach (SelectionElement<int> selectionElement in selectionElements)
             {
-                command_SelectCommands.Add(new Command_SelectCommand(selectionElement.Message, () => SetInt_RPC(selectionElement.Value), selectionElement.SpriteIndex));
+                command_SelectCommands.Add(new Command_SelectCommand(selectionElement.Message, () => SetInt_RPC(selectPlayer.PlayerID, selectionElement.Value), selectionElement.SpriteIndex));
             }
 
             GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
@@ -91,12 +134,12 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
 
                 if (canSelectValue.Count >= 1)
                 {
-                    SetInt(canSelectValue[UnityEngine.Random.Range(0, canSelectValue.Count)]);
+                    SetInt_RPC(selectPlayer.PlayerID, canSelectValue[UnityEngine.Random.Range(0, canSelectValue.Count)]);
                 }
 
                 else
                 {
-                    SetInt(0);
+                    SetInt_RPC(selectPlayer.PlayerID, 0);
                 }
             }
             #endregion
@@ -105,6 +148,10 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
 
     public void SetBoolSelection(List<SelectionElement<bool>> selectionElements, Player selectPlayer, string selectPlayerMessage, string notSelectPlayerMessage)
     {
+        _endSelect = false;
+        _selectedIntValue = 0;
+        _selectPlayer = selectPlayer;
+
         if (selectPlayer.isYou)
         {
             GManager.instance.commandText.OpenCommandText(selectPlayerMessage);
@@ -113,7 +160,7 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
 
             foreach (SelectionElement<bool> selectionElement in selectionElements)
             {
-                command_SelectCommands.Add(new Command_SelectCommand(selectionElement.Message, () => SetBool_RPC(selectionElement.Value), selectionElement.SpriteIndex));
+                command_SelectCommands.Add(new Command_SelectCommand(selectionElement.Message, () => SetBool_RPC(selectPlayer.PlayerID, selectionElement.Value), selectionElement.SpriteIndex));
             }
 
             GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
