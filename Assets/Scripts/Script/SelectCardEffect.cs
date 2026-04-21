@@ -60,8 +60,6 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         _skillInfos = new List<SkillInfo>();
 
         _afterSelectIndexCoroutine = null;
-
-        _endSelect = false;
     }
 
     public void SetIsLocal()
@@ -211,7 +209,6 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     }
 
     Root _root;
-    bool _endSelect = false;
     bool _isDeckBottom = false;
     bool _isDeckTop = false;
 
@@ -576,8 +573,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                         _slectedInexesInList.Add(selectedIndex);
                     }
 
-                    photonView.RPC("SetTargetIndicies", RpcTarget.All, _slectedInexesInList.ToArray());
-                    photonView.RPC("SetTargetCard", RpcTarget.All, targetCardIDs.ToArray());
+                    photonView.RPC("SetTargetCardAndIndicies", RpcTarget.All, _selectPlayer.PlayerID, targetCardIDs.ToArray(), _slectedInexesInList.ToArray());
                 }
             }
             else
@@ -645,25 +641,45 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
                         if (GManager.instance.IsAI)
                         {
-                            SetTargetCard(CardIDs.ToArray());
+                            SetTargetCardAndIndicies(_selectPlayer.PlayerID, CardIDs.ToArray(), null);
                         }
                         else
                         {
-                            photonView.RPC("SetTargetCard", RpcTarget.All, CardIDs.ToArray());
+                            photonView.RPC("SetTargetCardAndIndicies", RpcTarget.All, _selectPlayer.PlayerID, CardIDs.ToArray(), null);
                         }
 
                         break;
                     }
                 }
+            }
 
-                if (GManager.instance.IsAI)
+            yield return new WaitUntil(() => _selectPlayer.HasPlayerSelection());
+
+            CardSelection cardSelection = _selectPlayer.DequeuePlayerSelection<CardSelection>();
+
+            if (cardSelection != null && cardSelection.CardIDList != null)
+            {
+                _targetCards = new List<CardSource>();
+
+                foreach (int cardID in cardSelection.CardIDList)
                 {
-                    _endSelect = true;
+                    _targetCards.Add(GManager.instance.turnStateMachine.gameContext.ActiveCardList[cardID]);
                 }
             }
 
-            yield return new WaitWhile(() => !_endSelect);
-            _endSelect = false;
+            yield return new WaitUntil(() => _selectPlayer.HasPlayerSelection());
+
+            CardSelection indiciesSelection = _selectPlayer.DequeuePlayerSelection<CardSelection>();
+
+            if (indiciesSelection != null && indiciesSelection.CardIDList != null)
+            {
+                _slectedInexesInList = new List<int>();
+
+                foreach (int index in indiciesSelection.CardIDList)
+                {
+                    _slectedInexesInList.Add(index);
+                }
+            }
 
             GManager.instance.commandText.CloseCommandText();
             yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
@@ -991,26 +1007,16 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void SetTargetCard(int[] CardIDs)
+    public void SetTargetCardAndIndicies(int playerID, int[] CardIDs, int[] Indicies)
     {
-        _targetCards = new List<CardSource>();
+        Player player = GManager.instance.GetPlayerFromID(playerID);
 
-        foreach (int CardID in CardIDs)
+        if (!player)
         {
-            _targetCards.Add(GManager.instance.turnStateMachine.gameContext.ActiveCardList[CardID]);
+            return;
         }
 
-        _endSelect = true;
-    }
-
-    [PunRPC]
-    public void SetTargetIndicies(int[] CardIDs)
-    {
-        _slectedInexesInList = new List<int>();
-
-        foreach (int index in CardIDs)
-        {
-            _slectedInexesInList.Add(index);
-        }
+        player.QueuePlayerSelection(new CardSelection(CardIDs));
+        player.QueuePlayerSelection(new CardSelection(Indicies));
     }
 }

@@ -143,8 +143,6 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
     //No Selection Flag
     public bool _noSelect = false;
 
-    bool _endSelect = false;
-
     string _customMessage = null;
     string _customMessage_Enemy = null;
 
@@ -565,12 +563,12 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                                 {
                                     if (!_isLocal)
                                     {
-                                        photonView.RPC("SetNoSelectChara", RpcTarget.All);
+                                        photonView.RPC("SetTargetFrames", RpcTarget.All, _selectPlayer.PlayerID, null, null);
                                     }
 
                                     else
                                     {
-                                        SetNoSelectChara();
+                                        SetTargetFrames(_selectPlayer.PlayerID, null, null);
                                     }
                                 }
                             }
@@ -605,12 +603,12 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
                     if (!_isLocal)
                     {
-                        photonView.RPC("SetTargetFrames", RpcTarget.All, isTurnPlayer.ToArray(), CharaIndex.ToArray());
+                        photonView.RPC("SetTargetFrames", RpcTarget.All, _selectPlayer.PlayerID, isTurnPlayer.ToArray(), CharaIndex.ToArray());
                     }
 
                     else
                     {
-                        SetTargetFrames(isTurnPlayer.ToArray(), CharaIndex.ToArray());
+                        SetTargetFrames(_selectPlayer.PlayerID, isTurnPlayer.ToArray(), CharaIndex.ToArray());
                     }
 
                     GManager.instance.BackButton.CloseSelectCommandButton();
@@ -683,19 +681,51 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                                 }
                             }
 
-                            SetTargetFrames(isTurnPlayer.ToArray(), UnitIDs.ToArray());
+                            SetTargetFrames(_selectPlayer.PlayerID, isTurnPlayer.ToArray(), UnitIDs.ToArray());
                             break;
                         }
                     }
-
-                    _endSelect = true;
                 }
                 #endregion
             }
 
             //Wait until selection is complete
-                        yield return new WaitWhile(() => !_endSelect);
-            _endSelect = false;
+            yield return new WaitUntil(() => _selectPlayer.HasPlayerSelection());
+            PermanentSelection permanentSelection = _selectPlayer.DequeuePlayerSelection<PermanentSelection>();
+
+            if (permanentSelection != null)
+            {
+                _targetPermanents = new List<Permanent>();
+
+                if (permanentSelection.IsTurnPlayerList != null && permanentSelection.PermanentIDList != null)
+                {
+                    for (int i = 0; i < permanentSelection.IsTurnPlayerList.Length; i++)
+                    {
+                        Player player = null;
+
+                        if (permanentSelection.IsTurnPlayerList[i])
+                        {
+                            player = GManager.instance.turnStateMachine.gameContext.TurnPlayer;
+                        }
+
+                        else
+                        {
+                            player = GManager.instance.turnStateMachine.gameContext.NonTurnPlayer;
+                        }
+
+                        Permanent chara = player.GetFieldPermanents()[permanentSelection.PermanentIDList[i]];
+
+                        _targetPermanents.Add(chara);
+                    }
+
+                    _noSelect = false;
+                }
+                else
+                {
+                    GManager.instance.selectCommandPanel.CloseSelectCommandPanel();
+                    _noSelect = true;
+                }
+            }
 
             #region reset
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
@@ -1015,44 +1045,16 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
     #region 選択決定
     [PunRPC]
-    public void SetTargetFrames(bool[] isTurnPlayer, int[] UnitIndex)
+    public void SetTargetFrames(int playerID, bool[] isTurnPlayer, int[] UnitIndex)
     {
-        _targetPermanents = new List<Permanent>();
+        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
 
-        for (int i = 0; i < isTurnPlayer.Length; i++)
+        if (selectionPlayer == null)
         {
-            Player player = null;
-
-            if (isTurnPlayer[i])
-            {
-                player = GManager.instance.turnStateMachine.gameContext.TurnPlayer;
-            }
-
-            else
-            {
-                player = GManager.instance.turnStateMachine.gameContext.NonTurnPlayer;
-            }
-
-            Permanent chara = player.GetFieldPermanents()[UnitIndex[i]];
-
-            _targetPermanents.Add(chara);
+            return;
         }
 
-        _endSelect = true;
-    }
-    #endregion
-
-    #region 選択しない
-    [PunRPC]
-    public void SetNoSelectChara()
-    {
-        GManager.instance.selectCommandPanel.CloseSelectCommandPanel();
-
-        _targetPermanents = new List<Permanent>();
-
-        _noSelect = true;
-
-        _endSelect = true;
+        selectionPlayer.QueuePlayerSelection(new PermanentSelection(isTurnPlayer, UnitIndex));
     }
     #endregion
 }
