@@ -53,7 +53,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 [Mineral]/[Rock] trait card from hand or trash under played/digivolved digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digivolve into [Crescemon] in trash for 1 less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
