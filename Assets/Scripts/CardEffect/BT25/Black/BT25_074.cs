@@ -53,8 +53,7 @@ namespace DCGO.CardEffects.BT25
                     return cardSource.IsDigimon
                         && cardSource.HasPlayCost
                         && cardSource.GetCostItself <= 12
-                        && (cardSource.ContainsCardName("Chaosmon")
-                            || cardSource.EqualsTraits("D-Brigade")
+                        && (cardSource.EqualsTraits("D-Brigade")
                             || cardSource.EqualsTraits("ACCEL"))
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 5);
                 }
@@ -125,8 +124,7 @@ namespace DCGO.CardEffects.BT25
                     return cardSource.IsDigimon
                         && cardSource.HasPlayCost
                         && cardSource.GetCostItself <= 12
-                        && (cardSource.ContainsCardName("Chaosmon")
-                            || cardSource.EqualsTraits("D-Brigade")
+                        && (cardSource.EqualsTraits("D-Brigade")
                             || cardSource.EqualsTraits("ACCEL"));
                 }
 
@@ -139,7 +137,7 @@ namespace DCGO.CardEffects.BT25
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                     cardSources: selectedCards,
                     activateClass: activateClass,
-                    payCost: false,
+                    payCost: true,
                     isTapped: false,
                     root: SelectCardEffect.Root.Library,
                     activateETB: true));
@@ -158,7 +156,7 @@ namespace DCGO.CardEffects.BT25
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.IsOpponentTurn(card)
-                        && ( card.PermanentOfThisCard().TopCard.ContainsCardName("Chaosmon")
+                        && (card.PermanentOfThisCard().TopCard.ContainsCardName("Chaosmon")
                             || card.PermanentOfThisCard().TopCard.EqualsTraits("D-Brigade")
                             || card.PermanentOfThisCard().TopCard.EqualsTraits("ACCEL"));
                 }
