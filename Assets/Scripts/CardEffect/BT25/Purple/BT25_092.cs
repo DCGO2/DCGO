@@ -39,8 +39,6 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
                 {
-                    bool discarded = false;
-
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                     selectHandEffect.SetUp(
@@ -63,17 +61,10 @@ namespace DCGO.CardEffects.BT25
                     {
                         if (cardSources.Count >= 1)
                         {
-                            discarded = true;
-
-                            yield return null;
-                        }
-                    }
-
-                    if (discarded)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                         
-                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                        }
                     }
                 }
             }
@@ -83,7 +74,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 card from trash", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend and trash an option from hand or sources to digivolve into [Three Musketeers]/[TS] Digimon for 1 less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -98,7 +89,12 @@ namespace DCGO.CardEffects.BT25
                         && permanent.DigivolutionCards.Any(ValidTrashCard);
                 }
 
-                bool IsOwnDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                bool CanDigivolveDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && (CardEffectCommons.HasMatchConditionOwnersHand(card, cardSource => ValidTarget(cardSource, SelectCardEffect.Root.Hand, permanent))
+                            || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, cardSource => ValidTarget(cardSource, SelectCardEffect.Root.Trash, permanent)));
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -107,8 +103,15 @@ namespace DCGO.CardEffects.BT25
                             || CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition));
                 }
 
+                bool ValidTarget(CardSource cardSource, SelectCardEffect.Root root, Permanent permanent)
+                {
+                    return Valid3MOrTSCard(cardSource)
+                        && cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, root);
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    #region Pay costs
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SuspendPeremanentAndProcessAccordingToResult(
                         new List<Permanent>() { card.PermanentOfThisCard() },
                         activateClass,
@@ -117,25 +120,65 @@ namespace DCGO.CardEffects.BT25
 
                     IEnumerator SuccessProcess(List<Permanent> suspendedPermaments)
                     {
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                        bool validHandCard = CardEffectCommons.HasMatchConditionOwnersHand(card, ValidTrashCard);
+                        bool validDigivolutionCard = CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition);
+                        if (validHandCard && validDigivolutionCard)
+                        {
+                            List<SelectionElement<bool>> selectionElements1 = new List<SelectionElement<bool>>()
+                            {
+                                new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                                new SelectionElement<bool>(message: $"From digivolution cards", value : false, spriteIndex: 1),
+                            };
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: ValidTrashCard,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Discard,
-                            cardEffect: activateClass);
+                            string selectPlayerMessage1 = "From which area will you trash an option?";
+                            string notSelectPlayerMessage1 = "The opponent is choosing from which area to trash a card.";
 
-                        yield return StartCoroutine(selectHandEffect.Activate());
-                        
-                        if(CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsOwnDigimon))
+                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
+                        }
+                        else
+                        {
+                            GManager.instance.userSelectionManager.SetBool(validHandCard);
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        var fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                        if (fromHand)
+                        {
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: ValidTrashCard,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Discard,
+                                cardEffect: activateClass);
+
+                            yield return StartCoroutine(selectHandEffect.Activate());
+                        }
+                        else
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                                permanentCondition: PermanentCondition,
+                                cardCondition: ValidTrashCard,
+                                maxCount: 1,
+                                canNoTrash: false,
+                                isFromOnly1Permanent: true,
+                                activateClass: activateClass
+                            ));
+                        }
+                        #endregion
+
+                        #region Digivolve
+                        if(CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanDigivolveDigimon))
                         {
                             Permanent selectedPermanent = null;
 
@@ -143,7 +186,7 @@ namespace DCGO.CardEffects.BT25
 
                             selectPermanentEffect.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: IsOwnDigimon,
+                                canTargetCondition: CanDigivolveDigimon,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
@@ -167,14 +210,8 @@ namespace DCGO.CardEffects.BT25
 
                             if (selectedPermanent != null)
                             {
-                                bool ValidTarget(CardSource cardSource, SelectCardEffect.Root root)
-                                {
-                                    return Valid3MOrTSCard(cardSource)
-                                        && cardSource.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, false, activateClass, root);
-                                }
-
-                                bool ValidCardInHand = card.Owner.HandCards.Any(cardSource => ValidTarget(cardSource, SelectCardEffect.Root.Hand));
-                                bool ValidCardInTrash = card.Owner.TrashCards.Any(cardSource => ValidTarget(cardSource, SelectCardEffect.Root.Trash));
+                                bool ValidCardInHand = card.Owner.HandCards.Any(cardSource => ValidTarget(cardSource, SelectCardEffect.Root.Hand, selectedPermanent));
+                                bool ValidCardInTrash = card.Owner.TrashCards.Any(cardSource => ValidTarget(cardSource, SelectCardEffect.Root.Trash, selectedPermanent));
 
                                 if (ValidCardInHand && ValidCardInTrash)
                                 {
@@ -196,7 +233,7 @@ namespace DCGO.CardEffects.BT25
 
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                                var fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+                                var fromHand1 = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                     selectedPermanent,
@@ -205,10 +242,11 @@ namespace DCGO.CardEffects.BT25
                                     reduceCostTuple: (1, null),
                                     fixedCostTuple: null,
                                     ignoreDigivolutionRequirementFixedCost: -1,
-                                    isHand: fromHand,
+                                    isHand: fromHand1,
                                     activateClass,
                                     successProcess: null
                                 ));
+                                #endregion
                             }
                         }
                     }
