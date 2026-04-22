@@ -23,5 +23,19 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Can Trigger "When Digimon Digivolve"
+    public static bool CanTriggerWhenDigimonDigivolving(
+        Hashtable hashtable, 
+        Func<Permanent, bool> permanentCondition,
+        Func<SelectCardEffect.Root, bool> rootCondition = null)
+    {
+        if (!CanTriggerWhenPermanentDigivolving(hashtable, permanentCondition, rootCondition))
+            return false;
+        List<CardSource> evoRootTops = GetEvoRootTopsFromEnterFieldHashtable(hashtable, permanentCondition);
+        return evoRootTops != null
+            && evoRootTops.Any(cardSource => cardSource.IsDigimon);
+        
+    }
+    #endregion
 
 }
