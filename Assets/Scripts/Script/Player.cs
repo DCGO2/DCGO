@@ -869,6 +869,14 @@ public class Player : MonoBehaviour
             }
         }
 
+        foreach (Func<EffectTiming, ICardEffect> GetCardEffect in UntilAfterPlayEffect)
+        {
+            if (GetCardEffect(timing) != null)
+            {
+                PlayerEffects.Add(GetCardEffect(timing));
+            }
+        }
+
         foreach (ICardEffect cardEffect in PlayerEffects)
         {
             if (cardEffect.EffectSourceCard == null)
@@ -918,6 +926,10 @@ public class Player : MonoBehaviour
 
     #region セキュリティチェック後に消えるプレイヤーに掛かっている効果
     public List<Func<EffectTiming, ICardEffect>> UntilSecurityCheckEndEffects = new List<Func<EffectTiming, ICardEffect>>();
+    #endregion
+
+    #region Until Play of a card is completed
+    public List<Func<EffectTiming, ICardEffect>> UntilAfterPlayEffect = new List<Func<EffectTiming, ICardEffect>>();
     #endregion
 
     #endregion

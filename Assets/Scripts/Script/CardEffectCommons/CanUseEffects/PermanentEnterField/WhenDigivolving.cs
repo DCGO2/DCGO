@@ -31,10 +31,8 @@ public partial class CardEffectCommons
     {
         if (!CanTriggerWhenPermanentDigivolving(hashtable, permanentCondition, rootCondition))
             return false;
-        List<CardSource> evoRootTops = GetEvoRootTopsFromEnterFieldHashtable(hashtable, permanentCondition);
-        return evoRootTops != null
-            && evoRootTops.Any(cardSource => cardSource.IsDigimon);
-        
+
+        return GetDigivolvedFromDigimonFromEnterFieldHashtable(hashtable, permanentCondition);
     }
     #endregion
 

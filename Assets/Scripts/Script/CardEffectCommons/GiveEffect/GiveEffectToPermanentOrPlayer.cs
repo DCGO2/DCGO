@@ -85,6 +85,14 @@ public partial class CardEffectCommons
             case EffectDuration.UntilCalculateFixedCost:
                 player.UntilCalculateFixedCostEffect.Add(getCardEffect);
                 break;
+
+            case EffectDuration.UntilAfterPlay:
+                player.UntilAfterPlayEffect.Add(getCardEffect);
+                break;
+
+            case EffectDuration.UntilSecurityCheckEnd:
+                player.UntilSecurityCheckEndEffects.Add(getCardEffect);
+                break;
         }
     }
 

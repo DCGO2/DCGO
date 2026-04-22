@@ -141,7 +141,8 @@ public partial class CardEffectCommons
             {"isJogress", isJogress},
             {"DigiXrosCount", digiXrosCount },
             {"AssemblyCount", assemblyCount },
-            {"isFromDigimonDigivolutionCards", hashtableParams.Some(param => param.IsFromDigimonDigivolutionCards)}
+            {"isFromDigimonDigivolutionCards", hashtableParams.Some(param => param.IsFromDigimonDigivolutionCards)},
+            {"isDigivolvingFromDigimon", hashtableParams.Some(param => param.IsDigivolvingFromDigimon)}
         };
 
         if (cardEffect != null)
@@ -160,7 +161,7 @@ public partial class CardEffectCommons
                     {"evoRoots", hashtableParam.EvoRoots.Clone()},
                     {"evoRootTops", hashtableParam.EvoRootTops.Clone()},
                     {"Root", hashtableParam.Root},
-                    {"oldLevels", hashtableParam.OldLevels.Clone()},
+                    {"oldLevels", hashtableParam.OldLevels.Clone()}
                 };
 
                 return hashtableOfPermanent;

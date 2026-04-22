@@ -13,8 +13,6 @@ public class BT4_011 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        List<Func<EffectTiming, ICardEffect>> getCardEffects = new List<Func<EffectTiming, ICardEffect>>();
-
         if (timing == EffectTiming.None)
         {
             bool Condition()
@@ -33,7 +31,7 @@ public class BT4_011 : CEntity_Effect
         if(timing == EffectTiming.BeforePayCost)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Trash your Security to reduce digivolution cost", CanUseCondition, card);
+            activateClass.SetUpICardEffect("As if it were a level 3 digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, "");
             activateClass.SetIsBackgroundProcess(true);
             cardEffects.Add(activateClass);
@@ -126,7 +124,7 @@ public class BT4_011 : CEntity_Effect
                 dontHaveDPClass.SetUpDontHaveDPClass(PermanentCondition: PermanentCondition);
                 dontHaveDPClass.SetNotShowUI(true);
 
-               getCardEffects =
+                List<Func<EffectTiming, ICardEffect>> getCardEffects =
                     new List<Func<EffectTiming, ICardEffect>>()
                     {
                                                 _ => changePermanentLevelClass,
@@ -136,7 +134,7 @@ public class BT4_011 : CEntity_Effect
 
                 foreach (Func<EffectTiming, ICardEffect> getCardEffect in getCardEffects)
                 {
-                   card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
+                   card.Owner.UntilAfterPlayEffect.Add(getCardEffect);
                 }
 
                 yield return null;

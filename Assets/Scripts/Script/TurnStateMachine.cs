@@ -3282,6 +3282,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
             player.UntilCalculateFixedCostEffect = new List<Func<EffectTiming, ICardEffect>>();
 
+            player.UntilAfterPlayEffect = new List<Func<EffectTiming, ICardEffect>>();
+
             player.DigivolveCount_ThisTurn = 0;
 
             foreach (Permanent permanent in player.GetFieldPermanents())

@@ -1032,6 +1032,11 @@ public class PlayCardClass
         #endregion
 
         #endregion
+
+        foreach(Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+        {
+            player.UntilAfterPlayEffect = new List<Func<EffectTiming, ICardEffect>>();
+        }
     }
 
     IEnumerator OffMemoryPredictionLine()
@@ -1098,7 +1103,8 @@ public class OnEnterFieldHashtableParams
         List<CardSource> evoRootTops,
         SelectCardEffect.Root root,
         List<int> oldLevels,
-        bool isFromDigimonDigivolutionCards)
+        bool isFromDigimonDigivolutionCards,
+        bool isDigivolvingFromDigimon)
     {
         Permanent = permanent;
 
@@ -1120,6 +1126,7 @@ public class OnEnterFieldHashtableParams
         }
 
         IsFromDigimonDigivolutionCards = isFromDigimonDigivolutionCards;
+        IsDigivolvingFromDigimon = isDigivolvingFromDigimon;
     }
 
     public Permanent Permanent { get; private set; } = null;
@@ -1128,6 +1135,7 @@ public class OnEnterFieldHashtableParams
     public SelectCardEffect.Root Root { get; private set; } = SelectCardEffect.Root.None;
     public List<int> OldLevels { get; private set; } = new List<int>();
     public bool IsFromDigimonDigivolutionCards { get; private set; } = false;
+    public bool IsDigivolvingFromDigimon { get; private set; } = false;
 }
 
 #endregion
@@ -1241,6 +1249,7 @@ public class PlayPermanentClass
             List<CardSource> evoRootTops = new List<CardSource>();
             bool played = false;
             List<int> oldLevels = new List<int>();
+            bool fromDigimon = false;
 
             int frameId = -1;
 
@@ -1329,6 +1338,7 @@ public class PlayPermanentClass
                             permanent = _targetPermanent;
                             evoRoots.Add(_targetPermanent.TopCard);
                             evoRootTops.Add(_targetPermanent.TopCard);
+                            fromDigimon = _targetPermanent.IsDigimon;
                             permanent.AddCardSource(card);
                         }
                         else
@@ -1361,7 +1371,8 @@ public class PlayPermanentClass
                                         evoRootTops: evoRootTops,
                                         root: _root,
                                         oldLevels: oldLevels,
-                                        isFromDigimonDigivolutionCards:isFromDigimonDigivolutionCards
+                                        isFromDigimonDigivolutionCards:isFromDigimonDigivolutionCards,
+                                        isDigivolvingFromDigimon: false
                                     )
                                 },
                                 isEvolution: isEvolution,
@@ -1433,6 +1444,9 @@ public class PlayPermanentClass
                     foreach (Permanent evoRootPermanent in evoRootPermanents)
                     {
                         oldLevels.Add(evoRootPermanent.Level);
+
+                        if(evoRootPermanent.IsDigimon)
+                            fromDigimon = true;
 
                         evoRootTops.Add(evoRootPermanent.TopCard);
                     }
@@ -1600,7 +1614,8 @@ public class PlayPermanentClass
                             evoRootTops: evoRootTops,
                             root: _root,
                             oldLevels: oldLevels,
-                            isFromDigimonDigivolutionCards: isFromDigimonDigivolutionCards
+                            isFromDigimonDigivolutionCards: isFromDigimonDigivolutionCards,
+                            isDigivolvingFromDigimon: fromDigimon
                             )
                     );
                 }

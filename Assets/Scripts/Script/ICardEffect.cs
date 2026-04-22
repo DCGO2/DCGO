@@ -936,6 +936,8 @@ public enum EffectDuration
     UntilOwnerActivePhase,
     UntilCalculateFixedCost,
     UntilNextUntap,
+    UntilAfterPlay,
+    UntilSecurityCheckEnd,
 }
 
 #endregion

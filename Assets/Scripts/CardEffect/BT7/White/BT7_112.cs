@@ -209,6 +209,81 @@ public class BT7_112 : CEntity_Effect
                     {
                         ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
 
+                        Permanent selectedPermanent = CardEffectCommons.GetPermanentsFromHashtable(_hashtable)[0];
+
+                        bool CanUseChangeCondition(Hashtable ccHashtable)
+                        {
+                            if (selectedPermanent.TopCard != null)
+                            {
+                                if (card.Owner.GetBattleAreaPermanents().Contains(selectedPermanent))
+                                {
+                                    if (card == selectedPermanent.TopCard)
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        ChangePermanentLevelClass changePermanentLevelClass = new ChangePermanentLevelClass();
+                        changePermanentLevelClass.SetUpICardEffect($"Treated as level 6", CanUseChangeCondition, card);
+                        changePermanentLevelClass.SetUpChangePermanentLevelClass(GetLevel: GetLevel);
+                        changePermanentLevelClass.SetNotShowUI(true);
+
+                        int GetLevel(Permanent permanent, int level)
+                        {
+                            if (selectedPermanent.TopCard != null)
+                            {
+                                if (permanent == selectedPermanent)
+                                {
+                                    level = 6;
+                                }
+                            }
+
+                            return level;
+                        }
+
+
+                        TreatAsDigimonClass treatAsDigimonClass = new TreatAsDigimonClass();
+                        treatAsDigimonClass.SetUpICardEffect($"Treated as Digimon", CanUseChangeCondition, card);
+                        treatAsDigimonClass.SetUpTreatAsDigimonClass(
+                            permanentCondition: TamerPermanentCondition);
+                        treatAsDigimonClass.SetNotShowUI(true);
+
+                        bool TamerPermanentCondition(Permanent permanent)
+                        {
+                            if (selectedPermanent.TopCard != null)
+                            {
+                                if (permanent == selectedPermanent)
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+
+
+                        DontHaveDPClass dontHaveDPClass = new DontHaveDPClass();
+                        dontHaveDPClass.SetUpICardEffect("Don't have DP", CanUseChangeCondition, card);
+                        dontHaveDPClass.SetUpDontHaveDPClass(PermanentCondition: TamerPermanentCondition);
+                        dontHaveDPClass.SetNotShowUI(true);
+
+                        List<Func<EffectTiming, ICardEffect>> getCardEffects =
+                            new List<Func<EffectTiming, ICardEffect>>()
+                            {
+                                                        _ => changePermanentLevelClass,
+                                                        _ => treatAsDigimonClass,
+                                                        _ => dontHaveDPClass,
+                            };
+
+                        foreach (Func<EffectTiming, ICardEffect> getCardEffect in getCardEffects)
+                        {
+                            card.Owner.UntilAfterPlayEffect.Add(getCardEffect);
+                        }
+
                         AddDigivolutionRequirementClass addEvolutionConditionClass = new AddDigivolutionRequirementClass();
                         addEvolutionConditionClass.SetUpICardEffect($"Can digivolve to this card", CanUseCondition1, card);
                         addEvolutionConditionClass.SetUpAddDigivolutionRequirementClass(getEvoCost: GetEvoCost);

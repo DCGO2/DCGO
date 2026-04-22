@@ -230,6 +230,24 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Get if digivolved from a Digimon from hashtable of card effect
+    public static bool GetDigivolvedFromDigimonFromEnterFieldHashtable(Hashtable hashtable, Func<Permanent, bool> permanentCondition)
+    {
+        if (hashtable != null)
+        {
+            if (hashtable.ContainsKey("isDigivolvingFromDigimon"))
+            {
+                if (hashtable["isDigivolvingFromDigimon"] is bool)
+                {
+                    return (bool)hashtable["isDigivolvingFromDigimon"];
+                }
+            }
+        }
+
+        return false;
+    }
+    #endregion
+
     #region Get Permanents from hashtable
     public static List<Permanent> GetPlayedPermanentsFromEnterFieldHashtable(Hashtable hashtable, Func<SelectCardEffect.Root, bool> rootCondition)
     {
