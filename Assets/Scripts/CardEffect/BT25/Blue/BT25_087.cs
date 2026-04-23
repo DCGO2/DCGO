@@ -72,8 +72,6 @@ namespace DCGO.CardEffects.BT25
                         {
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
                                     new List<CardSource> { card.Owner.LibraryCards[0], card.Owner.LibraryCards[1] }, activateClass, isFacedown: true));
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
-                                    new List<CardSource> { card.Owner.LibraryCards[0] }, activateClass, isFacedown: true));
                         }
                     }
                 }
