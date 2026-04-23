@@ -153,6 +153,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         {
                             return "Opponent";
                         }
+
+                        //return playerName;
                     }
                 }
 
