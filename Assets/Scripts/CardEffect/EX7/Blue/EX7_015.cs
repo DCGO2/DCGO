@@ -42,7 +42,12 @@ namespace DCGO.CardEffects.EX7
                     playerCondition: PlayerCondition,
                     targetPermanentsCondition: TargetPermanentsCondition,
                     cardCondition: CardCondition);
-                cardEffects.Add(cannotReduceCostClass);                      
+                cardEffects.Add(cannotReduceCostClass);
+                
+                //string EffectDescription()
+                //{
+                //    return "[All Turns] Players can't reduce play costs.";
+                //}
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
