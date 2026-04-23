@@ -75,8 +75,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.CardColors.Contains(CardColor.Red);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -87,7 +86,24 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                    List<Permanent> playedPermanents = new List<Permanent>();
+
+                    foreach (Hashtable hash in CardEffectCommons.GetHashtablesFromHashtable(hashtable))
+                    {
+                        playedPermanents.Add(CardEffectCommons.GetPermanentFromHashtable(hash));
+                    }
+
+                    bool PermanentCondition1(Permanent permanent)
+                    {
+                        return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                            && permanent.TopCard.CardColors.Contains(CardColor.Red);
+                    }
+
+                    List<Permanent> targetPermanents = playedPermanents.Filter(PermanentCondition1);
+
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, targetPermanents.Contains))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                         targetPermanent: card.PermanentOfThisCard(),
                         cardCondition: CanSelectCardCondition,
                         payCost: true,
@@ -97,6 +113,7 @@ namespace DCGO.CardEffects.BT25
                         isHand: false,
                         activateClass: activateClass,
                         successProcess: null));
+                    }
                 }
             }
             #endregion
