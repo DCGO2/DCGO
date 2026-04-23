@@ -55,34 +55,37 @@ namespace DCGO.CardEffects.BT25
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                selectPermanentEffect1.SetUp(
-                    selectPlayer: card.Owner,
-                    canTargetCondition: CanSelectPermanentCondition,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: 1,
-                    canNoSelect: false,
-                    canEndNotMax: false,
-                    selectPermanentCoroutine: SelectPermanentCoroutine1,
-                    afterSelectPermanentCoroutine: null,
-                    mode: SelectPermanentEffect.Mode.Custom,
-                    cardEffect: activateClass);
-
-                selectPermanentEffect1.SetUpCustomMessage(
-                    "Select 1 Digimon that will gain 3k DP until enemy turn ends.",
-                    "The opponent is selecting 1 Digimon that will gain 3k DP until enemy turn ends.");
-
-                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
-
-                IEnumerator SelectPermanentCoroutine1(Permanent permanent)
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                        targetPermanent: permanent,
-                        changeValue: 3000,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass));
+                    SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect1.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine1,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect1.SetUpCustomMessage(
+                        "Select 1 Digimon that will gain 3k DP until enemy turn ends.",
+                        "The opponent is selecting 1 Digimon that will gain 3k DP until enemy turn ends.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+
+                    IEnumerator SelectPermanentCoroutine1(Permanent permanent)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                            targetPermanent: permanent,
+                            changeValue: 3000,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass));
+                    }
                 }
             }
             #endregion
@@ -92,7 +95,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnEndBattle)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<Draw 1>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT25_051_Inherited");
@@ -100,7 +103,7 @@ namespace DCGO.CardEffects.BT25
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] [Once Per Turn] When this Digimon wins a battle, gain 1 memory.";
+                    return "[All Turns] [Once Per Turn] When this Digimon wins a battle, <Draw 1>.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -127,7 +130,7 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                 }
             }
             #endregion
