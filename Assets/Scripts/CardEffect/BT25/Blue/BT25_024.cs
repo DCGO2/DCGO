@@ -104,15 +104,15 @@ namespace DCGO.CardEffects.BT25
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, targetPermanents.Contains))
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                        targetPermanent: card.PermanentOfThisCard(),
-                        cardCondition: CanSelectCardCondition,
-                        payCost: true,
-                        reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
-                        fixedCostTuple: null,
-                        ignoreDigivolutionRequirementFixedCost: -1,
-                        isHand: false,
-                        activateClass: activateClass,
-                        successProcess: null));
+                            targetPermanent: card.PermanentOfThisCard(),
+                            cardCondition: CanSelectCardCondition,
+                            payCost: true,
+                            reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
+                            fixedCostTuple: null,
+                            ignoreDigivolutionRequirementFixedCost: -1,
+                            isHand: false,
+                            activateClass: activateClass,
+                            successProcess: null));
                     }
                 }
             }
