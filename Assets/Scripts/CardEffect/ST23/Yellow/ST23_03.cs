@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,48 +68,29 @@ namespace DCGO.CardEffects.ST23
 
                 bool PermanentCondition(Permanent permanent)
                 {
-
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent == card.PermanentOfThisCard())
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent == card.PermanentOfThisCard();
                 }
 
                 bool HasProperTrait(CardSource source)
                 {
-                    return  source.IsDigimon &&
-                            source.EqualsTraits("Glowing Dawn");
+                    return source.IsDigimon
+                        && source.EqualsTraits("Glowing Dawn");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermanentCondition, HasProperTrait))
-                            {
-                                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, ValidTamerCondition))
-                                {
-                                    return true;
-                                }
-                            }
-                        }  
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.IsOwnerTurn(card)
+                        && CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermanentCondition, HasProperTrait)
+                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, ValidTamerCondition);
                 }
 
                 bool FaceDownCards(CardSource cardSource) => cardSource.IsFaceDown;
 
                 bool ValidTamerCondition(Permanent permanent)
                 {
-                    return permanent.IsTamer
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
                         && permanent.DigivolutionCards.Any(FaceDownCards);
                 }
 
@@ -151,8 +131,10 @@ namespace DCGO.CardEffects.ST23
 
                     if (trash)
                     {
-                        Hashtable hashtable = new Hashtable();
-                        hashtable.Add("CardEffect", activateClass);
+                        Hashtable hashtable = new Hashtable
+                        {
+                            { "CardEffect", activateClass }
+                        };
 
                         ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
 
@@ -170,15 +152,11 @@ namespace DCGO.CardEffects.ST23
 
                         int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                         {
-                            if (CardSourceCondition(cardSource))
-                            {
-                                if (RootCondition(root))
-                                {
-                                    if (PermanentsCondition(targetPermanents))
-                                    {
-                                        Cost -= 2;
-                                    }
-                                }
+                            if (CardSourceCondition(cardSource)
+                            && RootCondition(root)
+                            && PermanentsCondition(targetPermanents))
+                            { 
+                                Cost -= 2;
                             }
 
                             return Cost;
@@ -186,56 +164,27 @@ namespace DCGO.CardEffects.ST23
 
                         bool PermanentsCondition(List<Permanent> targetPermanents)
                         {
-                            if (targetPermanents != null)
-                            {
-                                if (targetPermanents.Count(PermanentCondition) >= 1)
-                                {
-                                    return true;
-                                }
-                            }
-
-                            return false;
+                            return targetPermanents != null
+                                && targetPermanents.Count(PermanentCondition) >= 1;
                         }
 
                         bool PermanentCondition(Permanent targetPermanent)
                         {
-                            if (targetPermanent.TopCard != null)
-                            {
-                                if (targetPermanent.TopCard.Owner == card.Owner)
-                                {
-                                    if (targetPermanent.TopCard.Owner.GetBattleAreaPermanents().Contains(targetPermanent))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-
-                            return false;
+                            return targetPermanent.TopCard != null
+                                && targetPermanent.TopCard.Owner == card.Owner
+                                && targetPermanent.TopCard.Owner.GetBattleAreaPermanents().Contains(targetPermanent);
                         }
 
                         bool CardSourceCondition(CardSource cardSource)
                         {
-                            if (cardSource != null)
-                            {
-                                if (cardSource.Owner == card.Owner)
-                                {
-                                    return cardSource.EqualsTraits("Glowing Dawn");
-                                }
-                            }
-
-                            return false;
+                            return cardSource != null
+                                && cardSource.Owner == card.Owner
+                                && cardSource.EqualsTraits("Glowing Dawn");
                         }
 
-                        bool RootCondition(SelectCardEffect.Root root)
-                        {
-                            return true;
-                        }
+                        bool RootCondition(SelectCardEffect.Root root) => true;
 
-                        bool isUpDown()
-                        {
-                            return true;
-                        }
-
+                        bool isUpDown() => true;
                     }
                 }
             }

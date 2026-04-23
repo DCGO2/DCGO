@@ -130,6 +130,7 @@ namespace DCGO.CardEffects.EX7
                     addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
 
                     card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
+                    card.Owner.UntilOpponentTurnEndEffects.Add(GetDetailEffect);
 
                     bool CanUseCondition1(Hashtable hashtable)
                     {
@@ -147,6 +148,15 @@ namespace DCGO.CardEffects.EX7
                         }
 
                         return false;
+                    }
+
+                    ICardEffect GetDetailEffect(EffectTiming timing)
+                    {
+                        if (timing == EffectTiming.None)
+                        {
+                            return CardEffectFactory.AddDetailClass(CanUseCondition1, PermanentCondition, "[End of your turn] Delete 1 of your Digimon", true, card);
+                        }
+                        return null;
                     }
 
                     List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
