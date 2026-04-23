@@ -169,8 +169,9 @@ namespace DCGO.CardEffects.AD1
                     };
 
                     string selectPlayerMessage1 = _Message;
+                    string notSelectPlayerMessage1 = "Opponent is selecting an effect";
 
-                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: "");
+                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
