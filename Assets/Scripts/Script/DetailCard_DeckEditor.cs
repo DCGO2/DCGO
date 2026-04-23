@@ -353,6 +353,39 @@ public class DetailCard_DeckEditor : MonoBehaviour
 
         digimonDetailObject.SetActive(levelText.gameObject.activeSelf || formText.gameObject.activeSelf || attributeText.gameObject.activeSelf  || typeText.gameObject.activeSelf);
 
+        //string changeColorString(string s)
+        //{
+        //    List<string> keyWordEffect = new List<string>()
+        //    {
+        //        "Blocker",
+        //        "Security Attack +",
+        //        "Security Attack -",
+        //        "Delay",
+        //        "Draw 1",
+        //        "Draw 2",
+        //        "Draw 3",
+        //        "Armor Purge",
+        //        "Jamming",
+        //        "DNA Digivolution",
+        //        "Save",
+        //        "Decoy",
+        //        "Digi-Burst",
+        //        "Piercing",
+        //        "Blitz",
+        //        "Material Save",
+        //        "Recovery +",
+        //        "Evade",
+        //        "Digisorption",
+        //        "Reboot",
+        //        "Rush",
+        //        "De-Digivolve",
+        //        "Retaliation",
+        //        "Raid",
+        //    };
+        //
+        //    return s;
+        //}
+
         //効果テキスト
         if (ContinuousController.instance.language == Language.ENG)
         {
