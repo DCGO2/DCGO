@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnEndBattle)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<Draw 1>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT25_048_Inherited");
@@ -71,7 +71,7 @@ namespace DCGO.CardEffects.BT25
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] [Once Per Turn] When this Digimon wins a battle, gain 1 memory.";
+                    return "[All Turns] [Once Per Turn] When this Digimon wins a battle, <Draw 1>.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -98,7 +98,7 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                 }
             }
             #endregion
