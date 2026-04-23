@@ -366,6 +366,7 @@ namespace DCGO.CardEffects.BT23
 
                                     if (selectedEffect != null)
                                     {
+                                        selectedEffect.SetIsDigimonEffect(true);
                                         Hashtable effectHashtable = CardEffectCommons.OnPlayCheckHashtableOfCard(selectedEffect.EffectSourceCard);
 
                                         if (!selectedEffect.IsDisabled)
