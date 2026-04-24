@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.BT25
                         canNoTrash: true,
                         isFromOnly1Permanent: false,
                         activateClass: activateClass,
-                        canEndNotMax: true,
+                        canEndNotMax: false,
                         afterSelectionCoroutine: AfterSelectCoroutine
                     ));
 
