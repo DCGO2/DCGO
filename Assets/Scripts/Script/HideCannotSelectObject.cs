@@ -88,7 +88,7 @@ public class HideCannotSelectObject : MonoBehaviour
 
     void Update()
     {
-        #region ���t���[���Ɉ�x�������f
+        #region ???
         _timerCount++;
 
         if (_timerCount < _updateFrame)

@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.LM
 
                 string EffectDiscription()
                 {
-                    return "[Start of your Turn] If your opponent has a Digimon, <Delay>.\r\n� Return 1 yellow Digimon card from your trash to the top of the deck. Then, if you don't have a Digimon, you may play 1 yellow Digimon card with 2000 DP or less from your trash without paying the cost.";
+                    return "[Start of your Turn] If your opponent has a Digimon, <Delay>.\r\n Return 1 yellow Digimon card from your trash to the top of the deck. Then, if you don't have a Digimon, you may play 1 yellow Digimon card with 2000 DP or less from your trash without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
