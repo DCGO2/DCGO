@@ -56,8 +56,8 @@ public class ResizeWindow : MonoBehaviour
             }
         }
 
-        anim.SetInteger(OpenHash, 0);
-        anim.SetInteger(CloseHash, 1);
+        anim.SafeSetInt(OpenHash, 0);
+        anim.SafeSetInt(CloseHash, 1);
     }
 
     public void SetUpWindowSize(string resolution)

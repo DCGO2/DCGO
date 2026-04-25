@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
 
 
 public class GraphicsOptionPanel : OffAnimation
@@ -32,8 +29,8 @@ public class GraphicsOptionPanel : OffAnimation
             }
         }
 
-        _anim.SetInteger(OpenHash, 0);
-        _anim.SetInteger(CloseHash, 1);
+        _anim.SafeSetInt(OpenHash, 0);
+        _anim.SafeSetInt(CloseHash, 1);
     }
 
     public void Init()
@@ -53,8 +50,8 @@ public class GraphicsOptionPanel : OffAnimation
         }
 
         gameObject.SetActive(true);
-        _anim.SetInteger(OpenHash, 1);
-        _anim.SetInteger(CloseHash, 0);
+        _anim.SafeSetInt(OpenHash, 1);
+        _anim.SafeSetInt(CloseHash, 0);
     }
 
     #region Auto select mode

@@ -1,12 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 
 public class YesNoObject : MonoBehaviour
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
     public Text InfoText;
 
     public List<CommandButton> Buttons;
@@ -73,8 +73,8 @@ public class YesNoObject : MonoBehaviour
     public void Open()
     {
         this.gameObject.SetActive(true);
-        anim.SetInteger("Open", 1);
-        anim.SetInteger("Close", 0);
+        anim.SafeSetInt(OpenHash, 1);
+        anim.SafeSetInt(CloseHash, 0);
     }
 
     public void Close()
@@ -89,7 +89,7 @@ public class YesNoObject : MonoBehaviour
             Opening.instance.PlayCancelSE();
         }
 
-        anim.SetInteger("Open", 0);
-        anim.SetInteger("Close", 1);
+        anim.SafeSetInt(OpenHash, 0);
+        anim.SafeSetInt(CloseHash, 1);
     }
 }
