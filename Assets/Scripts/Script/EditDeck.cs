@@ -376,7 +376,7 @@ public class EditDeck : MonoBehaviour
 
         else
         {
-            Opening.instance.battle.selectBattleDeck.ResetDeckInfoPanel();
+            yield return Opening.instance.battle.selectBattleDeck.ResetDeckInfoPanel();
 
             yield return ContinuousController.instance.StartCoroutine(Opening.instance.battle.selectBattleDeck.SetDeckList(false));
 

@@ -8,6 +8,8 @@ using System;
 
 public class ResizeWindow : MonoBehaviour
 {
+    private static readonly int OpenHash = Animator.StringToHash("Open");
+    private static readonly int CloseHash = Animator.StringToHash("Close");
     public Animator anim;
     public Toggle fullScreenToggle;
     public List<Button> switchWindowSizeButtons = new List<Button>();
@@ -20,8 +22,8 @@ public class ResizeWindow : MonoBehaviour
     {
         SetButtonsInteractable();
         gameObject.SetActive(true);
-        anim.SetInteger("Open", 1);
-        anim.SetInteger("Close", 0);
+        anim.SetInteger(OpenHash, 1);
+        anim.SetInteger(CloseHash, 0);
 
         if (fullScreenToggle != null)
         {
@@ -54,8 +56,8 @@ public class ResizeWindow : MonoBehaviour
             }
         }
 
-        anim.SetInteger("Open", 0);
-        anim.SetInteger("Close", 1);
+        anim.SetInteger(OpenHash, 0);
+        anim.SetInteger(CloseHash, 1);
     }
 
     public void SetUpWindowSize(string resolution)
@@ -89,7 +91,7 @@ public class ResizeWindow : MonoBehaviour
         //SetButtonsInteractable();
     }
 
-    public async void SetFullScreen(Toggle isFullScreen)
+    public /*async*/ void SetFullScreen(Toggle isFullScreen)
     {
 #if UNITY_EDITOR || !UNITY_STANDALONE
         Debug.Log(isFullScreen.isOn);

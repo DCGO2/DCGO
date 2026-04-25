@@ -152,357 +152,325 @@ public class ContinuousController : MonoBehaviour
 
     async Task CreateTokenData()
     {
-        DiaboromonToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.White },
-            PlayCost = 14,
-            Level = 6,
-            CardName_JPN = "ディアボロモン",
-            CardName_ENG = "Diaboromon",
-            Form_JPN = new List<string>() { "究極体" },
-            Form_ENG = new List<string>() { "Mega" },
-            Attribute_JPN = new List<string>() { "不明" },
-            Attribute_ENG = new List<string>() { "Unknown" },
-            Type_JPN = new List<string>() { "種族不明" },
-            Type_ENG = new List<string>() { "Unidentified" },
-            CardSpriteName = "BT2-082-token",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 3000,
-        };
+        DiaboromonToken = ScriptableObject.CreateInstance<CEntity_Base>();
+
+        DiaboromonToken.cardColors = new List<CardColor>() { CardColor.White };
+        DiaboromonToken.PlayCost = 14;
+        DiaboromonToken.Level = 6;
+        DiaboromonToken.CardName_JPN = "ディアボロモン";
+        DiaboromonToken.CardName_ENG = "Diaboromon";
+        DiaboromonToken.Form_JPN = new List<string>() { "究極体" };
+        DiaboromonToken.Form_ENG = new List<string>() { "Mega" };
+        DiaboromonToken.Attribute_JPN = new List<string>() { "不明" };
+        DiaboromonToken.Attribute_ENG = new List<string>() { "Unknown" };
+        DiaboromonToken.Type_JPN = new List<string>() { "種族不明" };
+        DiaboromonToken.Type_ENG = new List<string>() { "Unidentified" };
+        DiaboromonToken.CardSpriteName = "BT2-082-token";
+        DiaboromonToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        DiaboromonToken.DP = 3000;
 
         await DiaboromonToken.GetCardSprite();
 
-        AmonToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.Red },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "紅炎のアモン",
-            CardName_ENG = "Amon of Crimson Flame",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "BT14-018-token-red",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 6000,
-            CardEffectClassName = "BT4_038"
-        };
+        AmonToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        AmonToken.cardColors = new List<CardColor>() { CardColor.Red };
+        AmonToken.PlayCost = -1;
+        AmonToken.Level = 0;
+        AmonToken.CardName_JPN = "紅炎のアモン";
+        AmonToken.CardName_ENG = "Amon of Crimson Flame";
+        AmonToken.Form_JPN = new List<string>();
+        AmonToken.Form_ENG = new List<string>();
+        AmonToken.Attribute_JPN = new List<string>();
+        AmonToken.Attribute_ENG = new List<string>();
+        AmonToken.Type_JPN = new List<string>();
+        AmonToken.Type_ENG = new List<string>();
+        AmonToken.CardSpriteName = "BT14-018-token-red";
+        AmonToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        AmonToken.DP = 6000;
+        AmonToken.CardEffectClassName = "BT4_038";
 
         await AmonToken.GetCardSprite();
 
-        UmonToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.Yellow },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "蒼雷のウモン",
-            CardName_ENG = "Umon of Blue Thunder",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "BT14-018-token-yellow",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 6000,
-            CardEffectClassName = "BT1_031"
-        };
+        UmonToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        UmonToken.cardColors = new List<CardColor>() { CardColor.Yellow };
+        UmonToken.PlayCost = -1;
+        UmonToken.Level = 0;
+        UmonToken.CardName_JPN = "蒼雷のウモン";
+        UmonToken.CardName_ENG = "Umon of Blue Thunder";
+        UmonToken.Form_JPN = new List<string>();
+        UmonToken.Form_ENG = new List<string>();
+        UmonToken.Attribute_JPN = new List<string>();
+        UmonToken.Attribute_ENG = new List<string>();
+        UmonToken.Type_JPN = new List<string>();
+        UmonToken.Type_ENG = new List<string>();
+        UmonToken.CardSpriteName = "BT14-018-token-yellow";
+        UmonToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        UmonToken.DP = 6000;
+        UmonToken.CardEffectClassName = "BT1_031";
 
         await UmonToken.GetCardSprite();
 
-        FujitsumonToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.Purple },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "フジツモン",
-            CardName_ENG = "Fujitsumon",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "EX5-058-token",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 3000,
-            CardEffectClassName = "EX5_058_token"
-        };
+        FujitsumonToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        FujitsumonToken.cardColors = new List<CardColor>() { CardColor.Purple };
+        FujitsumonToken.PlayCost = -1;
+        FujitsumonToken.Level = 0;
+        FujitsumonToken.CardName_JPN = "フジツモン";
+        FujitsumonToken.CardName_ENG = "Fujitsumon";
+        FujitsumonToken.Form_JPN = new List<string>();
+        FujitsumonToken.Form_ENG = new List<string>();
+        FujitsumonToken.Attribute_JPN = new List<string>();
+        FujitsumonToken.Attribute_ENG = new List<string>();
+        FujitsumonToken.Type_JPN = new List<string>();
+        FujitsumonToken.Type_ENG = new List<string>();
+        FujitsumonToken.CardSpriteName = "EX5-058-token";
+        FujitsumonToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        FujitsumonToken.DP = 3000;
+        FujitsumonToken.CardEffectClassName = "EX5_058_token";
 
         await FujitsumonToken.GetCardSprite();
 
-        GyuukimonToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.Purple },
-            PlayCost = 7,
-            Level = 5,
-            CardName_JPN = "ギュウキモン",
-            CardName_ENG = "Gyuukimon",
-            Form_JPN = new List<string>() { "究極の" },
-            Form_ENG = new List<string>() { "Ultimate" },
-            Attribute_JPN = new List<string>() { "ウイルス" },
-            Attribute_ENG = new List<string>() { "Virus" },
-            Type_JPN = new List<string>() { "ダークアニマル" },
-            Type_ENG = new List<string>() { "Dark Animal" },
-            CardSpriteName = "LM-018-token",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 3000,
-        };
+        GyuukimonToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        GyuukimonToken.cardColors = new List<CardColor>() { CardColor.Purple };
+        GyuukimonToken.PlayCost = 7;
+        GyuukimonToken.Level = 5;
+        GyuukimonToken.CardName_JPN = "ギュウキモン";
+        GyuukimonToken.CardName_ENG = "Gyuukimon";
+        GyuukimonToken.Form_JPN = new List<string>() { "究極の" };
+        GyuukimonToken.Form_ENG = new List<string>() { "Ultimate" };
+        GyuukimonToken.Attribute_JPN = new List<string>() { "ウイルス" };
+        GyuukimonToken.Attribute_ENG = new List<string>() { "Virus" };
+        GyuukimonToken.Type_JPN = new List<string>() { "ダークアニマル" };
+        GyuukimonToken.Type_ENG = new List<string>() { "Dark Animal" };
+        GyuukimonToken.CardSpriteName = "LM-018-token";
+        GyuukimonToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        GyuukimonToken.DP = 3000;
+        GyuukimonToken.CardEffectClassName = "LM_018_token";
 
         await GyuukimonToken.GetCardSprite();
 
-        KoHagurumonToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.Black },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "",
-            CardName_ENG = "KoHagurumon",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "BT16-052-token",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 1000,
-            CardEffectClassName = "BT16_052_token"
-        };
+        KoHagurumonToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        KoHagurumonToken.cardColors = new List<CardColor>() { CardColor.Black };
+        KoHagurumonToken.PlayCost = -1;
+        KoHagurumonToken.Level = 0;
+        KoHagurumonToken.CardName_JPN = "";
+        KoHagurumonToken.CardName_ENG = "KoHagurumon";
+        KoHagurumonToken.Form_JPN = new List<string>();
+        KoHagurumonToken.Form_ENG = new List<string>();
+        KoHagurumonToken.Attribute_JPN = new List<string>();
+        KoHagurumonToken.Attribute_ENG = new List<string>();
+        KoHagurumonToken.Type_JPN = new List<string>();
+        KoHagurumonToken.Type_ENG = new List<string>();
+        KoHagurumonToken.CardSpriteName = "BT16-052-token";
+        KoHagurumonToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        KoHagurumonToken.DP = 1000;
+        KoHagurumonToken.CardEffectClassName = "BT16_052_token";
 
         await KoHagurumonToken.GetCardSprite();
         
-        FamiliarToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.Yellow },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "",
-            CardName_ENG = "Familiar",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "EX7-030-token",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 3000,
-            CardEffectClassName = "EX7_030_token"
-        };
+        FamiliarToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        FamiliarToken.cardColors = new List<CardColor>() { CardColor.Yellow };
+        FamiliarToken.PlayCost = -1;
+        FamiliarToken.Level = 0;
+        FamiliarToken.CardName_JPN = "";
+        FamiliarToken.CardName_ENG = "Familiar";
+        FamiliarToken.Form_JPN = new List<string>();
+        FamiliarToken.Form_ENG = new List<string>();
+        FamiliarToken.Attribute_JPN = new List<string>();
+        FamiliarToken.Attribute_ENG = new List<string>();
+        FamiliarToken.Type_JPN = new List<string>();
+        FamiliarToken.Type_ENG = new List<string>();
+        FamiliarToken.CardSpriteName = "EX7-030-token";
+        FamiliarToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        FamiliarToken.DP = 3000;
+        FamiliarToken.CardEffectClassName = "EX7_030_token";
 
         await FamiliarToken.GetCardSprite();
         
-        SelfDeleteFamiliarToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.Yellow },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "",
-            CardName_ENG = "Familiar",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "EX7-030-token",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 3000,
-            CardEffectClassName = "P_165_token"
-        };
+        SelfDeleteFamiliarToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        SelfDeleteFamiliarToken.cardColors = new List<CardColor>() { CardColor.Yellow };
+        SelfDeleteFamiliarToken.PlayCost = -1;
+        SelfDeleteFamiliarToken.Level = 0;
+        SelfDeleteFamiliarToken.CardName_JPN = "";
+        SelfDeleteFamiliarToken.CardName_ENG = "Familiar";
+        SelfDeleteFamiliarToken.Form_JPN = new List<string>();
+        SelfDeleteFamiliarToken.Form_ENG = new List<string>();
+        SelfDeleteFamiliarToken.Attribute_JPN = new List<string>();
+        SelfDeleteFamiliarToken.Attribute_ENG = new List<string>();
+        SelfDeleteFamiliarToken.Type_JPN = new List<string>();
+        SelfDeleteFamiliarToken.Type_ENG = new List<string>();
+        SelfDeleteFamiliarToken.CardSpriteName = "EX7-030-token";
+        SelfDeleteFamiliarToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        SelfDeleteFamiliarToken.DP = 3000;
+        SelfDeleteFamiliarToken.CardEffectClassName = "P_165_token";
 
         await SelfDeleteFamiliarToken.GetCardSprite();
 
-        VoleeZerdruckenToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.Purple },
-            PlayCost = -1,
-            Level = 4,
-            CardName_JPN = "",
-            CardName_ENG = "Volée & Zerdrücken",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "EX7-058-token",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 5000,
-            CardEffectClassName = "EX7_058_token"
-        };
+        VoleeZerdruckenToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        VoleeZerdruckenToken.cardColors = new List<CardColor>() { CardColor.Purple };
+        VoleeZerdruckenToken.PlayCost = -1;
+        VoleeZerdruckenToken.Level = 4;
+        VoleeZerdruckenToken.CardName_JPN = "";
+        VoleeZerdruckenToken.CardName_ENG = "Volée & Zerdrücken";
+        VoleeZerdruckenToken.Form_JPN = new List<string>();
+        VoleeZerdruckenToken.Form_ENG = new List<string>();
+        VoleeZerdruckenToken.Attribute_JPN = new List<string>();
+        VoleeZerdruckenToken.Attribute_ENG = new List<string>();
+        VoleeZerdruckenToken.Type_JPN = new List<string>();
+        VoleeZerdruckenToken.Type_ENG = new List<string>();
+        VoleeZerdruckenToken.CardSpriteName = "EX7-058-token";
+        VoleeZerdruckenToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        VoleeZerdruckenToken.DP = 5000;
+        VoleeZerdruckenToken.CardEffectClassName = "EX7_058_token";
 
         await VoleeZerdruckenToken.GetCardSprite();
 
-        UkaNoMitamaToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.Yellow },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "",
-            CardName_ENG = "Uka-no-Mitama",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "EX8-037-token",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 9000,
-            CardEffectClassName = "EX8_037_token"
-        };
+        UkaNoMitamaToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        UkaNoMitamaToken.cardColors = new List<CardColor>() { CardColor.Yellow };
+        UkaNoMitamaToken.PlayCost = -1;
+        UkaNoMitamaToken.Level = 0;
+        UkaNoMitamaToken.CardName_JPN = "";
+        UkaNoMitamaToken.CardName_ENG = "Uka-no-Mitama";
+        UkaNoMitamaToken.Form_JPN = new List<string>();
+        UkaNoMitamaToken.Form_ENG = new List<string>();
+        UkaNoMitamaToken.Attribute_JPN = new List<string>();
+        UkaNoMitamaToken.Attribute_ENG = new List<string>();
+        UkaNoMitamaToken.Type_JPN = new List<string>();
+        UkaNoMitamaToken.Type_ENG = new List<string>();
+        UkaNoMitamaToken.CardSpriteName = "EX8-037-token";
+        UkaNoMitamaToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        UkaNoMitamaToken.DP = 9000;
+        UkaNoMitamaToken.CardEffectClassName = "EX8_037_token";
 
         await UkaNoMitamaToken.GetCardSprite();
 
-        WarGrowlmonToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.Red },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "",
-            CardName_ENG = "WarGrowlmon",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "BT19-091-token-red",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 6000
-        };
+        WarGrowlmonToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        WarGrowlmonToken.cardColors = new List<CardColor>() { CardColor.Red };
+        WarGrowlmonToken.PlayCost = -1;
+        WarGrowlmonToken.Level = 0;
+        WarGrowlmonToken.CardName_JPN = "";
+        WarGrowlmonToken.CardName_ENG = "WarGrowlmon";
+        WarGrowlmonToken.Form_JPN = new List<string>();
+        WarGrowlmonToken.Form_ENG = new List<string>();
+        WarGrowlmonToken.Attribute_JPN = new List<string>();
+        WarGrowlmonToken.Attribute_ENG = new List<string>();
+        WarGrowlmonToken.Type_JPN = new List<string>();
+        WarGrowlmonToken.Type_ENG = new List<string>();
+        WarGrowlmonToken.CardSpriteName = "BT19-091-token-red";
+        WarGrowlmonToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        WarGrowlmonToken.DP = 6000;
 
         await WarGrowlmonToken.GetCardSprite();
 
-        TaomonToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.Yellow },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "",
-            CardName_ENG = "Taomon",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "BT19-091-token-yellow",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 6000
-        };
+        TaomonToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        TaomonToken.cardColors = new List<CardColor>() { CardColor.Yellow };
+        TaomonToken.PlayCost = -1;
+        TaomonToken.Level = 0;
+        TaomonToken.CardName_JPN = "";
+        TaomonToken.CardName_ENG = "Taomon";
+        TaomonToken.Form_JPN = new List<string>();
+        TaomonToken.Form_ENG = new List<string>();
+        TaomonToken.Attribute_JPN = new List<string>();
+        TaomonToken.Attribute_ENG = new List<string>();
+        TaomonToken.Type_JPN = new List<string>();
+        TaomonToken.Type_ENG = new List<string>();
+        TaomonToken.CardSpriteName = "BT19-091-token-yellow";
+        TaomonToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        TaomonToken.DP = 6000;
 
         await TaomonToken.GetCardSprite();
         
-        RapidmonToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.Green },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "",
-            CardName_ENG = "Rapidmon",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "BT19-091-token-green",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 6000
-        };
+        RapidmonToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        RapidmonToken.cardColors = new List<CardColor>() { CardColor.Green };
+        RapidmonToken.PlayCost = -1;
+        RapidmonToken.Level = 0;
+        RapidmonToken.CardName_JPN = "";
+        RapidmonToken.CardName_ENG = "Rapidmon";
+        RapidmonToken.Form_JPN = new List<string>();
+        RapidmonToken.Form_ENG = new List<string>();
+        RapidmonToken.Attribute_JPN = new List<string>();
+        RapidmonToken.Attribute_ENG = new List<string>();
+        RapidmonToken.Type_JPN = new List<string>();
+        RapidmonToken.Type_ENG = new List<string>();
+        RapidmonToken.CardSpriteName = "BT19-091-token-green";
+        RapidmonToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        RapidmonToken.DP = 6000;
 
         await RapidmonToken.GetCardSprite();
 
-        PipeFoxToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.Yellow },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "",
-            CardName_ENG = "Pipe-Fox",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "BT19-040-token",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 6000,
-            CardEffectClassName = "BT19_040_token"
-        };
+        PipeFoxToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        PipeFoxToken.cardColors = new List<CardColor>() { CardColor.Yellow };
+        PipeFoxToken.PlayCost = -1;
+        PipeFoxToken.Level = 0;
+        PipeFoxToken.CardName_JPN = "";
+        PipeFoxToken.CardName_ENG = "Pipe-Fox";
+        PipeFoxToken.Form_JPN = new List<string>();
+        PipeFoxToken.Form_ENG = new List<string>();
+        PipeFoxToken.Attribute_JPN = new List<string>();
+        PipeFoxToken.Attribute_ENG = new List<string>();
+        PipeFoxToken.Type_JPN = new List<string>();
+        PipeFoxToken.Type_ENG = new List<string>();
+        PipeFoxToken.CardSpriteName = "BT19-040-token";
+        PipeFoxToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        PipeFoxToken.DP = 6000;
+        PipeFoxToken.CardEffectClassName = "BT19_040_token";
 
         await PipeFoxToken.GetCardSprite();
 
-        AthoRenePorToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.White },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "",
-            CardName_ENG = "Atho, René & Por",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "BT20-017-token",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 6000,
-            CardEffectClassName = "BT20_017_token"
-        };
+        AthoRenePorToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        AthoRenePorToken.cardColors = new List<CardColor>() { CardColor.White };
+        AthoRenePorToken.PlayCost = -1;
+        AthoRenePorToken.Level = 0;
+        AthoRenePorToken.CardName_JPN = "";
+        AthoRenePorToken.CardName_ENG = "Atho, René & Por";
+        AthoRenePorToken.Form_JPN = new List<string>();
+        AthoRenePorToken.Form_ENG = new List<string>();
+        AthoRenePorToken.Attribute_JPN = new List<string>();
+        AthoRenePorToken.Attribute_ENG = new List<string>();
+        AthoRenePorToken.Type_JPN = new List<string>();
+        AthoRenePorToken.Type_ENG = new List<string>();
+        AthoRenePorToken.CardSpriteName = "BT20-017-token";
+        AthoRenePorToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        AthoRenePorToken.DP = 6000;
+        AthoRenePorToken.CardEffectClassName = "BT20_017_token";
 
         await AthoRenePorToken.GetCardSprite();
 
-        HinukamuyToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.White },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "",
-            CardName_ENG = "HinukamuyToken",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "BT23-057-token",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 6000,
-            CardEffectClassName = "BT23_057_token"
-        };
+        HinukamuyToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        HinukamuyToken.cardColors = new List<CardColor>() { CardColor.White };
+        HinukamuyToken.PlayCost = -1;
+        HinukamuyToken.Level = 0;
+        HinukamuyToken.CardName_JPN = "";
+        HinukamuyToken.CardName_ENG = "HinukamuyToken";
+        HinukamuyToken.Form_JPN = new List<string>();
+        HinukamuyToken.Form_ENG = new List<string>();
+        HinukamuyToken.Attribute_JPN = new List<string>();
+        HinukamuyToken.Attribute_ENG = new List<string>();
+        HinukamuyToken.Type_JPN = new List<string>();
+        HinukamuyToken.Type_ENG = new List<string>();
+        HinukamuyToken.CardSpriteName = "BT23-057-token";
+        HinukamuyToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        HinukamuyToken.DP = 6000;
+        HinukamuyToken.CardEffectClassName = "BT23_057_token";
 
         await HinukamuyToken.GetCardSprite();
 
         
 
-        PetrificationToken = new CEntity_Base()
-        {
-            cardColors = new List<CardColor>() { CardColor.White },
-            PlayCost = -1,
-            Level = 0,
-            CardName_JPN = "",
-            CardName_ENG = "Petrification",
-            Form_JPN = new List<string>(),
-            Form_ENG = new List<string>(),
-            Attribute_JPN = new List<string>(),
-            Attribute_ENG = new List<string>(),
-            Type_JPN = new List<string>(),
-            Type_ENG = new List<string>(),
-            CardSpriteName = "BT21-029-token",
-            cardKind = new List<CardKind> { CardKind.Digimon },
-            DP = 3000,
-            CardEffectClassName = "BT21_029_token"
-        };
+        PetrificationToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        PetrificationToken.cardColors = new List<CardColor>() { CardColor.White };
+        PetrificationToken.PlayCost = -1;
+        PetrificationToken.Level = 0;
+        PetrificationToken.CardName_JPN = "";
+        PetrificationToken.CardName_ENG = "Petrification";
+        PetrificationToken.Form_JPN = new List<string>();
+        PetrificationToken.Form_ENG = new List<string>();
+        PetrificationToken.Attribute_JPN = new List<string>();
+        PetrificationToken.Attribute_ENG = new List<string>();
+        PetrificationToken.Type_JPN = new List<string>();
+        PetrificationToken.Type_ENG = new List<string>();
+        PetrificationToken.CardSpriteName = "BT21-029-token";
+        PetrificationToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        PetrificationToken.DP = 3000;
+        PetrificationToken.CardEffectClassName = "BT21_029_token";
 
         await PetrificationToken.GetCardSprite();
     }
@@ -1540,9 +1508,7 @@ public static class RandomUtility
             int k = GameRandom.Range(0, n + 1);
 
             // Swap elements at indices n and k
-            CEntity_Base temp = CardDatas[n];
-            CardDatas[n] = CardDatas[k];
-            CardDatas[k] = temp;
+            (CardDatas[k], CardDatas[n]) = (CardDatas[n], CardDatas[k]);
         }
 
 
