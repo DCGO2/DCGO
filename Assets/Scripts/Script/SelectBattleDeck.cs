@@ -65,10 +65,10 @@ public class SelectBattleDeck : MonoBehaviour
         }
     }
 
-    bool once = false;
+    bool _once = false;
     public void OnClickSelectButton_RandomMatch()
     {
-        if (once || deckInfoPanel.ShowingDeckData == null)
+        if (_once || deckInfoPanel.ShowingDeckData == null)
         {
             return;
         }
@@ -82,7 +82,7 @@ public class SelectBattleDeck : MonoBehaviour
 
     public void OnClickSelectButton_BotMatch()
     {
-        if (once || deckInfoPanel.ShowingDeckData == null)
+        if (_once || deckInfoPanel.ShowingDeckData == null)
         {
             return;
         }
@@ -94,7 +94,7 @@ public class SelectBattleDeck : MonoBehaviour
 
     public IEnumerator OnClickSelectButton_RoomMatchCoroutine()
     {
-        if (once || deckInfoPanel.ShowingDeckData == null)
+        if (_once || deckInfoPanel.ShowingDeckData == null)
         {
             yield break;
         }
@@ -110,9 +110,9 @@ public class SelectBattleDeck : MonoBehaviour
 
     IEnumerator SetOnce()
     {
-        once = true;
+        _once = true;
         yield return _waitForSeconds1;
-        once = false;
+        _once = false;
     }
 
     public void Off()
@@ -132,7 +132,7 @@ public class SelectBattleDeck : MonoBehaviour
 
     public UnityAction OnCloseSelectBattleDeckAction;
 
-    public async void SetUpSelectBattleDeck(UnityAction OnClickSelectButtonAction, int defaulSelectDeckIndex)
+    public async void SetUpSelectBattleDeck(UnityAction OnClickSelectButtonAction, int _)
     {
         if (SelectDeckObject.activeSelf)
         {
@@ -146,7 +146,7 @@ public class SelectBattleDeck : MonoBehaviour
         SelectDeckObject.SetActive(true);
 
         anim.SafeSetInt(OpenHash, 1);
-        anim.SetInteger(CloseHash, 0);
+        anim.SafeSetInt(CloseHash, 0);
 
         ContinuousController.instance.StartCoroutine(SetDeckList(true));
 
@@ -226,8 +226,8 @@ public class SelectBattleDeck : MonoBehaviour
             Opening.instance.PlayCancelSE();
         }
 
-        anim.SetInteger(OpenHash, 0);
-        anim.SetInteger(CloseHash, 1);
+        anim.SafeSetInt(OpenHash, 0);
+        anim.SafeSetInt(CloseHash, 1);
     }
 
     public async Task ResetDeckInfoPanel()
