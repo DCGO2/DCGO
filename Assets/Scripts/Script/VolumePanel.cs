@@ -1,11 +1,10 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class VolumePanel : MonoBehaviour
 {
+    private static WaitForSeconds _waitForSeconds0_15 = new WaitForSeconds(0.15f);
     private static readonly int CloseHash = Animator.StringToHash("Close");
     private static readonly int OpenHash = Animator.StringToHash("Open");
     [Header("SEスライダー")]
@@ -42,8 +41,8 @@ public class VolumePanel : MonoBehaviour
         });
 
         gameObject.SetActive(true);
-        anim.SetInteger("Open", 1);
-        anim.SetInteger("Close", 0);
+        anim.SafeSetInt(OpenHash, 1);
+        anim.SafeSetInt(CloseHash, 0);
     }
 
     public void Off()
@@ -100,7 +99,7 @@ public class VolumePanel : MonoBehaviour
 
     bool _notPlaySample = false;
 
-    public void PlaySampleSE(float value)
+    public void PlaySampleSE(float _)
     {
         if (Opening.instance != null)
         {
@@ -125,7 +124,7 @@ public class VolumePanel : MonoBehaviour
     {
         _notPlaySample = true;
 
-        yield return new WaitForSeconds(0.15f);
+        yield return _waitForSeconds0_15;
 
         _notPlaySample = false;
     }

@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -59,7 +59,7 @@ public class CardImagePanel : OffAnimation
         {
             _infoText.text = LocalizeUtility.GetLocalizedString(
                                 EngMessage: $"The following {lackCardImageCardEntities.Count} card images are not set.",
-                                JpnMessage: $"ˆÈ‰º‚Ì {lackCardImageCardEntities.Count}–‡‚Ì\nƒJ[ƒh‰æ‘œ‚ªƒZƒbƒg‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB"
+                                JpnMessage: $"ä»¥ä¸‹ã® {lackCardImageCardEntities.Count}æšã®\nã‚«ãƒ¼ãƒ‰ç”»åƒãŒã‚»ãƒƒãƒˆã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚"
                             );
 
             _lackCardImagesObject.SetActive(true);
@@ -71,7 +71,7 @@ public class CardImagePanel : OffAnimation
         {
             _infoText.text = LocalizeUtility.GetLocalizedString(
                                 EngMessage: "All card images are set.",
-                                JpnMessage: "ƒJ[ƒh‰æ‘œ‚Í‘S‚ÄƒZƒbƒg‚³‚ê‚Ä‚¢‚Ü‚·B"
+                                JpnMessage: "ã‚«ãƒ¼ãƒ‰ç”»åƒã¯å…¨ã¦ã‚»ãƒƒãƒˆã•ã‚Œã¦ã„ã¾ã™ã€‚"
                             );
         }
     }
@@ -132,7 +132,7 @@ public class CardImagePanel : OffAnimation
             CommandTexts,
             LocalizeUtility.GetLocalizedString(
             EngMessage: "The list of card image names has been copied to the clipboard!",
-            JpnMessage: "ƒJ[ƒh‰æ‘œ–¼ˆê——‚ğ\nƒNƒŠƒbƒvƒ{[ƒh‚ÉƒRƒs[‚µ‚Ü‚µ‚½!"
+            JpnMessage: "ã‚«ãƒ¼ãƒ‰ç”»åƒåä¸€è¦§ã‚’\nã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰ã«ã‚³ãƒ”ãƒ¼ã—ã¾ã—ãŸ!"
         ),
             true);
     }

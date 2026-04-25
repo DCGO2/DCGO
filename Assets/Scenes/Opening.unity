@@ -64666,6 +64666,7 @@ GameObject:
   - component: {fileID: 1576401445}
   - component: {fileID: 1576401446}
   - component: {fileID: 1576401447}
+  - component: {fileID: 1576401448}
   m_Layer: 5
   m_Name: DeckInfoPanel
   m_TagString: Untagged
@@ -64737,6 +64738,27 @@ MonoBehaviour:
   DeckCountText: {fileID: 1988002286}
   TrialDrawButton: {fileID: 5506376018178374681}
   isFromSelectDeck: 0
+--- !u!95 &1576401448
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1576401444}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 89b572d6698ea714097bf5420918e98c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1582264489
 GameObject:
   m_ObjectHideFlags: 0
@@ -72852,6 +72874,7 @@ GameObject:
   - component: {fileID: 1792775834}
   - component: {fileID: 1792775836}
   - component: {fileID: 1792775835}
+  - component: {fileID: 1792775837}
   m_Layer: 5
   m_Name: DeckInfoPanel
   m_TagString: Untagged
@@ -72923,6 +72946,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1792775833}
   m_CullTransparentMesh: 0
+--- !u!95 &1792775837
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1792775833}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1795074585
 GameObject:
   m_ObjectHideFlags: 0
@@ -89882,6 +89926,7 @@ GameObject:
   - component: {fileID: 2123878073}
   - component: {fileID: 2123878075}
   - component: {fileID: 2123878074}
+  - component: {fileID: 2123878076}
   m_Layer: 5
   m_Name: DeckInfoPanel
   m_TagString: Untagged
@@ -89953,6 +89998,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2123878072}
   m_CullTransparentMesh: 0
+--- !u!95 &2123878076
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2123878072}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2125303686
 GameObject:
   m_ObjectHideFlags: 0
@@ -105731,6 +105797,7 @@ GameObject:
   - component: {fileID: 7827412352382397946}
   - component: {fileID: 7827412352382397944}
   - component: {fileID: 7827412352382397945}
+  - component: {fileID: 7827412352382397950}
   m_Layer: 5
   m_Name: DeckInfoPanel
   m_TagString: Untagged
@@ -105738,6 +105805,27 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!95 &7827412352382397950
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7827412352382397949}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!222 &7827412352585523691
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -106837,6 +106925,7 @@ GameObject:
   - component: {fileID: 7827412352956199575}
   - component: {fileID: 7827412352956199570}
   - component: {fileID: 7827412352956199571}
+  - component: {fileID: 7827412352956199576}
   m_Layer: 0
   m_Name: Opening
   m_TagString: Untagged
@@ -106859,6 +106948,20 @@ MonoBehaviour:
   playerInfo: {fileID: 7827412351893259071}
   loadingObject: {fileID: 1378047648}
   UpdateButtonParent: {fileID: 0}
+--- !u!114 &7827412352956199576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7827412352956199574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2a696ce2a233204c9fc6c9d84bf9750, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  URL: 
+  HashTacgs: []
 --- !u!222 &7827412353023664826
 CanvasRenderer:
   m_ObjectHideFlags: 0

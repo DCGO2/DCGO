@@ -28,8 +28,8 @@ public class SelectDeck : OffAnimation
     public void OffSelectDeck()
     {
         anim.enabled = true;
-        anim.SafeSetInt(OpenHash, 1);
-        anim.SafeSetInt(CloseHash, 0);
+        anim.SafeSetInt(OpenHash, 0);
+        anim.SafeSetInt(CloseHash, 1);
 
         isOpen = false;
     }
