@@ -7,6 +7,8 @@ using UnityEngine.Events;
 
 public class SelectDeck : OffAnimation
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
     [Header("Select Deck Object")]
     public GameObject SelectDeckObject;
 
@@ -27,8 +29,8 @@ public class SelectDeck : OffAnimation
     public void OffSelectDeck()
     {
         anim.enabled = true;
-        anim.SetInteger("Open", 0);
-        anim.SetInteger("Close", 1);
+        anim.SetInteger(OpenHash, 0);
+        anim.SetInteger(CloseHash, 1);
 
         isOpen = false;
     }
@@ -68,8 +70,8 @@ public class SelectDeck : OffAnimation
 
         SelectDeckObject.SetActive(true);
 
-        anim.SetInteger("Open", 1);
-        anim.SetInteger("Close", 0);
+        anim.SetInteger(OpenHash, 1);
+        anim.SetInteger(CloseHash, 0);
 
         if (ContinuousController.instance.DeckDatas.Count > 0)
         {
@@ -120,9 +122,9 @@ public class SelectDeck : OffAnimation
 
             _deckInfoPrefab.transform.localScale = Opening.instance.DeckInfoPrefabStartScale * 1.02f;
 
-            _deckInfoPrefab.OnClickAction = (deckdata) =>
+            _deckInfoPrefab.OnClickAction = async (deckdata) =>
             {
-                deckInfoPanel.SetUpDeckInfoPanel(deckdata);
+                await deckInfoPanel.SetUpDeckInfoPanel(deckdata);
 
                 Opening.instance.CreateOnClickEffect();
             };

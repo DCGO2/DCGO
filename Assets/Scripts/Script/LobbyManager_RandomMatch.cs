@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 using System;
 public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
     private static WaitForSeconds _waitForSeconds0_2 = new WaitForSeconds(0.2f);
     private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
     private static WaitForSeconds _waitForSeconds0_5 = new WaitForSeconds(0.5f);
@@ -63,8 +65,8 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         //this.battleRule = battleRule;
         ContinuousController.instance.StartCoroutine(ConnectCoroutine());
 
-        anim.SetInteger("Open", 1);
-        anim.SetInteger("Close", 0);
+        anim.SetInteger(OpenHash, 1);
+        anim.SetInteger(CloseHash, 0);
     }
     #endregion
 
@@ -183,7 +185,9 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 
         if (ContinuousController.instance.BattleDeckData != null)
         {
-            deckInfoPanel.SetUpDeckInfoPanel(ContinuousController.instance.BattleDeckData);
+            _ = deckInfoPanel.SetUpDeckInfoPanel(
+                ContinuousController.instance.BattleDeckData
+            );
         }
 
         if (ReturnButton != null)

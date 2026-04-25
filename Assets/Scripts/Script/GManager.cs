@@ -229,7 +229,7 @@ public class GManager : MonoBehaviourPun
     
     #endregion
 
-    private async void Awake()
+    private /*async*/ void Awake()
     {
         //return;
 

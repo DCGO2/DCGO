@@ -1,14 +1,13 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
-using System.Linq;
+using System.Threading.Tasks;
 
 public class SelectBattleDeck : MonoBehaviour
 {
+    private static readonly int OpenHash = Animator.StringToHash("Open");
+    private static readonly int CloseHash = Animator.StringToHash("Close");
     private static WaitForSeconds _waitForSeconds1 = new WaitForSeconds(1f);
     [Header("Deck selection object")]
     public GameObject SelectDeckObject;
@@ -146,8 +145,8 @@ public class SelectBattleDeck : MonoBehaviour
 
         SelectDeckObject.SetActive(true);
 
-        anim.SetInteger("Open", 1);
-        anim.SetInteger("Close", 0);
+        anim.SetInteger(OpenHash, 1);
+        anim.SetInteger(CloseHash, 0);
 
         ContinuousController.instance.StartCoroutine(SetDeckList(true));
 
@@ -169,7 +168,7 @@ public class SelectBattleDeck : MonoBehaviour
 
         else
         {
-            ResetDeckInfoPanel();
+            await ResetDeckInfoPanel();
         }
 
         /*
@@ -227,13 +226,13 @@ public class SelectBattleDeck : MonoBehaviour
             Opening.instance.PlayCancelSE();
         }
 
-        anim.SetInteger("Open", 0);
-        anim.SetInteger("Close", 1);
+        anim.SetInteger(OpenHash, 0);
+        anim.SetInteger(CloseHash, 1);
     }
 
-    public void ResetDeckInfoPanel()
+    public async Task ResetDeckInfoPanel()
     {
-        deckInfoPanel.SetUpDeckInfoPanel(null);
+        await deckInfoPanel.SetUpDeckInfoPanel(null);
     }
 
     public IEnumerator SetDeckList(bool open)
@@ -257,9 +256,9 @@ public class SelectBattleDeck : MonoBehaviour
 
             _deckInfoPrefab.transform.localScale = Opening.instance.DeckInfoPrefabStartScale * 1.02f;
 
-            _deckInfoPrefab.OnClickAction = (deckdata) =>
+            _deckInfoPrefab.OnClickAction = async (deckdata) =>
             {
-                deckInfoPanel.SetUpDeckInfoPanel(deckdata);
+                await deckInfoPanel.SetUpDeckInfoPanel(deckdata);
 
                 SetSelectDeckButton();
 
