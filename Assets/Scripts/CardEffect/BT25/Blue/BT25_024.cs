@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.BT25
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.EqualsCardName("Crescemon")
-                        && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass); ;
+                        && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
