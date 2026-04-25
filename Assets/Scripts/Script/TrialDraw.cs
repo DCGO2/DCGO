@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 
 public class TrialDraw : MonoBehaviour
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
     public CardPrefab_CreateDeck cardPrefab_CreateDeckPrefab;
     public Animator anim;
 
@@ -122,15 +124,15 @@ public class TrialDraw : MonoBehaviour
     public void Open()
     {
         On();
-        anim.SetInteger("Open", 1);
-        anim.SetInteger("Close", 0);
+        anim.SafeSetInt(OpenHash, 1);
+        anim.SafeSetInt(CloseHash, 0);
     }
 
     public void Close()
     {
         //OffDetailCard();
-        anim.SetInteger("Open", 0);
-        anim.SetInteger("Close", 1);
+        anim.SafeSetInt(OpenHash, 0);
+        anim.SafeSetInt(CloseHash, 1);
     }
 
     public void On()

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 using UnityEngine.Events;
 
 public class SelectDeck : OffAnimation
@@ -29,8 +28,8 @@ public class SelectDeck : OffAnimation
     public void OffSelectDeck()
     {
         anim.enabled = true;
-        anim.SetInteger(OpenHash, 0);
-        anim.SetInteger(CloseHash, 1);
+        anim.SafeSetInt(OpenHash, 1);
+        anim.SafeSetInt(CloseHash, 0);
 
         isOpen = false;
     }
@@ -70,8 +69,8 @@ public class SelectDeck : OffAnimation
 
         SelectDeckObject.SetActive(true);
 
-        anim.SetInteger(OpenHash, 1);
-        anim.SetInteger(CloseHash, 0);
+        anim.SafeSetInt(OpenHash, 1);
+        anim.SafeSetInt(CloseHash, 0);
 
         if (ContinuousController.instance.DeckDatas.Count > 0)
         {

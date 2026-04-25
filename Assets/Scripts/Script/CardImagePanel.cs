@@ -7,6 +7,9 @@ using UnityEngine.Events;
 
 public class CardImagePanel : OffAnimation
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
+    private static WaitForSeconds _waitForSeconds0_25 = new WaitForSeconds(0.25f);
     [SerializeField] TextMeshProUGUI _infoText;
     [SerializeField] TMP_InputField _cardIDsInput;
     [SerializeField] GameObject _lackCardImagesObject;
@@ -41,13 +44,13 @@ public class CardImagePanel : OffAnimation
     {
         _isOpen = true;
         gameObject.SetActive(true);
-        _anim.SetInteger("Open", 1);
-        _anim.SetInteger("Close", 0);
-        _lackCardImagesObject.gameObject.SetActive(false);
+        _anim.SafeSetInt(OpenHash, 1);
+        _anim.SafeSetInt(CloseHash, 0);
+        _lackCardImagesObject.SetActive(false);
         _infoText.text = "";
         _cardIDsInput.text = "";
 
-        yield return new WaitForSeconds(0.25f);
+        yield return _waitForSeconds0_25;
 
         List<CEntity_Base> lackCardImageCardEntities = ContinuousController.instance.CardList
         .Filter(cEntity_Base => !StreamingAssetsUtility.IsCardExists(cEntity_Base)).ToList();
@@ -59,7 +62,7 @@ public class CardImagePanel : OffAnimation
                                 JpnMessage: $"以下の {lackCardImageCardEntities.Count}枚の\nカード画像がセットされていません。"
                             );
 
-            _lackCardImagesObject.gameObject.SetActive(true);
+            _lackCardImagesObject.SetActive(true);
 
             _cardIDsInput.text = string.Join(", ", lackCardImageCardEntities.Map(cEntity_Base => cEntity_Base.CardSpriteName));
         }
@@ -106,8 +109,8 @@ public class CardImagePanel : OffAnimation
             }
         }
 
-        _anim.SetInteger("Open", 0);
-        _anim.SetInteger("Close", 1);
+        _anim.SafeSetInt(OpenHash, 0);
+        _anim.SafeSetInt(CloseHash, 1);
     }
 
     public void OnClickCopyButton()

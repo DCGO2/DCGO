@@ -49,8 +49,8 @@ public class DeckInfoPanel : MonoBehaviour
         {
             if (GetComponent<Animator>() != null)
             {
-                GetComponent<Animator>().SetInteger(OpenHash, 1);
-                GetComponent<Animator>().SetInteger(CloseHash, 0);
+                GetComponent<Animator>().SafeSetInt(OpenHash, 1);
+                GetComponent<Animator>().SafeSetInt(CloseHash, 0);
             }
 
             ShowingDeckData = deckData;

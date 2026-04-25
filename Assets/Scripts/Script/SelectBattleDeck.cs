@@ -145,7 +145,7 @@ public class SelectBattleDeck : MonoBehaviour
 
         SelectDeckObject.SetActive(true);
 
-        anim.SetInteger(OpenHash, 1);
+        anim.SafeSetInt(OpenHash, 1);
         anim.SetInteger(CloseHash, 0);
 
         ContinuousController.instance.StartCoroutine(SetDeckList(true));

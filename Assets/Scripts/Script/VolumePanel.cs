@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class VolumePanel : MonoBehaviour
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
     [Header("SEスライダー")]
     public Slider SESlier;
 
@@ -69,8 +71,8 @@ public class VolumePanel : MonoBehaviour
             }
         }
 
-        anim.SetInteger("Open", 0);
-        anim.SetInteger("Close", 1);
+        anim.SafeSetInt(OpenHash, 0);
+        anim.SafeSetInt(CloseHash, 1);
     }
 
     float ConvertPlayerPrefsValueToSliderValue(float playerPrefsValue, Slider slider)
