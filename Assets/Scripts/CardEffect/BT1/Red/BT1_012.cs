@@ -18,7 +18,7 @@ public class BT1_012 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When this Digimon is blockedÅ, it gets +2000 DP.";
+                return "[Your Turn] When this Digimon is blocked, it gets +2000 DP.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
