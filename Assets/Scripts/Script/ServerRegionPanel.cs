@@ -46,7 +46,7 @@ public class ServerRegionPanel : OffAnimation
         {
             foreach (ServerRegionToggle serverRegionToggle in _serverRegionToggles)
             {
-                static void OnToggleChange(string region)
+                void OnToggleChange(string region)
                 {
                     ContinuousController.instance.serverRegion = region;
                     ContinuousController.instance.SaveServerRegion();
