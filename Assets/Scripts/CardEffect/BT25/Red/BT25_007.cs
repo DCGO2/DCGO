@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.BT25
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                         && permanent.HasDP
-                        && permanent.DP <= 3000;
+                        && permanent.DP <= card.Owner.MaxDP_DeleteEffect(3000, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
