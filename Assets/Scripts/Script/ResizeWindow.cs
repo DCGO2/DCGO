@@ -1,10 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 using Button = UnityEngine.UI.Button;
 using Toggle = UnityEngine.UI.Toggle;
-using System;
 
 public class ResizeWindow : MonoBehaviour
 {
@@ -22,8 +19,8 @@ public class ResizeWindow : MonoBehaviour
     {
         SetButtonsInteractable();
         gameObject.SetActive(true);
-        anim.SetInteger(OpenHash, 1);
-        anim.SetInteger(CloseHash, 0);
+        anim.SafeSetInt(OpenHash, 1);
+        anim.SafeSetInt(CloseHash, 0);
 
         if (fullScreenToggle != null)
         {

@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,9 +16,9 @@ public class TrialDraw : MonoBehaviour
 
     public Text DeckCountText;
 
-    List<CEntity_Base> originalDeckCards = new List<CEntity_Base>();
-    List<CEntity_Base> deckCards = new List<CEntity_Base>();
-    List<CEntity_Base> drewCards = new List<CEntity_Base>();
+    List<CEntity_Base> _originalDeckCards = new List<CEntity_Base>();
+    List<CEntity_Base> _deckCards = new List<CEntity_Base>();
+    List<CEntity_Base> _drewCards = new List<CEntity_Base>();
 
     public Button drawButton;
 
@@ -31,14 +31,14 @@ public class TrialDraw : MonoBehaviour
 
         detailCard.OffDetailCard();
 
-        originalDeckCards = new List<CEntity_Base>();
+        _originalDeckCards = new List<CEntity_Base>();
 
         foreach (CEntity_Base cEntity_Base in cEntity_Bases)
         {
-            originalDeckCards.Add(cEntity_Base);
+            _originalDeckCards.Add(cEntity_Base);
         }
 
-        yield return ContinuousController.instance.StartCoroutine(Set(originalDeckCards));
+        yield return ContinuousController.instance.StartCoroutine(Set(_originalDeckCards));
     }
 
     IEnumerator Set(List<CEntity_Base> cEntity_Bases)
@@ -47,15 +47,15 @@ public class TrialDraw : MonoBehaviour
 
         drawButton.transform.parent.gameObject.SetActive(false);
 
-        deckCards = new List<CEntity_Base>();
-        drewCards = new List<CEntity_Base>();
+        _deckCards = new List<CEntity_Base>();
+        _drewCards = new List<CEntity_Base>();
 
         foreach (CEntity_Base cEntity_Base in cEntity_Bases)
         {
-            deckCards.Add(cEntity_Base);
+            _deckCards.Add(cEntity_Base);
         }
 
-        deckCards = RandomUtility.ShuffledDeckCards(deckCards);
+        _deckCards = RandomUtility.ShuffledDeckCards(_deckCards);
 
         //detailCard.OffDetailCard();
 
@@ -71,24 +71,24 @@ public class TrialDraw : MonoBehaviour
             DrawCard();
         }
 
-        yield return new WaitWhile(() => CardScroll.content.childCount < drewCards.Count);
+        yield return new WaitWhile(() => CardScroll.content.childCount < _drewCards.Count);
 
         this.gameObject.SetActive(true);
 
         Open();
 
-        drawButton.interactable = deckCards.Count >= 1;
+        drawButton.interactable = _deckCards.Count >= 1;
 
-        drawButton.transform.parent.gameObject.SetActive(deckCards.Count >= 1);
+        drawButton.transform.parent.gameObject.SetActive(_deckCards.Count >= 1);
     }
 
     public void DrawCard()
     {
-        if (deckCards.Count >= 1)
+        if (_deckCards.Count >= 1)
         {
-            CEntity_Base drewCard = deckCards[0];
-            deckCards.Remove(drewCard);
-            drewCards.Add(drewCard);
+            CEntity_Base drewCard = _deckCards[0];
+            _deckCards.Remove(drewCard);
+            _drewCards.Add(drewCard);
 
             CardPrefab_CreateDeck _cardPrefab_CreateDeck = null;
 
@@ -107,9 +107,9 @@ public class TrialDraw : MonoBehaviour
 
         EventSystem.current.SetSelectedGameObject(transform.GetChild(0).gameObject);
 
-        drawButton.interactable = deckCards.Count >= 1;
+        drawButton.interactable = _deckCards.Count >= 1;
 
-        drawButton.transform.parent.gameObject.SetActive(deckCards.Count >= 1);
+        drawButton.transform.parent.gameObject.SetActive(_deckCards.Count >= 1);
 
         SetDeckCountText();
     }
@@ -176,11 +176,11 @@ public class TrialDraw : MonoBehaviour
     public void SetDeckCountText()
     {
         DeckCountText.text = LocalizeUtility.GetLocalizedString(
-            EngMessage: $"Remaining Cards in Deck : {deckCards.Count}/{originalDeckCards.Count}",
-            JpnMessage: $"ƒfƒbƒLŽc‚è–‡” : {deckCards.Count}/{originalDeckCards.Count}"
+            EngMessage: $"Remaining Cards in Deck : {_deckCards.Count}/{_originalDeckCards.Count}",
+            JpnMessage: $"??? : {_deckCards.Count}/{_originalDeckCards.Count}"
         );
 
-        if (deckCards.Count >= 1)
+        if (_deckCards.Count >= 1)
         {
             DeckCountText.color = new Color32(255, 255, 255, 255);
         }
@@ -193,7 +193,7 @@ public class TrialDraw : MonoBehaviour
 
     public void OnClickRedrawButton()
     {
-        ContinuousController.instance.StartCoroutine(Set(originalDeckCards));
+        ContinuousController.instance.StartCoroutine(Set(_originalDeckCards));
         ContinuousController.instance.PlaySE(Opening.instance.DrawSE);
     }
 
