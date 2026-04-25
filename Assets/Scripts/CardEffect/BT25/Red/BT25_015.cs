@@ -54,15 +54,15 @@ namespace DCGO.CardEffects.BT25
                 return $"[{tag}] Delete 1 of your opponent's Digimon with 6000 DP or less.";
             }
 
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    &&permanent.HasDP
-                    && permanent.DP <= 6000;
-            }
-
             IEnumerator SharedActivateCoroutine(Hashtable _hashtable, ActivateClass activateClass)
             {
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                        && permanent.HasDP
+                        && permanent.DP <= card.Owner.MaxDP_DeleteEffect(6000, activateClass);
+                }
+
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
