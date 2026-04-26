@@ -82,34 +82,37 @@ namespace DCGO.CardEffects.BT25
                             activateClass: activateClass));
                 }
 
-                SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                selectPermanentEffect1.SetUp(
-                    selectPlayer: card.Owner,
-                    canTargetCondition: OpponentsDigimonWithoutSources,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: 1,
-                    canNoSelect: false,
-                    canEndNotMax: false,
-                    selectPermanentCoroutine: null,
-                    afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                    mode: SelectPermanentEffect.Mode.Custom,
-                    cardEffect: activateClass);
-
-                selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon to gain can't suspend until end of opponent's turn.", "The opponent is selecting 1 Digimon that will gain can't suspend until end of opponent's turn.");
-
-                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
-
-                IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                if (CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimonWithoutSources))
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
-                               permanentCondition: (permanent) => permanent == permanents[0],
-                               effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                               activateClass: activateClass,
-                               isOnlyActivePhase: false,
-                               effectName: "Can't Suspend"
-                           ));
+                    SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect1.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: OpponentsDigimonWithoutSources,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon to gain can't suspend until end of opponent's turn.", "The opponent is selecting 1 Digimon that will gain can't suspend until end of opponent's turn.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+
+                    IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
+                                   permanentCondition: (permanent) => permanent == permanents[0],
+                                   effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                   activateClass: activateClass,
+                                   isOnlyActivePhase: false,
+                                   effectName: "Can't Suspend"
+                               ));
+                    }
                 }
             }
             #endregion
