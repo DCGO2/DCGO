@@ -85,7 +85,7 @@ namespace DCGO.CardEffects.BT25
                 {
                     return cardSource.HasPlayCost
                         && cardSource.EqualsTraits("Appmon")
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass);
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass, fixedCost: cardSource.GetCostItself - 3);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
