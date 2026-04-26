@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT25
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasDP
+                        && permanent.HasDP
                         && permanent.DP <= card.Owner.MaxDP_DeleteEffect(7000, activateClass);
                 }
 
