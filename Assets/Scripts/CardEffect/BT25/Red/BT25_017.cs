@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.BT25
             string SharedEffectDescription(string tag)
             {
                 return $"[{tag}] This Digimon may attack. Then, by trashing 1 card in your hand, delete 1 of your opponent's Digimon with 7000 DP or less.";
-            }         
+            }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -61,25 +61,46 @@ namespace DCGO.CardEffects.BT25
                     yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                 }
 
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                selectHandEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: (cardSource) => true,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: 1,
+                    canNoSelect: true,
+                    canEndNotMax: false,
+                    isShowOpponent: true,
+                    selectCardCoroutine: null,
+                    afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                    mode: SelectHandEffect.Mode.Discard,
+                    cardEffect: activateClass);
+
+                yield return StartCoroutine(selectHandEffect.Activate());
+
+                IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                 {
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    if (cardSources.Count >= 1 && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Destroy,
-                        cardEffect: activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
 
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                }
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+                }                               
             }
             #endregion
 
