@@ -434,7 +434,7 @@ namespace DCGO.CardEffects.BT25
                                 selectHandEffect.SetUpCustomMessage("Select 1 [Gaomon] or [Thomas H. Norstein] to play.", "The opponent is selecting 1 [Gaomon] or [Thomas H. Norstein] to play.");
                                 selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
                                 yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-                                root = SelectCardEffect.Root.Hand;
+                                selectedRoot = SelectCardEffect.Root.Hand;
                             }
                             else
                             {
@@ -462,7 +462,7 @@ namespace DCGO.CardEffects.BT25
                                 selectCardEffect.SetUpCustomMessage("Select 1 [Gaomon] or [Thomas H. Norstein] to play.", "The opponent is selecting 1 [Gaomon] or [Thomas H. Norstein] to play.");
                                 selectCardEffect.SetUpCustomMessage_ShowCard("Selected Card");
                                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                                root = SelectCardEffect.Root.Trash;
+                                selectedRoot = SelectCardEffect.Root.Trash;
                             }
 
                             if (selectedCard != null && selectedRoot != SelectCardEffect.Root.None)
