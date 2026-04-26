@@ -1,6 +1,9 @@
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
+using UnityEngine;
 
 // Habakirimon/Habakiri
 namespace DCGO.CardEffects.BT25
@@ -71,8 +74,78 @@ namespace DCGO.CardEffects.BT25
                     bool ownSecurity = GManager.instance.userSelectionManager.SelectedIntValue == 1;
                     if (doTrash)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(
-                        new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashSecurityAndProcessAccordingToResult(
+                            player: ownSecurity ? card.Owner : card.Owner.Enemy,
+                            trashAmount: 1,
+                            activateClass: activateClass,
+                            fromTop: true,
+                            successProcess: SuccessProcess,
+                            failureProcess: null
+                        ));
+
+                        IEnumerator SuccessProcess(List<CardSource> cardSources)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                        }                   
+                    }
+                }
+            }
+            #endregion
+
+            #region All Turns
+            if (timing == EffectTiming.WhenRemoveField)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Trash your top sec to prevent them from leaving", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("BT25_043_AT");
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return
+                        "[All Turns][Once Per Turn] When any of your [Glowing Dawn] trait Digimon would leave the battle area, by trashing your top security card, they don't leave.";
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent.TopCard.HasGlowingDawnTraits;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && card.Owner.SecurityCards.Count >= 1;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    List<Permanent> removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable);
+
+                    removedPermanents = removedPermanents.Filter(PermanentCondition);
+                    if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                                player: card.Owner,
+                                destroySecurityCount: 1,
+                                cardEffect: activateClass,
+                                fromTop: true).DestroySecurity());
+
+                        foreach (Permanent permanent in removedPermanents)
+                        {
+                            permanent.willBeRemoveField = false;
+                            permanent.HideDeleteEffect();
+                            permanent.HideHandBounceEffect();
+                            permanent.HideDeckBounceEffect();
+                            permanent.HideWillRemoveFieldEffect();
+                        }
                     }
                 }
             }
@@ -87,7 +160,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    return cardSource.HasBeatBreakTraits;
+                    return cardSource.HasGlowingDawnTraits;
                 }
             }
             #endregion
