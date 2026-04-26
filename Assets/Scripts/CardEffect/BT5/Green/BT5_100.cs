@@ -20,7 +20,7 @@ public class BT5_100 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Reveal 5 cards from the top of your deck. Add 1 Digimon card with ÅÉDigisorptionÅÑ among them to your hand. Place the remaining cards at the bottom of your deck in any order.";
+                return "[Main] Reveal 5 cards from the top of your deck. Add 1 Digimon card with <Digisorption> among them to your hand. Place the remaining cards at the bottom of your deck in any order.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -50,7 +50,7 @@ public class BT5_100 : CEntity_Effect
                     {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 Digimon card with ÅÉDigisorptionÅÑ.",
+                            message: "Select 1 Digimon card with <Digisorption>.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),

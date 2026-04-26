@@ -21,7 +21,7 @@ public class BT5_049 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Reveal 3 cards from the top of your deck. Add all Digimon cards with ÅÉDigisorptionÅÑ among them to your hand. Place the remaining cards at the bottom of your deck in any order.";
+                return "[On Play] Reveal 3 cards from the top of your deck. Add all Digimon cards with <Digisorption> among them to your hand. Place the remaining cards at the bottom of your deck in any order.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
