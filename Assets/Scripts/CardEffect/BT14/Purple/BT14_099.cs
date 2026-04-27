@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.BT14
 
                 string EffectDiscription()
                 {
-                    return "[Main] Trash the top 3 cards of your deck. Then, 1 of your Digimon with [Devimon] in its name gains ÅÉSecurity A. +1ÅÑor the turn.";
+                    return "[Main] Trash the top 3 cards of your deck. Then, 1 of your Digimon with [Devimon] in its name gains <Security A. +1> for the turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
