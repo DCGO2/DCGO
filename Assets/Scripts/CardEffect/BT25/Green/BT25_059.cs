@@ -152,11 +152,11 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("-3k to 1 enemy digimon per suspended digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription1());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription1());
                 activateClass.SetHashString("BT25_059_AT");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription1()
+                string EffectDescription1()
                 {
                     return "[All Turns] [Once Per Turn] When any Digimon suspend, to 1 of your opponent's Digimon, give -3000 DP until their ends for each suspended Digimon.";
                 }
