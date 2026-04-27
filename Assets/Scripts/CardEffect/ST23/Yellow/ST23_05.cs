@@ -37,14 +37,11 @@ namespace DCGO.CardEffects.ST23
                                                               SharedActivateCoroutine,
                                                               SharedEffectDescription,
                                                               false,
-                                                              isOptionalFunction: IsOptional,
                                                               maxCountPerTurn: 1,
                                                               hashValue: SharedHashString,
                                                               whenDigivolving: true,
                                                               whenAttacking: true
                                                               );
-
-            bool IsOptional(Hashtable hashtable) => !CardEffectCommons.HasMatchConditionPermanent(IsWeakestEnemyDigimon);
 
             bool IsWeakestEnemyDigimon(Permanent permanent) => CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
 
