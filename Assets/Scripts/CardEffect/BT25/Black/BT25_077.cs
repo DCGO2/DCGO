@@ -139,6 +139,7 @@ namespace DCGO.CardEffects.BT25
                     SharedEffectDescription,
                     additionalActivateCondition: AdditionalActivateCondition,
                     optional: false,
+                    isSkippable: true,
                     onPlay: true,
                     whenDigivolving: true);
             #endregion
@@ -151,6 +152,7 @@ namespace DCGO.CardEffects.BT25
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("AD1_024_AT");
+                activateClass.SetIsOptionalOverride(IsOptional);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription() 
@@ -161,6 +163,11 @@ namespace DCGO.CardEffects.BT25
                     return CardEffectCommons.IsExistOnBattleArea(card)
                         && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsDigimonCondition)
                             || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsDigimonCondition));
+                }
+
+                bool IsOptional(Hashtable hashtable)
+                {
+                    return !CardEffectCommons.IsByEffect(hashtable, null);
                 }
 
                 bool IsDigimonCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
@@ -201,28 +208,31 @@ namespace DCGO.CardEffects.BT25
                         }
                     }
 
-                    if (isByEffect && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentsWeakestDigimon))
+                    if (isByEffect)
                     {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: IsOpponentsWeakestDigimon,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
                         executed = true;
+
+                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentsWeakestDigimon))
+                        {
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: IsOpponentsWeakestDigimon,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
                     }
-                    
+
                     if (!executed) activateClass.RemoveUse();
                 }
             }
