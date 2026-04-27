@@ -150,7 +150,7 @@ namespace DCGO.CardEffects.BT25
                 activateClass.SetUpICardEffect("May suspend 1 Digimon. By Effect: Delete lowest DP enemy digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
-                activateClass.SetHashString("AD1_024_AT");
+                activateClass.SetHashString("BT25_077_AT");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription() 
