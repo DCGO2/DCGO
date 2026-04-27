@@ -832,8 +832,8 @@ public partial class CardEffectFactory
                                                                     Func<Hashtable, ActivateClass, IEnumerator> activateCoroutine, 
                                                                     Func<string, string> effectDescription,
                                                                     bool optional,
-                                                                    Func<Hashtable, bool> additionalUseCondition = null,
-                                                                    Func<Hashtable, bool> additionalActivateCondition = null, 
+                                                                    Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                                    Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null, 
                                                                     Func<Hashtable, bool> isOptionalFunction = null,
                                                                     bool isSkippable = false,
                                                                     int maxCountPerTurn = -1,
@@ -909,8 +909,8 @@ public partial class CardEffectFactory
 
     public static ActivateClass ActivateClass(CardSource card,
                                                 string effectName,
-                                                Func<Hashtable, bool> canUseCondition,
-                                                Func<Hashtable, bool> canActivateCondition,
+                                                Func<Hashtable, ActivateClass, bool> canUseCondition,
+                                                Func<Hashtable, ActivateClass, bool> canActivateCondition,
                                                 Func<Hashtable, ActivateClass, IEnumerator> activateCoroutine,
                                                 string effectDescription,
                                                 bool optional,
@@ -924,8 +924,8 @@ public partial class CardEffectFactory
                                                 )
     {
         ActivateClass activateClass = new ActivateClass();
-        activateClass.SetUpICardEffect(effectName, canUseCondition, card);
-        activateClass.SetUpActivateClass(canActivateCondition, hashtable => activateCoroutine(hashtable, activateClass), maxCountPerTurn, optional, effectDescription);
+        activateClass.SetUpICardEffect(effectName, hashtable => canUseCondition(hashtable, activateClass), card);
+        activateClass.SetUpActivateClass(hashtable => canActivateCondition(hashtable, activateClass), hashtable => activateCoroutine(hashtable, activateClass), maxCountPerTurn, optional, effectDescription);
         activateClass.SetHashString(hashValue);
         activateClass.SetIsSecurityEffect(isSecurityEffect);
         activateClass.SetIsOptionalOverride(isOptionalFunction);
@@ -943,8 +943,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -957,17 +957,17 @@ public partial class CardEffectFactory
             return permanent == card.PermanentOfThisCard();
         }
 
-        bool CanUseCondition(Hashtable hashtable)
+        bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) &&
                     CardEffectCommons.CanTriggerOnMove(hashtable, PermanentCondition) && 
-                    (additionalUseCondition == null || additionalUseCondition(hashtable));
+                    (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
 
-        bool CanActivateCondition(Hashtable hashtable)
+        bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) && 
-                (additionalActivateCondition == null || additionalActivateCondition(hashtable));
+                (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }
 
@@ -981,8 +981,8 @@ public partial class CardEffectFactory
                                             string effectDescription,
                                             bool optional,
                                             Func<Hashtable, bool> isOptionalFunction = null,
-                                            Func<Hashtable, bool> additionalUseCondition = null,
-                                            Func<Hashtable, bool> additionalActivateCondition = null,
+                                            Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                            Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                             int maxCountPerTurn = -1,
                                             string hashValue = null,
                                             bool isInherited = false,
@@ -990,17 +990,17 @@ public partial class CardEffectFactory
     {
         return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, false, isSkippable: isSkippable);
 
-        bool CanUseCondition(Hashtable hashtable)
+        bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) &&
                 CardEffectCommons.CanTriggerOnPlay(hashtable, card) && 
-                (additionalUseCondition == null || additionalUseCondition(hashtable));
+                (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
 
-        bool CanActivateCondition(Hashtable hashtable)
+        bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) && 
-                (additionalActivateCondition == null || additionalActivateCondition(hashtable));
+                (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }
 
@@ -1014,8 +1014,8 @@ public partial class CardEffectFactory
                                                         string effectDescription,
                                                         bool optional,
                                                         Func<Hashtable, bool> isOptionalFunction = null,
-                                                        Func<Hashtable, bool> additionalUseCondition = null,
-                                                        Func<Hashtable, bool> additionalActivateCondition = null,
+                                                        Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                        Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                         int maxCountPerTurn = -1,
                                                         string hashValue = null,
                                                         bool isInherited = false,
@@ -1024,17 +1024,17 @@ public partial class CardEffectFactory
     {
         return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
 
-        bool CanUseCondition(Hashtable hashtable)
+        bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) &&
                 CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card) && 
-                (additionalUseCondition == null || additionalUseCondition(hashtable));
+                (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
 
-        bool CanActivateCondition(Hashtable hashtable)
+        bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) && 
-                (additionalActivateCondition == null || additionalActivateCondition(hashtable));
+                (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }
 
@@ -1047,8 +1047,8 @@ public partial class CardEffectFactory
                                                     string effectDescription,
                                                     bool optional,
                                                     Func<Hashtable, bool> isOptionalFunction = null,
-                                                    Func<Hashtable, bool> additionalUseCondition = null,
-                                                    Func<Hashtable, bool> additionalActivateCondition = null,
+                                                    Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                    Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                     int maxCountPerTurn = -1,
                                                     string hashValue = null,
                                                     bool isInherited = false,
@@ -1057,17 +1057,17 @@ public partial class CardEffectFactory
     {
         return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
 
-        bool CanUseCondition(Hashtable hashtable)
+        bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) &&
                 CardEffectCommons.CanTriggerOnAttack(hashtable, card) && 
-                (additionalUseCondition == null || additionalUseCondition(hashtable));
+                (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
 
-        bool CanActivateCondition(Hashtable hashtable)
+        bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) && 
-                (additionalActivateCondition == null || additionalActivateCondition(hashtable));
+                (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }
 
@@ -1081,8 +1081,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1091,17 +1091,17 @@ public partial class CardEffectFactory
     {
         return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
 
-        bool CanUseCondition(Hashtable hashtable)
+        bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.CanTriggerOnDeletion(hashtable, card) && 
-                (additionalUseCondition == null || additionalUseCondition(hashtable));
+                (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
 
-        bool CanActivateCondition(Hashtable hashtable)
+        bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return ((!(isInherited || isLinked) && CardEffectCommons.CanActivateOnDeletion(card)) 
                     || ((isInherited || isLinked) && CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card)))
-                && (additionalActivateCondition == null || additionalActivateCondition(hashtable));
+                && (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }
 
@@ -1115,8 +1115,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1126,17 +1126,17 @@ public partial class CardEffectFactory
     {
         return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
 
-        bool CanUseCondition(Hashtable hashtable)
+        bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) &&
                 CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card) &&
-                (additionalUseCondition == null || additionalUseCondition(hashtable));
+                (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
 
-        bool CanActivateCondition(Hashtable hashtable)
+        bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) &&
-                (additionalActivateCondition == null || additionalActivateCondition(hashtable));
+                (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }
 
@@ -1150,17 +1150,17 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 bool isSkippable = false)
     {
         ActivateClass activateClass = ActivateClass(card, effectName, CanUseCondition, additionalActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, -1, null, false, false, true, isSkippable);
         return activateClass;
 
-        bool CanUseCondition(Hashtable hashtable)
+        bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card) &&
-                (additionalUseCondition == null || additionalUseCondition(hashtable));
+                (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
     }
 
@@ -1174,8 +1174,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1184,18 +1184,18 @@ public partial class CardEffectFactory
     {
         return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
 
-        bool CanUseCondition(Hashtable hashtable)
+        bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card)
                 && CardEffectCommons.CanTriggerOnAttack(hashtable, card)
                 && (additionalUseCondition == null 
-                    || additionalUseCondition(hashtable));
+                    || additionalUseCondition(hashtable, activateClass));
         }
 
-        bool CanActivateCondition(Hashtable hashtable)
+        bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) &&
-                (additionalActivateCondition == null || additionalActivateCondition(hashtable));
+                (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
 
     }
@@ -1210,8 +1210,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1222,18 +1222,18 @@ public partial class CardEffectFactory
         activateClass.SetIsCounterEffect(true);
         return activateClass;
 
-        bool CanUseCondition(Hashtable hashtable)
+        bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card)
                 && CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, permanent => CardEffectCommons.IsOpponentPermanent(permanent, card))
                 && (additionalUseCondition == null 
-                    || additionalUseCondition(hashtable));
+                    || additionalUseCondition(hashtable, activateClass));
         }
 
-        bool CanActivateCondition(Hashtable hashtable)
+        bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) &&
-                (additionalActivateCondition == null || additionalActivateCondition(hashtable));
+                (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
 
     }
@@ -1252,8 +1252,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1264,18 +1264,18 @@ public partial class CardEffectFactory
     {
         return ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isOptionalFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
 
-        bool CanUseCondition(Hashtable hashtable)
+        bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card)
                 && (!yourTurn || CardEffectCommons.IsOwnerTurn(card))
                 && (!opponentTurn || CardEffectCommons.IsOpponentTurn(card))
-                && (additionalUseCondition == null || additionalUseCondition(hashtable));
+                && (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
 
-        bool CanActivateCondition(Hashtable hashtable)
+        bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) &&
-                (additionalActivateCondition == null || additionalActivateCondition(hashtable));
+                (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
 
     }
@@ -1290,8 +1290,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1307,8 +1307,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1324,8 +1324,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1341,8 +1341,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1362,8 +1362,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1379,8 +1379,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1396,8 +1396,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1413,8 +1413,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1434,8 +1434,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,
@@ -1451,8 +1451,8 @@ public partial class CardEffectFactory
                                                 string effectDescription,
                                                 bool optional,
                                                 Func<Hashtable, bool> isOptionalFunction = null,
-                                                Func<Hashtable, bool> additionalUseCondition = null,
-                                                Func<Hashtable, bool> additionalActivateCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
+                                                Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 int maxCountPerTurn = -1,
                                                 string hashValue = null,
                                                 bool isInherited = false,

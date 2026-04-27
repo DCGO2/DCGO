@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.EX11
 
             string SharedEffectDescription(string tag) => $"[{tag}] By trashing 1 card with [Vemmon] in its text from your hand, <Draw 1> and gain 1 memory.";
 
-            bool AdditionalActivateCondition(Hashtable hashtable)
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
             {
                 return card.Owner.HandCards.Count(HasVemmonArchetype) >= 1;
             }
