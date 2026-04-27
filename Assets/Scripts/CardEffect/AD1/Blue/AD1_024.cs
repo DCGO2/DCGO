@@ -200,10 +200,12 @@ namespace DCGO.CardEffects.AD1
 
                             IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                             {
-                                if (permanents.Count > 0) yield return ContinuousController.instance.StartCoroutine(
-                                    new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
-                                executed = true;
-                                yield return null;
+                                if (permanents.Count > 0)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(
+                                        new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                                    executed = true;
+                                }
                             }
                         }
                         else //if nothing to suspend, may still choose to take the action to unsuspend
@@ -245,13 +247,18 @@ namespace DCGO.CardEffects.AD1
                                 canNoSelect: true,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                                 mode: SelectPermanentEffect.Mode.PutLibraryBottom,
                                 cardEffect: activateClass);
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                            executed = true;
+                            IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                            {
+                                if (permanents.Count > 0)
+                                    executed = true;
+                                yield return null;
+                            }
                         }
                     }
 
