@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT25
 
                 string EffectDescription() => "[Start of Your Main Phase] By trashing 1 card with [Three Musketeers] in its text or [TS] trait from your hand, <Draw 1> and gain 1 memory.";
 
-                bool AdditionalActivateCondition(Hashtable hashtable) => CardEffectCommons.HasMatchConditionOwnersHand(card, Valid3MOrTSCard);
+                bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass) => CardEffectCommons.HasMatchConditionOwnersHand(card, Valid3MOrTSCard);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
                 {
