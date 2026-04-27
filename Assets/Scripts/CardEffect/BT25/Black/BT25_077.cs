@@ -91,7 +91,7 @@ namespace DCGO.CardEffects.BT25
 
             #region Shared OP / WD
 
-            string SharedEffectName = "You may play 1 [TS] Dgiimon with 6k or less DP";
+            string SharedEffectName = "You may play 1 [TS] Digimon with 6k or less DP";
 
             string SharedEffectDescription(string tag)
                 => $"[{tag}] You may play 1 [TS] trait Digimon card with 6000 DP or less from your hand without paying the cost.";
@@ -151,8 +151,7 @@ namespace DCGO.CardEffects.BT25
                 activateClass.SetUpICardEffect("May suspend 1 Digimon. By Effect: Delete lowest DP enemy digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
-                activateClass.SetHashString("AD1_024_AT");
-                activateClass.SetIsOptionalOverride(IsOptional);
+                activateClass.SetHashString("BT25_077_AT");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription() 
