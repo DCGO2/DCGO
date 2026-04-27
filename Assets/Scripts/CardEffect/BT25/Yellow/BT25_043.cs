@@ -130,22 +130,19 @@ namespace DCGO.CardEffects.BT25
                     List<Permanent> removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable);
 
                     removedPermanents = removedPermanents.Filter(PermanentCondition);
-                    if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                            player: card.Owner,
+                            destroySecurityCount: 1,
+                            cardEffect: activateClass,
+                            fromTop: true).DestroySecurity());
+                            
+                    foreach (Permanent permanent in removedPermanents)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                                player: card.Owner,
-                                destroySecurityCount: 1,
-                                cardEffect: activateClass,
-                                fromTop: true).DestroySecurity());
-
-                        foreach (Permanent permanent in removedPermanents)
-                        {
-                            permanent.willBeRemoveField = false;
-                            permanent.HideDeleteEffect();
-                            permanent.HideHandBounceEffect();
-                            permanent.HideDeckBounceEffect();
-                            permanent.HideWillRemoveFieldEffect();
-                        }
+                        permanent.willBeRemoveField = false;
+                        permanent.HideDeleteEffect();
+                        permanent.HideHandBounceEffect();
+                        permanent.HideDeckBounceEffect();
+                        permanent.HideWillRemoveFieldEffect();
                     }
                 }
             }
