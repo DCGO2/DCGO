@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using System;
-using System.Linq;
-using UnityEngine;
+using System.Collections;
+
 
 public partial class CardEffectFactory
 {
     #region Static effect of [Collision] on oneself
-    public static CollisionClass CollisionSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition)
+    public static CollisionClass CollisionSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, bool isLinkedEffect = false)
     {
         bool PermanentCondition(Permanent permanent) => permanent == card.PermanentOfThisCard();
 
@@ -24,7 +22,7 @@ public partial class CardEffectFactory
             return false;
         }
 
-        return CollisionStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition);
+        return CollisionStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition, isLinkedEffect: isLinkedEffect);
     }
     #endregion
 
@@ -33,12 +31,14 @@ public partial class CardEffectFactory
         Func<Permanent, bool> permanentCondition,
         bool isInheritedEffect,
         CardSource card,
-        Func<bool> condition)
+        Func<bool> condition,
+        bool isLinkedEffect)
     {
-        CollisionClass collisionClass = new ();
+        CollisionClass collisionClass = new();
         collisionClass.SetUpICardEffect("Collision", CanUseCondition, card);
         collisionClass.SetUpCollisionClass(PermanentCondition);
         collisionClass.SetIsInheritedEffect(isInheritedEffect);
+        collisionClass.SetIsLinkedEffect(isLinkedEffect);
 
         bool PermanentCondition(Permanent permanent)
         {
