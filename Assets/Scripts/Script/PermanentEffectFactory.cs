@@ -93,7 +93,7 @@ public partial class PermanentEffectFactory
         bool SkillCondition(ICardEffect cardEffect)
         {
             return CardEffectCommons.IsOpponentEffect(cardEffect, permanent.TopCard)
-                && cardEffect.IsOptionEffect;
+                && !cardEffect.IsDigimonEffect && !cardEffect.IsTamerEffect;
         }
 
         CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
