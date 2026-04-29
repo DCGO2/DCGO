@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 /// <summary>
 /// Class for given effects for Permanents, applying to the entire stack even if any specific card is removed from it
