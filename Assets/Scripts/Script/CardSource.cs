@@ -4143,6 +4143,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has Dinosaur trait
+
+    public bool HasDinosaurTraits
+    {
+        get
+        {
+            return EqualsTraits("Dinosaur");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
