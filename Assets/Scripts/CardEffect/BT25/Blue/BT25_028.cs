@@ -82,7 +82,7 @@ namespace DCGO.CardEffects.BT25
 
             #region Shared OP / WD
 
-            string SharedEffectName = "None of your opponent's Digimon with 1 or less Digivolution cards can suspend untiol end of their turn. Delete 1 of their unsuspended Digimon";
+            string SharedEffectName = "None of your opponent's Digimon with 1 or less Digivolution cards can suspend until end of their turn. Delete 1 of their unsuspended Digimon";
 
             string SharedEffectDescription(string tag)
                 => $"[{tag}] None of your opponent's Digimon with 1 or fewer digivolution cards can suspend until their turn ends. Then, delete 1 of your opponent's unsuspended Digimon.";
@@ -226,6 +226,7 @@ namespace DCGO.CardEffects.BT25
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your opponent's Digimon or Tamers can't suspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT25_028_WA_ESS");
                 cardEffects.Add(activateClass);
 
