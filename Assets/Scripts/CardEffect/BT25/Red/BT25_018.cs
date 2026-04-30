@@ -176,6 +176,12 @@ namespace DCGO.CardEffects.BT25
                     return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
+                bool YourDigimonThatCanAttack(Permanent permanent)
+                {
+                    return IsYourDigimon(permanent)
+                        && permanent.CanAttack(activateClass);
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
 
@@ -189,14 +195,14 @@ namespace DCGO.CardEffects.BT25
                         ));
                     #endregion
                     #region May Attack
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourDigimon))
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, YourDigimonThatCanAttack))
                     {
                         SelectPermanentEffect selectPermanentEffect =
                             GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: IsYourDigimon,
+                            canTargetCondition: YourDigimonThatCanAttack,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -223,6 +229,7 @@ namespace DCGO.CardEffects.BT25
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your opponent's Digimon or Tamers can't suspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, _ => DeleteWeakerDigimon(activateClass), 1, false, EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT25_018_WA_ESS");
                 cardEffects.Add(activateClass);
 
