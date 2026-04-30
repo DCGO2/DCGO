@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionOpponentsPermanent(card, Level6EnemyDigimon);
+                    return CardEffectCommons.HasMatchConditionPermanent(Level6EnemyDigimon);
                 }
 
                 bool Level6EnemyDigimon(Permanent permanent)
