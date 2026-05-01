@@ -46,7 +46,8 @@ namespace DCGO.CardEffects.BT25
                     => cardSource.EqualsTraits("TS");
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                     && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
 
 
                 bool CanActivateCondition(Hashtable hashtable)
