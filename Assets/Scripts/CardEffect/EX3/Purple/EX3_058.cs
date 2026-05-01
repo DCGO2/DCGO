@@ -69,30 +69,30 @@ namespace DCGO.CardEffects.EX3
                     return false;
                 }
 
-                //bool CanSelectCardCondition1(CardSource cardSource)
-                //{
-                //    if (cardSource != null)
-                //    {
-                //        if (cardSource.IsDigimon)
-                //        {
-                //            if (cardSource.Owner == card.Owner)
-                //            {
-                //                if (cardSource.CanPlayJogress(true))
-                //                {
-                //                    if (isExistOnField(card))
-                //                    {
-                //                        if (cardSource.CanJogressFromTargetPermanent(card.PermanentOfThisCard(), true))
-                //                        {
-                //                            return true;
-                //                        }
-                //                    }
-                //                }
-                //            }
-                //        }
-                //    }
+                bool CanSelectCardCondition1(CardSource cardSource)
+                {
+                   if (cardSource != null)
+                   {
+                       if (cardSource.IsDigimon)
+                       {
+                           if (cardSource.Owner == card.Owner)
+                           {
+                               if (cardSource.CanPlayJogress(true))
+                               {
+                                   if (isExistOnField(card))
+                                   {
+                                       if (cardSource.CanJogressFromTargetPermanent(card.PermanentOfThisCard(), true))
+                                       {
+                                           return true;
+                                       }
+                                   }
+                               }
+                           }
+                       }
+                   }
 
-                //    return false;
-                //}
+                   return false;
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -182,7 +182,7 @@ namespace DCGO.CardEffects.EX3
                         {
                             yield return ContinuousController.instance.StartCoroutine(
                                          CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
-                                             CanSelectCardCondition,
+                                             CanSelectCardCondition1,
                                              payCost: true,
                                              isHand: true,
                                              activateClass,

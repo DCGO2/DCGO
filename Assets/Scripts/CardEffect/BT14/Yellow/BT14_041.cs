@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.BT14
 
                 string EffectDiscription()
                 {
-                    return "[All Turns][Once Per Turn] When a card is added to your security stack, 1 of your opponent's Digimon gets -7000 DP and this Digimon gains ÅÉSecurity A. +1ÅÑor the turn.";
+                    return "[All Turns][Once Per Turn] When a card is added to your security stack, 1 of your opponent's Digimon gets -7000 DP and this Digimon gains <Security A. +1> for the turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

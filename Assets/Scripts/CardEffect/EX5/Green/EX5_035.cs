@@ -15,7 +15,7 @@ public class EX5_035 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Reveal the top 3 cards of your deck. Add all Digimon cards with ÅÉFortitudeÅÑ among them to the hand. Return the rest to the bottom of the deck.";
+                return "[On Play] Reveal the top 3 cards of your deck. Add all Digimon cards with <Fortitude> among them to the hand. Return the rest to the bottom of the deck.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

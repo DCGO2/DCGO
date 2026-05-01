@@ -21,7 +21,7 @@ public class EX5_042 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Reveal the top card of your deck. If that card is a level 5 or lower Digimon card with ÅÉFortitudeÅÑ, play it without paying the cost. Add the rest to your hand.";
+                return "[On Play] Reveal the top card of your deck. If that card is a level 5 or lower Digimon card with <Fortitude>, play it without paying the cost. Add the rest to your hand.";
             }
 
             bool CardCondition(CardSource cardSource)
@@ -107,7 +107,7 @@ public class EX5_042 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Reveal the top card of your deck. If that card is a level 5 or lower Digimon card with ÅÉFortitudeÅÑ, play it without paying the cost. Add the rest to your hand.";
+                return "[When Digivolving] Reveal the top card of your deck. If that card is a level 5 or lower Digimon card with <Fortitude>, play it without paying the cost. Add the rest to your hand.";
             }
 
             bool CardCondition(CardSource cardSource)
