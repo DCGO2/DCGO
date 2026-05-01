@@ -64,11 +64,35 @@ namespace DCGO.CardEffects.BT25
                     && permanent.IsOption;
 
                 bool CanSelectEnemyPermamentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy, null);
+                    => CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy, null);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    IEnumerator DeletionFailureProcess()
+                    {
+                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectEnemyOptionCondition))
+                        {
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectEnemyOptionCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 option in battle area to trash", "The opponent is selecting 1 option in battle area to trash.");
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        }
+                    }
+
                     // Delete all opponent digimon with lowest DP, if didnt delete, trash 1 opponent option
                     if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectEnemyPermamentCondition))
                     {
@@ -80,36 +104,10 @@ namespace DCGO.CardEffects.BT25
                                 targetPermanents: targetPermanents,
                                 activateClass: activateClass,
                                 successProcess: null,
-                                failureProcess: FailureProcess));
-
-                            IEnumerator FailureProcess()
-                            {
-                                if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectEnemyOptionCondition))
-                                {
-                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectEnemyOptionCondition));
-
-                                    selectPermanentEffect.SetUp(
-                                        selectPlayer: card.Owner,
-                                        canTargetCondition: CanSelectEnemyOptionCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        maxCount: maxCount,
-                                        canNoSelect: false,
-                                        canEndNotMax: false,
-                                        selectPermanentCoroutine: null,
-                                        afterSelectPermanentCoroutine: null,
-                                        mode: SelectPermanentEffect.Mode.Destroy,
-                                        cardEffect: activateClass);
-
-                                    selectPermanentEffect.SetUpCustomMessage("Select 1 option in battle area to trash", "The opponent is selecting 1 option in battle area to trash.");
-                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                                }
-                            }
-
+                                failureProcess: DeletionFailureProcess));
                         }
                     }
+                    else yield return ContinuousController.instance.StartCoroutine(DeletionFailureProcess());
 
 
                     // Link to 1 Owner digimon on the field
@@ -117,12 +115,12 @@ namespace DCGO.CardEffects.BT25
                     {
                         Permanent selectedPermament = null;
 
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectOwnerPermamentCondition));
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanSelectOwnerPermamentCondition));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectEnemyPermamentCondition,
+                            canTargetCondition: CanSelectOwnerPermamentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
