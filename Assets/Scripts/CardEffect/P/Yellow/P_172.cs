@@ -152,19 +152,6 @@ namespace DCGO.CardEffects.P
                     return false;
                 }
 
-                bool CanNoSelect(CardSource cardSource)
-                {
-                    if (cardSource != null)
-                    {
-                        if (cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
-                        {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition);

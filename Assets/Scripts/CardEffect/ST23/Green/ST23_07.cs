@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.ST23
 
             string SharedEffectDescription(string tag) => $"[{tag}] If you have 1 or fewer Tamers, you may play 1 Tamer card with the [Glowing Dawn] trait from your hand without paying the cost.";
 
-            bool AdditionalActivateCondition(Hashtable hashtable)
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
             {
                 return CardEffectCommons.MatchConditionOwnersPermanentCount(card, HasTamersInBattleArea) <= 1;
             }

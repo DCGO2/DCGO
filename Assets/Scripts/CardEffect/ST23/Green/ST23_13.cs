@@ -30,10 +30,11 @@ namespace DCGO.CardEffects.ST23
             {
                 if (card.Owner.LibraryCards.Count >= 1)
                 {
-                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
-
-                    selectionElements.Add(new(message: $"Yes", value: 1, spriteIndex: 0));
-                    selectionElements.Add(new(message: $"No", value: 2, spriteIndex: 1));
+                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>
+                    {
+                        new(message: $"Yes", value: 1, spriteIndex: 0),
+                        new(message: $"No", value: 2, spriteIndex: 1)
+                    };
 
                     string selectPlayerMessage = "Will you place the top card from your deck under this Tamer face down?";
                     string notSelectPlayerMessage = "The opponent is choosing whether to place the top card from their deck under their Tamer face down.";
@@ -58,7 +59,7 @@ namespace DCGO.CardEffects.ST23
             }
             #endregion       
 
-            #region Your Turns
+            #region Your Turn
             if (timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -80,7 +81,8 @@ namespace DCGO.CardEffects.ST23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

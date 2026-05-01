@@ -204,11 +204,6 @@ namespace DCGO.CardEffects.BT23
                         && CardEffectCommons.HasMatchConditionPermanent(IsCsTamer)
                         && CardEffectCommons.HasMatchConditionPermanent(SharedCanSelectPermamentCondition);
                 }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return null;
-                }
             }
 
             #endregion
@@ -238,11 +233,6 @@ namespace DCGO.CardEffects.BT23
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionPermanent(IsCsTamer)
                         && CardEffectCommons.HasMatchConditionPermanent(SharedCanSelectPermamentCondition);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return null;
                 }
             }
 

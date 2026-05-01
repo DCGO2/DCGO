@@ -131,10 +131,8 @@ namespace DCGO.CardEffects.ST23
                                 && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 3)));
                         }
 
-                        CardSource selectCard = null;
-                        List<CardSource> selectedCards = null;
-
-                        int maxCount2 = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
+                        CardSource selectedCard = null;
+                        List<CardSource> selectedCards = new List<CardSource>();
 
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -143,7 +141,7 @@ namespace DCGO.CardEffects.ST23
                             canTargetCondition: CanSelectCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount2,
+                            maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
                             isShowOpponent: true,
@@ -155,18 +153,16 @@ namespace DCGO.CardEffects.ST23
                         selectHandEffect.SetUpCustomMessage("Select 1 card to play/use.", "The opponent is selecting 1 card to play/use.");
                         selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            selectCard = cardSource;
                             selectedCards.Add(cardSource);
+                            selectedCard = cardSource;
                             yield return null;
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        if (selectCard != null)
+                        if (selectedCards != null)
                         {
                             #region reduce use cost
                             ChangeCostClass changeCostClass = new ChangeCostClass();
@@ -240,18 +236,18 @@ namespace DCGO.CardEffects.ST23
                             }
                             #endregion
 
-                            if (selectCard.IsOption)
-                            {                       
+                            if (selectedCard.IsOption)
+                            {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
                                     cardSources: selectedCards,
                                     activateClass: activateClass,
                                     payCost: true,
-                                    root: SelectCardEffect.Root.Hand));                            
+                                    root: SelectCardEffect.Root.Hand));
                             }
                             else
-                            {                            
+                            {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                    new List<CardSource>() { selectCard },
+                                    cardSources: selectedCards,
                                     activateClass: activateClass,
                                     payCost: true,
                                     isTapped: false,
@@ -274,6 +270,7 @@ namespace DCGO.CardEffects.ST23
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 bottom face-down card from 1 of your tamers, this [Glowing Dawn] Digimon unsuspends", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("ST23_04_Inherited");
                 cardEffects.Add(activateClass);
 

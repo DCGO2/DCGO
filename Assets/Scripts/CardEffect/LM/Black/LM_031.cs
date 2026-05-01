@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.LM
 
                 string EffectDiscription()
                 {
-                    return "[Start of your Turn] If your opponent has a Digimon, <Delay>.\r\n� Return 1 black Digimon card from your trash to the top of the deck. Then, if you don't have a Digimon, you may play 1 black Digimon card with 2000 DP or less from your trash without paying the cost.";
+                    return "[Start of your Turn] If your opponent has a Digimon, <Delay>.\r\n Return 1 black Digimon card from your trash to the top of the deck. Then, if you don't have a Digimon, you may play 1 black Digimon card with 2000 DP or less from your trash without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -138,19 +138,6 @@ namespace DCGO.CardEffects.LM
                            CardEffectCommons.IsExistOnBattleArea(card) &&
                            card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1 &&
                            CardEffectCommons.CanDeclareOptionDelayEffect(card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

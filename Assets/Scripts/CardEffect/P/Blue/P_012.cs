@@ -53,37 +53,20 @@ public class P_012 : CEntity_Effect
                         yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, hashtable).Tap());
 
                         yield return GManager.instance.photonWaitController.StartWait("Taichi_Select");
-
-                        if (card.Owner.isYou)
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
-                            GManager.instance.commandText.OpenCommandText("Which effect will you activate?");
+                            new SelectionElement<int>(message: $"Draw 1", value : 0, spriteIndex: 0),
+                            new SelectionElement<int>(message: $"DP +1000", value : 1, spriteIndex: 0),
+                        };
 
-                            List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
-                                {
-                                    new Command_SelectCommand($"Draw 1", () => photonView.RPC("SetActionID", RpcTarget.All, 0), 0),
-                                    new Command_SelectCommand($"DP +1000", () => photonView.RPC("SetActionID", RpcTarget.All, 1), 0),
-                                };
+                        string selectPlayerMessage = "Which effect will you activate?";
+                        string notSelectPlayerMessage = "The opponent is choosing which effect to activate.";
 
-                            GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
-                        }
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                        else
-                        {
-                            GManager.instance.commandText.OpenCommandText("The opponent is choosing which effect to activate.");
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                            #region AIƒ‚[ƒh
-                            if (GManager.instance.IsAI)
-                            {
-                                SetActionID(UnityEngine.Random.Range(0, 2));
-                            }
-                            #endregion
-                        }
-
-                        yield return new WaitWhile(() => !endSelect);
-                        endSelect = false;
-
-                        GManager.instance.commandText.CloseCommandText();
-                        yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                        int actionID = GManager.instance.userSelectionManager.SelectedIntValue;
 
                         switch (actionID)
                         {
@@ -138,15 +121,5 @@ public class P_012 : CEntity_Effect
         }
 
         return cardEffects;
-    }
-
-    bool endSelect = false;
-    int actionID = -1;
-
-    [PunRPC]
-    public void SetActionID(int actionID)
-    {
-        this.actionID = actionID;
-        endSelect = true;
     }
 }

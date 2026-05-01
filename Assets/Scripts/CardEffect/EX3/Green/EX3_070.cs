@@ -144,87 +144,40 @@ namespace DCGO.CardEffects.EX3
                         {
                             yield return GManager.instance.photonWaitController.StartWait("AvalonsGate_selectFirst");
 
-                            if (card.Owner.isYou)
+                            if (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) >= 2)
                             {
-                                if (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) >= 2)
+                                List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                                 {
-                                    if (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) == 2)
-                                    {
-                                        GManager.instance.commandText.OpenCommandText("Which effect will you activate the first?");
-                                    }
+                                    new SelectionElement<int>(message: $"Suspend & gain Pierce", value : 0, spriteIndex: 0),
+                                    new SelectionElement<int>(message: $"Unsuspend", value : 1, spriteIndex: 0),
+                                };
 
-                                    List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>();
+                                string selectPlayerMessage = "Which effect will you activate?";
+                                string notSelectPlayerMessage = "The opponent is choosing which effect activates.";
 
-                                    for (int i = 0; i < canSelectEffects.Count; i++)
-                                    {
-                                        if (!activatedEffects.Contains(canSelectEffects[i]))
-                                        {
-                                            int k = i;
-
-                                            string message = "";
-
-                                            switch (k)
-                                            {
-                                                case 0:
-                                                    message = "Suspend & gain Pierce";
-                                                    break;
-
-                                                case 1:
-                                                    message = "Unsuspend";
-                                                    break;
-                                            }
-
-                                            command_SelectCommands.Add(new Command_SelectCommand(message, () => photonView.RPC("SetEffectIndex", RpcTarget.All, k), 0));
-                                        }
-                                    }
-
-                                    GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
+                                if (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) == 2)
+                                {
+                                    selectPlayerMessage = "Which effect will you activate the first?";
                                 }
 
-                                else
-                                {
-                                    for (int i = 0; i < canSelectEffects.Count; i++)
-                                    {
-                                        if (!activatedEffects.Contains(canSelectEffects[i]))
-                                        {
-                                            photonView.RPC("SetEffectIndex", RpcTarget.All, i);
-                                            break;
-                                        }
-                                    }
-                                }
+                                GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                             }
 
                             else
                             {
-                                GManager.instance.commandText.OpenCommandText("The opponent is choosing which effect activates.");
-
-                                #region AIモード
-                                if (GManager.instance.IsAI)
+                                for (int i = 0; i < canSelectEffects.Count; i++)
                                 {
-                                    List<int> indexes = new List<int>();
-
-                                    for (int i = 0; i < canSelectEffects.Count; i++)
+                                    if (!activatedEffects.Contains(canSelectEffects[i]))
                                     {
-                                        if (!activatedEffects.Contains(canSelectEffects[i]))
-                                        {
-                                            int k = i;
-                                            indexes.Add(k);
-                                        }
-                                    }
-
-                                    if (indexes.Count >= 1)
-                                    {
-                                        SetEffectIndex(UnityEngine.Random.Range(0, indexes.Count));
+                                        GManager.instance.userSelectionManager.SetInt(i);
+                                        break;
                                     }
                                 }
-                                #endregion
                             }
 
-                            yield return new WaitWhile(() => !endSelect);
-                            endSelect = false;
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                            GManager.instance.commandText.CloseCommandText();
-                            yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                            int effectIndex = GManager.instance.userSelectionManager.SelectedIntValue;
 
                             if (0 <= effectIndex && effectIndex <= canSelectEffects.Count - 1)
                             {
@@ -244,36 +197,20 @@ namespace DCGO.CardEffects.EX3
                     #region 名称に「エグザモン」を含むデジモンがいない場合(1つ選択)
                     else
                     {
-                        if (card.Owner.isYou)
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
-                            GManager.instance.commandText.OpenCommandText("Which effect will you activate?");
+                            new SelectionElement<int>(message: $"Suspend & gain Pierce", value : 0, spriteIndex: 0),
+                            new SelectionElement<int>(message: $"Unsuspend", value : 1, spriteIndex: 0),
+                        };
 
-                            List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
-                                {
-                                    new Command_SelectCommand("Suspend & gain Pierce", () => photonView.RPC("SetEffectIndex", RpcTarget.All, 0), 0),
-                                    new Command_SelectCommand("Unsuspend", () => photonView.RPC("SetEffectIndex", RpcTarget.All, 1), 0),
-                                };
+                        string selectPlayerMessage = "Which effect will you activate?";
+                        string notSelectPlayerMessage = "The opponent is choosing which effect activates.";
 
-                            GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
-                        }
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                        else
-                        {
-                            GManager.instance.commandText.OpenCommandText("The opponent is choosing which effect activates.");
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                            #region AIモード
-                            if (GManager.instance.IsAI)
-                            {
-                                SetEffectIndex(UnityEngine.Random.Range(0, canSelectEffects.Count));
-                            }
-                            #endregion
-                        }
-
-                        yield return new WaitWhile(() => !endSelect);
-                        endSelect = false;
-
-                        GManager.instance.commandText.CloseCommandText();
-                        yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                        int effectIndex = GManager.instance.userSelectionManager.SelectedIntValue;
 
                         if (0 <= effectIndex && effectIndex <= canSelectEffects.Count - 1)
                         {
@@ -364,16 +301,6 @@ namespace DCGO.CardEffects.EX3
             }
 
             return cardEffects;
-        }
-
-        int effectIndex = 0;
-        bool endSelect = false;
-
-        [PunRPC]
-        public void SetEffectIndex(int effectIndex)
-        {
-            this.effectIndex = effectIndex;
-            endSelect = true;
         }
     }
 }

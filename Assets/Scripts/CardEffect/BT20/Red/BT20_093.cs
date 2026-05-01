@@ -214,106 +214,13 @@ namespace DCGO.CardEffects.BT20
 
                 IEnumerator SuccessProcess()
                 {
-                    List<CardSource> selectedCards = new List<CardSource>();
-
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectDNACardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to DNA digivolve.",
-                        "The opponent is selecting 1 card to DNA digivolve.");
-                    selectHandEffect.SetNotShowCard();
-
-                    yield return StartCoroutine(selectHandEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                    {
-                        selectedCards.Add(cardSource);
-
-                        yield return null;
-                    }
-
-                    if (selectedCards.Count >= 1)
-                    {
-                        foreach (CardSource selectedCard in selectedCards)
-                        {
-                            if (selectedCard.CanPlayJogress(true))
-                            {
-                                _jogressEvoRootsFrameIDs = Array.Empty<int>();
-
-                                yield return GManager.instance.photonWaitController.StartWait("Eldradimon_EX7_047");
-
-                                if (card.Owner.isYou || GManager.instance.IsAI)
-                                {
-                                    GManager.instance.selectJogressEffect.SetUp_SelectDigivolutionRoots
-                                    (card: selectedCard,
-                                        isLocal: true,
-                                        isPayCost: true,
-                                        canNoSelect: true,
-                                        endSelectCoroutine_SelectDigivolutionRoots: EndSelectCoroutineSelectDigivolutionRoots,
-                                        noSelectCoroutine: null);
-
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectJogressEffect
-                                        .SelectDigivolutionRoots());
-
-                                    IEnumerator EndSelectCoroutineSelectDigivolutionRoots(List<Permanent> permanents)
-                                    {
-                                        if (permanents.Count == 2)
-                                        {
-                                            _jogressEvoRootsFrameIDs = permanents.Distinct().ToArray()
-                                                .Map(permanent => permanent.PermanentFrame.FrameID);
-                                        }
-
-                                        yield return null;
-                                    }
-
-                                    photonView.RPC("SetJogressEvoRootsFrameIDs", RpcTarget.All, _jogressEvoRootsFrameIDs);
-                                }
-
-                                else
-                                {
-                                    GManager.instance.commandText.OpenCommandText("The opponent is choosing a card to DNA digivolve.");
-                                }
-
-                                yield return new WaitWhile(() => !_endSelect);
-                                _endSelect = false;
-
-                                GManager.instance.commandText.CloseCommandText();
-                                yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
-
-                                if (_jogressEvoRootsFrameIDs.Length == 2)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>()
-                                        .ShowCardEffect(new List<CardSource>() { selectedCard }, "Played Card", true, true));
-
-                                    PlayCardClass playCard = new PlayCardClass(
-                                        cardSources: new List<CardSource>() { selectedCard },
-                                        hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                                        payCost: true,
-                                        targetPermanent: null,
-                                        isTapped: false,
-                                        root: SelectCardEffect.Root.Hand,
-                                        activateETB: true);
-
-                                    playCard.SetJogress(_jogressEvoRootsFrameIDs);
-
-                                    yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
-                                }
-                            }
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(
+                                                        CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
+                                                            CanSelectDNACardCondition,
+                                                            payCost: true,
+                                                            isHand: true,
+                                                            activateClass
+                                                        ));
                 }
             }
 
@@ -454,19 +361,5 @@ namespace DCGO.CardEffects.BT20
 
             return cardEffects;
         }
-
-        #region Photon DNA
-
-        bool _endSelect;
-        int[] _jogressEvoRootsFrameIDs = Array.Empty<int>();
-
-        [PunRPC]
-        public void SetJogressEvoRootsFrameIDs(int[] jogressEvoRootsFrameIDs)
-        {
-            this._jogressEvoRootsFrameIDs = jogressEvoRootsFrameIDs;
-            _endSelect = true;
-        }
-
-        #endregion
     }
 }

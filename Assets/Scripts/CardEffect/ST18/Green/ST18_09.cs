@@ -41,12 +41,6 @@ namespace DCGO.CardEffects.ST18
                     return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent) &&
-                           permanent.IsDigimon;
-                }
-
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon &&

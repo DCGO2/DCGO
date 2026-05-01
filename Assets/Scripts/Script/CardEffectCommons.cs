@@ -292,7 +292,7 @@ public partial class CardEffectCommons
 
     #endregion
 
-    #region Play 1 [Vol�e & Zerdr�cken] Token
+    #region Play 1 [Volée & Zerdrücken] Token
 
     public static IEnumerator PlayVoleeZerdrucken(ICardEffect activateClass)
     {
