@@ -32,17 +32,25 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && card.PermanentOfThisCard().TopCard.EqualsTraits("TS");
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
-                
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(
-                        player: card.Owner,
-                        drawCount: 1,
-                        cardEffect: activateClass).Draw()
-                    );
+                    bool hasUsed = false;
+
+                    if (card.PermanentOfThisCard().TopCard.EqualsTraits("TS"))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(
+                            player: card.Owner,
+                            drawCount: 1,
+                            cardEffect: activateClass).Draw()
+                        );
+
+                        hasUsed = true;
+                    }
+
+                    if (!hasUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
