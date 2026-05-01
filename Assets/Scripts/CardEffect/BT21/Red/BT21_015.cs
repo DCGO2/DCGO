@@ -20,23 +20,16 @@ namespace DCGO.CardEffects.BT21
 
             #endregion
 
-            #region On Play / When Digivolving Shared
-
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.DP <= 4000)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
+            #region On Play / When Digivolving Shared       
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable, ActivateClass activateClass)
             {
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                        && permanent.DP <= card.Owner.MaxDP_DeleteEffect(4000, activateClass);
+                }
+
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -88,14 +81,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
             }
 
@@ -127,14 +113,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
             }
 
