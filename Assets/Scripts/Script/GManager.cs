@@ -492,9 +492,29 @@ public class GManager : MonoBehaviourPun
         AllowAlphaInputs();
     }
 
+    public Player GetPlayerFromID(int playerID)
+    {
+        if (You.PlayerID == playerID)
+        {
+            return You;
+        }
+        else if (Opponent.PlayerID == playerID)
+        {
+            return Opponent;
+        }
+
+        return null;
+    }
+
+    #region Cheats
+    public bool AllowCheats()
+    {
+        return !ContinuousController.instance.isRandomMatch || ContinuousController.instance.isAI;
+    }
+
     void AllowAlphaInputs()
     {
-        if (ContinuousController.instance.isRandomMatch && !ContinuousController.instance.isAI)
+        if (!AllowCheats())
             return;
 
         if (turnStateMachine == null)
@@ -506,78 +526,48 @@ public class GManager : MonoBehaviourPun
         //Draw a card
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.D))
         {
-            photonView.RPC("DrawCardRPC", RpcTarget.Others);
-            StartCoroutine(DrawCard(You));
+            turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.Draw));
         }
 
         //Trash a card
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.T))
         {
-            photonView.RPC("TrashCardRPC", RpcTarget.Others);
-            StartCoroutine(TrashCard(You));
+            turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.TrashCard));
         }
 
         //Top deck a card
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.L))
         {
-            photonView.RPC("TopDeckCardRPC", RpcTarget.Others);
-            StartCoroutine(TopDeckCard(You));
+            turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.PlaceCardOnDeck));
         }
 
         //Place Top Security
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
         {
             bool keyInput = Input.GetKey(KeyCode.LeftShift);
-            photonView.RPC("PlaceInSecurityRPC", RpcTarget.Others, keyInput);
-            StartCoroutine(PlaceInSecurity(You, keyInput));
+            if (keyInput)
+            {
+                turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.PlaceCardInSecurity));
+            }
+            else
+            {
+                turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.PlaceCardInSecurityFaceup));
+            }
         }
 
         //Gain Memory
         if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Equals))
         {
-            photonView.RPC("AlterMemoryRPC", RpcTarget.Others, -1);
-            StartCoroutine(AlterMemory(You, 1));
+            turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.GainMemory));
         }
 
         //Lose Memory
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Minus))
         {
-            photonView.RPC("AlterMemoryRPC", RpcTarget.Others, 1);
-            StartCoroutine(AlterMemory(You, -1));
+            turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.LoseMemory));
         }
             
     }
-
-    [PunRPC]
-    public void DrawCardRPC()
-    {
-        StartCoroutine(DrawCard(Opponent));
-    }
-
-    [PunRPC]
-    public void TrashCardRPC()
-    {
-        StartCoroutine(TrashCard(Opponent));
-    }
-
-    [PunRPC]
-    public void TopDeckCardRPC()
-    {
-        StartCoroutine(TopDeckCard(Opponent));
-    }
-
-    [PunRPC]
-    public void PlaceInSecurityRPC(bool keyInput)
-    {
-        StartCoroutine(PlaceInSecurity(Opponent, keyInput));
-    }
-
-    [PunRPC]
-    public void AlterMemoryRPC(int value)
-    {
-        StartCoroutine(AlterMemory(Opponent,value));
-    }
-
 
     public IEnumerator DrawCard(Player _player)
     {
@@ -586,16 +576,16 @@ public class GManager : MonoBehaviourPun
         yield return StartCoroutine(turnStateMachine.SetMainPhase());
     }
 
-    IEnumerator AlterMemory(Player _player, int value)
+    public IEnumerator AlterMemory(Player _player, int value)
     {
-        yield return StartCoroutine(You.AddMemory(value, null));
+        yield return StartCoroutine(_player.AddMemory(value, null));
 
         yield return StartCoroutine(turnStateMachine.SetMainPhase());
 
         yield return StartCoroutine(autoProcessing.EndTurnCheck());
     }
 
-    IEnumerator TrashCard(Player _player)
+    public IEnumerator TrashCard(Player _player)
     {
         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -618,7 +608,7 @@ public class GManager : MonoBehaviourPun
         yield return StartCoroutine(turnStateMachine.SetMainPhase());
     }
 
-    IEnumerator TopDeckCard(Player _player)
+    public IEnumerator TopDeckCard(Player _player)
     {
         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -641,7 +631,7 @@ public class GManager : MonoBehaviourPun
         yield return StartCoroutine(turnStateMachine.SetMainPhase());
     }
 
-    IEnumerator PlaceInSecurity(Player _player, bool placeFaceup)
+    public IEnumerator PlaceInSecurity(Player _player, bool placeFaceup)
     {
         CardSource selectedSource = null;
 
@@ -679,4 +669,5 @@ public class GManager : MonoBehaviourPun
 
         yield return StartCoroutine(turnStateMachine.SetMainPhase());
     }
+    #endregion
 }

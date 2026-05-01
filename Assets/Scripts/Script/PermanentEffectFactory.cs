@@ -115,4 +115,23 @@ public partial class PermanentEffectFactory
         bool PermanentCondition(Permanent permanent) => permanent == targetPermanent;
     }
     #endregion
+
+    #region Add Detail for Display
+    public static AddDetailClass AddDetailClass(Permanent targetPermanent, string detail, bool triggerEffect, ICardEffect activateClass)
+    {
+        return CardEffectFactory.AddDetailClass(CanUseCondition, PermanentCondition, detail, triggerEffect, activateClass.EffectSourceCard);
+
+        bool PermanentCondition(Permanent permanent)
+        {
+            return permanent != null
+                && permanent == targetPermanent;
+        }
+
+        bool CanUseCondition(Hashtable hashtable)
+        {
+            return CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent)
+                && !targetPermanent.TopCard.CanNotBeAffected(activateClass);
+        }
+    }
+    #endregion
 }

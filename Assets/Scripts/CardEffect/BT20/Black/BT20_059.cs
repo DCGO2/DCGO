@@ -96,6 +96,7 @@ namespace DCGO.CardEffects.BT20
                         canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects", CanUseConditionImmunity, card);
                         canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
                         card.Owner.UntilOpponentTurnEndEffects.Add(GetCardEffect);
+                        card.Owner.UntilOpponentTurnEndEffects.Add(GetDetailEffect);
 
                         bool CanUseConditionImmunity(Hashtable hashtable)
                         {
@@ -135,6 +136,20 @@ namespace DCGO.CardEffects.BT20
                                 return canNotAffectedClass;
                             }
 
+                            return null;
+                        }
+
+                        bool PermanentCondition(Permanent permanent)
+                        {
+                            return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                        }
+
+                        ICardEffect GetDetailEffect(EffectTiming timing)
+                        {
+                            if (timing == EffectTiming.None)
+                            {
+                                return CardEffectFactory.AddDetailClass(CanUseConditionImmunity, PermanentCondition, "Isn't affected by opponent's Digimon's effects", false, card);
+                            }
                             return null;
                         }
                     }

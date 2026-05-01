@@ -120,7 +120,6 @@ namespace DCGO.CardEffects.P
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
                         {
-                            bool destroyed = false;
                             List<Permanent> deletedPermanents = new List<Permanent>();
 
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();

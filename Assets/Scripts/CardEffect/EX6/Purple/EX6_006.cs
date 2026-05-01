@@ -651,15 +651,6 @@ namespace DCGO.CardEffects.EX6
                     return "[Breeding] [End of Opponent's Turn] By deleting this Digimon with 7 or more cards with different names in it's digivolution cards, you may play 1 [Ogudomon] from your trash without paying the cost";
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (permanent == card.PermanentOfThisCard())
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
                 bool CanSelectOgudomonInTrash(CardSource cardSource)
                 {
                     if (cardSource.CardNames.Contains("Ogudomon"))

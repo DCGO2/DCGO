@@ -106,6 +106,18 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Whether the card is a Digivolution Card
+
+    public static bool IsExistDigivolutionCards(CardSource card)
+    {
+        if (IsExistOnField(card))
+            return card.PermanentOfThisCard().DigivolutionCards.Contains(card);
+
+        return false;
+    }
+
+    #endregion
+
     #region Whether the card is Linked
 
     public static bool IsExistLinked(CardSource card)

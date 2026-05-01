@@ -62,7 +62,7 @@ namespace DCGO.CardEffects.BT13
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    #region �o��R�X�g-4
+                    #region Reduce play cost by 4
 
                     ChangeCostClass changeCostClass = new ChangeCostClass();
                     changeCostClass.SetUpICardEffect("Play Cost -4", CanUseCondition1, card);
@@ -191,7 +191,7 @@ namespace DCGO.CardEffects.BT13
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: true, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
                     }
 
-                    #region �o��R�X�g-4����
+                    #region Remove Reduction
 
                     card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
 
@@ -239,7 +239,7 @@ namespace DCGO.CardEffects.BT13
                     {
                         bool canPlay = false;
 
-                        #region �o��R�X�g-4
+                        #region Reduce play cost by 4
 
                         ChangeCostClass changeCostClass = new ChangeCostClass();
                         changeCostClass.SetUpICardEffect("Play Cost -4", CanUseCondition1, card);
@@ -336,7 +336,7 @@ namespace DCGO.CardEffects.BT13
                             canPlay = true;
                         }
 
-                        #region �o��R�X�g-4����
+                        #region Remove Reduction
 
                         card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
 
@@ -353,7 +353,7 @@ namespace DCGO.CardEffects.BT13
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    #region �o��R�X�g-4
+                    #region Reduce play cost by 4
 
                     ChangeCostClass changeCostClass = new ChangeCostClass();
                     changeCostClass.SetUpICardEffect("Play Cost -4", CanUseCondition1, card);
@@ -482,7 +482,7 @@ namespace DCGO.CardEffects.BT13
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: true, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
                     }
 
-                    #region �o��R�X�g-4����
+                    #region Remove Reduction
 
                     card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
 

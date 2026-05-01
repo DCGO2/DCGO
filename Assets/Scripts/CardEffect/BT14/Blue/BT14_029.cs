@@ -84,19 +84,6 @@ namespace DCGO.CardEffects.BT14
                     return "[When Attacking][Once Per Turn] If your opponent has no Digimon with as many or more digivolution cards than this Digimon, unsuspend this Digimon.";
                 }
 
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnAttack(hashtable, card);

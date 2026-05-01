@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.BT25
                     whenDigivolving: true,
                     whenAttacking: true);
 
-            bool AdditionalActivateCondition(Hashtable hashtable) => card.Owner.HandCards.Count() > 0;
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass) => card.Owner.HandCards.Count() > 0;
 
             bool EnteredByEffect(Hashtable hashtable)
             {
