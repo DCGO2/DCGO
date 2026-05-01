@@ -84,46 +84,29 @@ namespace DCGO.CardEffects.BT10
                     {
                         if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1 && card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
-                            if (card.Owner.isYou)
+                            string selectPlayerMessage = "From which area do you play a card?";
+                            string notSelectPlayerMessage = "The opponent is choosing from which area to play a card.";
+
+                            List<SelectionElement<bool>> command_SelectCommands = new List<SelectionElement<bool>>()
                             {
-                                GManager.instance.commandText.OpenCommandText("From which area do you play a card?");
+                                new SelectionElement<bool>(message: $"Under Tamer", value: false, spriteIndex: 0),
+                                new SelectionElement<bool>(message: $"From hand", value: false, spriteIndex: 1),
+                            };
 
-                                List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
-                                {
-                                    new Command_SelectCommand($"Under Tamer", () => photonView.RPC("SetFromHand", RpcTarget.All, false), 0),
-                                    new Command_SelectCommand($"From hand", () => photonView.RPC("SetFromHand", RpcTarget.All, true), 1),
-                                };
-
-                                GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
-                            }
-                            else
-                            {
-                                GManager.instance.commandText.OpenCommandText("The opponent is choosing from which area to play a card.");
-
-                                #region AIƒ‚[ƒh
-
-                                if (GManager.instance.IsAI)
-                                {
-                                    SetFromHand(RandomUtility.IsSucceedProbability(0.5f));
-                                }
-
-                                #endregion
-                            }
+                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: command_SelectCommands, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                         }
                         else if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) == 0 && card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
-                            SetFromHand(true);
+                            GManager.instance.userSelectionManager.SetBool(true);
                         }
                         else if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1 && card.Owner.HandCards.Count(CanSelectCardCondition) == 0)
                         {
-                            SetFromHand(false);
+                            GManager.instance.userSelectionManager.SetBool(false);
                         }
 
-                        yield return new WaitWhile(() => !endSelect);
-                        endSelect = false;
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        GManager.instance.commandText.CloseCommandText();
-                        yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                        bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                         if (fromHand)
                         {
@@ -327,16 +310,6 @@ namespace DCGO.CardEffects.BT10
             }
 
             return cardEffects;
-        }
-
-        bool endSelect = false;
-        bool fromHand = false;
-
-        [PunRPC]
-        public void SetFromHand(bool fromHand)
-        {
-            this.fromHand = fromHand;
-            endSelect = true;
         }
     }
 }

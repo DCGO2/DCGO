@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.BT16
                         if (selectedPermanent != null)
                         {
                             CanNotBeRemovedClass canNotBeRemovedClass = new CanNotBeRemovedClass();
-                            canNotBeRemovedClass.SetUpICardEffect("Can't leave battle area except by deletion effect", CanUseProtectionCondition, card);
+                            canNotBeRemovedClass.SetUpICardEffect("Can't leave battle area except by deletion", CanUseProtectionCondition, card);
                             canNotBeRemovedClass.SetUpCanNotBeRemovedClass(permanentCondition: PermanentCondition);
                             selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotBeRemovedClass);
 

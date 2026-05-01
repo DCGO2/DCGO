@@ -55,6 +55,22 @@ public class CardSource : MonoBehaviour
 
     public bool IsFlipped { get; private set; }
 
+    public bool IsFaceUp 
+    { 
+        get 
+        { 
+            return !IsFlipped; 
+        }
+    }
+
+    public bool IsFaceDown
+    {
+        get
+        {
+            return IsFlipped;
+        }
+    }
+
     #region set face
 
     public void SetFace(string str = "")

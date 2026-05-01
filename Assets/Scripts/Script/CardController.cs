@@ -3420,7 +3420,17 @@ public class ILinkCard
         if (_cardEffect == null) yield break;
 
         #region Trigger When Would Link effects
-        SelectCardEffect.Root root = CardEffectCommons.IsExistOnHand(_linkCard) ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.None;
+        SelectCardEffect.Root root;
+        if (CardEffectCommons.IsExistOnHand(_linkCard))
+            root = SelectCardEffect.Root.Hand;
+        else if (CardEffectCommons.IsExistInAnyTrash(_linkCard))
+            root = SelectCardEffect.Root.Trash;
+        else if (CardEffectCommons.IsExistDigivolutionCards(_linkCard))
+            root = SelectCardEffect.Root.DigivolutionCards;
+        else if (CardEffectCommons.IsExistLinked(_linkCard))
+            root = SelectCardEffect.Root.LinkedCards;
+        else
+            root = SelectCardEffect.Root.None;
 
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
             CardEffectCommons.WouldLinkHashtable(_linkCard, _permanent, root, null),
@@ -3436,11 +3446,11 @@ public class ILinkCard
             yield return ContinuousController.instance.StartCoroutine(_linkCard.Owner.AddMemory(-1 * Cost, _cardEffect));
         }
 
-        if (root == SelectCardEffect.Root.Hand)
-            yield return ContinuousController.instance.StartCoroutine(_permanent.AddLinkCard(_linkCard, _cardEffect));
-        else
+        if (root == SelectCardEffect.Root.None)
             yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToLinkCards(new List<Permanent[]>() { new Permanent[] { _linkCard.PermanentOfThisCard(), _permanent } }, _cardEffect).PlacePermanentToLinkCards());
-
+        else
+            yield return ContinuousController.instance.StartCoroutine(_permanent.AddLinkCard(_linkCard, _cardEffect));
+            
         WasLinked = _permanent.LinkedCards.Contains(_linkCard);
     }
 }

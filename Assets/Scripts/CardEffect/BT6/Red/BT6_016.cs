@@ -232,14 +232,4 @@ public class BT6_016 : CEntity_Effect
 
         return cardEffects;
     }
-
-    bool endSelect = false;
-    bool fromHand = false;
-
-    [PunRPC]
-    public void SetFromHand(bool fromHand)
-    {
-        this.fromHand = fromHand;
-        endSelect = true;
-    }
 }

@@ -52,22 +52,6 @@ namespace DCGO.CardEffects.BT16
                     return "[When Digivolving] Suspend all of your opponent's Digimon. Then, this Digimon may attack.";
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                        {
-                            if (permanent.IsDigimon)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);

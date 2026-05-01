@@ -66,7 +66,6 @@ namespace DCGO.CardEffects.BT24
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    bool addedCard = false;
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
                         revealCount: 3,
                         simplifiedSelectCardConditions:

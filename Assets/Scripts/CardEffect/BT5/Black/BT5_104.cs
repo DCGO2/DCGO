@@ -70,36 +70,20 @@ public class BT5_104 : CEntity_Effect
                 {
                     if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame()) >= 1)
                     {
-                        if (card.Owner.isYou)
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
-                            GManager.instance.commandText.OpenCommandText("Will you play a [Diaboromon] Token?");
+                            new SelectionElement<bool>(message: $"Play 1 Token", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"Not Play", value : false, spriteIndex: 1),
+                        };
 
-                            List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
-                                {
-                                    new Command_SelectCommand($"Play 1 Token", () => photonView.RPC("SetPlayToken", RpcTarget.All, true), 0),
-                                    new Command_SelectCommand($"Not Play", () => photonView.RPC("SetPlayToken", RpcTarget.All, false), 1),
-                                };
+                        string selectPlayerMessage = "Will you play a [Diaboromon] Token?";
+                        string notSelectPlayerMessage = "The opponent is choosing whether to play a token.";
 
-                            GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
-                        }
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                        else
-                        {
-                            GManager.instance.commandText.OpenCommandText("The opponent is choosing whether to play a token.");
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                            #region AIƒ‚[ƒh
-                            if (GManager.instance.IsAI)
-                            {
-                                SetPlayToken(RandomUtility.IsSucceedProbability(0.5f));
-                            }
-                            #endregion
-                        }
-
-                        yield return new WaitWhile(() => !endSelect);
-                        endSelect = false;
-
-                        GManager.instance.commandText.CloseCommandText();
-                        yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                        bool playToken = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                         if (playToken)
                         {
@@ -116,15 +100,5 @@ public class BT5_104 : CEntity_Effect
         }
 
         return cardEffects;
-    }
-
-    bool endSelect = false;
-    bool playToken = false;
-
-    [PunRPC]
-    public void SetPlayToken(bool playToken)
-    {
-        this.playToken = playToken;
-        endSelect = true;
     }
 }

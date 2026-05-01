@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.ST23
             }
             #endregion       
 
-            #region Your Turns
+            #region Your Turn
             if (timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -80,7 +80,8 @@ namespace DCGO.CardEffects.ST23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

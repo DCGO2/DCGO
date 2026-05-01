@@ -215,37 +215,20 @@ public class BT6_111 : CEntity_Effect
                         {
                             yield return GManager.instance.photonWaitController.StartWait("PayMemory_Alphamon");
 
-                            if (card.Owner.isYou)
+                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                             {
-                                GManager.instance.commandText.OpenCommandText($"Will you pay 1 memory cost?(already paid cost:{count})");
+                                new SelectionElement<bool>(message: $"Pay Cost", value : true, spriteIndex: 0),
+                                new SelectionElement<bool>(message: $"Not Pay Cost", value : false, spriteIndex: 1),
+                            };
 
-                                List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
-                                {
-                                    new Command_SelectCommand($"Pay Cost", () => photonView.RPC("SetPayCost", RpcTarget.All, true), 0),
-                                    new Command_SelectCommand($"Not Pay Cost", () => photonView.RPC("SetPayCost", RpcTarget.All, false), 1),
-                                };
+                            string selectPlayerMessage = $"Will you pay 1 memory cost?(already paid cost:{count})";
+                            string notSelectPlayerMessage = "The opponent is choosing whether to pay memory cost.";
 
-                                GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
-                            }
-                            else
-                            {
-                                GManager.instance.commandText.OpenCommandText("The opponent is choosing whether to pay memory cost.");
+                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                                #region AIƒ‚[ƒh
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                                if (GManager.instance.IsAI)
-                                {
-                                    SetPayCost(RandomUtility.IsSucceedProbability(0.5f));
-                                }
-
-                                #endregion
-                            }
-
-                            yield return new WaitWhile(() => !endSelect);
-                            endSelect = false;
-
-                            GManager.instance.commandText.CloseCommandText();
-                            yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                            bool payCost = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                             if (payCost)
                             {
@@ -313,15 +296,5 @@ public class BT6_111 : CEntity_Effect
         }
 
         return cardEffects;
-    }
-
-    bool endSelect = false;
-    bool payCost = false;
-
-    [PunRPC]
-    public void SetPayCost(bool payCost)
-    {
-        this.payCost = payCost;
-        endSelect = true;
-    }
+    } 
 }

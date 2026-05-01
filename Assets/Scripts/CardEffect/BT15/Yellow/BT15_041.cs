@@ -227,7 +227,6 @@ namespace DCGO.CardEffects.BT15
                         List<CardSource> selectedCards = new List<CardSource>();
 
                         int maxCount = 1;
-                        bool selectedCard = false;
 
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -253,7 +252,6 @@ namespace DCGO.CardEffects.BT15
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectedCards.Add(cardSource);
-                            selectedCard = true;
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
 

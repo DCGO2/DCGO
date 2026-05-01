@@ -82,7 +82,6 @@ namespace DCGO.CardEffects.EX6
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent selectedPermanent = null;
-                    Permanent selectedEnemy = null;
 
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-2, activateClass));
 

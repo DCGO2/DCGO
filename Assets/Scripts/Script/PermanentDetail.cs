@@ -290,12 +290,57 @@ public class PermanentDetail : MonoBehaviour
                 continue;
             }
 
+            if (cardEffect is IAddDetailEffect)
+            {
+                continue;
+            }
+
             if (cardEffect.IsNotShowUI)
             {
                 continue;
             }
 
             effectString += $"- {cardEffect.EffectName}\n";
+        }
+        #endregion
+
+        #region AddDetails
+        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+        {
+            #region Effects of permanents in play
+            foreach (Permanent otherPermanent in player.GetFieldPermanents())
+            {
+                foreach (ICardEffect cardEffect in otherPermanent.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is IAddDetailEffect)
+                    {
+                        if (cardEffect.CanTrigger(null))
+                        {
+                            if (((IAddDetailEffect)cardEffect).PermanentCondition(permanent))
+                            {
+                                effectString += $"- {((IAddDetailEffect)cardEffect).GetDetail()}\n";
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Effects of Players
+            foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
+            {
+                if (cardEffect is IAddDetailEffect)
+                {
+                    if (cardEffect.CanTrigger(null))
+                    {
+                        if (((IAddDetailEffect)cardEffect).PermanentCondition(permanent))
+                        {
+                            effectString += $"- {((IAddDetailEffect)cardEffect).GetDetail()}\n";
+                        }
+                    }
+                }
+            }
+            #endregion
         }
         #endregion
 

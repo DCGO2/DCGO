@@ -74,8 +74,6 @@ public class RB1_031 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    return true;
-
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                     {
                         return true;
