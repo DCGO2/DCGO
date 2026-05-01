@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanLinkThisCardCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    return (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) || CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card))
                         && CanLink(card, permanent);
                 }
 
@@ -296,6 +296,7 @@ namespace DCGO.CardEffects.BT25
                 activateClass.SetUpICardEffect("Trash 1 link card to not leave battle field", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetHashString("BT25-101-AT");
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
 
