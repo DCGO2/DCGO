@@ -38,17 +38,23 @@ namespace DCGO.CardEffects.BT25
 
             string SharedEffectDescription(string tag) => $"[{tag}] By trashing up to 2 [Iliad] or [TS] trait cards from your hand, <Draw 1> for each card trashed.";
 
+            bool CanSelectCardCondition(CardSource cardSource)
+            {
+                return cardSource.HasIliadTraits
+                        || cardSource.HasTSTraits;
+            }
+
             IEnumerator SharedActivateCoroutine(Hashtable _hashtable, ActivateClass activateClass)
             {
-                if (card.Owner.HandCards.Count >= 1)
+                if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                 {
-                    int maxCount = Math.Min(2, card.Owner.HandCards.Count);
+                    int maxCount = Math.Min(2, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardCondition));
 
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: _ => true,
+                        canTargetCondition: CanSelectCardCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount,
