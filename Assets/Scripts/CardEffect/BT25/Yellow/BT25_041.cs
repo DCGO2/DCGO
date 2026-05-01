@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.BT25
                 {
                     bool hasPaidCost = false;
                     bool canAddSecurityToHand = card.Owner.SecurityCards.Any();
-                    bool canTrashBottomFaceDownCard = CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsTamerWithFaceDownCard);
+                    bool canTrashBottomFaceDownCard = CardEffectCommons.HasMatchConditionPermanent(IsTamerWithFaceDownCard);
 
                     if (canAddSecurityToHand)
                     {
