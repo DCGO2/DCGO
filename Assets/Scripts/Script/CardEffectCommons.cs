@@ -616,12 +616,13 @@ public partial class CardEffectCommons
 
     #region Trash Hand card and the effect determines whether the security were trashed or not
 
-    public static IEnumerator TrashHandAndProcessAccordingToResult(Player player, Hashtable hashtable, CardSource cardToTrash, Func<CardSource, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
+    public static IEnumerator TrashHandAndProcessAccordingToResult(Player player, Hashtable hashtable, CardSource cardToTrash, ActivateClass activateClass, Func<CardSource, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
     {
-        IDiscardHand discardHand = new IDiscardHand(cardToTrash, hashtable);
-        yield return ContinuousController.instance.StartCoroutine(discardHand.Discard());
+        IDiscardHands discardHands = new IDiscardHands(new List<IDiscardHand>() { new IDiscardHand(cardToTrash, hashtable) }, activateClass);
+        yield return ContinuousController.instance.StartCoroutine(discardHands.DiscardHands());
 
-        if (discardHand.discarded)
+
+        if (discardHands.HasDiscarded)
         {
             if (successProcess != null)
             {
@@ -645,7 +646,7 @@ public partial class CardEffectCommons
         IPutSecurityPermanent putSecurityPermanent = new IPutSecurityPermanent(targetPermanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop, isFaceUp);
 
         CardSource topCard = targetPermanent.TopCard;
-        if (activateClass.EffectSourceCard != null 
+        if (activateClass.EffectSourceCard != null
             && activateClass.EffectSourceCard.Owner.CanAddSecurity(activateClass))
         {
             yield return ContinuousController.instance.StartCoroutine(putSecurityPermanent.PutSecurity());
