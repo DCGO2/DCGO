@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.HasTSTraits || targetPermanent.TopCard.HasDinosaurTraits;
+                    => targetPermanent.TopCard.HasTSTraits || targetPermanent.TopCard.EqualsTraits("Dinosaur");
 
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 5, permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -45,8 +45,7 @@ namespace DCGO.CardEffects.BT25
             string SharedEffectDescription(string tag) => $"[{tag}] Delete 1 of your opponent's highest DP Digimon.";
 
             bool CanSelectPermamentCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && CardEffectCommons.IsMaxDP(permanent, card.Owner.Enemy, null);
+                => CardEffectCommons.IsMaxDP(permanent, card.Owner.Enemy, null);
 
             IEnumerator SharedActivateCoroutine(Hashtable _hashtable, ActivateClass activateClass)
             {
