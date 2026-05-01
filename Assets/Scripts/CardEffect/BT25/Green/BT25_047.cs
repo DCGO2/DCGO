@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT25
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription() => "[On Play]  Reveal the top 3 cards of your deck. Add 1 [Vegetation] or [Shaman] trait card and 1 [TS] trait card among them to the hand. Return the rest to the bottom of the deck.";
+                string EffectDiscription() => "[On Play] Reveal the top 3 cards of your deck. Add 1 [Vegetation] or [Shaman] trait card and 1 [TS] trait card among them to the hand. Return the rest to the bottom of the deck.";
 
 
                 bool FirstCardSelection(CardSource cardSource)
