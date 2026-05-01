@@ -73,6 +73,7 @@ namespace DCGO.CardEffects.BT25
                             maxCount: 1,
                             selectCardCoroutine: null),
                         },
+                        mutualConditions: true,
                         remainingCardsPlace: RemainingCardsPlace.DeckBottom,
                         activateClass: activateClass
                     ));
