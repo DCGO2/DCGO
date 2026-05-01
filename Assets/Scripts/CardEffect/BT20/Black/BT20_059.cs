@@ -148,7 +148,7 @@ namespace DCGO.CardEffects.BT20
                         {
                             if (timing == EffectTiming.None)
                             {
-                                return CardEffectFactory.AddDetailClass(CanUseConditionImmunity, PermanentCondition, "Isn't affected by opponent's Digimon's effects", false, activateClass.EffectSourceCard);
+                                return CardEffectFactory.AddDetailClass(CanUseConditionImmunity, PermanentCondition, "Isn't affected by opponent's Digimon's effects", false, card);
                             }
                             return null;
                         }
