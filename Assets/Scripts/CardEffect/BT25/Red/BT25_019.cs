@@ -88,7 +88,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("If 5 or more memory, this gains immune to digimon effects, if 5 or less memory, this gains immune to option effects.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("If opponent is at 5 or more memory, this gains immune to digimon effects, If opponent is at 5 or less memory, this gains immune to option effects.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("BT25_019_EndOfYourTurn");
                 cardEffects.Add(activateClass);
