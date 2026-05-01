@@ -32,7 +32,7 @@ public partial class CardEffectFactory
         bool isInheritedEffect,
         CardSource card,
         Func<bool> condition,
-        bool isLinkedEffect)
+        bool isLinkedEffect = false)
     {
         CollisionClass collisionClass = new();
         collisionClass.SetUpICardEffect("Collision", CanUseCondition, card);
