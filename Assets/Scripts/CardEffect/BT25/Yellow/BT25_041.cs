@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.BT25
                 #region Conditions
 
                 bool IsTamerWithFaceDownCard(Permanent permanent) =>
-                    CardEffectCommons.IsPermanentExistsOnBattleAreaTamer(permanent) &&
+                    CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card) &&
                     permanent.HasFaceDownDigivolutionCards &&
                     !permanent.ImmuneFromStackTrashing(activateClass);
 
@@ -305,17 +305,17 @@ namespace DCGO.CardEffects.BT25
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnEndAttack(hashtable, card)
-                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsTamerWithFaceDownCard);
+                        && CardEffectCommons.CanTriggerOnEndAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsTamerWithFaceDownCard);
                 }
 
                 bool IsTamerWithFaceDownCard(Permanent permanent) =>
-                    CardEffectCommons.IsPermanentExistsOnBattleAreaTamer(permanent) &&
+                    CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card) &&
                     permanent.HasFaceDownDigivolutionCards &&
                     !permanent.ImmuneFromStackTrashing(activateClass);
 
