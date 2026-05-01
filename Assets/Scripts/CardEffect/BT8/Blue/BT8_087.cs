@@ -27,7 +27,7 @@ public class BT8_087 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Opponent's Turn] When one of your opponent's Digimon attacks one of your blue Digimon, you may suspend this Tamer to <Draw 1��. (Draw 1 card from your deck.)";
+                return "[Opponent's Turn] When one of your opponent's Digimon attacks one of your blue Digimon, you may suspend this Tamer to <Draw 1>. (Draw 1 card from your deck.)";
             }
 
             bool PermanentCondition(Permanent permanent)

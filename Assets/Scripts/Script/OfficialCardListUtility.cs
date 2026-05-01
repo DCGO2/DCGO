@@ -594,7 +594,7 @@ public class OfficialCardListUtility
 
         if (cEntity_Base.CardID == "EX3-045")
         {
-            cEntity_Base.EffectDiscription_ENG = cEntity_Base.EffectDiscription_ENG.Replace("You may suspend 1 of you or your opponent�fs Digimon", "You may suspend 1 Digimon").Replace("[Fairy] in its traits", "[Fairy] in one of their traits").Replace("[Fairy] in their traits", "[Fairy] in one of their traits");
+            cEntity_Base.EffectDiscription_ENG = cEntity_Base.EffectDiscription_ENG.Replace("You may suspend 1 of you or your opponent's Digimon", "You may suspend 1 Digimon").Replace("[Fairy] in its traits", "[Fairy] in one of their traits").Replace("[Fairy] in their traits", "[Fairy] in one of their traits");
         }
 
         if (cEntity_Base.CardID == "EX3-035")
@@ -626,9 +626,9 @@ public class OfficialCardListUtility
 
         if (cEntity_Base.CardID == "EX3-024")
         {
-            cEntity_Base.EffectDiscription_ENG = cEntity_Base.EffectDiscription_ENG.Replace("You may suspend 1 of your Digimon with [Dramon] or [Examon] in its name to force 1 of your opponent�fs Digimon to attack", "By suspending 1 of your Digimon with [Dramon] or [Examon] in its name, your opponent attacks with 1 of their Digimon");
+            cEntity_Base.EffectDiscription_ENG = cEntity_Base.EffectDiscription_ENG.Replace("You may suspend 1 of your Digimon with [Dramon] or [Examon] in its name to force 1 of your opponent's Digimon to attack", "By suspending 1 of your Digimon with [Dramon] or [Examon] in its name, your opponent attacks with 1 of their Digimon");
 
-            cEntity_Base.InheritedEffectDiscription_ENG = cEntity_Base.InheritedEffectDiscription_ENG.Replace("You may suspend 1 of your Digimon with [Dramon] or [Examon] in its name to force 1 of your opponent�fs Digimon to attack", "By suspending 1 of your Digimon with [Dramon] or [Examon] in its name, your opponent attacks with 1 of their Digimon");
+            cEntity_Base.InheritedEffectDiscription_ENG = cEntity_Base.InheritedEffectDiscription_ENG.Replace("You may suspend 1 of your Digimon with [Dramon] or [Examon] in its name to force 1 of your opponent's Digimon to attack", "By suspending 1 of your Digimon with [Dramon] or [Examon] in its name, your opponent attacks with 1 of their Digimon");
         }
 
         if (cEntity_Base.CardID == "EX3-023")
@@ -943,7 +943,7 @@ public class OfficialCardListUtility
         {
             if (!cEntity_Base.EffectDiscription_ENG.Contains("Apollomon") || !cEntity_Base.EffectDiscription_ENG.Contains("Dianamon"))
             {
-                cEntity_Base.EffectDiscription_ENG = "��DNA Digivolution: 0 from [Apollomon] + [Dianamon]��" + cEntity_Base.EffectDiscription_ENG;
+                cEntity_Base.EffectDiscription_ENG = "DNA Digivolution: 0 from [Apollomon] + [Dianamon]" + cEntity_Base.EffectDiscription_ENG;
             }
         }
 

@@ -102,7 +102,7 @@ public class MemoryObject : MonoBehaviour
                 }
 
 
-                #region �A�j���[�V����
+                #region ???
                 bool end = false;
                 var sequence = DOTween.Sequence();
 
