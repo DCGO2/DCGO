@@ -327,7 +327,7 @@ namespace DCGO.CardEffects.BT25
                 {
                     bool isUsed = false;
                     bool hasPaidCost = false;
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsTamerWithFaceDownCard))
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsTamerWithFaceDownCard))
                     {
                         bool trash = false;
                         SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
