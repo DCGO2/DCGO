@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.BT25
 
             string SharedEffectDescription(string tag) => $"[{tag}] By trashing 1 of your Digimon's link cards, you may play or use 1 [TS] trait card with a play or use cost of 5 or less from your hand without paying the cost.";
 
-            bool HasMatchingPermanent(Hashtable hashtable)
+            bool HasMatchingPermanent(Hashtable hashtable, ActivateClass activateClass)
             {
                 return CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
             }
