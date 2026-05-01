@@ -91,7 +91,7 @@ namespace DCGO.CardEffects.BT25
 
                 string EffectDescription()
                 {
-                    return "[Main] Add your bottom security card to the hand and place this card face up as the bottom security card. Then, you may play 1 green or black [TS] trait Digimon card from your hand with the play cost reduced by 3.";
+                    return "[Main] Add your bottom security card to the hand and place this card face up as the bottom security card. Then, you may play 1 black or red [TS] trait Digimon card from your hand with the play cost reduced by 3.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
