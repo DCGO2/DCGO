@@ -70,8 +70,8 @@ namespace DCGO.CardEffects.BT25
                         {
                             return cardSource.IsDigimon
                                 && cardSource.HasIliadTraits
-                                && (cardSource.CardColors.Contains(CardColor.Red)
-                                    || cardSource.CardColors.Contains(CardColor.Blue));
+                                && (cardSource.HasCardColor(CardColor.Red, isDigimonOnly: true)
+                                    || cardSource.HasCardColor(CardColor.Blue, isDigimonOnly: true));
                         }
 
                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
