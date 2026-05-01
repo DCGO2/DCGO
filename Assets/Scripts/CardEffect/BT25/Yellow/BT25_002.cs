@@ -40,7 +40,6 @@ namespace DCGO.CardEffects.BT25
                 bool CardCondition(CardSource cardSource)
                 {
                     return CardEffectCommons.IsExistOnHand(cardSource)
-                        && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass)
                         && cardSource.EqualsTraits("Glowing Dawn");
                 }
 
