@@ -221,6 +221,7 @@ namespace DCGO.CardEffects.BT25
 
                     #endregion
 
+                    if (!(CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsGaogamon) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsMachGaogamon))) yield break;
                     Permanent selectedPermanent = null;
 
                     #region Select Gaomon
@@ -296,7 +297,7 @@ namespace DCGO.CardEffects.BT25
                         #endregion
 
                         #region Select MachGaogamon
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsMachGaogamon))
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsMachGaogamon) && selectedTrashCards.Find(IsGaogamon))
                         {
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
                             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsMachGaogamon));
@@ -325,27 +326,23 @@ namespace DCGO.CardEffects.BT25
                         }
                         #endregion
 
-                        if (selectedTrashCards.Any())
+                        if (selectedTrashCards.Find(IsGaogamon) && selectedTrashCards.Find(IsMachGaogamon))
                         {
                             yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(
                                 addedDigivolutionCards: selectedTrashCards,
                                 cardEffect: activateClass));
 
-                            if (selectedTrashCards.Count == 2
-                                && selectedTrashCards.Find(IsGaogamon)
-                                && selectedTrashCards.Find(IsMachGaogamon))
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                    targetPermanent: selectedPermanent,
-                                    cardCondition: isMirageGaogamon,
-                                    payCost: false,
-                                    reduceCostTuple: null,
-                                    fixedCostTuple: null,
-                                    ignoreDigivolutionRequirementFixedCost: 1,
-                                    isHand: true,
-                                    activateClass: activateClass,
-                                    successProcess: null));
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                targetPermanent: selectedPermanent,
+                                cardCondition: isMirageGaogamon,
+                                payCost: false,
+                                reduceCostTuple: null,
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: 1,
+                                isHand: true,
+                                activateClass: activateClass,
+                                successProcess: null));
+
                         }
                     }
 
