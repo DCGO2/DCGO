@@ -89,12 +89,9 @@ namespace DCGO.CardEffects.BT25
                         if (permanents.Count == 1)
                         {
                             int reducedCost = permanents[0].TopCard.GetCostItself;
-                            foreach (var selectedPermanent in permanents)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(
-                                    new DestroyPermanentsClass(new List<Permanent>() { selectedPermanent },
+                            yield return ContinuousController.instance.StartCoroutine(
+                                    new DestroyPermanentsClass(permanents,
                                         CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
-                            }
 
                             if (card.Owner.CanReduceCost(null, card))
                             {
