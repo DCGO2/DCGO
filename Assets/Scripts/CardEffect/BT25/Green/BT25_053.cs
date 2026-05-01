@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Aegiochusmon: Green
 namespace DCGO.CardEffects.BT25
@@ -45,7 +46,7 @@ namespace DCGO.CardEffects.BT25
 
             #endregion
 
-            #region Shared WD / WA
+            #region Shared OP / WD
 
             string SharedEffectName = "Suspend 1 opponent digimon or tamer, freeze until opponent turn ends. Then if 3 or less security, this gains Piercing & 5K DP";
 
@@ -60,7 +61,7 @@ namespace DCGO.CardEffects.BT25
                 }
 
                 // Suspend 1 opponent digimon or tamer, freeze until opponent turn ends.
-                if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, PermanentCondition))
+                if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
                 {
                     Permanent selectedPermanent = null;
 
@@ -107,8 +108,8 @@ namespace DCGO.CardEffects.BT25
                     Permanent thisPermanent = card.PermanentOfThisCard();
 
                     #region Gain Piercing & +5K DP
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(thisPermanent, EffectDuration.UntilOwnerTurnEnd, activateClass));
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(thisPermanent, 5000, EffectDuration.UntilOwnerTurnEnd, activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(thisPermanent, EffectDuration.UntilEachTurnEnd, activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(thisPermanent, 5000, EffectDuration.UntilEachTurnEnd, activateClass));
                     #endregion
                 }
             }
@@ -131,8 +132,9 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 Opponent Digimon or Tamer", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("BT25_053_AT");
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -159,12 +161,13 @@ namespace DCGO.CardEffects.BT25
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        || CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaTamer(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                        && (permanent.IsDigimon || permanent.IsTamer);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool hasUsed = false;
                     if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, PermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, PermanentCondition));
@@ -179,13 +182,21 @@ namespace DCGO.CardEffects.BT25
                             canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                             mode: SelectPermanentEffect.Mode.Tap,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or tamer to suspend.", "The opponent is selecting 1 Digimon or tamer to suspend.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                        {
+                            if (permanents.Any()) hasUsed = true;
+                            yield return null;
+                        }
                     }
+
+                    if (!hasUsed) activateClass.RemoveUse();
                 }
             }
 
