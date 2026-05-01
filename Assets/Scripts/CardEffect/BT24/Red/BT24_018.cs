@@ -299,7 +299,6 @@ namespace DCGO.CardEffects.BT24
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     #region By Deleting Lowest Opponent's DP Digimon
-                    bool deletedCard = false;
                     if (CardEffectCommons.HasMatchConditionPermanent(CanDeleteCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();

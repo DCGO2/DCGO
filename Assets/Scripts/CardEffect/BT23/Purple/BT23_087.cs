@@ -142,8 +142,6 @@ namespace DCGO.CardEffects.BT23
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
-                Permanent DigivolvingDigimon = null;
-
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By suspending this tamer, gain <Rush>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());

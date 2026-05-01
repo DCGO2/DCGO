@@ -460,13 +460,15 @@ public partial class CardEffectCommons
         bool isHand,
         ICardEffect activateClass,
         Func<Permanent, bool>[] permanentConditions = null,
-        IEnumerator successProcess = null,
+        Func<CardSource, IEnumerator> successProcess = null,
         bool ignoreSelection = false,
-        IEnumerator failedProcess = null,
+        Func<IEnumerator> failedProcess = null,
         bool isOptional = true)
     {
         Player owner = activateClass.EffectSourceCard.Owner;
         CardSource dnaTarget = null;
+
+        const int DnaPermanentCount = 2;
 
         IEnumerator SelectCardCoroutine(CardSource cardSource)
         {
@@ -479,6 +481,12 @@ public partial class CardEffectCommons
         {
             return (canSelectDNACardCondition == null || canSelectDNACardCondition(cardSource))
                 && cardSource.CanPlayJogress(true);
+        }
+
+        if (owner.GetBattleAreaDigimons().Count < DnaPermanentCount)
+        {
+            yield return ContinuousController.instance.StartCoroutine(failedProcess());
+            yield break;
         }
 
         int maxCount = 1;
@@ -538,6 +546,7 @@ public partial class CardEffectCommons
             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
         }
 
+        bool processSuccessful = false;
         if (dnaTarget != null)
         {
             Component component = activateClass.EffectSourceCard.cEntity_EffectController.gameObject.AddComponent(typeof (SetJogressEvoRootsController));
@@ -563,7 +572,7 @@ public partial class CardEffectCommons
 
                 IEnumerator EndSelectCoroutine_SelectDigivolutionRoots(List<Permanent> permanents)
                 {
-                    if (permanents.Count == 2)
+                    if (permanents.Count == DnaPermanentCount)
                     {
                         _jogressEvoRootsFrameIDs = permanents.Distinct().ToArray().Map(permanent => permanent.PermanentFrame.FrameID);
                     }
@@ -584,7 +593,7 @@ public partial class CardEffectCommons
             GManager.instance.commandText.CloseCommandText();
             yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
 
-            if (controller.JogressEvoRootsFrameIDs.Length == 2)
+            if (controller.JogressEvoRootsFrameIDs.Length == DnaPermanentCount)
             {
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { dnaTarget }, "Played Card", true, true));
 
@@ -600,7 +609,18 @@ public partial class CardEffectCommons
                 playCard.SetJogress(controller.JogressEvoRootsFrameIDs);
 
                 yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+
+                processSuccessful = CardEffectCommons.IsExistOnBattleArea(dnaTarget);
             }
+        }
+
+        if (processSuccessful && successProcess != null)
+        {
+            yield return ContinuousController.instance.StartCoroutine(successProcess(dnaTarget));
+        }
+        else if (!processSuccessful && failedProcess != null)
+        {
+            yield return ContinuousController.instance.StartCoroutine(failedProcess());
         }
     }
 

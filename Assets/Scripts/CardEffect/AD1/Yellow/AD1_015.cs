@@ -140,7 +140,7 @@ namespace DCGO.CardEffects.AD1
                     && permanent.IsTamer;
             }
 
-            bool PlayTamerCanActivateCondition(Hashtable hashtable)
+            bool PlayTamerCanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
             {
                 return CardEffectCommons.HasMatchConditionOwnersHand(card, CanPlayTamerCondition)
                         || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlayTamerCondition)

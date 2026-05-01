@@ -287,8 +287,6 @@ namespace DCGO.CardEffects.P
                 {
                     List<CardSource> selectedCards = new List<CardSource>();
 
-                    int maxCount = 1;
-
                     #region #region User Selection - Select Card Location
 
                     if (canSelectHand && canSelectTrash)

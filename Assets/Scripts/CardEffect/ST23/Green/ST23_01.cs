@@ -43,8 +43,7 @@ namespace DCGO.CardEffects.ST23
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                        && permanent.IsTamer
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
                         && permanent.HasFaceDownDigivolutionCards;
                 }
 
@@ -86,7 +85,7 @@ namespace DCGO.CardEffects.ST23
                             yield return null;
                         }
                     }
-                    else selectedPermanent = card.Owner.GetBattleAreaPermanents().FirstOrDefault();
+                    else selectedPermanent = card.Owner.GetBattleAreaPermanents().FirstOrDefault(CanSelectPermanentCondition);
 
                     List<CardSource> selectedCards = new List<CardSource>();
 
