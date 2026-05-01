@@ -271,8 +271,7 @@ namespace DCGO.CardEffects.BT25
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true);
+                return CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true);
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
