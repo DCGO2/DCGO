@@ -185,6 +185,7 @@ namespace DCGO.CardEffects.BT25
                     SharedActivateCoroutine,
                     SharedEffectDescription,
                     optional: false,
+                    isSkippable: true,
                     onPlay: true,
                     whenDigivolving: true);
             #endregion   
@@ -194,7 +195,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnLoseSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("1 of your opponent's Digimon gets -8000 DP", CanUseCondition, card);
+                activateClass.SetUpICardEffect("1 of your opponent's Digimon gets -4000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("BT25_040_WST_AT");
                 activateClass.SetIsInheritedEffect(true);
