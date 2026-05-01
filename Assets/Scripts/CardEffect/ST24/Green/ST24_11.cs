@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.ST24
             #endregion
 
             #region Shared WD/WA
-            string SharedEffectName = "May suspend up to 2 enemy Digimon or Tamers, then may trash bottommost face-down card from your Tamer so enemy Digimon cannot unsuspend until their turn ends";
+            string SharedEffectName = "May suspend up to 2 enemy Digimon or Tamers, then may trash bottom face-down card from your Tamer so enemy Digimon cannot unsuspend until their turn ends";
 
             string SharedEffectHash = "ST24_11_SharedEffect";
 

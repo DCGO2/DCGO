@@ -148,7 +148,7 @@ namespace DCGO.CardEffects.BT14
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] If you have a Tamer, this Digimon gains ÅÉSecurity A. +1ÅÑ and <Piercing> for the turn.";
+                    return "[When Attacking] If you have a Tamer, this Digimon gains <Security A. +1> and <Piercing> for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
