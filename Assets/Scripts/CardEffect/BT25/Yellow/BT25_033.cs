@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Aegiomon
 namespace DCGO.CardEffects.BT25
@@ -36,6 +37,8 @@ namespace DCGO.CardEffects.BT25
             string SharedEffectDescription(string tag) => $"[{tag}] By adding your top security card to the hand, 1 of your opponent's Digimon gets -5000 DP for the turn.";
 
             bool CanSelectEnemyDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+
+            bool AdditionCanActivate(Hashtable hashtable) => card.Owner.SecurityCards.Any();
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -85,7 +88,8 @@ namespace DCGO.CardEffects.BT25
                         optional: true,
                         maxCountPerTurn: -1,
                         onPlay: true,
-                        whenDigivolving: true);
+                        whenDigivolving: true,
+                        additionalActivateCondition: AdditionCanActivate);
             #endregion
 
             #region Inherited
