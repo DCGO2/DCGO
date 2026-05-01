@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -194,6 +193,7 @@ namespace DCGO.CardEffects.BT25
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
+                isSkippable: true,
                 maxCountPerTurn: 1,
                 hashValue: SharedHashString,
                 whenDigivolving: true,
@@ -236,12 +236,11 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermamentCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermamentCondition))
                     {
                         Permanent selectedPermanent = null;
 
                         #region Select 1 of your Digimon
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectPermamentCondition));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -249,7 +248,7 @@ namespace DCGO.CardEffects.BT25
                             canTargetCondition: CanSelectPermamentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -302,7 +301,6 @@ namespace DCGO.CardEffects.BT25
                                     canAttackPlayerCondition: () => true,
                                     defenderCondition: _ => true,
                                     cardEffect: activateClass);
-                                selectAttackEffect.SetCanNotSelectNotAttack();
                                 yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                             }
                             #endregion
