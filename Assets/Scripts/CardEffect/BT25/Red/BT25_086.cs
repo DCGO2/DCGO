@@ -62,8 +62,7 @@ namespace DCGO.CardEffects.BT25
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanActivateSuspendCostEffect(card)
-                        && card.Owner.MemoryForPlayer <= 0;
+                        && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -116,7 +115,7 @@ namespace DCGO.CardEffects.BT25
                         if (selectedPermanent != null)
                         {
                             #region Gain DP
-                            int dpGain = card.Owner.Enemy.MemoryForPlayer * 1000;
+                            int dpGain = Math.Max(0, card.Owner.Enemy.MemoryForPlayer * 1000);
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                 targetPermanent: selectedPermanent,
                                 changeValue: dpGain,
@@ -135,7 +134,6 @@ namespace DCGO.CardEffects.BT25
                                     defenderCondition: _ => true,
                                     cardEffect: activateClass);
 
-                                selectAttackEffect.SetCanNotSelectNotAttack();
                                 yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                             }
                             #endregion
