@@ -260,8 +260,7 @@ public partial class CardEffectCommons
 
         bool doAction = true;
 
-        // �o�[�j���O�X�^�[�N���b�V���[(BT10-096)
-        // �u���C�W���O�E�������[�u�[�X�g
+        // ??? (BT10-096)    
         if (selectCardConditions.Length >= 2)
         {
             if (canNoAction)
@@ -764,7 +763,7 @@ public class RevealLibraryClass
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(RevealedCards, "Revealed Cards", true, true));
         }
 
-        #region ���O�ǉ�
+        #region ???
         if (RevealedCards.Count >= 1)
         {
             string log = "";

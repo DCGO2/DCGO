@@ -52,6 +52,7 @@ namespace DCGO.CardEffects.EX1
                     addSkillClass.SetUpICardEffect("Memory -2", CanUseCondition1, card);
                     addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
                     card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
+                    card.Owner.UntilOpponentTurnEndEffects.Add(GetDetailEffect);
 
                     bool CanUseCondition1(Hashtable hashtable)
                     {
@@ -69,6 +70,15 @@ namespace DCGO.CardEffects.EX1
                         }
 
                         return false;
+                    }
+
+                    ICardEffect GetDetailEffect(EffectTiming timing)
+                    {
+                        if (timing == EffectTiming.None)
+                        {
+                            return CardEffectFactory.AddDetailClass(CanUseCondition1, PermanentCondition, "[When Attacking] Lose 2 Memory", true, card);
+                        }
+                        return null;
                     }
 
                     List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
