@@ -75,7 +75,7 @@ namespace DCGO.CardEffects.BT25
                     => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
 
                 bool CanSelectOwnerPermamentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    => (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) || CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card))
                         && card.CanLinkToTargetPermanent(permanent, false, true);
 
                 bool CanSelectEnemyPermamentCondition(Permanent permanent)
@@ -86,8 +86,6 @@ namespace DCGO.CardEffects.BT25
                     // De-Digi(2) 1 opponent digimon
                     if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectEnemyPermamentCondition))
                     {
-                        Permanent selectedPermament = null;
-
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectEnemyPermamentCondition));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -99,24 +97,14 @@ namespace DCGO.CardEffects.BT25
                             maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
+                            mode: SelectPermanentEffect.Mode.Degenerate,
                             cardEffect: activateClass);
 
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            selectedPermament = permanent;
-                            yield return null;
-                        }
-
+                        selectPermanentEffect.SetDegenerationCount(2);
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digi(2)", "The opponent is selecting 1 Digimon to De-Digi(2).");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        if (selectedPermament != null) yield return ContinuousController.instance.StartCoroutine(new IDegeneration(
-                            permanent: selectedPermament,
-                            DegenerationCount: 2,
-                            cardEffect: activateClass).Degeneration());
 
                     }
 
@@ -125,12 +113,12 @@ namespace DCGO.CardEffects.BT25
                     {
                         Permanent selectedPermament = null;
 
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectOwnerPermamentCondition));
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanSelectOwnerPermamentCondition));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectEnemyPermamentCondition,
+                            canTargetCondition: CanSelectOwnerPermamentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
