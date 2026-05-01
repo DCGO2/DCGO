@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT25
 
             string SharedEffectDescription(string tag) => $"[{tag}] If you have 1 or fewer Tamers, you may play 1 [Thomas H. Norstein] from your hand without paying the cost.";
 
-            bool AdditionalActivateCondition(Hashtable hashtable)
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
             {
                 return CardEffectCommons.MatchConditionOwnersPermanentCount(card, HasTamersInBattleArea) <= 1;
             }

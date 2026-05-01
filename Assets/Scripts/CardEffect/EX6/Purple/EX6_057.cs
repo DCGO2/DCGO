@@ -93,6 +93,7 @@ namespace DCGO.CardEffects.EX6
                                 activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
                                 activateClass1.SetEffectSourcePermanent(selectedPermanent);
                                 selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                                selectedPermanent.UntilOwnerTurnEndEffects.Add(GetDetailEffect);
 
                                 if (!permanent.TopCard.CanNotBeAffected(activateClass))
                                 {
@@ -153,14 +154,14 @@ namespace DCGO.CardEffects.EX6
                                     return null;
                                 }
 
-                                //ICardEffect GetDetailEffect(EffectTiming timing)
-                                //{
-                                //    if (timing == EffectTiming.None)
-                                //    {
-                                //        return PermanentEffectFactory.AddDetailClass(permanent, "[End of your turn] Delete this Digimon", true, activateClass);
-                                //    }
-                                //    return null;
-                                //}
+                                ICardEffect GetDetailEffect(EffectTiming timing)
+                                {
+                                   if (timing == EffectTiming.None)
+                                   {
+                                       return PermanentEffectFactory.AddDetailClass(permanent, "[End of your turn] Delete this Digimon", true, activateClass);
+                                   }
+                                   return null;
+                                }
                             }
                         }
                     }
