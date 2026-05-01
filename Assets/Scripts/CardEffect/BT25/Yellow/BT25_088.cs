@@ -43,12 +43,7 @@ namespace DCGO.CardEffects.BT25
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SuspendPeremanentAndProcessAccordingToResult(
                         new List<Permanent>() { card.PermanentOfThisCard() },
@@ -145,24 +140,29 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(CostReductionEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("PlayCost-1_BT25_088");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                     => "[Your Turn] [Once Per Turn] When any of your [Glowing Dawn] trait cards would be played, by trashing the bottom face-down card from under any of your Tamers, reduce the cost by 1.";
                 
-                bool CanNoSelect(CardSource cardSource)
+                bool CanNoSelect(Hashtable hashtable)
                 {
-                    if (cardSource != null)
-                    {
-                        if (cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
-                        {
-                            return false;
-                        }
-                    }
+                    CardSource cardSource = CardEffectCommons.GetCardFromHashtable(hashtable);
 
-                    return true;
+                    SelectCardEffect.Root root = SelectCardEffect.Root.None;
+                    if (CardEffectCommons.IsExistOnHand(cardSource))
+                        root = SelectCardEffect.Root.Hand;
+                    else if (CardEffectCommons.IsExistInAnyTrash(cardSource))
+                        root = SelectCardEffect.Root.Trash;
+                    else if (CardEffectCommons.IsExistDigivolutionCards(cardSource))
+                        root = SelectCardEffect.Root.DigivolutionCards;
+                    else if (CardEffectCommons.IsExistLinked(cardSource))
+                        root = SelectCardEffect.Root.LinkedCards;
+                    
+                    return cardSource != null
+                        && cardSource.PayingCost(root, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -177,7 +177,7 @@ namespace DCGO.CardEffects.BT25
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, TamerWithOneFaceDownSource);
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool trash = false;
 
@@ -189,7 +189,7 @@ namespace DCGO.CardEffects.BT25
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: true,
+                        canNoSelect: CanNoSelect(hashtable),
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
@@ -219,7 +219,7 @@ namespace DCGO.CardEffects.BT25
                         changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
                         card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
 
-                        bool CanUseCondition1(Hashtable hashtable)
+                        bool CanUseCondition1(Hashtable _hashtable)
                         {
                             return true;
                         }
@@ -229,9 +229,7 @@ namespace DCGO.CardEffects.BT25
                             return true;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
-
-                        yield return null;
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(hashtable));
                     }
                     else activateClass.RemoveUse();
                 }
