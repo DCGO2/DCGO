@@ -53,7 +53,7 @@ namespace DCGO.CardEffects.EX7
 
                 string EffectDiscription()
                 {
-                    return "[On Play] 1 of your opponent's Digimon gains \"[End of Attack] Delete this Digimon.\" until the end of their turn. Then, if this Digimon has [LadyDevimon]/[X Antibody] in its digivolution cards, you may play 1 [Vol�e & Zerdr�cken] Token (Digimon/Lv.4/Purple/5000 DP/<Blocker>/<Retaliation>).";
+                    return "[On Play] 1 of your opponent's Digimon gains \"[End of Attack] Delete this Digimon.\" until the end of their turn. Then, if this Digimon has [LadyDevimon]/[X Antibody] in its digivolution cards, you may play 1 [Volée & Zerdrücken] Token (Digimon/Lv.4/Purple/5000 DP/<Blocker>/<Retaliation>).";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -204,7 +204,7 @@ namespace DCGO.CardEffects.EX7
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] 1 of your opponent's Digimon gains \" Delete this Digimon.\" until the end of their turn. Then, if this Digimon has [LadyDevimon]/[X Antibody] in its digivolution cards, you may play 1 [Vol�e & Zerdr�cken] Token (Digimon/Lv.4/Purple/5000 DP/<Blocker>/<Retaliation>).";
+                    return "[When Digivolving] 1 of your opponent's Digimon gains \" Delete this Digimon.\" until the end of their turn. Then, if this Digimon has [LadyDevimon]/[X Antibody] in its digivolution cards, you may play 1 [Volée & Zerdrücken] Token (Digimon/Lv.4/Purple/5000 DP/<Blocker>/<Retaliation>).";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

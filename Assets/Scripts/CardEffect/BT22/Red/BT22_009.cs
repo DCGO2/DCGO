@@ -143,13 +143,14 @@ namespace DCGO.CardEffects.BT22
 
             #region OP/WD/WL Shared
 
-            bool SharedPermanentCondition(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.DP <= 4000;
-            }
-
             IEnumerator SharedActivateCoroutine(ActivateClass activateClass)
             {
+                bool SharedPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                        && permanent.DP <= card.Owner.MaxDP_DeleteEffect(4000, activateClass);
+                }
+
                 if (CardEffectCommons.HasMatchConditionPermanent(SharedPermanentCondition))
                 {
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(SharedPermanentCondition));

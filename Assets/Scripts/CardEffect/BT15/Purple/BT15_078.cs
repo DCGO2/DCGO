@@ -85,6 +85,7 @@ namespace DCGO.CardEffects.BT15
                     addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
 
                     card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
+                    card.Owner.UntilOpponentTurnEndEffects.Add(GetDetailEffect);
 
                     bool CanUseCondition1(Hashtable hashtable)
                     {
@@ -102,6 +103,15 @@ namespace DCGO.CardEffects.BT15
                         }
 
                         return false;
+                    }
+
+                    ICardEffect GetDetailEffect(EffectTiming timing)
+                    {
+                        if (timing == EffectTiming.None)
+                        {
+                            return CardEffectFactory.AddDetailClass(CanUseCondition1, PermanentCondition, "[On Deletion] Lose 1 memory.", true, card);
+                        }
+                        return null;
                     }
 
                     List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
