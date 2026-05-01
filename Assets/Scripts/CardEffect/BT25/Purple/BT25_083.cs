@@ -177,20 +177,24 @@ namespace DCGO.CardEffects.BT25
 
             #region WD/WA Shared
 
-            string SharedEffectName1 = "By trashing 1 option card from any digimon digivolution cards, use 1 [Three Musketeers] trait option card in trash for 3 reducded cost";
+            string SharedEffectName1 = "By trashing 1 option card from any digimon digivolution cards, use 1 [Three Musketeers] trait option card in trash for 3 reduced cost";
 
             string SharedHashString = "BT25_083_WD_WA";
 
             string SharedEffectDescription1(string tag) => $"[{tag}] [Once Per Turn] By trashing 1 Option card from any of your Digimon's digivolution cards, you may use 1 [Three Musketeers] trait Option card from your trash with the cost reduced by 3.";
 
+            bool AdditionalActivateCondition(Hashtable hashtable) => CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition);
+
+            bool CanSelectDigimonCondition(Permanent permanent) =>
+                CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                && permanent.DigivolutionCards.Exists(CanSelectOptionCard);
+
+            bool CanSelectOptionCard(CardSource cardSource) => cardSource.IsOption;
+
             IEnumerator SharedActivateCoroutine1(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool hasUsed = false;
                 bool CanSelect3MOptionCard(CardSource cardSource) => cardSource.IsOption && cardSource.HasThreeMusketeersTraits;
-                bool CanSelectOptionCard(CardSource cardSource) => cardSource.IsOption;
-                bool CanSelectDigimonCondition(Permanent permanent) =>
-                    CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && permanent.DigivolutionCards.Exists(CanSelectOptionCard);
-
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition))
                 {
                     #region Select digimon to trash option card from digivolution source
@@ -262,7 +266,6 @@ namespace DCGO.CardEffects.BT25
                         if (selectedCard != null)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(selectedPermanent, new List<CardSource>() { selectedCard }, activateClass).TrashDigivolutionCards());
-
                             #region Select 3M option card in trash to use with reduced cost
                             CardSource selectedOption = null;
                             SelectCardEffect selectCardEffect1 = GManager.instance.GetComponent<SelectCardEffect>();
@@ -298,6 +301,8 @@ namespace DCGO.CardEffects.BT25
 
                             if (selectedOption != null)
                             {
+                                hasUsed = true;
+
                                 #region reduce play cost
                                 ChangeCostClass changeCostClass = new ChangeCostClass();
                                 changeCostClass.SetUpICardEffect($"Play Cost -3", CanUseCondition1, card);
@@ -377,7 +382,7 @@ namespace DCGO.CardEffects.BT25
                         }
                     }
                 }
-
+                if (!hasUsed) activateClass.RemoveUse();
             }
 
             CardEffectFactory.ActivateClassesForSharedEffects
@@ -387,9 +392,11 @@ namespace DCGO.CardEffects.BT25
                         SharedEffectDescription1,
                         maxCountPerTurn: 1,
                         hashValue: SharedHashString,
-                        optional: false,
-                        onPlay: true,
-                        whenDigivolving: true);
+                        optional: true,
+                        isSkippable: true,
+                        whenDigivolving: true,
+                        whenAttacking: true,
+                        additionalActivateCondition: AdditionalActivateCondition);
 
             #endregion
 
@@ -420,7 +427,10 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.Level <= 4 && cardSource.HasThreeMusketeersTraits && cardSource.IsDigimon;
+                    return cardSource.HasLevel &&
+                        cardSource.Level <= 4 &&
+                        cardSource.HasText("Three Musketeers")
+                        && cardSource.IsDigimon;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
