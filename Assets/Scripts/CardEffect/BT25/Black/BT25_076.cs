@@ -269,7 +269,7 @@ namespace DCGO.CardEffects.BT25
                 return $"[{tag}] Delete 1 of your opponent's Digimon with the lowest play cost. If this effect didn't delete, trash your opponent's top security card.";
             }
 
-            bool CanSelectPermanentCondition(Permanent permanent)
+            bool CanSelectMinCostCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true);
             }
@@ -280,13 +280,13 @@ namespace DCGO.CardEffects.BT25
 
                 bool failedToDelete = true;
 
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectMinCostCondition))
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition: CanSelectMinCostCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
