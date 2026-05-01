@@ -199,7 +199,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if(permanent.HasDP && permanent.DP <= 3000)
+                        if(permanent.HasDP && permanent.DP <= card.Owner.MaxDP_DeleteEffect(3000, activateClass))
                         {
                             return true;
                         }

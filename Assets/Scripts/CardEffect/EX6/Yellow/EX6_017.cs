@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// Luxmon
 namespace DCGO.CardEffects.EX6
 {
     public class EX6_017 : CEntity_Effect
@@ -14,53 +15,36 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[On Play] Reveal the top 3 cards of your deck. Add 1 Digimon card with the [Angel]/[Archangel] trait and 1 card with the [Three Great Angels] trait among them to your hand. Return the rest to the bottom of the deck.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.CardTraits.Contains("Angel") || cardSource.CardTraits.Contains("Archangel"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsDigimon
+                        && (cardSource.CardTraits.Contains("Angel")
+                            || cardSource.CardTraits.Contains("Archangel"));
                 }
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.CardTraits.Contains("Three Great Angels") || cardSource.CardTraits.Contains("ThreeGreatAngels"))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return cardSource.CardTraits.Contains("Three Great Angels")
+                            || cardSource.CardTraits.Contains("ThreeGreatAngels");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.LibraryCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -107,20 +91,17 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.PermanentOfThisCard().TopCard.CardTraits.Contains("Angel") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("Archangel") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("Three Great Angels") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("ThreeGreatAngels"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && (card.PermanentOfThisCard().TopCard.CardTraits.Contains("Angel")
+                            || card.PermanentOfThisCard().TopCard.CardTraits.Contains("Archangel")
+                            || card.PermanentOfThisCard().TopCard.CardTraits.Contains("Three Great Angels")
+                            || card.PermanentOfThisCard().TopCard.CardTraits.Contains("ThreeGreatAngels"));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
