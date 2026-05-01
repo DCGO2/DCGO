@@ -34,10 +34,7 @@ namespace DCGO.CardEffects.BT25
 
             string SharedEffectDescription(string tag) => $"[{tag}] [Once Per Turn] By trashing your top or bottom security card, your opponent's Digimon effects don't affect this Digimon until their turn ends.";
 
-            bool AdditionalCanUseCondition(Hashtable hashtable)
-            {
-                return card.Owner.SecurityCards.Count >= 1;
-            }
+            bool AdditionalCanUseCondition(Hashtable hashtable, ActivateClass activateClass) => card.Owner.SecurityCards.Count >= 1;
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -108,6 +105,7 @@ namespace DCGO.CardEffects.BT25
                     onPlay: true,
                     whenDigivolving: true,
                     whenAttacking: true,
+                    isSkippable: true,
                     additionalUseCondition: AdditionalCanUseCondition);
 
             #endregion
@@ -116,7 +114,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnLoseSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 level 4 or lower [Angel]/[Illad] trait card from hand without cost, then 2 digimon gain reboot & blocker untill opponent turn end", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 level 4 or lower [Angel]/[Illad] trait card from hand without cost, then 2 digimon gain reboot & blocker until opponent turn end", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT25_042_AT");
                 cardEffects.Add(activateClass);
@@ -137,85 +135,54 @@ namespace DCGO.CardEffects.BT25
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
-                bool CanPlayAngelCardCondition(CardSource cardSource)
-                    => cardSource.Level <= 4
-                       && cardSource.EqualsTraits("Angel")
-                       && CardEffectCommons.CanPlayAsNewPermanent(card, false, activateClass);
-
-                bool CanPlayIlladCardCondition(CardSource cardSource)
-                    => cardSource.Level <= 4
-                       && cardSource.HasIliadTraits
-                       && CardEffectCommons.CanPlayAsNewPermanent(card, false, activateClass);
+                bool CanPlayCardCondition(CardSource cardSource)
+                    => cardSource.HasLevel
+                       && cardSource.Level <= 4
+                       && CardEffectCommons.CanPlayAsNewPermanent(card, false, activateClass)
+                       && (cardSource.EqualsTraits("Angel") || cardSource.HasIliadTraits);
 
                 bool IsOwnedDigimon(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool canPlayAngelCard = CardEffectCommons.HasMatchConditionOwnersHand(card, CanPlayAngelCardCondition);
-                    bool canPlayIlladCard = CardEffectCommons.HasMatchConditionOwnersHand(card, CanPlayIlladCardCondition);
+                    bool canPlayCard = CardEffectCommons.HasMatchConditionOwnersHand(card, CanPlayCardCondition);
 
-                    if (canPlayAngelCard || canPlayIlladCard)
+                    if (canPlayCard)
                     {
-                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>();
 
-                        if (canPlayAngelCard) selectionElements.Add(new SelectionElement<int>(message: $"Play Angel card", value: 1, spriteIndex: 0));
-                        if (canPlayIlladCard) selectionElements.Add(new SelectionElement<int>(message: $"Play Illad card", value: 2, spriteIndex: 0));
-                        selectionElements.Add(new SelectionElement<int>(message: $"Don't play card", value: 3, spriteIndex: 1));
+                        if (canPlayCard) selectionElements.Add(new SelectionElement<bool>(message: $"Play card", value: true, spriteIndex: 0));
+                        selectionElements.Add(new SelectionElement<bool>(message: $"Don't play card", value: false, spriteIndex: 1));
 
                         string selectPlayerMessage = "Will you play a card?";
                         string notSelectPlayerMessage = "The opponent is choosing if they will play a card.";
 
-                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        bool doPlay = GManager.instance.userSelectionManager.SelectedIntValue != 3;
-                        bool playAngel = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+                        bool doPlay = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                         if (doPlay)
                         {
-                            if (playAngel)
-                            {
-                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanPlayAngelCardCondition));
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanPlayCardCondition));
 
-                                selectHandEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanPlayAngelCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: true,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: null,
-                                    mode: SelectHandEffect.Mode.PlayForFree,
-                                    cardEffect: activateClass);
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanPlayCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.PlayForFree,
+                                cardEffect: activateClass);
 
-                                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-                            }
-                            else
-                            {
-                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanPlayIlladCardCondition));
-
-                                selectHandEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanPlayIlladCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: true,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: null,
-                                    mode: SelectHandEffect.Mode.PlayForFree,
-                                    cardEffect: activateClass);
-
-                                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                         }
                     }
 
@@ -225,14 +192,13 @@ namespace DCGO.CardEffects.BT25
                     if (digimonCount > 2)
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        int maxCount = Math.Min(2, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsOwnedDigimon));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: IsOwnedDigimon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: digimonCount,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
