@@ -55,8 +55,8 @@ namespace DCGO.CardEffects.BT25
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        || CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaTamer(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                        && (permanent.IsDigimon || permanent.IsTamer);
                 }
 
                 // Suspend 1 opponent digimon or tamer, freeze until opponent turn ends.
@@ -66,7 +66,6 @@ namespace DCGO.CardEffects.BT25
 
                     #region Select 1 opponent digimon or tamer
 
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, PermanentCondition));
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -74,7 +73,7 @@ namespace DCGO.CardEffects.BT25
                         canTargetCondition: PermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -97,7 +96,7 @@ namespace DCGO.CardEffects.BT25
                     {
                         #region Suspend and Freeze
                         yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { selectedPermanent }, hashtable).Tap());
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspend(selectedPermanent, EffectDuration.UntilOpponentTurnEnd, activateClass, null, "Can not suspend"));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspend(selectedPermanent, EffectDuration.UntilOpponentTurnEnd, activateClass, null, "Can not unsuspend"));
                         #endregion
                     }
                 }
@@ -132,7 +131,7 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 Opponent Digimon or Tamer", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT25_053_AT");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
