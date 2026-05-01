@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT25
 
             string SharedHashString = "BT25_041_WD_WA";
 
-            string SharedEffectName = "By adding top security to hand or trashig bottom face down of a tamer, play or use 1 [Glowing Dawn] trait card from hand for 3 reduced cost";
+            string SharedEffectName = "By adding top security to hand or trashing bottom face down of a tamer, play or use 1 [Glowing Dawn] trait card from hand for 3 reduced cost";
 
             string SharedEffectDescription(string tag)
                 => $"[{tag}] [Once Per Turn] If it's your turn, by adding your top security card to the hand or trashing the bottom face-down card under any of your Tamers, you may play or use 1 card with the [Glowing Dawn] trait from your hand with the cost reduced by 3.";
@@ -65,27 +65,39 @@ namespace DCGO.CardEffects.BT25
                     if (canAddSecurityToHand)
                     {
                         #region Select to paid Security Cost
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+
+                        if (card.Owner.SecurityCards.Count >= 2)
                         {
-                            new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
-                        };
+                            selectionElements.Add(new SelectionElement<int>(message: $"Add top security card to hand", value: 1, spriteIndex: 0));
+                            selectionElements.Add(new SelectionElement<int>(message: $"Add bottom security card to hand", value: 2, spriteIndex: 0));
+                        }
+                        else if (card.Owner.SecurityCards.Count == 1)
+                        {
+                            selectionElements.Add(new SelectionElement<int>(message: $"Add security card to hand", value: 3, spriteIndex: 0));
+                        }
+                        selectionElements.Add(new SelectionElement<int>(message: $"Don't add security card to hand", value: 4, spriteIndex: 1));
 
                         string selectPlayerMessage = "Will you add the top security card to your hand?";
                         string notSelectPlayerMessage = "The opponent is to add the top security card to their hand.";
 
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                        bool addFromSecurity = GManager.instance.userSelectionManager.SelectedBoolValue;
+                        int selectedValue = GManager.instance.userSelectionManager.SelectedIntValue;
 
-                        if (addFromSecurity)
+                        if (selectedValue != 4)
                         {
-                            CardSource topCard = card.Owner.SecurityCards[0];
+                            CardSource topCard = null;
+                            if (selectedValue == 1 || selectedValue == 3) topCard = card.Owner.SecurityCards[0];
+                            else if (selectedValue == 2) topCard = card.Owner.SecurityCards[-1];
 
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
-                            yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(player: card.Owner, refSkillInfos: ref ContinuousController.instance.nullSkillInfos, activateClass).ReduceSecurity());
+                            if (topCard != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
+                                yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(player: card.Owner, refSkillInfos: ref ContinuousController.instance.nullSkillInfos, activateClass).ReduceSecurity());
+                                if (card.Owner.HandCards.Contains(topCard)) hasPaidCost = true;
+                            }
 
-                            if (card.Owner.HandCards.Contains(topCard)) hasPaidCost = true;
                         }
                         #endregion
                     }
@@ -138,9 +150,9 @@ namespace DCGO.CardEffects.BT25
                         #endregion
                     }
 
-                    if (hasPaidCost && CardEffectCommons.HasMatchConditionOwnersHand(card, isGlowingDawnCard))
+                    if (hasPaidCost) isUsed = true;
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, isGlowingDawnCard))
                     {
-                        isUsed = true;
                         CardSource selectedCard = null;
 
                         #region Selected Glowing Dawn Card in Hand to play or use
@@ -270,6 +282,7 @@ namespace DCGO.CardEffects.BT25
                     SharedActivateCoroutine,
                     SharedEffectDescription,
                     optional: false,
+                    isSkippable: true,
                     maxCountPerTurn: 1,
                     hashValue: SharedHashString,
                     whenDigivolving: true,
@@ -281,7 +294,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashig bottom face down of a tamer, this digimon with [Glowing Dawn] trait unsuspends", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By trashing bottom face down of a tamer, this digimon with [Glowing Dawn] trait unsuspends", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("BT25_041_EndAttack");
                 activateClass.SetIsInheritedEffect(true);
@@ -345,11 +358,9 @@ namespace DCGO.CardEffects.BT25
                         if (trash) hasPaidCost = true;
                     }
 
-                    if (hasPaidCost && IsGlowingDawnDigimon(card.PermanentOfThisCard()))
-                    {
-                        isUsed = true;
-                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
-                    }
+                    if (hasPaidCost) isUsed = true;
+                    if (hasPaidCost && IsGlowingDawnDigimon(card.PermanentOfThisCard())) yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+
                     if (!isUsed) activateClass.RemoveUse();
                 }
             }
