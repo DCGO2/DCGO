@@ -39,9 +39,16 @@ namespace DCGO.CardEffects.BT25
 
             #endregion
 
+            #region Blocker
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
             #region Shared OP / WD
 
-            string SharedEffectName = "De-Digivovle(1) 1 opponent digimon, then if 3 or less security, 1 of your digimon unsuspends";
+            string SharedEffectName = "<De-Digivolve 1> 1 opponent digimon, then if 3 or less security, 1 of your digimon unsuspends";
 
             string SharedEffectDescription(string tag) => $"[{tag}] <De-Digivolve 1> 1 of your opponent's Digimon. Then, if you have 3 or fewer security cards, 1 of your Digimon unsuspends.";
 
