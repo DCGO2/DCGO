@@ -279,7 +279,8 @@ namespace DCGO.CardEffects.AD1
                     #endregion
 
                     #region Play 1 card
-                    if (placedCards && card.PermanentOfThisCard().DigivolutionCards.Some(CanPlayXrosHeartOrBlueFlare))
+                    if ((placedCards || !CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectSaveTamerPermanentCondition)) 
+                        && card.PermanentOfThisCard().DigivolutionCards.Some(CanPlayXrosHeartOrBlueFlare))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
@@ -289,7 +290,7 @@ namespace DCGO.CardEffects.AD1
                             canTargetCondition: CanPlayXrosHeartOrBlueFlare,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            canNoSelect: () => false,
+                            canNoSelect: () => !placedCards,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
                             message: "Select 1 digivolution card to play.",

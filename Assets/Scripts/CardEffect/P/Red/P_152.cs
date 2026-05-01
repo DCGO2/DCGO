@@ -74,7 +74,8 @@ namespace DCGO.CardEffects.P
                 bool DeletionCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                        return permanent.HasDP && permanent.DP <= 3000;
+                        return permanent.HasDP
+                            && permanent.DP <= card.Owner.MaxDP_DeleteEffect(3000, activateClass);
 
                     return false;
                 }

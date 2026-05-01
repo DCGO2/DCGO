@@ -21,7 +21,7 @@ public class ST3_15 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] 1 of your opponent's Digimon gains ÅÉSecurity Attack -3ÅÑThis Digimon checks 3 fewer security cards) until the end of your opponent's next turn.";
+                return "[Main] 1 of your opponent's Digimon gains <Security Attack -3>This Digimon checks 3 fewer security cards) until the end of your opponent's next turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

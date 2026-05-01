@@ -91,7 +91,7 @@ namespace DCGO.CardEffects.BT14
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking][Once Per Turn] If your opponent has 10 or more cards in their trash, this Digimon gains ÅÉSecurity A. +1ÅÑ for the turn.";
+                    return "[When Attacking][Once Per Turn] If your opponent has 10 or more cards in their trash, this Digimon gains <Security A. +1> for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
