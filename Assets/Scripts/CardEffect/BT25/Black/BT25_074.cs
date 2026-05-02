@@ -121,11 +121,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon
-                        && cardSource.HasPlayCost
-                        && cardSource.GetCostItself <= 12
-                        && (cardSource.EqualsTraits("D-Brigade")
-                            || cardSource.EqualsTraits("ACCEL"));
+                    return cardSource == card;
                 }
 
                 bool RootCondition(SelectCardEffect.Root root) => true;
@@ -146,6 +142,107 @@ namespace DCGO.CardEffects.BT25
                 #region release effect reducing play cost
                 card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
                 #endregion
+            }
+            #endregion
+
+            #region All Turns
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("1 enemy Digimon can't digivolve until their turn end", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetHashString("BT25_074_AT");
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[All Turns] [Once Per Turn] When any of your [D-Brigade] or [ACCEL] trait Digimon are played, 1 of your opponent's Digimon can't digivolve until their turn ends.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedPermanentCondition);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card);
+                }
+
+                bool PlayedPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && (permanent.TopCard.EqualsTraits("D-Brigade")
+                            || permanent.TopCard.EqualsTraits("ACCEL"));
+                }
+
+                bool CanSelectPermanentCondition(Permanent targetPermanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(targetPermanent, card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 card to prevent from digivolving.", "Opponent is selecting 1 card to prevent from digivolving.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent selectedPermanent)
+                        {
+                            CanNotDigivolveClass canNotPutFieldClass = new CanNotDigivolveClass();
+                            canNotPutFieldClass.SetUpICardEffect("Can't Digivolve", CanUseCondition1, card);
+                            canNotPutFieldClass.SetUpCanNotEvolveClass(permanentCondition: PermanentCondition, cardCondition: CardCondition);
+                            selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+
+                            ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().DebuffSE);
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+
+                            bool CanUseCondition1(Hashtable hashtable) => true;
+
+                            bool PermanentCondition(Permanent permanent)
+                            {
+                                return permanent == selectedPermanent
+                                    && permanent.TopCard != null
+                                    && !permanent.TopCard.CanNotBeAffected(canNotPutFieldClass);
+                            }
+
+                            bool CardCondition(CardSource cardSource)
+                            {
+                                return cardSource.Owner == card.Owner.Enemy
+                                    && !cardSource.CanNotBeAffected(canNotPutFieldClass);
+                            }
+
+                            ICardEffect GetCardEffect(EffectTiming _timing)
+                            {
+                                if (_timing == EffectTiming.None)
+                                {
+                                    return canNotPutFieldClass;
+                                }
+
+                                return null;
+                            }
+                        }
+                    }
+                }
             }
             #endregion
 
