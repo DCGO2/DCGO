@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.BT25
                     => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
 
                 bool CanSelectOwnerPermamentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    => (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) || CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card))
                         && card.CanLinkToTargetPermanent(permanent, false, true);
 
                 bool CanSelectEnemyOptionCondition(Permanent permanent)
