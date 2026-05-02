@@ -193,7 +193,7 @@ namespace DCGO.CardEffects.BT25
             IEnumerator SharedActivateCoroutine1(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool hasUsed = false;
-                bool CanSelect3MOptionCard(CardSource cardSource) => cardSource.IsOption && cardSource.HasThreeMusketeersTraits && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass);
+                bool CanSelect3MOptionCard(CardSource cardSource) => cardSource.IsOption && cardSource.HasThreeMusketeersTraits && cardSource.Owner.MaxMemoryCost < cardSource.BasePlayCostFromEntity;
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition))
                 {
                     #region Select digimon to trash option card from digivolution source
@@ -265,122 +265,125 @@ namespace DCGO.CardEffects.BT25
                         if (selectedCard != null)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(selectedPermanent, new List<CardSource>() { selectedCard }, activateClass).TrashDigivolutionCards());
-                            #region Select 3M option card in trash to use with reduced cost
-                            CardSource selectedOption = null;
-                            SelectCardEffect selectCardEffect1 = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect1.SetUp(
-                                canTargetCondition: CanSelect3MOptionCard,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine1,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 [Three Musketeers] option to use.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            IEnumerator SelectCardCoroutine1(CardSource cardSource)
+                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelect3MOptionCard))
                             {
-                                selectedOption = cardSource;
-                                yield return null;
-                            }
+                                #region Select 3M option card in trash to use with reduced cost
+                                CardSource selectedOption = null;
+                                SelectCardEffect selectCardEffect1 = GManager.instance.GetComponent<SelectCardEffect>();
 
-                            selectCardEffect1.SetUpCustomMessage("Select 1 [Three Musketeers] option to use.", "The opponent is selecting 1 [Three Musketeers] option to use.");
-                            selectCardEffect1.SetUpCustomMessage_ShowCard("Selected Card");
+                                selectCardEffect1.SetUp(
+                                    canTargetCondition: CanSelect3MOptionCard,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => true,
+                                    selectCardCoroutine: SelectCardCoroutine1,
+                                    afterSelectCardCoroutine: null,
+                                    message: "Select 1 [Three Musketeers] option to use.",
+                                    maxCount: 1,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Trash,
+                                    customRootCardList: null,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect1.Activate());
-
-                            if (selectedOption != null)
-                            {
-                                hasUsed = true;
-
-                                #region reduce play cost
-                                ChangeCostClass changeCostClass = new ChangeCostClass();
-                                changeCostClass.SetUpICardEffect($"Play Cost -3", CanUseCondition1, card);
-                                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CanSelect3MOptionCard, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                                Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
-                                card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
-
-                                ICardEffect GetCardEffect(EffectTiming _timing)
+                                IEnumerator SelectCardCoroutine1(CardSource cardSource)
                                 {
-                                    if (_timing == EffectTiming.None)
-                                    {
-                                        return changeCostClass;
-                                    }
-
-                                    return null;
+                                    selectedOption = cardSource;
+                                    yield return null;
                                 }
 
-                                bool CanUseCondition1(Hashtable hashtable)
-                                {
-                                    return true;
-                                }
+                                selectCardEffect1.SetUpCustomMessage("Select 1 [Three Musketeers] option to use.", "The opponent is selecting 1 [Three Musketeers] option to use.");
+                                selectCardEffect1.SetUpCustomMessage_ShowCard("Selected Card");
 
-                                int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect1.Activate());
+
+                                if (selectedOption != null)
                                 {
-                                    if (CanSelect3MOptionCard(cardSource))
+                                    hasUsed = true;
+
+                                    #region reduce play cost
+                                    ChangeCostClass changeCostClass = new ChangeCostClass();
+                                    changeCostClass.SetUpICardEffect($"Play Cost -3", CanUseCondition1, card);
+                                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CanSelect3MOptionCard, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                                    Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
+                                    card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
+
+                                    ICardEffect GetCardEffect(EffectTiming _timing)
                                     {
-                                        if (RootCondition(root))
+                                        if (_timing == EffectTiming.None)
                                         {
-                                            if (PermanentsCondition(targetPermanents))
-                                            {
-                                                Cost -= 3;
-                                            }
+                                            return changeCostClass;
                                         }
+
+                                        return null;
                                     }
 
-                                    return Cost;
-                                }
-
-                                bool PermanentsCondition(List<Permanent> targetPermanents)
-                                {
-                                    if (targetPermanents == null)
+                                    bool CanUseCondition1(Hashtable hashtable)
                                     {
                                         return true;
                                     }
 
-                                    else
+                                    int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                                     {
-                                        if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
+                                        if (CanSelect3MOptionCard(cardSource))
+                                        {
+                                            if (RootCondition(root))
+                                            {
+                                                if (PermanentsCondition(targetPermanents))
+                                                {
+                                                    Cost -= 3;
+                                                }
+                                            }
+                                        }
+
+                                        return Cost;
+                                    }
+
+                                    bool PermanentsCondition(List<Permanent> targetPermanents)
+                                    {
+                                        if (targetPermanents == null)
                                         {
                                             return true;
                                         }
+
+                                        else
+                                        {
+                                            if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
+                                            {
+                                                return true;
+                                            }
+                                        }
+
+                                        return false;
                                     }
 
-                                    return false;
+                                    bool RootCondition(SelectCardEffect.Root root)
+                                    {
+                                        return true;
+                                    }
+
+                                    bool isUpDown()
+                                    {
+                                        return true;
+                                    }
+                                    #endregion
+
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
+                                        cardSources: new List<CardSource>() { selectedOption },
+                                        activateClass: activateClass,
+                                        payCost: true,
+                                        root: SelectCardEffect.Root.Trash));
+
+                                    #region release effect
+                                    card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
+                                    #endregion
                                 }
 
-                                bool RootCondition(SelectCardEffect.Root root)
-                                {
-                                    return true;
-                                }
-
-                                bool isUpDown()
-                                {
-                                    return true;
-                                }
-                                #endregion
-
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
-                                    cardSources: new List<CardSource>() { selectedOption },
-                                    activateClass: activateClass,
-                                    payCost: true,
-                                    root: SelectCardEffect.Root.Trash));
-
-                                #region release effect
-                                card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
                                 #endregion
                             }
-
-                            #endregion
 
                         }
                     }
