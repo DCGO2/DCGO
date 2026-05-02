@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.BT25
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(CostReductionEffectName, CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
-                activateClass.SetHashString("PlayCost-1_BT25_049");
+                activateClass.SetHashString("PlayCost-3_BT25_049");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -200,7 +200,7 @@ namespace DCGO.CardEffects.BT25
                         }
 
                         ChangeCostClass changeCostClass = new ChangeCostClass();
-                        changeCostClass.SetUpICardEffect("Play Cost -1", CanUseCondition1, card);
+                        changeCostClass.SetUpICardEffect("Play Cost -3", CanUseCondition1, card);
                         changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
                         card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
 
@@ -225,7 +225,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.None)
             {
                 ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -1", CanUseCondition, card);
+                changeCostClass.SetUpICardEffect("Play Cost -3", CanUseCondition, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
                 changeCostClass.SetNotShowUI(true);
                 cardEffects.Add(changeCostClass);
