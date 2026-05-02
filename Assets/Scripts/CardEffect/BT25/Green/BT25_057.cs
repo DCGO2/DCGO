@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("battle 1 of your opponent's Digimon.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Battle 1 of your opponent's Digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -150,38 +150,40 @@ namespace DCGO.CardEffects.BT25
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                     }
-                    else selectedPermanent = card.Owner.GetBattleAreaPermanents().FirstOrDefault(CanSelectPermanentCondition);
                     #endregion
 
-                    #region Trash Bottom Card
-                    List<CardSource> selectedCards = new List<CardSource>();
-                    CardSource trashTargetCard = selectedPermanent.DigivolutionCards.Filter(CanSelectTrashSourceCardCondition)[^1];
-                    selectedCards.Add(trashTargetCard);
-
-                    yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(selectedPermanent, selectedCards, activateClass).TrashDigivolutionCards());
-                    isUsed = true; // Declare true since cost was paid, so OPT will be used up here.
-                    #endregion
-
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentPermanentCondition))
+                    if (selectedPermanent == null)
                     {
-                        #region De-Digivolve 1 Opponent Digimon
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectOpponentPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Degenerate,
-                            cardEffect: activateClass);
+                        #region Trash Bottom Card
+                        List<CardSource> selectedCards = new List<CardSource>();
+                        CardSource trashTargetCard = selectedPermanent.DigivolutionCards.Filter(CanSelectTrashSourceCardCondition)[^1];
+                        selectedCards.Add(trashTargetCard);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve(1)", "The opponent is selecting 1 Digimon to De-Digivolve(1).");
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(selectedPermanent, selectedCards, activateClass).TrashDigivolutionCards());
+                        isUsed = true; // Declare true since cost was paid, so OPT will be used up here.
                         #endregion
+
+                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentPermanentCondition))
+                        {
+                            #region De-Digivolve 1 Opponent Digimon
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectOpponentPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Degenerate,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve(1)", "The opponent is selecting 1 Digimon to De-Digivolve(1).");
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            #endregion
+                        }
                     }
                 }
                 if (!isUsed) activateClass.RemoveUse();
