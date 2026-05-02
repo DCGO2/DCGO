@@ -227,7 +227,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("1 of your opponent's Digimon or Tamers can't suspend", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 1 enemy digimon with DP equal or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, _ => DeleteWeakerDigimon(activateClass), 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT25_018_WA_ESS");
