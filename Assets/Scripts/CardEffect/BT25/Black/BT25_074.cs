@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
-                    return cardSource == card;
+                    return true;
                 }
 
                 bool RootCondition(SelectCardEffect.Root root) => true;
