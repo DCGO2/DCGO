@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT25
 
             bool CanSelectEnemyDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
-            bool AdditionCanActivate(Hashtable hashtable) => card.Owner.SecurityCards.Any();
+            bool AdditionCanActivate(Hashtable hashtable, ActivateClass activateClass) => card.Owner.SecurityCards.Any();
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
