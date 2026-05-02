@@ -18,6 +18,7 @@ namespace DCGO.CardEffects.BT25
                 activateClass.SetUpICardEffect("By trashing top security, digivolve into card with [Glowing Dawn] trait for 1 less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("BT25_003_Inherited");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
