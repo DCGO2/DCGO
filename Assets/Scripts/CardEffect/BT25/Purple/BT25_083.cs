@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.BT25
                     List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
                     if (canSelectHand) selectionElements.Add(new SelectionElement<int>("Hand", 1, 0));
                     if (canSelectTrash) selectionElements.Add(new SelectionElement<int>("Trash", 2, 0));
-                    selectionElements.Add(new SelectionElement<int>("Dont take one", 3, 1));
+                    selectionElements.Add(new SelectionElement<int>("Don't place", 3, 1));
 
                     string selectPlayerMessage = "Which place will you take a [Three Musketeers] trait card from?";
                     string notSelectPlayerMessage = "The opponent is choosing an area to take a [Three Musketeers] trait card from.";
@@ -333,15 +333,12 @@ namespace DCGO.CardEffects.BT25
 
                                     int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                                     {
-                                        if (CanSelect3MOptionCard(cardSource))
+                                        if (cardSource.IsOption
+                                            && cardSource.HasThreeMusketeersTraits
+                                            && RootCondition(root)
+                                            && PermanentsCondition(targetPermanents))
                                         {
-                                            if (RootCondition(root))
-                                            {
-                                                if (PermanentsCondition(targetPermanents))
-                                                {
-                                                    Cost -= 3;
-                                                }
-                                            }
+                                            Cost -= 3;
                                         }
 
                                         return Cost;
@@ -349,20 +346,8 @@ namespace DCGO.CardEffects.BT25
 
                                     bool PermanentsCondition(List<Permanent> targetPermanents)
                                     {
-                                        if (targetPermanents == null)
-                                        {
-                                            return true;
-                                        }
-
-                                        else
-                                        {
-                                            if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                                            {
-                                                return true;
-                                            }
-                                        }
-
-                                        return false;
+                                        return targetPermanents == null
+                                                || targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
                                     }
 
                                     bool RootCondition(SelectCardEffect.Root root)
