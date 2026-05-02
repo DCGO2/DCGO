@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 // Rebootmon
 namespace DCGO.CardEffects.BT25
@@ -198,8 +197,8 @@ namespace DCGO.CardEffects.BT25
                     hashValue: SharedHashString,
                     optional: false,
                     isSkippable: true,
-                    onPlay: true,
-                    whenDigivolving: true);
+                    whenDigivolving: true,
+                    whenAttacking: true);
             #endregion
 
             #region Shared All Turns
