@@ -927,6 +927,31 @@ public class Permanent
                     #endregion
                 }
 
+                #region Effects of face up security
+                    foreach (CardSource cardSource in player.SecurityCards)
+                    {
+                        if (cardSource.IsFlipped)
+                            continue;
+
+                        foreach (ICardEffect cardEffect in cardSource.EffectList(EffectTiming.None))
+                        {
+                            if (cardEffect is IChangeLinkMaxEffect)
+                            {
+                                if (((IChangeLinkMaxEffect)cardEffect).PermanentCondition(this))
+                                {
+                                    if (cardEffect.CanUse(null))
+                                    {
+                                        if (!TopCard.CanNotBeAffected(cardEffect))
+                                        {
+                                            cardEffects_ChangeLinkedMax.Add(cardEffect);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+
                 #region player effect
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
                 {
