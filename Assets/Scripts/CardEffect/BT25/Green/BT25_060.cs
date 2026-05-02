@@ -53,6 +53,8 @@ namespace DCGO.CardEffects.BT25
 
             #region Shared WD / WA
 
+            string SharedHashString = "BT25_060_WD_WA";
+
             string SharedEffectName = "Link from hand or digivolution cards to unsuspend";
 
             string SharedEffectDescription(string tag)
@@ -192,6 +194,8 @@ namespace DCGO.CardEffects.BT25
                     SharedActivateCoroutine,
                     SharedEffectDescription,
                     additionalActivateCondition: AdditionalActivateCondition,
+                    maxCountPerTurn: 1,
+                    hashValue: SharedHashString,
                     optional: false,
                     isSkippable: true,
                     onPlay: true,
@@ -199,8 +203,12 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region Shared All Turns
+
+            string AllTurnsHashString = "BT25_060_AT_GAIN_EFFECTS";
             
             string AllTurnsEffectName = "Gain <Piercing>, <Blocker> and Digimon Effect Immunity";
+
+            bool AllTurnsActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleArea(card);
 
             string AllTurnsEffectDescription()
                 => "[All Turns] [Once Per Turn] When this Digimon gets linked or unsuspends, until your turn ends, this Digimon gains <Piercing> and <Blocker>, and your opponent's Digimon effects don't affect it.";
@@ -230,6 +238,36 @@ namespace DCGO.CardEffects.BT25
                 }
 
                 thisPermanent.UntilOwnerTurnEndEffects.Add(GetImmunity);
+            }
+
+            if (timing == EffectTiming.WhenLinked)
+            {
+                ActivateClass activateClass = new();
+                activateClass.SetUpICardEffect(AllTurnsEffectName, CanUseCondition, card);
+                activateClass.SetUpActivateClass(AllTurnsActivateCondition, hash => AllTurnsActivateCoroutine(hash, activateClass), 1, false, AllTurnsEffectDescription());
+                activateClass.SetHashString(AllTurnsHashString);
+                cardEffects.Add(activateClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.CanTriggerWhenLinking(hashtable, permanent => permanent == card.PermanentOfThisCard(), null);
+                }
+            }
+
+            if (timing == EffectTiming.OnUnTappedAnyone)
+            {
+                ActivateClass activateClass = new();
+                activateClass.SetUpICardEffect(AllTurnsEffectName, CanUseCondition, card);
+                activateClass.SetUpActivateClass(AllTurnsActivateCondition, hash => AllTurnsActivateCoroutine(hash, activateClass), 1, false, AllTurnsEffectDescription());
+                activateClass.SetHashString(AllTurnsHashString);
+                cardEffects.Add(activateClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.CanTriggerWhenSelfPermanentUnsuspends(hashtable, card);
+                }
             }
             #endregion
 
