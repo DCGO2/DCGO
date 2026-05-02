@@ -345,7 +345,7 @@ namespace DCGO.CardEffects.BT25
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.LinkedCards,
-                                customRootCardList: null,
+                                customRootCardList: thisPermanent.LinkedCards,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
