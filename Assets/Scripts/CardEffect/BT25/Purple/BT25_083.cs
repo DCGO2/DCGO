@@ -40,126 +40,124 @@ namespace DCGO.CardEffects.BT25
 
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition) && (canSelectHand || canSelectTrash))
                 {
-                    if (canSelectHand && canSelectTrash)
-                    {
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                        {
-                            new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 0),
-                        };
 
-                        string selectPlayerMessage = "From which area do you select a card?";
-                        string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
+                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+                    if (canSelectHand) selectionElements.Add(new SelectionElement<int>("Hand", 1, 0));
+                    if (canSelectTrash) selectionElements.Add(new SelectionElement<int>("Trash", 2, 0));
+                    selectionElements.Add(new SelectionElement<int>("Dont take one", 3, 1));
 
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                    }
-                    else
-                    {
-                        GManager.instance.userSelectionManager.SetBool(canSelectHand);
-                    }
+                    string selectPlayerMessage = "Which place will you take a [Three Musketeers] trait card from?";
+                    string notSelectPlayerMessage = "The opponent is choosing an area to take a [Three Musketeers] trait card from.";
+
+                    GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                    bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+                    bool dontTake = GManager.instance.userSelectionManager.SelectedIntValue == 3;
+                    bool fromHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
 
-                    #region Select 3M card to add digivolution source
-                    CardSource selectedCard = null;
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    if (!dontTake)
                     {
-                        selectedCard = cardSource;
-                        yield return null;
-                    }
-
-                    if (fromHand)
-                    {
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardCondition));
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to add to digivolution sources.", "The opponent is selecting 1 card to add to digivolution sources.");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-                    }
-                    else
-                    {
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
-
-                        selectCardEffect.SetUp(
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: "Select 1 card to add to digivolution sources",
-                            maxCount: maxCount,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Trash,
-                            customRootCardList: null,
-                            canLookReverseCard: true,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                    }
-                    #endregion
-
-                    if (selectedCard != null && CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition))
-                    {
-                        #region Select digimon to add digivolution source
-
-                        Permanent selectedPermanent = null;
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanSelectDigimonCondition));
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectDigimonCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        #region Select 3M card to add digivolution source
+                        CardSource selectedCard = null;
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            selectedPermanent = permanent;
+                            selectedCard = cardSource;
                             yield return null;
                         }
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain digivolution source.", "The opponent is selecting 1 Digimon to gain digivolution source.");
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        if (fromHand)
+                        {
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardCondition));
 
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
 
+                            selectHandEffect.SetUpCustomMessage("Select 1 card to add to digivolution sources.", "The opponent is selecting 1 card to add to digivolution sources.");
+                            selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                        }
+                        else
+                        {
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 card to add to digivolution sources",
+                                maxCount: maxCount,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        }
                         #endregion
 
-                        if (selectedPermanent != null)
+                        if (selectedCard != null && CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition))
                         {
-                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
-                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                            #region Select digimon to add digivolution source
+
+                            Permanent selectedPermanent = null;
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanSelectDigimonCondition));
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectDigimonCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                selectedPermanent = permanent;
+                                yield return null;
+                            }
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain digivolution source.", "The opponent is selecting 1 Digimon to gain digivolution source.");
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+
+                            #endregion
+
+                            if (selectedPermanent != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                                yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                            }
                         }
                     }
+
                 }
 
             }
@@ -169,7 +167,8 @@ namespace DCGO.CardEffects.BT25
                         SharedEffectName,
                         SharedActivateCoroutine,
                         SharedEffectDescription,
-                        optional: true,
+                        optional: false,
+                        isSkippable: true,
                         onPlay: true,
                         whenDigivolving: true);
 
@@ -183,7 +182,7 @@ namespace DCGO.CardEffects.BT25
 
             string SharedEffectDescription1(string tag) => $"[{tag}] [Once Per Turn] By trashing 1 Option card from any of your Digimon's digivolution cards, you may use 1 [Three Musketeers] trait Option card from your trash with the cost reduced by 3.";
 
-            bool AdditionalActivateCondition(Hashtable hashtable) => CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition);
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass) => CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition);
 
             bool CanSelectDigimonCondition(Permanent permanent) =>
                 CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
@@ -392,7 +391,7 @@ namespace DCGO.CardEffects.BT25
                         SharedEffectDescription1,
                         maxCountPerTurn: 1,
                         hashValue: SharedHashString,
-                        optional: true,
+                        optional: false,
                         isSkippable: true,
                         whenDigivolving: true,
                         whenAttacking: true,
