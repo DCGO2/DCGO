@@ -55,11 +55,11 @@ public class CardSource : MonoBehaviour
 
     public bool IsFlipped { get; private set; }
 
-    public bool IsFaceUp 
-    { 
-        get 
-        { 
-            return !IsFlipped; 
+    public bool IsFaceUp
+    {
+        get
+        {
+            return !IsFlipped;
         }
     }
 
@@ -4139,6 +4139,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("BEATBREAK");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has Shaman trait
+
+    public bool HasShamanTraits
+    {
+        get
+        {
+            return EqualsTraits("Shaman");
         }
     }
 
