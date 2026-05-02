@@ -37,20 +37,21 @@ namespace DCGO.CardEffects.BT25
                     return cardSource == card && CardEffectCommons.IsExistOnHand(cardSource);
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
+                bool CanSelectPermanentCondition(Permanent permanent, CardSource cardSource)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent != null
                         && permanent.TopCard.HasPlayCost
                         && permanent.TopCard.GetCostItself <= 11
                         && permanent.TopCard.HasText("Negamon")
-                        && permanent.DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Negamon")) > 0
-                        && !permanent.TopCard.CanNotBeAffected(activateClass);
+                        && permanent.DigivolutionCards.Count((digiCard) => digiCard.EqualsCardName("Negamon")) > 0
+                        && !permanent.TopCard.CanNotBeAffected(activateClass)
+                        && cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) - permanent.TopCard.GetCostItself <= cardSource.Owner.MaxMemoryCost;//Check the permanent would sufficiently reduce cost to make a valid play
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition) >= 1;
+                    return CardEffectCommons.MatchConditionPermanentCount(permanent => CanSelectPermanentCondition(permanent, CardEffectCommons.GetCardFromHashtable(hashtable))) >= 1;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -68,7 +69,7 @@ namespace DCGO.CardEffects.BT25
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition: permanent => CanSelectPermanentCondition(permanent, cardFromHashtable),
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
@@ -89,60 +90,65 @@ namespace DCGO.CardEffects.BT25
                         if (permanents.Count == 1)
                         {
                             int reducedCost = permanents[0].TopCard.GetCostItself;
-                            yield return ContinuousController.instance.StartCoroutine(
-                                    new DestroyPermanentsClass(permanents,
-                                        CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                                targetPermanents: permanents,
+                                activateClass: activateClass,
+                                successProcess: SuccessProcess,
+                                failureProcess: null));
 
-                            if (card.Owner.CanReduceCost(null, card))
+                            IEnumerator SuccessProcess(List<Permanent> permanents)
                             {
-                                ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                            }
-
-                            ChangeCostClass changeCostClass = new ChangeCostClass();
-                            changeCostClass.SetUpICardEffect($"Play Cost -{reducedCost}", CanUseCondition1, card);
-                            changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition,
-                                rootCondition: RootCondition, isUpDown: IsUpDown, isCheckAvailability: () => false,
-                                isChangePayingCost: () => true);
-                            card.Owner.UntilCalculateFixedCostEffect.Add(_ => changeCostClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(hashtable));
-
-                            bool CanUseCondition1(Hashtable hashtable1)
-                            {
-                                return true;
-                            }
-
-                            int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
-                                List<Permanent> targetPermanents)
-                            {
-                                if (CardSourceCondition(cardSource) &&
-                                    RootCondition(root) &&
-                                    PermanentsCondition(targetPermanents))
+                                if (card.Owner.CanReduceCost(null, card))
                                 {
-                                    cost -= reducedCost;
+                                    ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
                                 }
 
-                                return cost;
-                            }
+                                ChangeCostClass changeCostClass = new ChangeCostClass();
+                                changeCostClass.SetUpICardEffect($"Play Cost -{reducedCost}", CanUseCondition1, card);
+                                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition,
+                                    rootCondition: RootCondition, isUpDown: IsUpDown, isCheckAvailability: () => false,
+                                    isChangePayingCost: () => true);
+                                card.Owner.UntilCalculateFixedCostEffect.Add(_ => changeCostClass);
 
-                            bool PermanentsCondition(List<Permanent> targetPermanents)
-                            {
-                                return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
-                            }
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(hashtable));
 
-                            bool CardSourceCondition(CardSource cardSource)
-                            {
-                                return cardSource == card;
-                            }
+                                bool CanUseCondition1(Hashtable hashtable1)
+                                {
+                                    return true;
+                                }
 
-                            bool RootCondition(SelectCardEffect.Root root)
-                            {
-                                return true;
-                            }
+                                int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
+                                    List<Permanent> targetPermanents)
+                                {
+                                    if (CardSourceCondition(cardSource) &&
+                                        RootCondition(root) &&
+                                        PermanentsCondition(targetPermanents))
+                                    {
+                                        cost -= reducedCost;
+                                    }
 
-                            bool IsUpDown()
-                            {
-                                return true;
+                                    return cost;
+                                }
+
+                                bool PermanentsCondition(List<Permanent> targetPermanents)
+                                {
+                                    return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
+                                }
+
+                                bool CardSourceCondition(CardSource cardSource)
+                                {
+                                    return cardSource == card;
+                                }
+
+                                bool RootCondition(SelectCardEffect.Root root)
+                                {
+                                    return true;
+                                }
+
+                                bool IsUpDown()
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -202,15 +208,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool PermanentsCondition(List<Permanent> targetPermanents)
                 {
-                    return targetPermanents == null
-                        || targetPermanents.Count(targetPermanent => 
-                            CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card)
-                            && targetPermanent != null
-                            && targetPermanent.TopCard.HasPlayCost
-                            && targetPermanent.TopCard.GetCostItself <= 11
-                            && targetPermanent.TopCard.HasText("Negamon")
-                            && targetPermanent.DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Negamon")) > 0
-                            && !targetPermanent.TopCard.CanNotBeAffected(changeCostClass)) == 0;
+                    return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
                 }
 
                 bool CardSourceCondition(CardSource cardSource)
