@@ -374,6 +374,10 @@ namespace DCGO.CardEffects.BT25
                                     activateClass: activateClass,
                                     payCost: true,
                                     root: SelectCardEffect.Root.Trash));
+
+                                #region release effect
+                                card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
+                                #endregion
                             }
 
                             #endregion
