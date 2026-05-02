@@ -59,26 +59,14 @@ namespace DCGO.CardEffects.BT25
 
                     if (doTrash)
                     {
-                        if (topSecurity)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashSecurityAndProcessAccordingToResult(
-                                player: card.Owner,
-                                trashAmount: 1,
-                                activateClass: activateClass,
-                                fromTop: true,
-                                successProcess: SuccessProcess,
-                                failureProcess: null));
-                        }
-                        else
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashSecurityAndProcessAccordingToResult(
-                                player: card.Owner,
-                                trashAmount: 1,
-                                activateClass: activateClass,
-                                fromTop: false,
-                                successProcess: SuccessProcess,
-                                failureProcess: null));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashSecurityAndProcessAccordingToResult(
+                            player: card.Owner,
+                            trashAmount: 1,
+                            activateClass: activateClass,
+                            fromTop: topSecurity,
+                            successProcess: SuccessProcess,
+                            failureProcess: null));
+
 
                         IEnumerator SuccessProcess(List<CardSource> cardSources)
                         {
@@ -146,19 +134,16 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool canPlayCard = CardEffectCommons.HasMatchConditionOwnersHand(card, CanPlayCardCondition);
-
-                    if (canPlayCard)
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanPlayCardCondition))
                     {
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanPlayCardCondition));
 
                         selectHandEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: CanPlayCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
                             isShowOpponent: true,
@@ -175,13 +160,14 @@ namespace DCGO.CardEffects.BT25
                     if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsOwnedDigimon) >= 1)
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        int maxCount = Math.Min(2, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsOwnedDigimon));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: IsOwnedDigimon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: 2,
+                            maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
