@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
 #region Trash cards from hand
 
@@ -20,6 +20,7 @@ public class IDiscardHands
 
     List<IDiscardHand> discardHands { get; set; } = new List<IDiscardHand>();
     ICardEffect cardEffect { get; set; }
+    public bool HasDiscarded { get; set; }
 
     public IEnumerator DiscardHands()
     {
@@ -55,6 +56,7 @@ public class IDiscardHands
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnDiscardHand));
 
             #endregion
+            HasDiscarded = true;
         }
 
         #region add log
@@ -1258,8 +1260,8 @@ public class PlayPermanentClass
                         {
                             if (_isHatching)
                                 frameId = digieggFrame.FrameID;
-                            else if(card.CanPlayCardTargetFrame(digieggFrame, false, CardEffect, isBreedingArea: _isBreedingArea))
-                                    frameId = digieggFrame.FrameID;
+                            else if (card.CanPlayCardTargetFrame(digieggFrame, false, CardEffect, isBreedingArea: _isBreedingArea))
+                                frameId = digieggFrame.FrameID;
                         }
                     }
                 }
@@ -1310,7 +1312,7 @@ public class PlayPermanentClass
                             played = false;
                         }
 
-                        if(_isHatching)
+                        if (_isHatching)
                             played = _isHatching;
                     }
 
@@ -1444,7 +1446,7 @@ public class PlayPermanentClass
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(evoRootPermanent, ignoreOverflow: true));
                     }
 
-                    foreach(CardSource linkCard in linkCards)
+                    foreach (CardSource linkCard in linkCards)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(linkCard));
                     }
@@ -1744,7 +1746,7 @@ public class UseOptionClass
 
             #endregion
 
-            if(card.Owner.ExecutingCards.Contains(card))
+            if (card.Owner.ExecutingCards.Contains(card))
             {
                 List<OptionResolutionClass> optionResolutionEffects = new List<OptionResolutionClass>();
                 foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
@@ -3450,7 +3452,7 @@ public class ILinkCard
             yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToLinkCards(new List<Permanent[]>() { new Permanent[] { _linkCard.PermanentOfThisCard(), _permanent } }, _cardEffect).PlacePermanentToLinkCards());
         else
             yield return ContinuousController.instance.StartCoroutine(_permanent.AddLinkCard(_linkCard, _cardEffect));
-            
+
         WasLinked = _permanent.LinkedCards.Contains(_linkCard);
     }
 }
@@ -3682,7 +3684,7 @@ public class DestroyPermanentsClass
         }
 
         #endregion
-        
+
         // fix delete target permanents
         List<Permanent> destroyTargetPermanents_Fixed = _destroytargetPermanents.Filter(permanent =>
             permanent != null
@@ -3899,7 +3901,7 @@ public class ISecurityCheck
                     {
                         List<SkillInfo> triggeredSkillInfos = new List<SkillInfo>();
 
-                        
+
                         CardSource brokenSecurityCard = player.SecurityCards[0];
                         bool isFaceDown = brokenSecurityCard.IsFlipped;
 
@@ -4560,7 +4562,7 @@ public class IBattle
                     GManager.instance.turnStateMachine.IsSelecting = true;
 
                     //Preemptive end battle if the attack process is ended
-                    if (GManager.instance.attackProcess.IsEndAttack )
+                    if (GManager.instance.attackProcess.IsEndAttack)
                         yield break;
                 }
 
@@ -4579,7 +4581,7 @@ public class IBattle
                     else if (battleResults == 0)
                     {
                         WasTie = true;
-                        
+
                         WinnerPermanents.Add(AttackingPermanent);
                         WinnerPermanents.Add(DefendingPermanent);
 
@@ -4611,7 +4613,7 @@ public class IBattle
                     else if (AttackingPermanent.DP == DefendingCard.CardDP)
                     {
                         WasTie = true;
-                        
+
                         if (AttackingPermanent.CanBeDestroyedByBattle(AttackingPermanent, DefendingPermanent, DefendingCard))
                         {
                             LoserPermanents.Add(AttackingPermanent);
@@ -4664,7 +4666,7 @@ public class IBattle
                 yield return ContinuousController.instance.StartCoroutine(destoryBattlePermanents.Destroy());
 
                 //Fix Loser Permanents
-                if(LoserPermanents.Count != destoryBattlePermanents.DestroyedPermanents.Count)
+                if (LoserPermanents.Count != destoryBattlePermanents.DestroyedPermanents.Count)
                 {
                     LoserPermanents = destoryBattlePermanents.DestroyedPermanents;
                     _LoserPermanents = destoryBattlePermanents.DestroyedPermanents;
@@ -5246,7 +5248,7 @@ public class IAddSecurity
     }
 
     Player _player { get; set; }
-    CardSource _cardSource {  get; set; }
+    CardSource _cardSource { get; set; }
 
     public IEnumerator AddSecurity()
     {
@@ -5300,7 +5302,7 @@ public class IFlipSecurity
     }
 
     Player _player { get; set; }
-    CardSource _cardSource {  get; set; }
+    CardSource _cardSource { get; set; }
 
     public IEnumerator FlipFaceUp()
     {
