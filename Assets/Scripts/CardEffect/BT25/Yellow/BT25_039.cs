@@ -29,6 +29,7 @@ namespace DCGO.CardEffects.BT25
                 ActivateClass activateClass = new();
                 activateClass.SetUpICardEffect("May play [Ceresmon] for -7, then may place this under played card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -43,7 +44,6 @@ namespace DCGO.CardEffects.BT25
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistInSecurity(card, false)
-                        && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                 }
 
@@ -127,11 +127,11 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By deleting this, card doesn't leave", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("By deleting this, they don't leave", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] When any of your other [Shaman] or [Iliad] trait Digimon or Tamers would leave the battle area other than by your effects, by deleting this Digimon, they don't leave.";
                 }
@@ -153,7 +153,7 @@ namespace DCGO.CardEffects.BT25
                 {
                     return permanent != card.PermanentOfThisCard()
                         && CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                        && (permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer)
+                        && (permanent.IsDigimon || permanent.IsTamer)
                         && (permanent.TopCard.HasShamanTraits || permanent.TopCard.HasIliadTraits);
                 }
 
