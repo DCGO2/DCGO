@@ -29,14 +29,15 @@ namespace DCGO.CardEffects.BT25
             string SharedEffectName = "By place 1 [Three Musketeers] trait card from hand or trash as any digimon bottom digivolution card, draw 1";
 
             string SharedEffectDescription(string tag) => $"[{tag}] By placing 1 [Three Musketeers] trait card from your hand or trash as any of your Digimon's bottom digivolution cards, <Draw 1>";
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass) => CardEffectCommons.HasMatchConditionOwnersHand(card, SharedCanSelectCardCondition) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SharedCanSelectCardCondition);
+            bool SharedCanSelectCardCondition(CardSource cardSource) => cardSource.HasThreeMusketeersTraits;
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                bool CanSelectCardCondition(CardSource cardSource) => cardSource.HasThreeMusketeersTraits;
                 bool CanSelectDigimonCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
-                bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
-                bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
+                bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, SharedCanSelectCardCondition);
+                bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SharedCanSelectCardCondition);
 
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition) && (canSelectHand || canSelectTrash))
                 {
@@ -68,11 +69,11 @@ namespace DCGO.CardEffects.BT25
                         if (fromHand)
                         {
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardCondition));
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, SharedCanSelectCardCondition));
 
                             selectHandEffect.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition: SharedCanSelectCardCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: maxCount,
@@ -92,10 +93,10 @@ namespace DCGO.CardEffects.BT25
                         else
                         {
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, SharedCanSelectCardCondition));
 
                             selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition: SharedCanSelectCardCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 canNoSelect: () => true,
@@ -170,7 +171,8 @@ namespace DCGO.CardEffects.BT25
                         optional: false,
                         isSkippable: true,
                         onPlay: true,
-                        whenDigivolving: true);
+                        whenDigivolving: true,
+                        additionalActivateCondition: AdditionalActivateCondition);
 
             #endregion
 
@@ -182,7 +184,7 @@ namespace DCGO.CardEffects.BT25
 
             string SharedEffectDescription1(string tag) => $"[{tag}] [Once Per Turn] By trashing 1 Option card from any of your Digimon's digivolution cards, you may use 1 [Three Musketeers] trait Option card from your trash with the cost reduced by 3.";
 
-            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass) => CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition);
+            bool AdditionalActivateCondition2(Hashtable hashtable, ActivateClass activateClass) => CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition);
 
             bool CanSelectDigimonCondition(Permanent permanent) =>
                 CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
@@ -402,7 +404,7 @@ namespace DCGO.CardEffects.BT25
                         isSkippable: true,
                         whenDigivolving: true,
                         whenAttacking: true,
-                        additionalActivateCondition: AdditionalActivateCondition);
+                        additionalActivateCondition: AdditionalActivateCondition2);
 
             #endregion
 
