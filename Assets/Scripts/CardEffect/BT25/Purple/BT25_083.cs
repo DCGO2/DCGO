@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using static SelectCardEffect;
 
 // LadyDevimon
 namespace DCGO.CardEffects.BT25
@@ -195,7 +196,9 @@ namespace DCGO.CardEffects.BT25
             IEnumerator SharedActivateCoroutine1(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool hasUsed = false;
-                bool CanSelect3MOptionCard(CardSource cardSource) => cardSource.IsOption && cardSource.HasThreeMusketeersTraits && cardSource.Owner.MaxMemoryCost < cardSource.BasePlayCostFromEntity;
+                bool CanSelect3MOptionCard(CardSource cardSource) => cardSource.IsOption
+                    && cardSource.HasThreeMusketeersTraits
+                    && cardSource.PayingCost(Root.Trash, new List<Permanent>() { cardSource.PermanentOfThisCard() }) <= cardSource.Owner.MaxMemoryCost;
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition))
                 {
                     #region Select digimon to trash option card from digivolution source
