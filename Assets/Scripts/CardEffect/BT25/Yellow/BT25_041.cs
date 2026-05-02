@@ -40,6 +40,8 @@ namespace DCGO.CardEffects.BT25
             string SharedEffectDescription(string tag)
                 => $"[{tag}] [Once Per Turn] If it's your turn, by adding your top security card to the hand or trashing the bottom face-down card under any of your Tamers, you may play or use 1 card with the [Glowing Dawn] trait from your hand with the cost reduced by 3.";
 
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass) => CardEffectCommons.IsOwnerTurn(card);
+
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 #region Conditions
@@ -56,223 +58,199 @@ namespace DCGO.CardEffects.BT25
                 #endregion
 
                 bool isUsed = false;
-                if (CardEffectCommons.IsOwnerTurn(card))
+                bool hasPaidCost = false;
+                bool canAddSecurityToHand = card.Owner.SecurityCards.Any();
+                bool canTrashBottomFaceDownCard = CardEffectCommons.HasMatchConditionPermanent(IsTamerWithFaceDownCard);
+
+                #region Select to pay Cost
+                List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+
+                if (canAddSecurityToHand) selectionElements.Add(new SelectionElement<int>(message: $"Add top security card to hand", value: 1, spriteIndex: 0));
+                if (canTrashBottomFaceDownCard) selectionElements.Add(new SelectionElement<int>(message: $"Trash bottom face down card from 1 tamer", value: 2, spriteIndex: 0));
+                selectionElements.Add(new SelectionElement<int>(message: $"Dont pay the cost", value: 3, spriteIndex: 1));
+
+                string selectPlayerMessage = "Will you pay the cost?";
+                string notSelectPlayerMessage = "The opponent is choosing to pay the cost.";
+
+                GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                bool payCost = GManager.instance.userSelectionManager.SelectedIntValue != 3;
+                bool isSecurity = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+                #endregion
+
+                #region Pay Cost
+                if (payCost)
                 {
-                    bool hasPaidCost = false;
-                    bool canAddSecurityToHand = card.Owner.SecurityCards.Any();
-                    bool canTrashBottomFaceDownCard = CardEffectCommons.HasMatchConditionPermanent(IsTamerWithFaceDownCard);
-
-                    if (canAddSecurityToHand)
+                    if (isSecurity)
                     {
-                        #region Select to paid Security Cost
-                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
-
-                        if (card.Owner.SecurityCards.Count >= 2)
+                        CardSource topCard = card.Owner.SecurityCards[0];
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(player: card.Owner, refSkillInfos: ref ContinuousController.instance.nullSkillInfos, activateClass).ReduceSecurity());
+                        if (card.Owner.HandCards.Contains(topCard))
                         {
-                            selectionElements.Add(new SelectionElement<int>(message: $"Add top security card to hand", value: 1, spriteIndex: 0));
-                            selectionElements.Add(new SelectionElement<int>(message: $"Add bottom security card to hand", value: 2, spriteIndex: 0));
+                            hasPaidCost = true;
+                            isUsed = true;
                         }
-                        else if (card.Owner.SecurityCards.Count == 1)
-                        {
-                            selectionElements.Add(new SelectionElement<int>(message: $"Add security card to hand", value: 3, spriteIndex: 0));
-                        }
-                        selectionElements.Add(new SelectionElement<int>(message: $"Don't add security card to hand", value: 4, spriteIndex: 1));
-
-                        string selectPlayerMessage = "Will you add the top security card to your hand?";
-                        string notSelectPlayerMessage = "The opponent is to add the top security card to their hand.";
-
-                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                        int selectedValue = GManager.instance.userSelectionManager.SelectedIntValue;
-
-                        if (selectedValue != 4)
-                        {
-                            CardSource topCard = null;
-                            if (selectedValue == 1 || selectedValue == 3) topCard = card.Owner.SecurityCards[0];
-                            else if (selectedValue == 2) topCard = card.Owner.SecurityCards[-1];
-
-                            if (topCard != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
-                                yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(player: card.Owner, refSkillInfos: ref ContinuousController.instance.nullSkillInfos, activateClass).ReduceSecurity());
-                                if (card.Owner.HandCards.Contains(topCard)) hasPaidCost = true;
-                            }
-
-                        }
-                        #endregion
                     }
-
-                    if (!hasPaidCost && canTrashBottomFaceDownCard)
+                    else
                     {
-                        #region Select to paid by Trashing bottom face down card
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                        {
-                            new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
-                        };
-                        string selectPlayerMessage = "Will you trash the bottom face-down card under any of your Tamers?";
-                        string notSelectPlayerMessage = "The opponent is to trash the bottom face-down card under any of their Tamers.";
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                        bool trashBottomCard = GManager.instance.userSelectionManager.SelectedBoolValue;
+                        bool trash = false;
+                        SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        if (trashBottomCard)
-                        {
-                            bool trash = false;
-
-                            SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect1.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: IsTamerWithFaceDownCard,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect1.SetUpCustomMessage("Select 1 Tamer to trash 1 bottom face-down card from", "The opponent is selecting 1 Tamer to trash 1 bottom face-down card from");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
-
-                            IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 1, isFromTop: false, activateClass: activateClass, FaceDownCards));
-                                trash = true;
-                            }
-
-                            if (trash) hasPaidCost = true;
-                        }
-                        #endregion
-                    }
-
-                    if (hasPaidCost) isUsed = true;
-                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, isGlowingDawnCard))
-                    {
-                        CardSource selectedCard = null;
-
-                        #region Selected Glowing Dawn Card in Hand to play or use
-
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, isGlowingDawnCard));
-
-                        selectHandEffect.SetUp(
+                        selectPermanentEffect1.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: isGlowingDawnCard,
+                            canTargetCondition: IsTamerWithFaceDownCard,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                            mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+
+                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                         {
-                            selectedCard = cardSource;
-                            yield return null;
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 1, isFromTop: false, activateClass: activateClass, FaceDownCards));
+                            trash = true;
                         }
 
-                        selectHandEffect.SetUpCustomMessage("Select 1 [Glowing Dawn] card to play/use.", "The opponent is selecting 1 [Glowing Dawn] card to play/use.");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
-                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-                        #endregion
-
-                        if (selectedCard != null)
+                        selectPermanentEffect1.SetUpCustomMessage("Select 1 Tamer to trash 1 bottom face-down card from", "The opponent is selecting 1 Tamer to trash 1 bottom face-down card from");
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+                        if (trash)
                         {
+                            hasPaidCost = true;
+                            isUsed = true;
+                        }
+                    }
+                }
+                #endregion
 
-                            #region Reduce Cost
+                if (hasPaidCost && CardEffectCommons.HasMatchConditionOwnersHand(card, isGlowingDawnCard))
+                {
+                    CardSource selectedCard = null;
 
-                            IEnumerator ReduceCost(string type)
+                    #region Selected Glowing Dawn Card in Hand to play or use
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, isGlowingDawnCard));
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: isGlowingDawnCard,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    {
+                        selectedCard = cardSource;
+                        yield return null;
+                    }
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 [Glowing Dawn] card to play/use.", "The opponent is selecting 1 [Glowing Dawn] card to play/use.");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                    #endregion
+
+                    if (selectedCard != null)
+                    {
+
+                        #region Reduce Cost
+
+                        IEnumerator ReduceCost(string type)
+                        {
+                            if (card.Owner.CanReduceCost(null, card))
                             {
-                                if (card.Owner.CanReduceCost(null, card))
-                                {
-                                    ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                                }
+                                ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
+                            }
 
-                                Hashtable hashtable = new Hashtable
+                            Hashtable hashtable = new Hashtable
                                 {
                                     { "CardEffect", activateClass }
                                 };
 
-                                ChangeCostClass changeCostClass = new ChangeCostClass();
-                                changeCostClass.SetUpICardEffect($"{type} cost: -3", CanUseCondition1, card);
-                                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                                card.Owner.UntilCalculateFixedCostEffect.Add(_ => changeCostClass);
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(hashtable));
+                            ChangeCostClass changeCostClass = new ChangeCostClass();
+                            changeCostClass.SetUpICardEffect($"{type} cost: -3", CanUseCondition1, card);
+                            changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                            card.Owner.UntilCalculateFixedCostEffect.Add(_ => changeCostClass);
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(hashtable));
 
-                                bool CanUseCondition1(Hashtable hashtable)
-                                {
-                                    return true;
-                                }
-
-                                int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                                {
-                                    if (CardSourceCondition(cardSource) &&
-                                        RootCondition(root) &&
-                                        PermanentsCondition(targetPermanents))
-                                    {
-                                        cost -= 3;
-                                    }
-
-                                    return cost;
-                                }
-
-                                bool PermanentsCondition(List<Permanent> targetPermanents)
-                                {
-                                    return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
-                                }
-
-                                bool CardSourceCondition(CardSource cardSource)
-                                {
-                                    return cardSource != null
-                                        && cardSource.Owner == card.Owner
-                                        && cardSource.EqualsTraits("Glowing Dawn");
-                                }
-
-                                bool RootCondition(SelectCardEffect.Root root)
-                                {
-                                    return true;
-                                }
-
-                                bool isUpDown()
-                                {
-                                    return true;
-                                }
-                            }
-                            #endregion
-
-                            if (selectedCard.IsOption)
+                            bool CanUseCondition1(Hashtable hashtable)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(ReduceCost("Use"));
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
-                                    cardSources: new List<CardSource>() { selectedCard },
-                                    activateClass: activateClass,
-                                    payCost: true,
-                                    root: SelectCardEffect.Root.Hand));
-
+                                return true;
                             }
-                            else
+
+                            int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(ReduceCost("Play"));
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                    cardSources: new List<CardSource>() { selectedCard },
-                                    activateClass: activateClass,
-                                    payCost: true,
-                                    isTapped: false,
-                                    root: SelectCardEffect.Root.Hand,
-                                    activateETB: true));
+                                if (CardSourceCondition(cardSource) &&
+                                    RootCondition(root) &&
+                                    PermanentsCondition(targetPermanents))
+                                {
+                                    cost -= 3;
+                                }
+
+                                return cost;
+                            }
+
+                            bool PermanentsCondition(List<Permanent> targetPermanents)
+                            {
+                                return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
+                            }
+
+                            bool CardSourceCondition(CardSource cardSource)
+                            {
+                                return cardSource != null
+                                    && cardSource.Owner == card.Owner
+                                    && cardSource.EqualsTraits("Glowing Dawn");
+                            }
+
+                            bool RootCondition(SelectCardEffect.Root root)
+                            {
+                                return true;
+                            }
+
+                            bool isUpDown()
+                            {
+                                return true;
                             }
                         }
+                        #endregion
+
+                        if (selectedCard.IsOption)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(ReduceCost("Use"));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
+                                cardSources: new List<CardSource>() { selectedCard },
+                                activateClass: activateClass,
+                                payCost: true,
+                                root: SelectCardEffect.Root.Hand));
+
+                        }
+                        else
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(ReduceCost("Play"));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                cardSources: new List<CardSource>() { selectedCard },
+                                activateClass: activateClass,
+                                payCost: true,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.Hand,
+                                activateETB: true));
+                        }
                     }
+
                 }
+
                 if (!isUsed) activateClass.RemoveUse();
             }
 
@@ -286,7 +264,8 @@ namespace DCGO.CardEffects.BT25
                     maxCountPerTurn: 1,
                     hashValue: SharedHashString,
                     whenDigivolving: true,
-                    whenAttacking: true);
+                    whenAttacking: true,
+                    additionalActivateCondition: AdditionalActivateCondition);
             #endregion
 
             #region Inherit End of Attack OPT
