@@ -26,7 +26,7 @@ public partial class CardEffectFactory
     #endregion
 
     #region Static effect of [Reboot]
-    public static RebootClass RebootStaticEffect(Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition, bool isLinkedEffect)
+    public static RebootClass RebootStaticEffect(Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition, bool isLinkedEffect = false)
     {
         string effectName = "Reboot";
 
