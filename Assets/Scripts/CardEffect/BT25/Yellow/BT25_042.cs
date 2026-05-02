@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.BT25
                             player: card.Owner,
                             trashAmount: 1,
                             activateClass: activateClass,
-                            fromTop: topSecurity,
+                            fromTop: fromTop,
                             successProcess: SuccessProcess,
                             failureProcess: null));
 
