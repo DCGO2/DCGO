@@ -198,7 +198,7 @@ namespace DCGO.CardEffects.BT25
                 bool hasUsed = false;
                 bool CanSelect3MOptionCard(CardSource cardSource) => cardSource.IsOption
                     && cardSource.HasThreeMusketeersTraits
-                    && cardSource.PayingCost(Root.Trash, new List<Permanent>() { cardSource.PermanentOfThisCard() }) <= cardSource.Owner.MaxMemoryCost;
+                    && cardSource.PayingCost(Root.Trash, null, checkAvailability: false) <= cardSource.Owner.MaxMemoryCost;
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition))
                 {
                     #region Select digimon to trash option card from digivolution source
