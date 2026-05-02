@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.BT25
 
 
             bool CanSuspendPermamentCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnBattleArea(permanent);
+                => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
 
             bool Is2OrMoreSuspendedCondition()
             {
@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.BT25
             }
 
             bool CanSelectPermamentCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -78,11 +78,11 @@ namespace DCGO.CardEffects.BT25
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
 
-                if (Is2OrMoreSuspendedCondition() && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermamentCondition))
+                if (Is2OrMoreSuspendedCondition() && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermamentCondition))
                 {
                     Permanent selectedPermanent = null;
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectPermamentCondition));
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermamentCondition));
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
