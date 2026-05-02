@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT25
                     optional: false,
                     isSkippable: true,
                     onPlay: true,
-                    whenDigivolving: true);
+                    whenMoving: true);
 
             string SharedEffectDescription(string tag) => $"[{tag}] By trashing up to 2 [Iliad] or [TS] trait cards from your hand, <Draw 1> for each card trashed.";
 
