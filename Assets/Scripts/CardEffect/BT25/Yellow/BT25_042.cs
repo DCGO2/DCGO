@@ -40,22 +40,29 @@ namespace DCGO.CardEffects.BT25
             {
                 bool isUsed = false;
 
-                if (card.Owner.SecurityCards.Count >= 1)
+                bool requiresSelection = card.Owner.SecurityCards.Count >= 2;
+
+                if (card.Owner.SecurityCards.Any())
                 {
-                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
+                    #region Setup Location Selection
+                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+                    if (requiresSelection)
                     {
-                            new(message: $"Trash Top Security card", value: 1, spriteIndex: 0),
-                            new(message: $"Trash Bottom Security card", value: 2, spriteIndex: 0),
-                            new(message: $"Don't trash security", value: 3, spriteIndex: 1)
-                    };
-                    string selectPlayerMessage = "Will you trash a security card?";
-                    string notSelectPlayerMessage = "The opponent is choosing if they will trash a security card.";
+                        selectionElements.Add(new SelectionElement<int>("Top", 1, 0));
+                        selectionElements.Add(new SelectionElement<int>("Bottom", 2, 0));
+                    }
+                    else selectionElements.Add(new SelectionElement<int>("Trash only security card", 1, 0));
+                    selectionElements.Add(new SelectionElement<int>("Don't trash", 3, 1));
+
+                    string selectPlayerMessage = "Will you trash your security?";
+                    string notSelectPlayerMessage = "The opponent is choosing to trash their security";
 
                     GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                    #endregion
 
                     bool doTrash = GManager.instance.userSelectionManager.SelectedIntValue != 3;
-                    bool topSecurity = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+                    bool fromTop = GManager.instance.userSelectionManager.SelectedIntValue == 1;
 
                     if (doTrash)
                     {
