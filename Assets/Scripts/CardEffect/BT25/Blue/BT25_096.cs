@@ -216,8 +216,7 @@ namespace DCGO.CardEffects.BT25
                         => cardSource.EqualsCardName("MachGaogamon");
 
                     bool isMirageGaogamon(CardSource cardSource)
-                        => cardSource.EqualsCardName("MirageGaogamon")
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
+                        => cardSource.EqualsCardName("MirageGaogamon");
 
                     #endregion
 
