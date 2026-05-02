@@ -75,7 +75,7 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend and trash an option from hand or sources to digivolve into [Three Musketeers]/[TS] Digimon for 1 less", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription() 
