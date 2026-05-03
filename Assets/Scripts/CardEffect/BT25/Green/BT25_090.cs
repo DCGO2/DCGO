@@ -145,7 +145,7 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(CostReductionEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("PlayCost-1_BT25_090");
                 cardEffects.Add(activateClass);
 
@@ -167,7 +167,7 @@ namespace DCGO.CardEffects.BT25
                         root = SelectCardEffect.Root.LinkedCards;
                     
                     return cardSource != null
-                        && cardSource.PayingCost(root, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost;
+                        && cardSource.PayingCost(root, null, checkAvailability: false) <= cardSource.Owner.MaxMemoryCost;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
