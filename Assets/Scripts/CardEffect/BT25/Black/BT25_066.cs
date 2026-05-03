@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -29,7 +30,8 @@ namespace DCGO.CardEffects.BT25
 
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash a linked card to prevent this digimon from leaving", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -42,7 +44,7 @@ namespace DCGO.CardEffects.BT25
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
-                }                
+                }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
@@ -89,6 +91,7 @@ namespace DCGO.CardEffects.BT25
                             thisPermanent.HideWillRemoveFieldEffect();
                             thisPermanent.HideDeleteEffect();
                         }
+
                         yield return null;
                     }
                 }
