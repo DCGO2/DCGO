@@ -54,6 +54,7 @@ namespace DCGO.CardEffects.BT25
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Link for -1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetHashString("BT25_052_Main");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -196,7 +197,8 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Kazuki & Itsuki]", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("BT25_052_YT");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
