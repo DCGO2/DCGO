@@ -52,8 +52,7 @@ namespace DCGO.CardEffects.BT25
                     return cardSource.IsDigimon
                         && (cardSource.EqualsTraits("Machine")
                             || cardSource.EqualsTraits("Cyborg")
-                            || cardSource.HasTSTraits)
-                        && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
+                            || cardSource.HasTSTraits);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
