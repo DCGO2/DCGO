@@ -184,12 +184,12 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may unsuspend this digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, false, EffectDescription());
                 activateClass.SetHashString("BT25-029-OnAddHand-OnTrashTamerCards");
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription() => "[All Turns] [Once Per Turn] When effects add cards to your opponent's hand or trash cards from under your Tamers, this Digimon may unsuspend.";
+                string EffectDescription() => "[All Turns] [Once Per Turn] When effects add cards to your opponent's hand or trash cards from under your Tamers, this Digimon may unsuspend.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -209,12 +209,12 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may unsuspend this digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, false, EffectDescription());
                 activateClass.SetHashString("BT25-029-OnAddHand-OnTrashTamerCards");
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription() => "[All Turns] [Once Per Turn] When effects add cards to your opponent's hand or trash cards from under your Tamers, this Digimon may unsuspend.";
+                string EffectDescription() => "[All Turns] [Once Per Turn] When effects add cards to your opponent's hand or trash cards from under your Tamers, this Digimon may unsuspend.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
