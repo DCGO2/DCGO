@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.BT25
             }
             #endregion
 
-            #region App Fusion (Onmon & Gatchmon)
+            #region App Fusion (Offmon & Hackmon)
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.AddAppfuseMethodByName(new List<string>() { "Offmon", "Hackmon" }, card));
