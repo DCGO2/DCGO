@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.BT25
             }
             #endregion
 
-            #region Piercing
+            #region Rush
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent permanent)
