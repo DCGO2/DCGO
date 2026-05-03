@@ -89,6 +89,7 @@ namespace DCGO.CardEffects.BT25
                             EffectDescriptionDebuff());
                         activateClassDebuff.SetEffectSourcePermanent(selectedPermanent);
                         selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                        selectedPermanent.UntilOwnerTurnEndEffects.Add(GetDetailEffect);
 
                         if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                         {
@@ -103,22 +104,20 @@ namespace DCGO.CardEffects.BT25
 
                         bool CanUseConditionDebuff(Hashtable hashtable1)
                         {
-                            return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(selectedPermanent) &&
-                                   selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent) &&
-                                   GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner;
+                            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(selectedPermanent, card) &&
+                                   CardEffectCommons.IsOpponentTurn(card) &&
+                                   !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
                         }
 
                         bool CanActivateConditionDebuff(Hashtable hashtable1)
                         {
                             return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(selectedPermanent) &&
-                                   !selectedPermanent.TopCard.CanNotBeAffected(activateClass) &&
-                                   selectedPermanent.CanAttack(activateClassDebuff);
+                                   !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
                         }
 
                         IEnumerator ActivateCoroutineDebuff(Hashtable hashtableDebuff)
                         {
-                            if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent) &&
-                                selectedPermanent.CanAttack(activateClassDebuff))
+                            if (selectedPermanent.CanAttack(activateClassDebuff))
                             {
                                 SelectAttackEffect selectAttackEffect =
                                     GManager.instance.GetComponent<SelectAttackEffect>();
@@ -138,6 +137,21 @@ namespace DCGO.CardEffects.BT25
                         ICardEffect GetCardEffect(EffectTiming timingDebuff)
                         {
                             return timingDebuff == EffectTiming.OnStartMainPhase ? activateClassDebuff : null;
+                        }
+
+                        bool CanShowDebuffCondition(Hashtable hashtable1)
+                        {
+                            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(selectedPermanent, card) &&
+                                   !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
+                        }
+                        
+                        ICardEffect GetDetailEffect(EffectTiming timing)
+                        {
+                            if (timing == EffectTiming.None)
+                            {
+                                return CardEffectFactory.AddDetailClass(CanShowDebuffCondition, permanent => permanent == selectedPermanent, "[Start of Your Main Phase] This Digimon attacks.", true, card);
+                            }
+                            return null;
                         }
                     }
                 }
