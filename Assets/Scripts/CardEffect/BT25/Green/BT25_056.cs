@@ -212,10 +212,10 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 enemy Digimon or tamer", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] When this Digimon get linked, suspend 1 of your opponent's Digimon or Tamers.";
                 }
