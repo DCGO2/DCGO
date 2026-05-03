@@ -279,7 +279,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.WhenLinked)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Bottom deck 1 of your opponents suspended Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Bottom deck 1 of enemy suspended Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
