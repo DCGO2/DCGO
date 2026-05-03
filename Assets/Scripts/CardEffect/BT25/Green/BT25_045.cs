@@ -43,11 +43,11 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ();
                 activateClass.SetUpICardEffect("May reduce Link cost by 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("BT25_045_YT");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Your Turn] [Once Per Turn] When a [Social], [Tool] or [Game] trait card would link to this Digimon, you may reduce the cost by 1.";
                 }
@@ -100,11 +100,11 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 enemy Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Linking] Suspend 1 of your opponent's Digimon.";
                 }
