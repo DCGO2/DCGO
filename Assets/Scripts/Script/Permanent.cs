@@ -2730,6 +2730,28 @@ public class Permanent
                     #endregion
                 }
 
+                #region Effects of Face-up Security
+                foreach (CardSource source in player.SecurityCards)
+                {
+                    if (source.IsFlipped)
+                        continue;
+
+                    foreach (ICardEffect cardEffect in source.EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is IRushEffect)
+                        {
+                            if (cardEffect.CanTrigger(null))
+                            {
+                                if (((IRushEffect)cardEffect).HasRush(this))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                #endregion
+
                 #region プレイヤーの効果
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
                 {
