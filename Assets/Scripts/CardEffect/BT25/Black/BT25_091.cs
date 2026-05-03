@@ -50,6 +50,8 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool returned = false;
+
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                     {
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -76,11 +78,18 @@ namespace DCGO.CardEffects.BT25
 
                         IEnumerator SelectCardCoroutine(List<CardSource> cardSources)
                         {
-                            if (cardSources.Count == 0)
+                            if (cardSources.Count >= 1)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                                returned = true;
                             }
+                            
+                            return null;
                         }
+                    }
+
+                    if (!returned)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                     }
                 }
             }
