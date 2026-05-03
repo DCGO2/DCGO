@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.BT25
                         {
                             if (timing == EffectTiming.None)
                             {
-                                return CardEffectFactory.AddDetailClass(CanShowDebuffCondition, permanent => permanent == selectedPermanent, "[Start of Your Main Phase] This Digimon attacks.", true, card);
+                                return CardEffectFactory.AddDetailClass(CanShowDebuffCondition, permanent => permanent == selectedPermanent, EffectDescriptionDebuff(), true, card);
                             }
                             return null;
                         }
