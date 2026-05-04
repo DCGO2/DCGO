@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.BT25
                         root = SelectCardEffect.Root.LinkedCards;
                     
                     return cardSource != null
-                        && cardSource.PayingCost(root, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost;
+                        && cardSource.PayingCost(root, null, checkAvailability: false) <= cardSource.Owner.MaxMemoryCost;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
