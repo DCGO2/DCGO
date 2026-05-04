@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.BT25
                     }
                     else
                     {
-                        int maxCount = Math.Min(toLink, validHandCardCount);
+                        int maxCount = Math.Min(toLink, validTrashCardCount);
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.BT25
                             canNoSelect: () => true,
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                            message: "Select 1 link card",
+                            message: "Select link card(s)",
                             maxCount: maxCount,
                             canEndNotMax: true,
                             isShowOpponent: true,
