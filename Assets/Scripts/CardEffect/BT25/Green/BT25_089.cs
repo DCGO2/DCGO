@@ -238,6 +238,7 @@ namespace DCGO.CardEffects.BT25
                 activateClass.SetUpICardEffect("App fuse 1 digimon into digimon in hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("BT25_089_AppFusion");
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
