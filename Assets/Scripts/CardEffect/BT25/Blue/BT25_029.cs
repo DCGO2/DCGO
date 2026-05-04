@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region Shared WD/WA
-            string SharedEffectName = "May return 1 opponet level 5 lower digimon to hand, then by trashing bottom face down under a tamer, return 1 opponent lowest level digimon to hand";
+            string SharedEffectName = "May return 1 enemy level 5 or lower digimon to hand, then by trashing bottom face down under a tamer, return 1 enemy lowest level digimon to hand";
             string SharedEffectDescription(string tag) => $"[{tag}] [Once Per Turn] You may return 1 of your opponent's level 5 or lower Digimon to the hand. Then, by trashing the bottom face-down card under any of your Tamers, return 1 of your opponent's lowest level Digimon to the hand.";
             string SharedHashValue = "BT25-029-WD/WA";
 
@@ -84,79 +84,63 @@ namespace DCGO.CardEffects.BT25
 
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, TamerWithFaceDownCardCondition))
                 {
-                    string selectPlayerMessage = "Will you trash a face down card from a tamer?";
-                    string notSelectPlayerMessage = "The opponent is choosing to trash a face down card from a tamer.";
+                    Permanent selectedPermanent = null;
 
-                    List<SelectionElement<bool>> command_SelectCommands = new List<SelectionElement<bool>>()
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: TamerWithFaceDownCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        new SelectionElement<bool>(message: $"Yes", value: true, spriteIndex: 0),
-                        new SelectionElement<bool>(message: $"No", value: false, spriteIndex: 1),
-                    };
+                        selectedPermanent = permanent;
+                        yield return null;
+                    }
 
-                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: command_SelectCommands, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                    bool trash = GManager.instance.userSelectionManager.SelectedBoolValue;
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 of your tamers to trash bottom face down card", "The opponent is selecting 1 of their tamers to trash bottom face down card");
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    if (trash)
+                    if (selectedPermanent != null)
                     {
-                        Permanent selectedPermanent = null;
+                        var cardToTrash = selectedPermanent.DigivolutionCards.Last(x => x.IsFaceDown);
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsAndProcessAccordingToResult(
+                        targetPermanent: selectedPermanent,
+                        targetDigivolutionCards: new List<CardSource>() { cardToTrash },
+                        activateClass: activateClass,
+                        successProcess: SuccessProcess,
+                        failureProcess: null));
 
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: TamerWithFaceDownCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        IEnumerator SuccessProcess(List<CardSource> cardSources)
                         {
-                            selectedPermanent = permanent;
-                            yield return null;
-                        }
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 of your tamers to trash bottom face down card", "The opponent is selecting 1 of their tamers to trash bottom face down card");
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        if (selectedPermanent != null)
-                        {
-                            var cardToTrash = selectedPermanent.DigivolutionCards.Last(x => x.IsFaceDown);
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsAndProcessAccordingToResult(
-                            targetPermanent: selectedPermanent,
-                            targetDigivolutionCards: new List<CardSource>() { cardToTrash },
-                            activateClass: activateClass,
-                            successProcess: SuccessProcess,
-                            failureProcess: null));
-
-                            IEnumerator SuccessProcess(List<CardSource> cardSources)
+                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, LowestLevelPermanentCondition))
                             {
-                                if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, LowestLevelPermanentCondition))
-                                {
-                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                                    selectPermanentEffect.SetUp(
-                                        selectPlayer: card.Owner,
-                                        canTargetCondition: LowestLevelPermanentCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        maxCount: 1,
-                                        canNoSelect: false,
-                                        canEndNotMax: false,
-                                        selectPermanentCoroutine: null,
-                                        afterSelectPermanentCoroutine: null,
-                                        mode: SelectPermanentEffect.Mode.Bounce,
-                                        cardEffect: activateClass);
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: LowestLevelPermanentCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Bounce,
+                                    cardEffect: activateClass);
 
-                                    selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's lowest level Digimon to return to hand", "The opponent is selecting 1 lowest level Digimon to return to hand");
-                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                                }
-
+                                selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's lowest level Digimon to return to hand", "The opponent is selecting 1 lowest level Digimon to return to hand");
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                             }
+
                         }
                     }
                 }
@@ -168,6 +152,8 @@ namespace DCGO.CardEffects.BT25
             #region All Turns
 
             #region All Turns Shared
+
+            string AllTurnsSharedHashValue = "BT25-029-OnAddHand-OnTrashTamerCards";
 
             IEnumerator SharedActivateCoroutine1(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -185,7 +171,7 @@ namespace DCGO.CardEffects.BT25
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may unsuspend this digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, true, EffectDescription());
-                activateClass.SetHashString("BT25-029-OnAddHand-OnTrashTamerCards");
+                activateClass.SetHashString(AllTurnsSharedHashValue);
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
@@ -194,7 +180,7 @@ namespace DCGO.CardEffects.BT25
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerWhenAddHand(hashtable, player => player == card.Owner.Enemy, null);
+                        && CardEffectCommons.CanTriggerWhenAddHand(hashtable, player => player == card.Owner.Enemy, cardEffect => cardEffect != null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -210,7 +196,7 @@ namespace DCGO.CardEffects.BT25
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may unsuspend this digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, true, EffectDescription());
-                activateClass.SetHashString("BT25-029-OnAddHand-OnTrashTamerCards");
+                activateClass.SetHashString(AllTurnsSharedHashValue);
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
@@ -219,7 +205,7 @@ namespace DCGO.CardEffects.BT25
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, IsYourTamerCondition, null, null);
+                        && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, IsYourTamerCondition, cardEffect => cardEffect != null, null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
