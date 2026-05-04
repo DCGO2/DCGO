@@ -4940,7 +4940,7 @@ public class IMassDegeneration
         List<Permanent> permanents_Fixed = _permanents.Filter(ValidTarget);
 
         // Removed the choice for now as the only possible card is de-digivolve 1 several times, and choice as previously written is per single target. 
-        // Would need to see how it is ruled "De-digivolve 2 all your oppponent's digimon" should act (ask per digimon or ask overall)
+        // Would need to make another SelectCountEffect or edit every current usage such that it can take an array of targetPermanents. Not needed for the 1 card that uses this method so leaving it for now.
         // SelectCountEffect selectCountEffect = GManager.instance.GetComponent<SelectCountEffect>();
 
         // if (selectCountEffect != null && _degenerationCountRuling == null && _degenerationCount > 1)

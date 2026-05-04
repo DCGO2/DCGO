@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return card.Owner.GetBattleAreaDigimons().Count < card.Owner.GetBattleAreaDigimons().Count;
+                    return card.Owner.GetBattleAreaDigimons().Count < card.Owner.Enemy.GetBattleAreaDigimons().Count;
                 }
 
                 int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
@@ -75,7 +75,7 @@ namespace DCGO.CardEffects.BT25
 
             #region Shared OP / WD
 
-            string SharedEffectName = "May link up to 2 cards from your hand to any of your digimon for free. Then <De-Digivolve 1> all enemy Digimon per your link card";
+            string SharedEffectName = "May link up to 2 cards from hand/trash to your digimon for free. Then <De-Digivolve 1> all enemy Digimon per your link card";
 
             string SharedEffectDescription(string tag)
                 => $"[{tag}] You may link up to 2 cards from your hand or trash to any of your Digimon without paying the cost. Then, for each of your link cards, <De-Digivolve 1> all of your opponent's Digimon.";
@@ -94,32 +94,92 @@ namespace DCGO.CardEffects.BT25
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 #region Link 2 cards
-                int toLink = Math.Min(2, card.Owner.HandCards.Count(CanLinkCardCondition));
+                int toLink = Math.Min(2, card.Owner.HandCards.Count(CanLinkCardCondition)+card.Owner.TrashCards.Count(CanLinkCardCondition));
                 while (toLink > 0)
                 {
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    bool validHandCard = card.Owner.HandCards.Any(CanLinkCardCondition);
+                    bool validTrashCard = card.Owner.TrashCards.Any(CanLinkCardCondition);
 
-                    selectHandEffect.SetUp(
+                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+                    if (validHandCard)
+                    {
+                        selectionElements.Add(new(message: "from Hand", value: 1, spriteIndex: 0));
+                    }
+                    if (validTrashCard)
+                    {
+                        selectionElements.Add(new(message: "from Trash", value: 2, spriteIndex: 0));
+                    }
+                    selectionElements.Add(new(message: "Do not place", value: 3, spriteIndex: 1));
+
+                    GManager.instance.userSelectionManager.SetIntSelection(
+                        selectionElements: selectionElements,
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanLinkCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: toLink,
-                        canNoSelect: true,
-                        canEndNotMax: true,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        mode: SelectHandEffect.Mode.Custom,
-                        cardEffect: activateClass);
+                        selectPlayerMessage: "From which area will you link a card?",
+                        notSelectPlayerMessage: "The opponent is choosing from which area to link card.");
 
-                    string messagePluralize = toLink > 1 ? "Select one or more cards to link to 1 Digimon. You will be able to select a second link card and second Digimon target if you only select 1 card now." : "Select a card to link to 1 Digimon.";
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                    selectHandEffect.SetUpCustomMessage(
-                        messagePluralize,
-                        $"The opponent is selecting cards to link.");
+                    if (GManager.instance.userSelectionManager.SelectedIntValue == 3)
+                    {
+                        break;
+                    }
+                    if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
+                    {
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                    yield return StartCoroutine(selectHandEffect.Activate());
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanLinkCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: toLink,
+                            canNoSelect: true,
+                            canEndNotMax: true,
+                            isShowOpponent: true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        string messagePluralize = toLink > 1 && card.Owner.HandCards.Count(CanLinkCardCondition) > 1 ? "Select one or more cards to link to 1 Digimon. You will be able to select a second link card and second Digimon target if you only select 1 card now." : "Select a card to link to 1 Digimon.";
+
+                        selectHandEffect.SetUpCustomMessage(
+                            messagePluralize,
+                            $"The opponent is selecting cards to link.");
+
+                        yield return StartCoroutine(selectHandEffect.Activate());
+                    }
+                    else
+                    {
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: CanLinkCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            message: "Select 1 link card",
+                            maxCount: 1,
+                            canEndNotMax: true,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        string messagePluralize = toLink > 1 && card.Owner.TrashCards.Count(CanLinkCardCondition) > 1 ? "Select one or more cards to link to 1 Digimon. You will be able to select a second link card and second Digimon target if you only select 1 card now." : "Select a card to link to 1 Digimon.";
+
+                        selectCardEffect.SetUpCustomMessage(
+                            messagePluralize,
+                            $"The opponent is selecting cards to link.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        break;
+                    }
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
@@ -201,6 +261,7 @@ namespace DCGO.CardEffects.BT25
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Linked digimon may Attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
