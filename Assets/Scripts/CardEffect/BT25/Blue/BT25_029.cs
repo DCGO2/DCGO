@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region Shared WD/WA
-            string SharedEffectName = "May return 1 opponet level 4 or 5 lower digimon to hand, then by trashing bottom face down under a tamer, return 1 opponent lowest level digimon to hand";
+            string SharedEffectName = "May return 1 opponet level 5 lower digimon to hand, then by trashing bottom face down under a tamer, return 1 opponent lowest level digimon to hand";
             string SharedEffectDescription(string tag) => $"[{tag}] [Once Per Turn] You may return 1 of your opponent's level 5 or lower Digimon to the hand. Then, by trashing the bottom face-down card under any of your Tamers, return 1 of your opponent's lowest level Digimon to the hand.";
             string SharedHashValue = "BT25-029-WD/WA";
 
@@ -184,7 +184,7 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may unsuspend this digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, true, EffectDescription());
                 activateClass.SetHashString("BT25-029-OnAddHand-OnTrashTamerCards");
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
@@ -209,7 +209,7 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may unsuspend this digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, true, EffectDescription());
                 activateClass.SetHashString("BT25-029-OnAddHand-OnTrashTamerCards");
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
