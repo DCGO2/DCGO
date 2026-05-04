@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Link for -1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Link for -2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -236,7 +236,7 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("App fuse 1 digimon into digimon in hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("BT25_089_AppFusion");
                 cardEffects.Add(activateClass);
 
@@ -287,6 +287,7 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool executed = false;
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanent))
                     {
                         Permanent selectedPermanent = null;
@@ -352,10 +353,13 @@ namespace DCGO.CardEffects.BT25
                                 PlayCardClass playCardClass = new PlayCardClass(new List<CardSource> { selectedCard }, hashtable, true, selectedPermanent, false, SelectCardEffect.Root.Hand, true);
                                 playCardClass.SetAppFusion(new int[] { selectedPermanent.PermanentFrame.FrameID, selectedPermanent.LinkedCards.IndexOf(linkCard) });
 
+                                executed = true;
+
                                 yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
                             }
                         }
                     }
+                    if (!executed) activateClass.RemoveUse();
                 }
             }
             #endregion
