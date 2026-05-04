@@ -97,15 +97,15 @@ namespace DCGO.CardEffects.BT25
                 int toLink = Math.Min(2, card.Owner.HandCards.Count(CanLinkCardCondition)+card.Owner.TrashCards.Count(CanLinkCardCondition));
                 while (toLink > 0)
                 {
-                    bool validHandCard = card.Owner.HandCards.Any(CanLinkCardCondition);
-                    bool validTrashCard = card.Owner.TrashCards.Any(CanLinkCardCondition);
+                    int validHandCardCount = card.Owner.HandCards.Count(CanLinkCardCondition);
+                    int validTrashCardCount = card.Owner.TrashCards.Count(CanLinkCardCondition);
 
                     List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
-                    if (validHandCard)
+                    if (validHandCardCount > 0)
                     {
                         selectionElements.Add(new(message: "from Hand", value: 1, spriteIndex: 0));
                     }
-                    if (validTrashCard)
+                    if (validTrashCardCount > 0)
                     {
                         selectionElements.Add(new(message: "from Trash", value: 2, spriteIndex: 0));
                     }
@@ -125,6 +125,7 @@ namespace DCGO.CardEffects.BT25
                     }
                     if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
                     {
+                        int maxCount = Math.Min(toLink, validHandCardCount);
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                         selectHandEffect.SetUp(
@@ -132,7 +133,7 @@ namespace DCGO.CardEffects.BT25
                             canTargetCondition: CanLinkCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: toLink,
+                            maxCount: maxCount,
                             canNoSelect: true,
                             canEndNotMax: true,
                             isShowOpponent: true,
@@ -141,7 +142,7 @@ namespace DCGO.CardEffects.BT25
                             mode: SelectHandEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        string messagePluralize = toLink > 1 && card.Owner.HandCards.Count(CanLinkCardCondition) > 1 ? "Select one or more cards to link to 1 Digimon. You will be able to select a second link card and second Digimon target if you only select 1 card now." : "Select a card to link to 1 Digimon.";
+                        string messagePluralize = maxCount > 1 ? "Select one or more cards to link to 1 Digimon. You will be able to select a second link card and second Digimon target if you only select 1 card now." : "Select a card to link to 1 Digimon.";
 
                         selectHandEffect.SetUpCustomMessage(
                             messagePluralize,
@@ -151,6 +152,7 @@ namespace DCGO.CardEffects.BT25
                     }
                     else
                     {
+                        int maxCount = Math.Min(toLink, validHandCardCount);
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -161,7 +163,7 @@ namespace DCGO.CardEffects.BT25
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: AfterSelectCardCoroutine,
                             message: "Select 1 link card",
-                            maxCount: 1,
+                            maxCount: maxCount,
                             canEndNotMax: true,
                             isShowOpponent: true,
                             mode: SelectCardEffect.Mode.Custom,
@@ -171,7 +173,7 @@ namespace DCGO.CardEffects.BT25
                             selectPlayer: card.Owner,
                             cardEffect: activateClass);
 
-                        string messagePluralize = toLink > 1 && card.Owner.TrashCards.Count(CanLinkCardCondition) > 1 ? "Select one or more cards to link to 1 Digimon. You will be able to select a second link card and second Digimon target if you only select 1 card now." : "Select a card to link to 1 Digimon.";
+                        string messagePluralize = maxCount > 1 ? "Select one or more cards to link to 1 Digimon. You will be able to select a second link card and second Digimon target if you only select 1 card now." : "Select a card to link to 1 Digimon.";
 
                         selectCardEffect.SetUpCustomMessage(
                             messagePluralize,
@@ -195,32 +197,50 @@ namespace DCGO.CardEffects.BT25
                                     && cardSources.All(cardSource => cardSource.CanLinkToTargetPermanent(permanent, false));
                             }
                             
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanLinkPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            string choicePluralize = cardSources.Count > 1 ? "cards" : "card";
-
-                            selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon to link the chosen {choicePluralize}.", "The opponent is selecting 1 Digimon to link.");
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            if (CardEffectCommons.HasMatchConditionPermanent(CanLinkPermanentCondition))
                             {
-                                foreach (CardSource cardSource in cardSources)
-                                    yield return ContinuousController.instance.StartCoroutine(new ILinkCard(false, cardSource, permanent, activateClass).LinkCard());
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                                toLink -= cardSources.Count;
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanLinkPermanentCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: true,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                string choicePluralize = cardSources.Count > 1 ? "cards" : "card";
+
+                                selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon to link the chosen {choicePluralize}.", "The opponent is selecting 1 Digimon to link.");
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                                IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                                {
+                                    foreach (CardSource cardSource in cardSources)
+                                        yield return ContinuousController.instance.StartCoroutine(new ILinkCard(false, cardSource, permanent, activateClass).LinkCard());
+
+                                    toLink -= cardSources.Count;
+                                }
+                            }
+                            else
+                            {
+                                List<SelectionElement<int>> selectionElements1 = new List<SelectionElement<int>>()
+                                {
+                                    new(message: "Ok", value: 1, spriteIndex: 1)
+                                };
+
+                                GManager.instance.userSelectionManager.SetIntSelection(
+                                    selectionElements: selectionElements1,
+                                    selectPlayer: card.Owner,
+                                    selectPlayerMessage: "The cards you chose do not have a valid digimon which could link both. Try choosing 1 at a time.",
+                                    notSelectPlayerMessage: "The opponent is selecting cards to link.");
+
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                             }
                         }
                     }
