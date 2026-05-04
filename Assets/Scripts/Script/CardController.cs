@@ -4900,6 +4900,182 @@ public class IDegeneration
     }
 }
 
+public class IMassDegeneration
+{
+    /// <summary>
+    /// De-Digivolve Class for applying simultaneous De-digivolve to multiple digimon at once 
+    /// to behave correctly around immunity effects, especially blanket immunity
+    /// </summary>
+    /// <param name="permanents">Target Permanents</param>
+    /// <param name="DegenerationCount">De-Digivolve Amount</param>
+    /// <param name="cardEffect">Card Effect</param>
+    /// <param name="DegenerationCountRuling">Should we enforce rule to select De-digivolve amount before digimon, disabled by default.</param>
+    public IMassDegeneration(List<Permanent> permanents, int DegenerationCount, ICardEffect cardEffect, bool? DegenerationCountRuling = null)
+    {
+        _permanents = permanents;
+        _degenerationCount = DegenerationCount;
+        _cardEffect = cardEffect;
+        _degenerationCountRuling = DegenerationCountRuling;
+    }
+
+    List<Permanent> _permanents = null;
+    int _degenerationCount;
+    ICardEffect _cardEffect = null;
+    bool? _degenerationCountRuling;
+
+    public IEnumerator Degeneration()
+    {
+        if (_cardEffect == null) yield break;
+        if (_cardEffect.EffectSourceCard == null) yield break;
+
+        bool ValidTarget(Permanent permanent)
+        {
+            return permanent == null
+                && permanent.TopCard == null
+                && permanent.ImmuneFromDeDigivolve()
+                && permanent.ImmuneFromStackTrashing(_cardEffect)
+                && permanent.TopCard.CanNotBeAffected(_cardEffect);
+        }
+
+        List<Permanent> permanents_Fixed = _permanents.Filter(ValidTarget);
+
+        // Removed the choice for now as the only possible card is de-digivolve 1 several times, and choice as previously written is per single target. 
+        // Would need to make another SelectCountEffect or edit every current usage such that it can take an array of targetPermanents. Not needed for the 1 card that uses this method so leaving it for now.
+        // SelectCountEffect selectCountEffect = GManager.instance.GetComponent<SelectCountEffect>();
+
+        // if (selectCountEffect != null && _degenerationCountRuling == null && _degenerationCount > 1)
+        // {
+        //     Player selectPlayer = _cardEffect.EffectSourceCard.Owner;
+
+        //     selectCountEffect.SetUp(
+        //         SelectPlayer: selectPlayer,
+        //         targetPermanent: _permanent,
+        //         MaxCount: maxCount,
+        //         CanNoSelect: false,
+        //         Message: "How many cards do you trash?",
+        //         Message_Enemy: "The opponent is choosing how many cards to trash.",
+        //         SelectCountCoroutine: SelectCountCoroutine);
+
+        //     yield return ContinuousController.instance.StartCoroutine(selectCountEffect.Activate());
+
+        //     IEnumerator SelectCountCoroutine(int count)
+        //     {
+        //         _degenerationCount = count;
+        //         yield return null;
+        //     }
+        // }
+
+        if (_degenerationCount >= 1)
+        {
+            foreach(Permanent _permanent in permanents_Fixed)
+            {
+                int count = 0;
+
+                int maxCount = Math.Min(_degenerationCount, _permanent.DigivolutionCards.Count);
+
+                List<CardSource> selectedCards = new List<CardSource>();
+
+                while (true)
+                {
+                    bool StopCondition()
+                    {
+                        if (_permanent.HasNoDigivolutionCards)
+                        {
+                            return true;
+                        }
+
+                        if (_permanent.Level == 3)
+                        {
+                            if (_permanent.TopCard != null)
+                            {
+                                if (_permanent.TopCard.HasLevel)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+
+                        if (count >= maxCount)
+                        {
+                            return true;
+                        }
+
+                        return false;
+                    }
+
+                    if (StopCondition())
+                    {
+                        break;
+                    }
+
+                    if (count == 0)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(_permanent));
+                    }
+
+                    CardSource cardSource = _permanent.TopCard;
+
+                    selectedCards.Add(cardSource);
+
+                    yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(new List<CardSource>() { cardSource }).Overflow());
+
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(cardSource));
+
+                    if (!cardSource.IsToken)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
+                    }
+
+                    _permanent.ShowingPermanentCard.ShowPermanentData(true);
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, _permanent));
+
+                    count++;
+                }
+
+                #region "When Top Card is Trashed" effect
+
+                #region Hashtable Setting
+
+                System.Collections.Hashtable hashtable = new System.Collections.Hashtable()
+                            {
+                                {"Permanent", _permanent},
+                                {"CardSources", selectedCards}
+                            };
+
+                #endregion
+
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing
+                    .StackSkillInfos(hashtable, EffectTiming.WhenTopCardTrashed));
+
+                #endregion
+
+                #region add log
+
+                if (selectedCards.Count >= 1)
+                {
+                    string log = "";
+
+                    log += $"\nDe-Digivolve :";
+
+                    foreach (CardSource cardSource in selectedCards)
+                    {
+                        if (cardSource != null)
+                        {
+                            log += $"\n{cardSource.BaseENGCardNameFromEntity}({cardSource.CardID})";
+                        }
+                    }
+
+                    log += "\n";
+
+                    PlayLog.OnAddLog?.Invoke(log);
+                }
+                
+                #endregion
+            }
+        }
+    }
+}
+
 #endregion
 
 #region Trash digivolution cards
