@@ -104,6 +104,7 @@ namespace DCGO.CardEffects.EX10
                 activateClass.SetUpICardEffect("App fuse 1 digimon into digimon in hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("EX10_062_AppFusion");
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
