@@ -154,6 +154,7 @@ namespace DCGO.CardEffects.BT25
             #region All Turns Shared
 
             string AllTurnsSharedHashValue = "BT25-029-OnAddHand-OnTrashTamerCards";
+            string AllTurnsSharedEffectName = "You may unsuspend this digimon";
             string AllTurnsSharedDescription = "[All Turns] [Once Per Turn] When effects add cards to your opponent's hand or trash cards from under your Tamers, this Digimon may unsuspend.";
 
             IEnumerator SharedActivateCoroutine1(Hashtable hashtable, ActivateClass activateClass)
@@ -170,7 +171,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnAddHand)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("You may unsuspend this digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect(AllTurnsSharedEffectName, CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), 1, true, AllTurnsSharedDescription);
                 activateClass.SetHashString(AllTurnsSharedHashValue);
                 cardEffects.Add(activateClass);
@@ -192,7 +193,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("You may unsuspend this digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect(AllTurnsSharedEffectName, CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), 1, true, AllTurnsSharedDescription);
                 activateClass.SetHashString(AllTurnsSharedHashValue);
                 cardEffects.Add(activateClass);
