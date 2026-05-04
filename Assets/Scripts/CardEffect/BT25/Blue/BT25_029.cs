@@ -154,11 +154,12 @@ namespace DCGO.CardEffects.BT25
             #region All Turns Shared
 
             string AllTurnsSharedHashValue = "BT25-029-OnAddHand-OnTrashTamerCards";
+            string AllTurnsSharedDescription = "[All Turns] [Once Per Turn] When effects add cards to your opponent's hand or trash cards from under your Tamers, this Digimon may unsuspend.";
 
             IEnumerator SharedActivateCoroutine1(Hashtable hashtable, ActivateClass activateClass)
             {
                 yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
-                    permanents: new List<Permanent>() { activateClass.PermanentWhenTriggered },
+                    permanents: new List<Permanent>() { card.PermanentOfThisCard() },
                     cardEffect: activateClass
                     ).Unsuspend());
             }
@@ -170,12 +171,9 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may unsuspend this digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), 1, true, AllTurnsSharedDescription);
                 activateClass.SetHashString(AllTurnsSharedHashValue);
-                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
-
-                string EffectDescription() => "[All Turns] [Once Per Turn] When effects add cards to your opponent's hand or trash cards from under your Tamers, this Digimon may unsuspend.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -195,12 +193,9 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may unsuspend this digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), 1, true, AllTurnsSharedDescription);
                 activateClass.SetHashString(AllTurnsSharedHashValue);
-                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
-
-                string EffectDescription() => "[All Turns] [Once Per Turn] When effects add cards to your opponent's hand or trash cards from under your Tamers, this Digimon may unsuspend.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
