@@ -138,8 +138,8 @@ namespace DCGO.CardEffects.BT25
             {
                 if (card.Owner.CanAddSecurity(activateClass))
                 {
-                bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
-                bool canSelectSource = CardEffectCommons.HasMatchConditionPermanent(CanSelectPlacePermanentCondition);
+                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
+                    bool canSelectSource = CardEffectCommons.HasMatchConditionPermanent(CanSelectPlacePermanentCondition);
 
                     if (canSelectHand || canSelectSource)
                     {
@@ -308,7 +308,7 @@ namespace DCGO.CardEffects.BT25
                 {
                     return "[All Turns] [Once Per Turn] When your security stack is added to, <De-Digivolve 1> 1 of your opponent's Digimon.";
                 }
-                
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
@@ -372,8 +372,6 @@ namespace DCGO.CardEffects.BT25
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
                     {
-                        Permanent selectedPermanent = null;
-
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -396,15 +394,8 @@ namespace DCGO.CardEffects.BT25
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            selectedPermanent = permanent;
-
-                            yield return null;
-                        }
-
-                        if (selectedPermanent != null)
-                        {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                targetPermanent: selectedPermanent,
+                                targetPermanent: permanent,
                                 changeValue: -4000,
                                 effectDuration: EffectDuration.UntilEachTurnEnd,
                                 activateClass: activateClass));
