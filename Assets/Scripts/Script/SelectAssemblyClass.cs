@@ -350,15 +350,5 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    int _targetIndex = 0;
-    bool _endSelect = false;
-
     bool _endSelectAssembly = false;
-
-    [PunRPC]
-    public void SetTargetAssemblysIndex(int targetIndex)
-    {
-        this._targetIndex = targetIndex;
-        _endSelect = true;
-    }
 }
