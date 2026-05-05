@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.BT25
                     && cardSource.HasPlayCost
                     && cardSource.HasTSTraits
                     && cardSource.HasDP
-                    && cardSource.CardDP <= 6000
+                    && cardSource.BaseCardDP <= 6000
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
             }
 
