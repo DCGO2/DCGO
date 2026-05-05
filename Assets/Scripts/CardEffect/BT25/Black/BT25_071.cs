@@ -148,7 +148,7 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectName1(), SharedCanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass, true), 1, true, SharedEffectDescription1());
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), 1, true, SharedEffectDescription1());
                 activateClass.SetHashString("BT25_073_AT");
                 cardEffects.Add(activateClass);
             }
@@ -159,7 +159,7 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectName1(), SharedCanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass, false), 1, true, SharedEffectDescription1());
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), 1, true, SharedEffectDescription1());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT25_073_AT_ESS");
                 cardEffects.Add(activateClass);
