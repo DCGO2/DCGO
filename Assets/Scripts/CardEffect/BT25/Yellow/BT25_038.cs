@@ -360,7 +360,7 @@ namespace DCGO.CardEffects.BT25
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, _ => true);
+                           CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
