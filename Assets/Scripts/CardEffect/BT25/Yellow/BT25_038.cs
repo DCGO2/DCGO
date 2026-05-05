@@ -257,8 +257,8 @@ namespace DCGO.CardEffects.BT25
                                 List<SelectionElement<int>> selectionElements1 = new List<SelectionElement<int>>()
                                 {
                                     new (message: $"to Top", value : 1, spriteIndex: 0),
-                                    new (message: $"to Bottom", value : 2, spriteIndex: 1),
-                                    new (message: $"do not place", value : 3, spriteIndex: 2),
+                                    new (message: $"to Bottom", value : 2, spriteIndex: 0),
+                                    new (message: $"do not place", value : 3, spriteIndex: 1),
                                 };
 
                                 string selectPlayerMessage1 = "Where will you place card?";
