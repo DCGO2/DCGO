@@ -98,7 +98,8 @@ namespace DCGO.CardEffects.BT23
                 bool CanSelectPermamentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && permanent.HasDP && permanent.DP <= 4000;
+                        && permanent.HasDP 
+                        && permanent.DP <= card.Owner.MaxDP_DeleteEffect(4000, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

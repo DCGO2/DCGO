@@ -53,18 +53,6 @@ namespace DCGO.CardEffects.BT21
                 return false;
             }
 
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.DP <= 7000)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
             bool SharedCanActivateCondition(Hashtable hashtable)
             {
                 if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
@@ -79,6 +67,18 @@ namespace DCGO.CardEffects.BT21
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(7000, activateClass))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
                 bool cardAdded = false;
                 CardSource selectedCard = null;
                 SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();

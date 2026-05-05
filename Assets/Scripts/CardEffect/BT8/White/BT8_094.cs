@@ -21,7 +21,7 @@ public class BT8_094 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[All Turns] When one of your opponent's level 5 or lower Digimon is deleted, you may suspend this Tamer to <Draw 1„. (Draw 1 card from your deck.)";
+                return "[All Turns] When one of your opponent's level 5 or lower Digimon is deleted, you may suspend this Tamer to <Draw 1>. (Draw 1 card from your deck.)";
             }
 
             bool PermanentCondition(Permanent permanent)

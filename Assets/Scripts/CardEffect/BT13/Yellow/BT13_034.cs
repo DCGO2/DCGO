@@ -107,7 +107,7 @@ namespace DCGO.CardEffects.BT13
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking][Once per Turn] If there're 6 or fewer total cards in both players' security stacks, 1 of your opponent�f Digimon gets -2000 DP for the turn.";
+                    return "[When Attacking][Once per Turn] If there're 6 or fewer total cards in both players' security stacks, 1 of your opponent's Digimon gets -2000 DP for the turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

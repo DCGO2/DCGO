@@ -78,7 +78,7 @@ namespace DCGO.CardEffects.BT15
                     {
                         if (permanent.HasDP)
                         {
-                            if (permanent.DP <= 3000)
+                            if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(3000, activateClass))
                             {
                                 return true;
                             }
