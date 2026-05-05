@@ -257,7 +257,6 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region Link Effects
-
             #region Link Condition
 
             if (timing == EffectTiming.None)
@@ -289,13 +288,11 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region All Turns
-
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 link card to not leave battle field", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetHashString("BT25-101-AT");
                 activateClass.SetIsSkippable(true);
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
@@ -329,26 +326,25 @@ namespace DCGO.CardEffects.BT25
                     Permanent thisPermanent = card.PermanentOfThisCard();
 
                     #region Select Link Card to Trash
-
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                     selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: null,
-                                afterSelectCardCoroutine: SelectCardCoroutine,
-                                message: "Select 1 link card to trash.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.LinkedCards,
-                                customRootCardList: thisPermanent.LinkedCards,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: () => true,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: SelectCardCoroutine,
+                        message: "Select 1 link card to trash.",
+                        maxCount: 1,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.Custom,
+                        root: SelectCardEffect.Root.LinkedCards,
+                        customRootCardList: thisPermanent.LinkedCards,
+                        canLookReverseCard: true,
+                        selectPlayer: card.Owner,
+                        cardEffect: activateClass);
 
                     IEnumerator SelectCardCoroutine(List<CardSource> cardSources)
                     {
@@ -362,7 +358,6 @@ namespace DCGO.CardEffects.BT25
 
                     selectCardEffect.SetUpCustomMessage("Select 1 link card to trash.", "The opponent is selecting 1 link card to trash.");
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
                     #endregion
 
                     if (selectedLinkCard != null)
@@ -376,12 +371,12 @@ namespace DCGO.CardEffects.BT25
 
                         IEnumerator SuccessProcess(List<CardSource> cardSources)
                         {
-                            card.PermanentOfThisCard().willBeRemoveField = false;
+                            thisPermanent.willBeRemoveField = false;
 
-                            card.PermanentOfThisCard().HideDeleteEffect();
-                            card.PermanentOfThisCard().HideHandBounceEffect();
-                            card.PermanentOfThisCard().HideDeckBounceEffect();
-                            card.PermanentOfThisCard().HideWillRemoveFieldEffect();
+                            thisPermanent.HideDeleteEffect();
+                            thisPermanent.HideHandBounceEffect();
+                            thisPermanent.HideDeckBounceEffect();
+                            thisPermanent.HideWillRemoveFieldEffect();
 
                             yield return null;
                         }
@@ -389,9 +384,7 @@ namespace DCGO.CardEffects.BT25
 
                 }
             }
-
             #endregion
-
             #endregion
 
             return cardEffects;
