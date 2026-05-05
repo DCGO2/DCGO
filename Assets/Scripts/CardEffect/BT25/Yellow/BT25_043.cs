@@ -85,7 +85,7 @@ namespace DCGO.CardEffects.BT25
                         IEnumerator SuccessProcess(List<CardSource> cardSources)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
-                        }                   
+                        }
                     }
                 }
             }
@@ -134,7 +134,7 @@ namespace DCGO.CardEffects.BT25
                             destroySecurityCount: 1,
                             cardEffect: activateClass,
                             fromTop: true).DestroySecurity());
-                            
+
                     foreach (Permanent permanent in removedPermanents)
                     {
                         permanent.willBeRemoveField = false;
@@ -183,7 +183,7 @@ namespace DCGO.CardEffects.BT25
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     #region DP minus single target
-                    if (CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition) > 0)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -195,18 +195,18 @@ namespace DCGO.CardEffects.BT25
                             maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to -8K DP", "The opponent is selecting 1 Digimon to -8K DP");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            if (permanents != null) yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.ChangeDigimonDP(permanents[0], -8000, EffectDuration.UntilEachTurnEnd, activateClass));
+                            if (permanent != null) yield return ContinuousController.instance.StartCoroutine(
+                                CardEffectCommons.ChangeDigimonDP(permanent, -8000, EffectDuration.UntilEachTurnEnd, activateClass));
                         }
                     }
                     #endregion
