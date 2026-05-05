@@ -54,10 +54,8 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
             }
         }
 
-        GManager.instance.turnStateMachine.isSync = true;
         yield return ContinuousController.instance.StartCoroutine(ActivateMultipleSkills_OnePlayer(TurnPlayerSkillInfos, GManager.instance.turnStateMachine.gameContext.TurnPlayer, CheckNewTriggredSkill_mainStack, skipCondition));
         yield return ContinuousController.instance.StartCoroutine(ActivateMultipleSkills_OnePlayer(NonTurnPlayerSkillInfos, GManager.instance.turnStateMachine.gameContext.NonTurnPlayer, CheckNewTriggredSkill_mainStack, skipCondition));
-        GManager.instance.turnStateMachine.isSync = false;
 
         SkillInfos_used = new List<SkillInfo>();
 

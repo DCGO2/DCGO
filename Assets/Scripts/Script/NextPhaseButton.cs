@@ -43,14 +43,12 @@ public class NextPhaseButton : MonoBehaviourPunCallbacks
     {
         TurnStateMachine turnStateMachine = GManager.instance.turnStateMachine;
 
-        if (!turnStateMachine.isSync && !turnStateMachine.IsSelecting && !turnStateMachine.isExecuting && !turnStateMachine.isSecurityCehck)
+        if (!turnStateMachine.IsSelecting && !turnStateMachine.isExecuting && !turnStateMachine.isSecurityCehck)
         {
             if (turnStateMachine.gameContext.TurnPlayer.isYou)
             {
                 if (turnStateMachine.gameContext.TurnPhase == GameContext.phase.Breeding || turnStateMachine.gameContext.TurnPhase == GameContext.phase.Main)
                 {
-                    GManager.instance.turnStateMachine.isSync = true;
-
                     switch (turnStateMachine.gameContext.TurnPhase)
                     {
                         case GameContext.phase.Breeding:
@@ -107,7 +105,7 @@ public class NextPhaseButton : MonoBehaviourPunCallbacks
                     {
                         if (GManager.instance.turnStateMachine.gameContext.TurnPlayer.isYou)
                         {
-                            if (!GManager.instance.attackProcess.IsAttacking && !GManager.instance.turnStateMachine.isSync && !GManager.instance.turnStateMachine.IsSelecting && !GManager.instance.turnStateMachine.isExecuting && !GManager.instance.turnStateMachine.isSecurityCehck)
+                            if (!GManager.instance.attackProcess.IsAttacking && !GManager.instance.turnStateMachine.IsSelecting && !GManager.instance.turnStateMachine.isExecuting && !GManager.instance.turnStateMachine.isSecurityCehck)
                             {
                                 switch (GManager.instance.turnStateMachine.gameContext.TurnPhase)
                                 {
