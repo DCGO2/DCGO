@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.BT25
 
             #region Shared AT/Inherited
 
-            string SharedEffectName1() => "Play 1 level 4- [Yellow]/[Black]/[CS] trait digimon from digivolution sources";
+            string SharedEffectName1() => "Reveal 3, may play 1 play cost 4 or lower [TS] trait Digimon card, bot deck the rest.";
 
             string SharedEffectDescription1() => "[All Turns] [Once Per Turn] When this Digimon suspends, reveal the top 3 cards of your deck. You may play 1 play cost 4 or lower [TS] trait Digimon card among them without paying the cost. Return the rest to the bottom of the deck.";
 
@@ -96,7 +96,7 @@ namespace DCGO.CardEffects.BT25
                     && CardEffectCommons.CanTriggerWhenSelfPermanentSuspends(hashtable, card);
             }
 
-            IEnumerator SharedActivateCoroutine1(Hashtable hashtable, ActivateClass activateClass, bool IsTopCard)
+            IEnumerator SharedActivateCoroutine1(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
