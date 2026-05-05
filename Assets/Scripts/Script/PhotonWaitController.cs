@@ -184,6 +184,11 @@ public class PhotonWaitController : MonoBehaviour
 
     public IEnumerator Wait(string key)
     {
+        if (true)
+        {
+            yield break;
+        }
+
         StartCoroutine(SetWaitingText("Syncing"));
 
         Debug.Log($"Start Waiting:{key}");
