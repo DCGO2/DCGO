@@ -39,7 +39,7 @@ namespace DCGO.CardEffects.BT25
 
             bool CanSuspendPermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
                     && !permanent.IsSuspended
                     && permanent.CanSuspend;
             }
