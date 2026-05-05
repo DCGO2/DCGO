@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.BT25
                     {
                         selectionElements.Add(new(message: "from Trash", value: 2, spriteIndex: 0));
                     }
-                    selectionElements.Add(new(message: "Do not place", value: 3, spriteIndex: 1));
+                    selectionElements.Add(new(message: "Do not link", value: 3, spriteIndex: 1));
 
                     GManager.instance.userSelectionManager.SetIntSelection(
                         selectionElements: selectionElements,
