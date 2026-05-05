@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.BT25
 
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: null,
+                        canTargetCondition: _ => true,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // BlackGatomon
 namespace DCGO.CardEffects.BT25
@@ -37,7 +36,7 @@ namespace DCGO.CardEffects.BT25
             {
                 return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                     && CardEffectCommons.HasMatchConditionOwnersHand(card, TraitedTamer)
-                    && CardEffectCommons.MatchConditionOwnersPermanentCount(card, permanent => permanent.IsTamer) <= 1;
+                    && CardEffectCommons.MatchConditionOwnersPermanentCount(card, permanent => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)) <= 1;
             }
 
             bool TraitedTamer(CardSource cardSource)

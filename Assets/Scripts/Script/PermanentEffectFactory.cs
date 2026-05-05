@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 /// <summary>
 /// Class for given effects for Permanents, applying to the entire stack even if any specific card is removed from it
@@ -72,6 +69,35 @@ public partial class PermanentEffectFactory
 
         CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
         canNotAffectedClass.SetUpICardEffect("Not affected by opponent's Digimon's effects", CanUseCondition1, permanent.TopCard);
+        canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
+        canNotAffectedClass.SetEffectSourcePermanent(permanent);
+        return canNotAffectedClass;
+
+    }
+    #endregion
+
+    #region Option Effect Immunity
+    public static CanNotAffectedClass OptionEffectImmunity(Permanent permanent)
+    {
+        bool CanUseCondition1(Hashtable hashtable)
+        {
+            return CardEffectCommons.IsExistOnBattleAreaDigimon(permanent.TopCard);
+        }
+
+        bool CardCondition(CardSource cardSource)
+        {
+            return cardSource == permanent.TopCard
+                && CardEffectCommons.IsExistOnBattleAreaDigimon(permanent.TopCard);
+        }
+
+        bool SkillCondition(ICardEffect cardEffect)
+        {
+            return CardEffectCommons.IsOpponentEffect(cardEffect, permanent.TopCard)
+                && !cardEffect.IsDigimonEffect && !cardEffect.IsTamerEffect;
+        }
+
+        CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
+        canNotAffectedClass.SetUpICardEffect("Not affected by opponent's Option effects", CanUseCondition1, permanent.TopCard);
         canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
         canNotAffectedClass.SetEffectSourcePermanent(permanent);
         return canNotAffectedClass;

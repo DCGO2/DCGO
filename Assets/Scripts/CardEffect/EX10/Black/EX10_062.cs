@@ -102,8 +102,9 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("App fuse 1 digimon into digimon in hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("EX10_062_AppFusion");
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -153,6 +154,7 @@ namespace DCGO.CardEffects.EX10
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool executed = false;
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanent))
                     {
                         Permanent selectedPermanent = null;
@@ -218,10 +220,13 @@ namespace DCGO.CardEffects.EX10
                                 PlayCardClass playCardClass = new PlayCardClass(new List<CardSource> { selectedCard }, hashtable, true, selectedPermanent, false, SelectCardEffect.Root.Hand, true);
                                 playCardClass.SetAppFusion(new int[] { selectedPermanent.PermanentFrame.FrameID, selectedPermanent.LinkedCards.IndexOf(linkCard) });
 
+                                executed = true;
+
                                 yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
                             }
                         }
                     }
+                    if (!executed) activateClass.RemoveUse();
                 }
             }
 
