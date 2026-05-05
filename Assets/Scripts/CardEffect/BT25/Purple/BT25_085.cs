@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.BT25
                     && !cardSource.CanNotPlayThisOption;
             }
 
-            bool CanActivateUseOption(Hashtable hashtable)
+            bool CanActivateUseOption(Hashtable hashtable, ActivateClass activateClass)
             {
                 return CardEffectCommons.HasMatchConditionOwnersHand(card, IsTraitedOption)
                     || card.PermanentOfThisCard().DigivolutionCards.Any(IsTraitedOption);
@@ -197,7 +197,7 @@ namespace DCGO.CardEffects.BT25
                     && permanent.DigivolutionOrLinkCards.Any(CanTrashCardSource);
             }
 
-            bool CanActivateUnsuspend(Hashtable hashtable) => CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentWithTrashableCard);
+            bool CanActivateUnsuspend(Hashtable hashtable, ActivateClass activateClass) => CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentWithTrashableCard);
 
             IEnumerator UnsuspendActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
