@@ -229,9 +229,11 @@ namespace DCGO.CardEffects.BT25
                     return permanent == card.PermanentOfThisCard();
                 }
 
-                bool IsOpponentsDigimon(Permanent permanent)
+                bool IsOpponentsPermanent(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                        && (permanent.IsDigimon
+                            || permanent.IsTamer);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -247,13 +249,13 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon))
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsPermanent))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: IsOpponentsDigimon,
+                            canTargetCondition: IsOpponentsPermanent,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
