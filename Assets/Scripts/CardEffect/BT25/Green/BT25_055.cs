@@ -31,16 +31,17 @@ namespace DCGO.CardEffects.BT25
                     SharedActivateCoroutine,
                     SharedEffectDescription,
                     optional: false,
+                    isSkippable: true,
                     onPlay: true,
                     whenDigivolving: true);
 
             string SharedEffectDescription(string tag) => $"[{tag}] You may suspend 1 Digimon. Then, if there are 2 or more suspended Digimon, 1 of your Digimon may unsuspend.";
 
-            bool CanSelectPermanentCondition(Permanent permanent)
+            bool CanSuspendPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && !permanent.IsSuspended
-                    && !permanent.CanSuspend;
+                    && permanent.CanSuspend;
             }
 
             bool SuspendedDigimon(Permanent permanent)
@@ -58,13 +59,13 @@ namespace DCGO.CardEffects.BT25
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSuspendPermanentCondition))
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition: CanSuspendPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
@@ -126,7 +127,8 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -160,9 +162,9 @@ namespace DCGO.CardEffects.BT25
                             canNoSelect: true,
                             canEndNotMax: false,
                             isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            mode: SelectHandEffect.Mode.PlayForFree,
                             cardEffect: activateClass);
 
                         selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
@@ -170,21 +172,12 @@ namespace DCGO.CardEffects.BT25
 
                         yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                         {
-                            selectedCards.Add(cardSource);
                             Used = true;
 
-                            yield return null;
+                            return null;
                         }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: selectedCards,
-                            activateClass: activateClass,
-                            payCost: false,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.Hand,
-                            activateETB: true));
                     }
 
                     if (!Used)
@@ -226,14 +219,14 @@ namespace DCGO.CardEffects.BT25
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.IsOpponentTurn(card)
-                        && CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, PermanentCondition)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                        && CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, PermanentCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && GManager.instance.attackProcess.IsAttacking
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectRedirectCondition)
+                        && GManager.instance.attackProcess.AttackingPermanent != null
                         && GManager.instance.attackProcess.AttackingPermanent.CanSwitchAttackTarget;
                 }
 
