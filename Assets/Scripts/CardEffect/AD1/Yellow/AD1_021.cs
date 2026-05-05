@@ -122,6 +122,7 @@ namespace DCGO.CardEffects.AD1
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 Marcus Damon is also a 6k Digimon, gains Rush & can't digivolve. Then, 1 of your Digimon may attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippableFunction(IsSkippable);
                 activateClass.SetHashString("AD1_021_EoYT");
                 cardEffects.Add(activateClass);
 
@@ -135,6 +136,8 @@ namespace DCGO.CardEffects.AD1
                 }
 
                 bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleArea(card);
+
+                bool IsSkippable(Hashtable hashtable) => !CardEffectCommons.HasMatchConditionPermanent(PermanentCondition);
                 
                 bool PermanentCondition(Permanent permanent)
                 {

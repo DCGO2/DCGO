@@ -80,7 +80,7 @@ public class BT1_103 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Security] Trigger <Draw 1„ (Draw 1 card from your deck.) Then, add this card to your hand.";
+                return "[Security] Trigger <Draw 1> (Draw 1 card from your deck.) Then, add this card to your hand.";
             }
             bool CanUseCondition(Hashtable hashtable)
             {

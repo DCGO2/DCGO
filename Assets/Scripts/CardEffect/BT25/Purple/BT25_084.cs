@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.BT25
                     whenDigivolving: true,
                     whenAttacking: true);
 
-            bool AdditionalActivateCondition(Hashtable hashtable) => card.Owner.HandCards.Count() > 0;
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass) => card.Owner.HandCards.Count() > 0;
 
             bool EnteredByEffect(Hashtable hashtable)
             {
@@ -217,7 +217,8 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnTrashHand(hashtable, null, cardSource => cardSource.Owner == card.Owner);
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.CanTriggerOnTrashHand(hashtable, null, cardSource => cardSource.Owner == card.Owner);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

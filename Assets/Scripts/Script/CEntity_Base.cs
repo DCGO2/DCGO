@@ -219,7 +219,7 @@ public class CEntity_Base : ScriptableObject
     }
     #endregion
 
-    #region �Z�b�gID
+    #region ???
     public string SetID
     {
         get
@@ -238,7 +238,7 @@ public class CEntity_Base : ScriptableObject
     public bool IsPermanent => cardKind.Contains(CardKind.Digimon) || cardKind.Contains(CardKind.Tamer) || cardKind.Contains(CardKind.DigiEgg);
     #endregion
 
-    #region �J�[�hIndex���f�b�L�R�[�h�ɗp���镶����ɕϊ�(256�i��)
+    #region ???
     public string CardIndex_String
     {
         get
@@ -255,7 +255,7 @@ public class CEntity_Base : ScriptableObject
     }
     #endregion
 
-    #region �J�[�h�摜�����A���_�[�o�[�ŋ�؂�
+    #region ???
     public static string[] GetParseByUnderBar(string CardImageName)
     {
         string[] parseByUnderBar = new string[] { CardImageName };
@@ -269,7 +269,7 @@ public class CEntity_Base : ScriptableObject
     }
     #endregion
 
-    #region �J�[�h�摜�����n�C�t���ŋ�؂�
+    #region ???
     public static string[] GetParseByHyphen(string CardImageName)
     {
         string[] parseByHyphen = new string[] { CardImageName };
@@ -283,14 +283,14 @@ public class CEntity_Base : ScriptableObject
     }
     #endregion
 
-    #region �f�b�L�ɂ���Ɠ��J�[�hID�̃J�[�h�������Ă��閇��
+    #region ???
     public int SameCardIDCount(List<CEntity_Base> DeckCards)
     {
         return DeckCards.Count((cEntity_Base) => cEntity_Base.CardID == CardID);
     }
     #endregion
 
-    #region �p��������
+    #region ???
     public bool isParallel
     {
         get
@@ -313,7 +313,7 @@ public class CEntity_Base : ScriptableObject
     }
     #endregion
 
-    #region ���x��������
+    #region ???
     public bool HasLevel
     {
         get
