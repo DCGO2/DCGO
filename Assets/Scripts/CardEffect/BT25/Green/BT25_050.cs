@@ -39,16 +39,13 @@ namespace DCGO.CardEffects.BT25
                     onPlay: true,
                     whenDigivolving: true);
 
-
             bool CanSuspendPermamentCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
 
-            bool Is2OrMoreSuspendedCondition()
+            bool SuspendedDigimon(Permanent permanent)
             {
-                var permanents = new List<Permanent>(card.Owner.GetBattleAreaPermanents());
-                permanents.AddRange(card.Owner.Enemy.GetBattleAreaPermanents());
-
-                return permanents.Count(x => x.IsSuspended) >= 2;
+                return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
+                    && permanent.IsSuspended;
             }
 
             bool CanSelectPermamentCondition(Permanent permanent)
@@ -78,7 +75,7 @@ namespace DCGO.CardEffects.BT25
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
 
-                if (Is2OrMoreSuspendedCondition() && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermamentCondition))
+                if (CardEffectCommons.MatchConditionPermanentCount(SuspendedDigimon) >= 2 && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermamentCondition))
                 {
                     Permanent selectedPermanent = null;
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
