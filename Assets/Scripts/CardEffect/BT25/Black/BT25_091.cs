@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -81,6 +80,8 @@ namespace DCGO.CardEffects.BT25
                             if (cardSources.Count >= 1)
                             {
                                 returned = true;
+
+                                return null;
                             }
                             
                             return null;
