@@ -228,7 +228,7 @@ namespace DCGO.CardEffects.BT25
                                             canNoSelect: () => true,
                                             selectCardCoroutine: SelectCardCoroutine,
                                             afterSelectCardCoroutine: null,
-                                            message: "Select 1 [Angel], [Archangel], [Three Great Angels] or [Iliad] trait Digimon card to place at in security.",
+                                            message: "Select 1 [Angel], [Archangel], [Three Great Angels] or [Iliad] trait Digimon card to place in security.",
                                             maxCount: 1,
                                             canEndNotMax: false,
                                             isShowOpponent: true,
