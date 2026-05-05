@@ -177,6 +177,8 @@ namespace DCGO.CardEffects.BT25
                             if (cardSources.Count > 0)
                             {
                                 Used = true;
+
+                                return null;
                             }
 
                             return null;
