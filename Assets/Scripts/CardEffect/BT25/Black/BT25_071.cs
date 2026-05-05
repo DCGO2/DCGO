@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region All Turns
-            if (timing == EffectTiming.WhenRemoveField)
+            if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectName1(), SharedCanUseCondition, card);
@@ -155,7 +155,7 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region All Turns Inherited
-            if (timing == EffectTiming.WhenRemoveField)
+            if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectName1(), SharedCanUseCondition, card);
