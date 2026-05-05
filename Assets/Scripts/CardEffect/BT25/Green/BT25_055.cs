@@ -174,7 +174,10 @@ namespace DCGO.CardEffects.BT25
 
                         IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                         {
-                            Used = true;
+                            if (cardSources.Count > 0)
+                            {
+                                Used = true;
+                            }
 
                             return null;
                         }
