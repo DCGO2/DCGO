@@ -162,6 +162,7 @@ namespace DCGO.CardEffects.BT25
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
                         bool fromHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
                         bool dontPlace = GManager.instance.userSelectionManager.SelectedIntValue == 3;
 
@@ -262,7 +263,10 @@ namespace DCGO.CardEffects.BT25
 
                                 string selectPlayerMessage1 = "Where will you place card?";
                                 string notSelectPlayerMessage1 = "The opponent is choosing where to place card.";
+
                                 GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
+
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                             }
 
                             bool toTop = GManager.instance.userSelectionManager.SelectedIntValue == 1;
