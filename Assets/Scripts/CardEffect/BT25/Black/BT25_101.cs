@@ -160,7 +160,7 @@ namespace DCGO.CardEffects.BT25
                                         {
                                             selectedCardToLink = card;
                                             #region Select Digimon that will gain this card as a link
-                                            if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanLinkThisCardCondition) > 1)
+                                            if (CardEffectCommons.HasMatchConditionPermanent(CanLinkThisCardCondition, true))
                                             {
                                                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                                                 int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanLinkThisCardCondition));

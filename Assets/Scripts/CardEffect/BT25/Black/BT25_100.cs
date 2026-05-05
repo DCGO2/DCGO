@@ -116,7 +116,7 @@ namespace DCGO.CardEffects.BT25
                     }
 
                     // Link to 1 Owner digimon on the field
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectOwnerPermamentCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnerPermamentCondition, true))
                     {
                         Permanent selectedPermament = null;
 
