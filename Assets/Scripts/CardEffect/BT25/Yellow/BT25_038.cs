@@ -148,8 +148,8 @@ namespace DCGO.CardEffects.BT25
                             List<SelectionElement<int>> selectionElements1 = new List<SelectionElement<int>>()
                             {
                                 new (message: $"From hand", value : 1, spriteIndex: 0),
-                                new (message: $"From sources", value : 2, spriteIndex: 1),
-                                new (message: $"Don't place", value: 3, spriteIndex: 2)
+                                new (message: $"From sources", value : 2, spriteIndex: 0),
+                                new (message: $"Don't place", value: 3, spriteIndex: 1)
                             };
 
                             string selectPlayerMessage1 = "From which area will you place a card?";
@@ -249,7 +249,7 @@ namespace DCGO.CardEffects.BT25
                             {
                                 selectedCard = cardSource;
 
-                                yield return null;
+                                return null;
                             }
 
                             if (selectedCard != null)
@@ -267,16 +267,16 @@ namespace DCGO.CardEffects.BT25
                                 GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
 
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                            }
 
-                            bool toTop = GManager.instance.userSelectionManager.SelectedIntValue == 1;
-                            bool dontPlace1 = GManager.instance.userSelectionManager.SelectedIntValue == 3;
+                                bool toTop = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+                                bool dontPlace1 = GManager.instance.userSelectionManager.SelectedIntValue == 3;
 
-                            if (!dontPlace1)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(selectedCard, selectedCard.PermanentOfThisCard()));
+                                if (!dontPlace1)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(selectedCard, selectedCard.PermanentOfThisCard()));
 
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard, toTop: toTop));
+                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard, toTop: toTop));
+                                }
                             }
                         }
                     }
