@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT25
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reduce Play Cost -2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetHashString("PlayCost-2_BT21_093");
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -44,17 +44,16 @@ namespace DCGO.CardEffects.BT25
                         Permanent selectedPermanent = null;
 
                         #region Select Tamer to trash bottom face down digivolution card
-                        if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, SharedCanSelectTamerCondition) > 1)
+                        if (CardEffectCommons.HasMatchConditionPermanent(SharedCanSelectTamerCondition))
                         {
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, SharedCanSelectTamerCondition));
 
                             selectPermanentEffect.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: SharedCanSelectTamerCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                maxCount: maxCount,
+                                maxCount: 1,
                                 canNoSelect: true,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -70,10 +69,7 @@ namespace DCGO.CardEffects.BT25
 
                             selectPermanentEffect.SetUpCustomMessage("Select 1 tamer to trash bottom face down digivolution card.", "The opponent is selecting 1 tamer to trash bottom face down digivolution card.");
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
                         }
-                        if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, SharedCanSelectTamerCondition) == 1)
-                            selectedPermanent = card.Owner.GetBattleAreaPermanents().FirstOrDefault(permanent => SharedCanSelectTamerCondition(permanent));
                         #endregion
 
                         if (selectedPermanent != null)
@@ -101,15 +97,11 @@ namespace DCGO.CardEffects.BT25
 
                                 int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                                 {
-                                    if (CardSourceCondition(cardSource))
+                                    if (CardSourceCondition(cardSource)
+                                    && RootCondition(root)
+                                    && PermanentsCondition(targetPermanents))
                                     {
-                                        if (RootCondition(root))
-                                        {
-                                            if (PermanentsCondition(targetPermanents))
-                                            {
-                                                Cost -= 2;
-                                            }
-                                        }
+                                        Cost -= 2;
                                     }
 
                                     return Cost;
@@ -117,19 +109,8 @@ namespace DCGO.CardEffects.BT25
 
                                 bool PermanentsCondition(List<Permanent> targetPermanents)
                                 {
-                                    if (targetPermanents == null)
-                                    {
-                                        return true;
-                                    }
-                                    else
-                                    {
-                                        if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
+                                    return targetPermanents == null
+                                            || targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
                                 }
 
                                 bool CardSourceCondition(CardSource cardSource)
