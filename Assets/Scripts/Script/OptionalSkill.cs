@@ -1,20 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Photon;
 using Photon.Pun;
-using System.Linq;
+using Photon.Realtime;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 public class OptionalSkill : MonoBehaviourPunCallbacks
 {
     public string waitingText { get; set; } = "The opponent is considering whether to use the effect.";
-    bool _endSelect = false;
+
     bool _useOptional = false;
     public IEnumerator SelectOptional(ICardEffect cardEffect, Hashtable hash)
     {
         List<string> _YesNoTexts = new List<string>() { "Use", "Not use" };
 
-        _endSelect = false;
+        Player player = cardEffect.EffectSourceCard.Owner;
+
         _useOptional = false;
 
         string _Message;
@@ -90,10 +92,10 @@ public class OptionalSkill : MonoBehaviourPunCallbacks
 
             List<Command_SelectCommand> commands = new List<Command_SelectCommand>()
             {
-                new Command_SelectCommand(_YesNoTexts[0] ,() => photonView.RPC("SetUseOptional",RpcTarget.All,true),0),
+                new Command_SelectCommand(_YesNoTexts[0] ,() => photonView.RPC("SetUseOptional",RpcTarget.All, player.PlayerID, true),0),
             };
 
-            GManager.instance.BackButton.OpenSelectCommandButton(_YesNoTexts[1], () => { photonView.RPC("SetUseOptional", RpcTarget.All, false); }, 0);
+            GManager.instance.BackButton.OpenSelectCommandButton(_YesNoTexts[1], () => { photonView.RPC("SetUseOptional", RpcTarget.All, player.PlayerID, false); }, 0);
 
             GManager.instance.selectCommandPanel.SetUpCommandButton(commands);
         }
@@ -109,13 +111,13 @@ public class OptionalSkill : MonoBehaviourPunCallbacks
 
             if (GManager.instance.IsAI)
             {
-                _endSelect = true;
-                _useOptional = RandomUtility.IsSucceedProbability(0.9f);
+                SetUseOptional(player.PlayerID, RandomUtility.IsSucceedProbability(0.9f));
             }
         }
 
-        yield return new WaitWhile(() => !_endSelect);
-        _endSelect = false;
+        yield return new WaitUntil(() => player.HasPlayerSelection());
+        ValueSelection valueSelection = player.DequeuePlayerSelection<ValueSelection>();
+        _useOptional = valueSelection != null ? valueSelection.ValueAsBool() : false;
 
         GManager.instance.selectCommandPanel.Off();
 
@@ -131,9 +133,15 @@ public class OptionalSkill : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void SetUseOptional(bool useOptional)
+    public void SetUseOptional(int playerID, bool useOptional)
     {
-        _useOptional = useOptional;
-        _endSelect = true;
+        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
+
+        if (selectionPlayer == null)
+        {
+            return;
+        }
+
+        selectionPlayer.QueuePlayerSelection(new ValueSelection(useOptional));
     }
 }
