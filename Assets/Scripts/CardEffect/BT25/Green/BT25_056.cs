@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +46,6 @@ namespace DCGO.CardEffects.BT25
             }
 
             #endregion
-
 
             #region Barrier
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
@@ -207,11 +205,10 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region All Turns
-
             if (timing == EffectTiming.WhenLinked)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend 1 enemy Digimon or tamer", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend 1 enemy Digimon or Tamer", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -225,9 +222,11 @@ namespace DCGO.CardEffects.BT25
                     return permanent == card.PermanentOfThisCard();
                 }
 
-                bool IsOpponentsDigimon(Permanent permanent)
+                bool IsOpponentsPermanent(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                        && (permanent.IsDigimon
+                            || permanent.IsTamer);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -243,13 +242,13 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon))
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsPermanent))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: IsOpponentsDigimon,
+                            canTargetCondition: IsOpponentsPermanent,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -264,7 +263,6 @@ namespace DCGO.CardEffects.BT25
                     }
                 }
             }
-
             #endregion
 
             #region Link
