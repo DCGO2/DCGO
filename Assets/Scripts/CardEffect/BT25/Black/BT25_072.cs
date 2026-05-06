@@ -282,7 +282,7 @@ namespace DCGO.CardEffects.BT25
 
                             CardEffectCommons.AddEffectToPermanent(
                                 targetPermanent: permanent, 
-                                effectDuration: EffectDuration.UntilOwnerTurnEnd, 
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd, 
                                 card: card, 
                                 cardEffect: canNotEvolveClass, 
                                 timing: EffectTiming.None);
