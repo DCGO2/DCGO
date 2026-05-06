@@ -216,14 +216,13 @@ namespace DCGO.CardEffects.BT25
                                             selectCardEffect.SetUpCustomMessage("Select 1 [TS] trait card from your trash to link.", "The opponent is selecting 1 [TS] trait card from their trash to link.");
                                             selectCardEffect.SetUpCustomMessage_ShowCard("Selected card");
                                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
                                             #endregion
 
                                             #region Select Digimon that will gain selected card as link
-                                            if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, perm => CanLink(selectedCardToLink, perm)) > 1)
+                                            if (CardEffectCommons.HasMatchConditionPermanent(perm => CanLink(selectedCardToLink, perm)))
                                             {
                                                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, perm => CanLink(selectedCardToLink, perm)));
+                                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(perm => CanLink(selectedCardToLink, perm)));
 
                                                 selectPermanentEffect.SetUp(
                                                     selectPlayer: card.Owner,
@@ -241,12 +240,10 @@ namespace DCGO.CardEffects.BT25
                                                 selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to gain link.", "The opponent is selecting 1 Digimon to gain link.");
                                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                                             }
-                                            else selectedPermament = card.Owner.GetBattleAreaPermanents().FirstOrDefault(per => CanLink(selectedCardToLink, per));
                                             #endregion
                                         }
 
                                         if (selectedPermament != null && selectedCardToLink != null) yield return ContinuousController.instance.StartCoroutine(selectedPermament.AddLinkCard(selectedCardToLink, activateClass));
-
                                     }
                                 }
                             }
