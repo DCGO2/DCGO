@@ -206,7 +206,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                     {
                         return CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SelectMyotismonToPlay);
                     }

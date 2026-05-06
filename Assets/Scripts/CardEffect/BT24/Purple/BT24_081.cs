@@ -229,7 +229,7 @@ namespace DCGO.CardEffects.BT24
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasCorrectTrait);
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasCorrectTrait);
                 }
 
                 bool HasCorrectTrait(CardSource cardSource)

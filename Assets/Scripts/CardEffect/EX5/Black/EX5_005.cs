@@ -29,7 +29,7 @@ namespace DCGO.CardEffects.EX5
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
                     {
                         if (card.Owner.LibraryCards.Count >= 1)
                         {

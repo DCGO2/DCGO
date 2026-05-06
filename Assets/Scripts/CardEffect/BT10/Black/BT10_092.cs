@@ -139,7 +139,7 @@ namespace DCGO.CardEffects.BT10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                     {
                         if (card.Owner.CanAddMemory(activateClass))
                         {
