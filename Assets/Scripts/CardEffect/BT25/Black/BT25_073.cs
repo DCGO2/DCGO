@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.BT25
                 IEnumerator SelectedPermanentCoroutine(Permanent permanent)
                 {
                     selectedPermanent = permanent;
-                    return null;
+                    yield return null;
                 }
 
                 if (selectedPermanent != null)
@@ -139,7 +139,6 @@ namespace DCGO.CardEffects.BT25
                         }
 
                         CardSource selectCard = null;
-                        List<CardSource> selectedCards = null;
 
                         int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
 
@@ -165,7 +164,6 @@ namespace DCGO.CardEffects.BT25
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectCard = cardSource;
-                            selectedCards.Add(cardSource);
                             yield return null;
                         }
 
@@ -176,7 +174,7 @@ namespace DCGO.CardEffects.BT25
                             if (selectCard.IsOption)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
-                                    cardSources: selectedCards,
+                                    cardSources: new List<CardSource>() { selectCard },
                                     activateClass: activateClass,
                                     payCost: false,
                                     root: SelectCardEffect.Root.Hand));
