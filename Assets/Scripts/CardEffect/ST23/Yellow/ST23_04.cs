@@ -90,7 +90,7 @@ namespace DCGO.CardEffects.ST23
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -5000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                 }
 
-                if (CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource) > 0 && CardEffectCommons.IsOwnerTurn(card))
+                if (CardEffectCommons.HasMatchConditionPermanent(TamerWithOneFaceDownSource) && CardEffectCommons.IsOwnerTurn(card))
                 {
                     bool trash = false;
 
@@ -117,9 +117,9 @@ namespace DCGO.CardEffects.ST23
                     {
                         if (permanents != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 1, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
-
                             trash = true;
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 1, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
                         }
                     }
 
