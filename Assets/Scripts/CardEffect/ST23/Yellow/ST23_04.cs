@@ -158,14 +158,13 @@ namespace DCGO.CardEffects.ST23
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            selectedCards.Add(cardSource);
                             selectedCard = cardSource;
                             yield return null;
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        if (selectedCards != null)
+                        if (selectedCard != null)
                         {
                             #region reduce use cost
                             ChangeCostClass changeCostClass = new ChangeCostClass();
@@ -196,15 +195,11 @@ namespace DCGO.CardEffects.ST23
 
                             int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                             {
-                                if (PlayOrUseCondition(cardSource))
+                                if (PlayOrUseCondition(cardSource)
+                               && RootCondition(root)
+                               && PermanentsCondition(targetPermanents))
                                 {
-                                    if (RootCondition(root))
-                                    {
-                                        if (PermanentsCondition(targetPermanents))
-                                        {
-                                            Cost -= 3;
-                                        }
-                                    }
+                                    Cost -= 3;
                                 }
 
                                 return Cost;
@@ -212,20 +207,8 @@ namespace DCGO.CardEffects.ST23
 
                             bool PermanentsCondition(List<Permanent> targetPermanents)
                             {
-                                if (targetPermanents == null)
-                                {
-                                    return true;
-                                }
-
-                                else
-                                {
-                                    if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
+                                return targetPermanents == null
+                                        || targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
                             }
 
                             bool RootCondition(SelectCardEffect.Root root)
@@ -242,7 +225,7 @@ namespace DCGO.CardEffects.ST23
                             if (selectedCard.IsOption)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
-                                    cardSources: selectedCards,
+                                    cardSources: new List<CardSource> { selectedCard },
                                     activateClass: activateClass,
                                     payCost: true,
                                     root: SelectCardEffect.Root.Hand));
@@ -250,7 +233,7 @@ namespace DCGO.CardEffects.ST23
                             else
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                    cardSources: selectedCards,
+                                    cardSources: new List<CardSource> { selectedCard },
                                     activateClass: activateClass,
                                     payCost: true,
                                     isTapped: false,
