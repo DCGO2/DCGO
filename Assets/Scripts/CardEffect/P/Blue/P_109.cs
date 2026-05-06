@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System;
 
 public class P_109 : CEntity_Effect
 {
