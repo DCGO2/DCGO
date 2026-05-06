@@ -573,7 +573,16 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                         _slectedInexesInList.Add(selectedIndex);
                     }
 
-                    photonView.RPC("SetTargetCardAndIndicies", RpcTarget.All, _selectPlayer.PlayerID, targetCardIDs.ToArray(), _slectedInexesInList.ToArray());
+                    if (_isLocal)
+                    {
+                        SetTargetCardAndIndicies(_selectPlayer.PlayerID, targetCardIDs.ToArray(), _slectedInexesInList.ToArray());
+                    }
+                    else
+                    {
+                        photonView.RPC("SetTargetCardAndIndicies", RpcTarget.All, _selectPlayer.PlayerID, targetCardIDs.ToArray(), _slectedInexesInList.ToArray());
+                    }
+
+                   
                 }
             }
             else
@@ -639,7 +648,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                             CardIDs.Add(cardSource.CardIndex);
                         }
 
-                        if (GManager.instance.IsAI)
+                        if (GManager.instance.IsAI || _isLocal)
                         {
                             SetTargetCardAndIndicies(_selectPlayer.PlayerID, CardIDs.ToArray(), null);
                         }
