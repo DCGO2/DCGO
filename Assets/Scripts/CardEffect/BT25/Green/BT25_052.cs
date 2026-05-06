@@ -197,11 +197,11 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Kazuki & Itsuki]", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("BT25_052_YT");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                     => "[Your Turn] [Once Per Turn] When this Digimon get linked, if you have 1 or fewer Tamers, you may play 1 [Kazuki & Itsuki] from your hand without paying the cost.";
 
                 bool PermanentCondition(Permanent permanent)
@@ -245,7 +245,7 @@ namespace DCGO.CardEffects.BT25
                         canEndNotMax: false,
                         isShowOpponent: true,
                         selectCardCoroutine: null,
-                        afterSelectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         mode: SelectHandEffect.Mode.PlayForFree,
                         cardEffect: activateClass);
 
