@@ -126,7 +126,7 @@ namespace DCGO.CardEffects.BT25
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition)
                         && HasValidColor(hashtable);
                 }
 
