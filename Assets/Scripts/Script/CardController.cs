@@ -4930,11 +4930,11 @@ public class IMassDegeneration
 
         bool ValidTarget(Permanent permanent)
         {
-            return permanent == null
-                && permanent.TopCard == null
-                && permanent.ImmuneFromDeDigivolve()
-                && permanent.ImmuneFromStackTrashing(_cardEffect)
-                && permanent.TopCard.CanNotBeAffected(_cardEffect);
+            return permanent != null
+                && permanent.TopCard != null
+                && !permanent.ImmuneFromDeDigivolve()
+                && !permanent.ImmuneFromStackTrashing(_cardEffect)
+                && !permanent.TopCard.CanNotBeAffected(_cardEffect);
         }
 
         List<Permanent> permanents_Fixed = _permanents.Filter(ValidTarget);
