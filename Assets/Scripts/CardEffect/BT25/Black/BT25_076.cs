@@ -158,13 +158,7 @@ namespace DCGO.CardEffects.BT25
             #region Reduce Play Cost - Not Shown
             if (timing == EffectTiming.None)
             {
-                List<Permanent> permanents = card.Owner.GetBattleAreaDigimons().Where(permanent =>
-                    CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && !permanent.cardSources.Contains(card)
-                    && permanent.TopCard.HasPlayCost
-                    && permanent.TopCard.GetCostItself <= 11
-                    && permanent.TopCard.HasText("Negamon")
-                    && permanent.DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Negamon")) > 0).ToList();
+                List<Permanent> permanents = card.Owner.GetBattleAreaDigimons().Filter(PermanentCondition);
 
                 int reducedCost = permanents.Count > 0 ? permanents.Max(p => p.TopCard.GetCostItself): 0;
 
@@ -185,7 +179,7 @@ namespace DCGO.CardEffects.BT25
                 bool PermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent != null
+                        && !permanent.cardSources.Contains(card)
                         && permanent.TopCard.HasPlayCost
                         && permanent.TopCard.GetCostItself <= 11
                         && permanent.TopCard.HasText("Negamon")
