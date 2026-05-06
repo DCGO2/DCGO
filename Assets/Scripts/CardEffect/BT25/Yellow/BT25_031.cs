@@ -37,10 +37,10 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardTraits.Equals("Angel")
-                            || cardSource.CardTraits.Equals("Archangel")
-                            || cardSource.CardTraits.Equals("Three Great Angels")
-                            || cardSource.CardTraits.Equals("Four Great Dragons");
+                    return cardSource.EqualsTraits("Angel")
+                            || cardSource.EqualsTraits("Archangel")
+                            || cardSource.EqualsTraits("Three Great Angels")
+                            || cardSource.EqualsTraits("Four Great Dragons");
                 }
 
                 bool CanSelectCardCondition1(CardSource cardSource)

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 // Bacchusmon
 namespace DCGO.CardEffects.BT25
@@ -103,7 +102,7 @@ namespace DCGO.CardEffects.BT25
                     && cardSource.HasTSTraits
                     && cardSource.HasDP
                     && cardSource.CardDP <= 6000
-                    && CardEffectCommons.CanPlayAsNewPermanent(card, false, activateClass);
+                    && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
             }
 
             bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)

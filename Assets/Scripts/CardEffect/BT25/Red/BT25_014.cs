@@ -15,6 +15,16 @@ namespace DCGO.CardEffects.BT25
             {
                 bool PermanentCondition(Permanent permanent)
                 {
+                    return permanent.TopCard.EqualsTraits("Flame");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 2, true, card, null, level: 3));
+            }
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent permanent)
+                {
                     return permanent.TopCard.EqualsTraits("TS");
                 }
 

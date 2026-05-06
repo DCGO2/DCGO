@@ -85,7 +85,7 @@ namespace DCGO.CardEffects.BT25
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
 
-                if (CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource) > 1)
+                if (CardEffectCommons.HasMatchConditionPermanent(TamerWithOneFaceDownSource))
                 {
                     bool trashed = false;
 
