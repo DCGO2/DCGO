@@ -45,6 +45,7 @@ namespace DCGO.CardEffects.BT25
                     SharedEffectName,
                     SharedActivateCoroutine,
                     SharedEffectDescription,
+                    maxCountPerTurn: 1,
                     hashValue: SharedHashValue,
                     optional: false,
                     isSkippable: true,
@@ -83,10 +84,11 @@ namespace DCGO.CardEffects.BT25
                     selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to return to hand", "The opponent is selecting 1 Digimon to return to hand");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanent)
+                    IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                     {
-                        Used = true;
-                        return null;
+                        if (permanents.Count > 0)
+                            Used = true;
+                        yield return null;
                     }
                 }
 
@@ -119,6 +121,7 @@ namespace DCGO.CardEffects.BT25
 
                     if (selectedPermanent != null)
                     {
+                        Used = true;
                         var cardToTrash = selectedPermanent.DigivolutionCards.Last(x => x.IsFaceDown);
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsAndProcessAccordingToResult(
                         targetPermanent: selectedPermanent,
@@ -148,8 +151,6 @@ namespace DCGO.CardEffects.BT25
                                 selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's lowest level Digimon to return to hand", "The opponent is selecting 1 lowest level Digimon to return to hand");
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                             }
-
-                            Used = true;
                         }
                     }
                 }
