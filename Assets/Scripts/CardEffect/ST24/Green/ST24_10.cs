@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.ST24
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect1.SetUpCustomMessage("Select Tamer(s) to trash bottom face-down cards from", "The opponent is selecting Tamer(s) to trash bottom face-down cards from");
+                    selectPermanentEffect1.SetUpCustomMessage("Select all Tamer(s) to trash bottom face-down cards from", "The opponent is selecting Tamer(s) to trash bottom face-down cards from");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 
