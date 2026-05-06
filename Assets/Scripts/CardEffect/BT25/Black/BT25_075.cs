@@ -282,6 +282,7 @@ namespace DCGO.CardEffects.BT25
                 activateClass.SetUpICardEffect("Linked digimon may Attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
+                activateClass.SetEffectTargets(TargetablePermanents);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -298,11 +299,19 @@ namespace DCGO.CardEffects.BT25
                         && CardEffectCommons.CanTriggerWhenLinked(hashtable, PermanentCondition, null);
                 }
 
-                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleArea(card);
+                Permanent GetAttacker(Hashtable hashtable) => CardEffectCommons.GetPermanentFromHashtable(hashtable);
+
+                List<Permanent> TargetablePermanents(Hashtable hashtable) => new List<Permanent>() { GetAttacker(hashtable) };
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    activateClass.SetEffectName($"{GetAttacker(hashtable).TopCard.BaseENGCardNameFromEntity} may attack");
+                    return CardEffectCommons.IsExistOnBattleArea(card);
+                }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Permanent attacker = CardEffectCommons.GetPermanentFromHashtable(hashtable);
+                    Permanent attacker = GetAttacker(hashtable);
                     if (attacker != null && attacker.TopCard != null)
                     {
                         SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
