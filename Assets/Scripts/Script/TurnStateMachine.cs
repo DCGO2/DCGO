@@ -346,7 +346,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     public bool DoneStartGame { get; set; } = false;
 
     bool _isRedraw = false;
-    bool _endSelect = false;
     IEnumerator StartGame()
     {
 #if UNITY_EDITOR
@@ -389,7 +388,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         foreach (Player player in gameContext.Players_ForNonTurnPlayer)
         {
             _isRedraw = false;
-            _endSelect = false;
 
             yield return GManager.instance.photonWaitController.StartWait($"Mulligan");
 
@@ -402,7 +400,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             {
                 if (GManager.instance.isAuto && GManager.instance.IsAI)
                 {
-                    SetRedraw(RandomUtility.IsSucceedProbability(0.5f));
+                    SetRedraw(player.PlayerID, RandomUtility.IsSucceedProbability(0.5f));
                 }
 
                 else
@@ -423,8 +421,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         Message: message,
                         NotSelectButtonMessage: "Keep Hand",
                         EndSelectButtonMessage: "Mulligan",
-                        _OnClickNotSelectButtonAction: () => SetRedraw_RPC(false),
-                        _OnClickEndSelectButtonAction: () => SetRedraw_RPC(true),
+                        _OnClickNotSelectButtonAction: () => SetRedraw_RPC(player.PlayerID, false),
+                        _OnClickEndSelectButtonAction: () => SetRedraw_RPC(player.PlayerID, true),
                         RootCardSources: player.HandCards,
                         _CanTargetCondition: (cardSource) => false,
                         _CanTargetCondition_ByPreSelecetedList: null,
@@ -436,9 +434,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         skillInfos: null,
                         root: SelectCardEffect.Root.None));
 
-                    void SetRedraw_RPC(bool _isDraw)
+                    void SetRedraw_RPC(int playerId, bool _isDraw)
                     {
-                        photonView.RPC("SetRedraw", RpcTarget.All, _isDraw);
+                        photonView.RPC("SetRedraw", RpcTarget.All, playerId, _isDraw);
                     }
                 }
             }
@@ -455,13 +453,14 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         doRedraw = true;
                     }
 
-                    SetRedraw(doRedraw);
+                    SetRedraw(player.PlayerID, doRedraw);
                 }
                 #endregion
             }
 
-            yield return new WaitWhile(() => !_endSelect);
-            _endSelect = false;
+            yield return new WaitUntil(() => player.HasPlayerSelection());
+            ValueSelection valueSeletion = player.DequeuePlayerSelection<ValueSelection>();
+            _isRedraw = valueSeletion != null ? valueSeletion.ValueAsBool() : false;
 
             GManager.instance.selectCardPanel.CloseSelectCardPanel();
 
@@ -529,10 +528,16 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void SetRedraw(bool isRedraw)
+    void SetRedraw(int playerID, bool isRedraw)
     {
-        _isRedraw = isRedraw;
-        _endSelect = true;
+        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
+
+        if (selectionPlayer == null)
+        {
+            return;
+        }
+
+        selectionPlayer.QueuePlayerSelection(new ValueSelection(isRedraw));
     }
     #endregion
 
@@ -753,12 +758,12 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                     if (ContinuousController.instance.autoHatch)
                     {
-                        OnClickHatchObject();
+                        SendShouldHatch(true);
                     }
 
                     else
                     {
-                        gameContext.TurnPlayer.SetUpHatchObject(OnClickHatchObject);
+                        gameContext.TurnPlayer.SetUpHatchObject(() => SendShouldHatch(true));
                     }
                 }
                 #endregion
@@ -773,7 +778,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     {
                         GManager.instance.hideCannotSelectObject.SetUpHideCannotSelectObject(new List<FieldPermanentCard>() { fieldPermanentCard }, false);
 
-                        fieldPermanentCard.AddClickTarget((fieldPermanentCard1) => OnClickHatchObject());
+                        fieldPermanentCard.AddClickTarget((fieldPermanentCard1) => SendShouldHatch(true));
                         fieldPermanentCard.Outline_Select.gameObject.SetActive(true);
                         fieldPermanentCard.SetOrangeOutline();
                     }
@@ -800,14 +805,16 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         doHatch = true;
                     }
 
-                    SetBreedingPhase(doHatch);
+                    SetBreedingPhase(gameContext.TurnPlayer.PlayerID, doHatch);
                 }
                 #endregion
             }
 
-            yield return new WaitWhile(() => !endSelect_BreedingPhase && gameContext.TurnPhase == GameContext.phase.Breeding);
+            yield return new WaitWhile(() => !gameContext.TurnPlayer.HasPlayerSelection() && gameContext.TurnPhase == GameContext.phase.Breeding);
+            ValueSelection breedSelection = gameContext.TurnPlayer.DequeuePlayerSelection<ValueSelection>();
+            doAction_BreedingPhase = breedSelection != null ? breedSelection.ValueAsBool() : false;
+
             GManager.instance.hideCannotSelectObject.Close();
-            endSelect_BreedingPhase = false;
             gameContext.TurnPlayer.OffHatchObject();
             OffFieldCardTarget(gameContext.TurnPlayer);
             IsSelecting = true;
@@ -854,19 +861,24 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
     }
 
-    void OnClickHatchObject()
+    public void SendShouldHatch(bool shouldHatch)
     {
         gameContext.TurnPlayer.OffHatchObject();
-        photonView.RPC("SetBreedingPhase", RpcTarget.All, true);
+        photonView.RPC("SetBreedingPhase", RpcTarget.All, gameContext.TurnPlayer.PlayerID, shouldHatch);
     }
 
-    bool endSelect_BreedingPhase = false;
     bool doAction_BreedingPhase = false;
     [PunRPC]
-    public void SetBreedingPhase(bool doAction_BreedingPhase)
+    public void SetBreedingPhase(int playerID, bool doBreeding)
     {
-        this.doAction_BreedingPhase = doAction_BreedingPhase;
-        endSelect_BreedingPhase = true;
+        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
+
+        if (selectionPlayer == null)
+        {
+            return;
+        }
+
+        selectionPlayer.QueuePlayerSelection(new ValueSelection(doBreeding));
     }
     #endregion
 
@@ -3470,27 +3482,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     #endregion
 
     #region Go to the next phase
-    [PunRPC]
-    public void NextPhase()
+    public void PassTurn()
     {
-        if (gameContext.TurnPhase != GameContext.phase.Main)
-        {
-            int CurrentPhaseID = (int)gameContext.TurnPhase;
-
-            int NextPhaseID = ++CurrentPhaseID;
-
-            int MaxPhaseCount = Enum.GetNames(typeof(GameContext.phase)).Length;
-
-            if (NextPhaseID >= MaxPhaseCount)
-            {
-                NextPhaseID = 0;
-            }
-
-            isSync = true;
-            gameContext.TurnPhase = (GameContext.phase)Enum.ToObject(typeof(GameContext.phase), NextPhaseID);
-        }
-
-        else
+        if (gameContext.TurnPhase == GameContext.phase.Main)
         {
             ResetUI();
             ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.EndTurnProcess());
