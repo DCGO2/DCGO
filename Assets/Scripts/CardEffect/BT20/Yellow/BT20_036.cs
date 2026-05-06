@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using Photon.Pun;
 
 namespace DCGO.CardEffects.BT20
 {
@@ -47,11 +45,11 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reduce the play cost by 5", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetHashString("PlayCost-5_BT20_036");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "When this card would be played, if you have a Digimon with the [ACCEL] trait, reduce the play cost by 5.";
                 }
@@ -68,12 +66,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnHand(card))
-                    {
-                        return CardEffectCommons.HasMatchConditionPermanent(HasAccelTraitInPlay);
-                    }
-
-                    return false;
+                    return CardEffectCommons.HasMatchConditionPermanent(HasAccelTraitInPlay);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -248,10 +241,10 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("<De-Digivolve 2> 1 of your opponent's Digimon, then 1 gets -5000 DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[On Play] <De-Digivolve 2> 1 of your opponent's Digimon. Then, 1 of their Digimon gets -5000 DP until the end of their turn.";
                 }
@@ -328,10 +321,10 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("<De-Digivolve 2> 1 of your opponent's Digimon, then 1 gets -5000 DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Digivolving] <De-Digivolve 2> 1 of your opponent's Digimon. Then, 1 of their Digimon gets -5000 DP until the end of their turn.";
                 }
@@ -409,10 +402,10 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("DNA digivolve this Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[End of Your Turn] This Digimon and any of your other Digimon may DNA digivolve into a Digimon card with [Chaosmon] in its name in the hand. Then, the DNA digivolved Digimon may attack.";
                 }
@@ -496,12 +489,12 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may change the attack target to this Digimon.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("Redirect_BT20-036");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Opponent's Turn] [Once Per Turn] When any of your opponent's Digimon attack, you may change the attack target to this Digimon.";
                 }
