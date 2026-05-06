@@ -115,7 +115,7 @@ public class BT3_008 : CEntity_Effect
 
                                             int maxCount = 2;
 
-                                            #region �ő喇��
+                                            #region ???
                                             List<CardSource[]> cardsList = ParameterComparer.Enumerate(revealLibrary.revealedCards, maxCount).ToList();
 
                                             List<int> maxCounts = new List<int>() { 0 };
@@ -213,7 +213,7 @@ public class BT3_008 : CEntity_Effect
 
                                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                                            #region ���X�g�ɂ��I������
+                                            #region ???
                                             bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
                                             {
                                                 List<CardSource> _cardSources = new List<CardSource>();
@@ -265,7 +265,7 @@ public class BT3_008 : CEntity_Effect
                                             }
                                             #endregion
 
-                                            #region �I������
+                                            #region ???
                                             bool CanEndSelectCondition(List<CardSource> cardSources)
                                             {
                                                 List<CardSource[]> cardsList = ParameterComparer.Enumerate(cardSources, cardSources.Count).ToList();

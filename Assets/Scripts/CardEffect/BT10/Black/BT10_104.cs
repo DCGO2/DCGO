@@ -74,7 +74,7 @@ namespace DCGO.CardEffects.BT10
                         card.Owner,
                         activateClass).AddTrashCardsFromLibraryTop());
 
-                    #region �f�W�N���X�Ńg���b�V����I���\
+                    #region Select DigiXros from Trash
 
                     AddMaxTrashCountDigiXrosClass addMaxTrashCountDigiXrosClass = new AddMaxTrashCountDigiXrosClass();
                     addMaxTrashCountDigiXrosClass.SetUpICardEffect("Can select DigiXros cards from trash", CanUseCondition1, card);
@@ -151,7 +151,7 @@ namespace DCGO.CardEffects.BT10
                             activateETB: true));
                     }
 
-                    #region �f�W�N���X�Ńg���b�V����I���\����
+                    #region Remove Reduction
 
                     card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
 

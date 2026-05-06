@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.EX5
 
                 string EffectDiscription()
                 {
-                    return "[On Deletion] ÅÉDe-Digivolve  1ÅÑn 1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards). Then, return 1 of their 6000 DP or lower Digimon to the bottom of the deck.";
+                    return "[On Deletion] <De-Digivolve 1> 1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards). Then, return 1 of their 6000 DP or lower Digimon to the bottom of the deck.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.EX5
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] ÅÉDe-Digivolve  1ÅÑn 1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards). Then, return 1 of their 6000 DP or lower Digimon to the bottom of the deck.";
+                    return "[When Digivolving] <De-Digivolve 1> 1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards). Then, return 1 of their 6000 DP or lower Digimon to the bottom of the deck.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

@@ -50,7 +50,7 @@ public partial class CardEffectFactory
 
         int GetEvoCost(Permanent permanent, CardSource cardSource, CardEffectCommons.IgnoreRequirement ignore, bool checkAvailability)
         {
-            // �i�������𖳎����Đi�����悤�Ƃ��Ă���̂ɁA�i�������𖳎��ł��Ȃ��ꍇ
+            // ???
             if (ignoreDigivolutionRequirement && !cardSource.Owner.CanIgnoreDigivolutionRequirement(permanent, cardSource))
             {
                 return -1;
