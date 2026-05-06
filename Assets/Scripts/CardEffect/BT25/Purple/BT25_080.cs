@@ -32,6 +32,7 @@ namespace DCGO.CardEffects.BT25
                     SharedEffectName,
                     SharedActivateCoroutine,
                     SharedEffectDescription,
+                    maxCountPerTurn: 1,
                     hashValue: SharedHashValue,
                     optional: false,
                     isSkippable: true,
@@ -119,7 +120,9 @@ namespace DCGO.CardEffects.BT25
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
                     }
+                    else activateClass.RemoveUse();
                 }
+                
             }
             #endregion
 
