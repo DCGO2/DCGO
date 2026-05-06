@@ -40,7 +40,6 @@ namespace DCGO.CardEffects.BT25
                 bool CanSelectPermanentCondition(Permanent permanent, CardSource cardSource)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent != null
                         && permanent.TopCard.HasPlayCost
                         && permanent.TopCard.GetCostItself <= 11
                         && permanent.TopCard.HasText("Negamon")
@@ -161,7 +160,7 @@ namespace DCGO.CardEffects.BT25
             {
                 List<Permanent> permanents = card.Owner.GetBattleAreaDigimons().Where(permanent =>
                     CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && permanent != null
+                    && !permanent.cardSources.Contains(card)
                     && permanent.TopCard.HasPlayCost
                     && permanent.TopCard.GetCostItself <= 11
                     && permanent.TopCard.HasText("Negamon")
