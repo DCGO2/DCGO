@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Lekismon
 namespace DCGO.CardEffects.BT25
@@ -54,7 +55,8 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into [Crescemon] in trash for 1 less", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription() => "[Your Turn] When your Digimon are played or digivolve, if any of them are red, this Digimon may digivolve into [Crescemon] in the trash with the cost reduced by 1.";
@@ -70,7 +72,20 @@ namespace DCGO.CardEffects.BT25
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
+                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition)
+                        && HasValidColor(hashtable);
+                }
+
+                bool HasValidColor(Hashtable hashtable)
+                {
+                    List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
+                    return hashtables.Map(CardEffectCommons.GetPermanentFromHashtable).Any(HasCorrectColorPermanent);
+                }
+
+                bool HasCorrectColorPermanent(Permanent permanent)
+                {
+                    return PermanentCondition(permanent)
+                        && permanent.TopCard.CardColors.Contains(CardColor.Red);
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -80,40 +95,21 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.EqualsCardName("Crescemon")
-                        && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
+                    return cardSource.EqualsCardName("Crescemon");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<Permanent> playedPermanents = new List<Permanent>();
-
-                    foreach (Hashtable hash in CardEffectCommons.GetHashtablesFromHashtable(hashtable))
-                    {
-                        playedPermanents.Add(CardEffectCommons.GetPermanentFromHashtable(hash));
-                    }
-
-                    bool PermanentCondition1(Permanent permanent)
-                    {
-                        return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                            && permanent.TopCard.CardColors.Contains(CardColor.Red);
-                    }
-
-                    List<Permanent> targetPermanents = playedPermanents.Filter(PermanentCondition1);
-
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, targetPermanents.Contains))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                            targetPermanent: card.PermanentOfThisCard(),
-                            cardCondition: CanSelectCardCondition,
-                            payCost: true,
-                            reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
-                            fixedCostTuple: null,
-                            ignoreDigivolutionRequirementFixedCost: -1,
-                            isHand: false,
-                            activateClass: activateClass,
-                            successProcess: null));
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                        targetPermanent: card.PermanentOfThisCard(),
+                        cardCondition: CanSelectCardCondition,
+                        payCost: true,
+                        reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
+                        fixedCostTuple: null,
+                        ignoreDigivolutionRequirementFixedCost: -1,
+                        isHand: false,
+                        activateClass: activateClass,
+                        successProcess: null));
                 }
             }
             #endregion

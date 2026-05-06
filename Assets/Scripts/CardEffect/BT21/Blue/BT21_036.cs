@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Unsuspend this Digimon and gain DP+", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Unsuspend this Digimon and give 1 enemy Digimon DP-", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 

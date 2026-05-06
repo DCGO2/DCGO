@@ -115,9 +115,12 @@ namespace DCGO.CardEffects.ST23
 
                     IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 1, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
+                        if (permanents != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 1, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
 
-                        trash = true;
+                            trash = true;
+                        }
                     }
 
                     if (trash)

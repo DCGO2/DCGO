@@ -23,13 +23,11 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
     Func<int, IEnumerator> _selectDNACoroutine = null;
     List<int> _candidates = new List<int>();
     public int _selectedCount = 0;
-    public bool _endSelect = false;
     bool _notDoSync = false;
 
     public void ResetSelectDNAConditionClass()
     {
         _selectedCount = 0;
-        _endSelect = false;
     }
 
     public IEnumerator Activate()
@@ -39,11 +37,11 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
             //yield return GManager.instance.photonWaitController.StartWait("SelectDNACondition");
         }
 
-        if(_targetDNA.jogressCondition.Count > 1)
+        if (_targetDNA.jogressCondition.Count > 1)
         {
             if (_targetDNA.jogressCondition.Count == 1)
             {
-                SetDNACondition(0);
+                _selectedCount = 0;
             }
             else
             {
@@ -71,12 +69,9 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                GManager.instance.photonView.RPC("SetDNACondition", RpcTarget.All, GManager.instance.userSelectionManager.SelectedIntValue);
+                _selectedCount = GManager.instance.userSelectionManager.SelectedIntValue;
             }
         }
-
-        yield return new WaitWhile(() => !_endSelect);
-        _endSelect = false;
 
         GManager.instance.commandText.CloseCommandText();
         yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
@@ -85,12 +80,5 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
         {
             yield return ContinuousController.instance.StartCoroutine(_selectDNACoroutine(_selectedCount));
         }
-    }
-
-    [PunRPC]
-    public void SetDNACondition(int selectedCount)
-    {
-        _selectedCount = selectedCount;
-        _endSelect = true;
     }
 }

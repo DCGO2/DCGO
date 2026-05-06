@@ -27,10 +27,10 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into a [Beast],[Animal],[Sovereign] other than [Sea Animal] in traits/[TS] digimon in hand for free", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Start of Your Main Phase] If you have 4 or less memory, this Digimon may digivolve into a Digimon card with [Beast], [Animal] or [Sovereign], other than [Sea Animal], in any of its traits or the [TS] trait in the hand without paying the cost.";
                 }
