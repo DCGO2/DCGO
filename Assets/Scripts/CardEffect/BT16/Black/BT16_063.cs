@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -86,7 +87,7 @@ namespace DCGO.CardEffects.BT16
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
-                int SelectedCardCount = card.Owner.Enemy.SecurityCards.Count;
+                int SelectedCardCount = Math.Max(card.Owner.Enemy.SecurityCards.Count, card.Owner.SecurityCards.Count);
 
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unaffected by effects of your opponent's Digimon", CanUseCondition, card);
@@ -142,22 +143,6 @@ namespace DCGO.CardEffects.BT16
                     if (CardEffectCommons.IsJogress(hashtable))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                        {
-                            new SelectionElement<bool>(message: $"Your Security", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"Opponent's Security", value : false, spriteIndex: 1),
-                        };
-
-                        string selectPlayerMessage = "Choose which security you will use?";
-                        string notSelectPlayerMessage = "The opponent is choosing which security to use.";
-
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                        if (GManager.instance.userSelectionManager.SelectedBoolValue)
-                            SelectedCardCount = card.Owner.SecurityCards.Count;
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,

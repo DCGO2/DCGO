@@ -77,7 +77,7 @@ namespace DCGO.CardEffects.AD1
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                     && permanent.HasDP
-                    && permanent.DP < card.PermanentOfThisCard().DP;
+                    && permanent.DP <= card.PermanentOfThisCard().DP;
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)

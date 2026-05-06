@@ -1,10 +1,8 @@
-﻿using Photon;
-using Photon.Pun;
+﻿using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class MultipleSkills : MonoBehaviourPunCallbacks
@@ -165,7 +163,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
 
             skillInfos_active = skillInfos_active.Filter(skillInfo => skillInfo != null && skillInfo.CardEffect != null
                 && skillInfo.CardEffect.CanActivate(skillInfo.Hashtable) && skillInfo.CardEffect.EffectSourceCard != null);
-            
+
             if (skillInfos_active.Count > 0)
             {
                 bool oldIsSecurityGlassBlue = player.securityObject.securityBreakGlass.IsBlueGlass && IsOnlyHandEffectStacked && IsOnlyOptionalEffectStacked && IsEachStackedEffectHasDistinctSourceCard;
@@ -275,8 +273,8 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                                 yield return StartCoroutine(GManager.instance.selectCardPanel.OpenSelectCardPanel(
                                 Message: "Multiple effects are triggered.\nChoose which effect to process.",
                                 NotSelectButtonMessage: "Don't activate these effects.",
-                                EndSelectButtonMessage: "End Selection", 
-                                _OnClickNotSelectButtonAction: null, 
+                                EndSelectButtonMessage: "End Selection",
+                                _OnClickNotSelectButtonAction: null,
                                 _OnClickEndSelectButtonAction: null,
                                 RootCardSources: RootCardSources,
                                 _CanTargetCondition: (cardSource) => true,

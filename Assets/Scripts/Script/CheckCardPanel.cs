@@ -364,7 +364,7 @@ public class CheckCardPanel : MonoBehaviour
 
                             handCard.GetComponent<Draggable_HandCard>().CanPointerEnterExitAction = true;
 
-                            GManager.instance.turnStateMachine.photonView.RPC("SetActCardSkill", RpcTarget.All, handCard.cardSource.CardIndex, cardEffects1.IndexOf(cardEffect));
+                            GManager.instance.turnStateMachine.QueueMainPhaseAction(handCard.cardSource.Owner, new ActivateCardAction(handCard.cardSource.CardIndex, cardEffects1.IndexOf(cardEffect)));
 
                             CloseSelectCardPanel();
                         }
