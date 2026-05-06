@@ -147,7 +147,7 @@ public class BT6_054 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.CanActivateOnDeletion(card))
+                if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                 {
                     if (card.Owner.HandCards.Count >= 1)
                     {

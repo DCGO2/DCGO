@@ -103,7 +103,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
                     {
                         if (CardEffectCommons.CanActivateSelfOnDeletionWithContainingTrait(hashtable, "Unidentified", card))
                         {
