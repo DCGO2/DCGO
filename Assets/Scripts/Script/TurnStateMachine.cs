@@ -2919,7 +2919,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             List<ICardEffect> cardEffects = new List<ICardEffect>();
                             List<ICardEffect> cardEffects1 = new List<ICardEffect>();
 
-                            foreach (ICardEffect cardEffect in handCard.cardSource.EffectList(EffectTiming.OnDeclaration))
+                            foreach (ICardEffect cardEffect in handCard.cardSource.CanDeclareSkillList)
                             {
                                 cardEffects1.Add(cardEffect);
                                 cardEffects.Add(cardEffect);
@@ -3190,9 +3190,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         CardSource UseSkillCard = gameContext.ActiveCardList[cardIndex];
 
-        if (0 <= skillIndex && skillIndex < UseSkillCard.EffectList(EffectTiming.OnDeclaration).Count)
+        if (0 <= skillIndex && skillIndex < UseSkillCard.CanDeclareSkillList.Count)
         {
-            this.UseCardEffect = UseSkillCard.EffectList(EffectTiming.OnDeclaration)[skillIndex];
+            this.UseCardEffect = UseSkillCard.CanDeclareSkillList[skillIndex];
         }
     }
     #endregion
