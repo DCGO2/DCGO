@@ -187,20 +187,19 @@ namespace DCGO.CardEffects.ST24
                         selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCards.Add(cardSource);
+                        {;
                             selectedCard = cardSource;
                             yield return null;
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        if (selectedCards != null)
+                        if (selectedCard != null)
                         {
                             if (selectedCard.IsOption)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
-                                    cardSources: selectedCards,
+                                    cardSources: new List<CardSource> { selectedCard },
                                     activateClass: activateClass,
                                     payCost: false,
                                     root: SelectCardEffect.Root.Hand));
@@ -208,7 +207,7 @@ namespace DCGO.CardEffects.ST24
                             else
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                    cardSources: selectedCards,
+                                    cardSources: new List<CardSource> { selectedCard },
                                     activateClass: activateClass,
                                     payCost: false,
                                     isTapped: false,
