@@ -58,15 +58,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    if (cardSource == card)
-                    {
-                        if (CardEffectCommons.IsExistOnHand(cardSource))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource == card;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
