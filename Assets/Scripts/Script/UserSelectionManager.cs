@@ -182,12 +182,12 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
 
                 if (canSelectValue.Count >= 1)
                 {
-                    SetBool(canSelectValue[UnityEngine.Random.Range(0, canSelectValue.Count)]);
+                    SetBool_RPC(selectPlayer.PlayerID, canSelectValue[UnityEngine.Random.Range(0, canSelectValue.Count)]);
                 }
 
                 else
                 {
-                    SetBool(false);
+                    SetBool_RPC(selectPlayer.PlayerID, false);
                 }
             }
             #endregion
