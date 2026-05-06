@@ -311,7 +311,7 @@ public class CheckCardPanel : MonoBehaviour
                 List<ICardEffect> cardEffects = new List<ICardEffect>();
                 List<ICardEffect> cardEffects1 = new List<ICardEffect>();
 
-                foreach (ICardEffect cardEffect in handCard.cardSource.EffectList(EffectTiming.OnDeclaration))
+                foreach (ICardEffect cardEffect in handCard.cardSource.CanDeclareSkillList)
                 {
                     cardEffects1.Add(cardEffect);
                     cardEffects.Add(cardEffect);
