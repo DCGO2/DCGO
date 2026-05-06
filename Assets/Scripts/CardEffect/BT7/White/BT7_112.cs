@@ -62,7 +62,8 @@ public class BT7_112 : CEntity_Effect
 
             bool PermanentCondition(Permanent targetPermanent)
             {
-                return targetPermanent.IsTamer;
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(targetPermanent, card)
+                    && (targetPermanent.IsDigimon || targetPermanent.IsTamer);//Latest ruling is can return cards even when digivolving over level 6
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -102,6 +103,30 @@ public class BT7_112 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
+                List<Permanent> permanents = CardEffectCommons.GetPermanentsFromHashtable(_hashtable);
+                if (permanents != null)
+                {
+                    if (!permanents
+                        .Filter(permanent => permanent != null && permanent.TopCard != null)
+                        .Any(permanent => permanent.IsTamer))//If digivolution is not over a tamer, trashing is optional but allowed
+                    {
+                        string selectPlayerMessage = "Will you place 10 Tamer or Hybrid cards to bottom of deck?";
+                        string notSelectPlayerMessage = "The opponent is choosing if they will return cards to deck.";
+
+                        List<SelectionElement<bool>> command_SelectCommands = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"Yes", value: true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"No", value: false, spriteIndex: 1),
+                        };
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: command_SelectCommands, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        if (!GManager.instance.userSelectionManager.SelectedBoolValue)
+                            yield break;
+                    }
+                }
                 if (card.Owner.HandCards.Count(CanSelectCardCondition) + card.Owner.TrashCards.Count(CanSelectCardCondition) >= 10)
                 {
                     List<CardSource> libraryCards = new List<CardSource>();
