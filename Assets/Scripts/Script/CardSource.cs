@@ -3461,6 +3461,10 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card is a dual card
+    public bool IsDualCard => _cEntity_Base.IsDualCard;
+    #endregion
+
     #region Wheter this card is permanent
 
     public bool IsPermanent => _cEntity_Base.IsPermanent;
