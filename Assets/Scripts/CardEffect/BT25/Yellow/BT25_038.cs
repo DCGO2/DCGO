@@ -248,7 +248,7 @@ namespace DCGO.CardEffects.BT25
                             {
                                 selectedCard = cardSource;
 
-                                return null;
+                                yield return null;
                             }
 
                             if (selectedCard != null)
