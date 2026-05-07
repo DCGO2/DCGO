@@ -62,101 +62,30 @@ namespace DCGO.CardEffects.P
 
             #endregion
 
-            #endregion
-
-            #region Play Cost Reduction
-
+            #region Reduce Play Cost
             if (timing == EffectTiming.None)
             {
-                ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect($"Play Cost -", CanUseCondition, card);
-                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost,
-                    cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: IsUpDown,
-                    isCheckAvailability: () => false, isChangePayingCost: () => true);
-
-                cardEffects.Add(changeCostClass);
-
-                bool CanUseCondition(Hashtable hashtable)
+                bool Condition()
                 {
-                    if (card.Owner.HandCards.Contains(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.HasMatchConditionPermanent(PermanentCondition);
                 }
 
                 bool PermanentCondition(Permanent Permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(Permanent))
-                    {
-                        if (Permanent.IsDigimon)
-                        {
-                            if (Permanent.DP >= 13000)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(Permanent)
+                        && Permanent.IsDigimon
+                        && Permanent.HasDP
+                        && Permanent.DP >= 13000;
                 }
 
-                int count()
+                int changeCost()
                 {
                     return 2 * ((card.Owner.TrashCards.Count + card.Owner.Enemy.TrashCards.Count) / 5);
                 }
 
-                int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
-                    List<Permanent> targetPermanents)
-                {
-                    if (CardSourceCondition(cardSource))
-                    {
-                        if (RootCondition(root))
-                        {
-                            if (PermanentsCondition(targetPermanents))
-                            {
-                                cost -= count();
-                            }
-                        }
-                    }
-
-                    return cost;
-                }
-
-                bool PermanentsCondition(List<Permanent> targetPermanents)
-                {
-                    if (targetPermanents == null)
-                    {
-                        return true;
-                    }
-
-                    if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    return cardSource == card;
-                }
-
-                bool RootCondition(SelectCardEffect.Root root)
-                {
-                    return (root == SelectCardEffect.Root.Hand);
-                }
-
-                bool IsUpDown()
-                {
-                    return true;
-                }
+                cardEffects.Add(CardEffectFactory.MandatorySelfPlayCostReduction<Func<int>>(changeCost, card, Condition));
             }
+            #endregion
 
             #endregion
 
