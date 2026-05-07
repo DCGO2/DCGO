@@ -115,7 +115,7 @@ namespace DCGO.CardEffects.ST23
 
                     IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                     {
-                        if (permanents != null)
+                        if (permanents.Count == 1)
                         {
                             trash = true;
 
