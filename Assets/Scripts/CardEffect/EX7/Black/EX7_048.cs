@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// Gundramon
 namespace DCGO.CardEffects.EX7
 {
     public class EX7_048 : CEntity_Effect
@@ -11,12 +12,11 @@ namespace DCGO.CardEffects.EX7
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Alternate Digivolution
-
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel5 && targetPermanent.TopCard.HasText("Three Musketeers");
+                    return targetPermanent.TopCard.HasText("Three Musketeers");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -24,14 +24,13 @@ namespace DCGO.CardEffects.EX7
                     digivolutionCost: 4,
                     ignoreDigivolutionRequirement: false,
                     card: card,
-                    condition: null)
+                    condition: null,
+                    level: 5)
                 );
             }
-
             #endregion
 
             #region Blocker
-
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(
@@ -39,10 +38,21 @@ namespace DCGO.CardEffects.EX7
                     card: card,
                     condition: null));
             }
-
             #endregion
 
-            #region On Play/ When Digivolving Shared
+            #region Shared OP / WD
+            string SharedEffectName = "Reveal the top 6 cards of deck, use an Option card";
+
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    SharedEffectName,
+                    SharedActivateCoroutine,
+                    SharedEffectDescription,
+                    optional: false,
+                    onPlay: true,
+                    whenDigivolving: true);
+
+            string SharedEffectDescription(string tag) => $"[{tag}] Reveal the top 6 cards of your deck. You may use 1 Option card with the [Three Musketeers] trait among them without paying the cost. Return the rest to the top or bottom of the deck.";
 
             bool CanSelectCardSharedCondition(CardSource cardSource)
             {
@@ -51,123 +61,38 @@ namespace DCGO.CardEffects.EX7
                        cardSource.ContainsTraits("Three Musketeers");
             }
 
-            bool CanActivateSharedCondition(Hashtable hashtable)
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-            }
-
-            #endregion
-
-            #region On Play
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reveal the top 6 cards of deck, use an Option card", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return
-                        "[On Play] Reveal the top 6 cards of your deck. You may use 1 Option card with the [Three Musketeers] trait among them without paying the cost. Return the rest to the top or bottom of the deck.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                        revealCount: 6,
-                        simplifiedSelectCardConditions:
-                        new SimplifiedSelectCardConditionClass[]
-                        {
-                            new(
-                                canTargetCondition: CanSelectCardSharedCondition,
-                                message: "Select 1 Option card with the [Three Musketeers] trait.",
-                                mode: SelectCardEffect.Mode.Custom,
-                                maxCount: 1,
-                                selectCardCoroutine: SelectCardCoroutine),
-                        },
-                        remainingCardsPlace: RemainingCardsPlace.DeckTopOrBottom,
-                        activateClass: activateClass,
-                        canNoSelect: true
-                    ));
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
+                    revealCount: 6,
+                    simplifiedSelectCardConditions:
+                    new SimplifiedSelectCardConditionClass[]
                     {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.PlayOptionCards(
-                                cardSources: new List<CardSource>() { cardSource },
-                                activateClass: activateClass,
-                                payCost: false,
-                                root: SelectCardEffect.Root.Library
-                            )
-                        );
-                        yield return null;
-                    }
+                        new SimplifiedSelectCardConditionClass(
+                            canTargetCondition: CanSelectCardSharedCondition,
+                            message: "Select 1 Option card with the [Three Musketeers] trait.",
+                            mode: SelectCardEffect.Mode.Custom,
+                            maxCount: 1,
+                            selectCardCoroutine: SelectCardCoroutine),
+                    },
+                    remainingCardsPlace: RemainingCardsPlace.DeckTopOrBottom,
+                    activateClass: activateClass,
+                    canNoSelect: true
+                ));
+
+                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.PlayOptionCards(
+                            cardSources: new List<CardSource>() { cardSource },
+                            activateClass: activateClass,
+                            payCost: false,
+                            root: SelectCardEffect.Root.Library
+                        )
+                    );
+                    yield return null;
                 }
             }
-
-            #endregion
-
-            #region When Digivolving
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reveal the top 6 cards of deck, use an Option card", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return
-                        "[When Digivolving] Reveal the top 6 cards of your deck. You may use 1 Option card with the [Three Musketeers] trait among them without paying the cost. Return the rest to the top or bottom of the deck.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                        revealCount: 6,
-                        simplifiedSelectCardConditions:
-                        new SimplifiedSelectCardConditionClass[]
-                        {
-                            new(
-                                canTargetCondition: CanSelectCardSharedCondition,
-                                message: "Select 1 Option card with the [Three Musketeers] trait.",
-                                mode: SelectCardEffect.Mode.Custom,
-                                maxCount: 1,
-                                selectCardCoroutine: SelectCardCoroutine),
-                        },
-                        remainingCardsPlace: RemainingCardsPlace.DeckTopOrBottom,
-                        activateClass: activateClass,
-                        canNoSelect: true
-                    ));
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.PlayOptionCards(
-                                cardSources: new List<CardSource>() { cardSource },
-                                activateClass: activateClass,
-                                payCost: false,
-                                root: SelectCardEffect.Root.Library
-                            )
-                        );
-                        yield return null;
-                    }
-                }
-            }
-
             #endregion
 
             #region All Turns
