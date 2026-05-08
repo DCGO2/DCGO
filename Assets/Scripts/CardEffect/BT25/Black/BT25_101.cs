@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.BT25
                             {
                                 yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
 
-                                bool canSelectThisCard = CardEffectCommons.HasMatchConditionPermanent(PermanentThisCardCanLinkToCondition) || CardEffectCommons.HasMatchConditionOwnersBreedingPermanent(card, PermanentThisCardCanLinkToCondition);
+                                bool canSelectThisCard = CardEffectCommons.HasMatchConditionPermanent(PermanentThisCardCanLinkToCondition, true);
                                 bool canSelectTrashCard = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanLinkTrashCardCondition);
 
                                 if (canSelectThisCard || canSelectTrashCard)
