@@ -271,7 +271,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card) &&
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) &&
                            CardEffectCommons.HasMatchConditionPermanent(HasMachinedramon) &&
                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasKimeramon) &&
                            CardEffectCommons.HasMatchConditionOwnersHand(card, HasMillenniummon);

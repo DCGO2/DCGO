@@ -31,7 +31,7 @@ public class BT5_043 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.CanActivateOnDeletion(card))
+                if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                 {
                     if (card.Owner.LibraryCards.Count >= 1)
                     {

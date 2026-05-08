@@ -410,7 +410,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

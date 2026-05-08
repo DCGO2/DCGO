@@ -23,6 +23,13 @@ namespace DCGO.CardEffects.BT25
             }
             #endregion
 
+            #region Blocker
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
             #region All Turns
             if (timing == EffectTiming.WhenRemoveField)
             {
