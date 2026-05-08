@@ -2101,6 +2101,13 @@ public class Permanent
             return false;
         }
 
+        // can not attack from the breeding area
+        if (CardEffectCommons.IsPermanentExistsOnBreedingArea(this))
+        {
+            //any potential CanAttackFromBreedingArea would go here, although other changes would be needed to make the option appear
+            return false;
+        }
+
         //Can not attack during another attack
         if (GManager.instance.attackProcess.IsAttacking)
             return false;
