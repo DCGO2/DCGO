@@ -157,9 +157,13 @@ namespace DCGO.CardEffects.BT25
             #region Reduce Play Cost - Not Shown
             if (timing == EffectTiming.None && !CardEffectCommons.IsExistOnField(card))//do not apply this effect if the card is already in play anywhere to avoid stack overflow on GetCostItself
             {
+                int GetCardCost(CardSource cardSource)// May cause inaccurate number that ignores Pyramidamon effect, but GetCostItself causes stack overflow
+                {
+                    return CardEffectCommons.IsExistOnField(card) ? cardSource.BasePlayCostFromEntity : cardSource.GetCostItself;
+                }
                 List<Permanent> permanents = card.Owner.GetBattleAreaDigimons().Filter(PermanentCondition);
 
-                int reducedCost = permanents.Count > 0 ? permanents.Max(p => p.TopCard.GetCostItself): 0;
+                int reducedCost = permanents.Count > 0 ? permanents.Max(p => GetCardCost(p.TopCard)): 0;
 
                 ChangeCostClass changeCostClass = new ChangeCostClass();
                 changeCostClass.SetUpICardEffect($"Play Cost -{reducedCost}", CanUseCondition1, card);
@@ -179,7 +183,7 @@ namespace DCGO.CardEffects.BT25
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.HasPlayCost
-                        && permanent.TopCard.BasePlayCostFromEntity <= 11 // May cause inaccurate number that ignores Pyramidamon effect, but GetCostItself causes stack overflow
+                        && GetCardCost(permanent.TopCard) <= 11 
                         && permanent.TopCard.HasText("Negamon")
                         && permanent.DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Negamon")) > 0;
                 }
