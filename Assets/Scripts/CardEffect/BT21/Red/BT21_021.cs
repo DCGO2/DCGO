@@ -153,7 +153,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card);
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card);
                 }
 
                 bool CanSelectTamerCondition(Permanent permanent)

@@ -54,29 +54,23 @@ namespace DCGO.CardEffects.BT25
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionOwnersHand(card, TraitedTamer))
-                {
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: TraitedTamer,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.PlayForFree,
-                        cardEffect: activateClass);
+                selectHandEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: TraitedTamer,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: 1,
+                    canNoSelect: true,
+                    canEndNotMax: false,
+                    isShowOpponent: true,
+                    selectCardCoroutine: null,
+                    afterSelectCardCoroutine: null,
+                    mode: SelectHandEffect.Mode.PlayForFree,
+                    cardEffect: activateClass);
 
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-                }
-
-                return null;
+                yield return StartCoroutine(selectHandEffect.Activate());
             }
             #endregion
 

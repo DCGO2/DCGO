@@ -108,7 +108,7 @@ public class BT5_083 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.CanActivateOnDeletion(card))
+                if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer))
                     {

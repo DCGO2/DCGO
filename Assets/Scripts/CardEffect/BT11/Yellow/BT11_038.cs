@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.BT11
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
                         {

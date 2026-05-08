@@ -506,7 +506,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card)
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card)
                         && card.Owner.CanAddSecurity(activateClass);
                 }
 

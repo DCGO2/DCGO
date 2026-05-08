@@ -148,7 +148,7 @@ namespace DCGO.CardEffects.BT15
 
                             bool CanActivateCondition1(Hashtable hashtable)
                             {
-                                if (CardEffectCommons.CanActivateOnDeletion(cardSource))
+                                if (CardEffectCommons.CanActivateOnDeletion(hashtable, cardSource))
                                 {
                                     return true;
                                 }

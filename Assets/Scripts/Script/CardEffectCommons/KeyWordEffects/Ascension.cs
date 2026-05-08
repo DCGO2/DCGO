@@ -21,7 +21,7 @@ public partial class CardEffectCommons
     #region Can activate [Ascension]
     public static bool CanActivateAscension(Hashtable hashtable, CardSource card)
     {
-        return CanActivateOnDeletion(card);
+        return CanActivateOnDeletion(hashtable, card);
     }
     #endregion
 
