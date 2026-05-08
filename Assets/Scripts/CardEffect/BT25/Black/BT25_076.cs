@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    return cardSource == card && CardEffectCommons.IsExistOnHand(cardSource);
+                    return cardSource == card;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent, CardSource cardSource)
@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.BT25
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && !permanent.cardSources.Contains(card)
                         && permanent.TopCard.HasPlayCost
-                        && permanent.TopCard.GetCostItself <= 11
+                        && permanent.TopCard.BasePlayCostFromEntity <= 11 // May cause inaccurate number that ignores Pyramidamon effect, but GetCostItself causes stack overflow
                         && permanent.TopCard.HasText("Negamon")
                         && permanent.DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Negamon")) > 0;
                 }
