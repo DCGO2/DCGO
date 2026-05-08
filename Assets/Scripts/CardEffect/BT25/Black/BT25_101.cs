@@ -194,7 +194,7 @@ namespace DCGO.CardEffects.BT25
                                         {
                                             return permanent.IsDigimon
                                             && CardEffectCommons.IsOwnerPermanent(permanent, card)
-                                            && cardSource.CanLinkToTargetPermanent(permanent, false, true);
+                                            && selectedCardToLink .CanLinkToTargetPermanent(permanent, false, true);
                                         }
 
                                         #region Select Digimon that will gain selected card as link
