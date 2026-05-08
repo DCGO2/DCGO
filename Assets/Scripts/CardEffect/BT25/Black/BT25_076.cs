@@ -160,7 +160,9 @@ namespace DCGO.CardEffects.BT25
             {
                 List<Permanent> permanents = card.Owner.GetBattleAreaDigimons().Filter(PermanentCondition);
 
-                int reducedCost = permanents.Count > 0 ? permanents.Max(p => p.TopCard.GetCostItself): 0;
+                int reducedCost = permanents.Count > 0
+                    ? permanents.Max(p => p.TopCard.BasePlayCostFromEntity)
+                    : 0;
 
                 ChangeCostClass changeCostClass = new ChangeCostClass();
                 changeCostClass.SetUpICardEffect($"Play Cost -{reducedCost}", CanUseCondition1, card);
