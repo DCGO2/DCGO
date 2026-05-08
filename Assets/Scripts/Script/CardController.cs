@@ -3454,6 +3454,8 @@ public class ILinkCard
             yield return ContinuousController.instance.StartCoroutine(_permanent.AddLinkCard(_linkCard, _cardEffect));
 
         WasLinked = _permanent.LinkedCards.Contains(_linkCard);
+
+        _linkCard.Owner.UntilCalculateFixedCostEffect = new List<Func<EffectTiming, ICardEffect>>();
     }
 }
 #endregion
