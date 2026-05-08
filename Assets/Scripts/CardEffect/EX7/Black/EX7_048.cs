@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.EX7
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
-                    "Trash 1 Option card in this Digimon's digivolution cards to prevent 1 other Digimon from leaving Battle Area",
+                    "Trash 1 Option card in this Digimon's digivolution cards to prevent your Digimon from leaving Battle Area",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetHashString("Substitute_EX7_48");
