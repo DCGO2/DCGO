@@ -745,6 +745,7 @@ public class PlayCardClass
 
                 if (card.HasDigiXros && !isEvolution)
                 {
+                    GManager.instance.GetComponent<SelectDigiXrosClass>().SetExcludedCards(CardSources);
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectDigiXrosClass>().Select(card));
                 }
 
@@ -754,6 +755,7 @@ public class PlayCardClass
 
                 if (card.HasAssembly && !isEvolution)
                 {
+                    GManager.instance.GetComponent<SelectAssemblyClass>().SetExcludedCards(CardSources);
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectAssemblyClass>().Select(card));
                 }
 
@@ -1233,6 +1235,7 @@ public class PlayPermanentClass
 
                 if (card.HasDigiXros && !isEvolution)
                 {
+                    GManager.instance.GetComponent<SelectDigiXrosClass>().SetExcludedCards(_cardSources);
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectDigiXrosClass>().Select(card));
                 }
 
@@ -1242,6 +1245,7 @@ public class PlayPermanentClass
 
                 if (card.HasAssembly && !isEvolution)
                 {
+                    GManager.instance.GetComponent<SelectAssemblyClass>().SetExcludedCards(_cardSources);
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectAssemblyClass>().Select(card));
                 }
 
