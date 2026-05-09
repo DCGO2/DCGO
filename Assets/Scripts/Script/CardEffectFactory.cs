@@ -21,7 +21,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.IsExistOnBattleArea(card))
+            if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
             {
                 if (CardEffectCommons.IsOwnerTurn(card))
                 {
@@ -34,7 +34,7 @@ public partial class CardEffectFactory
 
         bool CanActivateCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.IsExistOnBattleArea(card))
+            if (CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass))
             {
                 if (card.Owner.MemoryForPlayer <= 2)
                 {
@@ -73,7 +73,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.IsExistOnBattleArea(card))
+            if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
             {
                 if (CardEffectCommons.IsOwnerTurn(card))
                 {
@@ -86,7 +86,7 @@ public partial class CardEffectFactory
 
         bool CanActivateCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.IsExistOnBattleArea(card))
+            if (CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass))
             {
                 if (card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1)
                 {
@@ -122,12 +122,12 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card);
+            return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
         }
 
         bool CanActivateCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card)
+            return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                 && card.Owner.CanAddMemory(activateClass)
                 && condition()
                 && card.Owner.GetBattleAreaDigimons().Any(permamentCondition);
