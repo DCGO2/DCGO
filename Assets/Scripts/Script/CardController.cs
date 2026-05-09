@@ -1107,7 +1107,9 @@ public class OnEnterFieldHashtableParams
         List<CardSource> evoRootTops,
         SelectCardEffect.Root root,
         List<int> oldLevels,
-        bool isFromDigimonDigivolutionCards)
+        bool isFromDigimonDigivolutionCards,
+        int digiXrosCount = 0,
+        int assemblyCount = 0)
     {
         Permanent = permanent;
 
@@ -1129,6 +1131,10 @@ public class OnEnterFieldHashtableParams
         }
 
         IsFromDigimonDigivolutionCards = isFromDigimonDigivolutionCards;
+
+        DigixrosCount = digiXrosCount;
+
+        AssemblyCount = assemblyCount;
     }
 
     public Permanent Permanent { get; private set; } = null;
@@ -1137,6 +1143,8 @@ public class OnEnterFieldHashtableParams
     public SelectCardEffect.Root Root { get; private set; } = SelectCardEffect.Root.None;
     public List<int> OldLevels { get; private set; } = new List<int>();
     public bool IsFromDigimonDigivolutionCards { get; private set; } = false;
+    public int DigixrosCount { get; private set; } = 0;
+    public int AssemblyCount { get; private set; } = 0;
 }
 
 #endregion
@@ -1399,7 +1407,9 @@ public class PlayPermanentClass
                                         evoRootTops: evoRootTops,
                                         root: _root,
                                         oldLevels: oldLevels,
-                                        isFromDigimonDigivolutionCards:isFromDigimonDigivolutionCards
+                                        isFromDigimonDigivolutionCards:isFromDigimonDigivolutionCards,
+                                        digiXrosCount: _digiXrosCount,
+                                        assemblyCount: _assemblyCount
                                     )
                                 },
                                 isEvolution: isEvolution,
@@ -1638,7 +1648,9 @@ public class PlayPermanentClass
                             evoRootTops: evoRootTops,
                             root: _root,
                             oldLevels: oldLevels,
-                            isFromDigimonDigivolutionCards: isFromDigimonDigivolutionCards
+                            isFromDigimonDigivolutionCards: isFromDigimonDigivolutionCards,
+                            digiXrosCount: _digiXrosCount,
+                            assemblyCount: _assemblyCount
                             )
                     );
                 }
