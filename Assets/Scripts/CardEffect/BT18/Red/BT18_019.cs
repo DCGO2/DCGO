@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
                         return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
 
                     return false;
@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -265,7 +265,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
                         return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
 
                     return false;
@@ -273,7 +273,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
