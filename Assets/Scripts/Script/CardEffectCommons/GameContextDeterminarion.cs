@@ -11,7 +11,7 @@ public partial class CardEffectCommons
 
     public static void EnforceLocationCheck()
     {
-        foreach(ICardEffect cardEffect in CardPermanenceMap.Keys)
+        foreach(ICardEffect cardEffect in CardPermanenceMap.Keys.ToList().Clone())
         {
             if (cardEffect.EffectSourceCard.PermanentOfThisCard() != CardPermanenceMap[cardEffect])
                 CardPermanenceMap[cardEffect] = FailurePermanent;//Mark as a Permanent that nothing else should ever be to ensure it will fail -Activate checks
