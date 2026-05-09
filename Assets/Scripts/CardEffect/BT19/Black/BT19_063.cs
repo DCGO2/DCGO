@@ -167,7 +167,7 @@ namespace DCGO.CardEffects.BT19
                         }
                     }
 
-                    if (CardEffectCommons.IsDijiXros(_hashtable, (count) => count == 2))
+                    if (CardEffectCommons.IsDijiXros(_hashtable, card, (count) => count == 2))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                         {
@@ -270,31 +270,6 @@ namespace DCGO.CardEffects.BT19
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
-                        }
-                    }
-
-                    if (CardEffectCommons.IsDijiXros(_hashtable, (count) => count == 2))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
-                        {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition1));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition1,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
                     }
                 }
