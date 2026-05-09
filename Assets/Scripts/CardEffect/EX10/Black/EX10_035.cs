@@ -213,6 +213,11 @@ namespace DCGO.CardEffects.EX10
 
             #region On Play/When Attacking Shared
 
+            string SharedEffectName = "De-digivolve 2, 2 digimon";
+
+            string SharedEffectDescription(string tag)
+                => $"[{tag}] <De-Digivolve 2> 2 of your opponent's Digimon. (Trash up to 2 cards from the top. You can't trash past level 3 cards.)";
+
             bool CanSelectPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -291,51 +296,14 @@ namespace DCGO.CardEffects.EX10
                 }
             }
 
-            #endregion
-
-            #region On Play
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("De-digivolve 2, 2 digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return "[On Play] <De-Digivolve 2> 2 of your opponent's Digimon. (Trash up to 2 cards from the top. You can't trash past level 3 cards.)";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-            }
-
-            #endregion
-
-            #region When Attacking
-
-            if (timing == EffectTiming.OnAllyAttack)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("De-digivolve 2, 2 digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return "[When Attacking] <De-Digivolve 2> 2 of your opponent's Digimon. (Trash up to 2 cards from the top. You can't trash past level 3 cards.)";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
-            }
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    SharedEffectName,
+                    SharedActivateCoroutine,
+                    SharedEffectDescription,
+                    optional: false,
+                    onPlay: true,
+                    whenAttacking: true);
 
             #endregion
 
