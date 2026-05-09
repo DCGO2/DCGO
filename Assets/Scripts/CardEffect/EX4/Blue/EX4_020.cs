@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.EX4
                                     effectDuration: EffectDuration.UntilEachTurnEnd,
                                     activateClass: activateClass));
 
-                    if (CardEffectCommons.IsDijiXros(_hashtable, (digixrosCount) => digixrosCount >= 1))
+                    if (CardEffectCommons.IsDijiXros(_hashtable, card, (digixrosCount) => digixrosCount >= 1))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {

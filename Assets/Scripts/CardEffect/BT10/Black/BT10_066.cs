@@ -95,7 +95,7 @@ namespace DCGO.CardEffects.BT10
                         }
                     }
 
-                    if (CardEffectCommons.IsDijiXros(_hashtable, (count) => count == 2))
+                    if (CardEffectCommons.IsDijiXros(_hashtable, card, (count) => count == 2))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                         {
