@@ -117,7 +117,7 @@ namespace DCGO.CardEffects.EX6
                             return true;
                         }
                         
-                        if (CardEffectCommons.IsDijiXros(hashtable, count => count >= 1))
+                        if (CardEffectCommons.IsDijiXros(hashtable, card, count => count >= 1))
                         {
                             return true;
                         }
@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.EX6
                         }
                     }
                     
-                    if (CardEffectCommons.IsDijiXros(hashtable, count => count >= 1))
+                    if (CardEffectCommons.IsDijiXros(hashtable, card, count => count >= 1))
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: card.PermanentOfThisCard(), changeValue: 3000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                         
