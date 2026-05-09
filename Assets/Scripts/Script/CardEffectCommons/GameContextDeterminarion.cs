@@ -14,7 +14,7 @@ public partial class CardEffectCommons
         foreach(ICardEffect cardEffect in CardPermanenceMap.Keys)
         {
             if (cardEffect.EffectSourceCard.PermanentOfThisCard() != CardPermanenceMap[cardEffect])
-                CardPermanenceMap[cardEffect] = FailurePermanent;//Mark as a Permanent that nothign else should ever be to ensure it will fail -Activate checks
+                CardPermanenceMap[cardEffect] = FailurePermanent;//Mark as a Permanent that nothing else should ever be to ensure it will fail -Activate checks
         }
     }
 
