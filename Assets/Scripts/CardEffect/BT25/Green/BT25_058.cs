@@ -137,7 +137,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsDigimonCondition)
                             || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsDigimonCondition))
                         && CardEffectCommons.IsByEffect(hashtable, null);
@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool IsBattleTarget(Permanent permanent) => IsOpponentsDigimon(permanent) && permanent.TopCard.HasDP;
 
-                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleArea(card);
+                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateclass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
