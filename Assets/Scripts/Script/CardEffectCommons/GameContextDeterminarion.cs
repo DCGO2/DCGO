@@ -7,11 +7,11 @@ public partial class CardEffectCommons
     public static Dictionary<ICardEffect, Permanent> CardPermanenceMap = new Dictionary<ICardEffect, Permanent>();
 
     #region Invalidate Cards tht are not in their correct location
-    private static Permanent FailurePermanent = new();
+    private static Permanent FailurePermanent = new(new List<CardSource>());
 
     public static void EnforceLocationCheck()
     {
-        foreach(ICardEffect cardEffect in CardPermanenceMap.GetKeys)
+        foreach(ICardEffect cardEffect in CardPermanenceMap.Keys)
         {
             if (cardEffect.EffectSourceCard.PermanentOfThisCard() != CardPermanenceMap[cardEffect])
                 CardPermanenceMap[cardEffect] = FailurePermanent;//Mark as a Permanent that nothign else should ever be to ensure it will fail -Activate checks
