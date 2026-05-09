@@ -1397,6 +1397,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             UseCardEffect = null;
             AttackingPermanent = null;
             DefendingPermanent = null;
+            CardEffectCommons.CardPermanenceMap = new Dictionary<ICardEffect, Permanent>();
         }
         #endregion
     }
@@ -3287,6 +3288,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         #region Reset status until end of turn
         GManager.instance.attackProcess.AttackCount = 0;
+
+        CardEffectCommons.CardPermanenceMap = new Dictionary<ICardEffect, Permanent>();
 
         foreach (Player player in gameContext.Players)
         {
