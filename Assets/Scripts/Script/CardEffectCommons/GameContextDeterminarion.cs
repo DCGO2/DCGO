@@ -6,7 +6,7 @@ public partial class CardEffectCommons
 {
     public static Dictionary<ICardEffect, Permanent> CardPermanenceMap = new Dictionary<ICardEffect, Permanent>();
 
-    #region Invalidate Cards tht are not in their correct location
+    #region Invalidate Cards that are not in their correct location
     private static Permanent FailurePermanent = new();
 
     public static void EnforceLocationCheck()
