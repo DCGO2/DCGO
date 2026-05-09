@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
                         return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
 
                     return false;
@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass))
                     {
                         if (card.Owner.Enemy.TrashCards.Count(CanSelectCardCondition) >= 1)
                         {
@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
                         return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
 
                     return false;
@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass))
                     {
                         if (card.Owner.Enemy.TrashCards.Count(CanSelectCardCondition) >= 1)
                         {
@@ -290,7 +290,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
                         return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
 
                     return false;
@@ -298,7 +298,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass))
                     {
                         if (card.Owner.Enemy.TrashCards.Count(CanSelectCardCondition) >= 1)
                         {

@@ -213,6 +213,11 @@ namespace DCGO.CardEffects.EX10
 
             #region On Play/When Attacking Shared
 
+            string SharedEffectName = "Return 1 suspended Digimon to the bottom of deck";
+
+            string SharedEffectDescription(string tag)
+                => $"[{tag}] Return 1 of your opponent's suspended Digimon to the bottom of the deck.";
+
             bool CanSelectPermanentCondition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
@@ -225,104 +230,39 @@ namespace DCGO.CardEffects.EX10
                 return false;
             }
 
-            bool CanActivateSharedCondition(Hashtable hashtable)
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-            }
-
-            #endregion
-
-            #region On Play
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return 1 suspended Digimon to the bottom of deck", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
-                    return "[On Play] Return 1 of your opponent's suspended Digimon to the bottom of the deck.";
-                }
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                        cardEffect: activateClass);
 
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.PutLibraryBottom,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
             }
 
-            #endregion
-
-            #region When Attacking
-
-            if (timing == EffectTiming.OnAllyAttack)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return 1 suspended Digimon to the bottom of deck", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return "[When Attacking] Return 1 of your opponent's suspended Digimon to the bottom of the deck.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.PutLibraryBottom,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
-                }
-            }
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    SharedEffectName,
+                    SharedActivateCoroutine,
+                    SharedEffectDescription,
+                    optional: false,
+                    onPlay: true,
+                    whenAttacking: true);
 
             #endregion
 

@@ -51,12 +51,13 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -139,13 +140,13 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass) &&
                            CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -323,13 +324,13 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass) && 
                            CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, OtherPermanentDeleted);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass) &&
                            card.Owner.Enemy.SecurityCards.Count > 0;
                 }
 
