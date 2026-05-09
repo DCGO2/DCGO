@@ -6,6 +6,20 @@ public partial class CardEffectCommons
 {
     public static Dictionary<ICardEffect, Permanent> CardPermanenceMap = new Dictionary<ICardEffect, Permanent>();
 
+    #region Invalidate Cards tht are not in their correct location
+    private static Permanent FailurePermanent = new();
+
+    public static void EnforceLocationCheck()
+    {
+        foreach(ICardEffect cardEffect in CardPermanenceMap.GetKeys)
+        {
+            if (cardEffect.EffectSourceCard.PermanentOfThisCard() != CardPermanenceMap[cardEffect])
+                CardPermanenceMap[cardEffect] = FailurePermanent;//Mark as a Permanent that nothign else should ever be to ensure it will fail -Activate checks
+        }
+    }
+
+    #endregion
+
     #region Trigger conditions - Capture current Permanent for card
 
     public static bool IsExistOnFieldTrigger(CardSource card, ICardEffect cardEffect)
