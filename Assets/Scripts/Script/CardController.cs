@@ -4485,7 +4485,7 @@ public class IBattle
     {
         hashtable = new Hashtable();
 
-        if (AttackingPermanent != null)
+        if (AttackingPermanent != null && AttackingPermanent.TopCard.HasDP)
         {
             bool IsExistingDefender()
             {
@@ -4496,12 +4496,12 @@ public class IBattle
                     {
                         if (DefendingPermanent.TopCard != null)
                         {
-                            return true;
+                            return DefendingPermanent.TopCard.HasDP;
                         }
                     }
                     else if (DefendingCard != null)
                     {
-                        return true;
+                        return DefendingCard.HasDP;
                     }
                 }
 
