@@ -738,23 +738,30 @@ public class PlayCardClass
 
             #endregion
 
-            #region select DigiXros
-
-            if (card.HasDigiXros && !isEvolution)
+            if (CardSources.Count == 1) //Do Digixros in this loop if playing 1 card as they will be needed to calculate cost, else will be done just before play
             {
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectDigiXrosClass>().Select(card));
+
+                #region select DigiXros
+
+                if (card.HasDigiXros && !isEvolution)
+                {
+                    GManager.instance.GetComponent<SelectDigiXrosClass>().SetExcludedCards(CardSources);
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectDigiXrosClass>().Select(card));
+                }
+
+                #endregion
+
+                #region select Assembly
+
+                if (card.HasAssembly && !isEvolution)
+                {
+                    GManager.instance.GetComponent<SelectAssemblyClass>().SetExcludedCards(CardSources);
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectAssemblyClass>().Select(card));
+                }
+
+                #endregion
+
             }
-
-            #endregion
-
-            #region select Assembly
-
-            if (card.HasAssembly && !isEvolution)
-            {
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectAssemblyClass>().Select(card));
-            }
-
-            #endregion
 
             #region Bounce Tamer of Burst digivolution
 
@@ -1195,7 +1202,9 @@ public class PlayPermanentClass
     bool _activateETB = true;
     int[] _jogressEvoRootsFrameIDs = null;
     int _digiXrosCount = 0;
+    int _maxDigixrosCount = 0;
     int _assemblyCount = 0;
+    int _maxAssemblyCount = 0;
     bool _burstDigivolved = false;
     int[] _appFusionFrameIDs = null;
     bool _appFusion = false;
@@ -1219,14 +1228,41 @@ public class PlayPermanentClass
         {
             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
+            if (_cardSources.Count > 1) //Do Digixros in this loop if playing more than 1 card as they shouldn't be paying cost and can then correctly work for each card being played
+            {
+
+                #region select DigiXros
+
+                if (card.HasDigiXros && !isEvolution)
+                {
+                    GManager.instance.GetComponent<SelectDigiXrosClass>().SetExcludedCards(_cardSources);
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectDigiXrosClass>().Select(card));
+                }
+
+                #endregion
+
+                #region select Assembly
+
+                if (card.HasAssembly && !isEvolution)
+                {
+                    GManager.instance.GetComponent<SelectAssemblyClass>().SetExcludedCards(_cardSources);
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectAssemblyClass>().Select(card));
+                }
+
+                #endregion
+
+            }
+
             if (GManager.instance.GetComponent<SelectDigiXrosClass>().playCard == card)
             {
                 _digiXrosCount = GManager.instance.GetComponent<SelectDigiXrosClass>().selectedDigicrossCards.Count;
+                _maxDigixrosCount = Math.Max(_digiXrosCount, _maxDigixrosCount);
             }
 
             if (GManager.instance.GetComponent<SelectAssemblyClass>().playCard == card)
             {
                 _assemblyCount = GManager.instance.GetComponent<SelectAssemblyClass>().selectedAssemblyCards.Count;
+                _maxAssemblyCount = Math.Max(_assemblyCount, _maxAssemblyCount);
             }
 
             bool isFromDigimonDigivolutionCards = card.Owner.GetFieldPermanents().Some((permanent) => permanent.DigivolutionCards.Contains(card));
