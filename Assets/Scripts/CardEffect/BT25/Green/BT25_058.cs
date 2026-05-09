@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool IsBattleTarget(Permanent permanent) => IsOpponentsDigimon(permanent) && permanent.TopCard.HasDP;
 
-                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateclass);
+                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
