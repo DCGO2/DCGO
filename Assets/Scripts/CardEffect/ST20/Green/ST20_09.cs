@@ -203,7 +203,6 @@ namespace DCGO.CardEffects.ST20
 
                 bool IsSkippable(Hashtable hashtable)
                 {
-                    List<Permanent> etbPermanents = new List<Permanent>();
                     List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
 
                     if (hashtables != null)
@@ -215,11 +214,9 @@ namespace DCGO.CardEffects.ST20
                             if (permanent != null && MyDigimonAdventurePlayedDigid(permanent))
                                 return false;
                         }
-
-                        etbPermanents = etbPermanents.Filter(MyDigimonAdventurePlayedDigid);
                     }
 
-                    return etbPermanents.Count <= 0;
+                    return true;
                 }
 
                 bool MyDigimonAdventurePlayedDigid(Permanent permanent)
