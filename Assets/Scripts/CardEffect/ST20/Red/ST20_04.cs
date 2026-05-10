@@ -57,10 +57,10 @@ namespace DCGO.CardEffects.ST20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("For the turn, 1 of your Digimon gains <Security A. +1>, and for every 2 colors your Tamers have, gets +2000 DP. (This Digimon checks 1 additional security card.)", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[On Play] For the turn, 1 of your Digimon gains <Security A. +1>, and for every 2 colors your Tamers have, gets +2000 DP. (This Digimon checks 1 additional security card.)";
                 }
@@ -120,12 +120,12 @@ namespace DCGO.CardEffects.ST20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("For the turn, 1 of your Digimon gains<Security A. +1>, and for every 2 colors your Tamers have, gets +2000 DP. (This Digimon checks 1 additional security card.)", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
-                    return "[When Digivolving]For the turn, 1 of your Digimon gains <Security A. +1>, and for every 2 colors your Tamers have, gets +2000 DP. (This Digimon checks 1 additional security card.)";
+                    return "[When Digivolving] For the turn, 1 of your Digimon gains <Security A. +1>, and for every 2 colors your Tamers have, gets +2000 DP. (This Digimon checks 1 additional security card.)";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -194,7 +194,6 @@ namespace DCGO.CardEffects.ST20
 
                 bool IsSkippable(Hashtable hashtable)
                 {
-                    List<Permanent> etbPermanents = new List<Permanent>();
                     List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
 
                     if (hashtables != null)
@@ -206,12 +205,11 @@ namespace DCGO.CardEffects.ST20
                             if (permanent != null && MyDigimonAdventurePlayedDigid(permanent))
                                 return false;
                         }
-
-                        etbPermanents = etbPermanents.Filter(MyDigimonAdventurePlayedDigid);
                     }
 
-                    return etbPermanents.Count <= 0;
+                    return true;
                 }
+
 
                 bool MyDigimonAdventurePlayedDigid(Permanent permanent)
                 {
