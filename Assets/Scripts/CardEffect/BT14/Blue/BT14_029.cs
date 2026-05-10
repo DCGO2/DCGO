@@ -14,10 +14,10 @@ namespace DCGO.CardEffects.BT14
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution cards and ", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Digivolving] Trash any 3 digivolution cards from your opponent's Digimon.";
                 }
@@ -69,11 +69,11 @@ namespace DCGO.CardEffects.BT14
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("Unsuspend_BT14_029");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Attacking] [Once Per Turn] If your opponent has no Digimon with as many or more digivolution cards than this Digimon, unsuspend this Digimon.";
                 }
