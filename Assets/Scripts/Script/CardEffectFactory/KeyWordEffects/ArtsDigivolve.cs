@@ -49,17 +49,14 @@ public partial class CardEffectFactory
 
             IEnumerator SelectPermanentCoroutine(Permanent permanent)
             {
-                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoExcecutingAreaCard(
-                    permanent,
-                    null,
-                    false,
-                    null,
-                    null,
-                    -1,
-                    artsDigivolutionClass,
-                    null,
-                    ignoreSelection: true
-                ));
+                yield return ContinuousController.instance.StartCoroutine(new PlayCardClass(
+                    cardSources: new List<CardSource>() { card },
+                    hashtable: null,
+                    payCost: false,
+                    targetPermanent: permanent,
+                    isTapped: false,
+                    root: SelectCardEffect.Root.Execution,
+                    activateETB: true).PlayCard());
             }
         }
     }
