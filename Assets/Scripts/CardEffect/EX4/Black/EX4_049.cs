@@ -56,7 +56,6 @@ namespace DCGO.CardEffects.EX4
                     {
                         if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
                         {
-                            yield return GManager.instance.photonWaitController.StartWait("Kuresgarurumon_Select_ETB");
                             List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                             {
                                 new SelectionElement<int>(message: $"Deck Bounce", value : 0, spriteIndex: 0),

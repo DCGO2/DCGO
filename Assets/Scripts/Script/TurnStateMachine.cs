@@ -19,9 +19,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     //Wheteher Selecting some card
     public bool IsSelecting = false;
 
-    //Synchronization
-    public bool isSync;
-
     //Effects in use
     public bool isExecuting;
 
@@ -231,7 +228,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         ContinuousController.instance.DoneSetRandom = false;
         #endregion
 
-        yield return GManager.instance.photonWaitController.StartWait("EndSetRandom");
 
         #region デッキカード生成
         yield return StartCoroutine(CardObjectController.CreatePlayerDecks(GManager.instance.CardPrefab, gameContext));
@@ -347,7 +343,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 #if UNITY_EDITOR
         //gameContext.TurnPlayer = GManager.instance.Opponent;
 #endif
-        yield return GManager.instance.photonWaitController.StartWait("StartGame");
 
         #region 先攻・後攻の決定
         if (gameContext.NonTurnPlayer.isYou)
@@ -371,21 +366,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         #endregion
 
-        yield return GManager.instance.photonWaitController.StartWait("EndSelectStartPlayer");
-
         foreach (Player player in gameContext.Players_ForNonTurnPlayer)
         {
             yield return StartCoroutine(new DrawClass(player, 5, null).Draw());
         }
 
-        yield return GManager.instance.photonWaitController.StartWait("EndDrawStartGame");
-
         #region マリガン
         foreach (Player player in gameContext.Players_ForNonTurnPlayer)
         {
             _isRedraw = false;
-
-            yield return GManager.instance.photonWaitController.StartWait($"Mulligan");
 
             if (!player.isYou)
             {
@@ -560,11 +549,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         gameContext.TurnPlayer.TurnCount++;
 
-        isSync = true;
         gameContext.TurnPhase = GameContext.phase.Active;
         Debug.Log($"{gameContext.TurnPlayer}:Start Turn({TurnCount}th Turn)");
-        yield return GManager.instance.photonWaitController.StartWait("StartTrun");
-        isSync = false;
 
         GManager.instance.showTurnPlayerObject.ShowTurnPlayer(gameContext.TurnPlayer);
 
@@ -594,8 +580,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         {
             yield break;
         }
-
-        isSync = true;
 
         #region Unsuspend
 
@@ -677,12 +661,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         PlayLog.OnAddLog?.Invoke($"\nDraw Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
         #endregion
 
-        isSync = true;
         gameContext.TurnPhase = GameContext.phase.Draw;
-        yield return GManager.instance.photonWaitController.StartWait("DrawPhase");
-        isSync = false;
-
-        isSync = true;
 
         #region ドロー
         if (TurnCount != 1)
@@ -731,10 +710,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         PlayLog.OnAddLog?.Invoke($"\nBreeding Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
         #endregion
 
-        isSync = true;
         gameContext.TurnPhase = GameContext.phase.Breeding;
-        yield return GManager.instance.photonWaitController.StartWait("BreedingPhase");
-        isSync = false;
+
         IsSelecting = false;
 
         if (gameContext.TurnPlayer.CanHatch || gameContext.TurnPlayer.CanMove)
@@ -915,10 +892,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         OffFieldCardTarget(gameContext.TurnPlayer);
         #endregion
 
-        isSync = true;
         gameContext.TurnPhase = GameContext.phase.Main;
         Debug.Log($"{gameContext.TurnPlayer}:Main Phase");
-        yield return GManager.instance.photonWaitController.StartWait("MainPhase");
 
         GManager.instance.showPhaseNotificationObject.ShowPhase(GameContext.phase.Main);
 
@@ -929,8 +904,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         // Automatic processing check timing
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
-
-        isSync = false;
 
         bool CanSelect()
         {
@@ -960,8 +933,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         #region Repeat until turn player selects
         while (!endGame)
         {
-            yield return GManager.instance.photonWaitController.StartWait("SetHandCardPlayablity");
-
             //自動処理チェックタイミング
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
             //Handle attack steps
@@ -979,8 +950,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             #region パラメータリセット
             ResetMainPhaseParameter();
             #endregion
-
-            yield return GManager.instance.photonWaitController.StartWait("SetMainPhase");
 
             if (gameContext.TurnPhase == GameContext.phase.Main)
             {
@@ -1197,26 +1166,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             }
 
             ResetUI();
-
-            _timer = 0f;
-
-            while (true)
-            {
-                yield return null;
-                _timer += Time.deltaTime;
-
-                if (!GManager.instance.commandText.gameObject.activeSelf)
-                {
-                    break;
-                }
-
-                if (_timer >= 0.6f)
-                {
-                    GManager.instance.commandText.gameObject.SetActive(false);
-                }
-            }
-
-            yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
             #endregion
 
             #region Use activation effect
@@ -1246,8 +1195,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             #region play cards
             else if (PlayCard != null)
             {
-                isSync = true;
-
                 yield return StartCoroutine(GManager.instance.GetComponent<Effects>().DeleteHandCardEffectCoroutine(PlayCard));
 
                 yield return StartCoroutine(GManager.instance.GetComponent<Effects>().ShowUseHandCardEffect_PlayCard(PlayCard));
@@ -1292,7 +1239,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                 yield return StartCoroutine(playCard.PlayCard());
 
-                isSync = false;
             }
             #endregion
 
@@ -1388,7 +1334,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             #endregion
 
             IsSelecting = false;
-            isSync = false;
+
             PlayCard = null;
             TargetFrameID = -1;
             JogressEvoRootsFrameIDs = new int[0];
@@ -1405,13 +1351,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     #region Added main phase operations
     public IEnumerator SetMainPhase()
     {
-        if (isSync)
-        {
-            yield break;
-        }
-
-        yield return new WaitWhile(() => isSync);
-
         if (gameContext.TurnPhase != GameContext.phase.Main)
         {
             yield break;
@@ -1479,9 +1418,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
         #endregion
 
-        // added
-        yield return new WaitWhile(() => isSync);
-
         #region Click/drag operation
         if (gameContext.TurnPlayer.isYou)
         {
@@ -1497,11 +1433,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                     IEnumerator OnClick_Select()
                     {
-                        if (isSync)
-                        {
-                            yield break;
-                        }
-
                         IsSelecting = true;
 
                         #region Reset cards in other places
@@ -1794,11 +1725,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             #region ドラッグ開始
                             void OnBeginDragAction(FieldPermanentCard fieldPermanentCard2)
                             {
-                                if (isSync)
-                                {
-                                    return;
-                                }
-
                                 if (gameContext.TurnPlayer.FieldPermanentObjects.Count((fieldPermanentCard3) => fieldPermanentCard3.fieldUnitCommandPanel.isActive()) == 0)
                                 {
                                     #region 手札のカードをリセット
@@ -1866,11 +1792,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             #region ドラッグ中
                             void OnDragAction(FieldPermanentCard fieldPermanentCard2, List<DropArea> dropAreas)
                             {
-                                if (isSync)
-                                {
-                                    StartCoroutine(SetMainPhase());
-                                }
-
                                 fieldPermanentCard2.CloseCommandPanel();
 
                                 TargetArrow targetArrow = null;
@@ -1946,11 +1867,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             #region ドラッグ終了
                             void OnEndDragAction(FieldPermanentCard fieldPermanentCard2, List<DropArea> dropAreas)
                             {
-                                if (isSync)
-                                {
-                                    StartCoroutine(SetMainPhase());
-                                }
-
                                 IsSelecting = false;
 
                                 TargetArrow targetArrow = null;
@@ -2068,11 +1984,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     #region At the start of drag
                     void BeginDrag(HandCard handCard1)
                     {
-                        if (isSync)
-                        {
-                            //return;
-                        }
-
                         if (gameContext.TurnPlayer.FieldPermanentObjects.Count((_fieldPermanentCard1) => _fieldPermanentCard1.fieldUnitCommandPanel.isActive()) == 0)
                         {
                             IsSelecting = true;
@@ -2176,11 +2087,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     #region At the end of drag
                     void OnDropCard(List<DropArea> dropAreas)
                     {
-                        if (isSync)
-                        {
-                            StartCoroutine(Return());
-                        }
-
                         if (gameContext.TurnPlayer.FieldPermanentObjects.Count((_fieldPermanentCard1) => _fieldPermanentCard1.fieldUnitCommandPanel.isActive()) == 0)
                         {
                             foreach (FieldPermanentCard fieldPermanentCard in gameContext.TurnPlayer.FieldPermanentObjects)
@@ -2289,8 +2195,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                                         IEnumerator SelectWheterToJogress()
                                                         {
-                                                            isSync = true;
-
                                                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect_SetPosition(handCard.cardSource, Pos));
                                                             handCard.transform.position = handCard.cardSource.Owner.brainStormObject.BrainStormHandCards[0].transform.position;
 
@@ -2338,8 +2242,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                                         IEnumerator SelectWheterToBurst()
                                                         {
-                                                            isSync = true;
-
                                                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect_SetPosition(handCard.cardSource, Pos));
                                                             handCard.transform.position = handCard.cardSource.Owner.brainStormObject.BrainStormHandCards[0].transform.position;
 
@@ -2386,8 +2288,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                                         IEnumerator SelectWheterToAppFusion()
                                                         {
-                                                            isSync = true;
-
                                                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect_SetPosition(handCard.cardSource, Pos));
                                                             handCard.transform.position = handCard.cardSource.Owner.brainStormObject.BrainStormHandCards[0].transform.position;
 
@@ -2433,8 +2333,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                                         IEnumerator SelectJogressTarget()
                                                         {
-                                                            isSync = true;
-
                                                             if (move)
                                                             {
                                                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect_SetPosition(handCard.cardSource, Pos));
@@ -2464,8 +2362,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                                 yield return null;
                                                                 yield return StartCoroutine(Return());
                                                             }
-
-                                                            isSync = false;
                                                         }
                                                     }
                                                     #endregion
@@ -2483,8 +2379,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                                         IEnumerator SelectJogressTarget()
                                                         {
-                                                            isSync = true;
-
                                                             if (move)
                                                             {
                                                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect_SetPosition(handCard.cardSource, Pos));
@@ -2515,8 +2409,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                                 yield return null;
                                                                 yield return StartCoroutine(Return());
                                                             }
-
-                                                            isSync = false;
                                                         }
                                                     }
                                                     #endregion
@@ -2534,8 +2426,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                                         IEnumerator SelectAppFusionTarget()
                                                         {
-                                                            isSync = true;
-
                                                             if (move)
                                                             {
                                                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect_SetPosition(handCard.cardSource, Pos));
@@ -2566,8 +2456,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                                 yield return null;
                                                                 yield return StartCoroutine(Return());
                                                             }
-
-                                                            isSync = false;
                                                         }
                                                     }
                                                     #endregion
@@ -2689,11 +2577,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     #region While dragging
                     void OnDragCard(List<DropArea> dropAreas)
                     {
-                        if (isSync)
-                        {
-                            StartCoroutine(Return());
-                        }
-
                         GManager.instance.memoryObject.OffMemoryPredictionLine();
 
                         if (gameContext.TurnPlayer.FieldPermanentObjects.Count((_fieldUnitCard1) => _fieldUnitCard1.fieldUnitCommandPanel.isActive()) == 0)
@@ -2860,7 +2743,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             }
                         }
 
-                        isSync = false;
                         StartCoroutine(SetMainPhase());
                     }
                 }
@@ -3275,11 +3157,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         OffFieldCardTarget(gameContext.TurnPlayer);
         #endregion
 
-        isSync = true;
         gameContext.TurnPhase = GameContext.phase.End;
         Debug.Log($"{gameContext.TurnPlayer}:End Phase");
-        yield return GManager.instance.photonWaitController.StartWait("EndPhase");
-        isSync = false;
 
         isFirstPlayerFirstTurn = false;
 
@@ -3429,8 +3308,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         ContinuousController.instance.CanSetRandom = false;
-
-        GManager.instance.photonWaitController.ResetKeys();
 
         if (PhotonNetwork.InRoom)
         {

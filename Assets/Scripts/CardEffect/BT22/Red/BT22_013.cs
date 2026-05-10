@@ -195,8 +195,6 @@ namespace DCGO.CardEffects.BT22
 
                     if(CanDelete || CanEvo)
                     {
-                        yield return GManager.instance.photonWaitController.StartWait("WarGreymon_BT22-013");
-
                         List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new(

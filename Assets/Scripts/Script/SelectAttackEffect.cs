@@ -210,7 +210,6 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
         if (active())
         {
-            yield return GManager.instance.photonWaitController.StartWait("SelectAttackEffect");
 
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
             {

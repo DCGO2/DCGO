@@ -163,8 +163,6 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     #region Select
     public IEnumerator Select(CardSource card)
     {
-        GManager.instance.turnStateMachine.isSync = true;
-
         selectedAssemblyCards = new List<CardSource>();
 
         playCard = card;
@@ -175,7 +173,6 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 
             foreach(AssemblyConditionElement element in AssemblyCondition.elements)
             {
-                yield return GManager.instance.photonWaitController.StartWait("SelectAssemblys");
 
                 if (selectedAssemblyCards.Count >= AssemblyCondition.elementCount)
                 {
@@ -209,8 +206,6 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
         }
 
         GManager.instance.GetComponent<Effects>().OffShowCard2();
-
-        GManager.instance.turnStateMachine.isSync = false;
     }
     #endregion
 

@@ -104,8 +104,6 @@ namespace DCGO.CardEffects.BT10
 
                         while (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) >= 1)
                         {
-                            yield return GManager.instance.photonWaitController.StartWait("FlyingHero_selectFirst");
-
                             if (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) >= 2)
                             {
                                 List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()

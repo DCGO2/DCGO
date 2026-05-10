@@ -40,8 +40,6 @@ namespace DCGO.CardEffects.EX2
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return GManager.instance.photonWaitController.StartWait("Justimon_Select_ETB");
-
                     List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new SelectionElement<int>(message: $"DP+2000", value : 0, spriteIndex: 0),
