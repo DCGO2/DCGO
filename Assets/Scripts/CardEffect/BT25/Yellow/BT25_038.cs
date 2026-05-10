@@ -234,7 +234,7 @@ namespace DCGO.CardEffects.BT25
                                             isShowOpponent: true,
                                             mode: SelectCardEffect.Mode.Custom,
                                             root: SelectCardEffect.Root.DigivolutionCards,
-                                            customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                                            customRootCardList: selectedPermanent[0].DigivolutionCards,
                                             canLookReverseCard: true,
                                             selectPlayer: card.Owner,
                                             cardEffect: activateClass);

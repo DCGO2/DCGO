@@ -23,7 +23,8 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend to may place top 2 from deck face down under this tamer", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -43,32 +44,36 @@ namespace DCGO.CardEffects.BT25
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SuspendPeremanentAndProcessAccordingToResult(
-                        new List<Permanent>() { card.PermanentOfThisCard() },
-                        activateClass,
-                        SuccessProcess,
-                        null));
+                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>
+                    {
+                        new(message: $"Suspend and place 2 cards from deck under this card", value: 1, spriteIndex: 0),
+                        new(message: $"Only suspend without placing cards", value: 2, spriteIndex: 0),
+                        new(message: $"No", value: 3, spriteIndex: 1)
+                    };
+
+                    string selectPlayerMessage = "Will you suspend this tamer to place the top 2 cards from your deck under this Tamer face down?";
+                    string notSelectPlayerMessage = "The opponent is choosing whether to place the top 2 cards from their deck under their Tamer face down.";
+
+                    GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    int answer = GManager.instance.userSelectionManager.SelectedIntValue;
+
+                    if (answer != 3)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SuspendPeremanentAndProcessAccordingToResult(
+                            new List<Permanent>() { card.PermanentOfThisCard() },
+                            activateClass,
+                            SuccessProcess,
+                            null));
+                    }
 
                     IEnumerator SuccessProcess(List<Permanent> suspendedPermaments)
                     {
-                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>
-                        {
-                            new(message: $"Yes", value: 1, spriteIndex: 0),
-                            new(message: $"No", value: 2, spriteIndex: 1)
-                        };
-
-                        string selectPlayerMessage = "Will you place the top 2 cards from your deck under this Tamer face down?";
-                        string notSelectPlayerMessage = "The opponent is choosing whether to place the top 2 cards from their deck under their Tamer face down.";
-
-                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                        bool Yes = GManager.instance.userSelectionManager.SelectedIntValue == 1;
-
-                        if (Yes)
+                        if (answer == 1)
                         {
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
                                     new List<CardSource> { card.Owner.LibraryCards[0], card.Owner.LibraryCards[1] }, activateClass, isFacedown: true));
