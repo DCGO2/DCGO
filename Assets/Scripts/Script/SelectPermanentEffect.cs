@@ -284,11 +284,6 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
             }
             #endregion
 
-            if (!_isLocal)
-            {
-                yield return GManager.instance.photonWaitController.StartWait("SelectPermanentEffect");
-            }
-
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
             {
                 GManager.instance.turnStateMachine.OffFieldCardTarget(player);

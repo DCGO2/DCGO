@@ -228,7 +228,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         ContinuousController.instance.DoneSetRandom = false;
         #endregion
 
-        yield return GManager.instance.photonWaitController.StartWait("EndSetRandom");
 
         #region デッキカード生成
         yield return StartCoroutine(CardObjectController.CreatePlayerDecks(GManager.instance.CardPrefab, gameContext));
@@ -344,7 +343,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 #if UNITY_EDITOR
         //gameContext.TurnPlayer = GManager.instance.Opponent;
 #endif
-        yield return GManager.instance.photonWaitController.StartWait("StartGame");
 
         #region 先攻・後攻の決定
         if (gameContext.NonTurnPlayer.isYou)
@@ -368,21 +366,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         #endregion
 
-        yield return GManager.instance.photonWaitController.StartWait("EndSelectStartPlayer");
-
         foreach (Player player in gameContext.Players_ForNonTurnPlayer)
         {
             yield return StartCoroutine(new DrawClass(player, 5, null).Draw());
         }
 
-        yield return GManager.instance.photonWaitController.StartWait("EndDrawStartGame");
-
         #region マリガン
         foreach (Player player in gameContext.Players_ForNonTurnPlayer)
         {
             _isRedraw = false;
-
-            yield return GManager.instance.photonWaitController.StartWait($"Mulligan");
 
             if (!player.isYou)
             {
@@ -559,7 +551,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         gameContext.TurnPhase = GameContext.phase.Active;
         Debug.Log($"{gameContext.TurnPlayer}:Start Turn({TurnCount}th Turn)");
-        yield return GManager.instance.photonWaitController.StartWait("StartTrun");
 
         GManager.instance.showTurnPlayerObject.ShowTurnPlayer(gameContext.TurnPlayer);
 
@@ -671,7 +662,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         #endregion
 
         gameContext.TurnPhase = GameContext.phase.Draw;
-        yield return GManager.instance.photonWaitController.StartWait("DrawPhase");
 
         #region ドロー
         if (TurnCount != 1)
@@ -721,7 +711,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         #endregion
 
         gameContext.TurnPhase = GameContext.phase.Breeding;
-        yield return GManager.instance.photonWaitController.StartWait("BreedingPhase");
 
         IsSelecting = false;
 
@@ -905,7 +894,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         gameContext.TurnPhase = GameContext.phase.Main;
         Debug.Log($"{gameContext.TurnPlayer}:Main Phase");
-        yield return GManager.instance.photonWaitController.StartWait("MainPhase");
 
         GManager.instance.showPhaseNotificationObject.ShowPhase(GameContext.phase.Main);
 
@@ -945,8 +933,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         #region Repeat until turn player selects
         while (!endGame)
         {
-            yield return GManager.instance.photonWaitController.StartWait("SetHandCardPlayablity");
-
             //自動処理チェックタイミング
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
             //Handle attack steps
@@ -964,8 +950,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             #region パラメータリセット
             ResetMainPhaseParameter();
             #endregion
-
-            yield return GManager.instance.photonWaitController.StartWait("SetMainPhase");
 
             if (gameContext.TurnPhase == GameContext.phase.Main)
             {
@@ -3175,7 +3159,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         gameContext.TurnPhase = GameContext.phase.End;
         Debug.Log($"{gameContext.TurnPlayer}:End Phase");
-        yield return GManager.instance.photonWaitController.StartWait("EndPhase");
 
         isFirstPlayerFirstTurn = false;
 
@@ -3325,8 +3308,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         ContinuousController.instance.CanSetRandom = false;
-
-        GManager.instance.photonWaitController.ResetKeys();
 
         if (PhotonNetwork.InRoom)
         {

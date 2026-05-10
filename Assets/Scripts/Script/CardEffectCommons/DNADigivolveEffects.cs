@@ -554,8 +554,6 @@ public partial class CardEffectCommons
             SetJogressEvoRootsController controller = (SetJogressEvoRootsController)component;
             int[] _jogressEvoRootsFrameIDs = new int[0];
 
-            yield return GManager.instance.photonWaitController.StartWait("DNA_Digivolve_by_Effect");
-
             if (owner.isYou || GManager.instance.IsAI)
             {
                 GManager.instance.selectJogressEffect.SetUp_SelectDigivolutionRoots

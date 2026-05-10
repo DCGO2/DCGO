@@ -379,7 +379,6 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 
                 foreach (DigiXrosConditionElement element in digiXrosCondition.elements)
                 {
-                    yield return GManager.instance.photonWaitController.StartWait("SelectDigiXross");
 
                     if (selectedDigicrossCards.Count >= 1)
                     {

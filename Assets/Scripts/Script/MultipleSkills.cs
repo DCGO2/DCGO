@@ -182,7 +182,6 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                 {
                     List<CardSource> RootCardSources = skillInfos_active.Map(skillInfo => skillInfo.CardEffect.EffectSourceCard);
 
-                    yield return GManager.instance.photonWaitController.StartWait("StartSelectMultipleSkill");
 
                     // Blast Digivolution
                     if (IsOnlyHandEffectStacked && IsOnlyOptionalEffectStacked && IsEachStackedEffectHasDistinctSourceCard)
@@ -334,7 +333,6 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
 
                     yield return ContinuousController.instance.StartCoroutine(Activate(!(IsOnlyHandEffectStacked && IsOnlyOptionalEffectStacked && IsEachStackedEffectHasDistinctSourceCard)));
 
-                    yield return GManager.instance.photonWaitController.StartWait("EndSelectMultipleSkill");
                 }
                 #endregion
 

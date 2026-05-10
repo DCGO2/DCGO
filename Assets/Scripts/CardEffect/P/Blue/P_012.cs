@@ -52,7 +52,6 @@ public class P_012 : CEntity_Effect
 
                         yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, hashtable).Tap());
 
-                        yield return GManager.instance.photonWaitController.StartWait("Taichi_Select");
                         List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new SelectionElement<int>(message: $"Draw 1", value : 0, spriteIndex: 0),
