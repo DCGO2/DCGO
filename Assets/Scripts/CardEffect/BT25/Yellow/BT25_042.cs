@@ -121,24 +121,20 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, owner => owner == card.Owner);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 bool CanPlayCardCondition(CardSource cardSource)
-                {
-                    return cardSource.HasPlayCost
-                        && cardSource.HasLevel
-                        && cardSource.Level <= 4
-                        && (cardSource.EqualsTraits("Angel")
-                            || cardSource.EqualsTraits("Iliad"))
-                        && CardEffectCommons.CanPlayAsNewPermanent(card, false, activateClass);
-                }
+                    => cardSource.HasLevel
+                       && cardSource.Level <= 4
+                       && (cardSource.EqualsTraits("Angel") || cardSource.HasIliadTraits)
+                       && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
                 bool IsOwnedDigimon(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
