@@ -69,8 +69,6 @@ namespace DCGO.CardEffects.BT14
 
             if (timing == EffectTiming.OnAllyAttack)
             {
-                int digivolutionCardCount = card.PermanentOfThisCard().DigivolutionCards.Count;
-
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
@@ -85,6 +83,14 @@ namespace DCGO.CardEffects.BT14
 
                 bool IsSkippable(Hashtable hashtable)
                 {
+                    int digivolutionCardCount = card.PermanentOfThisCard().DigivolutionCards.Count;
+
+                    bool HasMoreDigivolutionCardsCondition(Permanent permanent)
+                    {
+                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                            && permanent.DigivolutionCards.Count > digivolutionCardCount;
+                    }
+
                     return CardEffectCommons.HasMatchConditionPermanent(HasMoreDigivolutionCardsCondition);
                 }
 
@@ -99,15 +105,9 @@ namespace DCGO.CardEffects.BT14
                     return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
-                bool HasMoreDigivolutionCardsCondition(Permanent permanent)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && permanent.DigivolutionCards.Count > digivolutionCardCount;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (!CardEffectCommons.HasMatchConditionPermanent(HasMoreDigivolutionCardsCondition))
+                    if (!IsSkippable(hashtable))
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                     }
