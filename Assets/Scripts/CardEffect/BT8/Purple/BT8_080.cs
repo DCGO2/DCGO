@@ -149,7 +149,7 @@ public class BT8_080 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
+                if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
                 {
                     if (CardEffectCommons.CanActivateSelfOnDeletionWithContainingCardName(hashtable, "Myotismon", card))
                     {

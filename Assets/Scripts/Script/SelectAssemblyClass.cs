@@ -11,6 +11,7 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 {
     public List<CardSource> selectedAssemblyCards { get; private set; } = new List<CardSource>();
     public List<AddDigivolutionCardsInfo> addDigivolutionCardInfos { get; private set; } = new List<AddDigivolutionCardsInfo>();
+    public List<CardSource> excludedCards { get; private set; } = new List<CardSource>();
     public CardSource playCard { get; private set; } = null;
 
     public void ResetSelectAssemblyClass()
@@ -23,6 +24,11 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     public void AddDigivolutionCardInfos(AddDigivolutionCardsInfo digivolutionCardsInfo)
     {
         addDigivolutionCardInfos.Add(digivolutionCardsInfo);
+    }
+
+    public void SetExcludedCards(List<CardSource> excluded)
+    {
+        excludedCards = excluded;
     }
 
     #region Is Trash Card
@@ -43,6 +49,9 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     #region Can Select Assembly
     bool CanSelectAssembly(AssemblyConditionElement element, CardSource targetCard, CardSource card)
     {
+        if (excludedCards.Contains(targetCard))
+            return false;
+
         if (card != targetCard)
         {
             if (card != null)

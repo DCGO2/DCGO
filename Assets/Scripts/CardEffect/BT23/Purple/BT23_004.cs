@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

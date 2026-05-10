@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card) &&
+                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card) &&
                            CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasTamer); 
                 }
 

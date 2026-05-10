@@ -21,7 +21,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.IsExistOnBattleArea(card))
+            if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
             {
                 if (CardEffectCommons.IsOwnerTurn(card))
                 {
@@ -34,7 +34,7 @@ public partial class CardEffectFactory
 
         bool CanActivateCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.IsExistOnBattleArea(card))
+            if (CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass))
             {
                 if (card.Owner.MemoryForPlayer <= 2)
                 {
@@ -73,7 +73,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.IsExistOnBattleArea(card))
+            if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
             {
                 if (CardEffectCommons.IsOwnerTurn(card))
                 {
@@ -86,7 +86,7 @@ public partial class CardEffectFactory
 
         bool CanActivateCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.IsExistOnBattleArea(card))
+            if (CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass))
             {
                 if (card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1)
                 {
@@ -122,12 +122,12 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card);
+            return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
         }
 
         bool CanActivateCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card)
+            return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                 && card.Owner.CanAddMemory(activateClass)
                 && condition()
                 && card.Owner.GetBattleAreaDigimons().Any(permamentCondition);
@@ -959,14 +959,14 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card) &&
+            return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass) &&
                     CardEffectCommons.CanTriggerOnMove(hashtable, PermanentCondition) && 
                     (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
 
         bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card) && 
+            return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass) && 
                 (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }
@@ -992,14 +992,14 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card) &&
+            return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass) &&
                 CardEffectCommons.CanTriggerOnPlay(hashtable, card) && 
                 (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
 
         bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card) && 
+            return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass) && 
                 (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }
@@ -1026,14 +1026,14 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card) &&
+            return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass) &&
                 CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card) && 
                 (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
 
         bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card) && 
+            return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass) && 
                 (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }
@@ -1059,14 +1059,14 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card) &&
+            return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass) &&
                 CardEffectCommons.CanTriggerOnAttack(hashtable, card) && 
                 (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
 
         bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card) && 
+            return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass) && 
                 (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }
@@ -1099,8 +1099,7 @@ public partial class CardEffectFactory
 
         bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return ((!(isInherited || isLinked) && CardEffectCommons.CanActivateOnDeletion(card)) 
-                    || ((isInherited || isLinked) && CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card)))
+            return CardEffectCommons.CanActivateOnDeletion(hashtable, card)
                 && (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }
@@ -1128,14 +1127,14 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card) &&
+            return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass) &&
                 CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card) &&
                 (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
 
         bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card) &&
+            return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass) &&
                 (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }
@@ -1186,7 +1185,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card)
+            return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                 && CardEffectCommons.CanTriggerOnAttack(hashtable, card)
                 && (additionalUseCondition == null 
                     || additionalUseCondition(hashtable, activateClass));
@@ -1194,7 +1193,7 @@ public partial class CardEffectFactory
 
         bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card) &&
+            return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass) &&
                 (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
 
@@ -1224,7 +1223,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card)
+            return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                 && CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, permanent => CardEffectCommons.IsOpponentPermanent(permanent, card))
                 && (additionalUseCondition == null 
                     || additionalUseCondition(hashtable, activateClass));
@@ -1232,7 +1231,7 @@ public partial class CardEffectFactory
 
         bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card) &&
+            return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass) &&
                 (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
 
@@ -1266,7 +1265,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card)
+            return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                 && (!yourTurn || CardEffectCommons.IsOwnerTurn(card))
                 && (!opponentTurn || CardEffectCommons.IsOpponentTurn(card))
                 && (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
@@ -1274,7 +1273,7 @@ public partial class CardEffectFactory
 
         bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.IsExistOnBattleArea(card) &&
+            return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass) &&
                 (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
 

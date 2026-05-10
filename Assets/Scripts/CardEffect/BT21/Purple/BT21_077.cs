@@ -281,7 +281,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlay);
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlay);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -361,7 +361,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlay);
+                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlay);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

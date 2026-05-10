@@ -132,7 +132,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card);
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card);
                 }
             }
 
