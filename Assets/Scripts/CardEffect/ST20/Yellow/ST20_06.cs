@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 //ST20 Angewomon
 namespace DCGO.CardEffects.ST20
