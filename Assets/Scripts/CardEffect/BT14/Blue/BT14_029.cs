@@ -88,7 +88,6 @@ namespace DCGO.CardEffects.BT14
                     return CardEffectCommons.HasMatchConditionPermanent(HasMoreDigivolutionCardsCondition);
                 }
 
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
