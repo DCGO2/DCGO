@@ -428,7 +428,7 @@ namespace DCGO.CardEffects.ST20
                         }
                     }
 
-                    if (Used)
+                    if (!Used)
                     {
                         activateClass.RemoveUse();
                     }
