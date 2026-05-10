@@ -338,7 +338,7 @@ namespace DCGO.CardEffects.BT21
                         }
                     }
 
-                    if (Used)
+                    if (!Used)
                     {
                         activateClass.RemoveUse();
                     }
