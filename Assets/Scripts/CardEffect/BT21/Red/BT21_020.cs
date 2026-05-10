@@ -203,7 +203,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCard) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCard))
                         {
@@ -356,7 +356,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCard) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCard))
                         {

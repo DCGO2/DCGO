@@ -34,33 +34,31 @@ namespace DCGO.CardEffects.BT25
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    return cardSource == card && CardEffectCommons.IsExistOnHand(cardSource);
+                    return cardSource == card;
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent, CardSource cardSource)
+                bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent != null
                         && permanent.TopCard.HasPlayCost
                         && permanent.TopCard.GetCostItself <= 11
                         && permanent.TopCard.HasText("Negamon")
                         && permanent.DigivolutionCards.Count((digiCard) => digiCard.EqualsCardName("Negamon")) > 0
                         && !permanent.TopCard.CanNotBeAffected(activateClass)
-                        && cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) - permanent.TopCard.GetCostItself <= cardSource.Owner.MaxMemoryCost;//Check the permanent would sufficiently reduce cost to make a valid play
+                        && card.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) - permanent.TopCard.GetCostItself <= card.Owner.MaxMemoryCost;//Check the permanent would sufficiently reduce cost to make a valid play
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.MatchConditionPermanentCount(permanent => CanSelectPermanentCondition(permanent, CardEffectCommons.GetCardFromHashtable(hashtable))) >= 1;
+                    return CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool canNoSelect = true;
-                    CardSource cardFromHashtable = CardEffectCommons.GetCardFromHashtable(hashtable);
 
-                    if (cardFromHashtable && cardFromHashtable.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) >
-                        cardFromHashtable.Owner.MaxMemoryCost)
+                    if (card.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) >
+                        card.Owner.MaxMemoryCost)
                     {
                         canNoSelect = false;
                     }
@@ -69,7 +67,7 @@ namespace DCGO.CardEffects.BT25
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: permanent => CanSelectPermanentCondition(permanent, cardFromHashtable),
+                        canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
@@ -157,17 +155,15 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region Reduce Play Cost - Not Shown
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.None && !CardEffectCommons.IsExistOnField(card))//do not apply this effect if the card is already in play anywhere to avoid stack overflow on GetCostItself
             {
-                List<Permanent> permanents = card.Owner.GetBattleAreaDigimons().Where(permanent =>
-                    CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && permanent != null
-                    && permanent.TopCard.HasPlayCost
-                    && permanent.TopCard.GetCostItself <= 11
-                    && permanent.TopCard.HasText("Negamon")
-                    && permanent.DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Negamon")) > 0).ToList();
+                int GetCardCost(CardSource cardSource)// May cause inaccurate number that ignores Pyramidamon effect, but GetCostItself causes stack overflow
+                {
+                    return CardEffectCommons.IsExistOnField(card) ? cardSource.BasePlayCostFromEntity : cardSource.GetCostItself;
+                }
+                List<Permanent> permanents = card.Owner.GetBattleAreaDigimons().Filter(PermanentCondition);
 
-                int reducedCost = permanents.Count > 0 ? permanents.Max(p => p.TopCard.GetCostItself): 0;
+                int reducedCost = permanents.Count > 0 ? permanents.Max(p => GetCardCost(p.TopCard)): 0;
 
                 ChangeCostClass changeCostClass = new ChangeCostClass();
                 changeCostClass.SetUpICardEffect($"Play Cost -{reducedCost}", CanUseCondition1, card);
@@ -180,15 +176,14 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanUseCondition1(Hashtable hashtable1)
                 {
-                    return CardEffectCommons.MatchConditionPermanentCount(PermanentCondition) >= 1;
+                    return CardEffectCommons.HasMatchConditionPermanent(PermanentCondition);
                 }
 
                 bool PermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent != null
                         && permanent.TopCard.HasPlayCost
-                        && permanent.TopCard.GetCostItself <= 11
+                        && GetCardCost(permanent.TopCard) <= 11 
                         && permanent.TopCard.HasText("Negamon")
                         && permanent.DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Negamon")) > 0;
                 }

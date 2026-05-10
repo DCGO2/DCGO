@@ -1359,6 +1359,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             UseCardEffect = null;
             AttackingPermanent = null;
             DefendingPermanent = null;
+            CardEffectCommons.CardPermanenceMap = new Dictionary<ICardEffect, Permanent>();
         }
         #endregion
     }
@@ -2817,7 +2818,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             List<ICardEffect> cardEffects = new List<ICardEffect>();
                             List<ICardEffect> cardEffects1 = new List<ICardEffect>();
 
-                            foreach (ICardEffect cardEffect in handCard.cardSource.EffectList(EffectTiming.OnDeclaration))
+                            foreach (ICardEffect cardEffect in handCard.cardSource.CanDeclareSkillList)
                             {
                                 cardEffects1.Add(cardEffect);
                                 cardEffects.Add(cardEffect);
@@ -3088,9 +3089,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         CardSource UseSkillCard = gameContext.ActiveCardList[cardIndex];
 
-        if (0 <= skillIndex && skillIndex < UseSkillCard.EffectList(EffectTiming.OnDeclaration).Count)
+        if (0 <= skillIndex && skillIndex < UseSkillCard.CanDeclareSkillList.Count)
         {
-            this.UseCardEffect = UseSkillCard.EffectList(EffectTiming.OnDeclaration)[skillIndex];
+            this.UseCardEffect = UseSkillCard.CanDeclareSkillList[skillIndex];
         }
     }
     #endregion
@@ -3183,6 +3184,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         #region Reset status until end of turn
         GManager.instance.attackProcess.AttackCount = 0;
+
+        CardEffectCommons.CardPermanenceMap = new Dictionary<ICardEffect, Permanent>();
 
         foreach (Player player in gameContext.Players)
         {

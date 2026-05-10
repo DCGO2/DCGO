@@ -250,7 +250,13 @@ namespace DCGO.CardEffects.BT25
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerWhenLinking(hashtable, permanent => permanent == card.PermanentOfThisCard(), null);
+                        && CardEffectCommons.CanTriggerWhenLinked(hashtable, ThisDigimonPermamentCondition, null);
+                }
+
+                bool ThisDigimonPermamentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent == card.PermanentOfThisCard();
                 }
             }
 

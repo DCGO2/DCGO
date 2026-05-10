@@ -116,7 +116,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card)
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, SharedGhostDigimon);
                 }
 
@@ -150,7 +150,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

@@ -282,7 +282,7 @@ namespace DCGO.CardEffects.BT25
 
                             CardEffectCommons.AddEffectToPermanent(
                                 targetPermanent: permanent, 
-                                effectDuration: EffectDuration.UntilOwnerTurnEnd, 
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd, 
                                 card: card, 
                                 cardEffect: canNotEvolveClass, 
                                 timing: EffectTiming.None);
@@ -314,7 +314,7 @@ namespace DCGO.CardEffects.BT25
 
                 string EffectDescription()
                 {
-                    return "[When Linking] 1 of your opponent's Digimon or Tamers can't unsuspend until their turn ends.";
+                    return "[When Linking] 2 of your opponent's Digimon or Tamers can't unsuspend until their turn ends.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

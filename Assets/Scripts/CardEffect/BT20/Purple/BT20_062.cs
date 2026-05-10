@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card) &&
+                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card) &&
                            card.Owner.HandCards.Count >= 1;
                 }
 

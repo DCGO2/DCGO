@@ -17,7 +17,7 @@ public partial class CardEffectCommons
     {
         if (IsExistOnTrash(card))
         {
-            if (!isInheritedEffect || CanActivateOnDeletionInherited(hashtable, card))
+            if (!isInheritedEffect || CanActivateOnDeletion( hashtable, card))
             {
                 List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
 

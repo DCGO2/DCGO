@@ -161,6 +161,8 @@ public partial class CardEffectCommons
                     {"evoRootTops", hashtableParam.EvoRootTops.Clone()},
                     {"Root", hashtableParam.Root},
                     {"oldLevels", hashtableParam.OldLevels.Clone()},
+                    {"DigiXrosCount", hashtableParam.DigixrosCount},
+                    {"AssemblyCount", hashtableParam.AssemblyCount}
                 };
 
                 return hashtableOfPermanent;
