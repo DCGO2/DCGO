@@ -187,8 +187,6 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        yield return GManager.instance.photonWaitController.StartWait("MetalGarurumon_BT17");
-
                         List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new(message: "1 of your opponent's Digimon or Tamers can't suspend until the end of their turn. ",
@@ -396,8 +394,6 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        yield return GManager.instance.photonWaitController.StartWait("MetalGarurumon_BT17");
-
                         List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new(message: "1 of your opponent's Digimon or Tamers can't suspend until the end of their turn. ",

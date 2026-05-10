@@ -142,8 +142,6 @@ namespace DCGO.CardEffects.EX3
 
                         while (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) >= 1)
                         {
-                            yield return GManager.instance.photonWaitController.StartWait("AvalonsGate_selectFirst");
-
                             if (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) >= 2)
                             {
                                 List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()

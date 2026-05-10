@@ -551,7 +551,6 @@ public class PlayCardClass
 
                                             selectCountEffect.SetCandidates(CostList);
                                             selectCountEffect.SetPreferMin(true);
-                                            selectCountEffect.SetNotDoSync(true);
                                             selectCountEffect.SetIsDigivolutionCost(true);
 
                                             yield return ContinuousController.instance.StartCoroutine(selectCountEffect.Activate());
@@ -800,7 +799,6 @@ public class PlayCardClass
                     appFusion = true;
                 }
 
-                yield return GManager.instance.photonWaitController.StartWait("AppFuse");
             }
 
             #endregion
@@ -1279,8 +1277,6 @@ public class PlayPermanentClass
 
             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
-            GManager.instance.turnStateMachine.isSync = true;
-
             Permanent permanent = null;
             isEvolution = false;
             List<CardSource> evoRoots = new List<CardSource>();
@@ -1389,8 +1385,6 @@ public class PlayPermanentClass
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.CreateNewPermanent(permanent, frameId));
                             permanent.EnterFieldTurnCount = GManager.instance.turnStateMachine.TurnCount;
                         }
-
-                        GManager.instance.turnStateMachine.isSync = true;
 
                         if (GManager.instance.turnStateMachine.DoneStartGame)
                         {
@@ -1660,7 +1654,6 @@ public class PlayPermanentClass
             GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
             GManager.instance.GetComponent<SelectDNACondition>().ResetSelectDNAConditionClass();
 
-            yield return GManager.instance.photonWaitController.StartWait("EndPlayPermanent");
         }
 
         // except [On Play] effect
@@ -1744,8 +1737,6 @@ public class UseOptionClass
             PlayLog.OnAddLog?.Invoke($"\nPlay Option:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
             card.Init();
-
-            GManager.instance.turnStateMachine.isSync = true;
 
             card.SetFace();
 
@@ -1901,7 +1892,6 @@ public class UseOptionClass
 
             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
-            yield return GManager.instance.photonWaitController.StartWait("EndPlayOption");
         }
     }
 }

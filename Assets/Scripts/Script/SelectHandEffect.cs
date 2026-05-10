@@ -179,11 +179,6 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
 
             _targetCards = new List<CardSource>();
 
-            if (!_isLocal)
-            {
-                yield return GManager.instance.photonWaitController.StartWait("SelectHandEffect");
-            }
-
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
             {
                 GManager.instance.turnStateMachine.OffFieldCardTarget(player);
