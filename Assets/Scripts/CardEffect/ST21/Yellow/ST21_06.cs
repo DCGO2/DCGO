@@ -350,7 +350,7 @@ namespace DCGO.CardEffects.ST21
                         }
                     }
 
-                    if (Used)
+                    if (!Used)
                     {
                         activateClass.RemoveUse();
                     }
