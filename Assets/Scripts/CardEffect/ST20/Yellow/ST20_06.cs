@@ -273,8 +273,7 @@ namespace DCGO.CardEffects.ST20
                         etbPermanents = etbPermanents.Filter(MyDigimonAdventurePlayedDigid);
                     }
 
-                    return etbPermanents.Count <= 0
-                        && CardEffectCommons.HasMatchConditionPermanent(MyDigimonAlliance);
+                    return etbPermanents.Count <= 0;
                 }
 
                 bool MyDigimonAdventurePlayedDigid(Permanent permanent)
