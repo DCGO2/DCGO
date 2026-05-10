@@ -423,7 +423,11 @@ namespace DCGO.CardEffects.ST20
                             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
                         
-                        IEnumerator AfterOnAttackCoroutine() { Used = true; yield return null; }
+                        IEnumerator AfterOnAttackCoroutine() 
+                        { 
+                            Used = true;
+                            yield return null; 
+                        }
                     }
 
                     if (Used)
