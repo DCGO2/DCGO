@@ -266,8 +266,8 @@ namespace DCGO.CardEffects.ST20
                         {
                             Permanent permanent = CardEffectCommons.GetPermanentFromHashtable(hashtable1);
 
-                            if (permanent != null)
-                                if (MyDigimonAdventurePlayedDigid(permanent)) return false;
+                            if (permanent != null && MyDigimonAdventurePlayedDigid(permanent))
+                                return false;
                         }
 
                         etbPermanents = etbPermanents.Filter(MyDigimonAdventurePlayedDigid);
