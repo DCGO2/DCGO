@@ -551,7 +551,6 @@ public class PlayCardClass
 
                                             selectCountEffect.SetCandidates(CostList);
                                             selectCountEffect.SetPreferMin(true);
-                                            selectCountEffect.SetNotDoSync(true);
                                             selectCountEffect.SetIsDigivolutionCost(true);
 
                                             yield return ContinuousController.instance.StartCoroutine(selectCountEffect.Activate());
@@ -800,7 +799,6 @@ public class PlayCardClass
                     appFusion = true;
                 }
 
-                yield return GManager.instance.photonWaitController.StartWait("AppFuse");
             }
 
             #endregion
@@ -1656,7 +1654,6 @@ public class PlayPermanentClass
             GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
             GManager.instance.GetComponent<SelectDNACondition>().ResetSelectDNAConditionClass();
 
-            yield return GManager.instance.photonWaitController.StartWait("EndPlayPermanent");
         }
 
         // except [On Play] effect
@@ -1895,7 +1892,6 @@ public class UseOptionClass
 
             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
-            yield return GManager.instance.photonWaitController.StartWait("EndPlayOption");
         }
     }
 }

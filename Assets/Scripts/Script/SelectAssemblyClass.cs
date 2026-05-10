@@ -173,7 +173,6 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 
             foreach(AssemblyConditionElement element in AssemblyCondition.elements)
             {
-                yield return GManager.instance.photonWaitController.StartWait("SelectAssemblys");
 
                 if (selectedAssemblyCards.Count >= AssemblyCondition.elementCount)
                 {

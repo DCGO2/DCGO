@@ -126,7 +126,6 @@ public class BT5_082 : CEntity_Effect
 
                     while (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) >= 1)
                     {
-                        yield return GManager.instance.photonWaitController.StartWait("Tactimon_selectFirst");
 
                         if (canSelectEffects.Count((effect) => !activatedEffects.Contains(effect)) >= 2)
                         {
