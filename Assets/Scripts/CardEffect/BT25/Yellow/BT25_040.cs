@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.BT25
                         && cardSource.HasLevel
                         && cardSource.Level <= 4
                         && (cardSource.EqualsTraits("Angel") || cardSource.EqualsTraits("Iliad"))
-                        && CardEffectCommons.CanPlayAsNewPermanent(card, false, activateClass);
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
