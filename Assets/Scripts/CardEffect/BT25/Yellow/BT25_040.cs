@@ -202,12 +202,12 @@ namespace DCGO.CardEffects.BT25
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDescription() => "[All Turns] (Once Per Turn) When security stacks are removed from, 1 of your opponent's Digimon gets -4000 DP for the turn.";
+                string EffectDescription() => "[All Turns] [Once Per Turn] When your security stack is removed from, 1 of your opponent's Digimon gets -4000 DP for the turn.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, _ => true);
+                           CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
