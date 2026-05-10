@@ -166,9 +166,8 @@ namespace DCGO.CardEffects.BT21
                     return "[Your Turn][Once Per Turn] When your other Digimon are played or digivolve, if any of them have the [ADVENTURE] trait, 1 of your Digimon gains <Alliance> for the turn. Then, 1 of your Digimon may attack.";
                 }
 
-                bool IsSkippable(Hashtable hashtable)
+                                bool IsSkippable(Hashtable hashtable)
                 {
-                    List<Permanent> etbPermanents = new List<Permanent>();
                     List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
 
                     if (hashtables != null)
@@ -180,13 +179,10 @@ namespace DCGO.CardEffects.BT21
                             if (permanent != null && MyDigimonAdventurePlayedDigid(permanent))
                                 return false;
                         }
-
-                        etbPermanents = etbPermanents.Filter(MyDigimonAdventurePlayedDigid);
                     }
 
-                    return etbPermanents.Count <= 0;
+                    return true;
                 }
-
 
                 bool MyDigimonAdventurePlayedDigid(Permanent permanent)
                 {
