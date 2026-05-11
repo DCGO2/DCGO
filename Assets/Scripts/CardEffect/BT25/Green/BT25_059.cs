@@ -82,6 +82,7 @@ namespace DCGO.CardEffects.BT25
                 bool CardCondition(CardSource cardSource)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource)
+                        && cardSource.Owner == card.Owner
                         && cardSource == cardSource.PermanentOfThisCard().TopCard
                         && cardSource.PermanentOfThisCard().IsSuspended
                         && (cardSource.HasTSTraits || cardSource.EqualsTraits("Vegetation"));
