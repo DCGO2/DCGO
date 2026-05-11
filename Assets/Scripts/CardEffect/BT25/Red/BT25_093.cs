@@ -56,8 +56,11 @@ namespace DCGO.CardEffects.BT25
                     => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
 
                 bool CanSelectOwnerPermamentCondition(Permanent permanent)
-                    => (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) || CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card))
+                {
+                    return CardEffectCommons.IsOwnerPermanent(permanent, card)
+                        && permanent.IsDigimon
                         && card.CanLinkToTargetPermanent(permanent, false, true);
+                }
 
                 bool CanSelectEnemyOptionCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
@@ -111,7 +114,7 @@ namespace DCGO.CardEffects.BT25
 
 
                     // Link to 1 Owner digimon on the field
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectOwnerPermamentCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnerPermamentCondition, true))
                     {
                         Permanent selectedPermament = null;
 
