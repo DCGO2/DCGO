@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.LM
 
                 string EffectDescription()
                 {
-                    return "[Main] Reveal the top 2 cards of your deck. Add 1 Red or Purple card among them to the hand. Return the rest at the bottom of your deck. Then, place this card in the battle area.";
+                    return "[Main] Reveal the top 2 cards of your deck. Add 1 Yellow or Blue card among them to the hand. Return the rest at the bottom of your deck. Then, place this card in the battle area.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -67,7 +67,7 @@ namespace DCGO.CardEffects.LM
                         {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 Red or Purple card.",
+                            message: "Select 1 Yellow or Blue card.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
