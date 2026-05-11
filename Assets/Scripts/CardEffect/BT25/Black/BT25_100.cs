@@ -80,8 +80,8 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanSelectOwnerPermamentCondition(Permanent permanent)
                 {
-                    return permanent.IsDigimon
-                        && CardEffectCommons.IsOwnerPermanent(permanent, card)
+                    return CardEffectCommons.IsOwnerPermanent(permanent, card)
+                        && permanent.IsDigimon
                         && card.CanLinkToTargetPermanent(permanent, false, true);
                 }
 
