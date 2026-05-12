@@ -281,7 +281,7 @@ namespace DCGO.CardEffects.P
                     SharedEffectDescription,
                     optional: false,
                     onPlay: true,
-                    whenAttacking: true);
+                    whenDigivolving: true);
 
             #endregion
 
