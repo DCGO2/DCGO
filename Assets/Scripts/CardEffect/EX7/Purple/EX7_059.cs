@@ -294,7 +294,7 @@ namespace DCGO.CardEffects.EX7
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 option from digivolution cards to play 1 Option", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1 option from digivolution cards to use 1 Option", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("PlayOption_EX7-059");
                 cardEffects.Add(activateClass);
