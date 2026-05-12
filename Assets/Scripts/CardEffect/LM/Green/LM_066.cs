@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.LM
             #endregion
 
             #region Shared WD / WA
-            string SharedHashString = "LM_066_WD/WA";    
+            string SharedHashString = "LM_066_WD/WA";
             string SharedEffectName = "May unsuspend 1 Digimon, then may battle 1 enemy Digimon";
             string SharedEffectDescription(string tag) => $"[{tag}] [Once Per Turn] You may unsuspend 1 Digimon. Then, this Digimon may battle 1 of your opponent's Digimon.";
 
@@ -191,18 +191,26 @@ namespace DCGO.CardEffects.LM
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Tap,
+                        mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
                         selectedPermament = permanent;
+                        Used = true;
+
                         yield return null;
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    if (selectedPermament != null && selectedPermament.IsSuspended)
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SuspendPeremanentAndProcessAccordingToResult(
+                        new List<Permanent>() { selectedPermament },
+                        activateClass,
+                        SuccessProcess,
+                        null));
+
+                    IEnumerator SuccessProcess(List<Permanent> suspendedPermaments)
                     {
                         card.PermanentOfThisCard().willBeRemoveField = false;
 
@@ -211,7 +219,7 @@ namespace DCGO.CardEffects.LM
                         card.PermanentOfThisCard().HideDeckBounceEffect();
                         card.PermanentOfThisCard().HideWillRemoveFieldEffect();
 
-                        Used = true;
+                        yield return null;
                     }
 
                     if (!Used) activateClass.RemoveUse();
@@ -226,7 +234,7 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reduce Use Cost -2", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
@@ -237,8 +245,12 @@ namespace DCGO.CardEffects.LM
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, cardSource => cardSource == card)
-                        && CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendCondition) >= 2;
+                    return CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, cardSource => cardSource == card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendCondition) >= 2;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -329,12 +341,19 @@ namespace DCGO.CardEffects.LM
                 int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                 {
                     if (CardSourceCondition(cardSource)
-                    && RootCondition(root))
+                    && RootCondition(root)
+                    && PermanentsCondition(targetPermanents))
                     {
                         Cost -= 2;
                     }
 
                     return Cost;
+                }
+
+                bool PermanentsCondition(List<Permanent> targetPermanents)
+                {
+                    return targetPermanents == null
+                            || targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
                 }
 
                 bool CardSourceCondition(CardSource cardSource)
@@ -361,7 +380,7 @@ namespace DCGO.CardEffects.LM
                     => "[Main] 1 of your opponent's Digimon or tamers can't unsuspend until their turn ends. Then, for every 2 suspended Digimon, return 1 of their Digimon to the bottom of the deck.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                { 
+                {
                     return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
                 }
 
