@@ -1,5 +1,4 @@
-﻿using Photon.Pun;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -1218,6 +1217,13 @@ public static class ActivateICardEffectExtensionClass
     public static void RemoveUse(this ActivateICardEffect activateICardEffect)
     {
         ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RemoveUseEffectThisTurn((ICardEffect)activateICardEffect);
+    }
+    #endregion
+
+    #region add a usage of an X Per Turn
+    public static void AddUse(this ActivateICardEffect activateICardEffect)
+    {
+        ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn((ICardEffect)activateICardEffect);
     }
     #endregion
 
