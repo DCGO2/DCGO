@@ -1223,7 +1223,7 @@ public static class ActivateICardEffectExtensionClass
     #region add a usage of an X Per Turn
     public static void AddUse(this ActivateICardEffect activateICardEffect)
     {
-        ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn((ICardEffect)activateICardEffect);
+        ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn((ICardEffect)activateICardEffect);
     }
     #endregion
 
