@@ -1180,7 +1180,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         //Count up the number of uses
                         if (UseCardEffect.MaxCountPerTurn < 100)
                         {
-                            UseCardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(UseCardEffect);
+                            UseCardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(UseCardEffect);
                         }
 
                         // yield return StartCoroutine(((ActivateICardEffect)UseCardEffect).Activate_Optional_Effect_Execute(null));
