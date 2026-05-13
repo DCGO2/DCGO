@@ -529,6 +529,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     #region Active Phase
     IEnumerator ActivePhase()
     {
+        gameContext.TurnPlayer.SetTurnStartTime();
+
         foreach (Permanent permanent in gameContext.TurnPlayer.GetFieldPermanents())
         {
             permanent.UntilOwnerTurnStartEffects = new List<Func<EffectTiming, ICardEffect>>();

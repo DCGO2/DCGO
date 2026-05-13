@@ -4894,6 +4894,8 @@ public class IDegeneration
                 _permanent.ShowingPermanentCard.ShowPermanentData(true);
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, _permanent));
 
+                _permanent.TopCard.SetChangedLocationTime();//register that the new topcard just became a top card for the purpose of the start of timestamped continuous effects
+
                 count++;
             }
 
@@ -5068,6 +5070,8 @@ public class IMassDegeneration
 
                     _permanent.ShowingPermanentCard.ShowPermanentData(true);
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, _permanent));
+
+                    _permanent.TopCard.SetChangedLocationTime();//register that the new topcard just became a top card for the purpose of the start of timestamped continuous effects
 
                     count++;
                 }
@@ -5932,6 +5936,8 @@ public class ITrashStack
 
                 _permanent.ShowingPermanentCard.ShowPermanentData(true);
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, _permanent));
+
+                _permanent.TopCard.SetChangedLocationTime();//register that the new topcard just became a top card for the purpose of the start of timestamped continuous effects
 
                 count++;
             }
