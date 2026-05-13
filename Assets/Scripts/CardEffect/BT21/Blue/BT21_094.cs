@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT21
                 string EffectDescription()
                 {
                     return
-                        "[Main] Reveal the top 3 cards of your deck. Add 1 card with [Davis Motomiya] in its name in its name and 1 card with the [Free] trait among them to the hand. Trash the rest. Then, place this card in the battle area.";
+                        "[Main] Reveal the top 3 cards of your deck. Add 1 card with [Davis Motomiya] in its name and 1 card with the [Free] trait among them to the hand. Trash the rest. Then, place this card in the battle area.";
                 }
 
                 bool CanSelectDavisCardCondition(CardSource cardSource)
@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.BT21
                             {
                                 new(
                                     canTargetCondition: CanSelectDavisCardCondition,
-                                    message: "Select 1 card with [Davis Motomiya] in its name in its name.",
+                                    message: "Select 1 card with [Davis Motomiya] in its name.",
                                     mode: SelectCardEffect.Mode.AddHand,
                                     maxCount: 1,
                                     selectCardCoroutine: null),
