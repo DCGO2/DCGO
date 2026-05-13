@@ -1,3 +1,4 @@
+using DCGO.CardEntities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -106,25 +107,31 @@ namespace DCGO.CardEffects.BT15
 
                             bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
                             {
-                                List<string> cardIDs = new List<string>();
+                                List<string> cardNames = new List<string>();
 
                                 foreach (CardSource cardSource1 in cardSources)
                                 {
-                                    if (!cardIDs.Contains(cardSource1.CardID))
+                                    foreach (string cardName in cardSource1.CardNames)
                                     {
-                                        cardIDs.Add(cardSource1.CardID);
+                                        if (!cardNames.Contains(cardName))
+                                        {
+                                            cardNames.Add(cardName);
+                                        }
                                     }
                                 }
 
                                 foreach (CardSource cardSource1 in digivolutionCards)
                                 {
-                                    if (!cardIDs.Contains(cardSource1.CardID))
+                                    foreach (string cardName in cardSource1.CardNames)
                                     {
-                                        cardIDs.Add(cardSource1.CardID);
+                                        if (!cardNames.Contains(cardName))
+                                        {
+                                            cardNames.Add(cardName);
+                                        }
                                     }
                                 }
 
-                                if (cardIDs.Contains(cardSource.CardID))
+                                if (cardNames.Contains(cardSource.CardNames[0]))
                                 {
                                     return false;
                                 }
