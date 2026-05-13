@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("<Draw 1>", CanUseCondition, card);
+                activateClass.SetUpICardEffect("If [TS] trait, <Draw 1>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("BT25_001_Inherited");
                 activateClass.SetIsInheritedEffect(true);
