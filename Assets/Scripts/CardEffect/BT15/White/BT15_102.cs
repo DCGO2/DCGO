@@ -71,7 +71,13 @@ namespace DCGO.CardEffects.BT15
                     bool CanSelectTrashCardCondition(CardSource cardSource)
                     {
                         return CanSelectCardCondition(cardSource)
-                            && digivolutionCards.Count((filteredCard) => filteredCard.CardID == cardSource.CardID) == 0;
+                            && digivolutionCards.Count((filteredCard) => filteredCard.CardNames.Contains(cardSource.CardNames[0])) == 0;
+                    }
+
+                    bool CanSelectPermanentCondition(Permanent permanent)
+                    {
+                        return CanSelectCardConditionPermenant(permanent)
+                            && digivolutionCards.Count((filteredCard) => filteredCard.CardNames.Contains(permanent.TopCard.CardNames[0])) == 0;
                     }
 
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectTrashCardCondition(cardSource)))
