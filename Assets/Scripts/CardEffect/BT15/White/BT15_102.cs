@@ -75,7 +75,7 @@ namespace DCGO.CardEffects.BT15
 
                     bool CanSelectPermanentCondition(Permanent permanent)
                     {
-                        return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
                             && CanSelectCardCondition(permanent.TopCard);
                     }
                     
@@ -300,7 +300,8 @@ namespace DCGO.CardEffects.BT15
                     ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Placing 1 [Dark Masters] to get Play Cost -4");
 
                     return activateClass != null
-                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
+                        && (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition)
+                            || CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition));
                 }
 
                 int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
