@@ -65,6 +65,7 @@ namespace DCGO.CardEffects.BT15
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    #region Shared bool and stuff
                     List<CardSource> digivolutionCards = new List<CardSource>();
 
                     bool CanSelectTrashCardCondition(CardSource cardSource)
@@ -79,119 +80,163 @@ namespace DCGO.CardEffects.BT15
                             && digivolutionCards.Count((filteredCard) => filteredCard.CardNames.Contains(permanent.TopCard.CardNames[0])) == 0;
                     }
 
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectTrashCardCondition(cardSource)))
+                    int validPermanentCount = CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanSelectPermanentCondition);
+                    int validTrashCardCount = card.Owner.TrashCards.Count(CanSelectTrashCardCondition);
+
+                    int toPlace = Math.Min(3, validPermanentCount + validTrashCardCount);
+
+                    bool noSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(_hashtable));
+
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    int maxCount = Math.Min(3 - digivolutionCards.Count, card.Owner.TrashCards.Count((cardSource) => CanSelectTrashCardCondition(cardSource)));
+
+                    bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
                     {
-                        bool noSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(_hashtable));
-                        List<CardSource> selectedCards = new List<CardSource>();
+                        List<string> cardNames = new List<string>();
 
-                        int maxCount = Math.Min(3 - digivolutionCards.Count, card.Owner.TrashCards.Count((cardSource) => CanSelectTrashCardCondition(cardSource)));
-
-                        if (maxCount >= 1)
+                        foreach (CardSource cardSource1 in cardSources)
                         {
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectTrashCardCondition,
-                                canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
-                                canEndSelectCondition: CanEndSelectCondition,
-                                canNoSelect: () => noSelect,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select cards to place in Digivolution cards.",
-                                maxCount: maxCount,
-                                canEndNotMax: true,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                            bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
+                            foreach (string cardName in cardSource1.CardNames)
                             {
-                                List<string> cardNames = new List<string>();
-
-                                foreach (CardSource cardSource1 in cardSources)
+                                if (!cardNames.Contains(cardName))
                                 {
-                                    foreach (string cardName in cardSource1.CardNames)
-                                    {
-                                        if (!cardNames.Contains(cardName))
-                                        {
-                                            cardNames.Add(cardName);
-                                        }
-                                    }
+                                    cardNames.Add(cardName);
                                 }
-
-                                foreach (CardSource cardSource1 in digivolutionCards)
-                                {
-                                    foreach (string cardName in cardSource1.CardNames)
-                                    {
-                                        if (!cardNames.Contains(cardName))
-                                        {
-                                            cardNames.Add(cardName);
-                                        }
-                                    }
-                                }
-
-                                if (cardNames.Contains(cardSource.CardNames[0]))
-                                {
-                                    return false;
-                                }
-
-                                return true;
-                            }
-
-                            bool CanEndSelectCondition(List<CardSource> cardSources)
-                            {
-                                List<string> cardNames = new List<string>();
-
-                                foreach (CardSource cardSource1 in cardSources)
-                                {
-                                    foreach (string cardName in cardSource1.CardNames)
-                                    {
-                                        if (!cardNames.Contains(cardName))
-                                        {
-                                            cardNames.Add(cardName);
-                                        }
-                                    }
-                                }
-
-                                foreach (CardSource cardSource1 in digivolutionCards)
-                                {
-                                    foreach (string cardName in cardSource1.CardNames)
-                                    {
-                                        if (!cardNames.Contains(cardName))
-                                        {
-                                            cardNames.Add(cardName);
-                                        }
-                                    }
-                                }
-
-                                if (cardNames.Count != cardSources.Count + digivolutionCards.Count)
-                                {
-                                    return false;
-                                }
-
-                                return true;
-                            }
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-                                digivolutionCards.Add(cardSource);
-                                yield return null;
-                            }
-
-                            if (selectedCards.Count >= 1)
-                            {
-                                GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(new AddDigivolutionCardsInfo(activateClass, selectedCards));
-
-                                yield return StartCoroutine(AfterSelectCardCoroutine(selectedCards));
                             }
                         }
+
+                        foreach (CardSource cardSource1 in digivolutionCards)
+                        {
+                            foreach (string cardName in cardSource1.CardNames)
+                            {
+                                if (!cardNames.Contains(cardName))
+                                {
+                                    cardNames.Add(cardName);
+                                }
+                            }
+                        }
+
+                        if (cardNames.Contains(cardSource.CardNames[0]))
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                    bool CanEndSelectCondition(List<CardSource> cardSources)
+                    {
+                        List<string> cardNames = new List<string>();
+
+                        foreach (CardSource cardSource1 in cardSources)
+                        {
+                            foreach (string cardName in cardSource1.CardNames)
+                            {
+                                if (!cardNames.Contains(cardName))
+                                {
+                                    cardNames.Add(cardName);
+                                }
+                            }
+                        }
+
+                        foreach (CardSource cardSource1 in digivolutionCards)
+                        {
+                            foreach (string cardName in cardSource1.CardNames)
+                            {
+                                if (!cardNames.Contains(cardName))
+                                {
+                                    cardNames.Add(cardName);
+                                }
+                            }
+                        }
+
+                        if (cardNames.Count != cardSources.Count + digivolutionCards.Count)
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    {
+                        selectedCards.Add(cardSource);
+                        digivolutionCards.Add(cardSource);
+                        yield return null;
+                    }
+                    #endregion
+
+                    while (toPlace > 0)
+                    {
+                        if (validPermanentCount > 0 && validTrashCardCount > 0)
+                        {
+                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
+                            {
+                                new(message: "from Battle Area", value: 1, spriteIndex: 0),
+                                new(message: "from Trash", value: 2, spriteIndex: 0)
+                            };
+
+                            if (CanNoSelect(card))
+                            {
+                                selectionElements.Add(new(message: "Do not place", value: 3, spriteIndex: 1));
+                            }
+
+                            GManager.instance.userSelectionManager.SetIntSelection(
+                                selectionElements: selectionElements,
+                                selectPlayer: card.Owner,
+                                selectPlayerMessage: "From which area will you select a card?",
+                                notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
+                        }
+                        else
+                        {
+                            GManager.instance.userSelectionManager.SetInt(validPermanentCount > 0 ? 1 : 2);
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        if (GManager.instance.userSelectionManager.SelectedIntValue == 3)
+                        {
+                            break;
+                        }
+                        if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
+                        {
+                            // hand selection code
+                        }
+                        else
+                        {
+                            if (maxCount >= 1)
+                            {
+                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                selectCardEffect.SetUp(
+                                    canTargetCondition: CanSelectTrashCardCondition,
+                                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                                    canEndSelectCondition: CanEndSelectCondition,
+                                    canNoSelect: () => noSelect,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    message: "Select cards to place in Digivolution cards.",
+                                    maxCount: maxCount,
+                                    canEndNotMax: true,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Trash,
+                                    customRootCardList: null,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
+
+                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            }
+                        }
+                    }
+
+                    if (selectedCards.Count >= 1)
+                    {
+                        GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(new AddDigivolutionCardsInfo(activateClass, selectedCards));
+
+                        yield return StartCoroutine(AfterSelectCardCoroutine(selectedCards));
                     }
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
