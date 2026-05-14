@@ -105,7 +105,7 @@ namespace DCGO.CardEffects.BT11
 
                         int maxCount = 1;
 
-                        if (CardEffectCommons.IsDijiXros(_hashtable, (digixrosCount) => digixrosCount >= 1))
+                        if (CardEffectCommons.IsDijiXros(_hashtable, card, (digixrosCount) => digixrosCount >= 1))
                         {
                             maxCount += 1;
                         }
@@ -221,19 +221,6 @@ namespace DCGO.CardEffects.BT11
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
-                        int maxCount = 1;
-
-                        if (CardEffectCommons.IsDijiXros(_hashtable, (digixrosCount) => digixrosCount >= 1))
-                        {
-                            maxCount += 1;
-                        }
-
-                        maxCount = Math.Min(maxCount,
-                            card.Owner.TrashCards.Count(CanSelectCardCondition));
-
-                        maxCount = Math.Min(maxCount,
-                            card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()));
-
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -244,7 +231,7 @@ namespace DCGO.CardEffects.BT11
                                     selectCardCoroutine: SelectCardCoroutine,
                                     afterSelectCardCoroutine: null,
                                     message: "Select cards to play.",
-                                    maxCount: maxCount,
+                                    maxCount: 1,
                                     canEndNotMax: false,
                                     isShowOpponent: true,
                                     mode: SelectCardEffect.Mode.Custom,

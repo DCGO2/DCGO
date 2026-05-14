@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Shakkoumon
 namespace DCGO.CardEffects.BT25
@@ -205,8 +206,8 @@ namespace DCGO.CardEffects.BT25
                                     maxCount: 1,
                                     canNoSelect: true,
                                     canEndNotMax: false,
-                                    selectPermanentCoroutine: SelectPermanentCoroutine,
-                                    afterSelectPermanentCoroutine: null,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: afterSelectPermanentCoroutine,
                                     mode: SelectPermanentEffect.Mode.Custom,
                                     cardEffect: activateClass);
 
@@ -214,10 +215,8 @@ namespace DCGO.CardEffects.BT25
 
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                                IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                                IEnumerator afterSelectPermanentCoroutine(List<Permanent> selectedPermanent)
                                 {
-                                    Permanent selectedPermanent = permanent;
-
                                     if (selectedPermanent != null)
                                     {
                                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -235,7 +234,7 @@ namespace DCGO.CardEffects.BT25
                                             isShowOpponent: true,
                                             mode: SelectCardEffect.Mode.Custom,
                                             root: SelectCardEffect.Root.DigivolutionCards,
-                                            customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                                            customRootCardList: selectedPermanent[0].DigivolutionCards,
                                             canLookReverseCard: true,
                                             selectPlayer: card.Owner,
                                             cardEffect: activateClass);
@@ -249,7 +248,7 @@ namespace DCGO.CardEffects.BT25
                             {
                                 selectedCard = cardSource;
 
-                                return null;
+                                yield return null;
                             }
 
                             if (selectedCard != null)

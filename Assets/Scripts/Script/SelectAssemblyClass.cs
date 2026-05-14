@@ -13,6 +13,7 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 
     public List<CardSource> selectedAssemblyCards { get; private set; } = new List<CardSource>();
     public List<AddDigivolutionCardsInfo> addDigivolutionCardInfos { get; private set; } = new List<AddDigivolutionCardsInfo>();
+    public List<CardSource> excludedCards { get; private set; } = new List<CardSource>();
     public CardSource playCard { get; private set; } = null;
 
     public void ResetSelectAssemblyClass()
@@ -25,6 +26,11 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     public void AddDigivolutionCardInfos(AddDigivolutionCardsInfo digivolutionCardsInfo)
     {
         addDigivolutionCardInfos.Add(digivolutionCardsInfo);
+    }
+
+    public void SetExcludedCards(List<CardSource> excluded)
+    {
+        excludedCards = excluded;
     }
 
     #region Is Trash Card
@@ -45,6 +51,9 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     #region Can Select Assembly
     bool CanSelectAssembly(AssemblyConditionElement element, CardSource targetCard, CardSource card)
     {
+        if (excludedCards.Contains(targetCard))
+            return false;
+
         if (card != targetCard)
         {
             if (card != null)
@@ -156,8 +165,6 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     #region Select
     public IEnumerator Select(CardSource card)
     {
-        GManager.instance.turnStateMachine.isSync = true;
-
         selectedAssemblyCards = new List<CardSource>();
 
         playCard = card;
@@ -168,7 +175,6 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 
             foreach(AssemblyConditionElement element in AssemblyCondition.elements)
             {
-                yield return GManager.instance.photonWaitController.StartWait("SelectAssemblys");
 
                 if (selectedAssemblyCards.Count >= AssemblyCondition.elementCount)
                 {
@@ -202,8 +208,6 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
         }
 
         GManager.instance.GetComponent<Effects>().OffShowCard2();
-
-        GManager.instance.turnStateMachine.isSync = false;
     }
     #endregion
 

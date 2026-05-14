@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Divine Arms Version (Omega)
 namespace DCGO.CardEffects.BT25
@@ -57,21 +56,17 @@ namespace DCGO.CardEffects.BT25
                     return cardSource.HasTSTraits;
                 }
 
-                bool CanLinkThisCardCondition(Permanent permanent)
+                bool PermanentThisCardCanLinkToCondition(Permanent permanent)
                 {
-                    return (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) || CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card))
-                        && CanLink(card, permanent);
+                    return permanent.IsDigimon
+                        && CardEffectCommons.IsOwnerPermanent(permanent, card)
+                        && card.CanLinkToTargetPermanent(permanent, false, true);
                 }
 
                 bool CanLinkTrashCardCondition(CardSource cardSource)
                 {
                     return cardSource.HasTSTraits
-                        && CardEffectCommons.HasMatchConditionOwnersPermanent(cardSource, perm => CanLink(cardSource, perm));
-                }
-
-                bool CanLink(CardSource cardSource, Permanent permanent)
-                {
-                    return cardSource.CanLinkToTargetPermanent(permanent, false, true);
+                        && cardSource.CanLink(false, true);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -123,7 +118,7 @@ namespace DCGO.CardEffects.BT25
                             {
                                 yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
 
-                                bool canSelectThisCard = CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanLinkThisCardCondition);
+                                bool canSelectThisCard = CardEffectCommons.HasMatchConditionPermanent(PermanentThisCardCanLinkToCondition, true);
                                 bool canSelectTrashCard = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanLinkTrashCardCondition);
 
                                 if (canSelectThisCard || canSelectTrashCard)
@@ -159,30 +154,6 @@ namespace DCGO.CardEffects.BT25
                                         if (selectThisCard)
                                         {
                                             selectedCardToLink = card;
-                                            #region Select Digimon that will gain this card as a link
-                                            if (CardEffectCommons.HasMatchConditionPermanent(CanLinkThisCardCondition, true))
-                                            {
-                                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanLinkThisCardCondition));
-
-                                                selectPermanentEffect.SetUp(
-                                                    selectPlayer: card.Owner,
-                                                    canTargetCondition: CanLinkThisCardCondition,
-                                                    canTargetCondition_ByPreSelecetedList: null,
-                                                    canEndSelectCondition: null,
-                                                    maxCount: maxCount,
-                                                    canNoSelect: false,
-                                                    canEndNotMax: false,
-                                                    selectPermanentCoroutine: SelectPermamentToLinkToCoroutine,
-                                                    afterSelectPermanentCoroutine: null,
-                                                    mode: SelectPermanentEffect.Mode.Custom,
-                                                    cardEffect: activateClass);
-
-                                                selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to gain link.", "The opponent is selecting 1 Digimon to gain link.");
-                                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                                            }
-                                            else selectedPermament = card.Owner.GetBattleAreaPermanents().FirstOrDefault(per => CanLink(card, per));
-                                            #endregion
                                         }
                                         else
                                         {
@@ -196,7 +167,7 @@ namespace DCGO.CardEffects.BT25
                                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                                             selectCardEffect.SetUp(
-                                                canTargetCondition: IsTsTraitCard,
+                                                canTargetCondition: CanLinkTrashCardCondition,
                                                 canTargetCondition_ByPreSelecetedList: null,
                                                 canEndSelectCondition: null,
                                                 canNoSelect: () => true,
@@ -216,22 +187,30 @@ namespace DCGO.CardEffects.BT25
                                             selectCardEffect.SetUpCustomMessage("Select 1 [TS] trait card from your trash to link.", "The opponent is selecting 1 [TS] trait card from their trash to link.");
                                             selectCardEffect.SetUpCustomMessage_ShowCard("Selected card");
                                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
                                             #endregion
+                                        }
 
-                                            #region Select Digimon that will gain selected card as link
-                                            if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, perm => CanLink(selectedCardToLink, perm)) > 1)
+                                        bool CanLinkChosenCardCondition(Permanent permanent)
+                                        {
+                                            return permanent.IsDigimon
+                                            && CardEffectCommons.IsOwnerPermanent(permanent, card)
+                                            && selectedCardToLink .CanLinkToTargetPermanent(permanent, false, true);
+                                        }
+
+                                        #region Select Digimon that will gain selected card as link
+                                        if (selectedCardToLink != null)
+                                        {
+                                            if (CardEffectCommons.HasMatchConditionPermanent(CanLinkChosenCardCondition, true))
                                             {
                                                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, perm => CanLink(selectedCardToLink, perm)));
 
                                                 selectPermanentEffect.SetUp(
                                                     selectPlayer: card.Owner,
-                                                    canTargetCondition: CanLinkThisCardCondition,
+                                                    canTargetCondition: CanLinkChosenCardCondition,
                                                     canTargetCondition_ByPreSelecetedList: null,
                                                     canEndSelectCondition: null,
-                                                    maxCount: maxCount,
-                                                    canNoSelect: false,
+                                                    maxCount: 1,
+                                                    canNoSelect: true,
                                                     canEndNotMax: false,
                                                     selectPermanentCoroutine: SelectPermamentToLinkToCoroutine,
                                                     afterSelectPermanentCoroutine: null,
@@ -241,12 +220,10 @@ namespace DCGO.CardEffects.BT25
                                                 selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to gain link.", "The opponent is selecting 1 Digimon to gain link.");
                                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                                             }
-                                            else selectedPermament = card.Owner.GetBattleAreaPermanents().FirstOrDefault(per => CanLink(selectedCardToLink, per));
                                             #endregion
                                         }
 
                                         if (selectedPermament != null && selectedCardToLink != null) yield return ContinuousController.instance.StartCoroutine(selectedPermament.AddLinkCard(selectedCardToLink, activateClass));
-
                                     }
                                 }
                             }

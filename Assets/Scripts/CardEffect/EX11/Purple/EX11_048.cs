@@ -124,7 +124,7 @@ namespace DCGO.CardEffects.EX11
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

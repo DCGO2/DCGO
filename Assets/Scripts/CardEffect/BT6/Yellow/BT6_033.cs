@@ -50,7 +50,6 @@ public class BT6_033 : CEntity_Effect
                     {
                         if (card.Owner.SecurityCards.Count > 3)
                         {
-                            yield return GManager.instance.photonWaitController.StartWait("Pulsemon_Select_ETB");
 
                             List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
 

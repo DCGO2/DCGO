@@ -26,13 +26,7 @@ namespace DCGO.CardEffects.BT25
             #region Reduce Play Cost
             if (timing == EffectTiming.None)
             {
-                ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -5", CanUseCondition, card);
-                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                changeCostClass.SetNotShowUI(true);
-                cardEffects.Add(changeCostClass);
-
-                bool CanUseCondition(Hashtable hashtable)
+                bool Condition()
                 {
                     return CardEffectCommons.HasMatchConditionPermanent(WouldPlayCondition);
                 }
@@ -44,38 +38,7 @@ namespace DCGO.CardEffects.BT25
                         && permanent.DP >= 13000;
                 }
 
-                int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
-                        List<Permanent> targetPermanents)
-                {
-                    if (CardSourceCondition(cardSource) &&
-                        RootCondition(root) &&
-                        PermanentsCondition(targetPermanents))
-                    {
-                        cost -= 5;
-                    }
-
-                    return cost;
-                }
-
-                bool PermanentsCondition(List<Permanent> targetPermanents)
-                {
-                    return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
-                }
-
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    return cardSource == card;
-                }
-
-                bool RootCondition(SelectCardEffect.Root root)
-                {
-                    return true;
-                }
-
-                bool isUpDown()
-                {
-                    return true;
-                }
+                cardEffects.Add(CardEffectFactory.MandatorySelfPlayCostReduction(5, card, Condition));
             }
             #endregion
 

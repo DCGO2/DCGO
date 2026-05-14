@@ -1097,6 +1097,8 @@ public class CardObjectController : MonoBehaviour
 
                         if (!prevIsFrontLine)
                         {
+                            movingPermanent.TopCard.SetChangedLocationTime();//register that the card moved for the purpose of the start of timestamped continuous effects
+
                             #region Effect of "when moving from the training area"
 
                             #region Hashtable Setting

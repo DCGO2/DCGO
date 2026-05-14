@@ -190,8 +190,6 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        yield return GManager.instance.photonWaitController.StartWait("WarGreymon_BT17");
-
                         List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new(message: "Delete 1 of your opponent's Digimon with 8000 DP or less",
@@ -360,8 +358,6 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        yield return GManager.instance.photonWaitController.StartWait("WarGreymon_BT17");
-
                         List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new(message: "Delete 1 of your opponent's Digimon with 8000 DP or less",

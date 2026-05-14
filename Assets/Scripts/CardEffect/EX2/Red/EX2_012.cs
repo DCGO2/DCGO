@@ -193,7 +193,7 @@ namespace DCGO.CardEffects.EX2
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                     {
                         if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {

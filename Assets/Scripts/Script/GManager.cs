@@ -203,8 +203,7 @@ public class GManager : MonoBehaviourPun
     public BurstEffectObject burstEffectObject;
     [Header("Background Particle effects")]
     [SerializeField] List<ParticleSystem> _backgroundParticles = new List<ParticleSystem>();
-    [Header("Photon wait controller")]
-    public PhotonWaitController photonWaitController;
+ 
     [Header("Gameobjects closed when ending game")]
     public List<GameObject> CloseWhenEndingGameObjects = new List<GameObject>();
 

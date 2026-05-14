@@ -215,7 +215,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card) &&
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) &&
                            (card.Owner.HandCards.Some(CanSelectCardCondition) ||
                             card.Owner.TrashCards.Some(CanSelectCardCondition));
                 }

@@ -153,7 +153,7 @@ namespace DCGO.CardEffects.BT15
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        if (CardEffectCommons.CanActivateOnDeletion(card))
+                        if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                         {
                             return true;
                         }
