@@ -9,7 +9,7 @@ public class BT7_051 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        #region Alt Evo Condition
+        #region Reduced Cost
         if (timing == EffectTiming.None)
         {
             bool Condition()
