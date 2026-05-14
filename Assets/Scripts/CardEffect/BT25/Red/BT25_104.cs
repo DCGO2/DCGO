@@ -178,7 +178,20 @@ namespace DCGO.CardEffects.BT25
                 yield return null;
             }
 
-            if(timing == EffectTiming.OnStartTurn)
+            if (timing == EffectTiming.OnMove) // For the gigachad that evoes into it in raising
+            {
+                ActivateClass activateClass = CardEffectFactory.WhenMovingClass(
+                    card,
+                    "[Marcus Damon] are treated as Digimon",
+                    MarcusActivateCoroutine,
+                    "[Marcus Damon] are treated as Digimon",
+                    false
+                );
+                activateClass.SetIsBackgroundProcess(true);//Run in background at start of your turn to add effect to player
+                cardEffects.Add(activateClass);
+            }
+
+            if (timing == EffectTiming.OnStartTurn)
             {
                 ActivateClass activateClass = CardEffectFactory.StartOfYourTurnClass(
                     card,
@@ -190,7 +203,6 @@ namespace DCGO.CardEffects.BT25
                 activateClass.SetIsBackgroundProcess(true);//Run in background at start of your turn to add effect to player
                 cardEffects.Add(activateClass);
             }
-
 
             //To anyone copying this effect: If this were not a dual card it would also need a matching On Play effect
             if(timing == EffectTiming.OnEnterFieldAnyone)
