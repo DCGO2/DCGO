@@ -159,6 +159,10 @@ namespace DCGO.CardEffects.BT25
                             mode: SelectPermanentEffect.Mode.Tap,
                             cardEffect: activateClass);
 
+                        string message = isByEffect ? "Select a Digimon to suspend. Triggered by effect: After you will delete 1 enemy digimon." : "Select a Digimon to suspend. Not triggered by effect: Select \"No Selection\" to not expend the once per turn.";
+
+                        selectPermanentEffect.SetUpCustomMessage(message, "Opponent is selecting a Digimon to suspend.");
+
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                         IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
