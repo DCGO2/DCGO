@@ -180,7 +180,7 @@ namespace DCGO.CardEffects.BT25
 
             if (timing == EffectTiming.OnMove) // For the gigachad that evoes into it in raising
             {
-                ActivateClass activateClass = CardEffectFactory.StartOfYourTurnClass(
+                ActivateClass activateClass = CardEffectFactory.WhenMovingClass(
                     card,
                     "[Marcus Damon] are treated as Digimon",
                     MarcusActivateCoroutine,
