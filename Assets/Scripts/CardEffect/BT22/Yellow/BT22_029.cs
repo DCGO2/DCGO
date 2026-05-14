@@ -116,7 +116,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card)
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, SharedPuppetDigimon);
                 }
 

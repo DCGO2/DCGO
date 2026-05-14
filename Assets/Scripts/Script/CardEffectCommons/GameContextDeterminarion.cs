@@ -4,6 +4,114 @@ using System.Linq;
 
 public partial class CardEffectCommons
 {
+    public static Dictionary<ICardEffect, Permanent> CardPermanenceMap = new Dictionary<ICardEffect, Permanent>();
+
+    #region Invalidate Cards that are not in their correct location
+    private static Permanent FailurePermanent = new(new List<CardSource>());
+
+    public static void EnforceLocationCheck()
+    {
+        foreach(ICardEffect cardEffect in CardPermanenceMap.Keys.ToList().Clone())
+        {
+            if (cardEffect.EffectSourceCard.PermanentOfThisCard() != CardPermanenceMap[cardEffect])
+                CardPermanenceMap[cardEffect] = FailurePermanent;//Mark as a Permanent that nothing else should ever be to ensure it will fail -Activate checks
+        }
+    }
+
+    #endregion
+
+    #region Trigger conditions - Capture current Permanent for card
+
+    public static bool IsExistOnFieldTrigger(CardSource card, ICardEffect cardEffect)
+    {
+        bool exists = IsExistOnField(card);
+        if (exists)
+            CardPermanenceMap[cardEffect] = card.PermanentOfThisCard();
+        return exists;
+    }
+
+    public static bool IsExistOnBreedingAreaTrigger(CardSource card, ICardEffect cardEffect)
+    {
+        bool exists = IsExistOnBreedingArea(card);
+        if (exists)
+            CardPermanenceMap[cardEffect] = card.PermanentOfThisCard();
+        return exists;
+    }
+
+    public static bool IsExistOnBattleAreaTrigger(CardSource card, ICardEffect cardEffect)
+    {
+        bool exists = IsExistOnBattleArea(card);
+        if (exists)
+            CardPermanenceMap[cardEffect] = card.PermanentOfThisCard();
+        return exists;
+    }
+
+    public static bool IsExistOnBattleAreaDigimonTrigger(CardSource card, ICardEffect cardEffect)
+    {
+        bool exists = IsExistOnBattleAreaDigimon(card);
+        if (exists)
+            CardPermanenceMap[cardEffect] = card.PermanentOfThisCard();
+        return exists;
+    }
+
+    public static bool IsExistDigivolutionCardsTrigger(CardSource card, ICardEffect cardEffect)
+    {
+        bool exists = IsExistDigivolutionCards(card);
+        if (exists)
+            CardPermanenceMap[cardEffect] = card.PermanentOfThisCard();
+        return exists;
+    }
+
+    public static bool IsExistLinkedTrigger(CardSource card, ICardEffect cardEffect)
+    {
+        bool exists = IsExistLinked(card);
+        if (exists)
+            CardPermanenceMap[cardEffect] = card.PermanentOfThisCard();
+        return exists;
+    }
+
+    #endregion
+
+    #region Activate conditions - Check card is still part of the same Permanent
+
+    public static bool IsExistOnFieldActivate(CardSource card, ICardEffect cardEffect)
+    {
+        Permanent permanent = null;
+        return IsExistOnField(card) && CardPermanenceMap.TryGetValue(cardEffect, out permanent) && permanent == card.PermanentOfThisCard();
+    }
+
+    public static bool IsExistOnBreedingAreaActivate(CardSource card, ICardEffect cardEffect)
+    {
+        Permanent permanent = null;
+        return IsExistOnBreedingArea(card) && CardPermanenceMap.TryGetValue(cardEffect, out permanent) && permanent == card.PermanentOfThisCard();
+    }
+
+    public static bool IsExistOnBattleAreaActivate(CardSource card, ICardEffect cardEffect)
+    {
+        Permanent permanent = null;
+        return IsExistOnBattleArea(card) && CardPermanenceMap.TryGetValue(cardEffect, out permanent) && permanent == card.PermanentOfThisCard();
+    }
+
+    public static bool IsExistOnBattleAreaDigimonActivate(CardSource card, ICardEffect cardEffect)
+    {
+        Permanent permanent = null;
+        return IsExistOnBattleAreaDigimon(card) && CardPermanenceMap.TryGetValue(cardEffect, out permanent) && permanent == card.PermanentOfThisCard();
+    }
+
+    public static bool IsExistDigivolutionCardsActivate(CardSource card, ICardEffect cardEffect)
+    {
+        Permanent permanent = null;
+        return IsExistDigivolutionCards(card) && CardPermanenceMap.TryGetValue(cardEffect, out permanent) && permanent == card.PermanentOfThisCard();
+    }
+
+    public static bool IsExistLinkedActivate(CardSource card, ICardEffect cardEffect)
+    {
+        Permanent permanent = null;
+        return IsExistLinked(card) && CardPermanenceMap.TryGetValue(cardEffect, out permanent) && permanent == card.PermanentOfThisCard();
+    }
+
+    #endregion
+
     #region Whether the card is in the field
 
     public static bool IsExistOnField(CardSource card)

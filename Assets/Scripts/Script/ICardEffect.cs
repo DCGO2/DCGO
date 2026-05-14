@@ -698,6 +698,31 @@ public abstract class ICardEffect
 
     #endregion
 
+    #region When this effect was activated for comparison
+
+    DateTime _activatedTime = DateTime.MinValue;
+
+    public DateTime ActivatedTime
+    {
+        get { return _activatedTime; }
+        private set { _activatedTime = value; }
+    }
+
+    public void SetActivatedTime(params DateTime[] activationTimes)
+    {
+        if (activationTimes.Length > 0)
+        {
+            DateTime latest = activationTimes[0];
+            foreach (DateTime time in activationTimes)
+            {
+                if (time > latest) latest = time;
+            }
+            _activatedTime = latest;
+        }
+    }
+
+    #endregion
+
     #endregion
 
     #region Read only bool properties

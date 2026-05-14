@@ -126,6 +126,7 @@ namespace DCGO.CardEffects.BT25
                 activateClass.SetUpICardEffect(CostReductionEffectName, CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("PlayCost-3_BT25_049");
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

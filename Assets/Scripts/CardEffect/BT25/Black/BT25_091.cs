@@ -81,10 +81,10 @@ namespace DCGO.CardEffects.BT25
                             {
                                 returned = true;
 
-                                return null;
+                                yield return null;
                             }
                             
-                            return null;
+                            yield return null;
                         }
                     }
 

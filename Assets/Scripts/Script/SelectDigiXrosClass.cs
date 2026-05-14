@@ -11,6 +11,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 {
     public List<CardSource> selectedDigicrossCards { get; private set; } = new List<CardSource>();
     public List<AddDigivolutionCardsInfo> addDigivolutionCardInfos { get; private set; } = new List<AddDigivolutionCardsInfo>();
+    public List<CardSource> excludedCards { get; private set; } = new List<CardSource>();
     public CardSource playCard { get; private set; } = null;
 
     public void ResetSelectDigiXrosClass()
@@ -23,6 +24,11 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     public void AddDigivolutionCardInfos(AddDigivolutionCardsInfo digivolutionCardsInfo)
     {
         addDigivolutionCardInfos.Add(digivolutionCardsInfo);
+    }
+
+    public void SetExcludedCards(List<CardSource> excluded)
+    {
+        excludedCards = excluded;
     }
 
     #region Max Trash Count
@@ -300,6 +306,9 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     #region Can Select DigiXros
     bool CanSelectDigiXros(DigiXrosConditionElement element, CardSource targetCard, CardSource card)
     {
+        if (excludedCards.Contains(targetCard))
+            return false;
+            
         if (card != targetCard)
         {
             if (card != null)
@@ -358,8 +367,6 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     #region Select
     public IEnumerator Select(CardSource card)
     {
-        GManager.instance.turnStateMachine.isSync = true;
-
         selectedDigicrossCards = new List<CardSource>();
 
         playCard = card;
@@ -372,7 +379,6 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 
                 foreach (DigiXrosConditionElement element in digiXrosCondition.elements)
                 {
-                    yield return GManager.instance.photonWaitController.StartWait("SelectDigiXross");
 
                     if (selectedDigicrossCards.Count >= 1)
                     {
@@ -563,8 +569,6 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
         }
 
         GManager.instance.GetComponent<Effects>().OffShowCard2();
-
-        GManager.instance.turnStateMachine.isSync = false;
     }
     #endregion
 

@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.BT15
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                     {
                         if (card.Owner.Enemy.MemoryForPlayer <= 1)
                         {

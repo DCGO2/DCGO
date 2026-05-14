@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.BT10
                         activateClass: activateClass
                         ));
 
-                    if (CardEffectCommons.IsDijiXros(_hashtable, (count) => count == 2))
+                    if (CardEffectCommons.IsDijiXros(_hashtable, card, (count) => count == 2))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 

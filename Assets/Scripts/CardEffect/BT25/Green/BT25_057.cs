@@ -26,12 +26,12 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region When Digivolving
-
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Battle 1 of your opponent's Digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -51,7 +51,6 @@ namespace DCGO.CardEffects.BT25
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
@@ -84,14 +83,11 @@ namespace DCGO.CardEffects.BT25
 
                         if (selectedPermanent != null) yield return ContinuousController.instance.StartCoroutine(new IBattle(card.PermanentOfThisCard(), selectedPermanent, null, true).Battle());
                     }
-
                 }
             }
-
             #endregion
 
             #region WD/WA Shared
-
             string SharedHashString = "BT25_WD_WA";
 
             string SharedEffectName = "By trashing bottom face down card under your tamer, De-Digivolve(1) 1 opponent digimon";
@@ -123,36 +119,32 @@ namespace DCGO.CardEffects.BT25
                     Permanent selectedPermanent = null;
 
                     #region Select Tamer
-                    if (CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition) > 1)
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            selectedPermanent = permanent;
-                            yield return null;
-                        }
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 tamer to trash a face down card from.", "The opponent is selecting 1 tamer to trash a face down card from.");
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
+                        selectedPermanent = permanent;
+                        yield return null;
                     }
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 tamer to trash a face down card from.", "The opponent is selecting 1 tamer to trash a face down card from.");
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     #endregion
 
-                    if (selectedPermanent == null)
+                    if (selectedPermanent != null)
                     {
                         #region Trash Bottom Card
                         List<CardSource> selectedCards = new List<CardSource>();
@@ -166,8 +158,8 @@ namespace DCGO.CardEffects.BT25
                         if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentPermanentCondition))
                         {
                             #region De-Digivolve 1 Opponent Digimon
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            selectPermanentEffect.SetUp(
+                            SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            selectPermanentEffect1.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: CanSelectOpponentPermanentCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
@@ -180,8 +172,8 @@ namespace DCGO.CardEffects.BT25
                                 mode: SelectPermanentEffect.Mode.Degenerate,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve(1)", "The opponent is selecting 1 Digimon to De-Digivolve(1).");
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon to De-Digivolve(1)", "The opponent is selecting 1 Digimon to De-Digivolve(1).");
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
                             #endregion
                         }
                     }
@@ -200,13 +192,10 @@ namespace DCGO.CardEffects.BT25
                 hashValue: SharedHashString,
                 whenDigivolving: true,
                 whenAttacking: true);
-
             #endregion
-
             #endregion
 
             #region Option Effects
-
             #region Ignore Colour Requirement
             if (timing == EffectTiming.None)
             {
@@ -266,7 +255,6 @@ namespace DCGO.CardEffects.BT25
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain rush, sec atk(+1) and 5k DP", "The opponent is selecting 1 Digimon to gain rush, sec atk(+1) and 5k DP");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
                         #endregion
 
                         if (selectedPermanent != null)
@@ -291,7 +279,6 @@ namespace DCGO.CardEffects.BT25
                                     effectDuration: EffectDuration.UntilEachTurnEnd,
                                     activateClass: activateClass
                             ));
-
                             #endregion
 
                             #region Digimon Attack
@@ -318,7 +305,6 @@ namespace DCGO.CardEffects.BT25
                 cardEffects.Add(CardEffectFactory.ArtsDigivolveEffect(card));
             }
             #endregion
-
             #endregion
 
             return cardEffects;

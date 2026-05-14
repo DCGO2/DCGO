@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.BT25
                         && cardSource.HasLevel
                         && cardSource.Level <= 4
                         && (cardSource.EqualsTraits("Angel") || cardSource.EqualsTraits("Iliad"))
-                        && CardEffectCommons.CanPlayAsNewPermanent(card, false, activateClass);
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -202,12 +202,12 @@ namespace DCGO.CardEffects.BT25
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDescription() => "[All Turns] (Once Per Turn) When security stacks are removed from, 1 of your opponent's Digimon gets -4000 DP for the turn.";
+                string EffectDescription() => "[All Turns] [Once Per Turn] When your security stack is removed from, 1 of your opponent's Digimon gets -4000 DP for the turn.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, _ => true);
+                           CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

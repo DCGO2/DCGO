@@ -296,8 +296,6 @@ namespace DCGO.CardEffects.EX5
 
                     if (added)
                     {
-                        yield return GManager.instance.photonWaitController.StartWait("MetalEtemon_Select_switchB");
-
                         List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new SelectionElement<int>(message: $"This Digimon", value : 0, spriteIndex: 0),
