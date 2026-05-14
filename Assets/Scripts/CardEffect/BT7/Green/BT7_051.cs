@@ -19,7 +19,7 @@ public class BT7_051 : CEntity_Effect
 
             bool PermanentCondition(Permanent targetPermanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(targetPermanent, card)
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card)
                     && targetPermanent.DigivolutionCards.Any((cardSource) => cardSource.IsTamer);
             }
 
