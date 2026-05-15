@@ -18,8 +18,8 @@ public partial class CardEffectFactory
 
         bool CanSelectPermanentCondition(Permanent permanent)
         {
-            return permanent.IsDigimon
-                && CardEffectCommons.IsOwnerPermanent(permanent, card)
+            return CardEffectCommons.IsOwnerPermanent(permanent, card)
+                && permanent.IsDigimon
                 && card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, artsDigivolutionClass, SelectCardEffect.Root.Execution);
         }
         
