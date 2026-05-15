@@ -95,6 +95,8 @@ namespace DCGO.CardEffects.LM
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool Used = false;
+
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectUnsuspendCondition))
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -106,12 +108,22 @@ namespace DCGO.CardEffects.LM
                         maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: null,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.UnTap,
                         cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to unsuspend.", "The opponent is selecting 1 Digimon to unsuspend.");
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        if (permanent != null)
+                        {
+                            Used = true;
+
+                            yield return null;
+                        }
+                    }
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
@@ -137,11 +149,18 @@ namespace DCGO.CardEffects.LM
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IBattle(card.PermanentOfThisCard(), permanent, null, true).Battle());
+                        if(permanent != null)
+                        {
+                            Used = true;
+
+                            yield return ContinuousController.instance.StartCoroutine(new IBattle(card.PermanentOfThisCard(), permanent, null, true).Battle());
+                        }
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
+
+                if (!Used) activateClass.RemoveUse();
             }
             #endregion
 
