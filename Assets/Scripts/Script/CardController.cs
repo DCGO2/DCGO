@@ -117,8 +117,15 @@ public class IDiscardHand
 
 public class PlayCardClass
 {
-    public PlayCardClass(List<CardSource> cardSources, Hashtable hashtable, bool payCost, Permanent targetPermanent, bool isTapped, SelectCardEffect.Root root,
-    bool activateETB)
+    public PlayCardClass(List<CardSource> cardSources,
+        Hashtable hashtable,
+        bool payCost,
+        Permanent targetPermanent,
+        bool isTapped,
+        SelectCardEffect.Root root,
+        bool activateETB,
+        IEnumerator successProcess = null,
+        IEnumerator failedProcess = null)
     {
         if (cardSources != null)
         {
@@ -131,6 +138,8 @@ public class PlayCardClass
         _isTapped = isTapped;
         Root = root;
         _activateETB = activateETB;
+        _successProcess = successProcess;
+        _failedProcess = failedProcess;
     }
 
     public void SetJogress(int[] jogressEvoRootsFrameIDs)
@@ -209,6 +218,8 @@ public class PlayCardClass
     int _burstTamerFrameID = -1;
     int[] _appFusionFrameIDs = null;
     bool _isBreedingArea = false;
+    IEnumerator _successProcess;
+    IEnumerator _failedProcess;
 
     public bool isJogress => _jogressEvoRootsFrameIDs != null && _jogressEvoRootsFrameIDs.Length == 2;
 
@@ -952,6 +963,21 @@ public class PlayCardClass
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
                         }
+                    }
+                }
+
+                if(playFailed)
+                {
+                    if (_failedProcess != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(_failedProcess);
+                    }
+                }
+                else
+                {
+                    if (_successProcess != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(_successProcess);
                     }
                 }
             }
