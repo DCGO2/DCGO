@@ -55,6 +55,7 @@ namespace DCGO.CardEffects.EX9
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 4 Digi-Egg [Negamon] to Digi-Egg deck, to move to battle area.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateBreedingCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
