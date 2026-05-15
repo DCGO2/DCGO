@@ -358,7 +358,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                     skillInfos_active[_skillIndex].CardEffect.SetOnProcessCallbuck(() =>
                         {
                             SkillInfos_used.Add(skillInfos_active[_skillIndex]);
-                            cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(cardEffect);
+                            cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(cardEffect);
                         });
 
                     if (cardEffect is ActivateICardEffect)
