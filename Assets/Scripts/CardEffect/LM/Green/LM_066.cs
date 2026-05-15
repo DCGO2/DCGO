@@ -13,15 +13,6 @@ namespace DCGO.CardEffects.LM
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Shared Bool
-            bool CanSelectSuspendCondition(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
-                    && !permanent.IsSuspended
-                    && permanent.CanSuspend;
-            }
-            #endregion
-
             #region Digimon Effects
             #region Alternate Digivolution Requirement
             if (timing == EffectTiming.None)
@@ -149,7 +140,7 @@ namespace DCGO.CardEffects.LM
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        if(permanent != null)
+                        if (permanent != null)
                         {
                             Used = true;
 
@@ -190,6 +181,13 @@ namespace DCGO.CardEffects.LM
                 {
                     return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendCondition);
+                }
+
+                bool CanSelectSuspendCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
+                        && !permanent.IsSuspended
+                        && permanent.CanSuspend;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -272,8 +270,36 @@ namespace DCGO.CardEffects.LM
                     return CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendCondition) >= 2;
                 }
 
+                bool CanSelectSuspendCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
+                        && !permanent.IsSuspended;
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    bool canNoSelect = true;
+
+                    if (card.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) >
+                        card.Owner.MaxMemoryCost)
+                    {
+                        canNoSelect = false;
+                    }
+
+                    bool CanTargetCondition_ByPreSelecetedList(List<Permanent> permanents, Permanent permanent)
+                    {
+                        foreach (Permanent permanent1 in permanents)
+                        {
+                            if (canNoSelect = false
+                            && !permanent1.CanSuspend)
+                            {
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }
+
                     List<Permanent> selectedPermanents = new List<Permanent>();
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -281,25 +307,28 @@ namespace DCGO.CardEffects.LM
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
                         canTargetCondition: CanSelectSuspendCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
+                        canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                         canEndSelectCondition: null,
                         maxCount: 2,
-                        canNoSelect: true,
+                        canNoSelect: canNoSelect,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Tap,
+                        mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        selectedPermanents.Add(permanent);
-                        yield return null;
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SuspendPeremanentAndProcessAccordingToResult(
+                            new List<Permanent>() { permanent },
+                            activateClass,
+                            SuccessProcess,
+                            null));
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    if (selectedPermanents.Count == 2 && selectedPermanents.All(permanent => permanent.IsSuspended))
+                    IEnumerator SuccessProcess(List<Permanent> selectedPermanents)
                     {
                         if (card.Owner.CanReduceCost(null, card)) ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
 
@@ -355,6 +384,12 @@ namespace DCGO.CardEffects.LM
                 {
                     return CardEffectCommons.IsExistOnHand(card)
                         && CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendCondition) >= 2;
+                }
+
+                bool CanSelectSuspendCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
+                        && !permanent.IsSuspended;
                 }
 
                 int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
