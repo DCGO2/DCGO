@@ -11,14 +11,16 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
     public void SetUp
         (Player SelectPlayer,
         CardSource targetDNA,
-        Func<int, IEnumerator> SelectDNACoroutine)
+        Func<int, IEnumerator> SelectDNACoroutine,
+        bool IsLocal = false)
     {
         _selectPlayer = SelectPlayer;
         _targetDNA = targetDNA;
         _selectDNACoroutine = SelectDNACoroutine;
         _notDoSync = false;
         _isDigivolutionCost = false;
-    }
+        _isLocal = IsLocal;
+}
 
     Player _selectPlayer = null;
     CardSource _targetDNA = null;
@@ -27,6 +29,7 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
     public int _selectedCount = 0;
     bool _notDoSync = false;
     bool _isDigivolutionCost = false;
+    bool _isLocal = false;
 
     public void ResetSelectDNAConditionClass()
     {
@@ -68,7 +71,7 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
                 string selectPlayerMessage = "Which DNA do you want?";
                 string notSelectPlayerMessage = "The opponent is choosing from which DNA to do.";
 
-                GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: _targetDNA.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: _targetDNA.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage, _isLocal);
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
