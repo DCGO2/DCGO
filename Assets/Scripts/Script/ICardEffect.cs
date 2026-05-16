@@ -388,7 +388,7 @@ public abstract class ICardEffect
         {
             if (EffectSourceCard != null)
             {
-                if (EffectSourceCard.PermanentOfThisCard() != null)
+                if (EffectSourceCard.PermanentOfThisCard() != null && !IsOnDeletion)
                 {
                     if (IsInheritedEffect || IsLinkedEffect)
                     {
