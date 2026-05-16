@@ -64,8 +64,16 @@ namespace DCGO.CardEffects.BT21
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
+                bool CanSelectDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent.CanAttack(activateClass);
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    bool activated = false;
+
                     if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
                     {
                         int maxCount = Math.Min(1, card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
@@ -101,13 +109,11 @@ namespace DCGO.CardEffects.BT21
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnerPermanentCondition))
                     {
-                        Permanent selectedPermanent = null;
-
                         SelectPermanentEffect selectPermanentEffect2 = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect2.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectOwnerPermanentCondition,
+                            canTargetCondition: CanSelectDigimon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -125,24 +131,20 @@ namespace DCGO.CardEffects.BT21
 
                         IEnumerator SelectPermanentCoroutine2(Permanent permanent)
                         {
-                            selectedPermanent = permanent;
+                            activated = true;
 
-                            yield return null;
-                        }
-
-                        if (selectedPermanent != null && selectedPermanent.CanAttack(activateClass))
-                        {
                             SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
                             selectAttackEffect.SetUp(
-                                attacker: selectedPermanent,
+                                attacker: permanent,
                                 canAttackPlayerCondition: () => true,
-                                defenderCondition: _ => true,
+                                defenderCondition: (_) => true,
                                 cardEffect: activateClass);
 
                             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
                     }
+                    if (!activated) activateClass.RemoveUse();
                 }
             }
             #endregion
@@ -188,8 +190,16 @@ namespace DCGO.CardEffects.BT21
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
+                bool CanSelectDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent.CanAttack(activateClass);
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    bool activated = false;
+
                     if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
                     {
                         int maxCount = Math.Min(1, card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
@@ -225,13 +235,11 @@ namespace DCGO.CardEffects.BT21
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnerPermanentCondition))
                     {
-                        Permanent selectedPermanent = null;
-
                         SelectPermanentEffect selectPermanentEffect2 = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect2.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectOwnerPermanentCondition,
+                            canTargetCondition: CanSelectDigimon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -249,24 +257,20 @@ namespace DCGO.CardEffects.BT21
 
                         IEnumerator SelectPermanentCoroutine2(Permanent permanent)
                         {
-                            selectedPermanent = permanent;
+                            activated = true;
 
-                            yield return null;
-                        }
-
-                        if (selectedPermanent != null && selectedPermanent.CanAttack(activateClass))
-                        {
                             SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
                             selectAttackEffect.SetUp(
-                                attacker: selectedPermanent,
+                                attacker: permanent,
                                 canAttackPlayerCondition: () => true,
-                                defenderCondition: _ => true,
+                                defenderCondition: (_) => true,
                                 cardEffect: activateClass);
 
                             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
                     }
+                    if (!activated) activateClass.RemoveUse();
                 }
             }
             #endregion
