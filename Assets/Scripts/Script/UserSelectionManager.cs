@@ -9,6 +9,7 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
 {
     bool _endSelect = false;
     int _selectedIntValue = 0;
+    bool _isLocal = false;
     bool _selectedBoolValue => getBoolFromInt(_selectedIntValue);
     public int SelectedIntValue => _selectedIntValue;
     public bool SelectedBoolValue => _selectedBoolValue;
@@ -98,11 +99,12 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
         yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
     }
 
-    public void SetIntSelection(List<SelectionElement<int>> selectionElements, Player selectPlayer, string selectPlayerMessage, string notSelectPlayerMessage)
+    public void SetIntSelection(List<SelectionElement<int>> selectionElements, Player selectPlayer, string selectPlayerMessage, string notSelectPlayerMessage, bool IsLocal = false)
     {
         _endSelect = false;
         _selectedIntValue = 0;
         _selectPlayer = selectPlayer;
+        _isLocal = IsLocal;
 
         if (selectPlayer.isYou)
         {
@@ -112,7 +114,7 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
 
             foreach (SelectionElement<int> selectionElement in selectionElements)
             {
-                command_SelectCommands.Add(new Command_SelectCommand(selectionElement.Message, () => SetInt_RPC(selectPlayer.PlayerID, selectionElement.Value), selectionElement.SpriteIndex));
+                command_SelectCommands.Add(new Command_SelectCommand(selectionElement.Message, () => SendSelection(selectionElement.Value), selectionElement.SpriteIndex));
             }
 
             GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
@@ -132,25 +134,31 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
                     canSelectValue.Add(selectionElement.Value);
                 }
 
-                if (canSelectValue.Count >= 1)
-                {
-                    SetInt_RPC(selectPlayer.PlayerID, canSelectValue[UnityEngine.Random.Range(0, canSelectValue.Count)]);
-                }
-
-                else
-                {
-                    SetInt_RPC(selectPlayer.PlayerID, 0);
-                }
+                int value = canSelectValue.Count >= 1 ? canSelectValue[UnityEngine.Random.Range(0, canSelectValue.Count)] : 0;
+                SendSelection(value);
             }
             #endregion
         }
+
+        void SendSelection(int value)
+        {
+            if (_isLocal)
+            {
+                SetIntForPlayer(selectPlayer.PlayerID, value);
+            }
+            else
+            {
+                SetInt_RPC(selectPlayer.PlayerID, value);
+            }
+        }
     }
 
-    public void SetBoolSelection(List<SelectionElement<bool>> selectionElements, Player selectPlayer, string selectPlayerMessage, string notSelectPlayerMessage)
+    public void SetBoolSelection(List<SelectionElement<bool>> selectionElements, Player selectPlayer, string selectPlayerMessage, string notSelectPlayerMessage, bool IsLocal = false)
     {
         _endSelect = false;
         _selectedIntValue = 0;
         _selectPlayer = selectPlayer;
+        _isLocal = IsLocal;
 
         if (selectPlayer.isYou)
         {
@@ -160,7 +168,7 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
 
             foreach (SelectionElement<bool> selectionElement in selectionElements)
             {
-                command_SelectCommands.Add(new Command_SelectCommand(selectionElement.Message, () => SetBool_RPC(selectPlayer.PlayerID, selectionElement.Value), selectionElement.SpriteIndex));
+                command_SelectCommands.Add(new Command_SelectCommand(selectionElement.Message, () => SendSelection(selectionElement.Value), selectionElement.SpriteIndex));
             }
 
             GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
@@ -180,17 +188,22 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
                     canSelectValue.Add(selectionElement.Value);
                 }
 
-                if (canSelectValue.Count >= 1)
-                {
-                    SetBool_RPC(selectPlayer.PlayerID, canSelectValue[UnityEngine.Random.Range(0, canSelectValue.Count)]);
-                }
-
-                else
-                {
-                    SetBool_RPC(selectPlayer.PlayerID, false);
-                }
+                bool value = canSelectValue.Count >= 1 ? canSelectValue[UnityEngine.Random.Range(0, canSelectValue.Count)] : false;
+                SendSelection(value);
             }
             #endregion
+        }
+
+        void SendSelection(bool value)
+        {
+            if (_isLocal)
+            {
+                SetBoolForPlayer(selectPlayer.PlayerID, value);
+            }
+            else
+            {
+                SetBool_RPC(selectPlayer.PlayerID, value);
+            }
         }
     }
 }
