@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// Ame-no-Ohabari
 namespace DCGO.CardEffects.EX4
 {
     public class EX4_071 : CEntity_Effect
@@ -11,14 +12,15 @@ namespace DCGO.CardEffects.EX4
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Main
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Main] By deleting 1 of your Digimon, delete 1 of your opponent's Digimon whose level is less than or equal. If one of your Digimon with [Ravemon] in its name was deleted by this effect, at the end of your opponent's turn, play 1 [Ravemon] from your trash without paying the cost.";
                 }
@@ -188,19 +190,20 @@ namespace DCGO.CardEffects.EX4
                     }
                 }
             }
+            #endregion
 
-
+            #region Security
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Delete 1 Digimon with the lowest level", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
-                    return "[Security] Delete 1 of your opponent's Digimon with the lowest level.";
+                    return "[Security] Delete 1 of your opponent's Digimon with the lowest level.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -238,6 +241,7 @@ namespace DCGO.CardEffects.EX4
                     }
                 }
             }
+            #endregion
 
             return cardEffects;
         }
