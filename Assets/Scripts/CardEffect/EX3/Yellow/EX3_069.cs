@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// Trial of the Four Great Dragons
 namespace DCGO.CardEffects.EX3
 {
     public class EX3_069 : CEntity_Effect
@@ -10,14 +11,15 @@ namespace DCGO.CardEffects.EX3
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Main
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Main] <Draw 1>. Then, place this card in your battle area.";
                 }
@@ -35,32 +37,26 @@ namespace DCGO.CardEffects.EX3
                         cardEffect: activateClass));
                 }
             }
+            #endregion
 
+            #region Delay
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Digimon from hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Main] <Delay> (By trashing this card in your battle area, activate the effect below. You can't activate this effect the turn this card enters play.) - Play 1 Digimon card with [Four Great Dragons] in its traits from your hand without paying the cost. The Digimon played by this effect can't digivolve to level 7, and at the end of your opponent's turn, delete that Digimon.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.EqualsTraits("Four Great Dragons"))
-                    {
-                        if (cardSource.IsDigimon)
-                        {
-                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
+                    return cardSource.EqualsTraits("Four Great Dragons")
+                        && cardSource.IsDigimon
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -150,15 +146,8 @@ namespace DCGO.CardEffects.EX3
 
                                     bool CardCondition(CardSource cardSource)
                                     {
-                                        if (cardSource.Level == 7)
-                                        {
-                                            if (cardSource.HasLevel)
-                                            {
-                                                return true;
-                                            }
-                                        }
-
-                                        return false;
+                                        return cardSource.HasLevel
+                                            && cardSource.Level == 7;
                                     }
                                 }
 
@@ -166,33 +155,20 @@ namespace DCGO.CardEffects.EX3
                                 {
                                     ActivateClass activateClass1 = new ActivateClass();
                                     activateClass1.SetUpICardEffect("Delete the Digimon", CanUseCondition1, card);
-                                    activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "");
+                                    activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, 1, false, "");
+                                    activateClass1.SetHashString("EX3_069_EoOT");
                                     card.Owner.UntilOpponentTurnEndEffects.Add(GetCardEffect);
 
                                     bool CanUseCondition1(Hashtable hashtable)
                                     {
-                                        if (CardEffectCommons.IsOpponentTurn(card))
-                                        {
-                                            return true;
-                                        }
-
-                                        return false;
+                                        return CardEffectCommons.IsOpponentTurn(card);
                                     }
 
                                     bool CanActivateCondition1(Hashtable hashtable)
                                     {
-                                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
-                                        {
-                                            if (selectedPermanent.CanBeDestroyedBySkill(activateClass1))
-                                            {
-                                                if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass1))
-                                                {
-                                                    return true;
-                                                }
-                                            }
-                                        }
-
-                                        return false;
+                                        return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent)
+                                            && selectedPermanent.CanBeDestroyedBySkill(activateClass1)
+                                            && !selectedPermanent.TopCard.CanNotBeAffected(activateClass1);
                                     }
 
                                     IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
@@ -215,11 +191,14 @@ namespace DCGO.CardEffects.EX3
                     }
                 }
             }
+            #endregion
 
+            #region Security
             if (timing == EffectTiming.SecuritySkill)
             {
                 cardEffects.Add(CardEffectFactory.PlaceSelfDelayOptionSecurityEffect(card));
             }
+            #endregion
 
             return cardEffects;
         }
