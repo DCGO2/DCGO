@@ -1,8 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
+// RizeGreymon
 namespace DCGO.CardEffects.BT21
 {
     public class BT21_044 : CEntity_Effect
@@ -23,254 +22,179 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            #region Shared OP/WD
+            string SharedEffectName = "[Marcus Damon] becomes a Digimon with <Rush> and <Alliance> for turn, then 1 Digimon may attack";
+
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    SharedEffectName,
+                    SharedActivateCoroutine,
+                    SharedEffectDescription,
+                    optional: false,
+                    onPlay: true,
+                    whenDigivolving: true);
+
+            string SharedEffectDescription(string tag) => $"[{tag}] For the turn, 1 of your [Marcus Damon]s is also treated as a 3000 DP Digimon, can't digivolve, and gains <Rush> and <Alliance>. Then, 1 of your Digimon may attack.";
+
+            bool SharedCanSelectPermanentCondition(Permanent permanent)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("[Marcus Damon] becomes a Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                    && permanent.TopCard.EqualsCardName("Marcus Damon");
+            }
 
-                string EffectDiscription()
+            bool SharedCanSelectOwnerPermanentCondition(Permanent permanent, ActivateClass activateClass)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    && permanent.CanAttack(activateClass);
+            }
+
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
+            {
+                if (CardEffectCommons.HasMatchConditionPermanent(SharedCanSelectPermanentCondition))
                 {
-                    return "[On Play] For the turn, 1 of your [Marcus Damon]s is also treated as a 3000 DP Digimon, can't digivolve, and gains <Rush> and <Alliance>. Then, 1 of your Digimon may attack.";
+                    SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect1.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: SharedCanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine1,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect1.SetUpCustomMessage("Select 1 [Marcus Damon].", "The opponent is selecting 1 [Marcus Damon].");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+
+                    IEnumerator SelectPermanentCoroutine1(Permanent selectedPermanent)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BecomeDigimonThatCantDigivolve(targetPermanent: selectedPermanent, DP: 3000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainAlliance(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                    }
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
+                if (CardEffectCommons.HasMatchConditionPermanent(_ => SharedCanSelectOwnerPermanentCondition(_, activateClass)))
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    Permanent selectedPermanent = null;
+
+                    SelectPermanentEffect selectPermanentEffect2 = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect2.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: _ => SharedCanSelectOwnerPermanentCondition(_, activateClass),
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine2,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect2.SetUpCustomMessage("Select 1 Digimon that will attack.",
+                        "The opponent is selecting 1 Digimon that will attack.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect2.Activate());
+
+                    IEnumerator SelectPermanentCoroutine2(Permanent permanent)
                     {
-                        if (permanent.TopCard.EqualsCardName("Marcus Damon"))
-                        {
-                            return true;
-                        }
+                        selectedPermanent = permanent;
+
+                        yield return null;
                     }
 
-                    return false;
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                bool CanSelectOwnerPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                bool CanSelectDigimon(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.CanAttack(activateClass);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    bool activated = false;
-
-                    if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
+                    if (selectedPermanent != null)
                     {
-                        int maxCount = Math.Min(1, card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
+                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                        SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect1.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine1,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
+                        selectAttackEffect.SetUp(
+                            attacker: selectedPermanent,
+                            canAttackPlayerCondition: () => true,
+                            defenderCondition: _ => true,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect1.SetUpCustomMessage("Select 1 [Marcus Damon].", "The opponent is selecting 1 [Marcus Damon].");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
-
-                        IEnumerator SelectPermanentCoroutine1(Permanent selectedPermanent)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BecomeDigimonThatCantDigivolve(targetPermanent: selectedPermanent, DP: 3000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainAlliance(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                     }
-
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnerPermanentCondition))
-                    {
-                        SelectPermanentEffect selectPermanentEffect2 = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect2.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectDigimon,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine2,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect2.SetUpCustomMessage("Select 1 Digimon that will attack.",
-                            "The opponent is selecting 1 Digimon that will attack.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect2.Activate());
-
-                        IEnumerator SelectPermanentCoroutine2(Permanent permanent)
-                        {
-                            activated = true;
-
-                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                            selectAttackEffect.SetUp(
-                                attacker: permanent,
-                                canAttackPlayerCondition: () => true,
-                                defenderCondition: (_) => true,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                        }
-                    }
-                    if (!activated) activateClass.RemoveUse();
                 }
             }
             #endregion
 
-            #region When Digivolving
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            #region Shared AT/Inherit
+            string SharedEffectDescription1()
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("[Marcus Damon] becomes a Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
+                return "[All Turns][Once Per Turn] When any of your yellow or red Tamers are deleted, you may place 1 [Marcus Damon] from your trash as the top security card.";
+            }
 
-                string EffectDiscription()
+            bool SharedCanActivateCondition1(ActivateClass activateClass)
+            {
+                return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
+            }
+
+            bool SharedCanSelectCardCondition1(CardSource cardSource)
+            {
+                return cardSource.EqualsCardName("Marcus Damon");
+            }
+
+            bool SharedPermanentCondition1(Permanent permanent)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card);
+            }
+
+            IEnumerator SharedActivateCoroutine1(ActivateClass activateClass)
+            {
+                if (card.Owner.CanAddSecurity(activateClass)
+                && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SharedCanSelectCardCondition1))
                 {
-                    return "[When Digivolving] For the turn, 1 of your [Marcus Damon]s is also treated as a 3000 DP Digimon, can't digivolve, and gains <Rush> and <Alliance>. Then, 1 of your Digimon may attack.";
-                }
+                    List<CardSource> selectedCards = new List<CardSource>();
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
-                    {
-                        if (permanent.TopCard.EqualsCardName("Marcus Damon"))
-                        {
-                            return true;
-                        }
-                    }
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                    return false;
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                bool CanSelectOwnerPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                bool CanSelectDigimon(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.CanAttack(activateClass);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    bool activated = false;
-
-                    if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
-                    {
-                        int maxCount = Math.Min(1, card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect1.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine1,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect1.SetUpCustomMessage("Select 1 [Marcus Damon].", "The opponent is selecting 1 [Marcus Damon].");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
-
-                        IEnumerator SelectPermanentCoroutine1(Permanent selectedPermanent)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BecomeDigimonThatCantDigivolve(targetPermanent: selectedPermanent, DP: 3000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainAlliance(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
-                        }
-                    }                        
-
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnerPermanentCondition))
-                    {
-                        SelectPermanentEffect selectPermanentEffect2 = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect2.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectDigimon,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine2,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect2.SetUpCustomMessage("Select 1 Digimon that will attack.",
-                            "The opponent is selecting 1 Digimon that will attack.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect2.Activate());
-
-                        IEnumerator SelectPermanentCoroutine2(Permanent permanent)
-                        {
-                            activated = true;
-
-                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                            selectAttackEffect.SetUp(
-                                attacker: permanent,
-                                canAttackPlayerCondition: () => true,
-                                defenderCondition: (_) => true,
+                    selectCardEffect.SetUp(
+                                canTargetCondition: SharedCanSelectCardCondition1,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => false,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 [Marcus Damon] to add to security.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
                                 cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                    selectCardEffect.SetUpCustomMessage("Select 1 card to add to security.", "The opponent is selecting 1 card to add to security.");
+                    selectCardEffect.SetUpCustomMessage_ShowCard("Security Card");
+
+                    yield return StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    {
+                        selectedCards.Add(cardSource);
+
+                        yield return null;
+                    }
+
+                    if (selectedCards.Count >= 1)
+                    {
+                        foreach (CardSource selectedCard in selectedCards)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard));
                         }
                     }
-                    if (!activated) activateClass.RemoveUse();
                 }
             }
             #endregion
@@ -280,112 +204,14 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 [Marcus Damon] on the top of security from trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("AddSecurity_BT21_044");
+                activateClass.SetUpActivateClass(_ => SharedCanActivateCondition1(activateClass), _ => SharedActivateCoroutine1(activateClass), 1, true, SharedEffectDescription1());
+                activateClass.SetHashString("BT21_044_AT");
                 cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[All Turns][Once Per Turn] When any of your yellow or red Tamers are deleted, you may place 1 [Marcus Damon] from your trash as the top security card.";
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    if (cardSource.EqualsCardName("Marcus Damon"))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
-                    {
-                        if (permanent.IsTamer)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (card.Owner.CanAddSecurity(activateClass))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardCondition(cardSource)));
-
-                            List<CardSource> selectedCards = new List<CardSource>();
-
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                        canTargetCondition: CanSelectCardCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        canNoSelect: () => false,
-                                        selectCardCoroutine: SelectCardCoroutine,
-                                        afterSelectCardCoroutine: null,
-                                        message: "Select 1 [Marcus Damon] to add to security.",
-                                        maxCount: maxCount,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Trash,
-                                        customRootCardList: null,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 card to add to security.", "The opponent is selecting 1 card to add to security.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Security Card");
-
-                            yield return StartCoroutine(selectCardEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-
-                                yield return null;
-                            }
-
-                            if (selectedCards.Count >= 1)
-                            {
-                                foreach (CardSource selectedCard in selectedCards)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard));
-                                }
-                            }
-                        }
-                    }
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, SharedPermanentCondition1);
                 }
             }
             #endregion
@@ -395,113 +221,15 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 [Marcus Damon] on the top of security from trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(_ => SharedCanActivateCondition1(activateClass), _ => SharedActivateCoroutine1(activateClass), 1, true, SharedEffectDescription1());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("ESSAddSecurity_BT21_044");
+                activateClass.SetHashString("BT21_044_Inherited_AT");
                 cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[All Turns][Once Per Turn] When any of your yellow or red Tamers are deleted, you may place 1 [Marcus Damon] from your trash as the top security card.";
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    if (cardSource.EqualsCardName("Marcus Damon"))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
-                    {
-                        if (permanent.IsTamer)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (card.Owner.CanAddSecurity(activateClass))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardCondition(cardSource)));
-
-                            List<CardSource> selectedCards = new List<CardSource>();
-
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                        canTargetCondition: CanSelectCardCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        canNoSelect: () => false,
-                                        selectCardCoroutine: SelectCardCoroutine,
-                                        afterSelectCardCoroutine: null,
-                                        message: "Select 1 [Marcus Damon] to add to security.",
-                                        maxCount: maxCount,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Trash,
-                                        customRootCardList: null,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 card to add to security.", "The opponent is selecting 1 card to add to security.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Security Card");
-
-                            yield return StartCoroutine(selectCardEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-
-                                yield return null;
-                            }
-
-                            if (selectedCards.Count >= 1)
-                            {
-                                foreach (CardSource selectedCard in selectedCards)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard));
-                                }
-                            }
-                        }
-                    }
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, SharedPermanentCondition1);
                 }
             }
             #endregion
