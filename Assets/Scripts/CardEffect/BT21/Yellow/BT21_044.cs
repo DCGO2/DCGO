@@ -31,10 +31,16 @@ namespace DCGO.CardEffects.BT21
                     SharedActivateCoroutine,
                     SharedEffectDescription,
                     optional: false,
+                    isSkippableFunction: IsSkippable,
                     onPlay: true,
                     whenDigivolving: true);
 
             string SharedEffectDescription(string tag) => $"[{tag}] For the turn, 1 of your [Marcus Damon]s is also treated as a 3000 DP Digimon, can't digivolve, and gains <Rush> and <Alliance>. Then, 1 of your Digimon may attack.";
+
+            bool IsSkippable(Hashtable hashtable)
+            {
+                return !CardEffectCommons.HasMatchConditionPermanent(SharedCanSelectPermanentCondition);
+            }
 
             bool SharedCanSelectPermanentCondition(Permanent permanent)
             {
