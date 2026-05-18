@@ -78,7 +78,7 @@ namespace DCGO.CardEffects.BT15
                         return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
                             && CanSelectCardCondition(permanent.TopCard);
                     }
-                    
+
                     int validPermanentCount = CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanSelectPermanentCondition);
                     int validTrashCardCount = card.Owner.TrashCards.Count(CanSelectCardCondition);
 
@@ -147,7 +147,7 @@ namespace DCGO.CardEffects.BT15
                         if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
                         {
                             bool canNoSelect = noSelect() && validTrashCardCount > 0;
-                            int maxCount = Math.Min(3-digivolutionCards.Count, validPermanentCount);
+                            int maxCount = Math.Min(3 - digivolutionCards.Count, validPermanentCount);
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectPermanentEffect.SetUp(
@@ -175,7 +175,7 @@ namespace DCGO.CardEffects.BT15
                             }
 
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                            { 
+                            {
                                 digivolutionCards.Add(permanent.TopCard);
 
                                 yield return null;
@@ -185,7 +185,7 @@ namespace DCGO.CardEffects.BT15
                         else
                         {
                             bool canNoSelect = noSelect() && validPermanentCount > 0;
-                            int maxCount = Math.Min(3-digivolutionCards.Count, validTrashCardCount);
+                            int maxCount = Math.Min(3 - digivolutionCards.Count, validTrashCardCount);
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                             selectCardEffect.SetUp(
@@ -228,7 +228,7 @@ namespace DCGO.CardEffects.BT15
                         }
 
                         ChangeCostClass changeCostClass = new ChangeCostClass();
-                        changeCostClass.SetUpICardEffect($"Play Cost {-4*digivolutionCards.Count}", CanUseCondition1, card);
+                        changeCostClass.SetUpICardEffect($"Play Cost {-4 * digivolutionCards.Count}", CanUseCondition1, card);
                         changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
                         card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
 
@@ -310,13 +310,13 @@ namespace DCGO.CardEffects.BT15
                     && RootCondition(root)
                     && PermanentsCondition(targetPermanents))
                     {
-                        List<CardSource> validCards = card.Owner.GetBattleAreaDigimons().Filter(CanSelectPermanentCondition).Map(permanent => permanent.TopCard); 
+                        List<CardSource> validCards = card.Owner.GetBattleAreaDigimons().Filter(CanSelectPermanentCondition).Map(permanent => permanent.TopCard);
                         validCards.AddRange(card.Owner.TrashCards.Filter(CanSelectCardCondition));
                         int targetCount = Math.Min(3, Combinations.GetUniqueNameCardCount(validCards));
 
                         Cost -= targetCount * 4;
                     }
-                    
+
                     return Cost;
                 }
 
@@ -348,7 +348,7 @@ namespace DCGO.CardEffects.BT15
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 digimon from trash under this Digimon's digivolution cards", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 digimon from trash under this Digimon's digivolution cards and activate one of it's [On Play] effects", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
