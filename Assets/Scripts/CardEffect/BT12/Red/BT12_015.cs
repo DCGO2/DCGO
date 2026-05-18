@@ -362,7 +362,7 @@ namespace DCGO.CardEffects.BT12
                                                 payCost: true,
                                                 targetPermanent: selectedPermanent,
                                                 isTapped: false,
-                                                failedProcess: OnFail(card),
+                                                failedProcess: OnFail,
                                                 root: SelectCardEffect.Root.Hand,
                                                 activateETB: true).PlayCard());
                                         }
