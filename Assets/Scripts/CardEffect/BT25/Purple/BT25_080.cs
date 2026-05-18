@@ -100,7 +100,9 @@ namespace DCGO.CardEffects.BT25
                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                         }
 
-                        if (CardEffectCommons.IsByEffect(hashtable, null) && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
+                        if (CardEffectCommons.IsByEffect(hashtable, null)
+                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card)
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -122,7 +124,7 @@ namespace DCGO.CardEffects.BT25
                     }
                     else activateClass.RemoveUse();
                 }
-                
+
             }
             #endregion
 

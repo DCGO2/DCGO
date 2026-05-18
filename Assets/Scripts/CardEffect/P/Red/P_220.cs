@@ -195,11 +195,6 @@ namespace DCGO.CardEffects.P
                 return $"[{tag}] <De-Digivolve 2> 1 of your opponent's Digimon. Then, you may delete 1 Digimon.";
             }
 
-            bool SharedCanActivateCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.IsExistOnBattleArea(card);
-            }
-
             bool PermanentSelectCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
