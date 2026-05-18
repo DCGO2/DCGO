@@ -899,7 +899,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                     {
                         if (cardEffect.CanUse(hashtable))
                         {
-                            cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(cardEffect);
+                            cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(cardEffect);
                             yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
                         }
                     }
@@ -922,7 +922,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                         {
                             if (cardEffect.CanUse(hashtable))
                             {
-                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(cardEffect);
+                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(cardEffect);
                                 yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
                             }
                         }
@@ -945,7 +945,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                         {
                             if (cardEffect.CanUse(hashtable))
                             {
-                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(cardEffect);
+                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(cardEffect);
                                 yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
                             }
                         }
@@ -968,7 +968,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                         {
                             if (cardEffect.CanUse(hashtable))
                             {
-                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(cardEffect);
+                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(cardEffect);
                                 yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
                             }
                         }
@@ -1036,7 +1036,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                         {
                             if (cardEffect.CanUse(hashtable))
                             {
-                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(cardEffect);
+                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(cardEffect);
                                 yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
                             }
                         }

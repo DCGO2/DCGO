@@ -187,7 +187,7 @@ public class SelectJogressEffect : MonoBehaviour
             {
                 #region select DNA condition
                 SelectDNACondition selectDNACondition = GManager.instance.GetComponent<SelectDNACondition>();
-                selectDNACondition.SetUp(_card.Owner, _card, SelectDNA);
+                selectDNACondition.SetUp(_card.Owner, _card, SelectDNA, _isLocal);
 
                 yield return ContinuousController.instance.StartCoroutine(selectDNACondition.Activate());
 

@@ -37,6 +37,7 @@ namespace DCGO.CardEffects.BT16
                 activateClass.SetUpICardEffect("Add [End of Attack] to all of this Digimon's [On Deletion] effects.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsBackgroundProcess(true);
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

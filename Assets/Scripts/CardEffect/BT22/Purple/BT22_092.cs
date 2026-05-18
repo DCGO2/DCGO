@@ -210,7 +210,7 @@ namespace DCGO.CardEffects.BT22
                                             if (selectedEffect.CanUse(null))
                                             {
                                                 yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(null));
-
+                                                ((ActivateICardEffect)selectedEffect).AddUse();
                                                 yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                                             }
                                         }
