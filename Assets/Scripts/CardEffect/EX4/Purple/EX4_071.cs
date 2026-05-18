@@ -145,8 +145,6 @@ namespace DCGO.CardEffects.EX4
                                     {
                                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
                                         {
-                                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardCondition(cardSource)));
-
                                             List<CardSource> selectedCards = new List<CardSource>();
 
                                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -156,32 +154,20 @@ namespace DCGO.CardEffects.EX4
                                                 canTargetCondition_ByPreSelecetedList: null,
                                                 canEndSelectCondition: null,
                                                 canNoSelect: () => false,
-                                                selectCardCoroutine: SelectCardCoroutine,
+                                                selectCardCoroutine: null,
                                                 afterSelectCardCoroutine: null,
                                                 message: "Select 1 [Ravemon] to play.",
-                                                maxCount: maxCount,
+                                                maxCount: 1,
                                                 canEndNotMax: false,
                                                 isShowOpponent: true,
-                                                mode: SelectCardEffect.Mode.Custom,
+                                                mode: SelectCardEffect.Mode.PlayForFree,
                                                 root: SelectCardEffect.Root.Trash,
                                                 customRootCardList: null,
                                                 canLookReverseCard: true,
                                                 selectPlayer: card.Owner,
                                                 cardEffect: activateClass1);
 
-                                            selectCardEffect.SetUpCustomMessage("Select 1 [Ravemon] to play.", "The opponent is selecting 1 [Ravemon] to play.");
-                                            selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
                                             yield return StartCoroutine(selectCardEffect.Activate());
-
-                                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                                            {
-                                                selectedCards.Add(cardSource);
-
-                                                yield return null;
-                                            }
-
-                                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
                                         }
                                     }
                                 }
