@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// Henry Wong & Shu-Chong Wong
 namespace DCGO.CardEffects.EX4
 {
     public class EX4_063 : CEntity_Effect
@@ -10,14 +11,15 @@ namespace DCGO.CardEffects.EX4
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Start of Your Main Phase
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Terriermon] or [Lopmon] from hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Start of Your Main Phase] If you have 1 or fewer Digimon in play, you may play 1 [Terriermon] or [Lopmon] from your hand without paying the cost. Digimon played by this effect can't digivolve and are deleted at the end of your opponent's turn.";
                 }
@@ -101,12 +103,12 @@ namespace DCGO.CardEffects.EX4
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                                cardSources: selectedCards,
-                                                activateClass: activateClass,
-                                                payCost: false,
-                                                isTapped: false,
-                                                root: SelectCardEffect.Root.Hand,
-                                                activateETB: true));
+                            cardSources: selectedCards,
+                            activateClass: activateClass,
+                            payCost: false,
+                            isTapped: false,
+                            root: SelectCardEffect.Root.Hand,
+                            activateETB: true));
 
 
                         foreach (CardSource selectedCard in selectedCards)
@@ -142,7 +144,8 @@ namespace DCGO.CardEffects.EX4
                                 {
                                     ActivateClass activateClass1 = new ActivateClass();
                                     activateClass1.SetUpICardEffect("Delete the Digimon", CanUseCondition1, card);
-                                    activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "");
+                                    activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, 1, false, "");
+                                    activateClass1.SetHashString("EX4_063_EoOT");
                                     card.Owner.UntilOpponentTurnEndEffects.Add(GetCardEffect);
 
                                     bool CanUseCondition1(Hashtable hashtable)
@@ -194,16 +197,18 @@ namespace DCGO.CardEffects.EX4
                     }
                 }
             }
+            #endregion
 
+            #region Your Turn
             if (timing == EffectTiming.BeforePayCost)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolution Cost -1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetHashString("Digisorption-1_EX4_063");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Your Turn] When one of your Digimon with [Terriermon] or [Lopmon] in its digivolution cards would digivolve, by suspending this Tamer, reduce the digivolution cost by 1.";
                 }
@@ -325,11 +330,14 @@ namespace DCGO.CardEffects.EX4
                     }
                 }
             }
+            #endregion
 
+            #region Security
             if (timing == EffectTiming.SecuritySkill)
             {
                 cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
             }
+            #endregion
 
             return cardEffects;
         }
