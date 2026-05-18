@@ -124,8 +124,8 @@ public class PlayCardClass
         bool isTapped,
         SelectCardEffect.Root root,
         bool activateETB,
-        IEnumerator successProcess = null,
-        IEnumerator failedProcess = null)
+        IEnumerator<CardSource> successProcess = null,
+        IEnumerator<CardSource> failedProcess = null)
     {
         if (cardSources != null)
         {
