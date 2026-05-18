@@ -138,8 +138,8 @@ public class PlayCardClass
         _isTapped = isTapped;
         Root = root;
         _activateETB = activateETB;
-        _successProcess = successProcess;
-        _failedProcess = failedProcess;
+        _successProcess = (IEnumerator<CardSource>)successProcess;
+        _failedProcess = (IEnumerator<CardSource>)failedProcess;
     }
 
     public void SetJogress(int[] jogressEvoRootsFrameIDs)
@@ -218,8 +218,8 @@ public class PlayCardClass
     int _burstTamerFrameID = -1;
     int[] _appFusionFrameIDs = null;
     bool _isBreedingArea = false;
-    IEnumerator _successProcess;
-    IEnumerator _failedProcess;
+    IEnumerator<CardSource> _successProcess;
+    IEnumerator<CardSource> _failedProcess;
 
     public bool isJogress => _jogressEvoRootsFrameIDs != null && _jogressEvoRootsFrameIDs.Length == 2;
 
@@ -966,7 +966,7 @@ public class PlayCardClass
                     }
                 }
 
-                if(playFailed)
+                if (playFailed)
                 {
                     if (_failedProcess != null)
                     {
@@ -5035,7 +5035,7 @@ public class IMassDegeneration
 
         if (_degenerationCount >= 1)
         {
-            foreach(Permanent _permanent in permanents_Fixed)
+            foreach (Permanent _permanent in permanents_Fixed)
             {
                 int count = 0;
 
@@ -5139,7 +5139,7 @@ public class IMassDegeneration
 
                     PlayLog.OnAddLog?.Invoke(log);
                 }
-                
+
                 #endregion
             }
         }
