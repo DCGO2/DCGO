@@ -117,6 +117,8 @@ public class IDiscardHand
 
 public class PlayCardClass
 {
+    private static WaitForSeconds _waitForSeconds0_5 = new WaitForSeconds(0.5f);
+
     public PlayCardClass(List<CardSource> cardSources,
         Hashtable hashtable,
         bool payCost,
@@ -546,7 +548,7 @@ public class PlayCardClass
                                         {
                                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect(card));
                                         }
-                                   
+
                                         if (GManager.instance.TryGetComponent<SelectCountEffect>(out var selectCountEffect))
                                         {
                                             selectCountEffect.SetUp(
@@ -961,7 +963,7 @@ public class PlayCardClass
                     {
                         yield return ContinuousController.instance.StartCoroutine(_failedProcess(cardSource));
                     }
-                }            
+                }
                 else
                 {
                     if (_successProcess != null)
