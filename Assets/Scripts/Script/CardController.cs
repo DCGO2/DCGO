@@ -964,15 +964,12 @@ public class PlayCardClass
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
                         }
                     }
-                }
 
-                if (playFailed)
-                {
                     if (_failedProcess != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(_failedProcess);
                     }
-                }
+                }            
                 else
                 {
                     if (_successProcess != null)
