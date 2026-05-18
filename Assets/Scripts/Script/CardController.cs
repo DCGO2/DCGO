@@ -138,8 +138,8 @@ public class PlayCardClass
         _isTapped = isTapped;
         Root = root;
         _activateETB = activateETB;
-        _successProcess = (IEnumerator<CardSource>)successProcess;
-        _failedProcess = (IEnumerator<CardSource>)failedProcess;
+        _successProcess = successProcess;
+        _failedProcess = failedProcess;
     }
 
     public void SetJogress(int[] jogressEvoRootsFrameIDs)
