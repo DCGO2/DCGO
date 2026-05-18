@@ -1,8 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using System.Linq;
-using UnityEngine;
 
 public partial class CardEffectFactory
 {
@@ -17,12 +14,12 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnExecutingArea(card);
 
-        bool CanResolveCondition(CardSource optionCard) => CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition);
+        bool CanResolveCondition(CardSource optionCard) => CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition, true);
 
         bool CanSelectPermanentCondition(Permanent permanent)
         {
-            return (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                    || CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card))
+            return CardEffectCommons.IsOwnerPermanent(permanent, card)
+                && permanent.IsDigimon
                 && card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, artsDigivolutionClass, SelectCardEffect.Root.Execution);
         }
         
