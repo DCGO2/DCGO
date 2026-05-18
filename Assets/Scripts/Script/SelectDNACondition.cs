@@ -17,7 +17,6 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
         _targetDNA = targetDNA;
         _selectDNACoroutine = SelectDNACoroutine;
         _notDoSync = false;
-        _isDigivolutionCost = false;
         _isLocal = IsLocal;
 }
 
@@ -27,7 +26,6 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
     List<int> _candidates = new List<int>();
     public int _selectedCount = 0;
     bool _notDoSync = false;
-    bool _isDigivolutionCost = false;
     bool _isLocal = false;
 
     public void ResetSelectDNAConditionClass()
