@@ -967,7 +967,7 @@ public class PlayCardClass
 
                     if (_failedProcess != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(_failedProcess);
+                        yield return ContinuousController.instance.StartCoroutine(_failedProcess(cardSource));
                     }
                 }            
                 else
