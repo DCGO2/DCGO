@@ -1,14 +1,14 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
-using System.Linq;
+using System.Threading.Tasks;
 
 public class SelectBattleDeck : MonoBehaviour
 {
+    private static readonly int OpenHash = Animator.StringToHash("Open");
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static WaitForSeconds _waitForSeconds1 = new WaitForSeconds(1f);
     [Header("Deck selection object")]
     public GameObject SelectDeckObject;
 
@@ -65,10 +65,10 @@ public class SelectBattleDeck : MonoBehaviour
         }
     }
 
-    bool once = false;
+    bool _once = false;
     public void OnClickSelectButton_RandomMatch()
     {
-        if (once || deckInfoPanel.ShowingDeckData == null)
+        if (_once || deckInfoPanel.ShowingDeckData == null)
         {
             return;
         }
@@ -82,7 +82,7 @@ public class SelectBattleDeck : MonoBehaviour
 
     public void OnClickSelectButton_BotMatch()
     {
-        if (once || deckInfoPanel.ShowingDeckData == null)
+        if (_once || deckInfoPanel.ShowingDeckData == null)
         {
             return;
         }
@@ -94,7 +94,7 @@ public class SelectBattleDeck : MonoBehaviour
 
     public IEnumerator OnClickSelectButton_RoomMatchCoroutine()
     {
-        if (once || deckInfoPanel.ShowingDeckData == null)
+        if (_once || deckInfoPanel.ShowingDeckData == null)
         {
             yield break;
         }
@@ -110,9 +110,9 @@ public class SelectBattleDeck : MonoBehaviour
 
     IEnumerator SetOnce()
     {
-        once = true;
-        yield return new WaitForSeconds(1f);
-        once = false;
+        _once = true;
+        yield return _waitForSeconds1;
+        _once = false;
     }
 
     public void Off()
@@ -132,7 +132,7 @@ public class SelectBattleDeck : MonoBehaviour
 
     public UnityAction OnCloseSelectBattleDeckAction;
 
-    public async void SetUpSelectBattleDeck(UnityAction OnClickSelectButtonAction, int defaulSelectDeckIndex)
+    public async void SetUpSelectBattleDeck(UnityAction OnClickSelectButtonAction, int _)
     {
         if (SelectDeckObject.activeSelf)
         {
@@ -145,8 +145,8 @@ public class SelectBattleDeck : MonoBehaviour
 
         SelectDeckObject.SetActive(true);
 
-        anim.SetInteger("Open", 1);
-        anim.SetInteger("Close", 0);
+        anim.SafeSetInt(OpenHash, 1);
+        anim.SafeSetInt(CloseHash, 0);
 
         ContinuousController.instance.StartCoroutine(SetDeckList(true));
 
@@ -168,7 +168,7 @@ public class SelectBattleDeck : MonoBehaviour
 
         else
         {
-            ResetDeckInfoPanel();
+            await ResetDeckInfoPanel();
         }
 
         /*
@@ -178,7 +178,7 @@ public class SelectBattleDeck : MonoBehaviour
         }
         */
 
-        string message = "";
+        string message;
 
         if (ContinuousController.instance.isAI)
         {
@@ -226,13 +226,13 @@ public class SelectBattleDeck : MonoBehaviour
             Opening.instance.PlayCancelSE();
         }
 
-        anim.SetInteger("Open", 0);
-        anim.SetInteger("Close", 1);
+        anim.SafeSetInt(OpenHash, 0);
+        anim.SafeSetInt(CloseHash, 1);
     }
 
-    public void ResetDeckInfoPanel()
+    public async Task ResetDeckInfoPanel()
     {
-        deckInfoPanel.SetUpDeckInfoPanel(null);
+        await deckInfoPanel.SetUpDeckInfoPanel(null);
     }
 
     public IEnumerator SetDeckList(bool open)
@@ -256,9 +256,9 @@ public class SelectBattleDeck : MonoBehaviour
 
             _deckInfoPrefab.transform.localScale = Opening.instance.DeckInfoPrefabStartScale * 1.02f;
 
-            _deckInfoPrefab.OnClickAction = (deckdata) =>
+            _deckInfoPrefab.OnClickAction = async (deckdata) =>
             {
-                deckInfoPanel.SetUpDeckInfoPanel(deckdata);
+                await deckInfoPanel.SetUpDeckInfoPanel(deckdata);
 
                 SetSelectDeckButton();
 

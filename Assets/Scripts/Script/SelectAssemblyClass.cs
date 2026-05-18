@@ -9,6 +9,8 @@ using UnityEngine.Events;
 
 public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 {
+    private static WaitForSeconds _waitForSeconds0_4 = new WaitForSeconds(0.4f);
+
     public List<CardSource> selectedAssemblyCards { get; private set; } = new List<CardSource>();
     public List<AddDigivolutionCardsInfo> addDigivolutionCardInfos { get; private set; } = new List<AddDigivolutionCardsInfo>();
     public List<CardSource> excludedCards { get; private set; } = new List<CardSource>();
@@ -202,7 +204,7 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 
         if (selectedAssemblyCards.Count >= 1)
         {
-            yield return new WaitForSeconds(0.4f);
+            yield return _waitForSeconds0_4;
         }
 
         GManager.instance.GetComponent<Effects>().OffShowCard2();
@@ -259,7 +261,7 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
                     {
                         if (AssemblyConditionElement.CanTargetCondition_ByPreSelecetedList != null || AssemblyConditionElement.skipAllIfNoSelect)
                         {
-                            EndSelectAssembly();
+                            yield return StartCoroutine(EndSelectAssembly());
                         }
                     }
                 }
@@ -324,8 +326,6 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 
                     foreach (AddDigivolutionCardsInfo info in addDigivolutionCardInfos)
                     {
-                        List<CardSource> underTamerCards = new List<CardSource>();
-                        List<Permanent> digimonPermanents = new List<Permanent>();
                         List<CardSource> trashCards = new List<CardSource>();
 
                         foreach (CardSource cardSource in info.cardSources)
