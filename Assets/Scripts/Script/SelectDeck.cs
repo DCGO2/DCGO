@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 using UnityEngine.Events;
 
 public class SelectDeck : OffAnimation
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
     [Header("Select Deck Object")]
     public GameObject SelectDeckObject;
 
@@ -27,8 +28,8 @@ public class SelectDeck : OffAnimation
     public void OffSelectDeck()
     {
         anim.enabled = true;
-        anim.SetInteger("Open", 0);
-        anim.SetInteger("Close", 1);
+        anim.SafeSetInt(OpenHash, 0);
+        anim.SafeSetInt(CloseHash, 1);
 
         isOpen = false;
     }
@@ -53,7 +54,7 @@ public class SelectDeck : OffAnimation
             lastBattleDeckDataIndex = ContinuousController.instance.DeckDatas.IndexOf(ContinuousController.instance.LastBattleDeckData);
         }
 
-        ContinuousController.instance.ModifyAllDeckDatas();
+        //ContinuousController.instance.ModifyAllDeckDatas();
 
         if (0 <= lastBattleDeckDataIndex && lastBattleDeckDataIndex <= ContinuousController.instance.DeckDatas.Count - 1)
         {
@@ -68,8 +69,8 @@ public class SelectDeck : OffAnimation
 
         SelectDeckObject.SetActive(true);
 
-        anim.SetInteger("Open", 1);
-        anim.SetInteger("Close", 0);
+        anim.SafeSetInt(OpenHash, 1);
+        anim.SafeSetInt(CloseHash, 0);
 
         if (ContinuousController.instance.DeckDatas.Count > 0)
         {
@@ -120,9 +121,9 @@ public class SelectDeck : OffAnimation
 
             _deckInfoPrefab.transform.localScale = Opening.instance.DeckInfoPrefabStartScale * 1.02f;
 
-            _deckInfoPrefab.OnClickAction = (deckdata) =>
+            _deckInfoPrefab.OnClickAction = async (deckdata) =>
             {
-                deckInfoPanel.SetUpDeckInfoPanel(deckdata);
+                await deckInfoPanel.SetUpDeckInfoPanel(deckdata);
 
                 Opening.instance.CreateOnClickEffect();
             };
@@ -284,7 +285,7 @@ public class SelectDeck : OffAnimation
         }
 
         ContinuousController.instance.StartCoroutine(SetDeckList(false));
-        ContinuousController.instance.SaveDeckDatas();
+        //ContinuousController.instance.SaveDeckDatas();
     }
 
     public void OnClickDeleteAllDecksButton()
@@ -307,7 +308,7 @@ public class SelectDeck : OffAnimation
 
                 ContinuousController.instance.StartCoroutine(SetDeckList(false));
                 ResetDeckInfoPanel();
-                ContinuousController.instance.SaveDeckDatas();
+                //ContinuousController.instance.SaveDeckDatas();
                 ContinuousController.instance.DeleteAllDecks();
             }
                     ,null

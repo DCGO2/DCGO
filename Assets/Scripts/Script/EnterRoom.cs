@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
-using Photon.Realtime;
-using UnityEngine.SceneManagement;
-using System;
-using System.Linq;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
 using UnityEngine.Events;
 public class EnterRoom : MonoBehaviourPunCallbacks
 {
+    private static readonly int OpenHash = Animator.StringToHash("Open");
+    private static readonly int CloseHash = Animator.StringToHash("Close");
     [Header("Room ID InputField")]
     public InputField RoomIDInputField;
 
@@ -23,11 +20,11 @@ public class EnterRoom : MonoBehaviourPunCallbacks
     [Header("Enter Room Button")]
     public Button EnterRoomButton;
 
-    Image EnterRoomButtonImage;
+    Image _enterRoomButtonImage;
 
     private void Start()
     {
-        EnterRoomButtonImage = EnterRoomButton.GetComponent<Image>();
+        _enterRoomButtonImage = EnterRoomButton.GetComponent<Image>();
     }
 
 
@@ -42,8 +39,8 @@ public class EnterRoom : MonoBehaviourPunCallbacks
 
         this.gameObject.SetActive(true);
 
-        anim.SetInteger("Open", 1);
-        anim.SetInteger("Close", 0);
+        anim.SafeSetInt(OpenHash, 1);
+        anim.SafeSetInt(CloseHash, 0);
     }
 
     public void Close_(bool playSE)
@@ -53,8 +50,8 @@ public class EnterRoom : MonoBehaviourPunCallbacks
             Opening.instance.PlayCancelSE();
         }
 
-        anim.SetInteger("Open", 0);
-        anim.SetInteger("Close", 1);
+        anim.SafeSetInt(OpenHash, 0);
+        anim.SafeSetInt(CloseHash, 1);
     }
 
     public void Off()
@@ -62,11 +59,11 @@ public class EnterRoom : MonoBehaviourPunCallbacks
         this.gameObject.SetActive(false);
     }
 
-    bool canClick = true;
+    bool _canClick = true;
 
     public void OnClickEnterRoomButton()
     {
-        if (CanClickEnterRoomButton() && canClick)
+        if (CanClickEnterRoomButton() && _canClick)
         {
             ContinuousController.instance.StartCoroutine(JoinRoomCoroutine());
         }
@@ -74,7 +71,7 @@ public class EnterRoom : MonoBehaviourPunCallbacks
 
     IEnumerator JoinRoomCoroutine()
     {
-        canClick = false;
+        _canClick = false;
 
         if (!PhotonNetwork.IsConnectedAndReady)
         {
@@ -92,7 +89,7 @@ public class EnterRoom : MonoBehaviourPunCallbacks
 
         PhotonNetwork.JoinRoom(RoomIDInputField.text + "-" + ContinuousController.instance.useBanlist);
 
-        canClick = true;
+        _canClick = true;
     }
 
     public override void OnJoinedRoom()
@@ -136,9 +133,9 @@ public class EnterRoom : MonoBehaviourPunCallbacks
         {
             EnterRoomButton.enabled = true;
 
-            if (EnterRoomButtonImage != null)
+            if (_enterRoomButtonImage != null)
             {
-                EnterRoomButtonImage.color = Color.white;
+                _enterRoomButtonImage.color = Color.white;
             }
         }
 
@@ -146,9 +143,9 @@ public class EnterRoom : MonoBehaviourPunCallbacks
         {
             EnterRoomButton.enabled = false;
 
-            if (EnterRoomButtonImage != null)
+            if (_enterRoomButtonImage != null)
             {
-                EnterRoomButtonImage.color = new Color32(144, 144, 144, 255);
+                _enterRoomButtonImage.color = new Color32(144, 144, 144, 255);
             }
         }
     }

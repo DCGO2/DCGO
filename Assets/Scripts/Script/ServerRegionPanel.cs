@@ -1,11 +1,10 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
+
 public class ServerRegionPanel : OffAnimation
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
     [SerializeField] Animator _anim;
     [SerializeField] List<ServerRegionToggle> _serverRegionToggles = new();
 
@@ -29,8 +28,8 @@ public class ServerRegionPanel : OffAnimation
             }
         }
 
-        _anim.SetInteger("Open", 0);
-        _anim.SetInteger("Close", 1);
+        _anim.SafeSetInt(OpenHash, 0);
+        _anim.SafeSetInt(CloseHash, 1);
     }
 
     public void Init()
@@ -44,7 +43,7 @@ public class ServerRegionPanel : OffAnimation
         {
             foreach (ServerRegionToggle serverRegionToggle in _serverRegionToggles)
             {
-                void OnToggleChange(string region)
+                static void OnToggleChange(string region)
                 {
                     ContinuousController.instance.serverRegion = region;
                     ContinuousController.instance.SaveServerRegion();
@@ -57,7 +56,7 @@ public class ServerRegionPanel : OffAnimation
         }
 
         gameObject.SetActive(true);
-        _anim.SetInteger("Open", 1);
-        _anim.SetInteger("Close", 0);
+        _anim.SafeSetInt(OpenHash, 1);
+        _anim.SafeSetInt(CloseHash, 0);
     }
 }
