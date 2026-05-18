@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// Ame-no-Ohabari
 namespace DCGO.CardEffects.EX4
 {
     public class EX4_071 : CEntity_Effect
@@ -11,14 +12,15 @@ namespace DCGO.CardEffects.EX4
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Main
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Main] By deleting 1 of your Digimon, delete 1 of your opponent's Digimon whose level is less than or equal. If one of your Digimon with [Ravemon] in its name was deleted by this effect, at the end of your opponent's turn, play 1 [Ravemon] from your trash without paying the cost.";
                 }
@@ -120,7 +122,8 @@ namespace DCGO.CardEffects.EX4
                                 {
                                     ActivateClass activateClass1 = new ActivateClass();
                                     activateClass1.SetUpICardEffect("Play 1 [Ravemon] from trash", CanUseCondition1, card);
-                                    activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "");
+                                    activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, 1, false, "");
+                                    activateClass1.SetHashString("EX4_071_EoOT");
                                     CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilOpponentTurnEnd, card: card, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
 
                                     bool CanUseCondition1(Hashtable hashtable)
@@ -142,65 +145,51 @@ namespace DCGO.CardEffects.EX4
                                     {
                                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
                                         {
-                                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardCondition(cardSource)));
-
                                             List<CardSource> selectedCards = new List<CardSource>();
 
                                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                                             selectCardEffect.SetUp(
-                                                        canTargetCondition: CanSelectCardCondition,
-                                                        canTargetCondition_ByPreSelecetedList: null,
-                                                        canEndSelectCondition: null,
-                                                        canNoSelect: () => false,
-                                                        selectCardCoroutine: SelectCardCoroutine,
-                                                        afterSelectCardCoroutine: null,
-                                                        message: "Select 1 [Ravemon] to play.",
-                                                        maxCount: maxCount,
-                                                        canEndNotMax: false,
-                                                        isShowOpponent: true,
-                                                        mode: SelectCardEffect.Mode.Custom,
-                                                        root: SelectCardEffect.Root.Trash,
-                                                        customRootCardList: null,
-                                                        canLookReverseCard: true,
-                                                        selectPlayer: card.Owner,
-                                                        cardEffect: activateClass1);
-
-                                            selectCardEffect.SetUpCustomMessage("Select 1 [Ravemon] to play.", "The opponent is selecting 1 [Ravemon] to play.");
-                                            selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+                                                canTargetCondition: CanSelectCardCondition,
+                                                canTargetCondition_ByPreSelecetedList: null,
+                                                canEndSelectCondition: null,
+                                                canNoSelect: () => false,
+                                                selectCardCoroutine: null,
+                                                afterSelectCardCoroutine: null,
+                                                message: "Select 1 [Ravemon] to play.",
+                                                maxCount: 1,
+                                                canEndNotMax: false,
+                                                isShowOpponent: true,
+                                                mode: SelectCardEffect.Mode.PlayForFree,
+                                                root: SelectCardEffect.Root.Trash,
+                                                customRootCardList: null,
+                                                canLookReverseCard: true,
+                                                selectPlayer: card.Owner,
+                                                cardEffect: activateClass1);
 
                                             yield return StartCoroutine(selectCardEffect.Activate());
-
-                                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                                            {
-                                                selectedCards.Add(cardSource);
-
-                                                yield return null;
-                                            }
-
-                                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
                                         }
                                     }
                                 }
-
                             }
                         }
                     }
                 }
             }
+            #endregion
 
-
+            #region Security
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Delete 1 Digimon with the lowest level", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
-                    return "[Security] Delete 1 of your opponentÅ's Digimon with the lowest level.";
+                    return "[Security] Delete 1 of your opponent's Digimon with the lowest level.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -238,6 +227,7 @@ namespace DCGO.CardEffects.EX4
                     }
                 }
             }
+            #endregion
 
             return cardEffects;
         }
