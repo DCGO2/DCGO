@@ -58,11 +58,6 @@ namespace DCGO.CardEffects.BT15
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
 
-            bool SharedCanActivateCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.IsExistOnBattleArea(card);
-            }
-
             IEnumerator SharedActivateCoroutine(Hashtable _hashtable, ActivateClass activateClass)
             {
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))

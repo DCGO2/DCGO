@@ -62,10 +62,8 @@ public class HomeMode : MonoBehaviour
         Opening.instance.deck.deckListPanel.Close();
 
         for (int i = 0; i < Opening.instance.deck.selectDeck.deckInfoPrefabParentScroll.content.childCount; i++)
-        {
-            CreateNewDeckButton createNewDeckButton = Opening.instance.deck.selectDeck.deckInfoPrefabParentScroll.content.GetChild(i).GetComponent<CreateNewDeckButton>();
-
-            if (createNewDeckButton != null)
+        {    
+            if (Opening.instance.deck.selectDeck.deckInfoPrefabParentScroll.content.GetChild(i).TryGetComponent<CreateNewDeckButton>(out var createNewDeckButton))
             {
                 createNewDeckButton.CreateNewDeckWayObject.Off();
                 break;

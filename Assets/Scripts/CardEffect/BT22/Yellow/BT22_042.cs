@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Nyabootmon
 namespace DCGO.CardEffects.BT22
@@ -181,6 +180,7 @@ namespace DCGO.CardEffects.BT22
                 activateClass.SetUpICardEffect("Activate a [When Digivolving] effect", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT22_042_UseWD");
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

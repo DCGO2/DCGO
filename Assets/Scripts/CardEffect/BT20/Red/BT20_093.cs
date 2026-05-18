@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
 using System;
-using Photon.Pun;
 
+// Unleash the Dragon-Gene
 namespace DCGO.CardEffects.BT20
 {
     public class BT20_093 : CEntity_Effect
@@ -14,7 +13,6 @@ namespace DCGO.CardEffects.BT20
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Main Effect
-
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -45,7 +43,6 @@ namespace DCGO.CardEffects.BT20
                     if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                     {
                         #region Reduce Play Cost
-
                         ChangeCostClass changeCostClass = new ChangeCostClass();
                         changeCostClass.SetUpICardEffect($"Play Cost -3", CanUseReduceCondition, card);
                         changeCostClass.SetUpChangeCostClass(
@@ -75,33 +72,20 @@ namespace DCGO.CardEffects.BT20
 
                         int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                         {
-                            if (CardSourceCondition(cardSource))
+                            if (CardSourceCondition(cardSource)
+                            && RootCondition(root)
+                            && PermanentsCondition(targetPermanents))
                             {
-                                if (RootCondition(root))
-                                {
-                                    if (PermanentsCondition(targetPermanents))
-                                    {
-                                        cost -= 3;
-                                    }
-                                }
+                                cost -= 3;
                             }
-
+                             
                             return cost;
                         }
 
                         bool PermanentsCondition(List<Permanent> targetPermanents)
                         {
-                            if (targetPermanents == null)
-                            {
-                                return true;
-                            }
-
-                            if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                            {
-                                return true;
-                            }
-
-                            return false;
+                            return targetPermanents == null
+                                    || targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
                         }
 
                         bool CardSourceCondition(CardSource cardSource)
@@ -118,7 +102,6 @@ namespace DCGO.CardEffects.BT20
                         {
                             return true;
                         }
-
                         #endregion
 
                         List<CardSource> selectedCards = new List<CardSource>();
@@ -158,17 +141,19 @@ namespace DCGO.CardEffects.BT20
                             isTapped: false,
                             root: SelectCardEffect.Root.Hand,
                             activateETB: true));
+
+                        #region Remove Reduction
+                        card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
+                        #endregion
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(
                         CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
-
             #endregion
 
             #region Delay Effect
-
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -215,19 +200,17 @@ namespace DCGO.CardEffects.BT20
                 IEnumerator SuccessProcess()
                 {
                     yield return ContinuousController.instance.StartCoroutine(
-                                                        CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
-                                                            CanSelectDNACardCondition,
-                                                            payCost: true,
-                                                            isHand: true,
-                                                            activateClass
-                                                        ));
+                        CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
+                            CanSelectDNACardCondition,
+                            payCost: true,
+                            isHand: true,
+                            activateClass
+                        ));
                 }
             }
-
             #endregion
 
             #region Security Effect
-
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -356,7 +339,6 @@ namespace DCGO.CardEffects.BT20
                         CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
-
             #endregion
 
             return cardEffects;
