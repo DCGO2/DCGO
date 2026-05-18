@@ -89,8 +89,6 @@ namespace DCGO.CardEffects.BT21
 
                 if (CardEffectCommons.HasMatchConditionPermanent(_ => SharedCanSelectOwnerPermanentCondition(_, activateClass)))
                 {
-                    Permanent selectedPermanent = null;
-
                     SelectPermanentEffect selectPermanentEffect2 = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect2.SetUp(
@@ -101,35 +99,15 @@ namespace DCGO.CardEffects.BT21
                         maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine2,
+                        selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
+                        mode: SelectPermanentEffect.Mode.Attack,
                         cardEffect: activateClass);
 
                     selectPermanentEffect2.SetUpCustomMessage("Select 1 Digimon that will attack.",
                         "The opponent is selecting 1 Digimon that will attack.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect2.Activate());
-
-                    IEnumerator SelectPermanentCoroutine2(Permanent permanent)
-                    {
-                        selectedPermanent = permanent;
-
-                        yield return null;
-                    }
-
-                    if (selectedPermanent != null)
-                    {
-                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                        selectAttackEffect.SetUp(
-                            attacker: selectedPermanent,
-                            canAttackPlayerCondition: () => true,
-                            defenderCondition: _ => true,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                    }
                 }
             }
             #endregion
@@ -157,6 +135,8 @@ namespace DCGO.CardEffects.BT21
 
             IEnumerator SharedActivateCoroutine1(ActivateClass activateClass)
             {
+                bool Used = false;
+
                 if (card.Owner.CanAddSecurity(activateClass)
                 && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SharedCanSelectCardCondition1))
                 {
@@ -168,7 +148,7 @@ namespace DCGO.CardEffects.BT21
                         canTargetCondition: SharedCanSelectCardCondition1,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        canNoSelect: () => false,
+                        canNoSelect: () => true,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
                         message: "Select 1 [Marcus Damon] to add to security.",
@@ -202,6 +182,8 @@ namespace DCGO.CardEffects.BT21
                         }
                     }
                 }
+
+                if (!Used) activateClass.RemoveUse();
             }
             #endregion
 
@@ -210,7 +192,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 [Marcus Damon] on the top of security from trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(_ => SharedCanActivateCondition1(activateClass), _ => SharedActivateCoroutine1(activateClass), 1, true, SharedEffectDescription1());
+                activateClass.SetUpActivateClass(_ => SharedCanActivateCondition1(activateClass), _ => SharedActivateCoroutine1(activateClass), 1, false, SharedEffectDescription1());
                 activateClass.SetHashString("BT21_044_AT");
                 cardEffects.Add(activateClass);
 
@@ -227,7 +209,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 [Marcus Damon] on the top of security from trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(_ => SharedCanActivateCondition1(activateClass), _ => SharedActivateCoroutine1(activateClass), 1, true, SharedEffectDescription1());
+                activateClass.SetUpActivateClass(_ => SharedCanActivateCondition1(activateClass), _ => SharedActivateCoroutine1(activateClass), 1, false, SharedEffectDescription1());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT21_044_Inherited_AT");
                 cardEffects.Add(activateClass);
