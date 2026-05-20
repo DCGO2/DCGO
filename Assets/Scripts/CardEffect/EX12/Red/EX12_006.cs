@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.EX12
 
                 string EffectDescription()
                 {
-                    return "[Start of Your Main Phase] By trashing 1 card with the [Appmon] trait from your hand, <Draw 1> and gain 1 memory.";
+                    return "[Start of Your Main Phase] By trashing 1 card with the [SW] trait from your hand, <Draw 1> and gain 1 memory.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
