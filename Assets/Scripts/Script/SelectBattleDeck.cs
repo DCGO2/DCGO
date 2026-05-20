@@ -183,7 +183,7 @@ public class SelectBattleDeck : MonoBehaviour
         if (ContinuousController.instance.isAI)
         {
             message = LocalizeUtility.GetLocalizedString(
-                EngMessage: "Select Your Deck - Bot Match",
+                EngMessage: "WARNING: THE BOT MAKES ILLEGAL PLAYS",
                 JpnMessage: "使用デッキ選択 - Bot戦"
                 );
         }
