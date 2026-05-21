@@ -362,8 +362,14 @@ namespace DCGO.CardEffects.BT12
                                                 payCost: true,
                                                 targetPermanent: selectedPermanent,
                                                 isTapped: false,
+                                                failedProcess: OnFail,
                                                 root: SelectCardEffect.Root.Hand,
                                                 activateETB: true).PlayCard());
+                                        }
+
+                                        IEnumerator OnFail(CardSource cardSource)
+                                        {
+                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(card));
                                         }
 
                                         #region 6
