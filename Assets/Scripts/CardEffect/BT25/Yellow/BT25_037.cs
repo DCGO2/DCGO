@@ -78,7 +78,8 @@ namespace DCGO.CardEffects.BT25
                         activateClass).ReduceSecurity());
                 }
 
-                if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition)
+                && card.Owner.CanAddSecurity(activateClass))
                 {
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
