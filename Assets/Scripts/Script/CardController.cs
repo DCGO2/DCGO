@@ -119,8 +119,15 @@ public class PlayCardClass
 {
     private static WaitForSeconds _waitForSeconds0_5 = new WaitForSeconds(0.5f);
 
-    public PlayCardClass(List<CardSource> cardSources, Hashtable hashtable, bool payCost, Permanent targetPermanent, bool isTapped, SelectCardEffect.Root root,
-    bool activateETB)
+    public PlayCardClass(List<CardSource> cardSources,
+        Hashtable hashtable,
+        bool payCost,
+        Permanent targetPermanent,
+        bool isTapped,
+        SelectCardEffect.Root root,
+        bool activateETB,
+        IEnumerator<CardSource> successProcess = null,
+        IEnumerator<CardSource> failedProcess = null)
     {
         if (cardSources != null)
         {
@@ -133,6 +140,8 @@ public class PlayCardClass
         _isTapped = isTapped;
         Root = root;
         _activateETB = activateETB;
+        _successProcess = successProcess;
+        _failedProcess = failedProcess;
     }
 
     public void SetJogress(int[] jogressEvoRootsFrameIDs)
@@ -211,6 +220,8 @@ public class PlayCardClass
     int _burstTamerFrameID = -1;
     int[] _appFusionFrameIDs = null;
     bool _isBreedingArea = false;
+    IEnumerator<CardSource> _successProcess;
+    IEnumerator<CardSource> _failedProcess;
 
     public bool isJogress => _jogressEvoRootsFrameIDs != null && _jogressEvoRootsFrameIDs.Length == 2;
 
@@ -537,7 +548,7 @@ public class PlayCardClass
                                         {
                                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect(card));
                                         }
-                                   
+
                                         if (GManager.instance.TryGetComponent<SelectCountEffect>(out var selectCountEffect))
                                         {
                                             selectCountEffect.SetUp(
@@ -946,6 +957,18 @@ public class PlayCardClass
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
                         }
+                    }
+
+                    if (_failedProcess != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(_failedProcess(cardSource));
+                    }
+                }
+                else
+                {
+                    if (_successProcess != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(_successProcess(cardSource));
                     }
                 }
             }
@@ -5013,7 +5036,7 @@ public class IMassDegeneration
 
         if (_degenerationCount >= 1)
         {
-            foreach(Permanent _permanent in permanents_Fixed)
+            foreach (Permanent _permanent in permanents_Fixed)
             {
                 int count = 0;
 
@@ -5117,7 +5140,7 @@ public class IMassDegeneration
 
                     PlayLog.OnAddLog?.Invoke(log);
                 }
-                
+
                 #endregion
             }
         }
