@@ -433,6 +433,16 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region whether the play associated with this hashtable is paying a cost or free
+    public static bool GetPayCostFromHashtable(Hashtable hashtable)
+    {
+        return hashtable != null
+            && hashtable.ContainsKey("PayCost")
+            && hashtable["PayCost"] is bool
+            && (bool)hashtable["PayCost"];
+    }
+    #endregion
+
     #region Get IsEvolution Delete from 1 hashtable
     public static bool IsEvolution(Hashtable hashtable)
     {
