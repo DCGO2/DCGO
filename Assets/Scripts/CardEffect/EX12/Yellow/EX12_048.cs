@@ -166,7 +166,7 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && card.PermanentOfThisCard().DigivolutionCards.Some(CanSelectSourceCardCondition);
                 }
 
@@ -251,7 +251,7 @@ namespace DCGO.CardEffects.EX12
                                 && (cardSource.EqualsCardName("Gokuumon")
                                     || cardSource.EqualsCardName("Sagomon")
                                     || cardSource.EqualsCardName("Cho-Hakkaimon")
-                                    || cardSource.EqualsCardName("Sanzomon");
+                                    || cardSource.EqualsCardName("Sanzomon"));
                         }
 
                         bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
