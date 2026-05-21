@@ -126,8 +126,8 @@ public class PlayCardClass
         bool isTapped,
         SelectCardEffect.Root root,
         bool activateETB,
-        IEnumerator<CardSource> successProcess = null,
-        IEnumerator<CardSource> failedProcess = null)
+        Func<List<CardSource>, IEnumerator> successProcess = null,
+        Func<CardSource, IEnumerator> failedProcess = null)
     {
         if (cardSources != null)
         {
@@ -220,8 +220,8 @@ public class PlayCardClass
     int _burstTamerFrameID = -1;
     int[] _appFusionFrameIDs = null;
     bool _isBreedingArea = false;
-    IEnumerator<CardSource> _successProcess;
-    IEnumerator<CardSource> _failedProcess;
+    Func<List<CardSource>, IEnumerator> _successProcess;
+    Func<CardSource, IEnumerator> _failedProcess;
 
     public bool isJogress => _jogressEvoRootsFrameIDs != null && _jogressEvoRootsFrameIDs.Length == 2;
 
@@ -957,19 +957,15 @@ public class PlayCardClass
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
                         }
-                    }
-
-                    if (_failedProcess != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(_failedProcess(cardSource));
+                        if (_failedProcess != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(_failedProcess(cardSource));
+                        }
                     }
                 }
                 else
                 {
-                    if (_successProcess != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(_successProcess(cardSource));
-                    }
+                    
                 }
             }
 
@@ -1042,6 +1038,11 @@ public class PlayCardClass
 
         yield return ContinuousController.instance.StartCoroutine(playPermanent.PlayPermanent());
 
+        if (_successProcess != null)
+        {
+            yield return ContinuousController.instance.StartCoroutine(_successProcess(permanentCards));
+        }
+
         #endregion
 
         #region use option
@@ -1052,6 +1053,11 @@ public class PlayCardClass
         };
 
         yield return ContinuousController.instance.StartCoroutine(useOption.UseOption());
+
+        if (_successProcess != null)
+        {
+            yield return ContinuousController.instance.StartCoroutine(_successProcess(optionCards));
+        }
 
         #endregion
 
