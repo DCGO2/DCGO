@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,11 +33,20 @@ namespace DCGO.CardEffects.EX11
 
             string SharedEffectName = "Choose 1 Highest Cost Opponent's Digimon, delete the rest. If 4+ Vemmon, gain Blocker and immunity.";
 
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    SharedEffectName,
+                    SharedActivateCoroutine,
+                    SharedEffectDescription,
+                    optional: false,
+                    onPlay: true,
+                    whenDigivolving: true);
+
             string SharedEffectDescription(string tag) => $"[{tag}] Choose 1 of your opponent's highest play cost Digimon and delete all of their other Digimon. Then, if this Digimon has 4 or more [Vemmon] in its digivolution cards, until your opponent's turn ends, it gains <Blocker> and isn't affected by their effects.";
 
-            bool SharedCanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-
             bool CanSelectHighestCostCondition(Permanent permanent) => CardEffectCommons.IsMaxCost(permanent, card.Owner.Enemy, true);
+
+            bool CanDeletePermanentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -50,10 +58,8 @@ namespace DCGO.CardEffects.EX11
 
                     yield return ContinuousController.instance.StartCoroutine(SelectPermanentCoroutine(permanent));
                 }
-                else
+                else if (CardEffectCommons.MatchConditionPermanentCount(CanSelectHighestCostCondition) > 1)
                 { 
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectHighestCostCondition));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -61,7 +67,7 @@ namespace DCGO.CardEffects.EX11
                         canTargetCondition: CanSelectHighestCostCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -72,6 +78,10 @@ namespace DCGO.CardEffects.EX11
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Opponent's Digimon, you will delete all other digimon.", "Opponent is selecting 1 digimon and will delete all others.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                }
+                else if (CardEffectCommons.MatchConditionPermanentCount(CanSelectHighestCostCondition) == 0 && CardEffectCommons.HasMatchConditionPermanent(CanDeletePermanentCondition))
+                {
+                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(card.Owner.Enemy.GetBattleAreaDigimons(), CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                 }
 
                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
@@ -113,42 +123,6 @@ namespace DCGO.CardEffects.EX11
                             && cardEffect.EffectSourceCard != null
                             && cardEffect.EffectSourceCard.Owner == card.Owner.Enemy;
                     }
-                }
-            }
-
-            #endregion
-
-            #region On Play
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition,(hash) => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-            }
-
-            #endregion
-
-            #region When Digivolving
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition,(hash) => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("When Digivolving"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
             }
 
