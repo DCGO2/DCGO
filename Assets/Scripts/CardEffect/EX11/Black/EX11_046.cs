@@ -42,13 +42,11 @@ namespace DCGO.CardEffects.EX11
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                Permanent selectedPermanent = null;
+
                 if (CardEffectCommons.MatchConditionPermanentCount(CanSelectHighestCostCondition) == 1)
                 {
-                    Permanent permanent = null;
-
-                    permanent = card.Owner.Enemy.GetBattleAreaPermanents().FirstOrDefault(CanSelectHighestCostCondition);
-
-                    yield return ContinuousController.instance.StartCoroutine(SelectPermanentCoroutine(permanent));
+                    selectedPermanent = card.Owner.Enemy.GetBattleAreaPermanents().FirstOrDefault(CanSelectHighestCostCondition);
                 }
                 else
                 { 
@@ -76,13 +74,16 @@ namespace DCGO.CardEffects.EX11
 
                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                 {
-                    if (permanent != null)
-                    {
-                        List<Permanent> targetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(perm => perm != permanent);
+                    selectedPermanent = permanent;
 
-                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(targetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
-                    }
+                    yield return null;
                 }
+
+                #region destroy all except selected
+                List<Permanent> targetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(perm => perm != selectedPermanent);
+
+                yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(targetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
+                #endregion
 
                 if (card.PermanentOfThisCard() != null && card.PermanentOfThisCard().DigivolutionCards.Count(cardSource => cardSource.EqualsCardName("Vemmon")) >= 4)
                 {
