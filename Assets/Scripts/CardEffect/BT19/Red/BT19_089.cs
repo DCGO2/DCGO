@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.BT19
                                     {
                                         if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
                                         {
-                                            if (!cardEffect.IsDigimonEffect || !cardEffect.IsTamerEffect)
+                                            if (!cardEffect.IsDigimonEffect && !cardEffect.IsTamerEffect)
                                             {
                                                 return true;
                                             }
