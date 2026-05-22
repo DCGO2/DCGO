@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -203,7 +204,7 @@ public class GManager : MonoBehaviourPun
     public BurstEffectObject burstEffectObject;
     [Header("Background Particle effects")]
     [SerializeField] List<ParticleSystem> _backgroundParticles = new List<ParticleSystem>();
- 
+
     [Header("Gameobjects closed when ending game")]
     public List<GameObject> CloseWhenEndingGameObjects = new List<GameObject>();
 
@@ -225,7 +226,7 @@ public class GManager : MonoBehaviourPun
     public static Action OnCardFlippedChanged;
 
     public static Action<Player> OnSecurityStackChanged;
-    
+
     #endregion
 
     private /*async*/ void Awake()
@@ -418,6 +419,35 @@ public class GManager : MonoBehaviourPun
         digiXrosEffectObject.Init();
 
         burstEffectObject.Init();
+
+        if (IsAI)
+        {
+            CreateBotWarningText();
+        }
+    }
+
+    private void CreateBotWarningText()
+    {
+        if (You == null || You.HandTransform == null) return;
+
+        GameObject warningObj = new GameObject("BotWarningText");
+        warningObj.transform.SetParent(canvas.transform, false);
+
+        RectTransform rt = warningObj.AddComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0f, 0.5f);
+        rt.anchorMax = new Vector2(1f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0f);
+        rt.anchoredPosition = new Vector2(0f, 490f);
+        rt.sizeDelta = new Vector2(0f, 30f);
+
+        TextMeshProUGUI text = warningObj.AddComponent<TextMeshProUGUI>();
+        text.text = "WARNING: THE BOT IS NOT ACTIVELY MAINTAINED AND MAKES ILLEGAL PLAYS";
+        text.alignment = TextAlignmentOptions.Center;
+        text.color = new Color(1f, 0.3f, 0.3f, 1f);
+        text.fontSize = 20f;
+        text.fontStyle = FontStyles.Bold;
+        text.enableWordWrapping = false;
+        text.overflowMode = TextOverflowModes.Overflow;
     }
 
     public void ReturnToTitle()
@@ -484,7 +514,7 @@ public class GManager : MonoBehaviourPun
         }
 
         if (Input.GetKey(KeyCode.LeftControl) &&
-           Input.GetKey(KeyCode.LeftShift) && 
+           Input.GetKey(KeyCode.LeftShift) &&
            Input.GetKey(KeyCode.LeftAlt) &&
            Input.GetKeyDown(KeyCode.A))
             ActivateShortcuts = !ActivateShortcuts;
@@ -520,7 +550,7 @@ public class GManager : MonoBehaviourPun
 
         if (turnStateMachine == null)
             return;
-        
+
         if (!ActivateShortcuts)
             return;
 
@@ -557,7 +587,7 @@ public class GManager : MonoBehaviourPun
         }
 
         //Gain Memory
-        if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Equals))
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Equals))
         {
             turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.GainMemory));
         }
@@ -567,7 +597,7 @@ public class GManager : MonoBehaviourPun
         {
             turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.LoseMemory));
         }
-            
+
     }
 
     public IEnumerator DrawCard(Player _player)
