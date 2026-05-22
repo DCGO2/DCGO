@@ -1,4 +1,4 @@
-﻿using Photon.Pun;
+using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using Photon.Realtime;
 using System;
@@ -2444,7 +2444,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                                 (card: handCard.cardSource,
                                                                 isLocal: true,
                                                                 isPayCost: true,
-                                                                canNoSelect: true,
+                                                                canNoSelect: false,
                                                                 endSelectCoroutine_SelectLink: EndSelectCoroutine_SelectLink,
                                                                 noSelectCoroutine: _NoSelectCoroutine);
 
