@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e887a426c49a6748a021b8426a3cd53, type: 3}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -723,7 +723,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7928374914756538918
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1160,6 +1160,7 @@ GameObject:
   - component: {fileID: 7928374914864650544}
   - component: {fileID: 7928374914864650547}
   - component: {fileID: 7928374914864650546}
+  - component: {fileID: 4937676638312405349}
   m_Layer: 5
   m_Name: AutoMaxCardCountButton
   m_TagString: Untagged
@@ -1313,6 +1314,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &4937676638312405349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928374914864650548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24810f441051444c9b85cd5ee64ace1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7928374914887564770
 GameObject:
   m_ObjectHideFlags: 0
@@ -1434,7 +1447,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 3c2172383277d46b697de74b6df875e5, type: 3}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -2084,6 +2097,7 @@ GameObject:
   - component: {fileID: 7928374915029961593}
   - component: {fileID: 7928374915029961592}
   - component: {fileID: 7928374915029961595}
+  - component: {fileID: 4632474434352980641}
   m_Layer: 5
   m_Name: AutoHatchButton
   m_TagString: Untagged
@@ -2237,6 +2251,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &4632474434352980641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928374915029961597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24810f441051444c9b85cd5ee64ace1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7928374915051940583
 GameObject:
   m_ObjectHideFlags: 0
@@ -2528,6 +2554,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _anim: {fileID: 7928374915095919511}
+  _scrollRect: {fileID: 7928374915775137452}
   _reverseOpponentsCardsToggle: {fileID: 7928374915436071006}
   _showCutInAnimationToggle: {fileID: 7928374915675596211}
   _turnSuspendedCardsToggle: {fileID: 7928374914950194776}
@@ -2600,7 +2627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 3c2172383277d46b697de74b6df875e5, type: 3}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -3211,6 +3238,7 @@ GameObject:
   - component: {fileID: 7928374915203219918}
   - component: {fileID: 7928374915203219921}
   - component: {fileID: 7928374915203219920}
+  - component: {fileID: 4016611680359036842}
   m_Layer: 5
   m_Name: AutoDeckBottomOrderButton
   m_TagString: Untagged
@@ -3364,6 +3392,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &4016611680359036842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928374915203219922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24810f441051444c9b85cd5ee64ace1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7928374915215816685
 GameObject:
   m_ObjectHideFlags: 0
@@ -3424,7 +3464,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 3c2172383277d46b697de74b6df875e5, type: 3}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -3962,6 +4002,7 @@ GameObject:
   - component: {fileID: 7928374915307089664}
   - component: {fileID: 7928374915307089667}
   - component: {fileID: 7928374915307089666}
+  - component: {fileID: 3357544725572256066}
   m_Layer: 5
   m_Name: AutoDeckTopOrderButton
   m_TagString: Untagged
@@ -4115,6 +4156,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &3357544725572256066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928374915307089668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24810f441051444c9b85cd5ee64ace1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7928374915307483080
 GameObject:
   m_ObjectHideFlags: 0
@@ -4251,7 +4304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 6b1134f0bc52f8543b71ee696d61d89d, type: 3}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -4833,6 +4886,7 @@ GameObject:
   - component: {fileID: 7928374915473546153}
   - component: {fileID: 7928374915473546152}
   - component: {fileID: 7928374915473546155}
+  - component: {fileID: 7019467594845130036}
   m_Layer: 5
   m_Name: ReverseOpponentsCardsButton
   m_TagString: Untagged
@@ -4986,6 +5040,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &7019467594845130036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928374915473546157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24810f441051444c9b85cd5ee64ace1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7928374915475311728
 GameObject:
   m_ObjectHideFlags: 0
@@ -5741,7 +5807,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e887a426c49a6748a021b8426a3cd53, type: 3}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -5964,7 +6030,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7928374915775137454}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
   m_Name: 
@@ -6523,6 +6589,7 @@ GameObject:
   - component: {fileID: 7928374915840589318}
   - component: {fileID: 7928374915840589321}
   - component: {fileID: 7928374915840589320}
+  - component: {fileID: 3718408135101065587}
   m_Layer: 5
   m_Name: AutoMinDigivolutiuonCostButton
   m_TagString: Untagged
@@ -6676,6 +6743,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &3718408135101065587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928374915840589322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24810f441051444c9b85cd5ee64ace1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7928374915877382007
 GameObject:
   m_ObjectHideFlags: 0
@@ -6736,7 +6815,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5e887a426c49a6748a021b8426a3cd53, type: 3}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -7127,7 +7206,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7928374915970859287
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7239,6 +7318,7 @@ GameObject:
   - component: {fileID: 7928374916004630460}
   - component: {fileID: 7928374916004630463}
   - component: {fileID: 7928374916004630462}
+  - component: {fileID: 6508491763816116467}
   m_Layer: 5
   m_Name: AutoEffectOrderButton
   m_TagString: Untagged
@@ -7392,6 +7472,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &6508491763816116467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928374916004630400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24810f441051444c9b85cd5ee64ace1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7928374916028117480
 GameObject:
   m_ObjectHideFlags: 0
@@ -7779,7 +7871,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 3c2172383277d46b697de74b6df875e5, type: 3}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -8182,6 +8274,7 @@ GameObject:
   - component: {fileID: 7928374916272943215}
   - component: {fileID: 7928374916272943214}
   - component: {fileID: 7928374916272943217}
+  - component: {fileID: 1003559647348142293}
   m_Layer: 5
   m_Name: TurnSuspendedCardsButton
   m_TagString: Untagged
@@ -8335,6 +8428,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1003559647348142293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928374916272943219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24810f441051444c9b85cd5ee64ace1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7928374916288359320
 GameObject:
   m_ObjectHideFlags: 0
@@ -8428,6 +8533,7 @@ GameObject:
   - component: {fileID: 7928374916328845438}
   - component: {fileID: 7928374916328845377}
   - component: {fileID: 7928374916328845376}
+  - component: {fileID: 2319259301301056102}
   m_Layer: 5
   m_Name: SuspendCardRotationIsLeftButton
   m_TagString: Untagged
@@ -8581,6 +8687,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &2319259301301056102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928374916328845378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24810f441051444c9b85cd5ee64ace1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7928374916331378629
 GameObject:
   m_ObjectHideFlags: 0
@@ -9484,7 +9602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 3c2172383277d46b697de74b6df875e5, type: 3}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -9601,7 +9719,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 6b1134f0bc52f8543b71ee696d61d89d, type: 3}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -9824,6 +9942,7 @@ GameObject:
   - component: {fileID: 7928374916660100987}
   - component: {fileID: 7928374916660100986}
   - component: {fileID: 7928374916660100989}
+  - component: {fileID: 3974715734184600402}
   m_Layer: 5
   m_Name: ShowCutInAnimationButton
   m_TagString: Untagged
@@ -9977,6 +10096,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &3974715734184600402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928374916660100991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24810f441051444c9b85cd5ee64ace1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7928374916702200026
 GameObject:
   m_ObjectHideFlags: 0
@@ -10066,6 +10197,7 @@ GameObject:
   - component: {fileID: 7928374916729832105}
   - component: {fileID: 7928374916729832104}
   - component: {fileID: 7928374916729832107}
+  - component: {fileID: 5460304762472086679}
   m_Layer: 5
   m_Name: CheckEndSelectButton
   m_TagString: Untagged
@@ -10219,6 +10351,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &5460304762472086679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928374916729832109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24810f441051444c9b85cd5ee64ace1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7928374916758334288
 GameObject:
   m_ObjectHideFlags: 0
@@ -10384,6 +10528,7 @@ GameObject:
   - component: {fileID: 7669067546430629117}
   - component: {fileID: 5982150575648531567}
   - component: {fileID: 7826128636079055205}
+  - component: {fileID: 5321595054649498675}
   m_Layer: 5
   m_Name: BanlistButton
   m_TagString: Untagged
@@ -10537,3 +10682,15 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &5321595054649498675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8310052256679860245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24810f441051444c9b85cd5ee64ace1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
