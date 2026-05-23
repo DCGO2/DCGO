@@ -25,6 +25,8 @@ namespace DCGO.CardEffects.EX12
             #region Your Turn Security
             if (timing == EffectTiming.OnAllyAttack)
             {
+                int AttackingLevel = 0;
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("May play same level as attacker [VB] for 3 less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
@@ -38,23 +40,10 @@ namespace DCGO.CardEffects.EX12
                     && CardEffectCommons.IsOwnerTurn(card)
                     && CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, PermanentCondition);
 
-                int AttackingLevel = 0;
-
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (hashtable != null
-                    && hashtable.ContainsKey("AttackingPermanent")
-                    && hashtable["AttackingPermanent"] is Permanent)
-                    {
-                        Permanent AttackingPermanent = (Permanent)hashtable["AttackingPermanent"];
-
-                        if (AttackingPermanent != null
-                        && AttackingPermanent.TopCard != null
-                        && PermanentCondition(AttackingPermanent))
-                        {
-                            AttackingLevel = AttackingPermanent.Level;
-                        }
-                    }
+                    Permanent attackingPermanent = CardEffectCommons.GetAttackerFromHashtable(hashtable);
+                    AttackingLevel = attackingPermanent.Level;
 
                     return CardEffectCommons.IsExistInSecurity(card, false)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
@@ -66,7 +55,7 @@ namespace DCGO.CardEffects.EX12
                     && permanent.TopCard.Level >= 4
                     && permanent.TopCard.EqualsTraits("VB");
 
-                bool CanSelectCardCondition(CardSource cardSource)            
+                bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.EqualsTraits("Shambala")
                     && cardSource.Level == AttackingLevel;
 
@@ -117,7 +106,7 @@ namespace DCGO.CardEffects.EX12
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectFactory.ReplaceBottomSecurityWithFaceUpOptionEffect(card, activateClass));                  
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectFactory.ReplaceBottomSecurityWithFaceUpOptionEffect(card, activateClass));
                 }
             }
             #endregion
@@ -149,7 +138,7 @@ namespace DCGO.CardEffects.EX12
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {                 
+                {
                     SelectHandEffect selectHandEffect2 = GManager.instance.GetComponent<SelectHandEffect>();
 
                     selectHandEffect2.SetUp(
@@ -166,7 +155,7 @@ namespace DCGO.CardEffects.EX12
                         mode: SelectHandEffect.Mode.PlayForFree,
                         cardEffect: activateClass);
 
-                    yield return StartCoroutine(selectHandEffect2.Activate());                  
+                    yield return StartCoroutine(selectHandEffect2.Activate());
                 }
             }
             #endregion
