@@ -91,8 +91,8 @@ namespace DCGO.CardEffects.EX12
                     selectionElements.Add(new(message: "Do not use", value: 4, spriteIndex: 1));
 
 
-                    string selectPlayerMessage = "From which area will you link a Maquinamon?";
-                    string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
+                    string selectPlayerMessage = "Which effect will you activate?";
+                    string notSelectPlayerMessage = "The opponent is choosing which effect to activate.";
 
                     GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
