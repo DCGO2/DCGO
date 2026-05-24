@@ -1,17 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
-using System;
-using Photon.Pun;
-using System.Net.Security;
+
+// RhinoKabuterimon
 public class BT7_051 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region Reduced Cost
         if (timing == EffectTiming.None)
         {
             bool Condition()
@@ -21,20 +19,14 @@ public class BT7_051 : CEntity_Effect
 
             bool PermanentCondition(Permanent targetPermanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(targetPermanent, card))
-                {
-                    if (targetPermanent.DigivolutionCards.Count((cardSource) => cardSource.IsTamer) >= 1)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card)
+                    && targetPermanent.DigivolutionCards.Any((cardSource) => cardSource.IsTamer);
             }
 
             bool CardSourceCondition(CardSource cardSource)
             {
-                return cardSource == card && cardSource.Owner.HandCards.Contains(cardSource);
+                return cardSource == card
+                    && cardSource.Owner.HandCards.Contains(cardSource);
             }
 
             bool RootCondition(SelectCardEffect.Root root)
@@ -52,43 +44,39 @@ public class BT7_051 : CEntity_Effect
                 condition: Condition,
                 setFixedCost: false));
         }
+        #endregion
 
+        #region When Attacking
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Digivolve this Digimon into [Insectoid] or [Ten Warriors] Digimon", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
             cardEffects.Add(activateClass);
 
-            string EffectDiscription()
+            string EffectDescription()
             {
                 return "[When Attacking] If a card with [Hybrid] or [Insectoid] in its traits is in this Digimon's digivolution cards, this Digimon can digivolve into a Digimon card with [Insectoid] or [Ten Warriors] in its traits in your hand for a memory cost of 3.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.IsDigimon && (cardSource.CardTraits.Contains("Insectoid") || cardSource.CardTraits.Contains("Ten Warriors") || cardSource.CardTraits.Contains("TenWarriors"));
+                return cardSource.IsDigimon
+                    && (cardSource.CardTraits.Contains("Insectoid")
+                        || cardSource.CardTraits.Contains("Ten Warriors"));
             }
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                    && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (card.Owner.HandCards.Count >= 1)
-                    {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardTraits.Contains("Hybrid") || cardSource.CardTraits.Contains("Insectoid")) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                    && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition)
+                    && card.PermanentOfThisCard().DigivolutionCards.Any((cardSource) => cardSource.EqualsTraits("Hybrid") || cardSource.EqualsTraits("Insectoid"));
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -105,6 +93,7 @@ public class BT7_051 : CEntity_Effect
                     successProcess: null));
             }
         }
+        #endregion
 
         return cardEffects;
     }

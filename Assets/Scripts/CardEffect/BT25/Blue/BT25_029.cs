@@ -38,13 +38,14 @@ namespace DCGO.CardEffects.BT25
             #region Shared WD/WA
             string SharedEffectName = "May return 1 enemy level 5 or lower digimon to hand, then by trashing bottom face down under a tamer, return 1 enemy lowest level digimon to hand";
             string SharedEffectDescription(string tag) => $"[{tag}] [Once Per Turn] You may return 1 of your opponent's level 5 or lower Digimon to the hand. Then, by trashing the bottom face-down card under any of your Tamers, return 1 of your opponent's lowest level Digimon to the hand.";
-            string SharedHashValue = "BT25-029-WD/WA";
+            string SharedHashValue = "BT25_029_WD_WA";
 
             CardEffectFactory.ActivateClassesForSharedEffects
                 (ref cardEffects, timing, card,
                     SharedEffectName,
                     SharedActivateCoroutine,
                     SharedEffectDescription,
+                    maxCountPerTurn: 1,
                     hashValue: SharedHashValue,
                     optional: false,
                     isSkippable: true,
@@ -62,6 +63,8 @@ namespace DCGO.CardEffects.BT25
 
                 bool LowestLevelPermanentCondition(Permanent permanent) => CardEffectCommons.IsMinLevel(permanent, card.Owner.Enemy);
 
+                bool Used = false;
+
                 if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, Level5OrLowerPermanentCondition))
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -74,12 +77,19 @@ namespace DCGO.CardEffects.BT25
                         canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                         mode: SelectPermanentEffect.Mode.Bounce,
                         cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to return to hand", "The opponent is selecting 1 Digimon to return to hand");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                    {
+                        if (permanents.Count > 0)
+                            Used = true;
+                        yield return null;
+                    }
                 }
 
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, TamerWithFaceDownCardCondition))
@@ -111,6 +121,7 @@ namespace DCGO.CardEffects.BT25
 
                     if (selectedPermanent != null)
                     {
+                        Used = true;
                         var cardToTrash = selectedPermanent.DigivolutionCards.Last(x => x.IsFaceDown);
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsAndProcessAccordingToResult(
                         targetPermanent: selectedPermanent,
@@ -140,13 +151,12 @@ namespace DCGO.CardEffects.BT25
                                 selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's lowest level Digimon to return to hand", "The opponent is selecting 1 lowest level Digimon to return to hand");
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                             }
-
                         }
                     }
                 }
 
+                if (!Used) activateClass.RemoveUse();
             }
-
             #endregion
 
             #region All Turns

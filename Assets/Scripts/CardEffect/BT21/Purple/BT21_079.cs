@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

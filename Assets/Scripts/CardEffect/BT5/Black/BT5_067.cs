@@ -55,7 +55,7 @@ public class BT5_067 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
+                if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
                 {
                     if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame()) >= 1)
                     {

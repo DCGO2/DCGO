@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.BT25
 
             #region Shared OP / WD / WA
 
-            string SharedEffectName = "Link from hand or digivolution cards to this for -2";
+            string SharedEffectName = "Link from trash or digivolution cards to this for -2";
 
             string SharedEffectDescription(string tag)
                 => $"[{tag}] If it's your turn, you may link 1 [Social], [Tool] or [Game] trait Digimon card from your trash or this Digimon's digivolution cards to this Digimon with the cost reduced by 2.";
@@ -229,9 +229,11 @@ namespace DCGO.CardEffects.BT25
                     return permanent == card.PermanentOfThisCard();
                 }
 
-                bool IsOpponentsDigimon(Permanent permanent)
+                bool IsOpponentsPermanent(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                        && (permanent.IsDigimon
+                            || permanent.IsTamer);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -247,13 +249,13 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon))
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsPermanent))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: IsOpponentsDigimon,
+                            canTargetCondition: IsOpponentsPermanent,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -280,7 +282,7 @@ namespace DCGO.CardEffects.BT25
 
                             CardEffectCommons.AddEffectToPermanent(
                                 targetPermanent: permanent, 
-                                effectDuration: EffectDuration.UntilOwnerTurnEnd, 
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd, 
                                 card: card, 
                                 cardEffect: canNotEvolveClass, 
                                 timing: EffectTiming.None);
@@ -312,7 +314,7 @@ namespace DCGO.CardEffects.BT25
 
                 string EffectDescription()
                 {
-                    return "[When Linking] 1 of your opponent's Digimon or Tamers can't unsuspend until their turn ends.";
+                    return "[When Linking] 2 of your opponent's Digimon or Tamers can't unsuspend until their turn ends.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

@@ -231,7 +231,7 @@ public class EX5_041 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.CanActivateOnDeletion(card))
+                if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {

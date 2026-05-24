@@ -11,6 +11,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 {
     public List<CardSource> selectedDigicrossCards { get; private set; } = new List<CardSource>();
     public List<AddDigivolutionCardsInfo> addDigivolutionCardInfos { get; private set; } = new List<AddDigivolutionCardsInfo>();
+    public List<CardSource> excludedCards { get; private set; } = new List<CardSource>();
     public CardSource playCard { get; private set; } = null;
 
     public void ResetSelectDigiXrosClass()
@@ -23,6 +24,11 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     public void AddDigivolutionCardInfos(AddDigivolutionCardsInfo digivolutionCardsInfo)
     {
         addDigivolutionCardInfos.Add(digivolutionCardsInfo);
+    }
+
+    public void SetExcludedCards(List<CardSource> excluded)
+    {
+        excludedCards = excluded;
     }
 
     #region Max Trash Count
@@ -300,6 +306,9 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     #region Can Select DigiXros
     bool CanSelectDigiXros(DigiXrosConditionElement element, CardSource targetCard, CardSource card)
     {
+        if (excludedCards.Contains(targetCard))
+            return false;
+            
         if (card != targetCard)
         {
             if (card != null)
@@ -358,8 +367,6 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     #region Select
     public IEnumerator Select(CardSource card)
     {
-        GManager.instance.turnStateMachine.isSync = true;
-
         selectedDigicrossCards = new List<CardSource>();
 
         playCard = card;
@@ -372,7 +379,6 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 
                 foreach (DigiXrosConditionElement element in digiXrosCondition.elements)
                 {
-                    yield return GManager.instance.photonWaitController.StartWait("SelectDigiXross");
 
                     if (selectedDigicrossCards.Count >= 1)
                     {
@@ -466,7 +472,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 
                     else if (canSelectActions.Count == 2 && digiXrosCondition.CanTargetCondition_ByPreSelecetedList == null && !element.skipAllIfNoSelect)
                     {
-                        SetTargetDigiXrossIndex(actions.IndexOf(canSelectActions[0]));
+                        SetTargetDigiXrossIndex(card.Owner.PlayerID, actions.IndexOf(canSelectActions[0]));
                     }
 
                     else
@@ -508,7 +514,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                                         break;
                                 }
 
-                                command_SelectCommands.Add(new Command_SelectCommand(message, () => photonView.RPC("SetTargetDigiXrossIndex", RpcTarget.All, k), spriteIndex));
+                                command_SelectCommands.Add(new Command_SelectCommand(message, () => photonView.RPC("SetTargetDigiXrossIndex", RpcTarget.All, card.Owner.PlayerID, k), spriteIndex));
                             }
 
                             GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
@@ -530,14 +536,16 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                                     indexes.Add(k);
                                 }
 
-                                SetTargetDigiXrossIndex(UnityEngine.Random.Range(0, indexes.Count));
+                                SetTargetDigiXrossIndex(card.Owner.PlayerID, UnityEngine.Random.Range(0, indexes.Count));
                             }
                             #endregion
                         }
                     }
 
-                    yield return new WaitWhile(() => !_endSelect);
-                    _endSelect = false;
+                    yield return new WaitUntil(() => card.Owner.HasPlayerSelection());
+
+                    ValueSelection seletion = card.Owner.DequeuePlayerSelection<ValueSelection>();
+                    _targetIndex = seletion != null ? seletion.ValueAsInt() : 0;
 
                     GManager.instance.commandText.CloseCommandText();
                     yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
@@ -561,8 +569,6 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
         }
 
         GManager.instance.GetComponent<Effects>().OffShowCard2();
-
-        GManager.instance.turnStateMachine.isSync = false;
     }
     #endregion
 
@@ -1007,15 +1013,20 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     #endregion
 
     int _targetIndex = 0;
-    bool _endSelect = false;
 
     bool _endSelectDigiXros = false;
 
     [PunRPC]
-    public void SetTargetDigiXrossIndex(int targetIndex)
+    public void SetTargetDigiXrossIndex(int playerID, int targetIndex)
     {
-        this._targetIndex = targetIndex;
-        _endSelect = true;
+        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
+
+        if (selectionPlayer == null)
+        {
+            return;
+        }
+
+        selectionPlayer.QueuePlayerSelection(new ValueSelection(targetIndex));
     }
 }
 

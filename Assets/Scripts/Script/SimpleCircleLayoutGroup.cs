@@ -28,7 +28,7 @@ public class SimpleCircleLayoutGroup : UIBehaviour, ILayoutGroup
 	void Arrange()
 	{
 		float splitAngle = 360 / transform.childCount;
-		var rect = transform as RectTransform;
+		//var rect = transform as RectTransform;
 
 		for (int elementId = 0; elementId < transform.childCount; elementId++)
 		{

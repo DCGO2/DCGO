@@ -66,39 +66,42 @@ namespace DCGO.CardEffects.BT25
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        bool CanSelectCardCondition(CardSource cardSource)
+                        if (cardSources.Count > 0)
                         {
-                            return cardSource.IsDigimon
-                                && cardSource.HasIliadTraits
-                                && (cardSource.HasCardColor(CardColor.Red, isDigimonOnly: true)
-                                    || cardSource.HasCardColor(CardColor.Blue, isDigimonOnly: true));
-                        }
+                            bool CanSelectCardCondition(CardSource cardSource)
+                            {
+                                return cardSource.IsDigimon
+                                    && cardSource.HasIliadTraits
+                                    && (cardSource.HasCardColor(CardColor.Red, isDigimonOnly: true)
+                                        || cardSource.HasCardColor(CardColor.Blue, isDigimonOnly: true));
+                            }
 
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
+                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                            {
+                                int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
 
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: null,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 card to add to your hand.",
-                                maxCount: maxCount,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.AddHand,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
+                                selectCardEffect.SetUp(
+                                    canTargetCondition: CanSelectCardCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => true,
+                                    selectCardCoroutine: null,
+                                    afterSelectCardCoroutine: null,
+                                    message: "Select 1 card to add to your hand.",
+                                    maxCount: maxCount,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.AddHand,
+                                    root: SelectCardEffect.Root.Trash,
+                                    customRootCardList: null,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            }
                         }
                     }
                 }
@@ -126,7 +129,7 @@ namespace DCGO.CardEffects.BT25
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition)
                         && HasValidColor(hashtable);
                 }
 

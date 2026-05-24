@@ -247,6 +247,16 @@ public class PermanentDetail : MonoBehaviour
         }
         #endregion
 
+        #region Link count changes
+        int linkChange = permanent.LinkedMax - 1;
+        if (linkChange != 0)
+        {
+            string text = linkChange > 0 ? $"- Link +{linkChange}\n" : $"- Link {linkChange}\n";
+
+            effectString += text;
+        }
+        #endregion
+
         #region effect
         foreach (ICardEffect cardEffect in cardEffects)
         {
@@ -286,6 +296,11 @@ public class PermanentDetail : MonoBehaviour
             }
 
             if (cardEffect is CanNotBeDestroyedByBattleClass && cardEffect.EffectName == "Jamming")
+            {
+                continue;
+            }
+
+            if (cardEffect is IChangeLinkMaxEffect)
             {
                 continue;
             }

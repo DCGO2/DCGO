@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT13
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {

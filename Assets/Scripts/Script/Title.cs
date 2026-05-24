@@ -19,7 +19,7 @@ public class Title : MonoBehaviour
         anim.enabled = true;
     }
 
-    bool Clicked = false;
+    bool _clicked = false;
     public List<TextMeshProUGUI> titleTexts = new List<TextMeshProUGUI>();
     public CheckUpdate checkUpdate;
     public GameObject Parent;
@@ -27,12 +27,12 @@ public class Title : MonoBehaviour
     public GameObject ClickToStart;
     public void OnClick()
     {
-        if(Clicked)
+        if(_clicked)
         {
             return;
         }
 
-        Clicked = true;
+        _clicked = true;
 
         ContinuousController.instance.StartCoroutine(OnClickCoroutine());
     }

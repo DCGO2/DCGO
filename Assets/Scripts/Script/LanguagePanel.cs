@@ -6,6 +6,8 @@ using UnityEngine.Events;
 
 public class LanguagePanel : OffAnimation
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
     [SerializeField] Animator _anim;
     [SerializeField] List<LanguageToggle> _languageToggles = new();
 
@@ -29,8 +31,8 @@ public class LanguagePanel : OffAnimation
             }
         }
 
-        _anim.SetInteger("Open", 0);
-        _anim.SetInteger("Close", 1);
+        _anim.SafeSetInt(OpenHash, 0);
+        _anim.SafeSetInt(CloseHash, 1);
     }
 
     public void Init()
@@ -44,7 +46,7 @@ public class LanguagePanel : OffAnimation
         {
             foreach (LanguageToggle languageToggle in _languageToggles)
             {
-                void OnToggleChange(Language language)
+                static void OnToggleChange(Language language)
                 {
                     ContinuousController.instance.language = language;
                     ContinuousController.instance.SaveLanguage();
@@ -57,7 +59,7 @@ public class LanguagePanel : OffAnimation
         }
 
         gameObject.SetActive(true);
-        _anim.SetInteger("Open", 1);
-        _anim.SetInteger("Close", 0);
+        _anim.SafeSetInt(OpenHash, 1);
+        _anim.SafeSetInt(CloseHash, 0);
     }
 }

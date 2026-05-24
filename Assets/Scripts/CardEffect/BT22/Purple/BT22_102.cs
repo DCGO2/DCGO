@@ -71,6 +71,8 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    CardEffectCommons.EnforceLocationCheck();
+
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
                     Permanent attackingPermanent = CardEffectCommons.GetAttackerFromHashtable(_hashtable);

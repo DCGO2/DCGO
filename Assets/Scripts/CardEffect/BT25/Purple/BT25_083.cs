@@ -26,8 +26,7 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region OP/WD Shared
-
-            string SharedEffectName = "By place 1 [Three Musketeers] trait card from hand or trash as any digimon bottom digivolution card, draw 1";
+            string SharedEffectName = "By place 1 [Three Musketeers] trait card from hand or trash as any digimon bottom digivolution card, <Draw 1>";
 
             string SharedEffectDescription(string tag) => $"[{tag}] By placing 1 [Three Musketeers] trait card from your hand or trash as any of your Digimon's bottom digivolution cards, <Draw 1>";
             bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass) => CardEffectCommons.HasMatchConditionOwnersHand(card, SharedCanSelectCardCondition) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SharedCanSelectCardCondition);
@@ -121,7 +120,6 @@ namespace DCGO.CardEffects.BT25
                         if (selectedCard != null && CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition))
                         {
                             #region Select digimon to add digivolution source
-
                             Permanent selectedPermanent = null;
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanSelectDigimonCondition));
@@ -148,8 +146,6 @@ namespace DCGO.CardEffects.BT25
 
                             selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain digivolution source.", "The opponent is selecting 1 Digimon to gain digivolution source.");
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-
                             #endregion
 
                             if (selectedPermanent != null)
@@ -159,9 +155,7 @@ namespace DCGO.CardEffects.BT25
                             }
                         }
                     }
-
                 }
-
             }
 
             CardEffectFactory.ActivateClassesForSharedEffects
@@ -174,11 +168,9 @@ namespace DCGO.CardEffects.BT25
                         onPlay: true,
                         whenDigivolving: true,
                         additionalActivateCondition: AdditionalActivateCondition);
-
             #endregion
 
             #region WD/WA Shared
-
             string SharedEffectName1 = "By trashing 1 option card from any digimon digivolution cards, use 1 [Three Musketeers] trait option card in trash for 3 reduced cost";
 
             string SharedHashString = "BT25_083_WD_WA";
@@ -202,7 +194,6 @@ namespace DCGO.CardEffects.BT25
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition))
                 {
                     #region Select digimon to trash option card from digivolution source
-
                     Permanent selectedPermanent = null;
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanSelectDigimonCondition));
@@ -228,8 +219,6 @@ namespace DCGO.CardEffects.BT25
 
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to trash 1 option in sources", "The opponent is selecting 1 Digimon to trash 1 option in sources");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-
                     #endregion
 
                     if (selectedPermanent != null)
@@ -311,8 +300,8 @@ namespace DCGO.CardEffects.BT25
 
                                     #region reduce play cost
                                     ChangeCostClass changeCostClass = new ChangeCostClass();
-                                    changeCostClass.SetUpICardEffect($"Play Cost -3", CanUseCondition1, card);
-                                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CanSelect3MOptionCard, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                                    changeCostClass.SetUpICardEffect($"Play/Use Cost -3", CanUseCondition1, card);
+                                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: PlayOrUseCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
                                     Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
                                     card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
 
@@ -331,12 +320,16 @@ namespace DCGO.CardEffects.BT25
                                         return true;
                                     }
 
+                                    bool PlayOrUseCondition(CardSource cardSource)
+                                    {
+                                        return true;
+                                    }
+
                                     int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                                     {
-                                        if (cardSource.IsOption
-                                            && cardSource.HasThreeMusketeersTraits
-                                            && RootCondition(root)
-                                            && PermanentsCondition(targetPermanents))
+                                        if (PlayOrUseCondition(cardSource)
+                                        && RootCondition(root)
+                                        && PermanentsCondition(targetPermanents))
                                         {
                                             Cost -= 3;
                                         }
@@ -371,13 +364,12 @@ namespace DCGO.CardEffects.BT25
                                     card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
                                     #endregion
                                 }
-
                                 #endregion
                             }
-
                         }
                     }
                 }
+
                 if (!hasUsed) activateClass.RemoveUse();
             }
 
@@ -401,12 +393,12 @@ namespace DCGO.CardEffects.BT25
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 level 4 or lower [Three Musketeers] Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetHashString("BT25_083_OD");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "You may play 1 level 4 or lower Digimon card with [Three Musketeers] in its text from your trash without paying the cost.";
                 }
@@ -418,7 +410,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

@@ -1,10 +1,11 @@
+using Photon;
+using Photon.Pun;
+using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
-using System;
-using Photon.Pun;
+using UnityEngine;
 
 public partial class CardEffectCommons
 {
@@ -18,7 +19,7 @@ public partial class CardEffectCommons
     /// <returns>The created Permanent</returns>
     private static Permanent PlayTempPermanent(CardSource card, bool finalCard = false)
     {
-        Permanent playedPermanent = null;
+        Permanent playedPermanent;
         if (card != null)
         {
             int frameID = card.PreferredFrame().FrameID;
@@ -205,8 +206,6 @@ public partial class CardEffectCommons
 
     private static IEnumerator SelectPermanent(Player owner, CardSource jogressTarget, Permanent firstCondition, bool isOptional, ICardEffect activateClass, bool isWithHand, Func<Permanent, IEnumerator> SelectPermanentCoroutine, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> digivolutionCardCondition = null)
     {
-        Permanent selectedPermanent = null;
-
         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
         selectPermanentEffect.SetUp(
@@ -477,11 +476,11 @@ public partial class CardEffectCommons
             yield return null;
         }
 
-        bool CanJogressCondition(CardSource cardSource)
-        {
-            return (canSelectDNACardCondition == null || canSelectDNACardCondition(cardSource))
-                && cardSource.CanPlayJogress(true);
-        }
+        //bool CanJogressCondition(CardSource cardSource)
+        //{
+        //    return (canSelectDNACardCondition == null || canSelectDNACardCondition(cardSource))
+        //        && cardSource.CanPlayJogress(true);
+        //}
 
         if (owner.GetBattleAreaDigimons().Count < DnaPermanentCount)
         {
@@ -553,8 +552,6 @@ public partial class CardEffectCommons
             SetJogressEvoRootsController controller = (SetJogressEvoRootsController)component;
             int[] _jogressEvoRootsFrameIDs = new int[0];
 
-            yield return GManager.instance.photonWaitController.StartWait("DNA_Digivolve_by_Effect");
-
             if (owner.isYou || GManager.instance.IsAI)
             {
                 GManager.instance.selectJogressEffect.SetUp_SelectDigivolutionRoots
@@ -580,20 +577,20 @@ public partial class CardEffectCommons
                     yield return null;
                 }
 
-                controller.photonView.RPC("SetJogressEvoRootsFrameIDs", RpcTarget.All, _jogressEvoRootsFrameIDs);
+                controller.photonView.RPC("SetJogressEvoRootsFrameIDs", RpcTarget.All, owner.PlayerID, _jogressEvoRootsFrameIDs);
             }
             else
             {
                 GManager.instance.commandText.OpenCommandText("The opponent is choosing a card to DNA digivolve.");
             }
 
-            yield return new WaitWhile(() => !controller.EndSelect);
-            controller.EndSelect = false;
+            yield return new WaitUntil(() => owner.HasPlayerSelection());
+            PermanentSelection permanentSelection = owner.DequeuePlayerSelection<PermanentSelection>();
 
             GManager.instance.commandText.CloseCommandText();
             yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
 
-            if (controller.JogressEvoRootsFrameIDs.Length == DnaPermanentCount)
+            if (permanentSelection.PermanentIDList.Length == DnaPermanentCount)
             {
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { dnaTarget }, "Played Card", true, true));
 
@@ -606,7 +603,7 @@ public partial class CardEffectCommons
                     root: isHand ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash,
                     activateETB: true);
 
-                playCard.SetJogress(controller.JogressEvoRootsFrameIDs);
+                playCard.SetJogress(permanentSelection.PermanentIDList);
 
                 yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
 
@@ -640,31 +637,34 @@ public partial class CardEffectCommons
 
         return jogressCondition;
 
-        bool PermanentCondition(Permanent permanent)
-        {
-            return permanent != null
-                && permanent.TopCard != null
-                && permanent.TopCard.Owner == card.Owner
-                && permanent.IsDigimon
-                && CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-        }
-
-        bool FullPermanentCondition1(Permanent permanent) => PermanentCondition(permanent) && permanentCondition1 != null && permanentCondition1(permanent);
-
-        bool FullPermanentCondition2(Permanent permanent) => PermanentCondition(permanent) && permanentCondition2 != null && permanentCondition2(permanent);
+        //bool PermanentCondition(Permanent permanent)
+        //{
+        //    return permanent != null
+        //        && permanent.TopCard != null
+        //        && permanent.TopCard.Owner == card.Owner
+        //        && permanent.IsDigimon
+        //        && CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+        //}
+        //
+        //bool FullPermanentCondition1(Permanent permanent) => PermanentCondition(permanent) && permanentCondition1 != null && permanentCondition1(permanent);
+        //
+        //bool FullPermanentCondition2(Permanent permanent) => PermanentCondition(permanent) && permanentCondition2 != null && permanentCondition2(permanent);
     }
 
     //Private class used to register the callback so this doesn't need to be defined in every card that uses DNA by effect
     private class SetJogressEvoRootsController : MonoBehaviourPunCallbacks
     {
-        public bool EndSelect = false;
-        public int[] JogressEvoRootsFrameIDs = new int[0];
-
         [PunRPC]
-        public void SetJogressEvoRootsFrameIDs(int[] JogressEvoRootsFrameIDs)
+        public void SetJogressEvoRootsFrameIDs(int playerID, int[] jogressEvoRootsFrameIDs)
         {
-            this.JogressEvoRootsFrameIDs = JogressEvoRootsFrameIDs;
-            EndSelect = true;
+            Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
+
+            if (selectionPlayer == null)
+            {
+                return;
+            }
+
+            selectionPlayer.QueuePlayerSelection(new PermanentSelection(null, jogressEvoRootsFrameIDs));
         }
     } 
 

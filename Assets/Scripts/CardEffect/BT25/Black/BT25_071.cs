@@ -105,7 +105,6 @@ namespace DCGO.CardEffects.BT25
                         && cardSource.GetCostItself <= 4
                         && cardSource.EqualsTraits("TS");
                 }
-                List<CardSource> selectedCards = new List<CardSource>();
 
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
                     revealCount: 3,
@@ -126,40 +125,37 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                 {
-                    selectedCards.Add(cardSource);
-                    yield return null;
-                }
-
-                if (selectedCards.Count > 0)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                    cardSources: selectedCards,
-                    activateClass: activateClass,
-                    payCost: false,
-                    isTapped: false,
-                    root: SelectCardEffect.Root.Library,
-                    activateETB: true));
-                }
+                    if (cardSource != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                        cardSources: new List<CardSource> { cardSource },
+                        activateClass: activateClass,
+                        payCost: false,
+                        isTapped: false,
+                        root: SelectCardEffect.Root.Library,
+                        activateETB: true));
+                    }
+                }               
             }
             #endregion
 
             #region All Turns
-            if (timing == EffectTiming.WhenRemoveField)
+            if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectName1(), SharedCanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass, true), 1, true, SharedEffectDescription1());
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), 1, true, SharedEffectDescription1());
                 activateClass.SetHashString("BT25_073_AT");
                 cardEffects.Add(activateClass);
             }
             #endregion
 
             #region All Turns Inherited
-            if (timing == EffectTiming.WhenRemoveField)
+            if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectName1(), SharedCanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass, false), 1, true, SharedEffectDescription1());
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), 1, true, SharedEffectDescription1());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT25_073_AT_ESS");
                 cardEffects.Add(activateClass);

@@ -27,49 +27,12 @@ namespace DCGO.CardEffects.BT25
             #region Reduce Play Cost
             if (timing == EffectTiming.None)
             {
-                ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -5", CanUseCondition, card);
-                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                changeCostClass.SetNotShowUI(true);
-                cardEffects.Add(changeCostClass);
-
-                bool CanUseCondition(Hashtable hashtable)
+                bool Condition()
                 {
                     return card.Owner.GetBattleAreaDigimons().Count < card.Owner.Enemy.GetBattleAreaDigimons().Count;
                 }
 
-                int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
-                        List<Permanent> targetPermanents)
-                {
-                    if (CardSourceCondition(cardSource) &&
-                        RootCondition(root) &&
-                        PermanentsCondition(targetPermanents))
-                    {
-                        cost -= 5;
-                    }
-
-                    return cost;
-                }
-
-                bool PermanentsCondition(List<Permanent> targetPermanents)
-                {
-                    return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
-                }
-
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    return cardSource == card;
-                }
-
-                bool RootCondition(SelectCardEffect.Root root)
-                {
-                    return true;
-                }
-
-                bool isUpDown()
-                {
-                    return true;
-                }
+                cardEffects.Add(CardEffectFactory.MandatorySelfPlayCostReduction(5, card, Condition));
             }
             #endregion
 
@@ -100,22 +63,25 @@ namespace DCGO.CardEffects.BT25
                     int validHandCardCount = card.Owner.HandCards.Count(CanLinkCardCondition);
                     int validTrashCardCount = card.Owner.TrashCards.Count(CanLinkCardCondition);
 
-                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
-                    if (validHandCardCount > 0)
+                    if (validHandCardCount > 0 && validTrashCardCount > 0)
                     {
-                        selectionElements.Add(new(message: "from Hand", value: 1, spriteIndex: 0));
-                    }
-                    if (validTrashCardCount > 0)
-                    {
-                        selectionElements.Add(new(message: "from Trash", value: 2, spriteIndex: 0));
-                    }
-                    selectionElements.Add(new(message: "Do not place", value: 3, spriteIndex: 1));
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
+                        {
+                            new(message: "from Hand", value: 1, spriteIndex: 0),
+                            new(message: "from Trash", value: 2, spriteIndex: 0),
+                            new(message: "Do not link", value: 3, spriteIndex: 1)
+                        };
 
-                    GManager.instance.userSelectionManager.SetIntSelection(
-                        selectionElements: selectionElements,
-                        selectPlayer: card.Owner,
-                        selectPlayerMessage: "From which area will you link a card?",
-                        notSelectPlayerMessage: "The opponent is choosing from which area to link card.");
+                        GManager.instance.userSelectionManager.SetIntSelection(
+                            selectionElements: selectionElements,
+                            selectPlayer: card.Owner,
+                            selectPlayerMessage: "From which area will you link a card?",
+                            notSelectPlayerMessage: "The opponent is choosing from which area to link card.");
+                    }
+                    else
+                    {
+                        GManager.instance.userSelectionManager.SetInt(validHandCardCount > 0 ? 1 : 2);
+                    }
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
@@ -180,7 +146,6 @@ namespace DCGO.CardEffects.BT25
                             $"The opponent is selecting cards to link.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        break;
                     }
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
@@ -282,6 +247,7 @@ namespace DCGO.CardEffects.BT25
                 activateClass.SetUpICardEffect("Linked digimon may Attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
+                activateClass.SetEffectTargets(TargetablePermanents);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -298,11 +264,19 @@ namespace DCGO.CardEffects.BT25
                         && CardEffectCommons.CanTriggerWhenLinked(hashtable, PermanentCondition, null);
                 }
 
-                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleArea(card);
+                Permanent GetAttacker(Hashtable hashtable) => CardEffectCommons.GetPermanentFromHashtable(hashtable);
+
+                List<Permanent> TargetablePermanents(Hashtable hashtable) => new List<Permanent>() { GetAttacker(hashtable) };
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    activateClass.SetEffectName($"{GetAttacker(hashtable).TopCard.BaseENGCardNameFromEntity} may attack");
+                    return CardEffectCommons.IsExistOnBattleArea(card);
+                }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Permanent attacker = CardEffectCommons.GetPermanentFromHashtable(hashtable);
+                    Permanent attacker = GetAttacker(hashtable);
                     if (attacker != null && attacker.TopCard != null)
                     {
                         SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();

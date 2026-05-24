@@ -1,8 +1,6 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using System.IO;
 
 public class CEntity_EffectController : MonoBehaviour
 {
@@ -184,7 +182,7 @@ public class CEntity_EffectController : MonoBehaviour
         #region Generate and set an instance of the card effect class
         bool CanAttachEffectComponent()
         {
-            if (string.IsNullOrEmpty(ClassName)) 
+            if (string.IsNullOrEmpty(ClassName))
                 return false;
 
             if (Type.GetType(ClassName) == null)
@@ -199,7 +197,7 @@ public class CEntity_EffectController : MonoBehaviour
                     if (Type.GetType($"DCGO.CardEffects.Tokens.{ClassName}") == null)
                         return false;
                 }
-                
+
             }
 
             return true;
@@ -218,7 +216,7 @@ public class CEntity_EffectController : MonoBehaviour
                 else
                     t = Type.GetType($"DCGO.CardEffects.Tokens.{ClassName}");
             }
-                
+
 
             Component component = this.gameObject.AddComponent(t);
 
@@ -268,7 +266,7 @@ public class CEntity_EffectController : MonoBehaviour
     #endregion
 
     #region Register as effects used this turn
-    public void RegisterUseEfffectThisTurn(ICardEffect cardEffect)
+    public void RegisterUseEffectThisTurn(ICardEffect cardEffect)
     {
         UseEffectsThisTurn.Add(cardEffect);
     }

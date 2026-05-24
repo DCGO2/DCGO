@@ -206,7 +206,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
                     {
                         if (card.Owner.CanAddMemory(activateClass))
                         {
