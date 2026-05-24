@@ -82,7 +82,7 @@ namespace DCGO.CardEffects.BT17
 
                         bool returned = false;
                         bool canNoSelect = !(cardFromHashtable &&
-                                            (!CardEffectCommons.GetPayCostFromHashtable(hashtable)
+                                            (CardEffectCommons.GetPayCostFromHashtable(hashtable)
                                             && card.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > card.Owner.MaxMemoryCost));
 
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
