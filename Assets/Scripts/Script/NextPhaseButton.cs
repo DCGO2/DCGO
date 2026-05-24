@@ -1,12 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Events;
+﻿using Photon;
 using Photon.Pun;
 using System;
-using Photon;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.TextCore.Text;
+using UnityEngine.UI;
 
 public class NextPhaseButton : MonoBehaviourPunCallbacks
 {
@@ -40,14 +41,24 @@ public class NextPhaseButton : MonoBehaviourPunCallbacks
 
     public void OnClick()
     {
-        if (!GManager.instance.turnStateMachine.isSync && !GManager.instance.turnStateMachine.IsSelecting && !GManager.instance.turnStateMachine.isExecuting && !GManager.instance.turnStateMachine.isSecurityCehck)
+        TurnStateMachine turnStateMachine = GManager.instance.turnStateMachine;
+
+        if (!turnStateMachine.IsSelecting && !turnStateMachine.isExecuting && !turnStateMachine.isSecurityCehck)
         {
-            if (GManager.instance.turnStateMachine.gameContext.TurnPlayer.isYou)
+            if (turnStateMachine.gameContext.TurnPlayer.isYou)
             {
-                if (GManager.instance.turnStateMachine.gameContext.TurnPhase == GameContext.phase.Breeding || GManager.instance.turnStateMachine.gameContext.TurnPhase == GameContext.phase.Main)
+                if (turnStateMachine.gameContext.TurnPhase == GameContext.phase.Breeding || turnStateMachine.gameContext.TurnPhase == GameContext.phase.Main)
                 {
-                    GManager.instance.turnStateMachine.isSync = true;
-                    photonView.RPC("NextPhase", RpcTarget.All);
+                    switch (turnStateMachine.gameContext.TurnPhase)
+                    {
+                        case GameContext.phase.Breeding:
+                            turnStateMachine.SendShouldHatch(false);
+                            break;
+                        case GameContext.phase.Main:
+                            turnStateMachine.QueueMainPhaseAction(turnStateMachine.gameContext.TurnPlayer, new PassAction());
+                            break;
+                    }
+
                     StartCoroutine(CoverCoroutine(1.5f));
 
                     Button.interactable = false;
@@ -94,7 +105,7 @@ public class NextPhaseButton : MonoBehaviourPunCallbacks
                     {
                         if (GManager.instance.turnStateMachine.gameContext.TurnPlayer.isYou)
                         {
-                            if (!GManager.instance.attackProcess.IsAttacking && !GManager.instance.turnStateMachine.isSync && !GManager.instance.turnStateMachine.IsSelecting && !GManager.instance.turnStateMachine.isExecuting && !GManager.instance.turnStateMachine.isSecurityCehck)
+                            if (!GManager.instance.attackProcess.IsAttacking && !GManager.instance.turnStateMachine.IsSelecting && !GManager.instance.turnStateMachine.isExecuting && !GManager.instance.turnStateMachine.isSecurityCehck)
                             {
                                 switch (GManager.instance.turnStateMachine.gameContext.TurnPhase)
                                 {
@@ -161,12 +172,6 @@ public class NextPhaseButton : MonoBehaviourPunCallbacks
                 Cover.SetActive(true);
             }
         }
-    }
-
-    [PunRPC]
-    public void NextPhase()
-    {
-        GManager.instance.turnStateMachine.NextPhase();
     }
 
     public void SwitchTurnSprite()

@@ -89,7 +89,7 @@ public class EX5_043 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                #region �o��R�X�g-
+                #region Reduce Cost Effect
                 ChangeCostClass changeCostClass = new ChangeCostClass();
                 changeCostClass.SetUpICardEffect("Reduce Play Cost", CanUseCondition1, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
@@ -217,7 +217,7 @@ public class EX5_043 : CEntity_Effect
                         activateETB: true));
                 }
 
-                #region �o��R�X�g-����
+                #region Remove Reduce Cost Effect
                 card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
                 #endregion
             }
@@ -263,7 +263,7 @@ public class EX5_043 : CEntity_Effect
                 {
                     bool canPlay = false;
 
-                    #region �o��R�X�g-
+                    #region Reduce Cost Effect
                     ChangeCostClass changeCostClass = new ChangeCostClass();
                     changeCostClass.SetUpICardEffect("Reduce Play Cost", CanUseCondition1, card);
                     changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
@@ -354,7 +354,7 @@ public class EX5_043 : CEntity_Effect
                         canPlay = true;
                     }
 
-                    #region �o��R�X�g-����
+                    #region Remove Reduce Cost Effect
                     card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
                     #endregion
 
@@ -369,7 +369,7 @@ public class EX5_043 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                #region �o��R�X�g-
+                #region Reduce Cost Effect
                 ChangeCostClass changeCostClass = new ChangeCostClass();
                 changeCostClass.SetUpICardEffect("Reduce Play Cost", CanUseCondition1, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
@@ -497,7 +497,7 @@ public class EX5_043 : CEntity_Effect
                         activateETB: true));
                 }
 
-                #region �o��R�X�g-����
+                #region Remove Reduce Cost Effect
                 card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
                 #endregion
             }
@@ -513,7 +513,7 @@ public class EX5_043 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] [Once Per Turn] When one of your Digimon is played, you may return 1 of your opponent�'s 5000 DP or lower Digimon to the hand. For each of your other Digimon, add 3000 to the maximum DP this effect can choose.";
+                return "[Your Turn] [Once Per Turn] When one of your Digimon is played, you may return 1 of your opponent's 5000 DP or lower Digimon to the hand. For each of your other Digimon, add 3000 to the maximum DP this effect can choose.";
             }
 
             int maxDP()

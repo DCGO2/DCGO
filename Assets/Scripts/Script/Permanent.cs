@@ -298,7 +298,7 @@ public class Permanent
                     }
                 }
 
-                foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown)
+                foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown.OrderBy(cardEffect => cardEffect.ActivatedTime))
                 {
                     if (cardEffect is IChangeBaseDPEffect)
                     {
@@ -469,7 +469,7 @@ public class Permanent
             
             DP += LinkedDP;
 
-            foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown)
+            foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown.OrderBy(cardEffect => cardEffect.ActivatedTime))
             {
                 if (cardEffect is IChangeDPEffect)
                 {
@@ -926,6 +926,31 @@ public class Permanent
                     }
                     #endregion
                 }
+
+                #region Effects of face up security
+                    foreach (CardSource cardSource in player.SecurityCards)
+                    {
+                        if (cardSource.IsFlipped)
+                            continue;
+
+                        foreach (ICardEffect cardEffect in cardSource.EffectList(EffectTiming.None))
+                        {
+                            if (cardEffect is IChangeLinkMaxEffect)
+                            {
+                                if (((IChangeLinkMaxEffect)cardEffect).PermanentCondition(this))
+                                {
+                                    if (cardEffect.CanUse(null))
+                                    {
+                                        if (!TopCard.CanNotBeAffected(cardEffect))
+                                        {
+                                            cardEffects_ChangeLinkedMax.Add(cardEffect);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    #endregion
 
                 #region player effect
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
@@ -2379,11 +2404,12 @@ public class Permanent
                 Permanent attackingPermanent = GManager.instance.attackProcess.AttackingPermanent;
 
                 if (attackingPermanent != null
-                    && attackingPermanent.TopCard !=null
+                    && attackingPermanent.TopCard != null
                     && attackingPermanent.TopCard.Owner != TopCard.Owner
                     && attackingPermanent.HasCollision)
                 {
                     ActivateClass fakeCollisionClass = new();
+                    fakeCollisionClass.SetIsDigimonEffect(true);
                     fakeCollisionClass.SetUpICardEffect("Collision", _ => true, attackingPermanent.TopCard);
                     
                     if (!TopCard.CanNotBeAffected(fakeCollisionClass))//Check can be affected by opponent's Digimon effects
@@ -2704,6 +2730,28 @@ public class Permanent
                     }
                     #endregion
                 }
+
+                #region Effects of Face-up Security
+                foreach (CardSource source in player.SecurityCards)
+                {
+                    if (source.IsFlipped)
+                        continue;
+
+                    foreach (ICardEffect cardEffect in source.EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is IRushEffect)
+                        {
+                            if (cardEffect.CanTrigger(null))
+                            {
+                                if (((IRushEffect)cardEffect).HasRush(this))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                #endregion
 
                 #region プレイヤーの効果
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))

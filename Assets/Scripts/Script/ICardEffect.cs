@@ -1,5 +1,4 @@
-﻿using Photon.Pun;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,7 +25,7 @@ public abstract class ICardEffect
         SetCanActivateCondition(null);
 
         SetIsOptional(false);
-        SetIsOptionalOverride(null);
+        SetIsSkippableFunction(null);
         SetUseOptional(false);
         SetIsDeclarative(false);
         SetIsInheritedEffect(false);
@@ -286,13 +285,13 @@ public abstract class ICardEffect
     #region Override IsOptional with a function
 
     Func<Hashtable, bool> _isOptionalFunction = null;
-    public bool IsOptionalCondition(Hashtable hashtable)
+    public bool IsSkippableCondition(Hashtable hashtable)
     {
         if (_isOptionalFunction != null) return _isOptionalFunction(hashtable);
         return IsOptional;
     }
 
-    public void SetIsOptionalOverride(Func<Hashtable, bool> isOptionalOverride)
+    public void SetIsSkippableFunction(Func<Hashtable, bool> isOptionalOverride)
     {
         _isOptionalFunction = isOptionalOverride;
     }
@@ -305,7 +304,7 @@ public abstract class ICardEffect
 
     public bool IsSkippable(Hashtable hashtable)
     {
-        return _isSkippable || IsOptionalCondition(hashtable);
+        return _isSkippable || IsSkippableCondition(hashtable);
     }
 
     public void SetIsSkippable(bool isSkippable)
@@ -388,7 +387,7 @@ public abstract class ICardEffect
         {
             if (EffectSourceCard != null)
             {
-                if (EffectSourceCard.PermanentOfThisCard() != null)
+                if (EffectSourceCard.PermanentOfThisCard() != null && !IsOnDeletion)
                 {
                     if (IsInheritedEffect || IsLinkedEffect)
                     {
@@ -694,6 +693,31 @@ public abstract class ICardEffect
     public void SetNotShowUI(bool isNotShowUI)
     {
         IsNotShowUI = isNotShowUI;
+    }
+
+    #endregion
+
+    #region When this effect was activated for comparison
+
+    DateTime _activatedTime = DateTime.MinValue;
+
+    public DateTime ActivatedTime
+    {
+        get { return _activatedTime; }
+        private set { _activatedTime = value; }
+    }
+
+    public void SetActivatedTime(params DateTime[] activationTimes)
+    {
+        if (activationTimes.Length > 0)
+        {
+            DateTime latest = activationTimes[0];
+            foreach (DateTime time in activationTimes)
+            {
+                if (time > latest) latest = time;
+            }
+            _activatedTime = latest;
+        }
     }
 
     #endregion
@@ -1025,7 +1049,7 @@ public static class ActivateICardEffectExtensionClass
 
     public static IEnumerator Activate_Optional(this ActivateICardEffect activateICardEffect, Hashtable hash)
     {
-        if (((ICardEffect)activateICardEffect).IsOptionalCondition(hash))
+        if (((ICardEffect)activateICardEffect).IsOptional)
         {
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<OptionalSkill>().SelectOptional((ICardEffect)activateICardEffect, hash));
         }
@@ -1091,7 +1115,7 @@ public static class ActivateICardEffectExtensionClass
 
     public static IEnumerator Activate_Execute(this ActivateICardEffect activateICardEffect, Hashtable hash)
     {
-        if (((ICardEffect)activateICardEffect).UseOptional || !((ICardEffect)activateICardEffect).IsOptionalCondition(hash))
+        if (((ICardEffect)activateICardEffect).UseOptional || !((ICardEffect)activateICardEffect).IsOptional)
         {
             ((ICardEffect)activateICardEffect).OnProcessCallbuck?.Invoke();
             ((ICardEffect)activateICardEffect).SetOnProcessCallbuck(null);
@@ -1164,7 +1188,7 @@ public static class ActivateICardEffectExtensionClass
         {
             UnityEngine.Debug.Log($"Activate_Optional_Effect_Execute: {((ICardEffect)activateICardEffect).EffectSourceCard.BaseENGCardNameFromEntity}");
             //Optional effect activation selection
-            if (((ICardEffect)activateICardEffect).IsOptionalCondition(hash))
+            if (((ICardEffect)activateICardEffect).IsOptional)
             {
                 if (isCheckOptional)
                 {
@@ -1221,12 +1245,19 @@ public static class ActivateICardEffectExtensionClass
     }
     #endregion
 
+    #region add a usage of an X Per Turn
+    public static void AddUse(this ActivateICardEffect activateICardEffect)
+    {
+        ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn((ICardEffect)activateICardEffect);
+    }
+    #endregion
+
     #region Effect → Processing
 
     public static IEnumerator Activate_Effect_Execute(this ActivateICardEffect activateICardEffect, Hashtable hash, UnityAction<ICardEffect> useEffectCallback)
     {
         //cost → effect processing
-        if (((ICardEffect)activateICardEffect).UseOptional || !((ICardEffect)activateICardEffect).IsOptionalCondition(hash))
+        if (((ICardEffect)activateICardEffect).UseOptional || !((ICardEffect)activateICardEffect).IsOptional)
         {
             useEffectCallback?.Invoke((ICardEffect)activateICardEffect);
 

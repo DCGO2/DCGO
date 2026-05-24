@@ -138,7 +138,7 @@ namespace DCGO.CardEffects.EX4
 
                                     bool CanActivateCondition1(Hashtable hashtable1)
                                     {
-                                        if (CardEffectCommons.CanActivateOnDeletion(selectedPermanent.TopCard))
+                                        if (CardEffectCommons.CanActivateOnDeletion(hashtable1, selectedPermanent.TopCard))
                                         {
                                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: selectedPermanent.TopCard, payCost: false, cardEffect: activateClass1))
                                             {

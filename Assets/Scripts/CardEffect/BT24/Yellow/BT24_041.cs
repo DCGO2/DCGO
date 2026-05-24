@@ -30,99 +30,9 @@ namespace DCGO.CardEffects.BT24
             #endregion
 
             #region Reduce Play Cost
-
-            if (timing == EffectTiming.BeforePayCost)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reduce play cost (5)", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return "When this card would be played, if you have an [Iliad] trait Digimon or Tamer, reduce the play cost by 5.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, cardSource => cardSource == card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.HasMatchConditionPermanent(IsIliad);
-                }
-
-                bool IsIliad(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                        && permanent.TopCard.EqualsTraits("Iliad")
-                        && (permanent.IsDigimon
-                            || permanent.IsTamer);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (card.Owner.CanReduceCost(null, card))
-                    {
-                        ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                    }
-
-                    ChangeCostClass changeCostClass = new ChangeCostClass();
-                    changeCostClass.SetUpICardEffect("Play Cost -5", hashtable => true, card);
-                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                    card.Owner.UntilCalculateFixedCostEffect.Add(_ => changeCostClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
-
-                    int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
-                        List<Permanent> targetPermanents)
-                    {
-                        if (CardSourceCondition(cardSource) &&
-                            RootCondition(root) &&
-                            PermanentsCondition(targetPermanents))
-                        {
-                            cost -= 5;
-                        }
-
-                        return cost;
-                    }
-
-                    bool PermanentsCondition(List<Permanent> targetPermanents)
-                    {
-                        return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
-                    }
-
-                    bool CardSourceCondition(CardSource cardSource)
-                    {
-                        return cardSource == card;
-                    }
-
-                    bool RootCondition(SelectCardEffect.Root root)
-                    {
-                        return true;
-                    }
-
-                    bool isUpDown()
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            #endregion
-
-            #region Reduce Play Cost - Not Shown
-
             if (timing == EffectTiming.None)
             {
-                ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -5", CanUseCondition, card);
-                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
-                changeCostClass.SetNotShowUI(true);
-                cardEffects.Add(changeCostClass);
-
-                bool CanUseCondition(Hashtable hashtable)
+                bool Condition()
                 {
                     return CardEffectCommons.HasMatchConditionPermanent(IsIliad);
                 }
@@ -135,40 +45,8 @@ namespace DCGO.CardEffects.BT24
                             || permanent.IsTamer);
                 }
 
-                int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
-                        List<Permanent> targetPermanents)
-                {
-                    if (CardSourceCondition(cardSource) &&
-                        RootCondition(root) &&
-                        PermanentsCondition(targetPermanents))
-                    {
-                        cost -= 5;
-                    }
-
-                    return cost;
-                }
-
-                bool PermanentsCondition(List<Permanent> targetPermanents)
-                {
-                    return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
-                }
-
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    return cardSource == card;
-                }
-
-                bool RootCondition(SelectCardEffect.Root root)
-                {
-                    return true;
-                }
-
-                bool isUpDown()
-                {
-                    return true;
-                }
+                cardEffects.Add(CardEffectFactory.MandatorySelfPlayCostReduction(5, card, Condition));
             }
-
             #endregion
 
             #region Shared OP / WD/ OD
@@ -314,7 +192,7 @@ namespace DCGO.CardEffects.BT24
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card);
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card);
                 }
             }
 

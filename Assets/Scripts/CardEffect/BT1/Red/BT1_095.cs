@@ -81,7 +81,7 @@ public class BT1_095 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Security] Unsuspend 1 of your Digimon. That Digimon gains <Blocker„ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead) for the turn.";
+                return "[Security] Unsuspend 1 of your Digimon. That Digimon gains <Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead) for the turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

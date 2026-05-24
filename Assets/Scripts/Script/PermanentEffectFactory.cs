@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 /// <summary>
 /// Class for given effects for Permanents, applying to the entire stack even if any specific card is removed from it
@@ -13,6 +10,8 @@ public partial class PermanentEffectFactory
     #region Effect of a Permanent to Delete Itself
     public static ActivateClass DeleteSelfEffect(Permanent permanent, ICardEffect cardEffect, bool deleteOnOwnturn = true, bool deleteOnOpponentsTurn = true)
     {
+        if(permanent == null || permanent.TopCard == null) return null;
+        
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Delete this Digimon", CanUseCondition, permanent.TopCard);
         activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, "");
@@ -53,6 +52,8 @@ public partial class PermanentEffectFactory
     #region Digimon Effect Immunity
     public static CanNotAffectedClass DigimonEffectImmunity(Permanent permanent)
     {
+        if(permanent == null || permanent.TopCard == null) return null;
+        
         bool CanUseCondition1(Hashtable hashtable)
         {
             return CardEffectCommons.IsExistOnBattleAreaDigimon(permanent.TopCard);
@@ -79,9 +80,42 @@ public partial class PermanentEffectFactory
     }
     #endregion
 
+    #region Option Effect Immunity
+    public static CanNotAffectedClass OptionEffectImmunity(Permanent permanent)
+    {
+        if(permanent == null || permanent.TopCard == null) return null;
+        
+        bool CanUseCondition1(Hashtable hashtable)
+        {
+            return CardEffectCommons.IsExistOnBattleAreaDigimon(permanent.TopCard);
+        }
+
+        bool CardCondition(CardSource cardSource)
+        {
+            return cardSource == permanent.TopCard
+                && CardEffectCommons.IsExistOnBattleAreaDigimon(permanent.TopCard);
+        }
+
+        bool SkillCondition(ICardEffect cardEffect)
+        {
+            return CardEffectCommons.IsOpponentEffect(cardEffect, permanent.TopCard)
+                && !cardEffect.IsDigimonEffect && !cardEffect.IsTamerEffect;
+        }
+
+        CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
+        canNotAffectedClass.SetUpICardEffect("Not affected by opponent's Option effects", CanUseCondition1, permanent.TopCard);
+        canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
+        canNotAffectedClass.SetEffectSourcePermanent(permanent);
+        return canNotAffectedClass;
+
+    }
+    #endregion
+
     #region Cannot change Attack Target Effect
     public static CanNotSwitchAttackTargetClass CanNotSwitchAttackTargetEffect(Permanent targetPermanent, ICardEffect activateClass)
     {
+        if(targetPermanent == null || targetPermanent.TopCard == null) return null;
+
         CanNotSwitchAttackTargetClass canNotSwitchAttackTargetClass = new CanNotSwitchAttackTargetClass();
         canNotSwitchAttackTargetClass.SetUpICardEffect("This Digimon's attack target can't be switched.", CanUseCondition, targetPermanent.TopCard);
         canNotSwitchAttackTargetClass.SetUpCanNotSwitchAttackTargetClass(PermanentCondition: PermanentCondition);
@@ -104,6 +138,8 @@ public partial class PermanentEffectFactory
     #region Gain Collision Effect
     public static CollisionClass CollisionEffect(Permanent targetPermanent, ICardEffect activateClass)
     {
+        if(targetPermanent == null || targetPermanent.TopCard == null) return null;
+        
         return CardEffectFactory.CollisionStaticEffect(PermanentCondition, false, targetPermanent.TopCard, CanUseCondition);
 
         bool CanUseCondition()
@@ -113,6 +149,27 @@ public partial class PermanentEffectFactory
         }
 
         bool PermanentCondition(Permanent permanent) => permanent == targetPermanent;
+    }
+    #endregion
+
+    #region Add Detail for Display
+    public static AddDetailClass AddDetailClass(Permanent targetPermanent, string detail, bool triggerEffect, ICardEffect activateClass)
+    {
+        if(targetPermanent == null || targetPermanent.TopCard == null) return null;
+        
+        return CardEffectFactory.AddDetailClass(CanUseCondition, PermanentCondition, detail, triggerEffect, activateClass.EffectSourceCard);
+
+        bool PermanentCondition(Permanent permanent)
+        {
+            return permanent != null
+                && permanent == targetPermanent;
+        }
+
+        bool CanUseCondition(Hashtable hashtable)
+        {
+            return CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent)
+                && !targetPermanent.TopCard.CanNotBeAffected(activateClass);
+        }
     }
     #endregion
 }

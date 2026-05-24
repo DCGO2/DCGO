@@ -167,7 +167,7 @@ namespace DCGO.CardEffects.BT19
                         }
                     }
 
-                    if (CardEffectCommons.IsDijiXros(_hashtable, (count) => count == 2))
+                    if (CardEffectCommons.IsDijiXros(_hashtable, card, (count) => count == 2))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                         {
@@ -273,7 +273,7 @@ namespace DCGO.CardEffects.BT19
                         }
                     }
 
-                    if (CardEffectCommons.IsDijiXros(_hashtable, (count) => count == 2))
+                    if (CardEffectCommons.IsDijiXros(_hashtable, card, (count) => count == 2))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                         {
@@ -354,7 +354,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card) &&
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) &&
                            CardEffectCommons.HasMatchConditionPermanent(TamerHasDigimon);
                 }
 
@@ -474,7 +474,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card) &&
+                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card) &&
                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasKnightmonInText);
                 }
 

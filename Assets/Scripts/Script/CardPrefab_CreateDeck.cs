@@ -209,7 +209,7 @@ public class CardPrefab_CreateDeck : MonoBehaviour
                 {
                     for (int i = CostIcons.Count-1; i > -1; i--)
                     {
-                        CardColor cardColor = CardColor.None;
+                        CardColor cardColor;
                         int value = CostIcons.Count - i - 1;
 
                         if (i >= CostIcons.Count - cEntity_Base.cardColors.Count)
@@ -248,8 +248,7 @@ public class CardPrefab_CreateDeck : MonoBehaviour
                     {
                         for (int i = 0; i < CostIcons.Count; i++)
                         {
-                            int cardColorIndex = i < cEntity_Base.cardColors.Count ? i : 0;
-                            CardColor cardColor = cEntity_Base.cardColors[cardColorIndex];
+                            CardColor cardColor;
 
                             if (i < cEntity_Base.cardColors.Count)
                             {
@@ -289,7 +288,7 @@ public class CardPrefab_CreateDeck : MonoBehaviour
                                 EvoCostIcons[i].sprite = WhiteCircle;
                                 EvoCostIcons[i].transform.parent.gameObject.SetActive(true);
 
-                                CardColor cardColor = CardColor.None;
+                                CardColor cardColor;
 
                                 cardColor = cEntity_Base.EvoCosts[i].CardColor;
 
@@ -533,9 +532,11 @@ public class CardPrefab_CreateDeck : MonoBehaviour
             bool isRay = false;
 
             List<RaycastResult> results = new List<RaycastResult>();
-            PointerEventData pointer = new PointerEventData(EventSystem.current);
-            // マウスポインタの位置にレイ飛ばし、ヒットしたものを保存
-            pointer.position = Input.mousePosition;
+            PointerEventData pointer = new PointerEventData(EventSystem.current)
+            {
+                // マウスポインタの位置にレイ飛ばし、ヒットしたものを保存
+                position = Input.mousePosition
+            };
             EventSystem.current.RaycastAll(pointer, results);
             // ヒットしたUIの名前
             foreach (RaycastResult target in results)
@@ -573,25 +574,25 @@ public class CardPrefab_CreateDeck : MonoBehaviour
         return;
 #endif
         return;
-        bool isRay = false;
+        //bool isRay = false;
 
-        List<RaycastResult> results = new List<RaycastResult>();
-        PointerEventData pointer = new PointerEventData(EventSystem.current);
-        // マウスポインタの位置にレイ飛ばし、ヒットしたものを保存
-        pointer.position = Input.mousePosition;
-        EventSystem.current.RaycastAll(pointer, results);
-        // ヒットしたUIの名前
-        foreach (RaycastResult target in results)
-        {
-            if (target.gameObject == AddButton.gameObject || target.gameObject == RemoveButton.gameObject)
-            {
-                return;
-            }
-        }
+        //List<RaycastResult> results = new List<RaycastResult>();
+        //PointerEventData pointer = new PointerEventData(EventSystem.current);
+        //// マウスポインタの位置にレイ飛ばし、ヒットしたものを保存
+        //pointer.position = Input.mousePosition;
+        //EventSystem.current.RaycastAll(pointer, results);
+        //// ヒットしたUIの名前
+        //foreach (RaycastResult target in results)
+        //{
+        //    if (target.gameObject == AddButton.gameObject || target.gameObject == RemoveButton.gameObject)
+        //    {
+        //        return;
+        //    }
+        //}
 
-        _OnExit();
+        //_OnExit();
 
-        //StartCoroutine(OnExitCoroutine());
+        ////StartCoroutine(OnExitCoroutine());
     }
 
     IEnumerator OnExitCoroutine()
@@ -603,9 +604,11 @@ public class CardPrefab_CreateDeck : MonoBehaviour
             bool isRay = false;
 
             List<RaycastResult> results = new List<RaycastResult>();
-            PointerEventData pointer = new PointerEventData(EventSystem.current);
-            // マウスポインタの位置にレイ飛ばし、ヒットしたものを保存
-            pointer.position = Input.mousePosition;
+            PointerEventData pointer = new PointerEventData(EventSystem.current)
+            {
+                // マウスポインタの位置にレイ飛ばし、ヒットしたものを保存
+                position = Input.mousePosition
+            };
             EventSystem.current.RaycastAll(pointer, results);
             // ヒットしたUIの名前
             foreach (RaycastResult target in results)

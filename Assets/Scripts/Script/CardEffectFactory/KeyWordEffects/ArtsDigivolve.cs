@@ -1,8 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using System.Linq;
-using UnityEngine;
 
 public partial class CardEffectFactory
 {
@@ -17,12 +14,12 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnExecutingArea(card);
 
-        bool CanResolveCondition(CardSource optionCard) => CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition);
+        bool CanResolveCondition(CardSource optionCard) => CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition, true);
 
         bool CanSelectPermanentCondition(Permanent permanent)
         {
-            return (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                    || CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card))
+            return CardEffectCommons.IsOwnerPermanent(permanent, card)
+                && permanent.IsDigimon
                 && card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, artsDigivolutionClass, SelectCardEffect.Root.Execution);
         }
         
@@ -49,17 +46,14 @@ public partial class CardEffectFactory
 
             IEnumerator SelectPermanentCoroutine(Permanent permanent)
             {
-                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoExcecutingAreaCard(
-                    permanent,
-                    null,
-                    false,
-                    null,
-                    null,
-                    -1,
-                    artsDigivolutionClass,
-                    null,
-                    ignoreSelection: true
-                ));
+                yield return ContinuousController.instance.StartCoroutine(new PlayCardClass(
+                    cardSources: new List<CardSource>() { card },
+                    hashtable: null,
+                    payCost: false,
+                    targetPermanent: permanent,
+                    isTapped: false,
+                    root: SelectCardEffect.Root.Execution,
+                    activateETB: true).PlayCard());
             }
         }
     }

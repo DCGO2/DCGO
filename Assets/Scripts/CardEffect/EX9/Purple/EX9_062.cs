@@ -215,7 +215,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card);
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -295,7 +295,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

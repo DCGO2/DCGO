@@ -8,8 +8,12 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System;
 using System.Threading.Tasks;
+
+[RequireComponent(typeof(OpenURL))]
 public class Opening : MonoBehaviour
 {
+    private static WaitForSeconds _waitForSeconds0_15 = new WaitForSeconds(0.15f);
+    private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
     [Header("読み込み中表示オブジェクト")]
     public LoadingObject LoadingObject;
 
@@ -180,9 +184,11 @@ public class Opening : MonoBehaviour
         //bool isRay = false;
 
         List<RaycastResult> results = new List<RaycastResult>();
-        PointerEventData pointer = new PointerEventData(EventSystem.current);
-        // マウスポインタの位置にレイ飛ばし、ヒットしたものを保存
-        pointer.position = Input.mousePosition;
+        PointerEventData pointer = new PointerEventData(EventSystem.current)
+        {
+            // マウスポインタの位置にレイ飛ばし、ヒットしたものを保存
+            position = Input.mousePosition
+        };
         EventSystem.current.RaycastAll(pointer, results);
 
         // ヒットしたUIの名前
@@ -361,10 +367,8 @@ public class Opening : MonoBehaviour
             List<Camera> openingCameras = new List<Camera>();
 
             for (int i = 0; i < camerasParent.childCount; i++)
-            {
-                Camera camera = camerasParent.GetChild(i).GetComponent<Camera>();
-
-                if (camera != null)
+            {             
+                if (camerasParent.GetChild(i).TryGetComponent<Camera>(out var camera))
                 {
                     openingCameras.Add(camera);
                 }
@@ -405,9 +409,7 @@ public class Opening : MonoBehaviour
         mousePos.y = mousePos.y * magnification - canvasRect.sizeDelta.y / 2;
         mousePos.z = 0;// -0.5f;// transform.localPosition.z;
 
-        effect.transform.localPosition = mousePos;
-
-        effect.transform.localRotation = Quaternion.EulerAngles(new Vector3(77, 0, 0));
+        effect.transform.SetLocalPositionAndRotation(mousePos, Quaternion.Euler(new Vector3(77, 0, 0)));
 
         StartCoroutine(Effects.DeleteCoroutine(effect, null));
     }
@@ -477,7 +479,7 @@ public class Opening : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForSeconds0_1;
 
         VerText.text = $"Ver{ContinuousController.instance.GameVerString}";
 
@@ -488,7 +490,7 @@ public class Opening : MonoBehaviour
 
         LoadCardImages();
 
-        yield return new WaitForSeconds(0.15f);
+        yield return _waitForSeconds0_15;
 
         yield return StartCoroutine(LoadingObject.EndLoading());
     }

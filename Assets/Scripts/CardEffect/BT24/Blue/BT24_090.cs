@@ -232,7 +232,7 @@ namespace DCGO.CardEffects.BT24
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect($"Play 1 lvl 4- Blue or Yellow [TS] Digimon card from hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect($"Play 1 lvl 4- Blue or Yellow [TS] Digimon card from hand/trash", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);

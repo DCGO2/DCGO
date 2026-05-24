@@ -55,11 +55,11 @@ public class CardSource : MonoBehaviour
 
     public bool IsFlipped { get; private set; }
 
-    public bool IsFaceUp 
-    { 
-        get 
-        { 
-            return !IsFlipped; 
+    public bool IsFaceUp
+    {
+        get
+        {
+            return !IsFlipped;
         }
     }
 
@@ -113,6 +113,23 @@ public class CardSource : MonoBehaviour
         _PhotonView.ViewID = CardIndex + 60;
 
         PhotonView = _PhotonView;
+    }
+
+    #endregion
+
+    #region Timestamp of the last time this card changed location, for continuous effects. This should include becoming a top card via de-digivolve or no longer being a top card due to digivolution
+
+    DateTime _changedLocationTime = DateTime.MinValue;
+
+    public DateTime ChangedLocationTime
+    {
+        get { return _changedLocationTime; }
+        private set { _changedLocationTime = value; }
+    }
+
+    public void SetChangedLocationTime()
+    {
+        ChangedLocationTime = DateTime.Now;
     }
 
     #endregion
@@ -329,6 +346,7 @@ public class CardSource : MonoBehaviour
     {
         cEntity_EffectController.InitUseCountThisTurn();
         SetFace();
+        SetChangedLocationTime();
     }
 
     #endregion
@@ -3461,6 +3479,10 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card is a dual card
+    public bool IsDualCard => _cEntity_Base.IsDualCard;
+    #endregion
+
     #region Wheter this card is permanent
 
     public bool IsPermanent => _cEntity_Base.IsPermanent;
@@ -4139,6 +4161,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("BEATBREAK");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has Shaman trait
+
+    public bool HasShamanTraits
+    {
+        get
+        {
+            return EqualsTraits("Shaman");
         }
     }
 

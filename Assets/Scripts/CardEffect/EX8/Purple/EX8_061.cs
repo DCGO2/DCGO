@@ -172,7 +172,7 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card) &&
+                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card) &&
                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasCorrectTrait);
                 }
 

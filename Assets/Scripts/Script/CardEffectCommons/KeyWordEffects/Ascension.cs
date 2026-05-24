@@ -21,7 +21,7 @@ public partial class CardEffectCommons
     #region Can activate [Ascension]
     public static bool CanActivateAscension(Hashtable hashtable, CardSource card)
     {
-        return CanActivateOnDeletion(card);
+        return CanActivateOnDeletion(hashtable, card);
     }
     #endregion
 
@@ -47,50 +47,6 @@ public partial class CardEffectCommons
             {
                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card, true));
             }
-        }
-    }
-    #endregion
-
-    #region Target 1 Digimon gains [Ascension]
-    public static IEnumerator GainAscension(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass)
-    {
-        if (targetPermanent == null) yield break;
-        if (!IsPermanentExistsOnBattleArea(targetPermanent)) yield break;
-        if (activateClass == null) yield break;
-        if (activateClass.EffectSourceCard == null) yield break;
-
-        CardSource card = activateClass.EffectSourceCard;
-
-        bool CanUseCondition()
-        {
-            if (IsPermanentExistsOnBattleArea(targetPermanent))
-            {
-                if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        ActivateClass ascension = CardEffectFactory.AscensionEffect(
-            targetPermanent: targetPermanent,
-            isInheritedEffect: false,
-            condition: CanUseCondition,
-            rootCardEffect: activateClass,
-            card: activateClass.EffectSourceCard);
-
-        AddEffectToPermanent(
-            targetPermanent: targetPermanent,
-            effectDuration: effectDuration,
-            card: card,
-            cardEffect: ascension,
-            timing: EffectTiming.OnDestroyedAnyone);
-
-        if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
-        {
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(targetPermanent));
         }
     }
     #endregion

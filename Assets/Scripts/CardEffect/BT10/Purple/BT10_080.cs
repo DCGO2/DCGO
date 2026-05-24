@@ -229,7 +229,7 @@ namespace DCGO.CardEffects.BT10
 
                             bool CanActivateCondition1(Hashtable hashtable1)
                             {
-                                if (CardEffectCommons.CanActivateOnDeletion(card))
+                                if (CardEffectCommons.CanActivateOnDeletion(hashtable1, card))
                                 {
                                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                                     {

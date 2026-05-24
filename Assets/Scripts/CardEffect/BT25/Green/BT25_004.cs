@@ -26,14 +26,10 @@ namespace DCGO.CardEffects.BT25
 
             bool RootCondition(SelectCardEffect.Root root) => true;
 
-            bool isUpDown() => true;
-
-            int reducedCost = 1;
-
             #endregion
 
             #region Reduce Link Cost
-            if (timing == EffectTiming.BeforePayCost)
+            if (timing == EffectTiming.WhenWouldLink)
             {
                 ActivateClass activateClass = new ();
                 activateClass.SetUpICardEffect("May reduce Link cost by 1", CanUseCondition, card);
@@ -67,28 +63,6 @@ namespace DCGO.CardEffects.BT25
                     ));
 
                     yield return null;
-                }
-            }
-            #endregion
-
-            #region Reduce Link cost - Not Shown
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.ReduceLinkCostClass(
-                    card: card, 
-                    canUseCondition: CanUseCondition,
-                    isInheritedEffect: true,
-                    isOptional: true,
-                    reducedCost: 1,
-                    cardSourceCondition: CardCondition,
-                    permanentCondition: PermanentCondition,
-                    rootCondition: RootCondition
-                ));
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.IsOwnerTurn(card);
                 }
             }
             #endregion

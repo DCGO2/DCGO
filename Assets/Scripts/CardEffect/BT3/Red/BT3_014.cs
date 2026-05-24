@@ -96,6 +96,7 @@ public class BT3_014 : CEntity_Effect
                                     ChangeBaseDPClass changeDPClass = new ChangeBaseDPClass();
                                     changeDPClass.SetUpICardEffect("Origin DP is 1000", CanUseCondition1, card);
                                     changeDPClass.SetUpChangeBaseDPClass(changeDPFunc: ChangeDP, permanentCondition: permanentCondition, isUpDownFunc: _isUpDown, isMinusDPFunc: () => false);
+                                    changeDPClass.SetActivatedTime(DateTime.Now);
                                     selectedPermanent.UntilEachTurnEndEffects.Add((_timing) => changeDPClass);
 
                                     if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))

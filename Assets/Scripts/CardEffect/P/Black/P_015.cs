@@ -22,7 +22,7 @@ public class P_015 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Trigger ÅÉDe-DigivoLv.e 1ÅÑn 1 of your opponent's Digimon. (Trash a card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)";
+                return "[On Play] Trigger <De-Digivolve 1> 1 of your opponent's Digimon. (Trash a card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

@@ -82,8 +82,8 @@ namespace DCGO.CardEffects.BT17
 
                         bool returned = false;
                         bool canNoSelect = !(cardFromHashtable &&
-                                             cardFromHashtable.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) >
-                                             cardFromHashtable.Owner.MaxMemoryCost);
+                                            (!CardEffectCommons.GetPayCostFromHashtable(hashtable)
+                                            && card.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > card.Owner.MaxMemoryCost));
 
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -215,7 +215,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card) &&
+                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) &&
                            (card.Owner.HandCards.Some(CanSelectCardCondition) ||
                             card.Owner.TrashCards.Some(CanSelectCardCondition));
                 }

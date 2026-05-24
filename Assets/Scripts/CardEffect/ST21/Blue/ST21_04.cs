@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-
 //ST21 Zudomon
 namespace DCGO.CardEffects.ST21
 {
@@ -185,13 +184,32 @@ namespace DCGO.CardEffects.ST21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain alliance then attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippableFunction(IsSkippable);
                 activateClass.SetHashString("alliance-attack-ST21_04");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Your Turn][Once Per Turn] When your other Digimon are played or digivolve, if any of them have the [ADVENTURE] trait, 1 of your Digimon gains <Alliance> for the turn. Then, 1 of your Digimon may attack.";
+                }
+
+                bool IsSkippable(Hashtable hashtable)
+                {
+                    List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
+
+                    if (hashtables != null)
+                    {
+                        foreach (Hashtable hashtable1 in hashtables)
+                        {
+                            Permanent permanent = CardEffectCommons.GetPermanentFromHashtable(hashtable1);
+
+                            if (permanent != null && MyDigimonAdventurePlayedDigid(permanent))
+                                return false;
+                        }
+                    }
+
+                    return true;
                 }
 
                 bool MyDigimonAdventurePlayedDigid(Permanent permanent)
@@ -247,6 +265,8 @@ namespace DCGO.CardEffects.ST21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool Used = false;
+
                     List<Permanent> etbPermanents = new List<Permanent>();
                     List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
 
@@ -288,8 +308,10 @@ namespace DCGO.CardEffects.ST21
 
                             IEnumerator SelectBoostedDigimon(Permanent target)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainAlliance(targetPermanent: target, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass)); ;
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainAlliance(targetPermanent: target, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                             }
+
+                            Used = true;
                         }
                     }
 
@@ -332,8 +354,21 @@ namespace DCGO.CardEffects.ST21
                                 defenderCondition: _ => true,
                                 cardEffect: activateClass);
 
+                            selectAttackEffect.SetAfterOnAttackCoroutine(AfterOnAttackCoroutine);
+
                             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
+
+                        IEnumerator AfterOnAttackCoroutine()
+                        {
+                            Used = true;
+                            yield return null;
+                        }
+                    }
+
+                    if (!Used)
+                    {
+                        activateClass.RemoveUse();
                     }
                 }
             }
@@ -350,6 +385,7 @@ namespace DCGO.CardEffects.ST21
                 cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: true, card: card, condition: Condition));
             }
             #endregion
+
             return cardEffects;
         }
     }

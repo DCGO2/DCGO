@@ -29,8 +29,6 @@ namespace DCGO.CardEffects.BT14
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return GManager.instance.photonWaitController.StartWait("Heavens_Select_BT14");
-
                     List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new SelectionElement<int>(message: $"DP-6000", value : 0, spriteIndex: 0),

@@ -34,15 +34,16 @@ namespace DCGO.CardEffects.BT23
             #endregion
 
             #region OP/WD Shared
-
-            bool SharedCanSelectPermanentCondition(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && permanent.HasDP && permanent.DP <= 4000;
-            }
-
+        
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool SharedCanSelectPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                        && permanent.HasDP 
+                        && permanent.DP <= card.Owner.MaxDP_DeleteEffect(4000, activateClass);
+                }
+
                 if (CardEffectCommons.HasMatchConditionPermanent(SharedCanSelectPermanentCondition))
                 {
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(SharedCanSelectPermanentCondition));
@@ -90,8 +91,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionPermanent(SharedCanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
             }
 
@@ -119,8 +119,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionPermanent(SharedCanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
             }
 
@@ -148,7 +147,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card)
+                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                 }
 

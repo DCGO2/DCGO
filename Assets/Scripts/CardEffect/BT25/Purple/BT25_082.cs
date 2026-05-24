@@ -13,7 +13,6 @@ namespace DCGO.CardEffects.BT25
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Digivolution Condition
-
             if (timing == EffectTiming.None)
             {
                 bool Condition(Permanent permanent)
@@ -24,20 +23,27 @@ namespace DCGO.CardEffects.BT25
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(level: 3, permanentCondition: Condition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
-
             #endregion
 
             #region Shared OP/WD
+            string SharedEffectName = "Play a tamer with [Three Musketeers] in text from hand for free";
 
-            string SharedEffectName() => "Play a tamer with [Three Musketeers] in text from hand for free";
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    SharedEffectName,
+                    SharedActivateCoroutine,
+                    SharedEffectDescription,
+                    additionalActivateCondition: AdditionalActivateCondition,
+                    optional: false,
+                    onPlay: true,
+                    whenDigivolving: true);
 
             string SharedEffectDescription(string tag) => $"[{tag}] If you have 1 or fewer Tamers, you may play 1 Tamer card with [Three Musketeers] in its text from your hand without paying the cost.";
 
-            bool SharedCanActivateCondition(Hashtable hashtable)
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
             {
-                return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                    && CardEffectCommons.HasMatchConditionOwnersHand(card, TraitedTamer)
-                    && CardEffectCommons.MatchConditionOwnersPermanentCount(card, permanent => permanent.IsTamer) <= 1;
+                return CardEffectCommons.HasMatchConditionOwnersHand(card, TraitedTamer)
+                    && card.Owner.GetBattleAreaPermanents().Count(permanent => permanent.IsTamer) <= 1;
             }
 
             bool TraitedTamer(CardSource cardSource)
@@ -49,14 +55,13 @@ namespace DCGO.CardEffects.BT25
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, TraitedTamer));
 
                 selectHandEffect.SetUp(
                     selectPlayer: card.Owner,
                     canTargetCondition: TraitedTamer,
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
-                    maxCount: maxCount,
+                    maxCount: 1,
                     canNoSelect: true,
                     canEndNotMax: false,
                     isShowOpponent: true,
@@ -65,52 +70,11 @@ namespace DCGO.CardEffects.BT25
                     mode: SelectHandEffect.Mode.PlayForFree,
                     cardEffect: activateClass);
 
-                selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                return null;
+                yield return StartCoroutine(selectHandEffect.Activate());
             }
-
-            #endregion
-
-            #region On Play
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-            }
-
-            #endregion
-
-            #region When Digivolving
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("When Digivolving"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-            }
-
             #endregion
 
             #region All Turns
-
             if (timing == EffectTiming.None)
             {
                 bool Condition()
@@ -140,11 +104,9 @@ namespace DCGO.CardEffects.BT25
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: true, card: card, condition: Condition, effectName: effectName, cardCondition: CardCondition));
             }
-
             #endregion
 
             #region Inherited When Attacking
-
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -276,7 +238,6 @@ namespace DCGO.CardEffects.BT25
                     }
                 }
             }
-
             #endregion
 
             return cardEffects;

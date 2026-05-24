@@ -9,8 +9,11 @@ using UnityEngine.Events;
 
 public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 {
+    private static WaitForSeconds _waitForSeconds0_4 = new WaitForSeconds(0.4f);
+
     public List<CardSource> selectedAssemblyCards { get; private set; } = new List<CardSource>();
     public List<AddDigivolutionCardsInfo> addDigivolutionCardInfos { get; private set; } = new List<AddDigivolutionCardsInfo>();
+    public List<CardSource> excludedCards { get; private set; } = new List<CardSource>();
     public CardSource playCard { get; private set; } = null;
 
     public void ResetSelectAssemblyClass()
@@ -23,6 +26,11 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     public void AddDigivolutionCardInfos(AddDigivolutionCardsInfo digivolutionCardsInfo)
     {
         addDigivolutionCardInfos.Add(digivolutionCardsInfo);
+    }
+
+    public void SetExcludedCards(List<CardSource> excluded)
+    {
+        excludedCards = excluded;
     }
 
     #region Is Trash Card
@@ -43,6 +51,9 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     #region Can Select Assembly
     bool CanSelectAssembly(AssemblyConditionElement element, CardSource targetCard, CardSource card)
     {
+        if (excludedCards.Contains(targetCard))
+            return false;
+
         if (card != targetCard)
         {
             if (card != null)
@@ -154,8 +165,6 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     #region Select
     public IEnumerator Select(CardSource card)
     {
-        GManager.instance.turnStateMachine.isSync = true;
-
         selectedAssemblyCards = new List<CardSource>();
 
         playCard = card;
@@ -166,7 +175,6 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 
             foreach(AssemblyConditionElement element in AssemblyCondition.elements)
             {
-                yield return GManager.instance.photonWaitController.StartWait("SelectAssemblys");
 
                 if (selectedAssemblyCards.Count >= AssemblyCondition.elementCount)
                 {
@@ -196,12 +204,10 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 
         if (selectedAssemblyCards.Count >= 1)
         {
-            yield return new WaitForSeconds(0.4f);
+            yield return _waitForSeconds0_4;
         }
 
         GManager.instance.GetComponent<Effects>().OffShowCard2();
-
-        GManager.instance.turnStateMachine.isSync = false;
     }
     #endregion
 
@@ -255,7 +261,7 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
                     {
                         if (AssemblyConditionElement.CanTargetCondition_ByPreSelecetedList != null || AssemblyConditionElement.skipAllIfNoSelect)
                         {
-                            EndSelectAssembly();
+                            yield return StartCoroutine(EndSelectAssembly());
                         }
                     }
                 }
@@ -320,8 +326,6 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 
                     foreach (AddDigivolutionCardsInfo info in addDigivolutionCardInfos)
                     {
-                        List<CardSource> underTamerCards = new List<CardSource>();
-                        List<Permanent> digimonPermanents = new List<Permanent>();
                         List<CardSource> trashCards = new List<CardSource>();
 
                         foreach (CardSource cardSource in info.cardSources)
@@ -350,15 +354,5 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    int _targetIndex = 0;
-    bool _endSelect = false;
-
     bool _endSelectAssembly = false;
-
-    [PunRPC]
-    public void SetTargetAssemblysIndex(int targetIndex)
-    {
-        this._targetIndex = targetIndex;
-        _endSelect = true;
-    }
 }

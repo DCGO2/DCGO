@@ -247,11 +247,11 @@ namespace DCGO.CardEffects.BT12
 
                                     if (digivolve)
                                     {
-                                        #region �Ԃ̃��x��4�f�W�����Ƃ��Ĉ���
+                                        #region 1
 
                                         CardSource topCard = selectedPermanent.TopCard;
 
-                                        #region �ԂƂ��Ĉ���
+                                        #region 2
 
                                         ChangeCardColorClass changeCardColorClass = new ChangeCardColorClass();
                                         changeCardColorClass.SetUpICardEffect($"Treated as red", CanUseCondition1, card);
@@ -286,7 +286,7 @@ namespace DCGO.CardEffects.BT12
 
                                         #endregion
 
-                                        #region ���x��4�Ƃ��Ĉ���
+                                        #region 3
 
                                         ChangePermanentLevelClass changePermanentLevelClass = new ChangePermanentLevelClass();
                                         changePermanentLevelClass.SetUpICardEffect($"Treated as level 4", CanUseCondition1, card);
@@ -308,7 +308,7 @@ namespace DCGO.CardEffects.BT12
 
                                         #endregion
 
-                                        #region �f�W�����Ƃ��Ĉ���
+                                        #region 4
 
                                         TreatAsDigimonClass treatAsDigimonClass = new TreatAsDigimonClass();
                                         treatAsDigimonClass.SetUpICardEffect($"Treated as Digimon", CanUseCondition1, card);
@@ -330,7 +330,7 @@ namespace DCGO.CardEffects.BT12
 
                                         #endregion
 
-                                        #region DP�������Ȃ�(UI�ɕ\������Ȃ��悤��
+                                        #region 5
 
                                         DontHaveDPClass dontHaveDPClass = new DontHaveDPClass();
                                         dontHaveDPClass.SetUpICardEffect("Don't have DP", CanUseCondition1, card);
@@ -362,11 +362,17 @@ namespace DCGO.CardEffects.BT12
                                                 payCost: true,
                                                 targetPermanent: selectedPermanent,
                                                 isTapped: false,
+                                                failedProcess: OnFail,
                                                 root: SelectCardEffect.Root.Hand,
                                                 activateETB: true).PlayCard());
                                         }
 
-                                        #region �Ԃ̃��x��4�f�W�����Ƃ��Ĉ������ʂ�����
+                                        IEnumerator OnFail(CardSource cardSource)
+                                        {
+                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(card));
+                                        }
+
+                                        #region 6
 
                                         foreach (Func<EffectTiming, ICardEffect> GetCardEffect in GetCardEffects)
                                         {

@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using Photon.Pun;
 
 namespace DCGO.CardEffects.BT20
 {
@@ -28,227 +26,21 @@ namespace DCGO.CardEffects.BT20
             #endregion
 
             #region Reduce Play Cost
-            bool HasAccelTraitInPlay(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.TopCard.EqualsTraits("ACCEL"))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            #region Before Pay Cost - Condition Effect
-
-            if (timing == EffectTiming.BeforePayCost)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reduce the play cost by 5", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                activateClass.SetHashString("PlayCost-5_BT20_036");
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "When this card would be played, if you have a Digimon with the [ACCEL] trait, reduce the play cost by 5.";
-                }
-
-                bool CardCondition(CardSource cardSource)
-                {
-                    if (cardSource == card)
-                    {
-                        if (CardEffectCommons.IsExistOnHand(cardSource))
-                        {
-                            return CardEffectCommons.HasMatchConditionPermanent(HasAccelTraitInPlay);
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnHand(card))
-                    {
-                        return CardEffectCommons.HasMatchConditionPermanent(HasAccelTraitInPlay);
-                    }
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (card.Owner.CanReduceCost(null, card))
-                    {
-                        ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                    }
-
-                    ChangeCostClass changeCostClass = new ChangeCostClass();
-                    changeCostClass.SetUpICardEffect("Play Cost -5", CanUseCondition1, card);
-                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                    card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
-
-                    bool CanUseCondition1(Hashtable hashtable)
-                    {
-                        return true;
-                    }
-
-                    int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                    {
-                        if (CardSourceCondition(cardSource))
-                        {
-                            if (RootCondition(root))
-                            {
-                                if (PermanentsCondition(targetPermanents))
-                                {
-                                    int targetCost = 0;
-
-                                    if (CardEffectCommons.HasMatchConditionPermanent(HasAccelTraitInPlay))
-                                        targetCost += 5;
-
-                                    Cost -= targetCost;
-                                }
-                            }
-                        }
-
-                        return Cost;
-                    }
-
-                    bool PermanentsCondition(List<Permanent> targetPermanents)
-                    {
-                        if (targetPermanents == null)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    bool CardSourceCondition(CardSource cardSource)
-                    {
-                        return cardSource == card;
-                    }
-
-                    bool RootCondition(SelectCardEffect.Root root)
-                    {
-                        return true;
-                    }
-
-                    bool isUpDown()
-                    {
-                        return true;
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
-                }
-            }
-
-            #endregion
-
-            #region Reduce Play Cost - Not Shown
-
             if (timing == EffectTiming.None)
             {
-                ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -5", CanUseCondition, card);
-                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
-                changeCostClass.SetNotShowUI(true);
-                cardEffects.Add(changeCostClass);
-
-                bool CanUseCondition(Hashtable hashtable)
+                bool Condition()
                 {
-                    if (card.Owner.HandCards.Contains(card))
-                    {
-                        ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Reduce the play cost by 5");
-
-                        if (activateClass != null)
-                        {
-                            return CardEffectCommons.HasMatchConditionPermanent(HasAccelTraitInPlay);
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.HasMatchConditionPermanent(HasAccelTraitInPlay);
                 }
 
-                int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                bool HasAccelTraitInPlay(Permanent permanent)
                 {
-                    if (CardSourceCondition(cardSource))
-                    {
-                        if (RootCondition(root))
-                        {
-                            if (PermanentsCondition(targetPermanents))
-                            {
-                                int targetCount = 0;
-
-                                if (CardEffectCommons.HasMatchConditionPermanent(HasAccelTraitInPlay))
-                                    targetCount += 5;
-
-                                Cost -= targetCount;
-                            }
-                        }
-                    }
-
-                    return Cost;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent.TopCard.EqualsTraits("ACCEL");
                 }
 
-                bool PermanentsCondition(List<Permanent> targetPermanents)
-                {
-                    if (targetPermanents == null)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    if (cardSource != null)
-                    {
-                        if (cardSource == card)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool RootCondition(SelectCardEffect.Root root)
-                {
-                    return true;
-                }
-
-                bool isUpDown()
-                {
-                    return true;
-                }
+                cardEffects.Add(CardEffectFactory.MandatorySelfPlayCostReduction(5, card, Condition));
             }
-
-            #endregion
-
             #endregion
 
             #region On Play
@@ -256,10 +48,10 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("<De-Digivolve 2> 1 of your opponent's Digimon, then 1 gets -5000 DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[On Play] <De-Digivolve 2> 1 of your opponent's Digimon. Then, 1 of their Digimon gets -5000 DP until the end of their turn.";
                 }
@@ -336,10 +128,10 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("<De-Digivolve 2> 1 of your opponent's Digimon, then 1 gets -5000 DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Digivolving] <De-Digivolve 2> 1 of your opponent's Digimon. Then, 1 of their Digimon gets -5000 DP until the end of their turn.";
                 }
@@ -417,10 +209,10 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("DNA digivolve this Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[End of Your Turn] This Digimon and any of your other Digimon may DNA digivolve into a Digimon card with [Chaosmon] in its name in the hand. Then, the DNA digivolved Digimon may attack.";
                 }
@@ -504,12 +296,12 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may change the attack target to this Digimon.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("Redirect_BT20-036");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Opponent's Turn] [Once Per Turn] When any of your opponent's Digimon attack, you may change the attack target to this Digimon.";
                 }

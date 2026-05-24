@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// BeelStarmon Ace
 namespace DCGO.CardEffects.EX7
 {
     public class EX7_059 : CEntity_Effect
@@ -16,10 +17,10 @@ namespace DCGO.CardEffects.EX7
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasText("Three Musketeers") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 5 || targetPermanent.TopCard.HasText("ThreeMusketeers") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 5;
+                    return targetPermanent.TopCard.HasText("Three Musketeers");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 5));
             }
             #endregion
 
@@ -34,58 +35,39 @@ namespace DCGO.CardEffects.EX7
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return 1 Option from trash then play an Option", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Return 1 Option from trash then use an Option", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[On Play] Return 1 Option card from your trash to the hand. Then, you may use 1 Option card with the [Three Musketeers] trait from your hand without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsOption)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return cardSource.IsOption;
                 }
 
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.IsOption)
-                    {
-                        if (cardSource.CardTraits.Contains("Three Musketeers") || cardSource.CardTraits.Contains("ThreeMusketeers"))
-                        {
-                            if (cardSource.HasUseCost)
-                            {
-                                if (!cardSource.CanNotPlayThisOption)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsOption
+                        && (cardSource.CardTraits.Contains("Three Musketeers")
+                            || cardSource.CardTraits.Contains("ThreeMusketeers"))
+                        && cardSource.HasUseCost
+                        && !cardSource.CanNotPlayThisOption;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -173,69 +155,38 @@ namespace DCGO.CardEffects.EX7
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return 1 Option from trash then play an Option", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Return 1 Option from trash then use an Option", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Digivolving] Return 1 Option card from your trash to the hand. Then, you may use 1 Option card with the [Three Musketeers] trait from your hand without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        {
-                            return true;
-                        }
-                    }
-                   
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsOption)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return cardSource.IsOption;
                 }
-
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.IsOption)
-                    {
-                        if (cardSource.EqualsTraits("Three Musketeers"))
-                        {
-                            if (cardSource.HasUseCost)
-                            {
-                                if (!cardSource.CanNotPlayThisOption)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsOption
+                        && (cardSource.CardTraits.Contains("Three Musketeers")
+                            || cardSource.CardTraits.Contains("ThreeMusketeers"))
+                        && cardSource.HasUseCost
+                        && !cardSource.CanNotPlayThisOption;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -323,64 +274,41 @@ namespace DCGO.CardEffects.EX7
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return 1 digivolution card to play 1 Option", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Trash 1 option from digivolution cards to use 1 Option", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("PlayOption_EX7-059");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Attacking] [Once Per Turn] By trashing 1 Option card from this Digimon's digivolution cards, you may use 1 Option card with the [Three Musketeers] trait from your hand without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsOption)
-                    {
-                        if (!cardSource.CanNotTrashFromDigivolutionCards(activateClass))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsOption
+                        && !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1;
                 }
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.IsOption)
-                    {
-                        if (cardSource.EqualsTraits("Three Musketeers"))
-                        {
-                            if (cardSource.HasUseCost)
-                            {
-                                if (!cardSource.CanNotPlayThisOption)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsOption
+                        && (cardSource.CardTraits.Contains("Three Musketeers")
+                            || cardSource.CardTraits.Contains("ThreeMusketeers"))
+                        && cardSource.HasUseCost
+                        && !cardSource.CanNotPlayThisOption;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -392,22 +320,22 @@ namespace DCGO.CardEffects.EX7
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                     selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 Option card to discard.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
-                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: null);
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: () => true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        message: "Select 1 Option card to discard.",
+                        maxCount: 1,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.Custom,
+                        root: SelectCardEffect.Root.Custom,
+                        customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                        canLookReverseCard: true,
+                        selectPlayer: card.Owner,
+                        cardEffect: null);
 
                     selectCardEffect.SetUpCustomMessage("Select 1 Option card to discard.", "The opponent is selecting 1 Option card to discard.");
 

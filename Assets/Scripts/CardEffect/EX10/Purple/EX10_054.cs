@@ -210,7 +210,7 @@ namespace DCGO.CardEffects.EX10
                         canEndSelectCondition: null,
                         maxCount: maxCount,
                         canNoSelect: true,
-                        canEndNotMax: true,
+                        canEndNotMax: false,
                         selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.Tap,
@@ -225,7 +225,7 @@ namespace DCGO.CardEffects.EX10
                         canEndSelectCondition: null,
                         maxCount: maxCount,
                         canNoSelect: false,
-                        canEndNotMax: true,
+                        canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.Custom,
@@ -329,7 +329,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {

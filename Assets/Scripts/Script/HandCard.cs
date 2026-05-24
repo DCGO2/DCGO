@@ -722,16 +722,17 @@ public class HandCard : MonoBehaviour
     {
         if (CostText != null)
         {
+            List<CardColor> cardColors = cardSource.IsDualCard ? cardSource.DualCardColors : cardSource.CardColors;
             for (int i = CostIcons.Count - 1; i > -1; i--)
             {
                 CardColor cardColor = CardColor.None;
                 int value = CostIcons.Count - i - 1;
 
-                if (i >= CostIcons.Count - cardSource.CardColors.Count)
+                if (i >= CostIcons.Count - cardColors.Count)
                 {
-                    float fillAmount = (float)((CostIcons.Count - i) / (float)cardSource.CardColors.Count);
+                    float fillAmount = (float)((CostIcons.Count - i) / (float)cardColors.Count);
 
-                    cardColor = cardSource.CardColors[value];
+                    cardColor = cardColors[value];
                     CostIcons[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
                     CostIcons[i].fillAmount = fillAmount;
                     CostIcons[i].gameObject.SetActive(true);

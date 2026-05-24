@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -455,7 +455,7 @@ public class DataBase : MonoBehaviour
 
     public static string PierceEffectDiscription()
     {
-        return "<Piercing> (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.)";
+        return "<Piercing> (When this Digimon deletes your opponent's Digimon in battle while attacking, it checks security before the attack ends.)";
     }
 
     public static string RetaliationEffectDiscription()

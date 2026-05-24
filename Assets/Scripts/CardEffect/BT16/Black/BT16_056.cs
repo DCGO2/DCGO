@@ -266,8 +266,6 @@ namespace DCGO.CardEffects.BT16
                     if (card.Owner.Enemy.SecurityCards.Count < 3)
                         yield break;
 
-                    yield return GManager.instance.photonWaitController.StartWait("Publimon_Select_ETB");
-
                     List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                     {
                         new SelectionElement<bool>(message: $"Security Top", value : true, spriteIndex: 0),

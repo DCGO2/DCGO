@@ -311,7 +311,7 @@ public class CheckCardPanel : MonoBehaviour
                 List<ICardEffect> cardEffects = new List<ICardEffect>();
                 List<ICardEffect> cardEffects1 = new List<ICardEffect>();
 
-                foreach (ICardEffect cardEffect in handCard.cardSource.EffectList(EffectTiming.OnDeclaration))
+                foreach (ICardEffect cardEffect in handCard.cardSource.CanDeclareSkillList)
                 {
                     cardEffects1.Add(cardEffect);
                     cardEffects.Add(cardEffect);
@@ -364,7 +364,7 @@ public class CheckCardPanel : MonoBehaviour
 
                             handCard.GetComponent<Draggable_HandCard>().CanPointerEnterExitAction = true;
 
-                            GManager.instance.turnStateMachine.photonView.RPC("SetActCardSkill", RpcTarget.All, handCard.cardSource.CardIndex, cardEffects1.IndexOf(cardEffect));
+                            GManager.instance.turnStateMachine.QueueMainPhaseAction(handCard.cardSource.Owner, new ActivateCardAction(handCard.cardSource.CardIndex, cardEffects1.IndexOf(cardEffect)));
 
                             CloseSelectCardPanel();
                         }

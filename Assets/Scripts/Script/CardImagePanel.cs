@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -7,6 +7,9 @@ using UnityEngine.Events;
 
 public class CardImagePanel : OffAnimation
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
+    private static WaitForSeconds _waitForSeconds0_25 = new WaitForSeconds(0.25f);
     [SerializeField] TextMeshProUGUI _infoText;
     [SerializeField] TMP_InputField _cardIDsInput;
     [SerializeField] GameObject _lackCardImagesObject;
@@ -41,13 +44,13 @@ public class CardImagePanel : OffAnimation
     {
         _isOpen = true;
         gameObject.SetActive(true);
-        _anim.SetInteger("Open", 1);
-        _anim.SetInteger("Close", 0);
-        _lackCardImagesObject.gameObject.SetActive(false);
+        _anim.SafeSetInt(OpenHash, 1);
+        _anim.SafeSetInt(CloseHash, 0);
+        _lackCardImagesObject.SetActive(false);
         _infoText.text = "";
         _cardIDsInput.text = "";
 
-        yield return new WaitForSeconds(0.25f);
+        yield return _waitForSeconds0_25;
 
         List<CEntity_Base> lackCardImageCardEntities = ContinuousController.instance.CardList
         .Filter(cEntity_Base => !StreamingAssetsUtility.IsCardExists(cEntity_Base)).ToList();
@@ -56,10 +59,10 @@ public class CardImagePanel : OffAnimation
         {
             _infoText.text = LocalizeUtility.GetLocalizedString(
                                 EngMessage: $"The following {lackCardImageCardEntities.Count} card images are not set.",
-                                JpnMessage: $"ˆÈ‰º‚Ì {lackCardImageCardEntities.Count}–‡‚Ì\nƒJ[ƒh‰æ‘œ‚ªƒZƒbƒg‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB"
+                                JpnMessage: $"ä»¥ä¸‹ã® {lackCardImageCardEntities.Count}æšã®\nã‚«ãƒ¼ãƒ‰ç”»åƒãŒã‚»ãƒƒãƒˆã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚"
                             );
 
-            _lackCardImagesObject.gameObject.SetActive(true);
+            _lackCardImagesObject.SetActive(true);
 
             _cardIDsInput.text = string.Join(", ", lackCardImageCardEntities.Map(cEntity_Base => cEntity_Base.CardSpriteName));
         }
@@ -68,7 +71,7 @@ public class CardImagePanel : OffAnimation
         {
             _infoText.text = LocalizeUtility.GetLocalizedString(
                                 EngMessage: "All card images are set.",
-                                JpnMessage: "ƒJ[ƒh‰æ‘œ‚Í‘S‚ÄƒZƒbƒg‚³‚ê‚Ä‚¢‚Ü‚·B"
+                                JpnMessage: "ã‚«ãƒ¼ãƒ‰ç”»åƒã¯å…¨ã¦ã‚»ãƒƒãƒˆã•ã‚Œã¦ã„ã¾ã™ã€‚"
                             );
         }
     }
@@ -106,8 +109,8 @@ public class CardImagePanel : OffAnimation
             }
         }
 
-        _anim.SetInteger("Open", 0);
-        _anim.SetInteger("Close", 1);
+        _anim.SafeSetInt(OpenHash, 0);
+        _anim.SafeSetInt(CloseHash, 1);
     }
 
     public void OnClickCopyButton()
@@ -129,7 +132,7 @@ public class CardImagePanel : OffAnimation
             CommandTexts,
             LocalizeUtility.GetLocalizedString(
             EngMessage: "The list of card image names has been copied to the clipboard!",
-            JpnMessage: "ƒJ[ƒh‰æ‘œ–¼ˆê——‚ğ\nƒNƒŠƒbƒvƒ{[ƒh‚ÉƒRƒs[‚µ‚Ü‚µ‚½!"
+            JpnMessage: "ã‚«ãƒ¼ãƒ‰ç”»åƒåä¸€è¦§ã‚’\nã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰ã«ã‚³ãƒ”ãƒ¼ã—ã¾ã—ãŸ!"
         ),
             true);
     }
