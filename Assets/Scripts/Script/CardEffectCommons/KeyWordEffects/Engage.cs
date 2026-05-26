@@ -89,7 +89,7 @@ public partial class CardEffectCommons
 
         string EffectDescription()
         {
-            return $"{DataBase.EngageEffectDiscription()}";
+            return $"{DataBase.EngageEffectDescription()}";
         }
 
         if (rootCardEffect != null)
