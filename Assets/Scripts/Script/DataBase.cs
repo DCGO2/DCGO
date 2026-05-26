@@ -564,7 +564,7 @@ public class DataBase : MonoBehaviour
         return "[Link] (Plug this card from the hand or battle area sideways into the specified Digimon in the battle area.)";
     }
 
-    public static string EngageEffectDiscription()
+    public static string EngageEffectDescription()
     {
         return "<Engage> (At the end of your turn, this Digimon may attack.)";
     }
