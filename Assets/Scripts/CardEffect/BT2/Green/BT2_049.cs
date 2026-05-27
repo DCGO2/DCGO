@@ -21,7 +21,7 @@ public class BT2_049 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Suspend 1 of your opponent's Digimon. During your opponent's next unsuspend phaseÅCone of your opponent's Digimon can unsuspend.";
+                return "[On Play] Suspend 1 of your opponent's Digimon. During your opponent's next unsuspend phase, one of your opponent's Digimon can unsuspend.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

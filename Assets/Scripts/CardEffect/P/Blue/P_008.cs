@@ -21,7 +21,7 @@ public class P_008 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking][Once Per Turn] If this Digimon has a [Garurumon] digivolution cardÅCunsuspend this Digimon.";
+                return "[When Attacking] [Once Per Turn] If this Digimon has a [Garurumon] digivolution card, unsuspend this Digimon.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
