@@ -80,7 +80,8 @@ namespace DCGO.CardEffects.EX6
                             {
                                 return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent)
                                     && selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent)
-                                    && GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner;
+                                    && GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner
+                                    && !permanent.TopCard.CanNotBeAffected(activateClass);
                             }
 
                             bool CanActivateCondition1(Hashtable hashtable1)
