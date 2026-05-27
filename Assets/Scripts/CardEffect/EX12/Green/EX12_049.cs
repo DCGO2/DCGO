@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.EX12
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reveal top 3, add 1 option & 1 [TS] trait to hand. bottom deck the rest", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Reveal top 3, add 1 [Angoramon] in text & 1 [NSp] trait to hand. bottom deck the rest", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
