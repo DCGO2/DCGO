@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region Engage
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEndTurn)
             {
                 cardEffects.Add(CardEffectFactory.EngageSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
@@ -87,8 +87,6 @@ namespace DCGO.CardEffects.EX12
                 {
                     card.PermanentOfThisCard().UntilOpponentTurnEndEffects.Add((_timing) => PermanentEffectFactory.DigimonEffectImmunity(card.PermanentOfThisCard()));
 
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(card.PermanentOfThisCard()));
-
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP
                     (
                         card.PermanentOfThisCard(),
@@ -96,6 +94,8 @@ namespace DCGO.CardEffects.EX12
                         EffectDuration.UntilOpponentTurnEnd,
                         activateClass
                     ));
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(card.PermanentOfThisCard()));
                 }
             }
             #endregion
