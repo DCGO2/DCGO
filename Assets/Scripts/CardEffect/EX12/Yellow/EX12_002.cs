@@ -16,6 +16,7 @@ namespace DCGO.CardEffects.EX12
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("This Digimon may digivolve into [SW] in hand for 2 less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("EX12_002_Inherited");
                 cardEffects.Add(activateClass);
 
