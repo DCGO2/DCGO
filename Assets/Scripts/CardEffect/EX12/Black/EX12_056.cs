@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region Shared OP / WD
-            string SharedEffectName = ",De-Digivolve 1> 1 enemy Digimon, then 1 of your other [SW] Digimon may gain <Alliance> and attack.";
+            string SharedEffectName = "<De-Digivolve 1> 1 enemy Digimon, then 1 of your other [SW] Digimon may gain <Alliance> and attack.";
 
             CardEffectFactory.ActivateClassesForSharedEffects
                 (ref cardEffects, timing, card,
