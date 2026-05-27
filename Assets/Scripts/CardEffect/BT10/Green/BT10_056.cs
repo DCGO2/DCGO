@@ -170,7 +170,7 @@ namespace DCGO.CardEffects.BT10
                         {
                             if (CardSourceCondition(cardSource))
                             {
-                                if (CardEffectCommons.CanTriggerOnDeletion(hashtable, cardSource))
+                                if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, permanent => permanent == cardSource.PermanentOfThisCard(), activateClass1))
                                 {
                                     return true;
                                 }
@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.BT10
 
                         bool CanActivateCondition1(Hashtable hashtable)
                         {
-                            if (CardEffectCommons.CanActivateOnDeletion(hashtable, cardSource))
+                            if (CardEffectCommons.CanActivateOnDeletion(cardSource, activateClass1))
                             {
                                 return true;
                             }

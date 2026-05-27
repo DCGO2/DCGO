@@ -106,7 +106,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsOwnerDigimon);
+                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsOwnerDigimon, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

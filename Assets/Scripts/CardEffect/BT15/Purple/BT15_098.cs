@@ -153,7 +153,7 @@ namespace DCGO.CardEffects.BT15
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When one of your [Myotismon] is deleted, <Delay>.\r\n• You may play 1 [VenomMyotismon] from your trash without paying the cost.";
+                    return "[All Turns] When one of your [Myotismon] is deleted, <Delay>.\r\nï¿½ You may play 1 [VenomMyotismon] from your trash without paying the cost.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -172,7 +172,7 @@ namespace DCGO.CardEffects.BT15
                 {
                     if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                         {
                             return true;
                         }

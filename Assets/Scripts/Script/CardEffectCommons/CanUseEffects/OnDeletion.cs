@@ -10,14 +10,14 @@ public partial class CardEffectCommons
     #region Can trigger
 
     #region Can trigger [On Deletion] effect
-    public static bool CanTriggerOnDeletion(Hashtable hashtable, CardSource card)
+    public static bool CanTriggerOnDeletion(Hashtable hashtable, CardSource card, ICardEffect cardEffect)
     {
-        return CanTriggerOnPermanentDeleted(hashtable, (permanent) => permanent.cardSources.Contains(card));
+        return CanTriggerOnPermanentDeleted(hashtable, (permanent) => permanent.cardSources.Contains(card), cardEffect);
     }
     #endregion
 
     #region Can trigger "when permanent is deleted" effect
-    public static bool CanTriggerOnPermanentDeleted(Hashtable hashtable, Func<Permanent, bool> permanentCondition)
+    public static bool CanTriggerOnPermanentDeleted(Hashtable hashtable, Func<Permanent, bool> permanentCondition, ICardEffect cardEffect)
     {
         List<Hashtable> hashtables = GetHashtablesFromHashtable(hashtable);
 
@@ -35,6 +35,7 @@ public partial class CardEffectCommons
                         {
                             if (permanentCondition(permanent))
                             {
+                                RegisterOnDeletion(permanent, cardEffect);//Not always used when called directly, but there are some On deletions granted to permanents that need to use this method instead of CanTriggerOnDeletion
                                 return true;
                             }
                         }
@@ -110,33 +111,9 @@ public partial class CardEffectCommons
     #region Can activate
 
     #region Can activate [On Deletion] effect
-    public static bool CanActivateOnDeletion(Hashtable hashtable, CardSource card)
+    public static bool CanActivateOnDeletion(CardSource card, ICardEffect cardEffect)
     {
-        if (card.IsToken)
-            return true;
-
-        List<Hashtable> hashtables = GetHashtablesFromHashtable(hashtable);
-
-        if (hashtables != null)
-        {
-            foreach (Hashtable hashtable1 in hashtables)
-            {
-                CardSource TopCard = GetTopCardFromOneHashtable(hashtable1);
-
-                if (TopCard != null)
-                {
-                    if (TopCard.PermanentJustBeforeRemoveField != null)
-                    {
-                        if (card.PermanentJustBeforeRemoveField == TopCard.PermanentJustBeforeRemoveField)
-                        {
-                            return IsExistOnTrash(TopCard);
-                        }
-                    }
-                }
-            }
-        }
-
-        return false;
+        return card.IsToken || IsTopCardStillInTrash(cardEffect);
     }
     #endregion
 

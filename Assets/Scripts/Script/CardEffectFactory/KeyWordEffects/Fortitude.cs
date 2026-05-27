@@ -51,7 +51,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.CanTriggerFortitude(hashtable, card))
+            if (CardEffectCommons.CanTriggerFortitude(hashtable, card, activateClass))
             {
                 if (condition == null || condition())
                 {

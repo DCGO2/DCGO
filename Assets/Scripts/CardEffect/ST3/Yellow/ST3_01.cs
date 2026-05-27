@@ -38,7 +38,7 @@ public class ST3_01 : CEntity_Effect
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                         {
                             if (CardEffectCommons.IsDPZeroDelete(hashtable))
                             {

@@ -159,11 +159,11 @@ namespace DCGO.CardEffects.EX11
                 string EffectDescription()
                     => "[On Deletion] If you have 1 of fewer security cards, you may 1 play [Omnimon (X Antibody)] from your hand or under your [King Drasil_7D6]s on the field without paying the cost. Then, place this card as the played Digimon's bottom digivolution card.";
 
-                bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card)
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass)
                         && card.Owner.SecurityCards.Count <= 1
                         && (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition)
                             || CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition)

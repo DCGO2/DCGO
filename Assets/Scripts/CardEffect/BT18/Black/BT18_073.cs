@@ -397,12 +397,12 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) &&
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass) &&
                            CardEffectCommons.HasMatchConditionPermanent(HasKimeramon) &&
                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasMachinedramon) &&
                            CardEffectCommons.HasMatchConditionOwnersHand(card, HasMillenniummon);

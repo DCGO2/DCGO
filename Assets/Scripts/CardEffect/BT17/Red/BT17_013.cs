@@ -142,7 +142,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, OpponentPermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, OpponentPermanentCondition, activateClass))
                         {
                             if (CardEffectCommons.IsByEffect(hashtable, null))
                             {

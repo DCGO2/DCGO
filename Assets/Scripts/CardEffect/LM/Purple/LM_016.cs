@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                         {
                             if (CardEffectCommons.IsByEffect(hashtable, null))
                             {
@@ -129,12 +129,12 @@ namespace DCGO.CardEffects.LM
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card, activateClass))
                     {
                         if (card.Owner.HandCards.Count >= 1)
                         {
