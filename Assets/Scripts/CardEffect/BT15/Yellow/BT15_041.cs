@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.BT15
 
                 string EffectDiscription()
                 {
-                    return "[End of Opponent�'s Turn] By deleting this Digimon, you may play 1 [Rosemon] or [Jijimon] from your hand without paying the cost. Then activate the [When Digivolving] effect of the Digimon played by this effect.";
+                    return "[End of Opponent's Turn] By deleting this Digimon, you may play 1 [Rosemon] or [Jijimon] from your hand without paying the cost. Then activate the [When Digivolving] effect of the Digimon played by this effect.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
