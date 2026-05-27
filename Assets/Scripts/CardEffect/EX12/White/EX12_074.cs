@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Genshi Continent & Ashino Island
 namespace DCGO.CardEffects.EX12
@@ -97,105 +95,26 @@ namespace DCGO.CardEffects.EX12
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectFactory.ReplaceBottomSecurityWithFaceUpOptionEffect(card, activateClass));
 
-                    #region Hand Card Selection
-                    CardSource selectedCard = null;
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                    int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
 
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
                         canTargetCondition: CanSelectCardCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
                         isShowOpponent: true,
-                        selectCardCoroutine: SelectCardCoroutine,
+                        selectCardCoroutine: null,
                         afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
+                        mode: SelectHandEffect.Mode.PlayForCost,
                         cardEffect: activateClass);
 
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                    {
-                        selectedCard = cardSource;
-                        yield return null;
-                    }
-
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+                    selectHandEffect.SetReducedCostTuple((3, null));
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to play", "The opponent is selecting 1 card to play");
 
                     yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                    if (selectedCard != null)
-                    {
-                        #region reduce play cost
-                        ChangeCostClass changeCostClass = new ChangeCostClass();
-                        changeCostClass.SetUpICardEffect($"Play Cost -3", CanUseCondition1, card);
-                        changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                        Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
-                        card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
-
-                        ICardEffect GetCardEffect(EffectTiming _timing)
-                        {
-                            if (_timing == EffectTiming.None)
-                            {
-                                return changeCostClass;
-                            }
-
-                            return null;
-                        }
-
-                        bool CanUseCondition1(Hashtable hashtable) => true;
-
-                        int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                        {
-                            if (CardSourceCondition(cardSource)
-                                && RootCondition(root)
-                                && PermanentsCondition(targetPermanents))
-                            {
-                                Cost -= 3;
-                            }
-
-                            return Cost;
-                        }
-
-                        bool PermanentsCondition(List<Permanent> targetPermanents)
-                        {
-                            return targetPermanents == null || targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
-                        }
-
-                        bool CardSourceCondition(CardSource cardSource)
-                        {
-                            return cardSource.IsDigimon
-                                && (cardSource.HasCardColor(CardColor.Blue)
-                                    || cardSource.HasCardColor(CardColor.Yellow))
-                                && cardSource.HasTSTraits;
-                        }
-
-                        bool RootCondition(SelectCardEffect.Root root) => true;
-
-                        bool isUpDown() => true;
-                        #endregion
-
-                        #region Play card
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: new List<CardSource>() { selectedCard },
-                            activateClass: activateClass,
-                            payCost: true,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.Hand,
-                            activateETB: true));
-                        #endregion
-
-                        #region release effect reducing play cost
-                        card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
-                        #endregion
-
-                    }
-                    #endregion
-
                 }
             }
             #endregion
@@ -238,8 +157,8 @@ namespace DCGO.CardEffects.EX12
                             List<SelectionElement<int>> selectionElements1 = new List<SelectionElement<int>>()
                         {
                             new (message: $"From hand", value : 1, spriteIndex: 0),
-                            new (message: $"From trash", value : 2, spriteIndex: 1),
-                            new (message: $"Don't play", value: 3, spriteIndex: 2)
+                            new (message: $"From trash", value : 2, spriteIndex: 0),
+                            new (message: $"Don't play", value: 3, spriteIndex: 1)
                         };
 
                             string selectPlayerMessage1 = "From which area will you play a card?";
@@ -254,10 +173,9 @@ namespace DCGO.CardEffects.EX12
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
                         bool fromHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
-                        bool fromTrash = GManager.instance.userSelectionManager.SelectedIntValue == 2;
-                        bool notSelect = GManager.instance.userSelectionManager.SelectedIntValue == 3;
+                        bool doSelect = GManager.instance.userSelectionManager.SelectedIntValue != 3;
 
-                        if (!notSelect)
+                        if (doSelect)
                         {
                             #region Hand/Trash Card Selection & Play
                             if (fromHand)
