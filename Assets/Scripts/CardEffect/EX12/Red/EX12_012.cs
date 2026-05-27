@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-// Kakamon
+// Apemon
 namespace DCGO.CardEffects.EX12
 {
-    public class EX12_006 : CEntity_Effect
+    public class EX12_012 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
