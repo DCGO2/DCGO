@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.EX12
                     SharedEffectDescription,
                     hashValue: SharedHashValue,
                     maxCountPerTurn: 1,
-                    optional: true,
+                    optional: false,
                     isSkippable: true,
                     whenDigivolving: true,
                     whenAttacking: true);
@@ -89,7 +89,7 @@ namespace DCGO.CardEffects.EX12
                     if (canSelectTrash) selectionElements.Add(new(message: $"From Trash", value: 2, spriteIndex: 0));
                     selectionElements.Add(new(message: $"Dont place any", value: 3, spriteIndex: 1));
 
-                    string selectPlayerMessage = "Will you place up to 2 digimon cards inside this cards digivolution source?";
+                    string selectPlayerMessage = "Where will you select cards from to place under this Digimon as digivolution sources?";
                     string notSelectPlayerMessage = "The opponent is choosing to up to 2 digimon cards inside this cards digivolution source.";
 
                     GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
@@ -117,7 +117,7 @@ namespace DCGO.CardEffects.EX12
                                 canEndSelectCondition: null,
                                 maxCount: maxCount,
                                 canNoSelect: true,
-                                canEndNotMax: false,
+                                canEndNotMax: true,
                                 isShowOpponent: true,
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
@@ -140,7 +140,7 @@ namespace DCGO.CardEffects.EX12
                                 afterSelectCardCoroutine: null,
                                 message: "Select up to 2 digimon cards",
                                 maxCount: maxCount,
-                                canEndNotMax: false,
+                                canEndNotMax: true,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.Trash,
@@ -172,7 +172,7 @@ namespace DCGO.CardEffects.EX12
 
                             bool isTop = GManager.instance.userSelectionManager.SelectedBoolValue;
                             if (isTop) yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(
-                                addedDigivolutionCards: cardSources,
+                                addedDigivolutionCards: cardSources.Reverse(),
                                 cardEffect: activateClass));
                             else yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
                                 addedDigivolutionCards: cardSources,
@@ -203,7 +203,7 @@ namespace DCGO.CardEffects.EX12
 
                                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -dpMinus, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -dpMinus, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                                 }
                             }
                         }
@@ -234,11 +234,11 @@ namespace DCGO.CardEffects.EX12
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 1 opponet digimon with Highest DP, then 1 digimon may attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Delete 1 enemy digimon with highest DP, then 1 digimon may attack", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                     => "[Main] Delete 1 of your opponent's highest DP Digimon. Then, 1 of your Digimon may attack.";
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -248,11 +248,11 @@ namespace DCGO.CardEffects.EX12
                     => CardEffectCommons.IsMaxDP(permanent, card.Owner.Enemy, null);
 
                 bool CanSelectOwnerPermamentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentPermanentCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -273,7 +273,7 @@ namespace DCGO.CardEffects.EX12
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectOwnerPermamentCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnerPermamentCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
