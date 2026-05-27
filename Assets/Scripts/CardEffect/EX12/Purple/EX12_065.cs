@@ -76,8 +76,8 @@ namespace DCGO.CardEffects.EX12
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
                     canNoSelect: () => true,
-                    selectCardCoroutine: SelectCardCoroutine,
-                    afterSelectCardCoroutine: null,
+                    selectCardCoroutine: null,
+                    afterSelectCardCoroutine: AfterSelectCardCoroutine,
                     message: "Select 1 card to play.",
                     maxCount: 1,
                     canEndNotMax: false,
@@ -89,9 +89,9 @@ namespace DCGO.CardEffects.EX12
                     selectPlayer: card.Owner,
                     cardEffect: activateClass);
 
-                IEnumerator SelectCardCoroutine(CardSource selectedCards)
+                IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                 {
-                    if (selectedCards != null)
+                    if (cardSources != null)
                     {
                         Used = true;
 
