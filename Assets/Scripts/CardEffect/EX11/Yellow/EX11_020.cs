@@ -49,13 +49,13 @@ namespace DCGO.CardEffects.EX11
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card)
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass)
                         && !CardEffectCommons.IsByBattle(hashtable);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card)
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                 }
 

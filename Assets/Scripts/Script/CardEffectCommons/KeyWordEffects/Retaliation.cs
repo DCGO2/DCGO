@@ -7,7 +7,7 @@ using UnityEngine;
 public partial class CardEffectCommons
 {
     #region Can activate [Retaliation]
-    public static bool CanActivateRetaliation(Hashtable hashtable)
+    public static bool CanActivateRetaliation(Hashtable hashtable, ICardEffect cardEffect)
     {
         List<Hashtable> hashtables = GetHashtablesFromHashtable(hashtable);
 
@@ -21,7 +21,7 @@ public partial class CardEffectCommons
 
                     if (TopCard != null)
                     {
-                        if (IsExistOnTrash(TopCard))
+                        if (IsTopCardStillInTrash(cardEffect))
                         {
                             IBattle battle = GetBattleFromHashtable(hashtable);
 

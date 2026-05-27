@@ -5,9 +5,12 @@ using System.Linq;
 public partial class CardEffectCommons
 {
     public static Dictionary<ICardEffect, Permanent> CardPermanenceMap = new Dictionary<ICardEffect, Permanent>();
+    public static Dictionary<ICardEffect, SelectCardEffect.Root> CardLocationMap = new Dictionary<ICardEffect, SelectCardEffect.Root>();
+    public static Dictionary<ICardEffect, CardSource> OnDeletionCardMap = new Dictionary<ICardEffect, CardSource>();
 
     #region Invalidate Cards that are not in their correct location
     private static Permanent FailurePermanent = new(new List<CardSource>());
+    private static SelectCardEffect.Root FailureLocation = SelectCardEffect.Root.None;
 
     public static void EnforceLocationCheck()
     {
@@ -16,6 +19,64 @@ public partial class CardEffectCommons
             if (cardEffect.EffectSourceCard.PermanentOfThisCard() != CardPermanenceMap[cardEffect])
                 CardPermanenceMap[cardEffect] = FailurePermanent;//Mark as a Permanent that nothing else should ever be to ensure it will fail -Activate checks
         }
+        foreach(ICardEffect cardEffect in CardLocationMap.Keys.ToList().Clone())
+        {
+            if (!IsCorrectLocation(cardEffect))
+                CardLocationMap[cardEffect] = FailureLocation;
+        }
+        foreach(ICardEffect cardEffect in OnDeletionCardMap.Keys.ToList().Clone())
+        {
+            if (!IsTopCardStillInTrash(cardEffect))
+            {
+                OnDeletionCardMap[cardEffect] = null;
+            }
+        }
+    }
+
+    public static void ClearEffectLocations()
+    {
+        CardPermanenceMap = new Dictionary<ICardEffect, Permanent>();
+        CardLocationMap = new Dictionary<ICardEffect, SelectCardEffect.Root>();
+        OnDeletionCardMap = new Dictionary<ICardEffect, CardSource>();
+    }
+
+    #endregion
+
+    #region Card Location Helper methods
+    public static bool IsCorrectLocation(ICardEffect cardEffect)
+    {
+        SelectCardEffect.Root root = FailureLocation;
+        if (cardEffect != null && cardEffect.EffectSourceCard != null && CardLocationMap.TryGetValue(cardEffect, out root))
+        {
+            CardSource cardSource = cardEffect.EffectSourceCard;
+            switch(root)
+            {
+                case SelectCardEffect.Root.Trash:
+                    return IsExistOnTrash(cardSource);
+                case SelectCardEffect.Root.Security:
+                    return IsExistInSecurity(cardSource) && cardSource.IsFaceUp;
+                case SelectCardEffect.Root.Hand:
+                    return IsExistOnHand(cardSource);
+                case SelectCardEffect.Root.None:
+                    return false;
+            }   
+        }        
+        return false;
+        
+    }
+    #endregion
+
+    #region OnDeletion Capture and Check
+    public static void RegisterOnDeletion(Permanent permanent, ICardEffect cardEffect)
+    {
+        if(permanent == null || permanent.TopCard == null)
+            return;
+        OnDeletionCardMap[cardEffect] = permanent.TopCard;
+    }
+
+    public static bool IsTopCardStillInTrash(ICardEffect cardEffect)
+    {
+        return cardEffect != null && OnDeletionCardMap.TryGetValue(cardEffect, out CardSource card) && card != null && IsExistOnTrash(card);
     }
 
     #endregion
@@ -70,6 +131,30 @@ public partial class CardEffectCommons
         return exists;
     }
 
+    public static bool IsExistOnTrashTrigger(CardSource card, ICardEffect cardEffect)
+    {
+        bool exists = IsExistOnTrash(card);
+        if (exists)
+            CardLocationMap[cardEffect] = SelectCardEffect.Root.Trash;
+        return exists;
+    }
+
+    public static bool IsExistInSecurityTrigger(CardSource card, ICardEffect cardEffect)
+    {
+        bool exists = IsExistInSecurity(card);
+        if (exists)
+            CardLocationMap[cardEffect] = SelectCardEffect.Root.Security;
+        return exists;
+    }
+
+    public static bool IsExistOnHandTrigger(CardSource card, ICardEffect cardEffect)
+    {
+        bool exists = IsExistOnHand(card);
+        if (exists)
+            CardLocationMap[cardEffect] = SelectCardEffect.Root.Hand;
+        return exists;
+    }
+
     #endregion
 
     #region Activate conditions - Check card is still part of the same Permanent
@@ -108,6 +193,21 @@ public partial class CardEffectCommons
     {
         Permanent permanent = null;
         return IsExistLinked(card) && CardPermanenceMap.TryGetValue(cardEffect, out permanent) && permanent == card.PermanentOfThisCard();
+    }
+
+    public static bool IsExistOnTrashActivate(CardSource card, ICardEffect cardEffect)
+    {
+        return IsExistOnTrash(card) && IsCorrectLocation(cardEffect);
+    }
+
+    public static bool IsExistInSecurityActivate(CardSource card, ICardEffect cardEffect)
+    {
+        return IsExistInSecurity(card) && IsCorrectLocation(cardEffect);
+    }
+
+    public static bool IsExistOnHandActivate(CardSource card, ICardEffect cardEffect)
+    {
+        return IsExistOnHand(card) && IsCorrectLocation(cardEffect);
     }
 
     #endregion

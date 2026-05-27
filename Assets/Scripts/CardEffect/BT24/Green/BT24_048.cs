@@ -178,7 +178,7 @@ namespace DCGO.CardEffects.BT24
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                         {
                             bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
                             bool WinnerRealCondition(Permanent permanent)
