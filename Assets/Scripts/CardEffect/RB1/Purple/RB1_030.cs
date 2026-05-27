@@ -33,12 +33,12 @@ public class RB1_030 : CEntity_Effect
             {
                 if (timing == EffectTiming.OnEnterFieldAnyone)
                 {
-                    return "[When Digivolving][Once Per Turn] By trashing 1 card with [Gammamon] in its text in your hand,1 of your Digimon gains \"[On Deletion] Delete 1 of your opponent's Digimon with the lowest level\" until the end of your opponent's turn.";
+                    return "[When Digivolving] [Once Per Turn] By trashing 1 card with [Gammamon] in its text in your hand, 1 of your Digimon gains \"[On Deletion] Delete 1 of your opponent's Digimon with the lowest level\" until the end of your opponent's turn.";
                 }
 
                 else
                 {
-                    return "[When Attacking][Once Per Turn] By trashing 1 card with [Gammamon] in its text in your hand, 1 of your Digimon gains \"[On Deletion] Delete 1 of your opponent's Digimon with the lowest level\" until the end of your opponent's turn.";
+                    return "[When Attacking] [Once Per Turn] By trashing 1 card with [Gammamon] in its text in your hand, 1 of your Digimon gains \"[On Deletion] Delete 1 of your opponent's Digimon with the lowest level\" until the end of your opponent's turn.";
                 }
             }
 
@@ -158,7 +158,7 @@ public class RB1_030 : CEntity_Effect
 
                                 string EffectDiscription1()
                                 {
-                                    return "[On Deletion] Delete 1 of your opponent�fDigimon with the lowest level.";
+                                    return "[On Deletion] Delete 1 of your opponent's Digimon with the lowest level.";
                                 }
 
                                 bool CanSelectPermanentCondition1(Permanent permanent)
