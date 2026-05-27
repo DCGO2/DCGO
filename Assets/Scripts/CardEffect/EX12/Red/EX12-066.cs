@@ -71,11 +71,13 @@ namespace DCGO.CardEffects.EX12
                 {
                     bool HasDigivolveCondition(CardSource cardSource)
                     {
+                        List<Int> costList = cardSource.CostList(GManager.instance.attackProcess.AttackingPermanent, false, false);
+
                         return cardSource.HasLevel
                             && cardSource.Level <= 6
                             && (cardSource.HasText("Gammamon")
                                 || cardSource.EqualsTraits("VB"))
-                            && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: Math.Max(0, cardSource.GetCostItself - 1)); // not sure what the right code here is, I want it to throw false if there are no evo targets in hand
+                            && costList.Count > 0 && card.Owner.MaxMemoryCost >= Math.Min(costList) - 1;
                     }
 
                     List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
@@ -87,7 +89,7 @@ namespace DCGO.CardEffects.EX12
                     {
                         selectionElements.Add(new(message: "Use an Option", value: 2, spriteIndex: 0));
                     }
-                    selectionElements.Add(new(message: "Suspend only", value: 3, spriteIndex: 0));
+                    selectionElements.Add(new(message: "Suspend only", value: 3, spriteIndex: 1));
                     selectionElements.Add(new(message: "Do not use", value: 4, spriteIndex: 1));
 
 
