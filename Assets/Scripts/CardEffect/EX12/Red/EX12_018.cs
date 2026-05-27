@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-// Siriusmon/Planet Punch
+// Siriusmon / Planet Punch
 namespace DCGO.CardEffects.EX12
 {
     public class EX12_018 : CEntity_Effect
@@ -82,133 +82,142 @@ namespace DCGO.CardEffects.EX12
 
                 if (canSelectHand || canSelectTrash)
                 {
-                    #region Setup Location Selection
-                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+                    List<CardSource> cardSources = new List<CardSource>();
 
-                    if (canSelectHand) selectionElements.Add(new(message: $"From Hand", value: 1, spriteIndex: 0));
-                    if (canSelectTrash) selectionElements.Add(new(message: $"From Trash", value: 2, spriteIndex: 0));
-                    selectionElements.Add(new(message: $"Dont place any", value: 3, spriteIndex: 1));
-
-                    string selectPlayerMessage = "Where will you select cards from to place under this Digimon as digivolution sources?";
-                    string notSelectPlayerMessage = "The opponent is choosing to up to 2 digimon cards inside this cards digivolution source.";
-
-                    GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                    #endregion
-
-                    if (GManager.instance.userSelectionManager.SelectedIntValue != 3)
+                    while (cardSources < 2)
                     {
-                        List<CardSource> cardSources = new List<CardSource>();
-                        int maxCount = Math.Max(2, cardSources.Count);
+                        #region Setup Location Selection
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
 
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        if (canSelectHand) selectionElements.Add(new(message: $"From Hand", value: 1, spriteIndex: 0));
+                        if (canSelectTrash) selectionElements.Add(new(message: $"From Trash", value: 2, spriteIndex: 0));
+                        selectionElements.Add(new(message: $"Don't place any", value: 3, spriteIndex: 1));
+
+                        string selectPlayerMessage = "Where will you select cards from to place under this Digimon as digivolution sources?";
+                        string notSelectPlayerMessage = "The opponent is choosing to up to 2 digimon cards inside this cards digivolution source.";
+
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                        #endregion
+
+                        if (GManager.instance.userSelectionManager.SelectedIntValue == 3)
                         {
-                            cardSources.Add(cardSource);
-                            yield return null;
-                        }
-
-                        if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
-                        {
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: true,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectHandEffect.SetUpCustomMessage("Select up to 2 digimon cards to add to source.", "The opponent is selecting 2 digimon cards to add to source.");
-                            selectHandEffect.SetUpCustomMessage_ShowCard("Selected cards");
-                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                            break;
                         }
                         else
                         {
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select up to 2 digimon cards",
-                                maxCount: maxCount,
-                                canEndNotMax: true,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
+                            int maxCount = Math.Max(2, cardSources.Count);
 
-                            selectCardEffect.SetUpCustomMessage("Select up to 2 digimon cards to add to source.", "The opponent is selecting 2 digimon cards to add to source.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Selected cards");
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        }
-
-                        if (cardSources.Any())
-                        {
-                            isUsed = true;
-                            #region Setup Location Selection
-                            List<SelectionElement<bool>> selectionElements1 = new List<SelectionElement<bool>>();
-
-                            if (canSelectHand) selectionElements1.Add(new(message: $"Top of digivolution sources", value: true, spriteIndex: 0));
-                            if (canSelectTrash) selectionElements1.Add(new(message: $"Bottom of digivolution sources", value: false, spriteIndex: 0));
-
-                            string selectPlayerMessage1 = "Will you place up to 2 digimon cards inside this cards digivolution source?";
-                            string notSelectPlayerMessage1 = "The opponent is choosing to up to 2 digimon cards inside this cards digivolution source.";
-
-                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                            #endregion
-
-                            bool isTop = GManager.instance.userSelectionManager.SelectedBoolValue;
-                            if (isTop) yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(
-                                addedDigivolutionCards: cardSources.Reverse(),
-                                cardEffect: activateClass));
-                            else yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
-                                addedDigivolutionCards: cardSources,
-                                cardEffect: activateClass));
-
-                            if (card.PermanentOfThisCard().DigivolutionCards.Intersect(cardSources).Any() && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermamentCondition))
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {
-                                int dpMinus = 2000 * card.PermanentOfThisCard().DigivolutionCards.Count;
+                                cardSources.Add(cardSource);
+                                yield return null;
+                            }
 
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                selectPermanentEffect.SetUp(
+                            if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
+                            {
+                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                                selectHandEffect.SetUp(
                                     selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectPermamentCondition,
+                                    canTargetCondition: CanSelectCardCondition,
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
-                                    maxCount: 1,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: SelectPermanentCoroutine,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    maxCount: maxCount,
+                                    canNoSelect: true,
+                                    canEndNotMax: true,
+                                    isShowOpponent: true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    mode: SelectHandEffect.Mode.Custom,
                                     cardEffect: activateClass);
 
-                                selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon that will get DP -{dpMinus}.", $"The opponent is selecting 1 Digimon that will get DP -{dpMinus}.");
+                                selectHandEffect.SetUpCustomMessage("Select up to 2 digimon cards to add to source.", "The opponent is selecting 2 digimon cards to add to source.");
+                                selectHandEffect.SetUpCustomMessage_ShowCard("Selected cards");
+                                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                            }
+                            else
+                            {
+                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                                selectCardEffect.SetUp(
+                                    canTargetCondition: CanSelectCardCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    message: "Select up to 2 digimon cards",
+                                    maxCount: maxCount,
+                                    canEndNotMax: true,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Trash,
+                                    customRootCardList: null,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
 
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                selectCardEffect.SetUpCustomMessage("Select up to 2 digimon cards to add to source.", "The opponent is selecting 2 digimon cards to add to source.");
+                                selectCardEffect.SetUpCustomMessage_ShowCard("Selected cards");
+                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            }
+                        }
+                    }
 
-                                IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -dpMinus, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
-                                }
+                    if (cardSources.Any())
+                    {
+                        isUsed = true;
+                        #region Setup Location Selection
+                        List<SelectionElement<bool>> selectionElements1 = new List<SelectionElement<bool>>();
+
+                        if (canSelectHand) selectionElements1.Add(new(message: $"Top of digivolution sources", value: true, spriteIndex: 0));
+                        if (canSelectTrash) selectionElements1.Add(new(message: $"Bottom of digivolution sources", value: false, spriteIndex: 0));
+
+                        string selectPlayerMessage1 = "Will you place up to 2 digimon cards inside this cards digivolution source?";
+                        string notSelectPlayerMessage1 = "The opponent is choosing to up to 2 digimon cards inside this cards digivolution source.";
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                        #endregion
+
+                        bool isTop = GManager.instance.userSelectionManager.SelectedBoolValue;
+                        if (isTop) yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(
+                            addedDigivolutionCards: cardSources.Reverse(),
+                            cardEffect: activateClass));
+                        else yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
+                            addedDigivolutionCards: cardSources,
+                            cardEffect: activateClass));
+
+                        if (card.PermanentOfThisCard().DigivolutionCards.Intersect(cardSources).Any() && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermamentCondition))
+                        {
+                            int dpMinus = 2000 * card.PermanentOfThisCard().DigivolutionCards.Count;
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermamentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon that will get DP -{dpMinus}.", $"The opponent is selecting 1 Digimon that will get DP -{dpMinus}.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -dpMinus, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                             }
                         }
                     }
                 }
+
                 if (!isUsed) activateClass.RemoveUse();
             }
 
@@ -275,39 +284,25 @@ namespace DCGO.CardEffects.EX12
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnerPermamentCondition))
                     {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        SelectPermanentEffect selectPermanentEffect =
+                        GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectOwnerPermamentCondition,
+                            canTargetCondition: YourDigimonThatCanAttack,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
+                            mode: SelectPermanentEffect.Mode.Attack,
                             cardEffect: activateClass);
 
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            if (permanent.CanAttack(activateClass))
-                            {
-                                SelectAttackEffect selectAttackEffect =
-                                    GManager.instance.GetComponent<SelectAttackEffect>();
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will attack.",
+                            "The opponent is selecting 1 Digimon that will attack.");
 
-                                selectAttackEffect.SetUp(
-                                    attacker: permanent,
-                                    canAttackPlayerCondition: () => true,
-                                    defenderCondition: (permanent) => true,
-                                    cardEffect: activateClass);
-
-                                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                            }
-                        }
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to attack.", "The opponent is selecting 1 Digimon to attack.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
                 }
