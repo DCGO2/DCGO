@@ -22,7 +22,7 @@ public class BT1_049 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When an opponent's Digimon is deleted by dropping to 0 DP�C trigger <Draw 1> (Draw 1 card from your deck).";
+                return "[Your Turn] When an opponent's Digimon is deleted by dropping to 0 DP, trigger <Draw 1> (Draw 1 card from your deck).";
             }
 
             bool PermanentCondition(Permanent permanent)
