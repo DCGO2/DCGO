@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region Shared OP/WD/WA
-            string SharedEffectName = "May play 1 5 or lower [Puppet]/[Shambala] from trash for free";
+            string SharedEffectName = "May play 1 5 cost or lower [Puppet]/[Shambala] from trash for free";
             string SharedHashString = "EX12_065_OP_WD_WA";
 
             CardEffectFactory.ActivateClassesForSharedEffects
@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.EX12
 
                 AddSkillClass addSkillClass = new AddSkillClass();
                 addSkillClass.SetUpICardEffect("Your [Puppet]/[TB] Digimon get Retaliation", CanUseCondition, card);
-                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects, limitTiming: EffectTiming.OnDestroyedAnyone);
                 cardEffects.Add(addSkillClass);
 
                 bool CanUseCondition(Hashtable hashtable)
