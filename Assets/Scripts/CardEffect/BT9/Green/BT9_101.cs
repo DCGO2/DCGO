@@ -20,7 +20,7 @@ public class BT9_101 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Return 1 of your opponent's suspended Digimon and 1 of their suspended Tamers to the bottom of their ownersÅf decks.";
+                return "[Main] Return 1 of your opponent's suspended Digimon and 1 of their suspended Tamers to the bottom of their owners's decks.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

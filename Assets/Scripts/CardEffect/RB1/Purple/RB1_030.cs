@@ -158,7 +158,7 @@ public class RB1_030 : CEntity_Effect
 
                                 string EffectDiscription1()
                                 {
-                                    return "[On Deletion] Delete 1 of your opponentÅfDigimon with the lowest level.";
+                                    return "[On Deletion] Delete 1 of your opponent's Digimon with the lowest level.";
                                 }
 
                                 bool CanSelectPermanentCondition1(Permanent permanent)

@@ -29,7 +29,7 @@ namespace DCGO.CardEffects.BT12
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Suspend 1 of your opponentÅf Digimon. Then, you may attack your opponent's Digimon with this Digimon.";
+                    return "[When Digivolving] Suspend 1 of your opponent's Digimon. Then, you may attack your opponent's Digimon with this Digimon.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

@@ -21,7 +21,7 @@ public class P_068 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Security] At the end of the battle, 1 of your opponent's Digimon gains <Security Attack -1> for the turn. (This Digimon checks 1 fewer security cards.) Then, add this card to its ownerÅf hand.";
+                return "[Security] At the end of the battle, 1 of your opponent's Digimon gains <Security Attack -1> for the turn. (This Digimon checks 1 fewer security cards.) Then, add this card to its owner's hand.";
             }
 
 
@@ -53,7 +53,7 @@ public class P_068 : CEntity_Effect
 
                 string EffectDiscription1()
                 {
-                    return "1 of your opponent's Digimon gains <Security Attack -1> for the turn. (This Digimon checks 1 fewer security cards.) Then, add this card to its ownerÅf hand.";
+                    return "1 of your opponent's Digimon gains <Security Attack -1> for the turn. (This Digimon checks 1 fewer security cards.) Then, add this card to its owner's hand.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

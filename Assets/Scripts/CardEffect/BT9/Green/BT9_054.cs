@@ -111,7 +111,7 @@ public class BT9_054 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand to suspend 1 of your opponentÅfDigimon.";
+                return "[When Digivolving] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand to suspend 1 of your opponent's Digimon.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
