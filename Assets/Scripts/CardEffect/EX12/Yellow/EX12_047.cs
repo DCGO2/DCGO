@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.Mathematics;
 
 // Amaterasumon
 namespace DCGO.CardEffects.EX12
@@ -153,32 +150,35 @@ namespace DCGO.CardEffects.EX12
                             effectDuration: EffectDuration.UntilEachTurnEnd,
                             activateClass: activateClass));
 
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectDPMinusPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine2,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon that will get {DPMinus} DP.", $"The opponent is selecting 1 Digimon that will get {DPMinus} DP.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine2(Permanent permanent)
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDPMinusPermanentCondition))
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                targetPermanent: permanent,
-                                changeValue: DPMinus,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
-                                activateClass: activateClass));
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectDPMinusPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine2,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon that will get {DPMinus} DP.", $"The opponent is selecting 1 Digimon that will get {DPMinus} DP.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine2(Permanent permanent)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                                    targetPermanent: permanent,
+                                    changeValue: DPMinus,
+                                    effectDuration: EffectDuration.UntilEachTurnEnd,
+                                    activateClass: activateClass));
+                            }
                         }
                     }
                 }
@@ -196,7 +196,7 @@ namespace DCGO.CardEffects.EX12
 
                 string EffectDescription()
                 {
-                    return "[On Deletion] You may return 1 [TB] trait card from your trash to the hand. Then, if you do, you may play 1 level 5 or lower [TB] trait Digimon card from your hand without paying the cost.";
+                    return "[On Deletion] You may return 1 [TB] trait card from your trash to the hand. Then, you may play 1 level 5 or lower [TB] trait Digimon card from your hand without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
