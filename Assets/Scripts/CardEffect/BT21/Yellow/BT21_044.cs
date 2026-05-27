@@ -199,7 +199,7 @@ namespace DCGO.CardEffects.BT21
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, SharedPermanentCondition1);
+                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, SharedPermanentCondition1, activateClass);
                 }
             }
             #endregion
@@ -217,7 +217,7 @@ namespace DCGO.CardEffects.BT21
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, SharedPermanentCondition1);
+                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, SharedPermanentCondition1, activateClass);
                 }
             }
             #endregion

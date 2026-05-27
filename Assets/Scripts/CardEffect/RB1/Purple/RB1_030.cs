@@ -158,7 +158,7 @@ public class RB1_030 : CEntity_Effect
 
                                 string EffectDiscription1()
                                 {
-                                    return "[On Deletion] Delete 1 of your opponentfDigimon with the lowest level.";
+                                    return "[On Deletion] Delete 1 of your opponentï¿½fDigimon with the lowest level.";
                                 }
 
                                 bool CanSelectPermanentCondition1(Permanent permanent)
@@ -178,7 +178,7 @@ public class RB1_030 : CEntity_Effect
                                 {
                                     if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                     {
-                                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent))
+                                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent, activateClass))
                                         {
                                             if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                             {

@@ -105,7 +105,7 @@ public class ST14_07 : CEntity_Effect
                     {
                         if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                         {
-                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent))
+                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent, activateClass))
                             {
                                 if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                 {

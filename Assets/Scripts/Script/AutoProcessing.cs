@@ -312,6 +312,8 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
             yield return ContinuousController.instance.StartCoroutine(CardFaceDownProcess());
 
             IsRuleProcessing = false;
+
+            CardEffectCommons.EnforceLocationCheck();//Check for cards moved from locations their effects triggered
         }
     }
 
@@ -319,6 +321,8 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     bool DoRuleProcess()
     {
         if (IsRuleProcessing) return false;
+
+        CardEffectCommons.EnforceLocationCheck();//Check for cards moved from locations their effects triggered, once before rules processing to always perform this check between effects
 
         #region Whether it is necessary to perform game end processing
         if (GManager.instance.turnStateMachine.gameContext.Players.Count(player => player.IsLose) >= 1)

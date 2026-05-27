@@ -6,9 +6,9 @@ using UnityEngine;
 public partial class CardEffectCommons
 {
     #region Can trigger [Fortitude]
-    public static bool CanTriggerFortitude(Hashtable hashtable, CardSource card)
+    public static bool CanTriggerFortitude(Hashtable hashtable, CardSource card, ICardEffect activateClass)
     {
-        return CanTriggerOnDeletion(hashtable, card);
+        return CanTriggerOnDeletion(hashtable, card, activateClass);
     }
     #endregion
 
@@ -17,7 +17,7 @@ public partial class CardEffectCommons
     {
         if (IsExistOnTrash(card))
         {
-            if (!isInheritedEffect || CanActivateOnDeletion( hashtable, card))
+            if (!isInheritedEffect || CanActivateOnDeletion(card, activateClass))
             {
                 List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
 

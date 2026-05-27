@@ -187,12 +187,12 @@ public class P_099 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
+                if (CardEffectCommons.CanActivateOnDeletion(card, activateClass))
                 {
                     if (card.Owner.HandCards.Count >= 1)
                     {

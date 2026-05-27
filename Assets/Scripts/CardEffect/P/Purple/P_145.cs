@@ -193,7 +193,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
+                    if(CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass))
                     {
                         if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Myotismon") || cardSource.EqualsCardName("X Antibody")) >= 1)
                         {
@@ -206,7 +206,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card, activateClass))
                     {
                         return CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SelectMyotismonToPlay);
                     }

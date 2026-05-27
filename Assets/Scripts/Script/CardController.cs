@@ -1262,7 +1262,7 @@ public class PlayPermanentClass
 
                 #region select DigiXros
 
-                if (card.HasDigiXros && !isEvolution)
+                if (card.HasDigiXros)
                 {
                     GManager.instance.GetComponent<SelectDigiXrosClass>().SetExcludedCards(_cardSources);
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectDigiXrosClass>().Select(card));
@@ -1272,7 +1272,7 @@ public class PlayPermanentClass
 
                 #region select Assembly
 
-                if (card.HasAssembly && !isEvolution)
+                if (card.HasAssembly)
                 {
                     GManager.instance.GetComponent<SelectAssemblyClass>().SetExcludedCards(_cardSources);
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectAssemblyClass>().Select(card));
