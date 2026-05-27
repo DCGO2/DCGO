@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.EX12
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                        targetPermanent: card.PermanentOfThisCard(),
+                        targetPermanent: GManager.instance.attackProcess.AttackingPermanent,
                         cardCondition: CanSelectCardCondition,
                         payCost: true,
                         reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
