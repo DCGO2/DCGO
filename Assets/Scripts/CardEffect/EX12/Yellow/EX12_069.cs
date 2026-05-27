@@ -57,7 +57,9 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.EqualsTraits("Shambala")
-                    && cardSource.Level == AttackingLevel;
+                    && cardSource.HasLevel
+                    && cardSource.Level == AttackingLevel
+                    && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 3);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
