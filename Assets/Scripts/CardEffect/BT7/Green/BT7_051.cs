@@ -76,7 +76,10 @@ public class BT7_051 : CEntity_Effect
             {
                 return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                     && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition)
-                    && card.PermanentOfThisCard().DigivolutionCards.Any((cardSource) => cardSource.EqualsTraits("Hybrid") || cardSource.EqualsTraits("Insectoid"));
+                    && card.PermanentOfThisCard().DigivolutionCards.Any((cardSource) =>
+                        (cardSource.EqualsTraits("Hybrid")
+                            || cardSource.EqualsTraits("Insectoid"))
+                        && !cardSource.IsFlipped);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
