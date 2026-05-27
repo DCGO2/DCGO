@@ -224,12 +224,12 @@ namespace DCGO.CardEffects.BT24
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasCorrectTrait);
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasCorrectTrait);
                 }
 
                 bool HasCorrectTrait(CardSource cardSource)

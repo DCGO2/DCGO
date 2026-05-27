@@ -92,7 +92,7 @@ namespace DCGO.CardEffects.BT20
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanDeclareOptionDelayEffect(card) &&
-                           CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition);
+                           CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

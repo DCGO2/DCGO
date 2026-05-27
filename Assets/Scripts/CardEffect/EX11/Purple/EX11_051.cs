@@ -178,12 +178,12 @@ namespace DCGO.CardEffects.EX11
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass);
                 }
             }
 
@@ -205,12 +205,12 @@ namespace DCGO.CardEffects.EX11
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass);
                 }
 
                 bool CanSelectPermanentCondition1(Permanent permanent)

@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 int OpponentColorCount()
@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

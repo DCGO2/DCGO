@@ -153,9 +153,9 @@ namespace DCGO.CardEffects.BT24
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
             }
 
-            bool SharedCanUseCondition1(Hashtable hashtable)
+            bool SharedCanUseCondition1(Hashtable hashtable, ActivateClass activateClass)
             {
-                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
             }
 
             IEnumerator SharedActivateCoroutine1(Hashtable _hashtable, ActivateClass activateClass)
@@ -209,13 +209,13 @@ namespace DCGO.CardEffects.BT24
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName1(), SharedCanUseCondition1, card);
+                activateClass.SetUpICardEffect(SharedEffectName1(), hash => SharedCanUseCondition1(hash, activateClass), card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, true, SharedEffectDescription1());
                 cardEffects.Add(activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass);
                 }
             }
 
@@ -226,14 +226,14 @@ namespace DCGO.CardEffects.BT24
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName1(), SharedCanUseCondition1, card);
+                activateClass.SetUpICardEffect(SharedEffectName1(), hash => SharedCanUseCondition1(hash, activateClass), card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), -1, true, SharedEffectDescription1());
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass);
                 }
             }
 
