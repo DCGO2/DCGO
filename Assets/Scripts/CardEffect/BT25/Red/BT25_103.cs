@@ -160,29 +160,29 @@ namespace DCGO.CardEffects.BT25
                     {
                         if (cardSources.Count > 0)
                             used = true;
-                        
+
                         yield return null;
                     }
+                }
 
-                    List<SelectionElement<bool>> selectionElements1 = new List<SelectionElement<bool>>()
-                    {
-                        new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
-                        new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
-                    };
+                List<SelectionElement<bool>> selectionElements1 = new List<SelectionElement<bool>>()
+                {
+                    new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
+                    new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
+                };
 
-                    string selectPlayerMessage1 = "Will you end the attack?";
-                    string notSelectPlayerMessage1 = "The opponent is choosing if they will end the attack.";
+                string selectPlayerMessage1 = "Will you end the attack?";
+                string notSelectPlayerMessage1 = "The opponent is choosing if they will end the attack.";
 
-                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
+                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
 
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                    if (GManager.instance.userSelectionManager.SelectedBoolValue)
-                    {
-                        used = true;
+                if (GManager.instance.userSelectionManager.SelectedBoolValue)
+                {
+                    used = true;
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.EndAttack());
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.EndAttack());
                 }
 
                 if (!used) activateClass.RemoveUse();
