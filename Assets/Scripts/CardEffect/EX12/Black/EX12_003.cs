@@ -163,7 +163,7 @@ namespace DCGO.CardEffects.EX12
 
                             if (selectedPermanent1 != null)
                             {
-                                #region Selecting First Permanent for DNA
+                                #region Selecting Second Permanent for DNA
                                 bool PermanentDNASelection2(Permanent permanent)
                                 {
                                     return allowedPermanents.Contains(permanent)
