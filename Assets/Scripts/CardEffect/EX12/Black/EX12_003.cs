@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.EX12
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    CardSource selectedMEDNA = null;
+                    CardSource selectedDNA = null;
                     List<Permanent> allowedPermanents = new List<Permanent>();
                     Permanent selectedPermanent1 = null;
                     Permanent selectedPermanent2 = null;
@@ -86,25 +86,25 @@ namespace DCGO.CardEffects.EX12
 
                     IEnumerator SelectDNACoroutine(CardSource cardSource)
                     {
-                        selectedMEDNA = cardSource;
+                        selectedDNA = cardSource;
                         yield return null;
                     }
 
-                    if (selectedMEDNA != null)
+                    if (selectedDNA != null)
                     {
-                        JogressCondition dnaCondition = selectedMEDNA.jogressCondition[0];
+                        JogressCondition dnaCondition = selectedDNA.jogressCondition[0];
 
-                        if (selectedMEDNA.jogressCondition.Count > 1)
+                        if (selectedDNA.jogressCondition.Count > 1)
                         {
                             #region select DNA condition
                             SelectDNACondition selectDNACondition = GManager.instance.GetComponent<SelectDNACondition>();
-                            selectDNACondition.SetUp(selectedMEDNA.Owner, selectedMEDNA, SelectDNA);
+                            selectDNACondition.SetUp(selectedDNA.Owner, selectedDNA, SelectDNA);
 
                             yield return ContinuousController.instance.StartCoroutine(selectDNACondition.Activate());
 
                             IEnumerator SelectDNA(int dnaSelection)
                             {
-                                dnaCondition = selectedMEDNA.jogressCondition[dnaSelection];
+                                dnaCondition = selectedDNA.jogressCondition[dnaSelection];
 
                                 yield return null;
                             }
@@ -198,11 +198,11 @@ namespace DCGO.CardEffects.EX12
                         }
                     }
 
-                    if (selectedMEDNA != null
+                    if (selectedDNA != null
                     && selectedPermanent1
                     != null
                     && selectedPermanent2 != null
-                    && selectedMEDNA.CanJogressFromTargetPermanent(selectedPermanent1, false))
+                    && selectedDNA.CanJogressFromTargetPermanent(selectedPermanent1, false))
                     {
                         int[] jogressEvoRootsFrameIDs =
                         {
@@ -210,7 +210,7 @@ namespace DCGO.CardEffects.EX12
                         };
 
                         PlayCardClass playCard = new PlayCardClass(
-                            cardSources: new List<CardSource>() { selectedMEDNA },
+                            cardSources: new List<CardSource>() { selectedDNA },
                             hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
                             payCost: true,
                             targetPermanent: null,
