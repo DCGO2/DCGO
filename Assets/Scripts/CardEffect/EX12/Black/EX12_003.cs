@@ -124,103 +124,106 @@ namespace DCGO.CardEffects.EX12
                             }
                         }
 
-                        #region Selecting First Permanent for DNA
-                        bool PermanentDNASelection1(Permanent permanent)
-                        {
-                            return IsOwnerPermanentToBeDeletedCondition(permanent)
-                                && allowedPermanents.Contains(permanent);
-                        }
-                        
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: PermanentDNASelection1,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine1,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.",
-                            "The opponent is selecting 1 Digimon to DNA digivolve.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        #endregion
-
-                        IEnumerator SelectPermanentCoroutine1(Permanent permanent)
-                        {
-                            selectedPermanent1 = permanent;
-
-                            yield return null;
-                        }
-
-                        if (selectedPermanent1 != null)
+                        if (allowedPermanents.Count >= 2)
                         {
                             #region Selecting First Permanent for DNA
-                            bool PermanentDNASelection2(Permanent permanent)
+                            bool PermanentDNASelection1(Permanent permanent)
                             {
-                                return allowedPermanents.Contains(permanent)
-                                    && permanent != selectedPermanent1;
+                                return IsOwnerPermanentToBeDeletedCondition(permanent)
+                                    && allowedPermanents.Contains(permanent);
                             }
 
-                            SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            selectPermanentEffect1.SetUp(
+                            selectPermanentEffect.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: PermanentDNASelection2,
+                                canTargetCondition: PermanentDNASelection1,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
                                 canNoSelect: true,
                                 canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine2,
+                                selectPermanentCoroutine: SelectPermanentCoroutine1,
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect1.SetUpCustomMessage("Select second Digimon to DNA digivolve.",
-                                "The opponent is selecting second Digimon to DNA digivolve.");
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.",
+                                "The opponent is selecting 1 Digimon to DNA digivolve.");
 
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            #endregion
 
-                            IEnumerator SelectPermanentCoroutine2(Permanent permanent)
+                            IEnumerator SelectPermanentCoroutine1(Permanent permanent)
                             {
-                                selectedPermanent2 = permanent;
+                                selectedPermanent1 = permanent;
 
                                 yield return null;
                             }
-                            #endregion
-                        }
-                    }
 
-                    if (selectedDNA != null
-                    && selectedPermanent1
-                    != null
-                    && selectedPermanent2 != null
-                    && selectedDNA.CanJogressFromTargetPermanent(selectedPermanent1, false))
-                    {
-                        int[] jogressEvoRootsFrameIDs =
+                            if (selectedPermanent1 != null)
+                            {
+                                #region Selecting First Permanent for DNA
+                                bool PermanentDNASelection2(Permanent permanent)
+                                {
+                                    return allowedPermanents.Contains(permanent)
+                                        && permanent != selectedPermanent1;
+                                }
+
+                                SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                selectPermanentEffect1.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: PermanentDNASelection2,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: true,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: SelectPermanentCoroutine2,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                selectPermanentEffect1.SetUpCustomMessage("Select second Digimon to DNA digivolve.",
+                                    "The opponent is selecting second Digimon to DNA digivolve.");
+
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+
+                                IEnumerator SelectPermanentCoroutine2(Permanent permanent)
+                                {
+                                    selectedPermanent2 = permanent;
+
+                                    yield return null;
+                                }
+                                #endregion
+                            }
+                        }
+
+                        if (selectedDNA != null
+                        && selectedPermanent1
+                        != null
+                        && selectedPermanent2 != null
+                        && selectedDNA.CanJogressFromTargetPermanent(selectedPermanent1, false))
                         {
+                            int[] jogressEvoRootsFrameIDs =
+                            {
                             selectedPermanent1.PermanentFrame.FrameID, selectedPermanent2.PermanentFrame.FrameID
                         };
 
-                        PlayCardClass playCard = new PlayCardClass(
-                            cardSources: new List<CardSource>() { selectedDNA },
-                            hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                            payCost: true,
-                            targetPermanent: null,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.Hand,
-                            activateETB: true);
+                            PlayCardClass playCard = new PlayCardClass(
+                                cardSources: new List<CardSource>() { selectedDNA },
+                                hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
+                                payCost: true,
+                                targetPermanent: null,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.Hand,
+                                activateETB: true);
 
-                        playCard.SetJogress(jogressEvoRootsFrameIDs);
+                            playCard.SetJogress(jogressEvoRootsFrameIDs);
 
-                        yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+                            yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+                        }
                     }
                 }
             }
