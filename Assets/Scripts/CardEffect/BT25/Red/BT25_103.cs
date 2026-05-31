@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.BT25
             }
             #endregion
 
-            #region Shared OP / WA
+            #region Shared WD / WA
 
             string BounceEffectName = "Bottom deck 1 enemy Digimon with equal or fewer digivolution cards than this";
 
