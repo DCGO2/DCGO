@@ -206,10 +206,7 @@ namespace DCGO.CardEffects.EX12
                         && selectedPermanent2 != null
                         && selectedDNA.CanJogressFromTargetPermanent(selectedPermanent1, false))
                         {
-                            int[] jogressEvoRootsFrameIDs =
-                            {
-                            selectedPermanent1.PermanentFrame.FrameID, selectedPermanent2.PermanentFrame.FrameID
-                        };
+                            int[] jogressEvoRootsFrameIDs = {selectedPermanent1.PermanentFrame.FrameID, selectedPermanent2.PermanentFrame.FrameID};
 
                             PlayCardClass playCard = new PlayCardClass(
                                 cardSources: new List<CardSource>() { selectedDNA },
