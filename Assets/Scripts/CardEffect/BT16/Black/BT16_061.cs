@@ -191,7 +191,7 @@ namespace DCGO.CardEffects.BT16
 
                             if (CardEffectCommons.IsByEffect(hashtable, DeletionCardEffect))
                             {
-                                if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, DeletedPermanentCondition))
+                                if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, DeletedPermanentCondition, activateClass))
                                     return true;
                             }
                         }

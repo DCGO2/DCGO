@@ -240,7 +240,7 @@ namespace DCGO.CardEffects.BT13
 
                 string EffectDiscription()
                 {
-                    return "[End of OpponentÅf Turn] If this Digimon is [Belphemon: Sleep Mode], trash the top card of this Digimon. ";
+                    return "[End of Opponent's Turn] If this Digimon is [Belphemon: Sleep Mode], trash the top card of this Digimon. ";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

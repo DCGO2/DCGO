@@ -27,10 +27,10 @@ namespace DCGO.CardEffects.P
                     => cardSource.ContainsCardName("Growlmon") || cardSource.ContainsCardName("Gallantmon");
 
                 bool CanUseCondition(Hashtable hashtable)
-                 => CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                 => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanActivateOnDeletion( hashtable, card)
+                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass)
                     && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

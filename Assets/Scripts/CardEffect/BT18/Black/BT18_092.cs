@@ -39,7 +39,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardNames.Equals("Vemmon");
+                    return cardSource.EqualsCardName("Vemmon");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -104,12 +104,12 @@ namespace DCGO.CardEffects.BT18
                 bool PermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.DigivolutionCards.Count((cardSource) => cardSource.CardNames.Equals("Vemmon")) >= 2;
+                        && permanent.DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Vemmon")) >= 2;
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardNames.Equals("Vemmon");
+                    return cardSource.EqualsCardName("Vemmon");
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

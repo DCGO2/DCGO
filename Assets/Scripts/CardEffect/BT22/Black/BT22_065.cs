@@ -160,7 +160,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsOpponentDigimon);
+                    return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsOpponentDigimon, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

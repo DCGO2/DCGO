@@ -167,9 +167,150 @@ namespace DCGO.CardEffects.BT21
                 return "[On Deletion] You may play 1 red Tamer card with inherited effects from your hand or trash without paying the cost.";
             }
 
-            bool CanUseOnDeletionCondition(Hashtable hashtable)
+            bool CanUseOnDeletionCondition(Hashtable hashtable, ActivateClass activateClass)
             {
-                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
+            }
+
+            bool CanActivateOnDeletionCondition(Hashtable hashtable, ActivateClass activateClass)
+            {
+                if (CardEffectCommons.CanActivateOnDeletion(card, activateClass))
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, cardSource => CanSelectCard(cardSource, activateClass)) 
+                        || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, cardSource => CanSelectCard(cardSource, activateClass)))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            bool CanSelectCard(CardSource source, ActivateClass activateClass)
+            {
+                if (source.IsTamer)
+                {
+                    if (source.HasCardColor(CardColor.Red))
+                    {
+                        if (source.HasInheritedEffect)
+                        {
+                            if (CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.Hand) || CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.Trash))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+
+            IEnumerator OnDeletionActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
+            {
+                CardSource selectedCard = null;
+                bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, cardSource => CanSelectCard(cardSource, activateClass));
+                bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, cardSource => CanSelectCard(cardSource, activateClass));
+
+                if (canSelectHand || canSelectTrash)
+                {
+                    if (canSelectHand && canSelectTrash)
+                    {
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
+                        };
+
+                        string selectPlayerMessage = "From which area do you select a card?";
+                        string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                    }
+                    else
+                    {
+                        GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                    if (fromHand)
+                    {
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: cardSource => CanSelectCard(cardSource, activateClass),
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectHandEffect.SetUpCustomMessage("Select 1 tamer.", "The opponent is selecting 1 tamer.");
+
+                        yield return StartCoroutine(selectHandEffect.Activate());
+                    }
+                    else
+                    {
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: cardSource => CanSelectCard(cardSource, activateClass),
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 tamer.",
+                            maxCount: 1,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        selectCardEffect.SetUpCustomMessage("Select 1 tamer.", "The opponent is selecting 1 tamer.");
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                    }
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    {
+                        selectedCard = cardSource;
+                        yield return null;
+                    }
+
+                    if (selectedCard != null)
+                    {
+                        if (fromHand)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                    cardSources: new List<CardSource>() { selectedCard },
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    isTapped: false,
+                                    root: SelectCardEffect.Root.Hand,
+                                    activateETB: true));
+                        }
+                        else
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                    cardSources: new List<CardSource>() { selectedCard },
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    isTapped: false,
+                                    root: SelectCardEffect.Root.Trash,
+                                    activateETB: true));
+                        }
+                    }
+                }
             }
 
             #endregion
@@ -179,149 +320,9 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play a Red tamer from hand or trash", CanUseOnDeletionCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, OnDeletionActivateCoroutine, -1, true, OnDeletionEffectDiscription());
+                activateClass.SetUpICardEffect("Play a Red tamer from hand or trash", hash => CanUseOnDeletionCondition(hash, activateClass), card);
+                activateClass.SetUpActivateClass(hash => CanActivateOnDeletionCondition(hash, activateClass), hash => OnDeletionActivateCoroutine(hash, activateClass), -1, true, OnDeletionEffectDiscription());
                 cardEffects.Add(activateClass);
-
-                bool CanSelectCard(CardSource source)
-                {
-                    if (source.IsTamer)
-                    {
-                        if (source.HasCardColor(CardColor.Red))
-                        {
-                            if (source.HasInheritedEffect)
-                            {
-                                if (CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.Hand) || CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.Trash))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    return false;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCard) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCard))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-
-                IEnumerator OnDeletionActivateCoroutine(Hashtable hashtable)
-                {
-                    CardSource selectedCard = null;
-                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCard);
-                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCard);
-
-                    if (canSelectHand || canSelectTrash)
-                    {
-                        if (canSelectHand && canSelectTrash)
-                        {
-                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                            {
-                                new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
-                                new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
-                            };
-
-                            string selectPlayerMessage = "From which area do you select a card?";
-                            string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
-
-                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                        }
-                        else
-                        {
-                            GManager.instance.userSelectionManager.SetBool(canSelectHand);
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                        bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                        if (fromHand)
-                        {
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectCard,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectHandEffect.SetUpCustomMessage("Select 1 tamer.", "The opponent is selecting 1 tamer.");
-
-                            yield return StartCoroutine(selectHandEffect.Activate());
-                        }
-                        else
-                        {
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCard,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 tamer.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 tamer.", "The opponent is selecting 1 tamer.");
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        }
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCard = cardSource;
-                            yield return null;
-                        }
-
-                        if (selectedCard != null)
-                        {
-                            if (fromHand)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                       cardSources: new List<CardSource>() { selectedCard },
-                                       activateClass: activateClass,
-                                       payCost: false,
-                                       isTapped: false,
-                                       root: SelectCardEffect.Root.Hand,
-                                       activateETB: true));
-                            }
-                            else
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                       cardSources: new List<CardSource>() { selectedCard },
-                                       activateClass: activateClass,
-                                       payCost: false,
-                                       isTapped: false,
-                                       root: SelectCardEffect.Root.Trash,
-                                       activateETB: true));
-                            }
-                        }
-                    }
-                }
             }
 
             #endregion
@@ -331,150 +332,10 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play a Red tamer from hand or trash", CanUseOnDeletionCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, OnDeletionActivateCoroutine, -1, true, OnDeletionEffectDiscription());
+                activateClass.SetUpICardEffect("Play a Red tamer from hand or trash", hash => CanUseOnDeletionCondition(hash, activateClass), card);
+                activateClass.SetUpActivateClass(hash => CanActivateOnDeletionCondition(hash, activateClass), hash => OnDeletionActivateCoroutine(hash, activateClass), -1, true, OnDeletionEffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
-
-                bool CanSelectCard(CardSource source)
-                {
-                    if (source.IsTamer)
-                    {
-                        if (source.HasCardColor(CardColor.Red))
-                        {
-                            if (source.HasInheritedEffect)
-                            {
-                                if (CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.Hand) || CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.Trash))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    return false;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCard) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCard))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-
-                IEnumerator OnDeletionActivateCoroutine(Hashtable hashtable)
-                {
-                    CardSource selectedCard = null;
-                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCard);
-                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCard);
-
-                    if (canSelectHand || canSelectTrash)
-                    {
-                        if (canSelectHand && canSelectTrash)
-                        {
-                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                            {
-                                new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
-                                new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
-                            };
-
-                            string selectPlayerMessage = "From which area do you select a card?";
-                            string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
-
-                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                        }
-                        else
-                        {
-                            GManager.instance.userSelectionManager.SetBool(canSelectHand);
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                        bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                        if (fromHand)
-                        {
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectCard,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectHandEffect.SetUpCustomMessage("Select 1 tamer.", "The opponent is selecting 1 tamer.");
-
-                            yield return StartCoroutine(selectHandEffect.Activate());
-                        }
-                        else
-                        {
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCard,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 tamer.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 tamer.", "The opponent is selecting 1 tamer.");
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        }
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCard = cardSource;
-                            yield return null;
-                        }
-
-                        if (selectedCard != null)
-                        {
-                            if (fromHand)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                       cardSources: new List<CardSource>() { selectedCard },
-                                       activateClass: activateClass,
-                                       payCost: false,
-                                       isTapped: false,
-                                       root: SelectCardEffect.Root.Hand,
-                                       activateETB: true));
-                            }
-                            else
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                       cardSources: new List<CardSource>() { selectedCard },
-                                       activateClass: activateClass,
-                                       payCost: false,
-                                       isTapped: false,
-                                       root: SelectCardEffect.Root.Trash,
-                                       activateETB: true));
-                            }
-                        }
-                    }
-                }
             }
 
             #endregion

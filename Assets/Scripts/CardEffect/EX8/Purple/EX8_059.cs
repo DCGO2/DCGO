@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.EX8
                                     {
                                         if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                         {
-                                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent))
+                                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent, activateClass1))
                                             {
                                                 if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                                 {
@@ -337,7 +337,7 @@ namespace DCGO.CardEffects.EX8
                                     {
                                         if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                         {
-                                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent))
+                                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent, activateClass))
                                             {
                                                 if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                                 {
