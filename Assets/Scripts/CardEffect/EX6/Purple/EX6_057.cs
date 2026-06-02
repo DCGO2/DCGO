@@ -122,6 +122,7 @@ namespace DCGO.CardEffects.EX6
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)
+                        && permanent.HasLevel
                         && permanent.Level <= 5;
                 }
 
