@@ -4,8 +4,21 @@ using System;
 
 public partial class CardEffectFactory
 {
-    #region Trigger effect of [Guard]
-    public static ActivateClass GuardEffect(Permanent targetPermanent, bool isInheritedEffect, Func<bool> condition, ICardEffect rootCardEffect, CardSource card)
+    #region [Guard] self effect
+    public static ActivateClass GuardSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, bool isLinkedEffect = false)
+    {
+        return GuardEffect(
+            targetPermanent: card.PermanentOfThisCard(), 
+            isInheritedEffect,
+            condition,
+            rootCardEffect: null,
+            card,
+            isLinkedEffect);
+    }
+    #endregion
+
+    #region [Guard] Effect
+    public static ActivateClass GuardEffect(Permanent targetPermanent, bool isInheritedEffect, Func<bool> condition, ICardEffect rootCardEffect, CardSource card, bool isLinkedEffect = false)
     {
         if (targetPermanent == null) return null;
         if (targetPermanent.TopCard == null) return null;
@@ -15,6 +28,7 @@ public partial class CardEffectFactory
         activateClass.SetUpICardEffect("Guard", CanUseCondition, card);
         activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, DataBase.GuardEffectDescription());
         activateClass.SetIsInheritedEffect(isInheritedEffect);
+        activateClass.SetIsLinkedEffect(isLinkedEffect);
 
         if (rootCardEffect != null)
         {
@@ -26,8 +40,12 @@ public partial class CardEffectFactory
         bool CanUseCondition(Hashtable hashtable)
         {
             return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(targetPermanent)
-                && !targetPermanent.TopCard.CanNotBeAffected(activateClass);
+                && !targetPermanent.TopCard.CanNotBeAffected(activateClass)
+                && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition)
+                && CardEffectCommons.IsByEffect(hashtable, effect => CardEffectCommons.IsOpponentEffect(effect, card));
         }
+
+        bool PermanentCondition(Permanent permanent) => permanent != targetPermanent && CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
         bool CanActivateCondition(Hashtable hashtable)
         {
@@ -57,19 +75,41 @@ public partial class CardEffectFactory
         if (permanent == null) yield break;
         if (permanent.TopCard == null) yield break;
 
+        bool PermanentCondition(Permanent otherPermanent) => permanent != otherPermanent && CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(otherPermanent, permanent.TopCard);
+
         Player owner = permanent.TopCard.Owner;
 
-        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+        string selectPlayerMessage = "Will you delete this digimon to prevent the removal?";
+        string notSelectPlayerMessage = "The opponent is choosing if they will use Guard.";
 
-        IEnumerator SuccessProcess()
+        List<SelectionElement<bool>> command_SelectCommands = new List<SelectionElement<bool>>()
         {
-            permanent.willBeRemoveField = false;
-            permanent.HideDeleteEffect();
-            permanent.HideHandBounceEffect();
-            permanent.HideDeckBounceEffect();
-            permanent.HideWillRemoveFieldEffect();
+            new SelectionElement<bool>(message: $"Yes", value: true, spriteIndex: 0),
+            new SelectionElement<bool>(message: $"No", value: false, spriteIndex: 1),
+        };
 
-            yield return null;
+        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: command_SelectCommands, selectPlayer: owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+        if (GManager.instance.userSelectionManager.SelectedBoolValue)
+        {
+            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+
+            IEnumerator SuccessProcess()
+            {
+                List<Permanent> GuardedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(PermanentCondition);
+
+                foreach (Permanent guardPermanent in GuardedPermanents)
+                {
+                    guardPermanent.willBeRemoveField = false;
+                    guardPermanent.HideDeleteEffect();
+                    guardPermanent.HideHandBounceEffect();
+                    guardPermanent.HideDeckBounceEffect();
+                    guardPermanent.HideWillRemoveFieldEffect();
+                }
+                yield return null;
+            }
         }
     }
     #endregion
@@ -108,72 +148,6 @@ public partial class CardEffectFactory
         {
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(targetPermanent));
         }
-    }
-    #endregion
-
-    #region Player gains effect to have Digimon gains [Guard]
-    public static IEnumerator GainGuardPlayerEffect(Func<Permanent, bool> permanentCondition, EffectDuration effectDuration, ICardEffect activateClass)
-    {
-        if (activateClass == null) yield break;
-        if (activateClass.EffectSourceCard == null) yield break;
-
-        CardSource card = activateClass.EffectSourceCard;
-
-        bool PermanentCondition(Permanent permanent)
-        {
-            return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)
-                && !permanent.TopCard.CanNotBeAffected(activateClass)
-                && (permanentCondition == null
-                    || permanentCondition(permanent));
-        }
-
-        bool CanUseCondition()
-        {
-            return true;
-        }
-
-        ICardEffect guard = CardEffectFactory.GuardStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, condition: CanUseCondition);
-
-        CardEffectCommons.AddEffectToPlayer(effectDuration: effectDuration, card: card, cardEffect: guard, timing: EffectTiming.WhenRemoveField);
-
-        foreach (Permanent permanent in GManager.instance.turnStateMachine.gameContext.PermanentsForTurnPlayer)
-        {
-            if (PermanentCondition(permanent))
-            {
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(permanent));
-            }
-        }
-    }
-    #endregion
-
-    #region Static effect of [Guard] to all PermanentCondition Digimon
-    public static ActivateClass GuardStaticEffect(Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition)
-    {
-        ActivateClass activateClass = new ActivateClass();
-        activateClass.SetUpICardEffect("Guard", CanUseCondition, card);
-        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, DataBase.GuardEffectDescription());
-        activateClass.SetIsInheritedEffect(isInheritedEffect);
-
-        bool CanUseCondition(Hashtable hashtable)
-        {
-            return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
-                && (condition == null
-                    || condition());
-        }
-
-        bool CanActivateCondition(Hashtable hashtable)
-        {
-            return CardEffectFactory.CanActivateGuard(card.PermanentOfThisCard(), activateClass)
-                && (condition == null
-                    || condition());
-        }
-
-        IEnumerator ActivateCoroutine(Hashtable hashtable)
-        {
-            return CardEffectFactory.GuardProcess(hashtable, activateClass, card.PermanentOfThisCard());
-        }
-
-        return activateClass;
     }
     #endregion
 

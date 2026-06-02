@@ -31,12 +31,49 @@ namespace DCGO.CardEffects.EX12
                         && permanent.TopCard.EqualsTraits("Me");
                 }
 
-                bool CanUseCondition()
+                bool CardSourceCondition(CardSource cardSource)
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
+                    {
+                        if (cardSource.Owner == card.Owner)
+                        {
+                            if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                            {
+                                if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistInSecurity(card, false);
                 }
 
-                cardEffects.Add(CardEffectFactory.GuardStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, condition: CanUseCondition));
+                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                {
+                    if (_timing == EffectTiming.WhenRemoveField)
+                    {
+                        bool Condition()
+                        {
+                            return true;
+                        }
+
+                        cardEffects.Add(CardEffectFactory.GuardSelfEffect(false, cardSource, Condition));
+                    }
+
+                    return cardEffects;
+                }
+
+                AddSkillClass addSkillClass = new AddSkillClass();
+                addSkillClass.SetUpICardEffect("Your Digimon gain Guard", CanUseCondition, card);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects, limitTiming: EffectTiming.WhenRemoveField);
+                cardEffects.Add(addSkillClass);
 
             }
             #endregion
