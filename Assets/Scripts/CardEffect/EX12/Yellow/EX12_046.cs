@@ -202,7 +202,8 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.HasDP
+                    return cardSource.IsDigimon
+                        && cardSource.HasDP
                         && cardSource.CardDP <= 5000
                         && cardSource.EqualsTraits("TB")
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
