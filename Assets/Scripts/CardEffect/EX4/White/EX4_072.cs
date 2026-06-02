@@ -90,8 +90,7 @@ namespace DCGO.CardEffects.EX4
 
                 bool CanSelectCardCondition(CardSource cardSource, Permanent permanent)
                 {
-                    return permanent.TopCard.CardNames.Any((cardName) => cardSource.ContainsCardName(cardName))
-                        && !permanent.TopCard.CardNames.Any((cardName) => cardSource.EqualsCardName(cardName))
+                    return permanent.TopCard.CardNames.Any((cardName) => cardSource.ContainsCardName(cardName) && !cardSource.EqualsCardName(cardName))
                         && cardSource.HasLevel
                         && cardSource.Level == 6;
                 }
