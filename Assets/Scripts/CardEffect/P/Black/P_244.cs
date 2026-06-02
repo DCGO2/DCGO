@@ -70,20 +70,12 @@ namespace DCGO.CardEffects.P
 
                             bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                            CardSource selectedCard = null;
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCard = cardSource;
-                                yield return null;
-                            }
-
                             #region Hand/Trash Card Selection & Play
                             if (fromHand)
                             {
-                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                                SelectHandEffect selectHandEffect2 = GManager.instance.GetComponent<SelectHandEffect>();
 
-                                selectHandEffect.SetUp(
+                                selectHandEffect2.SetUp(
                                     selectPlayer: card.Owner,
                                     canTargetCondition: CanSelectCardCondition,
                                     canTargetCondition_ByPreSelecetedList: null,
@@ -92,17 +84,12 @@ namespace DCGO.CardEffects.P
                                     canNoSelect: true,
                                     canEndNotMax: false,
                                     isShowOpponent: true,
-                                    selectCardCoroutine: SelectCardCoroutine,
+                                    selectCardCoroutine: null,
                                     afterSelectCardCoroutine: null,
-                                    mode: SelectHandEffect.Mode.Custom,
+                                    mode: SelectHandEffect.Mode.PlayForFree,
                                     cardEffect: activateClass);
 
-                                selectHandEffect.SetUpCustomMessage("Select 1 [Vemmon]/[Zenith] to play.", "The opponent is selecting 1 [Vemmon]/[Zenith] to play.");
-
-                                yield return StartCoroutine(selectHandEffect.Activate());
-
-                                if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(
-                                    CardEffectCommons.PlayPermanentCards(new List<CardSource>() { selectedCard }, activateClass, false, false, SelectCardEffect.Root.Hand, true));
+                                yield return StartCoroutine(selectHandEffect2.Activate());
                             }
                             else
                             {
@@ -113,24 +100,20 @@ namespace DCGO.CardEffects.P
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
                                     canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
+                                    selectCardCoroutine: null,
                                     afterSelectCardCoroutine: null,
-                                    message: "Select 1 [Vemmon]/[Zenith] to play.",
+                                    message: "Select 1 card to play.",
                                     maxCount: 1,
                                     canEndNotMax: false,
                                     isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
+                                    mode: SelectCardEffect.Mode.PlayForFree,
                                     root: SelectCardEffect.Root.Trash,
                                     customRootCardList: null,
                                     canLookReverseCard: true,
                                     selectPlayer: card.Owner,
                                     cardEffect: activateClass);
 
-                                selectCardEffect.SetUpCustomMessage("Select 1 [Vemmon]/[Zenith] to play.", "The opponent is selecting 1 [Vemmon]/[Zenith] to play.");
-
-                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                                if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(
-                                    CardEffectCommons.PlayPermanentCards(new List<CardSource>() { selectedCard }, activateClass, false, false, SelectCardEffect.Root.Trash, true));
+                                yield return StartCoroutine(selectCardEffect.Activate());
                             }
                             #endregion
                         }
@@ -161,7 +144,7 @@ namespace DCGO.CardEffects.P
                         && CardEffectCommons.CanTriggerOnAddDigivolutionCard(
                             hashtable: hashtable,
                             permanentCondition: TriggerPermanentCondition,
-                            cardEffectCondition: cardEffect => cardEffect.EffectSourceCard != null && cardEffect.EffectSourceCard.Owner == card.Owner,
+                            cardEffectCondition: _ => true,
                             cardCondition: TriggerCardCondition);
                 }
 
@@ -274,7 +257,7 @@ namespace DCGO.CardEffects.P
                                 ));
                             }
                         }
-                    }        
+                    }
                 }
             }
             #endregion
