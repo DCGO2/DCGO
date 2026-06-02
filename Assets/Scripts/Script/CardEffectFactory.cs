@@ -1093,13 +1093,13 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.CanTriggerOnDeletion(hashtable, card) && 
+            return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass) && 
                 (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
         }
 
         bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
         {
-            return CardEffectCommons.CanActivateOnDeletion(hashtable, card)
+            return CardEffectCommons.CanActivateOnDeletion(card, activateClass)
                 && (additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass));
         }
     }

@@ -97,7 +97,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDescription()
                 {
-                    return "[Your Turn] When effects delete Digimon, <Delay>.\r\n• 1 of your Digimon with [Guilmon] or [Growlmon] in its name may digivolve into a Digimon card with [Growlmon], [Gallantmon] or [Megidramon] in its name in the trash without paying the cost.";
+                    return "[Your Turn] When effects delete Digimon, <Delay>.\r\n 1 of your Digimon with [Guilmon] or [Growlmon] in its name may digivolve into a Digimon card with [Growlmon], [Gallantmon] or [Megidramon] in its name in the trash without paying the cost.";
                 }
 
                 bool TriggerPermanentCondition(Permanent permanent)
@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     return CardEffectCommons.IsOwnerTurn(card) &&
                            CardEffectCommons.CanDeclareOptionDelayEffect(card) &&
-                           CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, TriggerPermanentCondition) &&
+                           CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, TriggerPermanentCondition, activateClass) &&
                            CardEffectCommons.IsByEffect(hashtable, null);
                 }
 

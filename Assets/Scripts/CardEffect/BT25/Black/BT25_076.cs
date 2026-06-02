@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.BT25
                 {
                     bool canNoSelect = true;
 
-                    if (!CardEffectCommons.GetPayCostFromHashtable(hashtable)
+                    if (CardEffectCommons.GetPayCostFromHashtable(hashtable)
                         && card.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > card.Owner.MaxMemoryCost)
                     {
                         canNoSelect = false;

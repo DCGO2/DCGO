@@ -161,7 +161,7 @@ public class BT8_070 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                    if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                     {
                         return true;
                     }

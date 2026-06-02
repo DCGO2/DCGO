@@ -122,7 +122,7 @@ namespace DCGO.CardEffects.EX8
                         {
                             if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(selectedPermanent))
                             {
-                                if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent))
+                                if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent, activateClass))
                                 {
                                     if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                     {
@@ -221,7 +221,7 @@ namespace DCGO.CardEffects.EX8
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                             {
                                 return true;
                             }

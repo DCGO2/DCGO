@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.EX4
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn][Once Per Turn] When an effect suspends another Digimon, this Digimon gets +2000 DP until the end of your opponentÅ's turn.";
+                    return "[Your Turn] [Once Per Turn] When an effect suspends another Digimon, this Digimon gets +2000 DP until the end of your opponent's turn.";
                 }
 
                 bool PermanentCondition(Permanent permanent)

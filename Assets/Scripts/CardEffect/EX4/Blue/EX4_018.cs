@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.EX4
 
                 string EffectDiscription()
                 {
-                    return "[On Play] 1 of your opponentÅf Digimon with the lowest level gains \"[When Attacking] Lose 2 memory\" until the end of your opponent's turn.";
+                    return "[On Play] 1 of your opponent's Digimon with the lowest level gains \"[When Attacking] Lose 2 memory\" until the end of your opponent's turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

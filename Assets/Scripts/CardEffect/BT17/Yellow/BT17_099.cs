@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.BT17
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When one of your Tamers is deleted or returned to the hand, <Delay>.\r\n• 1 of your Digimon may digivolve into a Digimon card with [ShineGreymon] in its name in the hand without paying the cost.";
+                    return "[All Turns] When one of your Tamers is deleted or returned to the hand, <Delay>.\r\n 1 of your Digimon may digivolve into a Digimon card with [ShineGreymon] in its name in the hand without paying the cost.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -192,12 +192,12 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                         {
                             return true;
                         }
 
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                         {
                             return true;
                         }

@@ -44,7 +44,7 @@ public class BT8_094 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                    if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                     {
                         return true;
                     }

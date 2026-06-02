@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
+// Altea
 namespace DCGO.CardEffects.BT20
 {
     public class BT20_086 : CEntity_Effect
@@ -23,10 +24,10 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By placing a card as bottom digivolution source, flip opponents top security face up", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Start of Your Main Phase] By placing 1 play cost 4 or lower black Digimon card with the [Cyborg] or [Machine] trait from your hand or trash as any of your [Cyborg] or [Machine] trait Digimon's bottom digivolution card, flip your opponent's top face-down security card face up.";
                 }
@@ -47,12 +48,13 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return isExistOnField(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass) &&
                            CardEffectCommons.HasMatchConditionPermanent(SelectPermanentCard) &&
                            (CardEffectCommons.HasMatchConditionOwnersHand(card, SelectSourceCard) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SelectSourceCard));
                 }
@@ -199,7 +201,6 @@ namespace DCGO.CardEffects.BT20
                 cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
             }
             #endregion
-            
 
             return cardEffects;
         }
