@@ -23,13 +23,6 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region Static Keywords
-            #region Rush
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.RushSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
-            }
-            #endregion
-
             #region Piercing
             if (timing == EffectTiming.OnDetermineDoSecurityCheck)
             {
@@ -189,7 +182,7 @@ namespace DCGO.CardEffects.EX12
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("May return 1 [TB] card to hand, then may play 1 lvl 5- [TB] Digimon from hand for free", CanUseCondition, card);
+                activateClass.SetUpICardEffect("May return 1 [TB] card from trash to hand, then may play 1 lvl 5- [TB] Digimon from hand for free", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
