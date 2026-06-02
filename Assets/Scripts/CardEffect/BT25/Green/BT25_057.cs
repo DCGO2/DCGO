@@ -31,6 +31,7 @@ namespace DCGO.CardEffects.BT25
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Battle 1 of your opponent's Digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebSocketSharp;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Create/CEntity_Base")]

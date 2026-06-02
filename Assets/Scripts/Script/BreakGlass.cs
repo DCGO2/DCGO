@@ -4,7 +4,10 @@ using DG.Tweening;
 
 public class BreakGlass : MonoBehaviour
 {
-    [SerializeField] private bool useGravity = false;                            // 重力を有効にするかどうか
+    private static WaitForSeconds _waitForSeconds0_15 = new WaitForSeconds(0.15f);
+    private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
+
+    //[SerializeField] private bool useGravity = false;                            // 重力を有効にするかどうか
     [SerializeField] internal Vector3 explodeVel = new Vector3(0, 0, 0f);      // 爆発の中心地
     [SerializeField] private float explodeForce = 75000;                         // 爆発の威力
     [SerializeField] private float explodeRange = 500;                          // 爆発の範囲
@@ -42,9 +45,9 @@ public class BreakGlass : MonoBehaviour
             rb.AddExplosionForce(explodeForce, transform.position + explodeVel, explodeRange);
         }
 
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForSeconds0_1;
 
-        if (!(this is SecurityBreakGlass))
+        if (this is not SecurityBreakGlass)
         {
             foreach (Rigidbody rb in rigidBodies)
             {
@@ -52,7 +55,7 @@ public class BreakGlass : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(0.15f);
+        yield return _waitForSeconds0_15;
 
         foreach (Rigidbody rb in rigidBodies)
         {

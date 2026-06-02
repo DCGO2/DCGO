@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +5,6 @@ using UnityEngine.UI;
 public class HideCannotSelectObject : MonoBehaviour
 {
     [SerializeField] Transform _cardUnmasksParent;
-    bool _first = false;
 
     List<PermanentUnMask> _permanentUnMasks = new List<PermanentUnMask>();
     public void Init()

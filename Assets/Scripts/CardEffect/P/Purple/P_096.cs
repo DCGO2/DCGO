@@ -136,8 +136,6 @@ namespace DCGO.CardEffects.P
                             bool fromTrash = false;
                             bool noSelect = false;
 
-                            yield return GManager.instance.photonWaitController.StartWait("PrismGallet_Select");
-
                             if (canSelectTamer() && canSelectTrash())
                             {
                                 List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()

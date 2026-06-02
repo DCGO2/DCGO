@@ -26,13 +26,7 @@ namespace DCGO.CardEffects.BT25
             #region Reduce Play Cost
             if (timing == EffectTiming.None)
             {
-                ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -5", CanUseCondition, card);
-                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                changeCostClass.SetNotShowUI(true);
-                cardEffects.Add(changeCostClass);
-
-                bool CanUseCondition(Hashtable hashtable)
+                bool Condition()
                 {
                     return CardEffectCommons.HasMatchConditionPermanent(WouldPlayCondition);
                 }
@@ -44,38 +38,7 @@ namespace DCGO.CardEffects.BT25
                         && permanent.DP >= 13000;
                 }
 
-                int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
-                        List<Permanent> targetPermanents)
-                {
-                    if (CardSourceCondition(cardSource) &&
-                        RootCondition(root) &&
-                        PermanentsCondition(targetPermanents))
-                    {
-                        cost -= 5;
-                    }
-
-                    return cost;
-                }
-
-                bool PermanentsCondition(List<Permanent> targetPermanents)
-                {
-                    return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
-                }
-
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    return cardSource == card;
-                }
-
-                bool RootCondition(SelectCardEffect.Root root)
-                {
-                    return true;
-                }
-
-                bool isUpDown()
-                {
-                    return true;
-                }
+                cardEffects.Add(CardEffectFactory.MandatorySelfPlayCostReduction(5, card, Condition));
             }
             #endregion
 
@@ -216,24 +179,23 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
                     {
                         bool WinnerCondition(Permanent permanent) => permanent.TopCard.Owner == card.Owner && permanent.TopCard.HasTSTraits;
 
-                        if (CardEffectCommons.CanTriggerWhenWinBattle(
+                        return CardEffectCommons.CanTriggerWhenWinBattle(
                             hashtable: hashtable,
-                            winnerCondition: WinnerCondition))
-                        {
-                            return true;
-                        }
+                            winnerCondition: WinnerCondition);
                     }
-
-                    return false;
+                    else
+                    {
+                        return false;
+                    }
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

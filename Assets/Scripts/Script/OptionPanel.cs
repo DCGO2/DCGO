@@ -6,6 +6,8 @@ using UnityEngine.Events;
 
 public class OptionPanel : OffAnimation
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
     [SerializeField] VolumePanel _volumePanel;
     [SerializeField] ResizeWindow _resizeWindowPanel;
     [SerializeField] GameplayOption _gameplayOption;
@@ -187,8 +189,8 @@ public class OptionPanel : OffAnimation
             }
         }
 
-        _anim.SetInteger("Open", 0);
-        _anim.SetInteger("Close", 1);
+        _anim.SafeSetInt(OpenHash, 0);
+        _anim.SafeSetInt(CloseHash, 1);
     }
 
     public void Init()
@@ -232,6 +234,6 @@ public class OptionPanel : OffAnimation
         return;
 #endif
 
-        Application.Quit();
+        //Application.Quit();
     }
 }

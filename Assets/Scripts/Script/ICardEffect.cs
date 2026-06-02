@@ -1,5 +1,4 @@
-﻿using Photon.Pun;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -388,7 +387,7 @@ public abstract class ICardEffect
         {
             if (EffectSourceCard != null)
             {
-                if (EffectSourceCard.PermanentOfThisCard() != null)
+                if (EffectSourceCard.PermanentOfThisCard() != null && !IsOnDeletion)
                 {
                     if (IsInheritedEffect || IsLinkedEffect)
                     {
@@ -694,6 +693,31 @@ public abstract class ICardEffect
     public void SetNotShowUI(bool isNotShowUI)
     {
         IsNotShowUI = isNotShowUI;
+    }
+
+    #endregion
+
+    #region When this effect was activated for comparison
+
+    DateTime _activatedTime = DateTime.MinValue;
+
+    public DateTime ActivatedTime
+    {
+        get { return _activatedTime; }
+        private set { _activatedTime = value; }
+    }
+
+    public void SetActivatedTime(params DateTime[] activationTimes)
+    {
+        if (activationTimes.Length > 0)
+        {
+            DateTime latest = activationTimes[0];
+            foreach (DateTime time in activationTimes)
+            {
+                if (time > latest) latest = time;
+            }
+            _activatedTime = latest;
+        }
     }
 
     #endregion
@@ -1218,6 +1242,13 @@ public static class ActivateICardEffectExtensionClass
     public static void RemoveUse(this ActivateICardEffect activateICardEffect)
     {
         ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RemoveUseEffectThisTurn((ICardEffect)activateICardEffect);
+    }
+    #endregion
+
+    #region add a usage of an X Per Turn
+    public static void AddUse(this ActivateICardEffect activateICardEffect)
+    {
+        ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn((ICardEffect)activateICardEffect);
     }
     #endregion
 

@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.BT25
 
             #region Shared OP / WD / WA
 
-            string SharedEffectName = "Link from hand or digivolution cards to this for -2";
+            string SharedEffectName = "Link from trash or digivolution cards to this for -2";
 
             string SharedEffectDescription(string tag)
                 => $"[{tag}] If it's your turn, you may link 1 [Social], [Tool] or [Game] trait Digimon card from your trash or this Digimon's digivolution cards to this Digimon with the cost reduced by 2.";
@@ -314,7 +314,7 @@ namespace DCGO.CardEffects.BT25
 
                 string EffectDescription()
                 {
-                    return "[When Linking] 1 of your opponent's Digimon or Tamers can't unsuspend until their turn ends.";
+                    return "[When Linking] 2 of your opponent's Digimon or Tamers can't unsuspend until their turn ends.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

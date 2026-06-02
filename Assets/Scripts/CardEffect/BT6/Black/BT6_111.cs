@@ -213,7 +213,6 @@ public class BT6_111 : CEntity_Effect
 
                         while (card.Owner.MaxMemoryCost >= 1 && count < 5)
                         {
-                            yield return GManager.instance.photonWaitController.StartWait("PayMemory_Alphamon");
 
                             List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                             {

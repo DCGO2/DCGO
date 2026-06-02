@@ -85,7 +85,7 @@ public class BT7_084 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
             }
 
             bool CanActivateCondition(Hashtable hashtable)

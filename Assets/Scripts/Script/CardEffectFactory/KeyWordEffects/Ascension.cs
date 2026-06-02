@@ -17,13 +17,13 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.CanTriggerAscension(hashtable, card)
+            return CardEffectCommons.CanTriggerAscension(hashtable, card, activateClass)
                 && (condition == null || condition());
         }
 
         bool CanActivateCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.CanActivateAscension(hashtable, card);
+            return CardEffectCommons.CanActivateAscension(card, activateClass);
         }
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)

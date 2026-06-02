@@ -109,8 +109,8 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.OnLoseSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 level 4 or lower [Angel]/[Illad] trait card from hand without cost, then 2 digimon gain reboot & blocker until opponent turn end", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpICardEffect("Play 1 level 4 or lower [Angel]/[Iliad] trait card from hand without cost, then 2 digimon gain reboot & blocker until opponent turn end", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("BT25_042_AT");
                 cardEffects.Add(activateClass);
 
@@ -121,20 +121,20 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, owner => owner == card.Owner);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 bool CanPlayCardCondition(CardSource cardSource)
                     => cardSource.HasLevel
                        && cardSource.Level <= 4
-                       && CardEffectCommons.CanPlayAsNewPermanent(card, false, activateClass)
-                       && (cardSource.EqualsTraits("Angel") || cardSource.HasIliadTraits);
+                       && (cardSource.EqualsTraits("Angel") || cardSource.HasIliadTraits)
+                       && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
                 bool IsOwnedDigimon(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
@@ -160,14 +160,13 @@ namespace DCGO.CardEffects.BT25
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
                     }
 
                     List<Permanent> selectedPermaments = new List<Permanent>(); ;
-                    if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsOwnedDigimon) >= 1)
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsOwnedDigimon))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        int maxCount = Math.Min(2, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsOwnedDigimon));
+                        int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(IsOwnedDigimon));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
@@ -188,7 +187,7 @@ namespace DCGO.CardEffects.BT25
                             yield break;
                         }
 
-                        selectPermanentEffect.SetUpCustomMessage($"Select 2 digimon to gain reboot and blocker.", $"The opponent is selecting 2 digimon to gain reboot and blocker.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 2 digimon to gain reboot and blocker.", "The opponent is selecting 2 digimon to gain reboot and blocker.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 

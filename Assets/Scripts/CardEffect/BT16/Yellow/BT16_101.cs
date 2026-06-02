@@ -126,7 +126,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                         {
                             if (!CardEffectCommons.IsByEffect(hashtable, null))
                             {
@@ -177,7 +177,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                         {
                             bool WinnerCondition(Permanent permanent) => CardEffectCommons.IsOwnerPermanent(permanent, card);
                             bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);

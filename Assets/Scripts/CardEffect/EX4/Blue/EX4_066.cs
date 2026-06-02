@@ -29,8 +29,6 @@ namespace DCGO.CardEffects.EX4
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return GManager.instance.photonWaitController.StartWait("GoldBeast_Select");
-
                     List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new SelectionElement<int>(message: $"Digivolve into [BlitzGreymon]", value : 0, spriteIndex: 0),

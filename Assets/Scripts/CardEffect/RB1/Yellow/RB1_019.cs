@@ -42,7 +42,7 @@ public class RB1_019 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Place all level 3 Digimon face down on top of their owners' security stacks in any order. Then, all of your opponentÅf level 4 or higher Digimon get -3000 DP and gain <Security Attack -1> until the end of their turn.";
+                return "[When Digivolving] Place all level 3 Digimon face down on top of their owners' security stacks in any order. Then, all of your opponent's level 4 or higher Digimon get -3000 DP and gain <Security Attack -1> until the end of their turn.";
             }
 
             bool PermanentCondition(Permanent permanent)
@@ -207,7 +207,7 @@ public class RB1_019 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] By trashing 1 card with [Numemon] in its name in this Digimon's digivolution cards, place 1 of your opponentÅf Digimon face down at the bottom of their security stack.";
+                return "[When Attacking] By trashing 1 card with [Numemon] in its name in this Digimon's digivolution cards, place 1 of your opponent's Digimon face down at the bottom of their security stack.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

@@ -10,6 +10,8 @@ public partial class PermanentEffectFactory
     #region Effect of a Permanent to Delete Itself
     public static ActivateClass DeleteSelfEffect(Permanent permanent, ICardEffect cardEffect, bool deleteOnOwnturn = true, bool deleteOnOpponentsTurn = true)
     {
+        if(permanent == null || permanent.TopCard == null) return null;
+        
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Delete this Digimon", CanUseCondition, permanent.TopCard);
         activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, "");
@@ -50,6 +52,8 @@ public partial class PermanentEffectFactory
     #region Digimon Effect Immunity
     public static CanNotAffectedClass DigimonEffectImmunity(Permanent permanent)
     {
+        if(permanent == null || permanent.TopCard == null) return null;
+        
         bool CanUseCondition1(Hashtable hashtable)
         {
             return CardEffectCommons.IsExistOnBattleAreaDigimon(permanent.TopCard);
@@ -79,6 +83,8 @@ public partial class PermanentEffectFactory
     #region Option Effect Immunity
     public static CanNotAffectedClass OptionEffectImmunity(Permanent permanent)
     {
+        if(permanent == null || permanent.TopCard == null) return null;
+        
         bool CanUseCondition1(Hashtable hashtable)
         {
             return CardEffectCommons.IsExistOnBattleAreaDigimon(permanent.TopCard);
@@ -108,6 +114,8 @@ public partial class PermanentEffectFactory
     #region Cannot change Attack Target Effect
     public static CanNotSwitchAttackTargetClass CanNotSwitchAttackTargetEffect(Permanent targetPermanent, ICardEffect activateClass)
     {
+        if(targetPermanent == null || targetPermanent.TopCard == null) return null;
+
         CanNotSwitchAttackTargetClass canNotSwitchAttackTargetClass = new CanNotSwitchAttackTargetClass();
         canNotSwitchAttackTargetClass.SetUpICardEffect("This Digimon's attack target can't be switched.", CanUseCondition, targetPermanent.TopCard);
         canNotSwitchAttackTargetClass.SetUpCanNotSwitchAttackTargetClass(PermanentCondition: PermanentCondition);
@@ -130,6 +138,8 @@ public partial class PermanentEffectFactory
     #region Gain Collision Effect
     public static CollisionClass CollisionEffect(Permanent targetPermanent, ICardEffect activateClass)
     {
+        if(targetPermanent == null || targetPermanent.TopCard == null) return null;
+        
         return CardEffectFactory.CollisionStaticEffect(PermanentCondition, false, targetPermanent.TopCard, CanUseCondition);
 
         bool CanUseCondition()
@@ -145,6 +155,8 @@ public partial class PermanentEffectFactory
     #region Add Detail for Display
     public static AddDetailClass AddDetailClass(Permanent targetPermanent, string detail, bool triggerEffect, ICardEffect activateClass)
     {
+        if(targetPermanent == null || targetPermanent.TopCard == null) return null;
+        
         return CardEffectFactory.AddDetailClass(CanUseCondition, PermanentCondition, detail, triggerEffect, activateClass.EffectSourceCard);
 
         bool PermanentCondition(Permanent permanent)

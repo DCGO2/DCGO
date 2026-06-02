@@ -213,14 +213,14 @@ namespace DCGO.CardEffects.EX10
 
             #region On Play/When Attacking Shared
 
+            string SharedEffectName = "De-digivolve 2, 2 digimon";
+
+            string SharedEffectDescription(string tag)
+                => $"[{tag}] <De-Digivolve 2> 2 of your opponent's Digimon. (Trash up to 2 cards from the top. You can't trash past level 3 cards.)";
+
             bool CanSelectPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-            }
-
-            bool CanActivateSharedCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.IsExistOnBattleArea(card);
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable _hashtable, ActivateClass activateClass)
@@ -291,51 +291,14 @@ namespace DCGO.CardEffects.EX10
                 }
             }
 
-            #endregion
-
-            #region On Play
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("De-digivolve 2, 2 digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return "[On Play] <De-Digivolve 2> 2 of your opponent's Digimon. (Trash up to 2 cards from the top. You can't trash past level 3 cards.)";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-            }
-
-            #endregion
-
-            #region When Attacking
-
-            if (timing == EffectTiming.OnAllyAttack)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("De-digivolve 2, 2 digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return "[When Attacking] <De-Digivolve 2> 2 of your opponent's Digimon. (Trash up to 2 cards from the top. You can't trash past level 3 cards.)";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
-            }
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    SharedEffectName,
+                    SharedActivateCoroutine,
+                    SharedEffectDescription,
+                    optional: false,
+                    onPlay: true,
+                    whenAttacking: true);
 
             #endregion
 
@@ -386,12 +349,12 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card)
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass)
                         && card.Owner.CanAddSecurity(activateClass);
                 }
 

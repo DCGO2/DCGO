@@ -126,7 +126,6 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         yield return ContinuousController.instance.StartCoroutine(ShrinkSecurityDigimonDisplay());
 
         GManager.instance.turnStateMachine.IsSelecting = true;
-        GManager.instance.turnStateMachine.isSync = true;
 
         //Rule processing
         yield return ContinuousController.instance.StartCoroutine(RuleProcess());
@@ -138,7 +137,6 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         yield return ContinuousController.instance.StartCoroutine(TriggeredSkillProcess(false, null));
 
         GManager.instance.turnStateMachine.IsSelecting = false;
-        GManager.instance.turnStateMachine.isSync = false;
     }
     #endregion
 
@@ -314,6 +312,8 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
             yield return ContinuousController.instance.StartCoroutine(CardFaceDownProcess());
 
             IsRuleProcessing = false;
+
+            CardEffectCommons.EnforceLocationCheck();//Check for cards moved from locations their effects triggered
         }
     }
 
@@ -321,6 +321,8 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     bool DoRuleProcess()
     {
         if (IsRuleProcessing) return false;
+
+        CardEffectCommons.EnforceLocationCheck();//Check for cards moved from locations their effects triggered, once before rules processing to always perform this check between effects
 
         #region Whether it is necessary to perform game end processing
         if (GManager.instance.turnStateMachine.gameContext.Players.Count(player => player.IsLose) >= 1)
@@ -678,8 +680,6 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     {
         if (GManager.instance.turnStateMachine.gameContext.TurnPhase != GameContext.phase.End)
         {
-            GManager.instance.turnStateMachine.isSync = true;
-
             // yield return GManager.instance.photonWaitController.StartWait("EndTurnProcess");
 
             if (GManager.instance.turnStateMachine.Passed && GManager.instance.turnStateMachine.gameContext.TurnPhase == GameContext.phase.Main)
@@ -722,8 +722,6 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
             else
             {
-                GManager.instance.turnStateMachine.isSync = false;
-
                 if (GManager.instance.turnStateMachine.gameContext.TurnPhase == GameContext.phase.Main)
                 {
                     StartCoroutine(GManager.instance.turnStateMachine.SetMainPhase());
@@ -905,7 +903,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                     {
                         if (cardEffect.CanUse(hashtable))
                         {
-                            cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(cardEffect);
+                            cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(cardEffect);
                             yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
                         }
                     }
@@ -928,7 +926,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                         {
                             if (cardEffect.CanUse(hashtable))
                             {
-                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(cardEffect);
+                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(cardEffect);
                                 yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
                             }
                         }
@@ -951,7 +949,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                         {
                             if (cardEffect.CanUse(hashtable))
                             {
-                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(cardEffect);
+                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(cardEffect);
                                 yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
                             }
                         }
@@ -974,7 +972,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                         {
                             if (cardEffect.CanUse(hashtable))
                             {
-                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(cardEffect);
+                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(cardEffect);
                                 yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
                             }
                         }
@@ -1042,7 +1040,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                         {
                             if (cardEffect.CanUse(hashtable))
                             {
-                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(cardEffect);
+                                cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(cardEffect);
                                 yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
                             }
                         }

@@ -117,8 +117,17 @@ public class IDiscardHand
 
 public class PlayCardClass
 {
-    public PlayCardClass(List<CardSource> cardSources, Hashtable hashtable, bool payCost, Permanent targetPermanent, bool isTapped, SelectCardEffect.Root root,
-    bool activateETB)
+    private static WaitForSeconds _waitForSeconds0_5 = new WaitForSeconds(0.5f);
+
+    public PlayCardClass(List<CardSource> cardSources,
+        Hashtable hashtable,
+        bool payCost,
+        Permanent targetPermanent,
+        bool isTapped,
+        SelectCardEffect.Root root,
+        bool activateETB,
+        Func<List<CardSource>, IEnumerator> successProcess = null,
+        Func<CardSource, IEnumerator> failedProcess = null)
     {
         if (cardSources != null)
         {
@@ -131,6 +140,8 @@ public class PlayCardClass
         _isTapped = isTapped;
         Root = root;
         _activateETB = activateETB;
+        _successProcess = successProcess;
+        _failedProcess = failedProcess;
     }
 
     public void SetJogress(int[] jogressEvoRootsFrameIDs)
@@ -209,6 +220,8 @@ public class PlayCardClass
     int _burstTamerFrameID = -1;
     int[] _appFusionFrameIDs = null;
     bool _isBreedingArea = false;
+    Func<List<CardSource>, IEnumerator> _successProcess;
+    Func<CardSource, IEnumerator> _failedProcess;
 
     public bool isJogress => _jogressEvoRootsFrameIDs != null && _jogressEvoRootsFrameIDs.Length == 2;
 
@@ -536,9 +549,7 @@ public class PlayCardClass
                                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect(card));
                                         }
 
-                                        SelectCountEffect selectCountEffect = GManager.instance.GetComponent<SelectCountEffect>();
-
-                                        if (selectCountEffect != null)
+                                        if (GManager.instance.TryGetComponent<SelectCountEffect>(out var selectCountEffect))
                                         {
                                             selectCountEffect.SetUp(
                                                 SelectPlayer: card.Owner,
@@ -551,7 +562,6 @@ public class PlayCardClass
 
                                             selectCountEffect.SetCandidates(CostList);
                                             selectCountEffect.SetPreferMin(true);
-                                            selectCountEffect.SetNotDoSync(true);
                                             selectCountEffect.SetIsDigivolutionCost(true);
 
                                             yield return ContinuousController.instance.StartCoroutine(selectCountEffect.Activate());
@@ -718,10 +728,7 @@ public class PlayCardClass
                 {
                     foreach (Permanent targetPermanent in targetPermanents)
                     {
-                        if (targetPermanent != null)
-                        {
-                            targetPermanent.ShowWillEvolutionEffect();
-                        }
+                        targetPermanent?.ShowWillEvolutionEffect();
                     }
                 }
 
@@ -729,32 +736,36 @@ public class PlayCardClass
 
                 foreach (Permanent targetPermanent in targetPermanents)
                 {
-                    if (targetPermanent != null)
-                    {
-                        targetPermanent.HideWillEvolutionEffect();
-                    }
+                    targetPermanent?.HideWillEvolutionEffect();
                 }
             }
 
             #endregion
 
-            #region select DigiXros
-
-            if (card.HasDigiXros && !isEvolution)
+            if (CardSources.Count == 1) //Do Digixros in this loop if playing 1 card as they will be needed to calculate cost, else will be done just before play
             {
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectDigiXrosClass>().Select(card));
+
+                #region select DigiXros
+
+                if (card.HasDigiXros && !isEvolution)
+                {
+                    GManager.instance.GetComponent<SelectDigiXrosClass>().SetExcludedCards(CardSources);
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectDigiXrosClass>().Select(card));
+                }
+
+                #endregion
+
+                #region select Assembly
+
+                if (card.HasAssembly && !isEvolution)
+                {
+                    GManager.instance.GetComponent<SelectAssemblyClass>().SetExcludedCards(CardSources);
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectAssemblyClass>().Select(card));
+                }
+
+                #endregion
+
             }
-
-            #endregion
-
-            #region select Assembly
-
-            if (card.HasAssembly && !isEvolution)
-            {
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectAssemblyClass>().Select(card));
-            }
-
-            #endregion
 
             #region Bounce Tamer of Burst digivolution
 
@@ -793,7 +804,6 @@ public class PlayCardClass
                     appFusion = true;
                 }
 
-                yield return GManager.instance.photonWaitController.StartWait("AppFuse");
             }
 
             #endregion
@@ -947,7 +957,15 @@ public class PlayCardClass
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
                         }
+                        if (_failedProcess != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(_failedProcess(cardSource));
+                        }
                     }
+                }
+                else
+                {
+                    
                 }
             }
 
@@ -1020,6 +1038,11 @@ public class PlayCardClass
 
         yield return ContinuousController.instance.StartCoroutine(playPermanent.PlayPermanent());
 
+        if (_successProcess != null)
+        {
+            yield return ContinuousController.instance.StartCoroutine(_successProcess(permanentCards));
+        }
+
         #endregion
 
         #region use option
@@ -1031,6 +1054,11 @@ public class PlayCardClass
 
         yield return ContinuousController.instance.StartCoroutine(useOption.UseOption());
 
+        if (_successProcess != null)
+        {
+            yield return ContinuousController.instance.StartCoroutine(_successProcess(optionCards));
+        }
+
         #endregion
 
         #endregion
@@ -1038,7 +1066,7 @@ public class PlayCardClass
 
     IEnumerator OffMemoryPredictionLine()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return _waitForSeconds0_5;
 
         GManager.instance.memoryObject.OffMemoryPredictionLine();
     }
@@ -1100,7 +1128,9 @@ public class OnEnterFieldHashtableParams
         List<CardSource> evoRootTops,
         SelectCardEffect.Root root,
         List<int> oldLevels,
-        bool isFromDigimonDigivolutionCards)
+        bool isFromDigimonDigivolutionCards,
+        int digiXrosCount = 0,
+        int assemblyCount = 0)
     {
         Permanent = permanent;
 
@@ -1122,6 +1152,10 @@ public class OnEnterFieldHashtableParams
         }
 
         IsFromDigimonDigivolutionCards = isFromDigimonDigivolutionCards;
+
+        DigixrosCount = digiXrosCount;
+
+        AssemblyCount = assemblyCount;
     }
 
     public Permanent Permanent { get; private set; } = null;
@@ -1130,6 +1164,8 @@ public class OnEnterFieldHashtableParams
     public SelectCardEffect.Root Root { get; private set; } = SelectCardEffect.Root.None;
     public List<int> OldLevels { get; private set; } = new List<int>();
     public bool IsFromDigimonDigivolutionCards { get; private set; } = false;
+    public int DigixrosCount { get; private set; } = 0;
+    public int AssemblyCount { get; private set; } = 0;
 }
 
 #endregion
@@ -1195,7 +1231,9 @@ public class PlayPermanentClass
     bool _activateETB = true;
     int[] _jogressEvoRootsFrameIDs = null;
     int _digiXrosCount = 0;
+    int _maxDigixrosCount = 0;
     int _assemblyCount = 0;
+    int _maxAssemblyCount = 0;
     bool _burstDigivolved = false;
     int[] _appFusionFrameIDs = null;
     bool _appFusion = false;
@@ -1219,14 +1257,41 @@ public class PlayPermanentClass
         {
             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
+            if (_cardSources.Count > 1) //Do Digixros in this loop if playing more than 1 card as they shouldn't be paying cost and can then correctly work for each card being played
+            {
+
+                #region select DigiXros
+
+                if (card.HasDigiXros)
+                {
+                    GManager.instance.GetComponent<SelectDigiXrosClass>().SetExcludedCards(_cardSources);
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectDigiXrosClass>().Select(card));
+                }
+
+                #endregion
+
+                #region select Assembly
+
+                if (card.HasAssembly)
+                {
+                    GManager.instance.GetComponent<SelectAssemblyClass>().SetExcludedCards(_cardSources);
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectAssemblyClass>().Select(card));
+                }
+
+                #endregion
+
+            }
+
             if (GManager.instance.GetComponent<SelectDigiXrosClass>().playCard == card)
             {
                 _digiXrosCount = GManager.instance.GetComponent<SelectDigiXrosClass>().selectedDigicrossCards.Count;
+                _maxDigixrosCount = Math.Max(_digiXrosCount, _maxDigixrosCount);
             }
 
             if (GManager.instance.GetComponent<SelectAssemblyClass>().playCard == card)
             {
                 _assemblyCount = GManager.instance.GetComponent<SelectAssemblyClass>().selectedAssemblyCards.Count;
+                _maxAssemblyCount = Math.Max(_assemblyCount, _maxAssemblyCount);
             }
 
             bool isFromDigimonDigivolutionCards = card.Owner.GetFieldPermanents().Some((permanent) => permanent.DigivolutionCards.Contains(card));
@@ -1234,8 +1299,6 @@ public class PlayPermanentClass
             bool isFromSecurity = card.Owner.SecurityCards.Contains(card);
 
             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
-
-            GManager.instance.turnStateMachine.isSync = true;
 
             Permanent permanent = null;
             isEvolution = false;
@@ -1346,8 +1409,6 @@ public class PlayPermanentClass
                             permanent.EnterFieldTurnCount = GManager.instance.turnStateMachine.TurnCount;
                         }
 
-                        GManager.instance.turnStateMachine.isSync = true;
-
                         if (GManager.instance.turnStateMachine.DoneStartGame)
                         {
                             if (!isEvolution)
@@ -1363,7 +1424,9 @@ public class PlayPermanentClass
                                         evoRootTops: evoRootTops,
                                         root: _root,
                                         oldLevels: oldLevels,
-                                        isFromDigimonDigivolutionCards:isFromDigimonDigivolutionCards
+                                        isFromDigimonDigivolutionCards:isFromDigimonDigivolutionCards,
+                                        digiXrosCount: _digiXrosCount,
+                                        assemblyCount: _assemblyCount
                                     )
                                 },
                                 isEvolution: isEvolution,
@@ -1602,7 +1665,9 @@ public class PlayPermanentClass
                             evoRootTops: evoRootTops,
                             root: _root,
                             oldLevels: oldLevels,
-                            isFromDigimonDigivolutionCards: isFromDigimonDigivolutionCards
+                            isFromDigimonDigivolutionCards: isFromDigimonDigivolutionCards,
+                            digiXrosCount: _digiXrosCount,
+                            assemblyCount: _assemblyCount
                             )
                     );
                 }
@@ -1612,7 +1677,6 @@ public class PlayPermanentClass
             GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
             GManager.instance.GetComponent<SelectDNACondition>().ResetSelectDNAConditionClass();
 
-            yield return GManager.instance.photonWaitController.StartWait("EndPlayPermanent");
         }
 
         // except [On Play] effect
@@ -1696,8 +1760,6 @@ public class UseOptionClass
             PlayLog.OnAddLog?.Invoke($"\nPlay Option:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
             card.Init();
-
-            GManager.instance.turnStateMachine.isSync = true;
 
             card.SetFace();
 
@@ -1853,7 +1915,6 @@ public class UseOptionClass
 
             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
-            yield return GManager.instance.photonWaitController.StartWait("EndPlayOption");
         }
     }
 }
@@ -1932,6 +1993,8 @@ public class DrawClass
 
 public class IAddTrashCardsFromLibraryTop
 {
+    private static WaitForSeconds _waitForSeconds0_06 = new WaitForSeconds(0.06f);
+
     public IAddTrashCardsFromLibraryTop(int addTrashCount, Player player, ICardEffect cardEffect)
     {
         _addTrashCount = addTrashCount;
@@ -1986,7 +2049,7 @@ public class IAddTrashCardsFromLibraryTop
             for (int i = 0; i < discardedCards.Count; i++)
             {
                 ContinuousController.instance.PlaySE(GManager.instance.DrawSE);
-                yield return new WaitForSeconds(0.06f);
+                yield return _waitForSeconds0_06;
             }
 
             log += "\n";
@@ -3454,6 +3517,8 @@ public class ILinkCard
             yield return ContinuousController.instance.StartCoroutine(_permanent.AddLinkCard(_linkCard, _cardEffect));
 
         WasLinked = _permanent.LinkedCards.Contains(_linkCard);
+
+        _linkCard.Owner.UntilCalculateFixedCostEffect = new List<Func<EffectTiming, ICardEffect>>();
     }
 }
 #endregion
@@ -3839,6 +3904,9 @@ public class DestroyPermanentsClass
 
 public class ISecurityCheck
 {
+    private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
+    private static WaitForSeconds _waitForSeconds0_3 = new WaitForSeconds(0.3f);
+
     public ISecurityCheck(Permanent AttackingPermanent, Player player)
     {
         this.AttackingPermanent = AttackingPermanent;
@@ -3931,7 +3999,7 @@ public class ISecurityCheck
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().BreakSecurityEffect(player));
 
-                        yield return new WaitForSeconds(0.1f);
+                        yield return _waitForSeconds0_1;
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().EnterSecurityCardEffect(brokenSecurityCard));
 
@@ -3952,9 +4020,11 @@ public class ISecurityCheck
                         {
                             if (cardEffect is ActivateICardEffect)
                             {
-                                Hashtable hashtable1 = new Hashtable();
-                                hashtable1.Add("Card", brokenSecurityCard);
-                                hashtable1.Add("isFaceDown", isFaceDown);
+                                Hashtable hashtable1 = new Hashtable
+                                {
+                                    { "Card", brokenSecurityCard },
+                                    { "isFaceDown", isFaceDown }
+                                };
 
                                 if (cardEffect.CanUse(hashtable1))
                                 {
@@ -3971,7 +4041,7 @@ public class ISecurityCheck
                         {
                             if (!brokenSecurityCard.IsDigimon)
                             {
-                                yield return new WaitForSeconds(0.3f);
+                                yield return _waitForSeconds0_3;
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShrinkUpUseHandCard(GManager.instance.GetComponent<Effects>().ShowUseHandCard));
                             }
                         }
@@ -4134,7 +4204,7 @@ public class ISecurityCheck
 
                                 if (doBattle)
                                 {
-                                    yield return new WaitForSeconds(0.3f);
+                                    yield return _waitForSeconds0_3;
 
                                     yield return ContinuousController.instance.StartCoroutine(new IBattle(AttackingPermanent: AttackingPermanent, DefendingPermanent: null, DefendingCard: brokenSecurityCard).Battle());
                                 }
@@ -4194,6 +4264,9 @@ public class ISecurityCheck
 
 public class IDestroySecurity
 {
+    private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
+    private static WaitForSeconds _waitForSeconds0_5 = new WaitForSeconds(0.5f);
+
     private enum TrashMode
     {
         TopSecurity,
@@ -4297,11 +4370,11 @@ public class IDestroySecurity
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().BreakSecurityEffect(_player));
 
-                    yield return new WaitForSeconds(0.1f);
+                    yield return _waitForSeconds0_1;
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().EnterSecurityCardEffect(destroyedSecurityCard));
 
-                    yield return new WaitForSeconds(0.5f);
+                    yield return _waitForSeconds0_5;
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().DestroySecurityEffect(destroyedSecurityCard));
 
@@ -4419,7 +4492,7 @@ public class IBattle
 
     public int CompareStats()
     {
-        int statCheck = 0;
+        int statCheck;
 
         if (AttackingPermanent.HasIceclad || DefendingPermanent.HasIceclad)
             statCheck = AttackingPermanent.DigivolutionCards.Count - DefendingPermanent.DigivolutionCards.Count;
@@ -4435,7 +4508,7 @@ public class IBattle
     {
         hashtable = new Hashtable();
 
-        if (AttackingPermanent != null)
+        if (AttackingPermanent != null && AttackingPermanent.HasDP)
         {
             bool IsExistingDefender()
             {
@@ -4446,12 +4519,12 @@ public class IBattle
                     {
                         if (DefendingPermanent.TopCard != null)
                         {
-                            return true;
+                            return DefendingPermanent.HasDP;
                         }
                     }
                     else if (DefendingCard != null)
                     {
-                        return true;
+                        return DefendingCard.HasDP;
                     }
                 }
 
@@ -4854,6 +4927,8 @@ public class IDegeneration
                 _permanent.ShowingPermanentCard.ShowPermanentData(true);
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, _permanent));
 
+                _permanent.TopCard.SetChangedLocationTime();//register that the new topcard just became a top card for the purpose of the start of timestamped continuous effects
+
                 count++;
             }
 
@@ -4967,7 +5042,7 @@ public class IMassDegeneration
 
         if (_degenerationCount >= 1)
         {
-            foreach(Permanent _permanent in permanents_Fixed)
+            foreach (Permanent _permanent in permanents_Fixed)
             {
                 int count = 0;
 
@@ -5029,6 +5104,8 @@ public class IMassDegeneration
                     _permanent.ShowingPermanentCard.ShowPermanentData(true);
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, _permanent));
 
+                    _permanent.TopCard.SetChangedLocationTime();//register that the new topcard just became a top card for the purpose of the start of timestamped continuous effects
+
                     count++;
                 }
 
@@ -5069,7 +5146,7 @@ public class IMassDegeneration
 
                     PlayLog.OnAddLog?.Invoke(log);
                 }
-                
+
                 #endregion
             }
         }
@@ -5513,6 +5590,8 @@ public class IFlipSecurity
 
 public class SuspendPermanentsClass
 {
+    private static WaitForSeconds _waitForSeconds0_3 = new WaitForSeconds(0.3f);
+
     public SuspendPermanentsClass(List<Permanent> permanents, Hashtable hashtable)
     {
         _permanents = permanents;
@@ -5605,7 +5684,7 @@ public class SuspendPermanentsClass
 
             #endregion
 
-            yield return new WaitForSeconds(0.3f);
+            yield return _waitForSeconds0_3;
         }
     }
 }
@@ -5616,6 +5695,8 @@ public class SuspendPermanentsClass
 
 public class IUnsuspendPermanents
 {
+    private static WaitForSeconds _waitForSeconds0_3 = new WaitForSeconds(0.3f);
+
     public IUnsuspendPermanents(List<Permanent> permanents, ICardEffect cardEffect)
     {
         _permanents = permanents.Clone().Filter(CardEffectCommons.IsPermanentExistsOnBattleArea);
@@ -5711,7 +5792,7 @@ public class IUnsuspendPermanents
 
             #endregion
 
-            yield return new WaitForSeconds(0.3f);
+            yield return _waitForSeconds0_3;
         }
     }
 }
@@ -5892,6 +5973,8 @@ public class ITrashStack
 
                 _permanent.ShowingPermanentCard.ShowPermanentData(true);
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, _permanent));
+
+                _permanent.TopCard.SetChangedLocationTime();//register that the new topcard just became a top card for the purpose of the start of timestamped continuous effects
 
                 count++;
             }

@@ -5,15 +5,15 @@ using System;
 using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.Events;
-using System.IO;
-using System.Text;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 
 
 
+[RequireComponent(typeof(Animator))]
 public class DeckInfoPanel : MonoBehaviour
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
     [Header("デッキ情報パネルオブジェクト")]
     public GameObject DeckInfoPanelObject;
 
@@ -49,8 +49,8 @@ public class DeckInfoPanel : MonoBehaviour
         {
             if (GetComponent<Animator>() != null)
             {
-                GetComponent<Animator>().SetInteger("Open", 1);
-                GetComponent<Animator>().SetInteger("Close", 0);
+                GetComponent<Animator>().SafeSetInt(OpenHash, 1);
+                GetComponent<Animator>().SafeSetInt(CloseHash, 0);
             }
 
             ShowingDeckData = deckData;
@@ -242,7 +242,7 @@ public class DeckInfoPanel : MonoBehaviour
 
         while (text.Length > DeckName.characterLimit)
         {
-            text = text.Substring(0, text.Length - 1);
+            text = text[..^1];
         }
 
         ContinuousController.instance.RenameDeck(ShowingDeckData, text);

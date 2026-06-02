@@ -105,7 +105,6 @@ namespace DCGO.CardEffects.BT25
                         && cardSource.GetCostItself <= 4
                         && cardSource.EqualsTraits("TS");
                 }
-                List<CardSource> selectedCards = new List<CardSource>();
 
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
                     revealCount: 3,
@@ -126,20 +125,17 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                 {
-                    selectedCards.Add(cardSource);
-                    yield return null;
-                }
-
-                if (selectedCards.Count > 0)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                    cardSources: selectedCards,
-                    activateClass: activateClass,
-                    payCost: false,
-                    isTapped: false,
-                    root: SelectCardEffect.Root.Library,
-                    activateETB: true));
-                }
+                    if (cardSource != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                        cardSources: new List<CardSource> { cardSource },
+                        activateClass: activateClass,
+                        payCost: false,
+                        isTapped: false,
+                        root: SelectCardEffect.Root.Library,
+                        activateETB: true));
+                    }
+                }               
             }
             #endregion
 

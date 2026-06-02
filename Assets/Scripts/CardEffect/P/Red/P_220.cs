@@ -188,17 +188,11 @@ namespace DCGO.CardEffects.P
 
             #region Shared OP / WD
 
-            string SharedEffectName()
-                => "<De-Digivolve 2>. Then Delete 1 Digimon";
+            string SharedEffectName = "<De-Digivolve 2>. Then Delete 1 Digimon";
 
             string SharedEffectDescription(string tag)
             {
                 return $"[{tag}] <De-Digivolve 2> 1 of your opponent's Digimon. Then, you may delete 1 Digimon.";
-            }
-
-            bool SharedCanActivateCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.IsExistOnBattleArea(card);
             }
 
             bool PermanentSelectCondition(Permanent permanent)
@@ -275,41 +269,14 @@ namespace DCGO.CardEffects.P
                 #endregion
             }
 
-            #endregion
-
-            #region On Play
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), -1, false, SharedEffectDescription("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                        CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-            }
-
-            #endregion
-
-            #region When Digivolving
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), -1, false, SharedEffectDescription("When Digivolving"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                        CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-            }
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    SharedEffectName,
+                    SharedActivateCoroutine,
+                    SharedEffectDescription,
+                    optional: false,
+                    onPlay: true,
+                    whenDigivolving: true);
 
             #endregion
 
@@ -329,12 +296,12 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) &&
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass) &&
                         card.Owner.TrashCards.Count(CardSelectCondition) >= 3;
                 }
 

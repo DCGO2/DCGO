@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                         {
                             bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
                             bool WinnerRealCondition(Permanent permanent)

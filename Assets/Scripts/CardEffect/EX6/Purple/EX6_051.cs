@@ -236,7 +236,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable,card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanSelectCardInTrash(CardSource cardSource)

@@ -298,7 +298,7 @@ public class Permanent
                     }
                 }
 
-                foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown)
+                foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown.OrderBy(cardEffect => cardEffect.ActivatedTime))
                 {
                     if (cardEffect is IChangeBaseDPEffect)
                     {
@@ -469,7 +469,7 @@ public class Permanent
             
             DP += LinkedDP;
 
-            foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown)
+            foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown.OrderBy(cardEffect => cardEffect.ActivatedTime))
             {
                 if (cardEffect is IChangeDPEffect)
                 {
@@ -2404,11 +2404,12 @@ public class Permanent
                 Permanent attackingPermanent = GManager.instance.attackProcess.AttackingPermanent;
 
                 if (attackingPermanent != null
-                    && attackingPermanent.TopCard !=null
+                    && attackingPermanent.TopCard != null
                     && attackingPermanent.TopCard.Owner != TopCard.Owner
                     && attackingPermanent.HasCollision)
                 {
                     ActivateClass fakeCollisionClass = new();
+                    fakeCollisionClass.SetIsDigimonEffect(true);
                     fakeCollisionClass.SetUpICardEffect("Collision", _ => true, attackingPermanent.TopCard);
                     
                     if (!TopCard.CanNotBeAffected(fakeCollisionClass))//Check can be affected by opponent's Digimon effects

@@ -23,7 +23,7 @@ public class BT2_046 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When this Digimon deletes one of your opponent's level 6 or higher Digimon in battleÅ unsuspend this Digimon.";
+                return "[Your Turn] When this Digimon deletes one of your opponent's level 6 or higher Digimon in battle, unsuspend this Digimon.";
             }
 
             bool CanUseCondition(Hashtable hashtable)

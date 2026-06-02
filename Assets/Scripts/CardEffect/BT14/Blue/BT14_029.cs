@@ -13,11 +13,11 @@ namespace DCGO.CardEffects.BT14
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash digivolution cards and ", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Trash 3 digivolution cards from enemy digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Digivolving] Trash any 3 digivolution cards from your opponent's Digimon.";
                 }
@@ -42,25 +42,20 @@ namespace DCGO.CardEffects.BT14
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
                             permanentCondition: CanSelectPermanentCondition,
                             cardCondition: CanSelectCardCondition,
                             maxCount: 3,
@@ -68,6 +63,7 @@ namespace DCGO.CardEffects.BT14
                             isFromOnly1Permanent: false,
                             activateClass: activateClass
                         ));
+                    }
                 }
             }
 
@@ -75,36 +71,47 @@ namespace DCGO.CardEffects.BT14
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippableFunction(IsSkippable);
                 activateClass.SetHashString("Unsuspend_BT14_029");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
-                    return "[When Attacking][Once Per Turn] If your opponent has no Digimon with as many or more digivolution cards than this Digimon, unsuspend this Digimon.";
+                    return "[When Attacking] [Once Per Turn] If your opponent has no Digimon with as many or more digivolution cards than this Digimon, unsuspend this Digimon.";
+                }
+
+                bool IsSkippable(Hashtable hashtable)
+                {
+                    int digivolutionCardCount = card.PermanentOfThisCard().DigivolutionCards.Count;
+
+                    bool HasMoreDigivolutionCardsCondition(Permanent permanent)
+                    {
+                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                            && permanent.DigivolutionCards.Count > digivolutionCardCount;
+                    }
+
+                    return CardEffectCommons.HasMatchConditionPermanent(HasMoreDigivolutionCardsCondition);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.Enemy.GetBattleAreaDigimons().Count(permanent => permanent.DigivolutionCards.Count >= card.PermanentOfThisCard().DigivolutionCards.Count) == 0)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                    if (!IsSkippable(hashtable))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                    }
+                    else activateClass.RemoveUse();
                 }
             }
 

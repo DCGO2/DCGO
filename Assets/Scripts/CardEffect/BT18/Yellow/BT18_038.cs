@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -146,7 +146,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card, activateClass))
                     {
                         if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
@@ -215,12 +215,12 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card, activateClass))
                     {
                         if (card.Owner.CanAddSecurity(activateClass))
                         {

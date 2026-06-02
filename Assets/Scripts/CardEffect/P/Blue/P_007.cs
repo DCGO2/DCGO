@@ -22,7 +22,7 @@ public class P_007 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] If this Digimon has [Garurumon] in its nameÅCtrigger <Draw 1>. (Draw 1 card from your deck.)";
+                return "[When Attacking] If this Digimon has [Garurumon] in its name, trigger <Draw 1>. (Draw 1 card from your deck.)";
             }
 
             bool CanUseCondition(Hashtable hashtable)

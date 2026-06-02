@@ -1,11 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
 
+// Shadramon
 public class P_110 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
@@ -25,11 +23,11 @@ public class P_110 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Play 1 [Veemon] or [Wormmon] from hand", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpICardEffect("Play 1 [Veemon] or [Wormmon] from trash for free", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
             cardEffects.Add(activateClass);
 
-            string EffectDiscription()
+            string EffectDescription()
             {
                 return "[When Digivolving] You may play 1 [Veemon]/[Wormmon] from your trash suspended without paying the cost.";
             }
@@ -156,12 +154,12 @@ public class P_110 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
+                if (CardEffectCommons.CanActivateOnDeletion(card, activateClass))
                 {
                     if (card.Owner.HandCards.Count >= 1)
                     {

@@ -70,7 +70,6 @@ namespace DCGO.CardEffects.BT12
                         {
                             for (int i = 0; i < count; i++)
                             {
-                                yield return GManager.instance.photonWaitController.StartWait("Cho-Hakkaimon");
 
                                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                                 {
@@ -129,7 +128,7 @@ namespace DCGO.CardEffects.BT12
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                             {
                                 if (CardEffectCommons.IsDPZeroDelete(hashtable))
                                 {

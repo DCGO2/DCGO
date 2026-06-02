@@ -263,7 +263,7 @@ namespace DCGO.CardEffects.P
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition);
+                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

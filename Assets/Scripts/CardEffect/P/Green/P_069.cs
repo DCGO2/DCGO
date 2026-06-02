@@ -22,7 +22,7 @@ public class P_069 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Security] At the end of the battle, suspend 1 of your opponent's Digimon. Then, add this card to its ownerÅf hand.";
+                return "[Security] At the end of the battle, suspend 1 of your opponent's Digimon. Then, add this card to its owner's hand.";
             }
 
 
@@ -54,7 +54,7 @@ public class P_069 : CEntity_Effect
 
                 string EffectDiscription1()
                 {
-                    return "Suspend 1 of your opponent's Digimon. Then, add this card to its ownerÅf hand.";
+                    return "Suspend 1 of your opponent's Digimon. Then, add this card to its owner's hand.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
