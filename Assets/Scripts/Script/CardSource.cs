@@ -117,6 +117,23 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region Timestamp of the last time this card changed location, for continuous effects. This should include becoming a top card via de-digivolve or no longer being a top card due to digivolution
+
+    DateTime _changedLocationTime = DateTime.MinValue;
+
+    public DateTime ChangedLocationTime
+    {
+        get { return _changedLocationTime; }
+        private set { _changedLocationTime = value; }
+    }
+
+    public void SetChangedLocationTime()
+    {
+        ChangedLocationTime = DateTime.Now;
+    }
+
+    #endregion
+
     #region whether this card can be played
 
     public bool CanPlayFromHandDuringMainPhase
@@ -329,6 +346,7 @@ public class CardSource : MonoBehaviour
     {
         cEntity_EffectController.InitUseCountThisTurn();
         SetFace();
+        SetChangedLocationTime();
     }
 
     #endregion
@@ -3459,6 +3477,10 @@ public class CardSource : MonoBehaviour
 
     public bool IsOption => CardKinds.Contains(CardKind.Option);
 
+    #endregion
+
+    #region whether this card is a dual card
+    public bool IsDualCard => _cEntity_Base.IsDualCard;
     #endregion
 
     #region Wheter this card is permanent

@@ -1,12 +1,10 @@
 using Photon.Pun;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 public class GameplayOption : OffAnimation
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
     [SerializeField] Animator _anim;
     [SerializeField] Toggle _reverseOpponentsCardsToggle;
     [SerializeField] Toggle _showCutInAnimationToggle;
@@ -41,8 +39,8 @@ public class GameplayOption : OffAnimation
             }
         }
 
-        _anim.SetInteger("Open", 0);
-        _anim.SetInteger("Close", 1);
+        _anim.SafeSetInt(OpenHash, 0);
+        _anim.SafeSetInt(CloseHash, 1);
     }
 
     public void Init()
@@ -60,11 +58,11 @@ public class GameplayOption : OffAnimation
                 value: ContinuousController.instance.reverseOpponentsCards
             );
 
-            /*OptionUtility.InitToggle(
-                toggle: _showCutInAnimationToggle,
-                onToggleChanged: OnShowCutInAnimationToggleChanged,
-                value: ContinuousController.instance.showCutInAnimation
-            );*/
+            OptionUtility.InitToggle(
+               toggle: _showCutInAnimationToggle,
+               onToggleChanged: OnShowCutInAnimationToggleChanged,
+               value: ContinuousController.instance.showCutInAnimation
+            );
 
             OptionUtility.InitToggle(
                 toggle: _turnSuspendedCardsToggle,
@@ -131,8 +129,8 @@ public class GameplayOption : OffAnimation
         }
 
         gameObject.SetActive(true);
-        _anim.SetInteger("Open", 1);
-        _anim.SetInteger("Close", 0);
+        _anim.SafeSetInt(OpenHash, 1);
+        _anim.SafeSetInt(CloseHash, 0);
     }
 
     #region Show cut in animation

@@ -280,8 +280,6 @@ namespace DCGO.CardEffects.BT13
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return GManager.instance.photonWaitController.StartWait("Examon_Select_ET13_059");
-
                     List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
                             new SelectionElement<bool>(message: $"Suspend 1 Digimon", value : true, spriteIndex: 0),

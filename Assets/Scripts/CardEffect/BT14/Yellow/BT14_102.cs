@@ -77,8 +77,6 @@ namespace DCGO.CardEffects.BT14
 
                     if (deleted)
                     {
-                        yield return GManager.instance.photonWaitController.StartWait("Heavens_Select_BT14");
-
                         List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new SelectionElement<int>(message: $"Place 1 Digimon with the [Virus] trait at the bottom of security", value : 0, spriteIndex: 0),
@@ -207,12 +205,12 @@ namespace DCGO.CardEffects.BT14
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card, activateClass))
                     {
                         if (card.Owner.CanAddSecurity(activateClass))
                         {
@@ -265,12 +263,12 @@ namespace DCGO.CardEffects.BT14
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card, activateClass))
                     {
                         if (card.Owner.HandCards.Count >= 1)
                         {

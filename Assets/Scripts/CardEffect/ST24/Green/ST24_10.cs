@@ -97,7 +97,7 @@ namespace DCGO.CardEffects.ST24
 
                     if (selectedPermanent != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(_targetPermanents, hashtable).Tap());
+                        yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(_targetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
                         CanNotUnsuspendClass canNotUnsuspendClass = new CanNotUnsuspendClass();
                         canNotUnsuspendClass.SetUpICardEffect("Can't Unsuspend", CanUseCondition1, card);

@@ -210,12 +210,12 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -290,12 +290,12 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion( hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

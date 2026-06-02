@@ -31,20 +31,14 @@ public class BT2_083 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                    && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                     && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -87,7 +81,7 @@ public class BT2_083 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
             }
 
             bool CanActivateCondition(Hashtable hashtable)

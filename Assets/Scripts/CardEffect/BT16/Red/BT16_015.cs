@@ -37,6 +37,7 @@ namespace DCGO.CardEffects.BT16
                 activateClass.SetUpICardEffect("Add [End of Attack] to all of this Digimon's [On Deletion] effects.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsBackgroundProcess(true);
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -156,12 +157,12 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

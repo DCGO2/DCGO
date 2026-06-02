@@ -20,7 +20,7 @@ public class BT1_054 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] If you have 3 or more memoryÅC of your opponent's Digimon gets -2000 DP for the turn.";
+                return "[When Attacking] If you have 3 or more memory, 1 of your opponent's Digimon gets -2000 DP for the turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

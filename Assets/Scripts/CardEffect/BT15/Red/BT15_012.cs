@@ -170,7 +170,7 @@ namespace DCGO.CardEffects.BT15
 
                         IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                         {
-                            if (CardEffectCommons.IsDijiXros(_hashtable, count => count == 2))
+                            if (CardEffectCommons.IsDijiXros(_hashtable, card, count => count == 2))
                             {
                                 foreach (Permanent selectedPermanent in permanents)
                                 {

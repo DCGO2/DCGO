@@ -61,7 +61,7 @@ namespace DCGO.CardEffects.BT15
 
                 bool CanUseOnDeletion(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
+                    if (CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateDeletion))
                     {
                         if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => (cardSource.ContainsCardName("Numemon") || cardSource.CardNames.Contains("XAntibody") || cardSource.CardNames.Contains("X Antibody"))) >= 1)
                         {
@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT15
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card, activateDeletion))
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
                         {
@@ -168,12 +168,12 @@ namespace DCGO.CardEffects.BT15
 
                 bool CanUseOnDeletion(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateDeletion);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card, activateDeletion))
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
                         {

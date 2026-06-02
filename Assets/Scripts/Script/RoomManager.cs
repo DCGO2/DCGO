@@ -12,6 +12,8 @@ using UnityEngine.Events;
 
 public class RoomManager : MonoBehaviourPunCallbacks
 {
+    private static WaitForSeconds _waitForSeconds1 = new WaitForSeconds(1f);
+    private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
     [SerializeField] bool _isReady = false;
     int playerCount { get; set; }
 
@@ -125,25 +127,27 @@ public class RoomManager : MonoBehaviourPunCallbacks
         while (true)
         {
             //Setting up the room to be created
-            RoomOptions roomOptions = new RoomOptions();
-            roomOptions.IsVisible = true;   //Make the room visible in the lobby
-            roomOptions.IsOpen = true;      //Allow other players to enter the room
-            roomOptions.PublishUserId = true;
-
-            roomOptions.MaxPlayers = 2;
-
-            //Stores the creator's name to display the room creator in the room's custom properties
-            roomOptions.CustomRoomProperties = new Hashtable()
+            RoomOptions roomOptions = new RoomOptions
             {
-                { "RoomCreator",PhotonNetwork.NickName },
-                { "UseBanlist", ContinuousController.instance.useBanlist }
-            };
+                IsVisible = true,   //Make the room visible in the lobby
+                IsOpen = true,      //Allow other players to enter the room
+                PublishUserId = true,
 
-            //Display custom property information in the lobby
-            roomOptions.CustomRoomPropertiesForLobby = new string[]
-            {
-                "RoomCreator",
-                "UseBanlist"
+                MaxPlayers = 2,
+
+                //Stores the creator's name to display the room creator in the room's custom properties
+                CustomRoomProperties = new Hashtable()
+                {
+                    { "RoomCreator",PhotonNetwork.NickName },
+                    { "UseBanlist", ContinuousController.instance.useBanlist }
+                },
+
+                //Display custom property information in the lobby
+                CustomRoomPropertiesForLobby = new string[]
+                {
+                    "RoomCreator",
+                    "UseBanlist"
+                }
             };
 
             string RoomName = StringUtils.GeneratePassword_Num(5);
@@ -241,7 +245,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         #region RoomName
         string RoomName = PhotonNetwork.CurrentRoom.Name;
-        RoomIDText.text = RoomName.Substring(0,5);
+        RoomIDText.text = RoomName[..5];
         #endregion
     }
     #endregion
@@ -323,7 +327,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             Opening.instance.battle.selectBattleMode.StartSelectRoomMatch();
         }
 
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForSeconds0_1;
 
         yield return ContinuousController.instance.StartCoroutine(disconnectLoadingObject.EndLoading());
     }
@@ -375,9 +379,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     {
         Hashtable PlayerProp = player.CustomProperties;
 
-        object value;
-
-        if (PlayerProp.TryGetValue(ReadyKey(), out value))
+        if (PlayerProp.TryGetValue(ReadyKey(), out object _))
         {
             PlayerProp[ReadyKey()] = _isReady;
         }
@@ -396,9 +398,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     {
         foreach (var p in PhotonNetwork.PlayerList)
         {
-            object value;
-
-            if (p.CustomProperties.TryGetValue(ReadyKey(), out value))
+            if (p.CustomProperties.TryGetValue(ReadyKey(), out object value))
             {
                 if (!(bool)value)
                 {
@@ -497,7 +497,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
     IEnumerator GoToBattleSceneCoroutine()
     {
         yield return ContinuousController.instance.StartCoroutine(Opening.instance.LoadingObject_Unload.StartLoading("Now Loading"));
-        object value;
 
         DoneStartBattle = true;
 
@@ -514,14 +513,14 @@ public class RoomManager : MonoBehaviourPunCallbacks
         {
             if (dictionaryEntry.Key.ToString().Contains("PhotonWaitController"))
             {
-                if (PlayerProp.TryGetValue(dictionaryEntry.Key.ToString(), out value))
+                if (PlayerProp.TryGetValue(dictionaryEntry.Key.ToString(), out _))
                 {
                     PlayerProp.Remove(dictionaryEntry.Key.ToString());
                 }
             }
         }
 
-        if (PlayerProp.TryGetValue("isBattle", out value))
+        if (PlayerProp.TryGetValue("isBattle", out _))
         {
             PlayerProp["isBattle"] = true;
         }
@@ -531,7 +530,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             PlayerProp.Add("isBattle", true);
         }
 
-        if (PlayerProp.TryGetValue(ReadyKey(), out value))
+        if (PlayerProp.TryGetValue(ReadyKey(), out _))
         {
             PlayerProp[ReadyKey()] = false;
         }
@@ -544,7 +543,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         PlayerProp[ContinuousController.DeckDataPropertyKey] = ContinuousController.instance.BattleDeckData.GetThisDeckCode();
 
         PhotonNetwork.LocalPlayer.SetCustomProperties(PlayerProp);
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForSeconds0_1;
 
         //Opening.instance.MainCamera.gameObject.SetActive(false);
 
@@ -555,7 +554,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         ContinuousController.instance.StartCoroutine(Opening.instance.OpeningBGM.FadeOut(0.5f));
 
-        yield return new WaitForSeconds(1f);
+        yield return _waitForSeconds1;
 
         SceneManager.LoadSceneAsync("BattleScene", LoadSceneMode.Additive);
         yield return ContinuousController.instance.StartCoroutine(Opening.instance.LoadingObject_Unload.EndLoading());
@@ -575,9 +574,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         {
             GameObject PlayerElement = Instantiate(PlayerElementPrefab, PlayerParent.transform);
 
-            object value;
-
-            string PlayerName = "Player";
+            string PlayerName;
 
             #region Get player name from custom property
             if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
@@ -592,7 +589,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
             Hashtable hash = PhotonNetwork.PlayerList[i].CustomProperties;
 
-            if (hash.TryGetValue(ContinuousController.PlayerNameKey, out value))
+            if (hash.TryGetValue(ContinuousController.PlayerNameKey, out object value))
             {
                 PlayerName = (string)value;
             }
@@ -803,7 +800,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.InRoom)
         {
             #region クリップボードにデッキコードをコピー
-            GUIUtility.systemCopyBuffer = PhotonNetwork.CurrentRoom.Name.Substring(0, 5);
+            GUIUtility.systemCopyBuffer = PhotonNetwork.CurrentRoom.Name[..5];
             #endregion
 
             List<UnityAction> Commands = new List<UnityAction>()
@@ -878,7 +875,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         Hashtable RoomProp = PhotonNetwork.CurrentRoom.CustomProperties;
 
-        if (RoomProp.TryGetValue(DataBase.FirstPlayerIndexIdKey, out object value))
+        if (RoomProp.TryGetValue(DataBase.FirstPlayerIndexIdKey, out object _))
         {
             RoomProp[DataBase.FirstPlayerIndexIdKey] = firstPlayerIndexID;
         }

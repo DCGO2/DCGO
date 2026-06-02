@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.EX4
 
                                     bool CanUseCondition1(Hashtable hashtable1)
                                     {
-                                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent))
+                                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent, activateClass1))
                                         {
                                             if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                             {
@@ -138,7 +138,7 @@ namespace DCGO.CardEffects.EX4
 
                                     bool CanActivateCondition1(Hashtable hashtable1)
                                     {
-                                        if (CardEffectCommons.CanActivateOnDeletion(hashtable1, selectedPermanent.TopCard))
+                                        if (CardEffectCommons.CanActivateOnDeletion(selectedPermanent.TopCard, activateClass1))
                                         {
                                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: selectedPermanent.TopCard, payCost: false, cardEffect: activateClass1))
                                             {

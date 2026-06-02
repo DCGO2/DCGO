@@ -33,6 +33,8 @@ public partial class CardEffectCommons
 
         ChangeBaseDPClass changeBaseDPClass = CardEffectFactory.ChangeBaseDPStaticEffect(targetPermanent: targetPermanent, changeValue: changeValue, isInheritedEffect: false, card: card, condition: CanUseCondition);
 
+        changeBaseDPClass.SetActivatedTime(DateTime.Now);
+
         AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: changeBaseDPClass, timing: EffectTiming.None);
 
         if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))

@@ -137,7 +137,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsDigimonCondition)
                             || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsDigimonCondition))
                         && CardEffectCommons.IsByEffect(hashtable, null);
@@ -147,7 +147,9 @@ namespace DCGO.CardEffects.BT25
 
                 bool IsOpponentsDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
-                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleArea(card);
+                bool IsBattleTarget(Permanent permanent) => IsOpponentsDigimon(permanent) && permanent.HasDP;
+
+                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
@@ -173,13 +175,13 @@ namespace DCGO.CardEffects.BT25
                     }
                     #endregion
                     #region May Battle
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentsDigimon))
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsBattleTarget))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: IsOpponentsDigimon,
+                            canTargetCondition: IsBattleTarget,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,

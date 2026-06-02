@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.BT19
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                             {
                                 return true;
                             }

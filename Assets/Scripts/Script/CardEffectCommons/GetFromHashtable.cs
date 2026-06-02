@@ -433,6 +433,16 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region whether the play associated with this hashtable is paying a cost or free
+    public static bool GetPayCostFromHashtable(Hashtable hashtable)
+    {
+        return hashtable != null
+            && hashtable.ContainsKey("PayCost")
+            && hashtable["PayCost"] is bool
+            && (bool)hashtable["PayCost"];
+    }
+    #endregion
+
     #region Get IsEvolution Delete from 1 hashtable
     public static bool IsEvolution(Hashtable hashtable)
     {
@@ -814,13 +824,26 @@ public partial class CardEffectCommons
     #endregion
 
     #region Get IsDijiXros from hashtable
-    public static bool IsDijiXros(Hashtable hashtable, Func<int, bool> digixrosCountCondition)
+    public static bool IsDijiXros(Hashtable hashtable, CardSource card, Func<int, bool> digixrosCountCondition)
     {
-        int digiXrosCount = GetDigiXrosCount(hashtable);
+        List<Hashtable> hashtables = GetHashtablesFromHashtable(hashtable);
 
-        if (digixrosCountCondition != null)
+        if (hashtables != null)
         {
-            return digixrosCountCondition(digiXrosCount);
+            foreach (Hashtable hashtable1 in hashtables)
+            {
+                Permanent permanent = GetPermanentFromHashtable(hashtable1);
+
+                if (permanent != null && permanent.cardSources.Contains(card))
+                {
+                    int digiXrosCount = GetDigiXrosCount(hashtable1);
+
+                    if (digixrosCountCondition != null)
+                    {
+                        return digixrosCountCondition(digiXrosCount);
+                    }
+                }
+            }
         }
 
         return false;

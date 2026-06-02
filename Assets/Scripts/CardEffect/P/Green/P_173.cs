@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.P
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsOpponentsDigimon) &&
+                           CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsOpponentsDigimon, activateClass) &&
                            CardEffectCommons.IsByBattle(hashtable);
                 }
 

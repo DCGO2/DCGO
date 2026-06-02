@@ -191,8 +191,6 @@ namespace DCGO.CardEffects.LM
                 {
                     Permanent selectedPermanent = card.PermanentOfThisCard();
 
-                    yield return GManager.instance.photonWaitController.StartWait("Quantumon_Select_ETB");
-
                     List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new SelectionElement<int>(message: $"Digimon", value : 0, spriteIndex: 0),

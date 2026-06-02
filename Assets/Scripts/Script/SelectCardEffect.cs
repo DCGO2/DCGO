@@ -338,11 +338,6 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         _targetCards = new List<CardSource>();
 
         _slectedInexesInList = new List<int>();
-        
-        if (!_isLocal)
-        {
-            yield return GManager.instance.photonWaitController.StartWait("SelectCardEffect");
-        }
 
         bool oldIsActiveOutline_AttackingPermanent = false;
 

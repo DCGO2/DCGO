@@ -7,7 +7,7 @@ using UnityEngine;
 public partial class CardEffectCommons
 {
     #region Can activate [Retaliation]
-    public static bool CanActivateRetaliation(Hashtable hashtable)
+    public static bool CanActivateRetaliation(Hashtable hashtable, ICardEffect cardEffect)
     {
         List<Hashtable> hashtables = GetHashtablesFromHashtable(hashtable);
 
@@ -21,7 +21,7 @@ public partial class CardEffectCommons
 
                     if (TopCard != null)
                     {
-                        if (IsByBattle(hashtable))
+                        if (IsTopCardStillInTrash(cardEffect))
                         {
                             IBattle battle = GetBattleFromHashtable(hashtable);
 
@@ -31,26 +31,30 @@ public partial class CardEffectCommons
 
                                 if (battleHashtable != null)
                                 {
-                                    List<Permanent> WinnerPermanents = GetWinnerPermanentsRealFromHashtable(battleHashtable);
+                                    List<Permanent> LoserPermanents = GetLoserPermanentsFromHashtable(battleHashtable);
 
-                                    if (WinnerPermanents != null)
+                                    if (LoserPermanents != null)
                                     {
-                                        if (WinnerPermanents.Count((permanent) => permanent.cardSources.Contains(TopCard)) == 0)
+                                        if (LoserPermanents.Some((permanent) => permanent.cardSources.Contains(TopCard)))
                                         {
-                                            bool canDestroyWinner = WinnerPermanents.Some(permanent => IsOpponentPermanent(permanent, TopCard));
-
-                                            if (canDestroyWinner)
+                                            #region Work out if opponent is still in play
+                                            if (LoserPermanents.Some(permanent => IsOpponentPermanent(permanent, TopCard)))// In case of tie, any other permanent is the opponent's digimon
                                             {
-                                                List<Permanent> LoserPermanents = GetLoserPermanentsFromHashtable(battleHashtable);
+                                                return true;
+                                            } 
+                                            else
+                                            {
+                                                List<Permanent> WinnerPermanents = GetWinnerPermanentsRealFromHashtable(battleHashtable);
 
-                                                if (LoserPermanents != null)
+                                                if (WinnerPermanents != null)
                                                 {
-                                                    if (LoserPermanents.Some((permanent) => permanent.cardSources.Contains(TopCard)))
+                                                    if (WinnerPermanents.Some(permanent => IsOpponentPermanent(permanent, TopCard)))
                                                     {
                                                         return true;
                                                     }
                                                 }
                                             }
+                                            #endregion
                                         }
                                     }
                                 }
@@ -101,6 +105,20 @@ public partial class CardEffectCommons
                                             if (destroyTargetPermanents.Count >= 1)
                                             {
                                                 yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(destroyTargetPermanents, CardEffectHashtable(activateClass)).Destroy());
+                                            }
+                                            else //In case of tie there is no winner permanents but the other loser permanent is the target
+                                            {
+                                                List<Permanent> LoserPermanents = GetLoserPermanentsFromHashtable(battleHashtable);
+
+                                                if (LoserPermanents != null)
+                                                {
+                                                    destroyTargetPermanents = LoserPermanents.Filter(permanent => IsOpponentPermanent(permanent, TopCard));
+
+                                                    if (destroyTargetPermanents.Count >= 1)
+                                                    {
+                                                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(destroyTargetPermanents, CardEffectHashtable(activateClass)).Destroy());
+                                                    }
+                                                }
                                             }
                                         }
                                     }

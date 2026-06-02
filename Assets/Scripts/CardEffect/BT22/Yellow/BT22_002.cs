@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition);
+                    return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 using System;
 public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 {
+    private static readonly int CloseHash = Animator.StringToHash("Close");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
     private static WaitForSeconds _waitForSeconds0_2 = new WaitForSeconds(0.2f);
     private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
     private static WaitForSeconds _waitForSeconds0_5 = new WaitForSeconds(0.5f);
@@ -63,8 +65,8 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         //this.battleRule = battleRule;
         ContinuousController.instance.StartCoroutine(ConnectCoroutine());
 
-        anim.SetInteger("Open", 1);
-        anim.SetInteger("Close", 0);
+        anim.SetInteger(OpenHash, 1);
+        anim.SetInteger(CloseHash, 0);
     }
     #endregion
 
@@ -125,8 +127,6 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         MessageText.text = "";
         TimeText.gameObject.SetActive(true);
         StartCoroutine(TimeCountUp());
-        timer = 0;
-        count = true;
 
         if (PhotonNetwork.InLobby)
         {
@@ -185,7 +185,9 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 
         if (ContinuousController.instance.BattleDeckData != null)
         {
-            deckInfoPanel.SetUpDeckInfoPanel(ContinuousController.instance.BattleDeckData);
+            _ = deckInfoPanel.SetUpDeckInfoPanel(
+                ContinuousController.instance.BattleDeckData
+            );
         }
 
         if (ReturnButton != null)
@@ -337,24 +339,26 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         yield return new WaitWhile(() => !PhotonNetwork.InLobby);
 
         //Setting up the room to be created
-        RoomOptions roomOptions = new RoomOptions();
-        roomOptions.IsVisible = true;   //Make the room visible in the lobby.
-        roomOptions.IsOpen = true;      //Allow other players to enter the room
-        roomOptions.PublishUserId = true;
-
-        roomOptions.MaxPlayers = 2;
-
-        //To display room creator in room custom properties, store creator's name
-        roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
+        RoomOptions roomOptions = new RoomOptions
         {
-            { "RoomCreator",PhotonNetwork.NickName },
+            IsVisible = true,   //Make the room visible in the lobby.
+            IsOpen = true,      //Allow other players to enter the room
+            PublishUserId = true,
 
-        };
+            MaxPlayers = 2,
 
-        //Display custom property information in the lobby
-        roomOptions.CustomRoomPropertiesForLobby = new string[]
-        {
-            "RoomCreator",
+            //To display room creator in room custom properties, store creator's name
+            CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
+            {
+                { "RoomCreator",PhotonNetwork.NickName },
+
+            },
+
+            //Display custom property information in the lobby
+            CustomRoomPropertiesForLobby = new string[]
+            {
+                "RoomCreator",
+            }
         };
 
         string RoomName = StringUtils.GeneratePassword_AlpahabetNum(8);
@@ -465,8 +469,6 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         endLoadingText = true;
     }
 
-    bool count = true;
-    float timer = 0;
     Button ReturnButtonButton;
     private void Start()
     {

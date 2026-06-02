@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// Bagramon
 namespace DCGO.CardEffects.BT11
 {
     public class BT11_088 : CEntity_Effect
@@ -390,23 +391,24 @@ namespace DCGO.CardEffects.BT11
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                             selectCardEffect.SetUp(
-                                        canTargetCondition: CanSelectCardCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: CanEndSelectCondition,
-                                        canNoSelect: () => false,
-                                        selectCardCoroutine: SelectCardCoroutine,
-                                        afterSelectCardCoroutine: null,
-                                        message: "Select 1 digivolution card to discard.",
-                                        maxCount: 1,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Custom,
-                                        customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: null);
+                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: CanEndSelectCondition,
+                                canNoSelect: () => false,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 digivolution card to discard.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.DigivolutionCards,
+                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: null);
 
+                            selectCardEffect.SetUseFaceDown();
                             selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to discard.", "The opponent is selecting 1 digivolution card to discard.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());

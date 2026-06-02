@@ -276,7 +276,7 @@ namespace DCGO.CardEffects.EX10
                             }
 
                             if (timing == EffectTiming.OnDestroyedAnyone)
-                                return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, OpponentsDigimon);
+                                return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, OpponentsDigimon, activateClass);
                         }
                     }
 

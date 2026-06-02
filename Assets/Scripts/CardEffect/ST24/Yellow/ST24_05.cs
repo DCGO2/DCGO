@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.ST24
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return (targetPermanent.TopCard.CardNames.Contains("Agumon")
+                    return (targetPermanent.TopCard.ContainsCardName("Agumon")
                         && targetPermanent.TopCard.EqualsTraits("Dinosaur"))
                             || targetPermanent.TopCard.EqualsTraits("DATA SQUAD");
                 }

@@ -100,23 +100,7 @@ namespace DCGO.CardEffects.BT11
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-
-                        if (CardEffectCommons.IsDijiXros(hashtable, count => count == 2))
-                        {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -150,7 +134,7 @@ namespace DCGO.CardEffects.BT11
                         }
                     }
 
-                    if (CardEffectCommons.IsDijiXros(_hashtable, count => count == 2))
+                    if (CardEffectCommons.IsDijiXros(_hashtable, card, count => count == 2))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                         {

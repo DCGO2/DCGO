@@ -25,7 +25,6 @@ public class SelectCountEffect : MonoBehaviourPunCallbacks
         _messageForEnemy = Message_Enemy;
         _selectCountCoroutine = SelectCountCoroutine;
         _preferMin = false;
-        _notDoSync = false;
         _isDigivolutionCost = false;
 
         _candidates = new List<int>();
@@ -39,11 +38,6 @@ public class SelectCountEffect : MonoBehaviourPunCallbacks
     public void SetPreferMin(bool preferMin)
     {
         _preferMin = preferMin;
-    }
-
-    public void SetNotDoSync(bool notDoSync)
-    {
-        _notDoSync = notDoSync;
     }
 
     public void SetIsDigivolutionCost(bool isDigivolutionCost)
@@ -61,15 +55,10 @@ public class SelectCountEffect : MonoBehaviourPunCallbacks
     List<int> _candidates = new List<int>();
     int _selectedCount = 0;
     bool _preferMin = true;
-    bool _notDoSync = false;
     bool _isDigivolutionCost = false;
 
     public IEnumerator Activate()
     {
-        if (!_notDoSync)
-        {
-            yield return GManager.instance.photonWaitController.StartWait("SelectCountEffect");
-        }
 
         if (_maxCount >= 1)
         {

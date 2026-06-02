@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -455,7 +455,7 @@ public class DataBase : MonoBehaviour
 
     public static string PierceEffectDiscription()
     {
-        return "<Piercing> (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.)";
+        return "<Piercing> (When this Digimon deletes your opponent's Digimon in battle while attacking, it checks security before the attack ends.)";
     }
 
     public static string RetaliationEffectDiscription()
@@ -538,7 +538,6 @@ public class DataBase : MonoBehaviour
         return $"<Overclock [{trait}]> (At the end of your turn, by deleting 1 of your Tokens or other [{trait}] trait Digimon, this Digimon attacks a player without suspending.)";
     }
 
-
     public static string TrainingEffectDiscription()
     {
         return "<Training> (In the main phase, by suspending this Digimon, place your deck's top card face down as this Digimon's bottom digivolution card. This effect can also activate in the breeding area).";
@@ -562,6 +561,16 @@ public class DataBase : MonoBehaviour
     public static string LinkEffectDiscription()
     {
         return "[Link] (Plug this card from the hand or battle area sideways into the specified Digimon in the battle area.)";
+    }
+
+    public static string GuardEffectDescription()
+    {
+        return "<Guard> (When any of your other Digimon would leave the battle area by your opponent's effects, by deleting this Digimon, they don't leave.)";
+    }
+    
+    public static string EngageEffectDescription()
+    {
+        return "<Engage> (At the end of your turn, this Digimon may attack.)";
     }
 
     public static string ReplaceToASCII(string text)

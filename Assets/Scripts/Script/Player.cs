@@ -24,11 +24,13 @@ public class Player : MonoBehaviour
             {
                 if (BattleAreaFrameParent.GetChild(i).childCount >= 2)
                 {
-                    FieldCardFrame fieldCardFrame = new FieldCardFrame();
-                    fieldCardFrame.Frame = BattleAreaFrameParent.GetChild(i).GetChild(0).gameObject;
-                    fieldCardFrame.Frame_Select = BattleAreaFrameParent.GetChild(i).GetChild(1).GetComponent<Image>();
-                    fieldCardFrame.FrameID = count;
-                    fieldCardFrame.player = this;
+                    FieldCardFrame fieldCardFrame = new FieldCardFrame
+                    {
+                        Frame = BattleAreaFrameParent.GetChild(i).GetChild(0).gameObject,
+                        Frame_Select = BattleAreaFrameParent.GetChild(i).GetChild(1).GetComponent<Image>(),
+                        FrameID = count,
+                        player = this
+                    };
                     fieldCardFrame.Frame.GetComponent<Image>().color = new Color(0, 0, 0, 0);
                     fieldCardFrame.Frame_Select.color = new Color(0, 0, 0, 0);
                     fieldCardFrames.Add(fieldCardFrame);
@@ -39,11 +41,13 @@ public class Player : MonoBehaviour
 
             if (BreedingAreaFrameParent.childCount >= 2)
             {
-                FieldCardFrame fieldCardFrame = new FieldCardFrame();
-                fieldCardFrame.Frame = BreedingAreaFrameParent.GetChild(0).gameObject;
-                fieldCardFrame.Frame_Select = BreedingAreaFrameParent.GetChild(1).GetComponent<Image>();
-                fieldCardFrame.FrameID = count;
-                fieldCardFrame.player = this;
+                FieldCardFrame fieldCardFrame = new FieldCardFrame
+                {
+                    Frame = BreedingAreaFrameParent.GetChild(0).gameObject,
+                    Frame_Select = BreedingAreaFrameParent.GetChild(1).GetComponent<Image>(),
+                    FrameID = count,
+                    player = this
+                };
                 fieldCardFrame.Frame.GetComponent<Image>().color = new Color(0, 0, 0, 0);
                 fieldCardFrame.Frame_Select.color = new Color(0, 0, 0, 0);
                 fieldCardFrames.Add(fieldCardFrame);
@@ -412,7 +416,7 @@ public class Player : MonoBehaviour
             {
                 for (int i = 0; i < DeckCardImages.Count; i++)
                 {
-                    float targetY = 0;
+                    float targetY;
 
                     if (j % 2 == 0)
                     {
@@ -553,7 +557,7 @@ public class Player : MonoBehaviour
     {
         if (PlayMatSpriteRenderer_Original != null)
         {
-            string filiName = "";
+            string filiName;
 
             if (isYou)
             {
@@ -948,6 +952,23 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region Timestamp of the last time the player's turn started, for continuous effects.
+
+    DateTime _turnStartTime = DateTime.MinValue;
+
+    public DateTime TurnStartTime
+    {
+        get { return _turnStartTime; }
+        private set { _turnStartTime = value; }
+    }
+
+    public void SetTurnStartTime()
+    {
+        TurnStartTime = DateTime.Now;
+    }
+
+    #endregion
+
     #region トラッシュのカードオブジェクト
     public HandCard TrashHandCard;
     #endregion
@@ -1111,7 +1132,7 @@ public class Player : MonoBehaviour
     {
         get
         {
-            int MaxMemoryCost = 0;
+            int MaxMemoryCost;
 
             if (PlayerID == 0)
             {
@@ -1651,8 +1672,6 @@ public class FieldCardFrame
             {
                 return player.fieldCardFrames[this.FrameID - 4];
             }
-
-            return null;
         }
     }
 }

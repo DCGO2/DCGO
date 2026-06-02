@@ -176,7 +176,7 @@ namespace DCGO.CardEffects.BT11
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -186,7 +186,7 @@ namespace DCGO.CardEffects.BT11
                         return true;
                     }
 
-                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card, activateClass))
                     {
                         if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition1) >= 1)
                         {
