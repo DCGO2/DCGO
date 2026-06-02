@@ -74,9 +74,9 @@ namespace DCGO.CardEffects.EX4
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && (permanent.TopCard.CardNames.Equals("Gallantmon")
-                        || permanent.TopCard.CardNames.Equals("Sakuyamon")
-                        || permanent.TopCard.CardNames.Equals("MegaGargomon")))
+                    && (permanent.TopCard.EqualsCardName("Gallantmon")
+                        || permanent.TopCard.EqualsCardName("Sakuyamon")
+                        || permanent.TopCard.EqualsCardName("MegaGargomon")))
                     {
                         foreach (CardSource cardSource in card.Owner.HandCards)
                         {
