@@ -4,14 +4,30 @@ using System.Collections.Generic;
 
 public partial class CardEffectFactory
 {
-    #region Trigger effect of [Engage]
+    #region [Engage] self effect
+    public static ActivateClass EngageSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, bool isLinkedEffect = false)
+    {
+        return EngageEffect(
+            targetPermanent: card.PermanentOfThisCard(),
+            isInheritedEffect,
+            condition,
+            rootCardEffect: null,
+            card,
+            beforeOnAttackCoroutine: null,
+            isLinkedEffect
+        );
+    }
+    #endregion
+
+    #region [Engage] effect
     public static ActivateClass EngageEffect(
         Permanent targetPermanent,
         bool isInheritedEffect,
         Func<bool> condition,
         ICardEffect rootCardEffect,
         CardSource card,
-        Func<IEnumerator> beforeOnAttackCoroutine = null)
+        Func<IEnumerator> beforeOnAttackCoroutine = null,
+        bool isLinkedEffect = false)
     {
         if (targetPermanent == null) return null;
         if (targetPermanent.TopCard == null) return null;
