@@ -564,6 +564,11 @@ public class DataBase : MonoBehaviour
         return "[Link] (Plug this card from the hand or battle area sideways into the specified Digimon in the battle area.)";
     }
 
+    public static string GuardEffectDescription()
+    {
+        return "<Guard> (When any of your other Digimon would leave the battle area by your opponent's effects, by deleting this Digimon, they don't leave.)";
+    }
+    
     public static string EngageEffectDescription()
     {
         return "<Engage> (At the end of your turn, this Digimon may attack.)";
