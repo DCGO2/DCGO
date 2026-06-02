@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.EX12
                 {
                     List<CardSource> cardSources = new List<CardSource>();
 
-                    while (cardSources < 2)
+                    while (cardSources.Count < 2)
                     {
                         #region Setup Location Selection
                         List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
@@ -180,9 +180,16 @@ namespace DCGO.CardEffects.EX12
                         #endregion
 
                         bool isTop = GManager.instance.userSelectionManager.SelectedBoolValue;
-                        if (isTop) yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(
-                            addedDigivolutionCards: cardSources.Reverse(),
+                        if (isTop)
+                        {
+                            List<CardSource> fixedCards = new List<CardSource>();
+                            fixedCards = cardSources.Clone();
+                            fixedCards.Reverse();
+
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(
+                            addedDigivolutionCards: fixedCards,
                             cardEffect: activateClass));
+                        }
                         else yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
                             addedDigivolutionCards: cardSources,
                             cardEffect: activateClass));
@@ -257,7 +264,8 @@ namespace DCGO.CardEffects.EX12
                     => CardEffectCommons.IsMaxDP(permanent, card.Owner.Enemy, null);
 
                 bool CanSelectOwnerPermamentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    && permanent.CanAttack(activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
@@ -289,7 +297,7 @@ namespace DCGO.CardEffects.EX12
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: YourDigimonThatCanAttack,
+                            canTargetCondition: CanSelectOwnerPermamentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
