@@ -229,7 +229,7 @@ namespace DCGO.CardEffects.EX12
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        if (cardSources != null)
+                        if (cardSources.Count > 0)
                         {
                             Used = true;
 
