@@ -51,7 +51,7 @@ public partial class CardEffectCommons
             isInheritedEffect: false,
             condition: CanUseCondition,
             rootCardEffect: activateClass,
-            card: targetPermanent.TopCard);
+            card: card);
 
         AddEffectToPermanent(
             targetPermanent: targetPermanent,
