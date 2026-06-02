@@ -80,8 +80,8 @@ namespace DCGO.CardEffects.EX4
                     {
                         foreach (CardSource cardSource in card.Owner.HandCards)
                         {
-                            return CanSelectCardCondition(cardSource, permanent)
-                            && !cardSource.CanNotEvolve(permanent);
+                            if (CanSelectCardCondition(cardSource, permanent)
+                            && !cardSource.CanNotEvolve(permanent)) return true;
                         }
                     }
 
