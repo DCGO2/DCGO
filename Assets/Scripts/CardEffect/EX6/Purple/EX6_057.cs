@@ -122,7 +122,7 @@ namespace DCGO.CardEffects.EX6
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)
-                        && permanent.HasLevel
+                        && permanent.TopCard.HasLevel
                         && permanent.Level <= 5;
                 }
 
@@ -202,7 +202,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     return CardEffectCommons.IsOpponentTurn(card)
                         && CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition);
+                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
