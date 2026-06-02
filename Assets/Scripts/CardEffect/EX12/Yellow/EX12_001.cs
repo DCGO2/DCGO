@@ -17,6 +17,7 @@ namespace DCGO.CardEffects.EX12
                 activateClass.SetUpICardEffect("May DNA this [VB] Digimon and 1 other into a [VB] in hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
