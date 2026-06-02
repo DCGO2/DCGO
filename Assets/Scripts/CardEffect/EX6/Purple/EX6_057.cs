@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.EX6
                             activateClass1.SetUpICardEffect("Delete this Digimon", CanUseCondition1, selectedPermanent.TopCard);
                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDescription1());
                             activateClass1.SetEffectSourcePermanent(selectedPermanent);
-                            CardEffectCommons.AddEffectToPermanent(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOwnerTurnEnd, card: card, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
+                            CardEffectCommons.AddEffectToPermanent(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOwnerTurnEnd, card: card, cardEffect: PermanentEffectFactory.AddDetailClass(selectedPermanent, "[End of Your Turn] Delete this Digimon.", true, activateClass), timing: EffectTiming.OnEndTurn);
 
                             if (!permanent.TopCard.CanNotBeAffected(activateClass))
                             {
