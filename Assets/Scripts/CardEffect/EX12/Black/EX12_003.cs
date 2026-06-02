@@ -16,6 +16,7 @@ namespace DCGO.CardEffects.EX12
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("May DNA 1 of the leaving Digimon and another Digimon into an [ME] in hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
@@ -206,7 +207,7 @@ namespace DCGO.CardEffects.EX12
                         && selectedPermanent2 != null
                         && selectedDNA.CanJogressFromTargetPermanent(selectedPermanent1, false))
                         {
-                            int[] jogressEvoRootsFrameIDs = {selectedPermanent1.PermanentFrame.FrameID, selectedPermanent2.PermanentFrame.FrameID};
+                            int[] jogressEvoRootsFrameIDs = { selectedPermanent1.PermanentFrame.FrameID, selectedPermanent2.PermanentFrame.FrameID };
 
                             PlayCardClass playCard = new PlayCardClass(
                                 cardSources: new List<CardSource>() { selectedDNA },
