@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.EX12
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.EqualsTraits("Shambala");
+                return cardSource.EqualsTraits("SW");
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
