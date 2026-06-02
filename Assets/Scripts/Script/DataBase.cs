@@ -568,6 +568,11 @@ public class DataBase : MonoBehaviour
     {
         return "<Guard> (When any of your other Digimon would leave the battle area by your opponent's effects, by deleting this Digimon, they don't leave.)";
     }
+    
+    public static string EngageEffectDescription()
+    {
+        return "<Engage> (At the end of your turn, this Digimon may attack.)";
+    }
 
     public static string ReplaceToASCII(string text)
     {
