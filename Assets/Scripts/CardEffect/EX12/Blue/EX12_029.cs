@@ -257,7 +257,7 @@ namespace DCGO.CardEffects.EX12
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
                                 targetPermanent: permanent,
-                                trashCount: 3,
+                                trashCount: 2,
                                 isFromTop: false,
                                 activateClass: activateClass));
                         }
