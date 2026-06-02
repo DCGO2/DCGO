@@ -388,7 +388,7 @@ namespace DCGO.CardEffects.EX7
                     {
                         if (CardEffectCommons.IsOpponentTurn(card))
                         {
-                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                             {
                                 return true;
                             }

@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.EX4
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                             {
                                 return true;
                             }

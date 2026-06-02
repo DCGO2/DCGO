@@ -261,7 +261,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool IsOwnTamerCondition(Permanent permanent)
@@ -277,7 +277,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(hashtable, card) &&
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass) &&
                            CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsOwnTamerCondition) &&
                            (CardEffectCommons.HasMatchConditionOwnersHand(card, HasTraitCondition) ||
                             CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasTraitCondition));

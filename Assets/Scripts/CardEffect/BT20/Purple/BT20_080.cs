@@ -291,7 +291,7 @@ namespace DCGO.CardEffects.BT20
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsOpponentsDigimon);                }
+                           CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsOpponentsDigimon, activateClass);                }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {

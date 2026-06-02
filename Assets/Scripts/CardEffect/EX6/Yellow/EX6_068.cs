@@ -140,7 +140,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, DeletedPermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, DeletedPermanentCondition, activateClass))
                         {
                             return true;
                         }

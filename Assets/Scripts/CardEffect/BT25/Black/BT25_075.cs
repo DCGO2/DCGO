@@ -255,11 +255,11 @@ namespace DCGO.CardEffects.BT25
                     return "[Your Turn] When your Digimon get linked, one of them may attack.";
                 }
 
-                bool PermanentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && permanent.CanAttack(activateClass);
+                bool PermanentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanTriggerWhenLinked(hashtable, PermanentCondition, null);
                 }
@@ -271,13 +271,13 @@ namespace DCGO.CardEffects.BT25
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     activateClass.SetEffectName($"{GetAttacker(hashtable).TopCard.BaseENGCardNameFromEntity} may attack");
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent attacker = GetAttacker(hashtable);
-                    if (attacker != null && attacker.TopCard != null)
+                    if (attacker != null && attacker.TopCard != null && attacker.CanAttack(activateClass))
                     {
                         SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 

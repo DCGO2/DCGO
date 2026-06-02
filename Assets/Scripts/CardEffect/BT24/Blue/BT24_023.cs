@@ -136,13 +136,23 @@ namespace DCGO.CardEffects.BT24
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
-                                permanentCondition: (permanent) => permanent == selectedPermanent,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass,
-                                isOnlyActivePhase: false,
-                                effectName: "Can't Suspend"
-                            ));
+                        if (selectedPermanent != null)
+                        {
+                            CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
+                            canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCondition1, card);
+                            canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCondition);
+                            selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotSuspendClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+
+                            bool CanUseCondition1(Hashtable hashtable)
+                            {
+                                return selectedPermanent.TopCard != null
+                                    && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
+                            }
+
+                            bool PermanentCondition(Permanent permanent) => permanent == selectedPermanent;
+                        }
                     }
                 }
             }

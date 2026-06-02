@@ -597,7 +597,12 @@ public class GManager : MonoBehaviourPun
         {
             turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.LoseMemory));
         }
-
+        
+        //Add security to hand
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.H))
+        {
+            turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.RemoveFromSecurity));
+        }
     }
 
     public IEnumerator DrawCard(Player _player)
@@ -697,6 +702,33 @@ public class GManager : MonoBehaviourPun
             // Place this card face up as the top security card
             yield return StartCoroutine(CardObjectController.AddSecurityCard(selectedSource, toTop: true, faceUp: placeFaceup));
         }
+
+        yield return StartCoroutine(turnStateMachine.SetMainPhase());
+    }
+
+    public IEnumerator RemoveFromSecurity (Player _player)
+    {
+        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+    
+        selectCardEffect.SetUp(
+            canTargetCondition: (cardSource) => true,
+            canTargetCondition_ByPreSelecetedList: null,
+            canEndSelectCondition: null,
+            canNoSelect: () => true,
+            selectCardCoroutine: null,
+            afterSelectCardCoroutine: null,
+            message: "Select Cards to add to hand",
+            maxCount: _player.SecurityCards.Count,
+            canEndNotMax: true,
+            isShowOpponent: false,
+            mode: SelectCardEffect.Mode.AddHand,
+            root: SelectCardEffect.Root.Security,
+            customRootCardList: null,
+            canLookReverseCard: true,
+            selectPlayer: _player,
+            cardEffect: null);
+    
+        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
         yield return StartCoroutine(turnStateMachine.SetMainPhase());
     }

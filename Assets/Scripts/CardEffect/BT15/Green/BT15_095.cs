@@ -111,7 +111,7 @@ namespace DCGO.CardEffects.BT15
                                     {
                                         if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                         {
-                                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent))
+                                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent, activateClass))
                                             {
                                                 if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                                 {
