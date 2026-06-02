@@ -71,13 +71,13 @@ namespace DCGO.CardEffects.EX12
                 {
                     bool HasDigivolveCondition(CardSource cardSource)
                     {
-                        List<Int> costList = cardSource.CostList(GManager.instance.attackProcess.AttackingPermanent, false, false);
+                        List<int> costList = cardSource.CostList(GManager.instance.attackProcess.AttackingPermanent, false, false);
 
                         return cardSource.HasLevel
                             && cardSource.Level <= 6
                             && (cardSource.HasText("Gammamon")
                                 || cardSource.EqualsTraits("VB"))
-                            && costList.Count > 0 && card.Owner.MaxMemoryCost >= Math.Min(costList) - 1;
+                            && costList.Count > 0 && card.Owner.MaxMemoryCost >= costList.Min() - 1;
                     }
 
                     List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
