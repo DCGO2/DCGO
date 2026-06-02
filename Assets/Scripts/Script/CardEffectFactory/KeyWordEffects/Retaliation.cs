@@ -48,7 +48,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, (permanent) => permanent.cardSources.Contains(targetPermanent.TopCard)))
+            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, (permanent) => permanent.cardSources.Contains(targetPermanent.TopCard), activateClass))
             {
                 if (condition == null || condition())
                 {
@@ -61,7 +61,7 @@ public partial class CardEffectFactory
 
         bool CanActivateCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.CanActivateRetaliation(hashtable);
+            return CardEffectCommons.CanActivateRetaliation(hashtable, activateClass);
         }
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)

@@ -20,7 +20,7 @@ public class BT1_113 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Until the end of your opponent's next turnÅC1 of your opponent's Digimon can't attack or block.";
+                return "[Main] Until the end of your opponent's next turn, of your opponent's Digimon can't attack or block.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

@@ -7,21 +7,21 @@ using UnityEngine;
 public partial class CardEffectCommons
 {
     #region Can Trigger [Ascension]
-    public static bool CanTriggerAscension(Hashtable hashtable, CardSource card)
+    public static bool CanTriggerAscension(Hashtable hashtable, CardSource card, ICardEffect activateClass)
     {
-        return CanTriggerOnDeletion(hashtable, card);
+        return CanTriggerOnDeletion(hashtable, card, activateClass);
     }
 
-    public static bool CanTriggerPermanentAscension(Hashtable hashtable, Func<Permanent, bool> permanentCondition)
+    public static bool CanTriggerPermanentAscension(Hashtable hashtable, Func<Permanent, bool> permanentCondition, ICardEffect activateClass)
     {
-        return CanTriggerOnPermanentDeleted(hashtable, permanentCondition);
+        return CanTriggerOnPermanentDeleted(hashtable, permanentCondition, activateClass);
     }
     #endregion
 
     #region Can activate [Ascension]
-    public static bool CanActivateAscension(Hashtable hashtable, CardSource card)
+    public static bool CanActivateAscension(CardSource card, ICardEffect activateClass)
     {
-        return CanActivateOnDeletion(hashtable, card);
+        return CanActivateOnDeletion(card, activateClass);
     }
     #endregion
 

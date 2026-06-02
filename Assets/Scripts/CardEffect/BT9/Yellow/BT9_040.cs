@@ -31,7 +31,7 @@ public class BT9_040 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] 1 of your opponent's Digimon gains <Security Attack -1> (This Digimon checks 1 fewer security cards) until the end of your opponent's turn. Then, if [Angewomon] or [X Antibody] is in this DigimonÅf digivolution cards and you have 5 or fewer security cards, <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)";
+                return "[When Digivolving] 1 of your opponent's Digimon gains <Security Attack -1> (This Digimon checks 1 fewer security cards) until the end of your opponent's turn. Then, if [Angewomon] or [X Antibody] is in this Digimon's digivolution cards and you have 5 or fewer security cards, <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.BT24
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.CanDeclareOptionDelayEffect(card)
-                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermamentCondition);
+                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermamentCondition, activateClass);
                 }
 
                 bool PermamentCondition(Permanent permanent)

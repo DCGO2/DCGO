@@ -147,7 +147,7 @@ namespace DCGO.CardEffects.BT25
 
                 bool IsOpponentsDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
-                bool IsBattleTarget(Permanent permanent) => IsOpponentsDigimon(permanent) && permanent.TopCard.HasDP;
+                bool IsBattleTarget(Permanent permanent) => IsOpponentsDigimon(permanent) && permanent.HasDP;
 
                 bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 

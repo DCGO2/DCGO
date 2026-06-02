@@ -248,7 +248,7 @@ namespace DCGO.CardEffects.BT17
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition);
+                           CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

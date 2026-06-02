@@ -146,7 +146,7 @@ namespace DCGO.CardEffects.EX11
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsNSoPermanent);
+                    return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsNSoPermanent, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

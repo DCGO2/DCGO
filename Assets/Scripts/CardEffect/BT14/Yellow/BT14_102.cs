@@ -205,12 +205,12 @@ namespace DCGO.CardEffects.BT14
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card, activateClass))
                     {
                         if (card.Owner.CanAddSecurity(activateClass))
                         {
@@ -263,12 +263,12 @@ namespace DCGO.CardEffects.BT14
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion( hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card, activateClass))
                     {
                         if (card.Owner.HandCards.Count >= 1)
                         {

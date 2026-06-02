@@ -52,7 +52,7 @@ public class BT6_066 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                    if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition, activateClass))
                     {
                         if (CardEffectCommons.IsOpponentTurn(card))
                         {

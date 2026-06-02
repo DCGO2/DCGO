@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsTamerPlayed);
+                    return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsTamerPlayed, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
