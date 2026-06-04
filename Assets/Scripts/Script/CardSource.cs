@@ -4177,6 +4177,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has VB trait
+
+    public bool HasVBTraits
+    {
+        get
+        {
+            return EqualsTraits("VB");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
