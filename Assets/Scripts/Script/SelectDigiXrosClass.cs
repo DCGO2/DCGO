@@ -387,8 +387,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 
                     if (_endSelectDigiXros)
                     {
-                        _endSelectDigiXros = false;
-                        //break; TODO: Removed for not triggering digixros in all situations
+                        _endSelectDigiXros = false;//Reset here in case of leftover from previous digixros
                     }
 
                     bool canSelectHand = false;
@@ -470,7 +469,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                         }
                     }
 
-                    else if (canSelectActions.Count == 2 && digiXrosCondition.CanTargetCondition_ByPreSelecetedList == null && !element.skipAllIfNoSelect)
+                    else if (canSelectActions.Count == 2 && !element.skipAllIfNoSelect)
                     {
                         SetTargetDigiXrossIndex(card.Owner.PlayerID, actions.IndexOf(canSelectActions[0]));
                     }
@@ -553,6 +552,11 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                     if (0 <= _targetIndex && _targetIndex <= actions.Count - 1)
                     {
                         yield return ContinuousController.instance.StartCoroutine(actions[_targetIndex]());
+
+                        if (_endSelectDigiXros)
+                        {
+                            break;//Perform here where the value will only just have been set by the above routine
+                        }
 
                         if (!card.Owner.isYou && GManager.instance.IsAI)
                         {

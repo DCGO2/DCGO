@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (cardSource == card)
                     {
-                        DigiXrosConditionElement element = new DigiXrosConditionElement(CanSelectCardCondition, "1 Digimon card with [Xros Heart] or [Blue Flare] trait");
+                        DigiXrosConditionElement element = new DigiXrosConditionElement(CanSelectCardCondition, "1 Digimon card with [Xros Heart] or [Blue Flare] trait", true);
 
                         bool CanSelectCardCondition(CardSource cardSource)
                         {
