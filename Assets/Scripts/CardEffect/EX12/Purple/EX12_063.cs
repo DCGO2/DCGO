@@ -15,25 +15,20 @@ namespace DCGO.CardEffects.EX12
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsTraits("Puppet")
-                            || targetPermanent.TopCard.EqualsTraits("Shambala");
+                    return !targetPermanent.HasPermanentColor(CardColor.White) 
+                        && (targetPermanent.TopCard.EqualsTraits("Puppet")
+                            || targetPermanent.TopCard.EqualsTraits("Shambala"));
                 }
 
-                List<CardColor> validColors = new List<CardColor>(){ CardColor.Red, CardColor.Blue, CardColor.Yellow, CardColor.Green, CardColor.Black, CardColor.Purple };
-
-                foreach(CardColor color in validColors)//Add separate evo condition for each one non-white color
-                {
-                    cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                        permanentCondition: PermanentCondition,
-                        digivolutionCost: 3,
-                        ignoreDigivolutionRequirement: false,
-                        card: card,
-                        condition: null,
-                        level: 4,
-                        cardColor: color
-                        )
-                    );
-                }
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 3,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null,
+                    level: 4
+                    )
+                );
             }
             #endregion
 
@@ -134,6 +129,7 @@ namespace DCGO.CardEffects.EX12
                     return cardSource.IsDigimon
                         && cardSource.HasLevel
                         && cardSource.Level <= 4
+                        && (cardSource.EqualsTraits("Puppet") || cardSource.EqualsTraits("TB"))
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
                 
@@ -168,6 +164,7 @@ namespace DCGO.CardEffects.EX12
                 ActivateClass activateClass = new();
                 activateClass.SetUpICardEffect(OnDeletionEffectName, hash => OnDeletionUseCondition(hash, activateClass), card);
                 activateClass.SetUpActivateClass(hash => OnDeletionActivateCondition(hash, activateClass), hash => OnDeletionActivateCoroutine(hash, activateClass), -1, false, OnDeletionEffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
             }
 
@@ -176,6 +173,7 @@ namespace DCGO.CardEffects.EX12
                 ActivateClass activateClass = new();
                 activateClass.SetUpICardEffect(OnDeletionEffectName, hash => OnDeletionUseCondition(hash, activateClass), card);
                 activateClass.SetUpActivateClass(hash => OnDeletionActivateCondition(hash, activateClass), hash => OnDeletionActivateCoroutine(hash, activateClass), -1, false, OnDeletionEffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
             }
