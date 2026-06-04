@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -45,12 +46,6 @@ namespace DCGO.CardEffects.EX12
                         && permanent.TopCard.EqualsTraits("ME");
                 }
 
-                bool IsOwnerPermanentToBeDeletedCondition(Permanent permanent)
-                {
-                    return PermanentCondition(permanent)
-                        && permanent.willBeRemoveField;
-                }
-
                 bool CanSelectDNACondition(CardSource cardSource)
                 {
                     return cardSource.EqualsTraits("ME")
@@ -59,170 +54,17 @@ namespace DCGO.CardEffects.EX12
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    CardSource selectedDNA = null;
-                    List<Permanent> allowedPermanents = new List<Permanent>();
-                    Permanent selectedPermanent1 = null;
-                    Permanent selectedPermanent2 = null;
+                    List<Permanent> allowedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(PermanentCondition);
 
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    Func<Permanent, bool>[] permanentConditions = new Func<Permanent, bool>[] { allowedPermanents.Contains };//one of the 2 must be a to be removed digimon
 
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectDNACondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: SelectDNACoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectHandEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.",
-                        "The opponent is selecting 1 Digimon to DNA digivolve.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                    IEnumerator SelectDNACoroutine(CardSource cardSource)
-                    {
-                        selectedDNA = cardSource;
-                        yield return null;
-                    }
-
-                    if (selectedDNA != null)
-                    {
-                        JogressCondition dnaCondition = selectedDNA.jogressCondition[0];
-
-                        if (selectedDNA.jogressCondition.Count > 1)
-                        {
-                            #region select DNA condition
-                            SelectDNACondition selectDNACondition = GManager.instance.GetComponent<SelectDNACondition>();
-                            selectDNACondition.SetUp(selectedDNA.Owner, selectedDNA, SelectDNA);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectDNACondition.Activate());
-
-                            IEnumerator SelectDNA(int dnaSelection)
-                            {
-                                dnaCondition = selectedDNA.jogressCondition[dnaSelection];
-
-                                yield return null;
-                            }
-                            #endregion
-                        }
-
-                        JogressConditionElement[] elements = (JogressConditionElement[])dnaCondition.elements.Clone();
-
-                        for (int i = 0; i < elements.Length; i++)
-                        {
-                            foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
-                            {
-                                if (elements[i].EvoRootCondition(permanent))
-                                {
-                                    allowedPermanents.Add(permanent);
-                                }
-                            }
-                        }
-
-                        if (allowedPermanents.Count >= 2)
-                        {
-                            #region Selecting First Permanent for DNA
-                            bool PermanentDNASelection1(Permanent permanent)
-                            {
-                                return IsOwnerPermanentToBeDeletedCondition(permanent)
-                                    && allowedPermanents.Contains(permanent);
-                            }
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: PermanentDNASelection1,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine1,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.",
-                                "The opponent is selecting 1 Digimon to DNA digivolve.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                            #endregion
-
-                            IEnumerator SelectPermanentCoroutine1(Permanent permanent)
-                            {
-                                selectedPermanent1 = permanent;
-
-                                yield return null;
-                            }
-
-                            if (selectedPermanent1 != null)
-                            {
-                                #region Selecting Second Permanent for DNA
-                                bool PermanentDNASelection2(Permanent permanent)
-                                {
-                                    return allowedPermanents.Contains(permanent)
-                                        && permanent != selectedPermanent1;
-                                }
-
-                                SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                selectPermanentEffect1.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: PermanentDNASelection2,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: 1,
-                                    canNoSelect: true,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: SelectPermanentCoroutine2,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Custom,
-                                    cardEffect: activateClass);
-
-                                selectPermanentEffect1.SetUpCustomMessage("Select second Digimon to DNA digivolve.",
-                                    "The opponent is selecting second Digimon to DNA digivolve.");
-
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
-
-                                IEnumerator SelectPermanentCoroutine2(Permanent permanent)
-                                {
-                                    selectedPermanent2 = permanent;
-
-                                    yield return null;
-                                }
-                                #endregion
-                            }
-                        }
-
-                        if (selectedDNA != null
-                        && selectedPermanent1
-                        != null
-                        && selectedPermanent2 != null
-                        && selectedDNA.CanJogressFromTargetPermanent(selectedPermanent1, false))
-                        {
-                            int[] jogressEvoRootsFrameIDs = { selectedPermanent1.PermanentFrame.FrameID, selectedPermanent2.PermanentFrame.FrameID };
-
-                            PlayCardClass playCard = new PlayCardClass(
-                                cardSources: new List<CardSource>() { selectedDNA },
-                                hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                                payCost: true,
-                                targetPermanent: null,
-                                isTapped: false,
-                                root: SelectCardEffect.Root.Hand,
-                                activateETB: true);
-
-                            playCard.SetJogress(jogressEvoRootsFrameIDs);
-
-                            yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
+                        canSelectDNACardCondition: CanSelectDNACondition,
+                        payCost: true,
+                        isHand: true,
+                        activateClass,
+                        permanentConditions
+                    ));
                 }
             }
             #endregion
