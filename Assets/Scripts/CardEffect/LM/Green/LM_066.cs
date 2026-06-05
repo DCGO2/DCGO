@@ -290,7 +290,7 @@ namespace DCGO.CardEffects.LM
                     {
                         foreach (Permanent permanent1 in permanents)
                         {
-                            if (canNoSelect = false
+                            if (canNoSelect == false
                             && !permanent1.CanSuspend)
                             {
                                 return false;
