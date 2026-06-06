@@ -1,8 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// Digital Translator
 namespace DCGO.CardEffects.EX4
 {
     public class EX4_072 : CEntity_Effect
@@ -11,6 +11,7 @@ namespace DCGO.CardEffects.EX4
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Rule
             if (timing == EffectTiming.None)
             {
                 ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
@@ -24,8 +25,6 @@ namespace DCGO.CardEffects.EX4
                     return true;
                 }
 
-
-
                 List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
                 {
                     if (cardSource == card)
@@ -36,7 +35,9 @@ namespace DCGO.CardEffects.EX4
                     return CardNames;
                 }
             }
+            #endregion
 
+            #region Ignore Color Requirement
             if (timing == EffectTiming.None)
             {
                 IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
@@ -47,55 +48,40 @@ namespace DCGO.CardEffects.EX4
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer);
                 }
-
-
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    if (cardSource == card)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return cardSource == card;
                 }
             }
+            #endregion
 
+            #region Main
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
-                    return "[Main] Choose 1 of your level 6 Digimon. Ignoring digivolution requirements and without paying the cost, it may digivolve into a level 6 Digimon card in your hand with a different name that includes the chosen Digimon's name.";
+                    return "[Main] Choose 1 of your [Gallantmon], [Sakuyamon] or [MegaGargomon].From your hand, ignoring digivolution requirements and without paying the cost, it may digivolve into a level 6 Digimon card with a different name that includes the chosen Digimon's name.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    && (permanent.TopCard.EqualsCardName("Gallantmon")
+                        || permanent.TopCard.EqualsCardName("Sakuyamon")
+                        || permanent.TopCard.EqualsCardName("MegaGargomon")))
                     {
-                        if (permanent.TopCard.HasLevel && permanent.Level == 6)
+                        foreach (CardSource cardSource in card.Owner.HandCards)
                         {
-                            foreach (CardSource cardSource in card.Owner.HandCards)
-                            {
-                                if (CanSelectCardCondition(cardSource, permanent))
-                                {
-                                    if (!cardSource.CanNotEvolve(permanent))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
+                            if (CanSelectCardCondition(cardSource, permanent)
+                            && !cardSource.CanNotEvolve(permanent)) return true;
                         }
                     }
 
@@ -104,18 +90,9 @@ namespace DCGO.CardEffects.EX4
 
                 bool CanSelectCardCondition(CardSource cardSource, Permanent permanent)
                 {
-                    if (permanent.TopCard.CardNames.Count((cardName) => cardSource.ContainsCardName(cardName)) >= 1)
-                    {
-                        if (permanent.TopCard.CardNames.Count((cardName) => cardSource.CardNames.Contains(cardName)) == 0)
-                        {
-                            if (cardSource.HasLevel && cardSource.Level == 6)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return permanent.TopCard.CardNames.Any((cardName) => cardSource.ContainsCardName(cardName) && !cardSource.EqualsCardName(cardName))
+                        && cardSource.HasLevel
+                        && cardSource.Level == 6;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -129,8 +106,6 @@ namespace DCGO.CardEffects.EX4
                     {
                         Permanent selectedPermanent = null;
 
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -138,7 +113,7 @@ namespace DCGO.CardEffects.EX4
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -173,35 +148,27 @@ namespace DCGO.CardEffects.EX4
                     }
                 }
             }
+            #endregion
 
-
+            #region Security
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect($"Return 1 card from trash to hand and add this card to hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Return 1 card from trash to hand and add this card to hand", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Security] Return 1 Digimon card from your trash to your hand, and add this card to your hand.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource != null)
-                    {
-                        if (cardSource.IsDigimon)
-                        {
-                            if (cardSource.Owner == card.Owner)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return cardSource != null
+                        && cardSource.IsDigimon
+                        && cardSource.Owner == card.Owner;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -213,8 +180,6 @@ namespace DCGO.CardEffects.EX4
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                     {
-                        int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
-
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -225,7 +190,7 @@ namespace DCGO.CardEffects.EX4
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: null,
                             message: "Select 1 card to add to your hand.",
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canEndNotMax: false,
                             isShowOpponent: true,
                             mode: SelectCardEffect.Mode.AddHand,
@@ -241,6 +206,7 @@ namespace DCGO.CardEffects.EX4
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.AddThisCardToHand(card, activateClass));
                 }
             }
+            #endregion
 
             return cardEffects;
         }
