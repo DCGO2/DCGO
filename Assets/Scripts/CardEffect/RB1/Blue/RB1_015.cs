@@ -155,113 +155,12 @@ public class RB1_015 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.None)
-        {
-            AddSkillClass addSkillClass = new AddSkillClass();
-            addSkillClass.SetUpICardEffect("This Digimon gains all effects of [Gammamon] in digivolution cards", CanUseCondition, card);
-            addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+        #region All Turns Copy effects of Gammamon in digivolution cards
+        bool CopyCardCondition(CardSource cardSource) => cardSource.ContainsCardName("Gammamon");
 
-            cardEffects.Add(addSkillClass);
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.IsExistOnBattleArea(card);
-            }
-
-            bool PermanentCondition(Permanent permanent)
-            {
-                return permanent == card.PermanentOfThisCard();
-            }
-
-            bool CardSourceCondition(CardSource cardSource)
-            {
-                if (PermanentCondition(cardSource.PermanentOfThisCard()))
-                {
-                    if (cardSource == cardSource.PermanentOfThisCard().TopCard)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
-            {
-                if (CardSourceCondition(cardSource))
-                {
-                    foreach (CardSource cardSource1 in cardSource.PermanentOfThisCard().DigivolutionCards)
-                    {
-                        if (cardSource1.ContainsCardName("Gammamon"))
-                        {
-                            foreach (ICardEffect cardEffect in cardSource1.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(_timing, card))
-                            {
-                                if (!cardEffect.IsSecurityEffect && !cardEffect.IsInheritedEffect)
-                                {
-                                    cardEffects.Add(cardEffect);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return cardEffects;
-            }
-        }
-
-        if (timing == EffectTiming.None)
-        {
-            AddSkillClass addSkillClass = new AddSkillClass();
-            addSkillClass.SetUpICardEffect("This Digimon gains all effects of [Gammamon] in digivolution cards", CanUseCondition, card);
-            addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-            addSkillClass.SetIsInheritedEffect(true);
-            cardEffects.Add(addSkillClass);
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.IsExistOnBattleArea(card);
-            }
-
-            bool PermanentCondition(Permanent permanent)
-            {
-                return permanent == card.PermanentOfThisCard();
-            }
-
-            bool CardSourceCondition(CardSource cardSource)
-            {
-                if (PermanentCondition(cardSource.PermanentOfThisCard()))
-                {
-                    if (cardSource == cardSource.PermanentOfThisCard().TopCard)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
-            {
-                if (CardSourceCondition(cardSource))
-                {
-                    foreach (CardSource cardSource1 in cardSource.PermanentOfThisCard().DigivolutionCards)
-                    {
-                        if (cardSource1.ContainsCardName("Gammamon"))
-                        {
-                            foreach (ICardEffect cardEffect in cardSource1.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(_timing, card))
-                            {
-                                if (!cardEffect.IsSecurityEffect && !cardEffect.IsInheritedEffect)
-                                {
-                                    cardEffects.Add(cardEffect);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return cardEffects;
-            }
-        }
+        CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, cardCondition: CopyCardCondition);
+        CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, isInheritedEffect: true, cardCondition: CopyCardCondition);
+        #endregion
 
         return cardEffects;
     }
