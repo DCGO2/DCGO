@@ -113,8 +113,8 @@ namespace DCGO.CardEffects.BT24
                 {
                     if (permanent != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
-                                permanentCondition: (otherPermanent) => otherPermanent == permanent,
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendEffect(
+                                targetPermanent: permanent,
                                 effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass,
                                 isOnlyActivePhase: false,
