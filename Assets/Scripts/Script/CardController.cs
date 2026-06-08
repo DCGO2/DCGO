@@ -1551,6 +1551,11 @@ public class PlayPermanentClass
                     card.Owner.DigivolveCount_ThisTurn++;
                     yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, null).Draw());
 
+                    if (isJogress)
+                    {
+                        yield return new WaitForEndOfFrame();
+                    }
+
                     if (_burstDigivolved)
                     {
                         if (permanent.TopCard != null)
