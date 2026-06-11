@@ -535,6 +535,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     {
         gameContext.TurnPlayer.SetTurnStartTime();
 
+        if (gameContext.TurnPlayer.isYou)
+            GManager.OnStartTimer?.Invoke();
+
         foreach (Permanent permanent in gameContext.TurnPlayer.GetFieldPermanents())
         {
             permanent.UntilOwnerTurnStartEffects = new List<Func<EffectTiming, ICardEffect>>();
@@ -962,6 +965,11 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 if (!CanSelect())
                 {
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.EndTurnProcess());
+                }
+                else
+                {
+                    if (gameContext.TurnPlayer.isYou)
+                        GManager.OnResetTimer?.Invoke();
                 }
             }
 
@@ -3246,7 +3254,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
     #region Game over
     public bool endGame { get; set; } = false;
-    public void OnClickSurrenderButton()
+    public void OnClickSurrenderButton(bool fromUser = true, string effectText = "")
     {
         int localPlayerID;
 
@@ -3259,12 +3267,12 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         {
             localPlayerID = 1;
         }
-
-        photonView.RPC("Surrender", RpcTarget.All, localPlayerID);
+        Debug.Log($"SURRENDER: {localPlayerID}, {fromUser}, {effectText}");
+        photonView.RPC("Surrender", RpcTarget.All, localPlayerID, fromUser, effectText);
     }
 
     [PunRPC]
-    public void Surrender(int loserPlayerID)
+    public void Surrender(int loserPlayerID, bool fromUser, string effectText)
     {
         Player player = null;
 
@@ -3294,9 +3302,10 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             }
         }
 
+        Debug.Log($"SURRENDER: {player}, {fromUser}, {effectText}");
         if (player != null)
         {
-            EndGame(player.Enemy, true);
+            EndGame(player.Enemy, fromUser, effectText);
         }
 
         //EndGame(gameContext.NonTurnPlayer, true);

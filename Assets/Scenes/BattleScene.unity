@@ -17822,6 +17822,7 @@ GameObject:
   - component: {fileID: 198236661}
   - component: {fileID: 198236663}
   - component: {fileID: 198236664}
+  - component: {fileID: 198236665}
   m_Layer: 0
   m_Name: GManager
   m_TagString: Untagged
@@ -18221,6 +18222,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69f9ca96bc7186a45880ab24f159e284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &198236665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198236640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13faab1122846a347abb1e0c96f023fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timeOutTime: 180
+  timerImage: {fileID: 156150922234379324}
+  colorGradiant:
+    serializedVersion: 2
+    key0: {r: 0.39215687, g: 1, b: 0.39215687, a: 1}
+    key1: {r: 1, g: 0.39215687, b: 0.39215687, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 6554
+    ctime1: 58982
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  maxSFXPitch: 0.15
 --- !u!1 &208123383
 GameObject:
   m_ObjectHideFlags: 0
@@ -173225,7 +173270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.4009434, b: 0.4009434, a: 1}
+  m_Color: {r: 0.39215684, g: 1, b: 0.39215687, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -173249,7 +173294,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 156150922234379327}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ecf41561024d3384b9f350347e5b890b, type: 3}
   m_Name: 
@@ -173257,7 +173302,7 @@ MonoBehaviour:
   b: 1
   image: {fileID: 0}
   speed: 0.3
-  _doRotate: 1
+  doRotate: 1
   progress: {fileID: 0}
 --- !u!224 &156150922234379326
 RectTransform:
@@ -173267,7 +173312,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 156150922234379327}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5.28}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.86, y: 0.86, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -174800,15 +174845,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3651413245858577326, guid: b028bda2f9bcba64989e7087b45465c6, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3651413245858577326, guid: b028bda2f9bcba64989e7087b45465c6, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3651413245858577326, guid: b028bda2f9bcba64989e7087b45465c6, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 41.65997
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3651413246452580820, guid: b028bda2f9bcba64989e7087b45465c6, type: 3}
       propertyPath: m_Pivot.x

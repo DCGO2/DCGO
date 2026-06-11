@@ -227,6 +227,9 @@ public class GManager : MonoBehaviourPun
 
     public static Action<Player> OnSecurityStackChanged;
 
+    public static Action OnStartTimer;
+    public static Action OnResetTimer;
+
     #endregion
 
     private /*async*/ void Awake()
@@ -469,9 +472,24 @@ public class GManager : MonoBehaviourPun
                 return;
             }
 
-            turnStateMachine.OnClickSurrenderButton();
+            turnStateMachine.OnClickSurrenderButton(true, "");
         }
     }
+
+    public void OnClickSurrenderButton(bool fromUser = true, string effectText = "")
+    {
+        if (turnStateMachine != null)
+        {
+            if (turnStateMachine.endGame)
+            {
+                return;
+            }
+
+            turnStateMachine.OnClickSurrenderButton(fromUser, effectText);
+        }
+    }
+
+
 
     public TargetArrow CreateTargetArrow()
     {
