@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Events;
+﻿using UnityEngine;
 
 public class OptionPanel : OffAnimation
 {
@@ -44,8 +40,8 @@ public class OptionPanel : OffAnimation
     {
         _isOpen = true;
         gameObject.SetActive(true);
-        _anim.SetInteger("Open", 1);
-        _anim.SetInteger("Close", 0);
+        _anim.SetInteger(OpenHash, 1);
+        _anim.SetInteger(CloseHash, 0);
 
         if (_volumePanel != null)
         {
