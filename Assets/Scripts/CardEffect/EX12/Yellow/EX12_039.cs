@@ -19,16 +19,6 @@ namespace DCGO.CardEffects.EX12
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 0, false, card, null, level: 2));
             }
-
-            if (timing == EffectTiming.None)
-            {
-                static bool PermanentCondition(Permanent targetPermanent)
-                {
-                    return targetPermanent.TopCard.EqualsCardName("Poromon");
-                }
-
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 0, false, card, null));
-            }
             #endregion
 
             #region Your Turn
