@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.EX12
             {
                 string EffectDescription() => "[Security] Activate this card's [Main] effect.";
 
-                CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: "May play 1 [Sanmyojin] trait Digimon from hand for free", effectDiscription: EffectDescription());
+                CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: "Trash 1 [TB] to <Draw 2> and place in battle area", effectDiscription: EffectDescription());
             }
             #endregion
 
