@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.EX12
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("May play/use 1 card with [Gammamon] in text/[VB] trait for 2 less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("May play/use 1 card with [Gammamon] in text/[VB] trait from hand for 2 less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("EX12_013_Main");
                 cardEffects.Add(activateClass);
