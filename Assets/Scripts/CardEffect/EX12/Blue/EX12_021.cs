@@ -95,14 +95,14 @@ namespace DCGO.CardEffects.EX12
             }
             #endregion
 
-            #region Inherited
+                        #region Inherited
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("If you have 7 or fewer cards in hand, <Draw 1>.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("EX12_021_Inherited");
+                activateClass.SetHashString("EX12_020_Inherited");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -116,10 +116,10 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool Used = false;
 
@@ -137,6 +137,7 @@ namespace DCGO.CardEffects.EX12
                 }
             }
             #endregion
+
 
             return cardEffects;
         }
