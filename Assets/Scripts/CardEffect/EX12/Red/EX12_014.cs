@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 //Canoweissmon
 namespace DCGO.CardEffects.EX12
