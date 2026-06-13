@@ -78,7 +78,6 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region Delay
-
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
