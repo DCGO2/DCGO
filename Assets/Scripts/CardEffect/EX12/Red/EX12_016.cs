@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-//MetalGreymon
+// MetalGreymon
 namespace DCGO.CardEffects.EX12
 {
     public class EX12_016 : CEntity_Effect
@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.EX12
                             || cardSource.EqualsTraits("VB"));
                 }
 
-                string[] decodeStrings = { "(Lv.4 or lower w/[Agumon]/[Greymon] in name or w/[ME]/[VB] trait)", "Level 4 or lower Digimon card with [Agumon]/[Greymon] in name or [ME]/[VB] Trait" };
+                string[] decodeStrings = { "(Lv.4 or lower w/[Agumon]/[Greymon] in name or w/[ME]/[VB] trait)", "Level 4 or lower Digimon card with [Agumon]/[Greymon] in name or [ME]/[VB] trait" };
                 cardEffects.Add(CardEffectFactory.DecodeSelfEffect(card: card, isInheritedEffect: false, decodeStrings: decodeStrings, sourceCondition: SourceCondition, condition: null));
             }
             #endregion
@@ -199,7 +199,7 @@ namespace DCGO.CardEffects.EX12
                             || cardSource.EqualsTraits("VB"));
                 }
 
-                string[] decodeStrings = { "(Lv.4 or lower w/[Agumon]/[Greymon] in name or w/[ME]/[VB] trait)", "Level 4 or lower Digimon card with [Agumon]/[Greymon] in name or [ME]/[VB] Trait" };
+                string[] decodeStrings = { "(Lv.4 or lower w/[Agumon]/[Greymon] in name or w/[ME]/[VB] trait)", "Level 4 or lower Digimon card with [Agumon]/[Greymon] in name or [ME]/[VB] trait" };
                 cardEffects.Add(CardEffectFactory.DecodeSelfEffect(card: card, isInheritedEffect: true, decodeStrings: decodeStrings, sourceCondition: SourceCondition, condition: null));
             }
             #endregion
