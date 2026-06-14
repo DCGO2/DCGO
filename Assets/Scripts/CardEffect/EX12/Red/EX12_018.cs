@@ -167,10 +167,11 @@ namespace DCGO.CardEffects.EX12
                     {
                         isUsed = true;
                         #region Setup Location Selection
-                        List<SelectionElement<bool>> selectionElements1 = new List<SelectionElement<bool>>();
-
-                        if (canSelectHand) selectionElements1.Add(new(message: $"Top of digivolution sources", value: true, spriteIndex: 0));
-                        if (canSelectTrash) selectionElements1.Add(new(message: $"Bottom of digivolution sources", value: false, spriteIndex: 0));
+                        List<SelectionElement<bool>> selectionElements1 = new List<SelectionElement<bool>>
+                        {
+                            new(message: $"Top of digivolution sources", value: true, spriteIndex: 0),
+                            new(message: $"Bottom of digivolution sources", value: false, spriteIndex: 0)
+                        };
 
                         string selectPlayerMessage1 = "Will you place up to 2 digimon cards inside this cards digivolution source?";
                         string notSelectPlayerMessage1 = "The opponent is choosing to up to 2 digimon cards inside this cards digivolution source.";
