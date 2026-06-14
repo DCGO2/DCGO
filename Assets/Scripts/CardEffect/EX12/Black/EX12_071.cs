@@ -98,8 +98,7 @@ namespace DCGO.CardEffects.EX12
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsOwnerPermanent(permanent, card)
-                        && permanent.IsDigimon
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
                         && permanent.TopCard.EqualsTraits("SW");
                 }
 
