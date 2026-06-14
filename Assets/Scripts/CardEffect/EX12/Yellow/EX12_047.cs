@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region Shared OP/WD
-            string SharedEffectName = "Delete enemy lowest DP, by returning 2 of their trash cards to bottom of deck, this gets 6K DP and they get -5K DP";
+            string SharedEffectName = "Delete enemy lowest DP, then by returning 2 of their trash cards to bottom of deck, this gets 6K DP and they get -5K DP per color";
 
             CardEffectFactory.ActivateClassesForSharedEffects
             (ref cardEffects, timing, card,
@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.EX12
 
                     if (selectedCards.Count == 2)
                     {
-                        int DPMinus = Combinations.GetUniqueColorCardCount(selectedCards) * -5000;
+                        int DPMinus = Combinations.GetDifferenetColorCardCount(selectedCards) * -5000;
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ReturnRevealedCardsToLibraryBottom(
                             remainingCards: selectedCards,
