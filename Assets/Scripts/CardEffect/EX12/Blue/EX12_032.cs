@@ -230,7 +230,7 @@ namespace DCGO.CardEffects.EX12
                             || cardSource.EqualsTraits("VB"));
                 }
 
-                string[] decodeStrings = { "(Lv.4 or lower w/[Gabumon]/[Garurumon] in name or w/[NSo]/[VB] trait)", "Level 4 or lower Digimon card with [Gabumon]/[Garurumon] in name or [NSo]/[VB] Trait" };
+                string[] decodeStrings = { "(Lv.4 or lower w/[Gabumon]/[Garurumon] in name or w/[NSo]/[VB] trait)", "Level 4 or lower Digimon card with [Gabumon]/[Garurumon] in name or [NSo]/[VB] trait" };
                 cardEffects.Add(CardEffectFactory.DecodeSelfEffect(card: card, isInheritedEffect: true, decodeStrings: decodeStrings, sourceCondition: SourceCondition, condition: null));
             }
             #endregion
