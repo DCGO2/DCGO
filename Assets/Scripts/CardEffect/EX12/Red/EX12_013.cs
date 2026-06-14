@@ -94,6 +94,8 @@ namespace DCGO.CardEffects.EX12
 
                     if (selectedCard != null)
                     {
+                        isUsed = true;
+
                         #region Reduce Cost
                         IEnumerator ReduceCost(string type)
                         {
