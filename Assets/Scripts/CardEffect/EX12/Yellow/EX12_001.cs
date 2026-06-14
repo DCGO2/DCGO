@@ -28,7 +28,8 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
