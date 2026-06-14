@@ -55,20 +55,26 @@ namespace DCGO.CardEffects.EX12
                         payCost: true,
                         isHand: true,
                         activateClass,
-                        permanentConditions
+                        permanentConditions,
+                        successProcess: SuccessProcess
                     ));
 
-                    if (card.PermanentOfThisCard().CanAttack(activateClass))
+                    IEnumerator SuccessProcess(CardSource cardSource)
                     {
-                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                        if (card.PermanentOfThisCard().CanAttack(activateClass))
+                        {
+                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                        selectAttackEffect.SetUp(
-                            attacker: card.PermanentOfThisCard(),
-                            canAttackPlayerCondition: () => true,
-                            defenderCondition: _ => true,
-                            cardEffect: activateClass);
+                            selectAttackEffect.SetUp(
+                                attacker: card.PermanentOfThisCard(),
+                                canAttackPlayerCondition: () => true,
+                                defenderCondition: _ => true,
+                                cardEffect: activateClass);
 
-                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                        }
+
+                        yield return null;
                     }
                 }
             }
