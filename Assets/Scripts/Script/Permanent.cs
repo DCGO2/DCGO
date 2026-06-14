@@ -781,6 +781,15 @@ public class Permanent
     }
     #endregion
 
+    #region Color of the permanent
+    public bool HasPermanentColor(CardColor color)
+    {
+        if (TopCard == null) return false;
+
+        return TopCard.CardColors.Contains(color);
+    }
+    #endregion
+
     #region Can be returned to deck?
     public bool CannotReturnToLibrary(ICardEffect cardEffect)
     {
