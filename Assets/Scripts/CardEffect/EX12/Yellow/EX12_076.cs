@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.Mathematics;
+
 
 // Susanoomon
 namespace DCGO.CardEffects.EX12
@@ -58,7 +57,7 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region Shared OP/WD
-            string SharedEffectName = "Give all enemy Digimon -3K DP per color in digivolution cards util end of turn";
+            string SharedEffectName = "Give all enemy Digimon -3K DP per color in digivolution cards until turn end";
 
             CardEffectFactory.ActivateClassesForSharedEffects
             (ref cardEffects, timing, card,
@@ -81,7 +80,7 @@ namespace DCGO.CardEffects.EX12
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDPPlayerEffect(
                         permanentCondition: IsOpponentsDigimon,
                         changeValue: dpChange,
-                        effectDuration: EffectDuration.UntilOwnerTurnEnd,
+                        effectDuration: EffectDuration.UntilEachTurnEnd,
                         activateClass: activateClass));
             }
             #endregion
@@ -90,8 +89,8 @@ namespace DCGO.CardEffects.EX12
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = CardEffectFactory.WhenAttackingClass(
-                    card, 
-                    "Place 1 Enemy in Security, if 4+ colours in digivolution cards, Trash their security and recover 1",
+                    card,
+                    "Place 1 enemy Digimon in security, if 4+ colors in digivolution cards, trash their security and <Recovery +1>",
                     ActivateCoroutine,
                     EffectDescription(),
                     optional: false,
@@ -100,7 +99,7 @@ namespace DCGO.CardEffects.EX12
                     );
                 cardEffects.Add(activateClass);
 
-                string EffectDescription() 
+                string EffectDescription()
                     => "[When Attacking] [Once Per Turn] Place 1 of your opponent's Digimon as the top security card. Then, if this Digimon has 4 or more colors in its digivolution cards, trash their top security card and <Recovery +1>.";
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
