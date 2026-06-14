@@ -130,41 +130,41 @@ namespace DCGO.CardEffects.EX12
             }
             #endregion
 
-            #region DigiXros
+            #region Assembly
             if (timing == EffectTiming.None)
             {
-                AddDigiXrosConditionClass addDigiXrosConditionClass = new AddDigiXrosConditionClass();
-                addDigiXrosConditionClass.SetUpICardEffect($"DigiXros -2", CanUseCondition, card);
-                addDigiXrosConditionClass.SetUpAddDigiXrosConditionClass(getDigiXrosCondition: GetDigiXros);
-                addDigiXrosConditionClass.SetNotShowUI(true);
-                cardEffects.Add(addDigiXrosConditionClass);
+                AddAssemblyConditionClass addAssemblyConditionClass = new AddAssemblyConditionClass();
+                addAssemblyConditionClass.SetUpICardEffect("Assembly", CanUseCondition, card);
+                addAssemblyConditionClass.SetUpAddAssemblyConditionClass(getAssemblyCondition: GetAssembly);
+                addAssemblyConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addAssemblyConditionClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return true;
                 }
 
-                DigiXrosCondition GetDigiXros(CardSource cardSource)
+                AssemblyCondition GetAssembly(CardSource cardSource)
                 {
                     if (cardSource == card)
                     {
-                        DigiXrosConditionElement element = new DigiXrosConditionElement(CanSelectCardCondition,
-                            "1 Lv.4 or lower [TB] trait card");
+                        AssemblyConditionElement element = new AssemblyConditionElement(CanSelectCardCondition);
 
-                        bool CanSelectCardCondition(CardSource xrosCardSource)
+                        bool CanSelectCardCondition(CardSource cardSource)
                         {
-                            return xrosCardSource != null
-                                && xrosCardSource.Owner == card.Owner
-                                && xrosCardSource.HasLevel
-                                && xrosCardSource.Level <= 4
-                                && xrosCardSource.EqualsTraits("TB");
+                            return cardSource.HasLevel
+                                && cardSource.Level <= 4
+                                && cardSource.EqualsTraits("TB");
                         }
 
-                        List<DigiXrosConditionElement> elements = new List<DigiXrosConditionElement>() { element };
+                        AssemblyCondition assemblyCondition = new AssemblyCondition(
+                            element: element,
+                            CanTargetCondition_ByPreSelecetedList: null,
+                            selectMessage: "Lv. 4 or lower [TB] trait card",
+                            elementCount: 1,
+                            reduceCost: 2);
 
-                        DigiXrosCondition digiXrosCondition = new DigiXrosCondition(elements, null, 2);
-
-                        return digiXrosCondition;
+                        return assemblyCondition;
                     }
 
                     return null;
