@@ -33,21 +33,10 @@ namespace DCGO.CardEffects.EX12
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
-                    {
-                        if (cardSource.Owner == card.Owner)
-                        {
-                            if (cardSource == cardSource.PermanentOfThisCard().TopCard)
-                            {
-                                if (PermanentCondition(cardSource.PermanentOfThisCard()))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource)
+                        && cardSource.Owner == card.Owner
+                        && cardSource == cardSource.PermanentOfThisCard().TopCard
+                        && PermanentCondition(cardSource.PermanentOfThisCard());
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -74,7 +63,6 @@ namespace DCGO.CardEffects.EX12
                 addSkillClass.SetUpICardEffect("Your Digimon gain Guard", CanUseCondition, card);
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects, limitTiming: EffectTiming.WhenRemoveField);
                 cardEffects.Add(addSkillClass);
-
             }
             #endregion
 
