@@ -43,7 +43,8 @@ namespace DCGO.CardEffects.EX12
                 bool CanSelectDNACondition(CardSource cardSource)
                 {
                     return cardSource.EqualsTraits("VB")
-                        && cardSource.jogressCondition.Count > 0;
+                        && cardSource.CanPlayJogress(true)
+                        && cardSource.CanJogressFromTargetPermanent(card.PermanentOfThisCard(), true);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
