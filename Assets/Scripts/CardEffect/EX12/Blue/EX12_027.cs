@@ -5,7 +5,7 @@ using System.Linq;
 // TeslaJellymon
 namespace DCGO.CardEffects.EX12
 {
-    public class EX12_0273 : CEntity_Effect
+    public class EX12_027 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
