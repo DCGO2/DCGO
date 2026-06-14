@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.EX12
                     && permanent.TopCard.EqualsTraits("VB");
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.EqualsTraits("Shambala")
+                    => cardSource.EqualsTraits("VB")
                     && cardSource.HasLevel
                     && cardSource.Level == AttackingLevel
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 3);
