@@ -138,8 +138,7 @@ namespace DCGO.CardEffects.BT15
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        if (GManager.instance.userSelectionManager.SelectedIntValue == 3
-                        || validPermanentCount + validTrashCardCount == 0)
+                        if (GManager.instance.userSelectionManager.SelectedIntValue == 3)
                         {
                             break;
                         }
