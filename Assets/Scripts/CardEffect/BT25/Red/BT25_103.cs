@@ -89,7 +89,7 @@ namespace DCGO.CardEffects.BT25
             bool IsEnemyWithLessSources(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && permanent.DigivolutionCards.Count() <= card.PermanentOfThisCard().DigivolutionCards.Count;
+                    && permanent.DigivolutionCards.Count() <= card.PermanentOfThisCard().DigivolutionCards.Count();
             }
 
             IEnumerator BounceActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
