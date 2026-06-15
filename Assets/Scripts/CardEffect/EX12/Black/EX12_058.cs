@@ -4,7 +4,7 @@ using System.Collections.Generic;
 // HiAndromon
 namespace DCGO.CardEffects.EX12
 {
-    public class EX12_032 : CEntity_Effect
+    public class EX12_058 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
