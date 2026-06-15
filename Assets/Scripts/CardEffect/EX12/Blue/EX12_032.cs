@@ -208,7 +208,7 @@ namespace DCGO.CardEffects.EX12
                         reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
                         fixedCostTuple: null,
                         ignoreDigivolutionRequirementFixedCost: -1,
-                        isHand: true,
+                        isHand: false,
                         activateClass: activateClass,
                         successProcess: null
                     ));
