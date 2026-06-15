@@ -100,10 +100,10 @@ namespace DCGO.CardEffects.EX12
                         isUsed = true;
 
                         #region reduce cost
-                        int reducecost = -2;
+                        int reducecost = 2;
 
                         ChangeCostClass changeCostClass = new ChangeCostClass();
-                        changeCostClass.SetUpICardEffect($"Play/Use Cost {reducecost}", CanUseCondition1, card);
+                        changeCostClass.SetUpICardEffect($"Play/Use Cost -{reducecost}", CanUseCondition1, card);
                         changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: PlayOrUseCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
                         Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
                         card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
