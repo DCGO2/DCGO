@@ -209,7 +209,7 @@ namespace DCGO.CardEffects.EX12
             }
             #endregion
 
-            #region [All Turns] [Once Per Turn] When any of your Digimon are played or digivolve — can't activate [When Digivolving] effects or suspend
+            #region [All Turns]
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -275,8 +275,8 @@ namespace DCGO.CardEffects.EX12
                         }
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Select 1 Digimon that can't activate [When Digivolving] effects or suspend.",
-                            "The opponent is selecting 1 Digimon that can't activate [When Digivolving] effects or suspend.");
+                            "Select 1 Digimon that cant activate [When Digivolving] effects or suspend.",
+                            "The opponent is selecting 1 Digimon that will gain cant activate [When Digivolving] effects or suspend.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
