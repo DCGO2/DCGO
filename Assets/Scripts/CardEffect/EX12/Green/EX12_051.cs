@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.EX12
                         || permanent.TopCard.EqualsTraits("NSp");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 2, false, card, null, level: 4));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 3, false, card, null, level: 4));
             }
             #endregion
 

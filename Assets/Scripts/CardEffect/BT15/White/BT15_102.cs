@@ -82,8 +82,6 @@ namespace DCGO.CardEffects.BT15
                     int validPermanentCount = CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanSelectPermanentCondition);
                     int validTrashCardCount = card.Owner.TrashCards.Count(CanSelectCardCondition);
 
-                    int toPlace = Math.Min(3, validPermanentCount + validTrashCardCount);
-
                     bool noSelect() => CanNoSelect(card, digivolutionCards.Count);
 
                     bool ValidPermanentCombination(List<Permanent> permanents, Permanent permanent)
@@ -111,32 +109,32 @@ namespace DCGO.CardEffects.BT15
                     }
                     #endregion
 
-                    while (toPlace > 0)
+                    while (digivolutionCards.Count < 3
+                    && validPermanentCount + validTrashCardCount != 0)
                     {
-                        if (validPermanentCount > 0 && validTrashCardCount > 0)
-                        {
-                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
-                            {
-                                new(message: "from Battle Area", value: 1, spriteIndex: 0),
-                                new(message: "from Trash", value: 2, spriteIndex: 0)
-                            };
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
 
-                            if (noSelect())
-                            {
-                                string message = digivolutionCards.Count > 0 ? "Finish Placing" : "Do not place";
-                                selectionElements.Add(new(message: message, value: 3, spriteIndex: 1));
-                            }
-
-                            GManager.instance.userSelectionManager.SetIntSelection(
-                                selectionElements: selectionElements,
-                                selectPlayer: card.Owner,
-                                selectPlayerMessage: "From which area will you select a card?",
-                                notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
-                        }
-                        else
+                        if (validPermanentCount > 0)
                         {
-                            GManager.instance.userSelectionManager.SetInt(validPermanentCount > 0 ? 1 : 2);
+                            selectionElements.Add(new(message: "from Battle Area", value: 1, spriteIndex: 0));
                         }
+
+                        if (validTrashCardCount > 0)
+                        {
+                            selectionElements.Add(new(message: "from Trash", value: 2, spriteIndex: 0));
+                        }
+
+                        if (noSelect())
+                        {
+                            string message = digivolutionCards.Count > 0 ? "Finish Placing" : "Do not place";
+                            selectionElements.Add(new(message: message, value: 3, spriteIndex: 1));
+                        }
+
+                        GManager.instance.userSelectionManager.SetIntSelection(
+                            selectionElements: selectionElements,
+                            selectPlayer: card.Owner,
+                            selectPlayerMessage: "From which area will you select a card?",
+                            notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
@@ -144,6 +142,7 @@ namespace DCGO.CardEffects.BT15
                         {
                             break;
                         }
+
                         if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
                         {
                             bool canNoSelect = noSelect() && validTrashCardCount > 0;

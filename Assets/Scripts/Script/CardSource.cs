@@ -3572,6 +3572,23 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card has "Hybrid" trait
+
+    public bool HasHybridTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Hybrid"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
     #region whether this card has "SEEKERS" trait
 
     public bool HasSeekersTraits
@@ -3753,6 +3770,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Iliad");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Shambala" trait
+
+    public bool HasShambalaTraits
+    {
+        get
+        {
+            return EqualsTraits("Shambala");
         }
     }
 
@@ -4173,6 +4202,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Shaman");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has VB trait
+
+    public bool HasVBTraits
+    {
+        get
+        {
+            return EqualsTraits("VB");
         }
     }
 
