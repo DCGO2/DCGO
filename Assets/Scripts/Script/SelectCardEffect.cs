@@ -183,7 +183,6 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     {
         AddHand,
         Discard,
-
         // PutLibraryTop,
         // PutLibraryBottom,
         PlayForFree,

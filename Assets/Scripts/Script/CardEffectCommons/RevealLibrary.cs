@@ -272,7 +272,7 @@ public partial class CardEffectCommons
                         };
 
                 string selectPlayerMessage = "Will you select cards?";
-                string notSelectPlayerMessage = "The opponent is wheter to select cards.";
+                string notSelectPlayerMessage = "The opponent is whether to select cards.";
 
                 GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: selectPlayer, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
@@ -736,6 +736,8 @@ public enum RemainingCardsPlace
 #region Reveal deck cards
 public class RevealLibraryClass
 {
+    private static WaitForSeconds _waitForSeconds0_5 = new WaitForSeconds(0.5f);
+
     public RevealLibraryClass(Player player, int revealCount)
     {
         _player = player;
@@ -784,7 +786,7 @@ public class RevealLibraryClass
         }
         #endregion
 
-        yield return new WaitForSeconds(0.5f);
+        yield return _waitForSeconds0_5;
 
         _revealedCards.ForEach(cardSource => cardSource.IsBeingRevealed = true);
     }
