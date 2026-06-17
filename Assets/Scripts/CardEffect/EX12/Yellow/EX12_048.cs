@@ -77,11 +77,16 @@ namespace DCGO.CardEffects.EX12
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
 
+            bool DigivolutionCardCondition(CardSource cardSource)
+            {
+                return cardSource.IsLevel5;
+            }
+
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
-                    int dpMinus = -8000 + card.PermanentOfThisCard().DigivolutionCards.Count * -3000;
+                    int dpMinus = -8000 + card.PermanentOfThisCard().DigivolutionCards.Filter(DigivolutionCardCondition).Count() * -3000;
 
                     Permanent selectedPermament = null;
 
