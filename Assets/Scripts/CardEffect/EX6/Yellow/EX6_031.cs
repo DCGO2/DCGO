@@ -20,10 +20,10 @@ namespace DCGO.CardEffects.EX6
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Sanzomon") ||
-                           targetPermanent.TopCard.ContainsCardName("Gokuumon") ||
-                           targetPermanent.TopCard.ContainsCardName("Sagomon") ||
-                           targetPermanent.TopCard.ContainsCardName("Cho-Hakkaimon");
+                    return targetPermanent.TopCard.EqualsCardName("Sanzomon") ||
+                           targetPermanent.TopCard.EqualsCardName("Gokuumon") ||
+                           targetPermanent.TopCard.EqualsCardName("Sagomon") ||
+                           targetPermanent.TopCard.EqualsCardName("Cho-Hakkaimon");
                 }
                 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -67,12 +67,12 @@ namespace DCGO.CardEffects.EX6
                                 {
                                     if (conditionCardSource.IsDigimon)
                                     {
-                                        if (conditionCardSource.CardNames_DigiXros.Contains("Sanzomon"))
+                                        if (conditionCardSource.CardNames_DigiXros.Equals("Sanzomon"))
                                         {
                                             return true;
                                         }
                                     }
-                                }
+                                }       
                             }
                             
                             return false;
@@ -89,7 +89,7 @@ namespace DCGO.CardEffects.EX6
                                 {
                                     if (conditionCardSource.IsDigimon)
                                     {
-                                        if (conditionCardSource.CardNames_DigiXros.Contains("Gokuumon"))
+                                        if (conditionCardSource.CardNames_DigiXros.Equals("Gokuumon"))
                                         {
                                             return true;
                                         }
@@ -111,7 +111,7 @@ namespace DCGO.CardEffects.EX6
                                 {
                                     if (conditionCardSource.IsDigimon)
                                     {
-                                        if (conditionCardSource.CardNames_DigiXros.Contains("Sagomon"))
+                                        if (conditionCardSource.CardNames_DigiXros.Equals("Sagomon"))
                                         {
                                             return true;
                                         }
@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.EX6
                                 {
                                     if (conditionCardSource.IsDigimon)
                                     {
-                                        if (conditionCardSource.CardNames_DigiXros.Contains("Cho-Hakkaimon"))
+                                        if (conditionCardSource.CardNames_DigiXros.Equals("Cho-Hakkaimon"))
                                         {
                                             return true;
                                         }
@@ -282,7 +282,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.ContainsCardName("Sanzomon"))
+                        if (cardSource.EqualsCardName("Sanzomon"))
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
                                     cardEffect: activateClass))
@@ -299,9 +299,9 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.ContainsCardName("Gokuumon") ||
-                            cardSource.ContainsCardName("Sagomon") ||
-                            cardSource.ContainsCardName("Cho-Hakkaimon"))
+                        if (cardSource.EqualsCardName("Gokuumon") ||
+                            cardSource.EqualsCardName("Sagomon") ||
+                            cardSource.EqualsCardName("Cho-Hakkaimon"))
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
                                     cardEffect: activateClass))
