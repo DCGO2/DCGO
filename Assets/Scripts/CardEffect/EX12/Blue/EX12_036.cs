@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Ryugumon
 namespace DCGO.CardEffects.EX12
@@ -65,7 +64,6 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region Shared OP/WD/WA — Place 1 Lv.6 or lower [Aqua]/[Sea Animal]/[TB] from hand as bottom source, then unsuspend 1 of your Digimon
-
             string SharedHashString = "EX12_036_OP_WD_WA";
 
             string SharedEffectName = "Place 1 Lv.6 or lower [Aqua]/[Sea Animal]/[TB] card from hand as bottom source, unsuspend 1 of your Digimon";
@@ -75,7 +73,8 @@ namespace DCGO.CardEffects.EX12
                 SharedEffectName,
                 SharedActivateCoroutine,
                 SharedEffectDescription,
-                optional: true,
+                optional: false,
+                isSkippable: true,
                 maxCountPerTurn: 1,
                 hashValue: SharedHashString,
                 onPlay: true,
@@ -84,12 +83,6 @@ namespace DCGO.CardEffects.EX12
 
             string SharedEffectDescription(string tag)
                 => $"[{tag}] [Once Per Turn] By placing 1 level 6 or lower card with [Aqua] or [Sea Animal] in any of its traits or the [TB] trait from your hand as this Digimon's bottom digivolution card, 1 of your Digimon may unsuspend.";
-
-            bool SharedCanActivateCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.IsExistOnBattleArea(card)
-                    && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardCondition);
-            }
 
             bool CanSelectHandCardCondition(CardSource cardSource)
             {
@@ -107,7 +100,9 @@ namespace DCGO.CardEffects.EX12
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (SharedCanActivateCondition(hashtable))
+                bool isUsed = false;
+
+                if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardCondition))
                 {
                     CardSource selectedCard = null;
 
@@ -140,37 +135,35 @@ namespace DCGO.CardEffects.EX12
 
                     if (selectedCard != null)
                     {
-                        Permanent selectedPermanent = card.PermanentOfThisCard();
+                        isUsed = true;
 
-                        if (selectedPermanent != null)
+                        yield return ContinuousController.instance.StartCoroutine(
+                            card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+
+                        if (CardEffectCommons.HasMatchConditionPermanent(IsYourDigimonCondition))
                         {
-                            yield return ContinuousController.instance.StartCoroutine(
-                                selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            if (CardEffectCommons.HasMatchConditionPermanent(IsYourDigimonCondition))
-                            {
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: IsYourDigimonCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.UnTap,
+                                cardEffect: activateClass);
 
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: IsYourDigimonCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: 1,
-                                    canNoSelect: true,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: null,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.UnTap,
-                                    cardEffect: activateClass);
-
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
                     }
                 }
-            }
 
+                if (!isUsed) activateClass.RemoveUse();
+            }
             #endregion
 
             #region [All Turns]
@@ -260,30 +253,13 @@ namespace DCGO.CardEffects.EX12
 
                             bool InvalidateCondition(ICardEffect cardEffect)
                             {
-                                if (selectedPermanent.TopCard != null)
-                                {
-                                    if (cardEffect != null)
-                                    {
-                                        if (cardEffect.EffectSourceCard != null)
-                                        {
-                                            if (isExistOnField(cardEffect.EffectSourceCard))
-                                            {
-                                                if (cardEffect.EffectSourceCard.PermanentOfThisCard() == selectedPermanent)
-                                                {
-                                                    if (cardEffect.IsWhenDigivolving)
-                                                    {
-                                                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                                        {
-                                                            return true;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                return false;
+                                return selectedPermanent.TopCard != null
+                                    && cardEffect != null
+                                    && cardEffect.EffectSourceCard != null
+                                    && isExistOnField(cardEffect.EffectSourceCard)
+                                    && cardEffect.EffectSourceCard.PermanentOfThisCard() == selectedPermanent
+                                    && cardEffect.IsWhenDigivolving
+                                    && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
                             }
 
                             // Can't suspend
