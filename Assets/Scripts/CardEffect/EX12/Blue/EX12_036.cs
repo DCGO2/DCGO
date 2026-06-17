@@ -70,6 +70,18 @@ namespace DCGO.CardEffects.EX12
 
             string SharedEffectName = "Place 1 Lv.6 or lower [Aqua]/[Sea Animal]/[TB] card from hand as bottom source, unsuspend 1 of your Digimon";
 
+            CardEffectFactory.ActivateClassesForSharedEffects(
+                ref cardEffects, timing, card,
+                SharedEffectName,
+                SharedActivateCoroutine,
+                SharedEffectDescription,
+                optional: true,
+                maxCountPerTurn: 1,
+                hashValue: SharedHashString,
+                onPlay: true,
+                whenDigivolving: true,
+                whenAttacking: true);
+
             string SharedEffectDescription(string tag)
                 => $"[{tag}] [Once Per Turn] By placing 1 level 6 or lower card with [Aqua] or [Sea Animal] in any of its traits or the [TB] trait from your hand as this Digimon's bottom digivolution card, 1 of your Digimon may unsuspend.";
 
@@ -95,118 +107,70 @@ namespace DCGO.CardEffects.EX12
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                CardSource selectedCard = null;
-
-                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                selectHandEffect.SetUp(
-                    selectPlayer: card.Owner,
-                    canTargetCondition: CanSelectHandCardCondition,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: 1,
-                    canNoSelect: true,
-                    canEndNotMax: false,
-                    isShowOpponent: true,
-                    selectCardCoroutine: SelectCardCoroutine,
-                    afterSelectCardCoroutine: null,
-                    mode: SelectHandEffect.Mode.Custom,
-                    cardEffect: activateClass);
-
-                selectHandEffect.SetUpCustomMessage("Select 1 card to place as the bottom digivolution card.", "The opponent is selecting 1 card to place as the bottom digivolution card.");
-                selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
-
-                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                if (SharedCanActivateCondition(hashtable))
                 {
-                    selectedCard = cardSource;
-                    yield return null;
-                }
+                    CardSource selectedCard = null;
 
-                if (selectedCard != null)
-                {
-                    Permanent selectedPermanent = card.PermanentOfThisCard();
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                    if (selectedPermanent != null)
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectHandCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to place as the bottom digivolution card.", "The opponent is selecting 1 card to place as the bottom digivolution card.");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                        selectedCard = cardSource;
+                        yield return null;
+                    }
 
-                        if (CardEffectCommons.HasMatchConditionPermanent(IsYourDigimonCondition))
+                    if (selectedCard != null)
+                    {
+                        Permanent selectedPermanent = card.PermanentOfThisCard();
+
+                        if (selectedPermanent != null)
                         {
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            yield return ContinuousController.instance.StartCoroutine(
+                                selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: IsYourDigimonCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.UnTap,
-                                cardEffect: activateClass);
+                            if (CardEffectCommons.HasMatchConditionPermanent(IsYourDigimonCondition))
+                            {
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: IsYourDigimonCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: true,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.UnTap,
+                                    cardEffect: activateClass);
+
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            }
                         }
                     }
                 }
             }
 
-            #endregion
-
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hash) => SharedActivateCoroutine(hash, activateClass), 1, true, SharedEffectDescription("On Play"));
-                activateClass.SetHashString(SharedHashString);
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card)
-                        && CardEffectCommons.IsExistOnBattleArea(card);
-                }
-            }
-            #endregion
-
-            #region When Digivolving
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hash) => SharedActivateCoroutine(hash, activateClass), 1, true, SharedEffectDescription("When Digivolving"));
-                activateClass.SetHashString(SharedHashString);
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card)
-                        && CardEffectCommons.IsExistOnBattleArea(card);
-                }
-            }
-            #endregion
-
-            #region When Attacking
-            if (timing == EffectTiming.OnAllyAttack)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hash) => SharedActivateCoroutine(hash, activateClass), 1, true, SharedEffectDescription("When Attacking"));
-                activateClass.SetHashString(SharedHashString);
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card)
-                        && CardEffectCommons.IsExistOnBattleArea(card);
-                }
-            }
             #endregion
 
             #region [All Turns]
