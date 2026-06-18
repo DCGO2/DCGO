@@ -61,7 +61,7 @@ namespace DCGO.CardEffects.EX12
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("<De-Digivolve 2> 1 enemy Digimon, then -6K DP 1 enemy Digimon until their turn ends.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 2> 1 enemy Digimon, then -6K DP 1 enemy Digimon until their turn ends", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("EX12_057_AT");
                 cardEffects.Add(activateClass);
