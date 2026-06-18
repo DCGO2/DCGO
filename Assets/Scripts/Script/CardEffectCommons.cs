@@ -419,6 +419,33 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Play [Paishu] Token(s)
+    public static IEnumerator PlayPaishuToken(ICardEffect activateClass, int quantity = 1)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.PaishuToken,
+            activateClass: activateClass,
+            isOwnerPermanent: false,
+            isTapped: false,
+            quantity
+            ));
+    }
+    #endregion
+
+    #region Play [Kotenken] Token(s)
+    public static IEnumerator PlayKotenkenToken(ICardEffect activateClass, int quantity = 1)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.KotenkenToken,
+            activateClass: activateClass,
+            isOwnerPermanent: false,
+            isTapped: false,
+            quantity
+            ));
+    }
+    #endregion
+
+
     #region Security effect of "add this card to hand"
 
     public static IEnumerator AddThisCardToHand(CardSource card1, ICardEffect activateClass)
