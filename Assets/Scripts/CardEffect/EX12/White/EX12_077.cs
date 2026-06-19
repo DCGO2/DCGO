@@ -386,7 +386,7 @@ namespace DCGO.CardEffects.EX12
 
             bool AdditionalActivateCondition2(Hashtable hashtable, ActivateClass activateClass)
             {
-                return CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition2);
+                return CardEffectCommons.HasMatchConditionPermanent(permanent => CanSelectPermanentCondition2(permanent, activateClass));
             }
 
             bool CanSelectCardCondition2(CardSource cardSource, ActivateClass activateClass)
@@ -400,10 +400,10 @@ namespace DCGO.CardEffects.EX12
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass)));
             }
 
-            bool CanSelectPermanentCondition2(Permanent permanent)
+            bool CanSelectPermanentCondition2(Permanent permanent, ActivateClass activateClass)
             {
                 return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
-                    && permanent.DigivolutionCards.Some(CanSelectCardCondition2);
+                    && permanent.DigivolutionCards.Some(cardSource => CanSelectCardCondition2(cardSource, activateClass));
             }
 
             IEnumerator SharedActivateCoroutine2(Hashtable hashtable, ActivateClass activateClass)
@@ -414,7 +414,7 @@ namespace DCGO.CardEffects.EX12
 
                 selectPermanentEffect.SetUp(
                     selectPlayer: card.Owner,
-                    canTargetCondition: CanSelectPermanentCondition2,
+                    canTargetCondition: permanent => CanSelectPermanentCondition2(permanent, activateClass),
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
                     maxCount: 1,
@@ -442,7 +442,7 @@ namespace DCGO.CardEffects.EX12
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                     selectCardEffect.SetUp(
-                        canTargetCondition: CanSelectCardCondition2,
+                        canTargetCondition: cardSource => CanSelectCardCondition2(cardSource, activateClass),
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         canNoSelect: () => true,
