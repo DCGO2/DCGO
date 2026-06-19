@@ -134,96 +134,97 @@ namespace DCGO.CardEffects.EX12
                         int validHandCardCount = card.Owner.HandCards.Count(CanSelectFilteredCardCondtion);
                         int validTrashCardCount = card.Owner.TrashCards.Count(CanSelectFilteredCardCondtion);
 
-                        if (validHandCardCount > 0 && validTrashCardCount > 0)
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+                        if (validHandCardCount > 0)
                         {
-                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
-                            {
-                                new(message: "from Hand", value: 1, spriteIndex: 0),
-                                new(message: "from Trash", value: 2, spriteIndex: 0),
-                                new(message: "Do not place", value: 3, spriteIndex: 1)
-                            };
+                            selectionElements.Add(new(message: "from Hand", value: 1, spriteIndex: 0));
+                        }
+                        if (validTrashCardCount > 0)
+                        {
+                            selectionElements.Add(new(message: "from Trash", value: 2, spriteIndex: 0));
+                        }
+                        selectionElements.Add(new(message: "Do not place", value: 3, spriteIndex: 1));
 
-                            GManager.instance.userSelectionManager.SetIntSelection(
-                                selectionElements: selectionElements,
+                        GManager.instance.userSelectionManager.SetIntSelection(
+                            selectionElements: selectionElements,
+                            selectPlayer: card.Owner,
+                            selectPlayerMessage: "From which area will you select a card?",
+                            notSelectPlayerMessage: "The opponent is choosing from which area to select card.");
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        if (GManager.instance.userSelectionManager.SelectedIntValue == 3)
+                        {
+                            break;
+                        }
+                        if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
+                        {
+                            int maxCount = Math.Min(toSelect, card.Owner.HandCards.Count(CanSelectCardCondition));
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                            selectHandEffect.SetUp(
                                 selectPlayer: card.Owner,
-                                selectPlayerMessage: "From which area will you select a card?",
-                                notSelectPlayerMessage: "The opponent is choosing from which area to select card.");
+                                canTargetCondition: CanSelectFilteredCardCondtion,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: true,
+                                canEndNotMax: true,
+                                isShowOpponent: true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                            string messagePluralize = maxCount > 1 ? "Select one or more cards to place under this Digimon. You will be able to select a second card if you only choose 1." : "Select a card to place under this Digimon.";
 
-                            if (GManager.instance.userSelectionManager.SelectedIntValue == 3)
+                            selectHandEffect.SetUpCustomMessage(
+                                messagePluralize,
+                                $"The opponent is selecting cards to place.");
+
+                            yield return StartCoroutine(selectHandEffect.Activate());
+                        }
+                        else
+                        {
+                            int maxCount = Math.Min(toSelect, card.Owner.TrashCards.Count(CanSelectCardCondition));
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectFilteredCardCondtion,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select link card(s)",
+                                maxCount: maxCount,
+                                canEndNotMax: true,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            string messagePluralize = maxCount > 1 ? "Select one or more cards to place under this Digimon. You will be able to select a second card if you only choose 1." : "Select a card to place under this Digimon.";
+
+                            selectCardEffect.SetUpCustomMessage(
+                                messagePluralize,
+                                $"The opponent is selecting cards to place.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        }
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            if (cardSource != null)
                             {
-                                break;
-                            }
-                            if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
-                            {
-                                int maxCount = Math.Min(toSelect, card.Owner.HandCards.Count(CanSelectCardCondition));
-                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                                selectHandEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectFilteredCardCondtion,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: true,
-                                    canEndNotMax: true,
-                                    isShowOpponent: true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    mode: SelectHandEffect.Mode.Custom,
-                                    cardEffect: activateClass);
-
-                                string messagePluralize = maxCount > 1 ? "Select one or more cards to place under this Digimon. You will be able to select a second card if you only choose 1." : "Select a card to place under this Digimon.";
-
-                                selectHandEffect.SetUpCustomMessage(
-                                    messagePluralize,
-                                    $"The opponent is selecting cards to place.");
-
-                                yield return StartCoroutine(selectHandEffect.Activate());
-                            }
-                            else
-                            {
-                                int maxCount = Math.Min(toSelect, card.Owner.TrashCards.Count(CanSelectCardCondition));
-                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectFilteredCardCondtion,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select link card(s)",
-                                    maxCount: maxCount,
-                                    canEndNotMax: true,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Trash,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                                string messagePluralize = maxCount > 1 ? "Select one or more cards to place under this Digimon. You will be able to select a second card if you only choose 1." : "Select a card to place under this Digimon.";
-
-                                selectCardEffect.SetUpCustomMessage(
-                                    messagePluralize,
-                                    $"The opponent is selecting cards to place.");
-
-                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                                selectedCards.Add(cardSource);
+                                toSelect--;
                             }
 
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                if (cardSource != null)
-                                {
-                                    selectedCards.Add(cardSource);
-                                    toSelect--;
-                                }
-
-                                yield return null;
-                            }
+                            yield return null;
                         }
                     }
 
