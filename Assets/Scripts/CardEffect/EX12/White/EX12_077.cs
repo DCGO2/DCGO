@@ -400,7 +400,7 @@ namespace DCGO.CardEffects.EX12
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass)));
             }
 
-            bool CanSelectPermanentCondition2(Permanent permanent, ActivateClass activateClass)
+            bool CanSelectPermanentCondition2(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
                     && permanent.DigivolutionCards.Some(CanSelectCardCondition2);
