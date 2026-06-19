@@ -196,7 +196,7 @@ namespace DCGO.CardEffects.EX12
                                 canNoSelect: () => true,
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
-                                message: "Select link card(s)",
+                                message: "Select card(s) to place",
                                 maxCount: maxCount,
                                 canEndNotMax: true,
                                 isShowOpponent: true,
