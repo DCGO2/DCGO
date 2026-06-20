@@ -145,7 +145,7 @@ namespace DCGO.CardEffects.EX12
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("May digivolve into [Garurumon] in name/[NSo]/[VB] trait in trash for 2 less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("May digivolve into [Angel]/[Holy Angel]/[Three Great Angels]/[NSp]/[VB] trait in hand for 2 less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
@@ -192,7 +192,7 @@ namespace DCGO.CardEffects.EX12
                         reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
                         fixedCostTuple: null,
                         ignoreDigivolutionRequirementFixedCost: -1,
-                        isHand: false,
+                        isHand: true,
                         activateClass: activateClass,
                         successProcess: null
                     ));
