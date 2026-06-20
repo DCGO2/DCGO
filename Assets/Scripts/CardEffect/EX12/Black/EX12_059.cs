@@ -228,28 +228,38 @@ namespace DCGO.CardEffects.EX12
                         }
                     }
 
-                    if(selectedCards.Count == 2)
+                    if (selectedCards.Count == 2)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
-
-                        ImmuneStackTrashingClass immuneFromStackTrashingClass = new ImmuneStackTrashingClass();
-                        immuneFromStackTrashingClass.SetUpICardEffect("Isn't affected by trashing any stacked card", CanUseCondition1, card.PermanentOfThisCard().TopCard);
-                        immuneFromStackTrashingClass.SetUpImmuneFromStackTrashingClass(PermanentCondition: PermanentCondition, EffectCondition: EffectCondition);
-                        card.PermanentOfThisCard().UntilOpponentTurnEndEffects.Add((_timing) => immuneFromStackTrashingClass);
-
-                        bool CanUseCondition1(Hashtable hashtable1)
+                        bool CanSelectPermanentImmuneCondition(Permanent permanent)
                         {
-                            return card.PermanentOfThisCard().TopCard != null;
+                            return permanent.IsDigimon;
                         }
 
-                        bool EffectCondition(ICardEffect effect)
-                        {
-                            return CardEffectCommons.IsOpponentEffect(effect, card);
-                        }
+                        List<Permanent> selectedPermanents = card.Owner.GetBattleAreaPermanents().Filter(CanSelectPermanentImmuneCondition);
 
-                        bool PermanentCondition(Permanent permanent)
+                        foreach (Permanent permanent in selectedPermanents)
                         {
-                            return permanent == card.PermanentOfThisCard();
+                            Permanent selectedPermanent = permanent;
+
+                            ImmuneStackTrashingClass immuneFromStackTrashingClass = new ImmuneStackTrashingClass();
+                            immuneFromStackTrashingClass.SetUpICardEffect("Isn't affected by trashing any stacked card", CanUseCondition1, selectedPermanent.TopCard);
+                            immuneFromStackTrashingClass.SetUpImmuneFromStackTrashingClass(PermanentCondition: PermanentCondition, EffectCondition: EffectCondition);
+                            selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => immuneFromStackTrashingClass);
+
+                            bool CanUseCondition1(Hashtable hashtable1)
+                            {
+                                return selectedPermanent.TopCard != null;
+                            }
+
+                            bool EffectCondition(ICardEffect effect)
+                            {
+                                return CardEffectCommons.IsOpponentEffect(effect, card);
+                            }
+
+                            bool PermanentCondition(Permanent permanent)
+                            {
+                                return permanent == selectedPermanent;
+                            }
                         }
                     }
                 }
