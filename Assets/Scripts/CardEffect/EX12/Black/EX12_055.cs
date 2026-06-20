@@ -158,7 +158,7 @@ namespace DCGO.CardEffects.EX12
             if (timing == EffectTiming.OnCounterTiming)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Change attack target to this Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("1 other Digimon may digivolve into lvl 6 or less [ME] in hand for free", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("EX12_055_Counter");
