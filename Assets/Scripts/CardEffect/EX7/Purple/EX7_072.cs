@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.EX7
                     return CardEffectCommons.IsExistOnTrashActivate(card, activateClass);
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     List<CardSource> cardSources = new List<CardSource>() { card };
 
@@ -78,7 +78,7 @@ namespace DCGO.CardEffects.EX7
                     return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool PermanentCondition(Permanent permanent)
                     {
@@ -107,7 +107,7 @@ namespace DCGO.CardEffects.EX7
                                 return "[End of Your Turn] Delete 1 of your Digimon.";
                             }
 
-                            bool CanUseCondition1(Hashtable hashtable1)
+                            bool CanUseCondition1(Hashtable hashtable)
                             {
                                 return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)
                                     && permanent.TopCard.Owner.GetBattleAreaDigimons().Contains(permanent)
@@ -115,7 +115,7 @@ namespace DCGO.CardEffects.EX7
                                     && !permanent.TopCard.CanNotBeAffected(activateClass);
                             }
 
-                            bool CanActivateCondition1(Hashtable hashtable1)
+                            bool CanActivateCondition1(Hashtable hashtable)
                             {
                                 return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)
                                     && !permanent.TopCard.CanNotBeAffected(activateClass);
@@ -123,10 +123,10 @@ namespace DCGO.CardEffects.EX7
 
                             bool CanSelectPermanentCondition(Permanent permanent)
                             {
-                                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                             }
 
-                            IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
+                            IEnumerator ActivateCoroutine1(Hashtable hashtable)
                             {
                                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
