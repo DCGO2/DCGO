@@ -172,8 +172,8 @@ namespace DCGO.CardEffects.EX12
                     return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
-                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, Condition));
-                cardEffects.Add(CardEffectFactory.RebootStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, Condition));
+                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(PermanentCondition, false, card, Condition));
+                cardEffects.Add(CardEffectFactory.RebootStaticEffect(PermanentCondition, false, card, Condition));
             }
             #endregion
 
