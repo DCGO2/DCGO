@@ -25,6 +25,13 @@ namespace DCGO.CardEffects.EX12
             }
             #endregion
 
+            #region Jamming
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.JammingSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
             #region Shared OP/WD
             string SharedEffectName = "May trash up to 3 from hand, -2K DP times trashed cards 1 enemy Digimon, then bot deck 1 5K DP or lower enemy Digimon";
 
@@ -69,7 +76,7 @@ namespace DCGO.CardEffects.EX12
                         selectPlayer: card.Owner,
                         canTargetCondition: cardSource => true,
                         canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: CanEndSelectCondition,
+                        canEndSelectCondition: null,
                         maxCount: discardCount,
                         canNoSelect: true,
                         canEndNotMax: true,
@@ -81,10 +88,6 @@ namespace DCGO.CardEffects.EX12
 
                     yield return StartCoroutine(selectHandEffect.Activate());
 
-                    bool CanEndSelectCondition(List<CardSource> cardSources)
-                    {
-                        return CardEffectCommons.HasNoElement(cardSources);
-                    }
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
