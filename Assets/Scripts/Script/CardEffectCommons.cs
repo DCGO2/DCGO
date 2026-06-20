@@ -425,7 +425,7 @@ public partial class CardEffectCommons
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
             tokenData: ContinuousController.instance.PaishuToken,
             activateClass: activateClass,
-            isOwnerPermanent: false,
+            isOwnerPermanent: true,
             isTapped: false,
             quantity
             ));
@@ -438,7 +438,7 @@ public partial class CardEffectCommons
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
             tokenData: ContinuousController.instance.KotenkenToken,
             activateClass: activateClass,
-            isOwnerPermanent: false,
+            isOwnerPermanent: true,
             isTapped: false,
             quantity
             ));
