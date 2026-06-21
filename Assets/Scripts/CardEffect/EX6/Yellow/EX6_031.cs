@@ -67,7 +67,7 @@ namespace DCGO.CardEffects.EX6
                                 {
                                     if (conditionCardSource.IsDigimon)
                                     {
-                                        if (conditionCardSource.CardNames_DigiXros.Equals("Sanzomon"))
+                                        if (conditionCardSource.CardNames_DigiXros.Contains("Sanzomon"))
                                         {
                                             return true;
                                         }
@@ -89,7 +89,7 @@ namespace DCGO.CardEffects.EX6
                                 {
                                     if (conditionCardSource.IsDigimon)
                                     {
-                                        if (conditionCardSource.CardNames_DigiXros.Equals("Gokuumon"))
+                                        if (conditionCardSource.CardNames_DigiXros.Contains("Gokuumon"))
                                         {
                                             return true;
                                         }
@@ -111,7 +111,7 @@ namespace DCGO.CardEffects.EX6
                                 {
                                     if (conditionCardSource.IsDigimon)
                                     {
-                                        if (conditionCardSource.CardNames_DigiXros.Equals("Sagomon"))
+                                        if (conditionCardSource.CardNames_DigiXros.Contains("Sagomon"))
                                         {
                                             return true;
                                         }
@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.EX6
                                 {
                                     if (conditionCardSource.IsDigimon)
                                     {
-                                        if (conditionCardSource.CardNames_DigiXros.Equals("Cho-Hakkaimon"))
+                                        if (conditionCardSource.CardNames_DigiXros.Contains("Cho-Hakkaimon"))
                                         {
                                             return true;
                                         }
