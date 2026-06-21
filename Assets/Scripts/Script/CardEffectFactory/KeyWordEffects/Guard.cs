@@ -102,15 +102,15 @@ public partial class CardEffectFactory
 
             IEnumerator SuccessProcess()
             {
-                List<Permanent> GuardedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(PermanentCondition);
+                List<Permanent> removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(PermanentCondition);
 
-                foreach (Permanent otherpermanent in GuardedPermanents)
+                foreach (Permanent removed in removedPermanents)
                 {
-                    otherpermanent.willBeRemoveField = false;
-                    otherpermanent.HideDeleteEffect();
-                    otherpermanent.HideHandBounceEffect();
-                    otherpermanent.HideDeckBounceEffect();
-                    otherpermanent.HideWillRemoveFieldEffect();
+                    removed.willBeRemoveField = false;
+                    removed.HideDeleteEffect();
+                    removed.HideHandBounceEffect();
+                    removed.HideDeckBounceEffect();
+                    removed.HideWillRemoveFieldEffect();
                 }
 
                 yield return null;
