@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.EX12
                 bool CanSelectDNACondition(CardSource cardSource)
                 {
                     return cardSource.EqualsTraits("ME")
-                        && CardEffectCommons.CanDnaDigivolve(cardSource, new List<CardEffectCommons.CardLocation> { CardEffectCommons.CardLocation.FIELD, CardEffectCommons.CardLocation.FIELD });
+                        && CardEffectCommons.CanDnaDigivolve(cardSource, new List<CardEffectCommons.CardLocation> { CardEffectCommons.CardLocation.BATTLE_AREA, CardEffectCommons.CardLocation.BATTLE_AREA });
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

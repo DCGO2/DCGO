@@ -4,7 +4,7 @@ public partial class CardEffectCommons
 {
     public enum CardLocation
     {
-        FIELD,
+        BATTLE_AREA,
         HAND,
         TRASH,
     }
@@ -18,7 +18,7 @@ public partial class CardEffectCommons
             var jogressCondition = cardSource.jogressCondition[1].elements[i];
             var location = cardLocations[i];
 
-            if (location == CardLocation.FIELD) return HasMatchConditionOwnersPermanent(cardSource, jogressCondition.EvoRootCondition);
+            if (location == CardLocation.BATTLE_AREA) return HasMatchConditionOwnersPermanent(cardSource, jogressCondition.EvoRootCondition);
             if (location == CardLocation.HAND) return HasMatchConditionOwnersHand(cardSource, cs => jogressCondition.EvoRootCondition(cs.PermanentOfThisCard()));
             if (location == CardLocation.TRASH) return HasMatchConditionOwnersCardInTrash(cardSource, cs => jogressCondition.EvoRootCondition(cs.PermanentOfThisCard()));
         }
