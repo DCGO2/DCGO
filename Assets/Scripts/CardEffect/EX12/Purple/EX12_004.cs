@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.EX12
                     return card.PermanentOfThisCard().TopCard.EqualsTraits("TB");
                 }
 
-                cardEffects.Add(CardEffectFactory.FortitudeSelfEffect(isInheritedEffect: true, card: card, condition: PermanentCondition));
+                cardEffects.Add(CardEffectFactory.ExecuteSelfEffect(isInheritedEffect: true, card: card, condition: PermanentCondition));
             }
             #endregion
             return cardEffects;
