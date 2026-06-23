@@ -226,10 +226,8 @@ public class OptionPanel : OffAnimation
 
     public void OnClickExitGameButton()
     {
-#if UNITY_EDITOR || !UNITY_STANDALONE
-        return;
-#endif
-
+#if UNITY_STANDALONE
         Application.Quit();
+#endif
     }
 }
