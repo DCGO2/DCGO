@@ -66,7 +66,7 @@ namespace DCGO.CardEffects.EX12
             #region Shared OP/WD/WA — Place 1 Lv.6 or lower [Aqua]/[Sea Animal]/[TB] from hand as bottom source, then unsuspend 1 of your Digimon
             string SharedHashString = "EX12_036_OP_WD_WA";
 
-            string SharedEffectName = "Place 1 Lv.6 or lower [Aqua]/[Sea Animal]/[TB] card from hand as bottom source, unsuspend 1 of your Digimon";
+            string SharedEffectName = "Place 1 Lv.6 or lower [Aqua]/[Sea Animal]/[TB] card from hand as bottom source to unsuspend 1 of your Digimon";
 
             CardEffectFactory.ActivateClassesForSharedEffects(
                 ref cardEffects, timing, card,
