@@ -230,6 +230,6 @@ public class OptionPanel : OffAnimation
         return;
 #endif
 
-        //Application.Quit();
+        Application.Quit();
     }
 }
