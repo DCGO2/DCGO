@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.EX12
                 bool CanSelectDNACondition(CardSource cardSource)
                 {
                     return cardSource.EqualsTraits("ME")
-                        && cardSource.jogressCondition.Count > 0;
+                        && cardSource.CanPlayJogress(true);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
