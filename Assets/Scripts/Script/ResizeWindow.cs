@@ -59,63 +59,50 @@ public class ResizeWindow : MonoBehaviour
 
     public void SetUpWindowSize(string resolution)
     {
-#if UNITY_EDITOR || !UNITY_STANDALONE
-        return;
+#if UNITY_STANDALONE
+        if (Opening.instance != null)
+            Opening.instance.PlayDecisionSE();
+        else if (GManager.instance != null)
+            GManager.instance.PlayDecisionSE();
+
+        //float height = width / 16f * 9f;
+        int heightstring = 4;
+        if (resolution.Length <= 7)
+            heightstring = 3;
+
+        string temp = resolution.Substring(0, 4);
+        var width = int.Parse(temp);
+        temp = resolution.Substring(4, heightstring);
+        var height = int.Parse(temp);
+        //Screen.SetResolution((int)width, (int)height, false);
+        Screen.SetResolution((int)width, (int)height, UnityEngine.Device.Screen.fullScreen);
+        SetButtonsInteractable();
 #endif
 
-        //if (Opening.instance != null)
-        //{
-        //    Opening.instance.PlayDecisionSE();
-        //}
 
-        //else if (GManager.instance != null)
-        //{
-        //    GManager.instance.PlayDecisionSE();
-        //}
-
-        ////float height = width / 16f * 9f;
-        //int heightstring = 4;
-        //if (resolution.Length <= 7)
-        //{
-        //    heightstring = 3;
-        //}
-        //string temp = resolution.Substring(0, 4);
-        //var width = int.Parse(temp);
-        //temp = resolution.Substring(4, heightstring);
-        //var height = int.Parse(temp);
-        ////Screen.SetResolution((int)width, (int)height, false);
-        //Screen.SetResolution((int)width, (int)height, UnityEngine.Device.Screen.fullScreen);
-        //SetButtonsInteractable();
     }
 
     public /*async*/ void SetFullScreen(Toggle isFullScreen)
     {
-#if UNITY_EDITOR || !UNITY_STANDALONE
-        Debug.Log(isFullScreen.isOn);
-        return;
-#endif
-        //if (Opening.instance != null)
-        //{
-        //    Opening.instance.PlayDecisionSE();
-        //}
+#if UNITY_STANDALONE
+        if (Opening.instance != null)
+            Opening.instance.PlayDecisionSE();
 
-        //else if (GManager.instance != null)
-        //{
-        //    GManager.instance.PlayDecisionSE();
-        //}
+        else if (GManager.instance != null)
+            GManager.instance.PlayDecisionSE();
 
-        //UnityEngine.Device.Screen.fullScreen = isFullScreen.isOn;
+
+        UnityEngine.Device.Screen.fullScreen = isFullScreen.isOn;
         //await Task.Delay(TimeSpan.FromSeconds(Time.deltaTime));
-        //SetButtonsInteractable();
+        SetButtonsInteractable();
+#endif
+
     }
 
     void SetButtonsInteractable()
     {
-        return;
-
-        //foreach (Button button in switchWindowSizeButtons)
-        //{
-        //    button.interactable = !UnityEngine.Device.Screen.fullScreen;
-        //}
+        foreach (Button button in switchWindowSizeButtons)
+           button.interactable = !UnityEngine.Device.Screen.fullScreen;
+        
     }
 }
