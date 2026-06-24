@@ -161,8 +161,7 @@ namespace DCGO.CardEffects.EX12
 
                         bool CanSelectCardCondition(CardSource cardSource)
                         {
-                            return cardSource.IsDigimon
-                                && cardSource.HasLevel
+                            return cardSource.HasLevel
                                 && cardSource.Level <= 4
                                 && (cardSource.ContainsCardName("Agumon")
                                     || cardSource.ContainsCardName("Greymon")
