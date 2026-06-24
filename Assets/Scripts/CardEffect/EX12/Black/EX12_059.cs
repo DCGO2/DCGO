@@ -230,6 +230,8 @@ namespace DCGO.CardEffects.EX12
 
                     if (selectedCards.Count == 2)
                     {
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
+
                         bool CanSelectPermanentImmuneCondition(Permanent permanent)
                         {
                             return permanent.IsDigimon;
