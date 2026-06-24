@@ -110,7 +110,7 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    if (PermanentCondition(permanent))
                     {
                         foreach (CardSource cardSource in card.Owner.HandCards)
                         {
