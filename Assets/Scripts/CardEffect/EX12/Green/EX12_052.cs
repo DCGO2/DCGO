@@ -126,6 +126,11 @@ namespace DCGO.CardEffects.EX12
                     whenAttacking: true,
                     counter: true);
 
+            bool CanSelectBattlePermanentCondition(Permanent permanent)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+            }
+
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool isUsed = false;
@@ -169,7 +174,7 @@ namespace DCGO.CardEffects.EX12
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition: CanSelectBattlePermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
