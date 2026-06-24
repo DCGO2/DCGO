@@ -87,7 +87,7 @@ namespace DCGO.CardEffects.EX12
 
                 string EffectDescription()
                 {
-                    return "[All Turns] When any of [SW] trait Digimon are played, <Delay> .\r\n• 1 of your [SW] trait Digimon may digivolve into a [Saneiketsu] trait Digimon card in the hand without paying the cost.";
+                    return "[All Turns] When any of your [SW] trait Digimon are played, <Delay> .\r\n• 1 of your [SW] trait Digimon may digivolve into a [Saneiketsu] trait Digimon card in the hand without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
