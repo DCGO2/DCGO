@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.BT18
                                 canEndSelectCondition: null,
                                 canNoSelect: () => canSelectNo,
                                 selectCardCoroutine: LevelSelected,
-                                afterSelectCardCoroutine: null,
+                                afterSelectCardCoroutine: AfterSelectCardCoroutine,
                                 message: $"Select level {Levels.IndexOf(level) + 3} Digimon card to add to the top of opponent's deck",
                                 maxCount: 1,
                                 canEndNotMax: false,
@@ -171,8 +171,16 @@ namespace DCGO.CardEffects.BT18
                         {
                             if (cardSource != null)
                                 selectedCards.Add(cardSource);
-                            else
+
+                            yield return null;
+                        }
+
+                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                        {
+                            if (cardSources.Count == 0)
+                            {
                                 exitLoop = true;
+                            }
 
                             yield return null;
                         }
