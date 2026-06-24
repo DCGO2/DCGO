@@ -228,14 +228,14 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanSelectPermanentCondition1(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
                         && (permanent.IsDigimon
                             || permanent.IsTamer);
                 }
 
                 bool CanSelectPermanentCondition2(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
                         && (permanent.IsDigimon
                             || permanent.IsTamer)
                         && permanent.DigivolutionCards.Count == 0;
