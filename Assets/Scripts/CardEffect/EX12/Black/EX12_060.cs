@@ -303,7 +303,7 @@ namespace DCGO.CardEffects.EX12
                                 && cardSource.Level <= 6
                                 && (cardSource.EqualsTraits("Machine")
                                     || cardSource.EqualsTraits("Cyborg")
-                                    || cardSource.EqualsTraits("ME");
+                                    || cardSource.EqualsTraits("ME"));
                         }
 
                         bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
