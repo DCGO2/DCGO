@@ -51,7 +51,7 @@ public class P_113 : CEntity_Effect
                     {
                         if (card.PermanentOfThisCard().HasDP)
                         {
-                            if (permanent.TopCard.HasDP)
+                            if (permanent.HasDP)
                             {
                                 if (permanent.DP <= card.PermanentOfThisCard().DP)
                                 {
