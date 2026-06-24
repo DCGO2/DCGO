@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.BT24
                     canNoSelect: false,
                     canEndNotMax: false,
                     selectPermanentCoroutine: SelectPermanentCoroutine1,
-                    afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine1,
+                    afterSelectPermanentCoroutine: null,
                     mode: SelectPermanentEffect.Mode.Custom,
                     cardEffect: activateClass);
 
@@ -135,20 +135,32 @@ namespace DCGO.CardEffects.BT24
                                 && !permanent.TopCard.CanNotBeAffected(activateClass);
                         }
                         #endregion
+
+                        #region Can't Suspend
+                        CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
+                        canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCondition1, card);
+                        canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCondition);
+                        permanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotSuspendClass);
+
+                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
+                        }
+
+                        bool CanUseCondition1(Hashtable hashtable)
+                        {
+                            return permanent.TopCard != null
+                                && !permanent.TopCard.CanNotBeAffected(activateClass);
+                        }
+
+                        bool PermanentCondition(Permanent permanent)
+                        {
+                            return true;
+                        }
+                        #endregion
                     }
 
                     yield return null;
-                }
-
-                IEnumerator AfterSelectPermanentCoroutine1(List<Permanent> permanents)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
-                        permanentCondition: (permanent) => permanent == permanents[0],
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass,
-                        isOnlyActivePhase: false,
-                        effectName: "Can't Suspend"
-                    ));
                 }
             }
             #endregion
