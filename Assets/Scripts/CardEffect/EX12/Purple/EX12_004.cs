@@ -10,16 +10,18 @@ namespace DCGO.CardEffects.EX12
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Inherited Fortitude
-            if (timing == EffectTiming.OnDestroyedAnyone)
+            if (timing == EffectTiming.OnEndTurn)
             {
                 bool PermanentCondition()
                 {
-                    return card.PermanentOfThisCard().TopCard.EqualsTraits("TB");
+                    return CardEffectCommons.IsOwnerTurn(card)
+                        && card.PermanentOfThisCard().TopCard.EqualsTraits("TB");
                 }
 
                 cardEffects.Add(CardEffectFactory.ExecuteSelfEffect(isInheritedEffect: true, card: card, condition: PermanentCondition));
             }
             #endregion
+
             return cardEffects;
         }
     }
