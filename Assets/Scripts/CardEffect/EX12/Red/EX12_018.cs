@@ -106,7 +106,7 @@ namespace DCGO.CardEffects.EX12
                         }
                         else
                         {
-                            int maxCount = Math.Max(2, 2-cardSources.Count);
+                            int maxCount = Math.Min(2, 2-cardSources.Count);
 
                             IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {
