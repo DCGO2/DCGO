@@ -324,11 +324,11 @@ namespace DCGO.CardEffects.EX12
 
                                 if (ToTop)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(fixedCards, activateClass));
+                                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsTop(fixedCards, activateClass));
                                 }
                                 else
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(fixedCards, activateClass));
+                                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(fixedCards, activateClass));
                                 }
 
                                 yield return null;
