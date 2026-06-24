@@ -104,7 +104,8 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.EqualsTraits("Saneiketsu");
+                    return cardSource.IsDigimon
+                        && cardSource.EqualsTraits("Saneiketsu");
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
