@@ -973,7 +973,7 @@ public partial class CardEffectFactory
 
     #endregion
 
-        #region On Play
+    #region On Play
 
     public static ActivateClass OnPlayClass(CardSource card,
                                             string effectName,
