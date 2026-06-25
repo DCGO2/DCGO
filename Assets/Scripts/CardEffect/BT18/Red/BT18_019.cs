@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DCGO.CardEffects.BT18
 {
@@ -220,6 +221,170 @@ namespace DCGO.CardEffects.BT18
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(sources));
 
                             yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1 * sources.Count, activateClass));
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region On Deletion
+            if (timing == EffectTiming.OnDestroyedAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Play a [Millenniummon] from the trash", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[On Deletion] By returning 1 [Kimeramon] and 1 [Machinedramon] from your trash to the bottom of the deck, you may play 1 [Millenniummon] from your trash without paying the cost.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass)
+                        && (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardConditionKimeramon)
+                            || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardConditionMachinedramon));
+                }
+
+                bool CanSelectCardConditionKimeramon(CardSource cardSource)
+                {
+                    return cardSource != null
+                        && cardSource.Owner == card.Owner
+                        && cardSource.EqualsCardName("Kimeramon");
+                }
+
+                bool CanSelectCardConditionMachinedramon(CardSource cardSource)
+                {
+                    return cardSource != null
+                        && cardSource.Owner == card.Owner
+                        && cardSource.EqualsCardName("Machinedramon");
+                }
+
+                bool CanSelectCardConditionMilleniummon(CardSource cardSource)
+                {
+                    return cardSource.EqualsCardName("Millenniummon")
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, root: SelectCardEffect.Root.Trash);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    bool returned = false;
+
+                    int maxCount = 2;
+
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                    canTargetCondition: (cardSource) => CanSelectCardConditionKimeramon(cardSource) || CanSelectCardConditionMachinedramon(cardSource),
+                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                    canEndSelectCondition: CanEndSelectCondition,
+                    canNoSelect: () => true,
+                    selectCardCoroutine: null,
+                    afterSelectCardCoroutine: AfterSelectCardCoroutine1,
+                    message: "Select cards to place at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
+                    maxCount: maxCount,
+                    canEndNotMax: false,
+                    isShowOpponent: false,
+                    mode: SelectCardEffect.Mode.Custom,
+                    root: SelectCardEffect.Root.Trash,
+                    customRootCardList: null,
+                    canLookReverseCard: true,
+                    selectPlayer: card.Owner,
+                    cardEffect: activateClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                    bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
+                    {
+                        if (cardSources.Count(CanSelectCardConditionKimeramon) >= 1
+                        && CanSelectCardConditionKimeramon(cardSource)
+                        && !CanSelectCardConditionMachinedramon(cardSource))
+                        {
+                            return false;
+                        }
+
+                        if (cardSources.Count(CanSelectCardConditionMachinedramon) >= 1
+                        && CanSelectCardConditionMachinedramon(cardSource)
+                        && !CanSelectCardConditionKimeramon(cardSource))
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                    bool CanEndSelectCondition(List<CardSource> cardSources)
+                    {
+                        if (cardSources.Count(CanSelectCardConditionKimeramon) == 0)
+                        {
+                            return false;
+                        }
+
+                        if (cardSources.Count(CanSelectCardConditionMachinedramon) == 0)
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                    IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+                    {
+                        if (cardSources.Count == 2)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
+
+                            returned = true;
+                        }
+                    }
+
+                    if (returned)
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardConditionMilleniummon))
+                        {
+                            List<CardSource> selectedCards = new List<CardSource>();
+
+                            SelectCardEffect selectPlayEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectPlayEffect.SetUp(
+                                canTargetCondition: CanSelectCardConditionMilleniummon,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 card to play.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectPlayEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                            selectPlayEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                            yield return StartCoroutine(selectPlayEffect.Activate());
+
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            {
+                                selectedCards.Add(cardSource);
+
+                                yield return null;
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
                         }
                     }
                 }
