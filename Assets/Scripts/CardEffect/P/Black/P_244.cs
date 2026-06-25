@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.P
                         && CardEffectCommons.CanTriggerOnAddDigivolutionCard(
                             hashtable: hashtable,
                             permanentCondition: TriggerPermanentCondition,
-                            cardEffectCondition: _ => true,
+                            cardEffectCondition: cardEffect => cardEffect != null,
                             cardCondition: TriggerCardCondition);
                 }
 
