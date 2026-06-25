@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.P
             #endregion
 
             #region Your turn - Delay
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAddDigivolutionCards)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into a Digimon w/[Vemmon] in text for 3 less.", CanUseCondition, card);
@@ -139,13 +139,12 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanDeclareOptionDelayEffect(card)
+                    return CardEffectCommons.CanDeclareOptionDelayEffect(card)
                         && CardEffectCommons.CanTriggerOnAddDigivolutionCard(
                             hashtable: hashtable,
                             permanentCondition: TriggerPermanentCondition,
-                            cardEffectCondition: cardEffect => cardEffect != null,
-                            cardCondition: TriggerCardCondition);
+                            cardEffectCondition: cardEffect => cardEffect.EffectSourceCard != null,
+                            cardCondition: cardSource => cardSource.EqualsCardName("Vemmon"));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -156,11 +155,6 @@ namespace DCGO.CardEffects.P
                 bool TriggerPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-                }
-
-                bool TriggerCardCondition(CardSource cardSource)
-                {
-                    return cardSource.EqualsCardName("Vemmon");
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
