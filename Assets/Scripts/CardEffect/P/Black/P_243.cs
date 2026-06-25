@@ -88,7 +88,13 @@ namespace DCGO.CardEffects.P
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsOwnerTurn(card)
+                        && CardEffectCommons.HasMatchConditionPermanent(PermanentCondition)
                         && CardEffectCommons.CanDeclareOptionDelayEffect(card);
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanSelectCardCondition1(CardSource cardSource)
