@@ -143,8 +143,6 @@ namespace DCGO.CardEffects.BT18
 
                         if (CardEffectCommons.HasMatchConditionOpponentsCardInTrash(card, level))
                         {
-                            bool canSelectNo() => selectedCards == null;
-
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                             selectCardEffect.SetUp(
@@ -167,6 +165,8 @@ namespace DCGO.CardEffects.BT18
 
                             yield return StartCoroutine(selectCardEffect.Activate());
                         }
+
+                        bool canSelectNo() => selectedCards == null;
 
                         IEnumerator LevelSelected(CardSource cardSource)
                         {
