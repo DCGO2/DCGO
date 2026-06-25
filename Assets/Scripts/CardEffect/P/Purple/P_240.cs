@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.P
             #region Reboot
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: true, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
             #endregion
 
