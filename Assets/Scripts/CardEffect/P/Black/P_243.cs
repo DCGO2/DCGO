@@ -186,6 +186,8 @@ namespace DCGO.CardEffects.P
                                     canLookReverseCard: true,
                                     selectPlayer: card.Owner,
                                     cardEffect: activateClass);
+
+                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect2.Activate());
                             }
                         }
                     }
