@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.P
             }
             #endregion
 
-            #region Inherited On Deletion
+            #region On Deletion
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -83,23 +83,17 @@ namespace DCGO.CardEffects.P
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { card.PermanentOfThisCard(), selectedPermanent } }, false, activateClass).PlacePermanentToDigivolutionCards());
 
-                            if (((isExistOnField(card)
-                                && selectedPermanent.DigivolutionCards.Contains(card))
-                                || card.IsToken)
-                            && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                    targetPermanent: selectedPermanent,
-                                    cardCondition: CanSelectCardCondition,
-                                    payCost: false,
-                                    reduceCostTuple: null,
-                                    fixedCostTuple: null,
-                                    ignoreDigivolutionRequirementFixedCost: -1,
-                                    isHand: true,
-                                    activateClass: activateClass,
-                                    successProcess: null
-                                ));
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                targetPermanent: selectedPermanent,
+                                cardCondition: CanSelectCardCondition,
+                                payCost: false,
+                                reduceCostTuple: null,
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: -1,
+                                isHand: true,
+                                activateClass: activateClass,
+                                successProcess: null
+                            ));
                         }
                     }
                 }
