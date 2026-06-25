@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.BT18
 
                         if (CardEffectCommons.HasMatchConditionOpponentsCardInTrash(card, level))
                         {
-                            bool canSelectNo = selectedCards == null;
+                            bool canSelectNo() => selectedCards == null;
 
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -151,7 +151,7 @@ namespace DCGO.CardEffects.BT18
                                 canTargetCondition: level,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                canNoSelect: () => canSelectNo,
+                                canNoSelect: () => canSelectNo(),
                                 selectCardCoroutine: LevelSelected,
                                 afterSelectCardCoroutine: AfterSelectCardCoroutine,
                                 message: $"Select level {Levels.IndexOf(level) + 3} Digimon card to add to the top of opponent's deck",
