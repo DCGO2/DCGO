@@ -166,7 +166,7 @@ namespace DCGO.CardEffects.BT18
                             yield return StartCoroutine(selectCardEffect.Activate());
                         }
 
-                        bool canSelectNo() => selectedCards == null;
+                        bool canSelectNo() => selectedCards.Count == 0;
 
                         IEnumerator LevelSelected(CardSource cardSource)
                         {
