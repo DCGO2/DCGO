@@ -136,6 +136,7 @@ namespace DCGO.CardEffects.BT18
                 if (CardEffectCommons.IsJogress(_hashtable))
                 {
                     List<CardSource> selectedCards = new List<CardSource>();
+                    selectedCards = null;
 
                     foreach (Func<CardSource, bool> level in Levels)
                     {
