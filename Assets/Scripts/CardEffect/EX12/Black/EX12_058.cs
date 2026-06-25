@@ -135,26 +135,25 @@ namespace DCGO.CardEffects.EX12
                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                 {
                     selectedCard = cardSource;
-                    yield return null;
-                }
 
-                if (selectedCard != null)
-                {
-                    if (CardEffectCommons.CanPlayAsNewPermanent(selectedCard, false, activateClass, SelectCardEffect.Root.Library))
+                    if (selectedCard != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: new List<CardSource> { selectedCard },
-                            activateClass: activateClass,
-                            payCost: false,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.Library,
-                            activateETB: true));
+                        if (CardEffectCommons.CanPlayAsNewPermanent(selectedCard, false, activateClass, SelectCardEffect.Root.Library))
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                cardSources: new List<CardSource> { selectedCard },
+                                activateClass: activateClass,
+                                payCost: false,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.Library,
+                                activateETB: true));
+                        }
+                        else
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new ITrashDeckCards(new List<CardSource> { selectedCard }, activateClass).TrashDeckCards());
+                        }
                     }
-                    else
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new ITrashDeckCards(new List<CardSource> { selectedCard }, activateClass).TrashDeckCards());
-                    }
-                }
+                }          
             }
             #endregion
 
