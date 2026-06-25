@@ -14,6 +14,8 @@ namespace DCGO.CardEffects.EX12
             #region Inherit
             if (timing == EffectTiming.WhenRemoveField)
             {
+                List<Permanent> allowedPermanents = null;
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("May DNA 1 of the leaving Digimon and another Digimon into an [ME] in hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
@@ -35,6 +37,8 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
+                     allowedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(PermanentCondition);
+
                     return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectDNACondition)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent != card.PermanentOfThisCard());
@@ -48,8 +52,13 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanSelectDNACondition(CardSource cardSource)
                 {
-                    return cardSource.EqualsTraits("ME")
-                        && cardSource.CanPlayJogress(true);
+                    foreach (Permanent permanent in allowedPermanents)
+                    {
+                        return cardSource.EqualsTraits("ME")
+                            && cardSource.CanJogressFromTargetPermanent(permanent, true);
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
