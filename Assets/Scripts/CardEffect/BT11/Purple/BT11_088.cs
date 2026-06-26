@@ -140,7 +140,8 @@ namespace DCGO.CardEffects.BT11
 
             bool CanSelectCardCondition2(CardSource cardSource, ActivateClass activateClass)
             {
-                return !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
+                return !cardSource.CanNotTrashFromDigivolutionCards(activateClass)
+                    || cardSource.IsFaceDown;
             }
 
             IEnumerator SharedActivateCoroutine2(Hashtable hashtable, ActivateClass activateClass)
