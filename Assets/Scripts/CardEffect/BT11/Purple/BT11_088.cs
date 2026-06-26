@@ -126,7 +126,7 @@ namespace DCGO.CardEffects.BT11
             #endregion
 
             #region Shared All Turns
-            string SharedEffectName2() => "Place [Shuu Yulin] under to prevent De-Digivolve on 1 Digimon.";
+            string SharedEffectName2() => "Trash 1 of this Digimon's sources to trash enemy top sec";
 
             string SharedEffectDescription2() => "[All Turns][Once Per Turn] When an opponent's Digimon digivolves or an effect adds cards to the digivolution cards of an opponent's Digimon, by trashing 1 card in this Digimon's digivolution cards, trash the top card of your opponent's security stack.";
 
@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.BT11
                 selectCardEffect.SetUp(
                     canTargetCondition: (cardSource) => CanSelectCardCondition2(cardSource, activateClass),
                     canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: CanEndSelectCondition,
+                    canEndSelectCondition: null,
                     canNoSelect: () => false,
                     selectCardCoroutine: SelectCardCoroutine,
                     afterSelectCardCoroutine: null,
@@ -171,11 +171,6 @@ namespace DCGO.CardEffects.BT11
                 selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to discard.", "The opponent is selecting 1 digivolution card to discard.");
 
                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                bool CanEndSelectCondition(List<CardSource> cardSources)
-                {
-                    return CardEffectCommons.HasNoElement(cardSources);
-                }
 
                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                 {
