@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using static SelectCardEffect;
 
 // LadyDevimon
 namespace DCGO.CardEffects.BT25
@@ -191,6 +190,7 @@ namespace DCGO.CardEffects.BT25
                 bool CanSelect3MOptionCard(CardSource cardSource) => cardSource.IsOption
                     && cardSource.HasThreeMusketeersTraits
                     && cardSource.PayingCost(Root.Trash, null, checkAvailability: false) <= cardSource.Owner.MaxMemoryCost;
+
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition))
                 {
                     #region Select digimon to trash option card from digivolution source
@@ -259,6 +259,9 @@ namespace DCGO.CardEffects.BT25
                         if (selectedCard != null)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(selectedPermanent, new List<CardSource>() { selectedCard }, activateClass).TrashDigivolutionCards());
+
+                            hasUsed = true;
+
                             if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelect3MOptionCard))
                             {
                                 #region Select 3M option card in trash to use with reduced cost
@@ -296,8 +299,6 @@ namespace DCGO.CardEffects.BT25
 
                                 if (selectedOption != null)
                                 {
-                                    hasUsed = true;
-
                                     #region reduce play cost
                                     ChangeCostClass changeCostClass = new ChangeCostClass();
                                     changeCostClass.SetUpICardEffect($"Play/Use Cost -3", CanUseCondition1, card);
