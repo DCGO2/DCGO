@@ -242,6 +242,9 @@ namespace DCGO.CardEffects.EX12
 
                 bool IsOpponentsDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
+                bool PermanentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                    && (permanent.IsDigimon || permanent.IsTamer);
+
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     if(CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
@@ -286,15 +289,15 @@ namespace DCGO.CardEffects.EX12
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
-                    if(CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon))
+                    if(CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
                     {
-                        int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(IsOpponentsDigimon));
+                        int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: IsOpponentsDigimon,
+                            canTargetCondition: PermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
