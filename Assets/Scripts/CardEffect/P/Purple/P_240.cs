@@ -298,20 +298,19 @@ namespace DCGO.CardEffects.P
                                 new SelectionElement<int>(message: $"From hand", value: 1, spriteIndex: 0);
                                 new SelectionElement<int>(message: $"From trash", value: 2, spriteIndex: 0);
                                 new SelectionElement<int>(message: $"Don't play", value: 3, spriteIndex: 1);
-                            }
-                            ;
+                            };
 
                             string selectPlayerMessage = "From which area do you select a card?";
                             string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
 
                             GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                         }
                         else
                         {
                             GManager.instance.userSelectionManager.SetBool(canSelectHand);
                         }
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                         #endregion
 
                         bool doPlay = GManager.instance.userSelectionManager.SelectedIntValue != 3;
