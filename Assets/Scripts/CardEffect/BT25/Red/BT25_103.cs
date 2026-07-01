@@ -94,7 +94,7 @@ namespace DCGO.CardEffects.BT25
 
             IEnumerator BounceActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsEnemyWithLessSources))
+                if (CardEffectCommons.HasMatchConditionPermanent(IsEnemyWithLessSources))
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
