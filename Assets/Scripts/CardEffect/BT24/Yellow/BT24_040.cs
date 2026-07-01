@@ -38,16 +38,12 @@ namespace DCGO.CardEffects.BT24
             #region On Play / When Digivolving Shared
             string SharedEffectName = "Trash 1 Digimon sources. 2 Digimon or Tamers can't Suspend or Activate When Digivolving";
 
-            CardEffectFactory.ActivateClassesForSharedEffects(
-                ref cardEffects, timing, card,
-                SharedEffectName,
-                SharedActivateCoroutine,
-                SharedEffectDescription,
-                optional: false,
-                onPlay: true,
-                whenDigivolving: true);
-
             string SharedEffectDescription(string tag) => $"[{tag}] Trash all digivolution cards of 1 of your opponent's Digimon. Then, until your opponent's turn ends, 2 of their Digimon or Tamers can't suspend or activate [When Digivolving] effects.";
+
+            bool SharedCanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+            {
+                return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
+            }
 
             bool CanTrashDigivolutionCardsCondition(Permanent permanent)
             {
@@ -164,6 +160,43 @@ namespace DCGO.CardEffects.BT24
                 }
             }
             #endregion
+
+            #region On Play
+
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
+                activateClass.SetUpActivateClass(hash => SharedCanActivateCondition(hash, activateClass), hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("On Play"));
+                cardEffects.Add(activateClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+            }
+
+            #endregion
+
+            #region When Digivolving
+
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
+                activateClass.SetUpActivateClass(hash => SharedCanActivateCondition(hash, activateClass), hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("When Digivolving"));
+                cardEffects.Add(activateClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+            }
+
+            #endregion
+
 
             #region All Turns
             if (timing == EffectTiming.WhenRemoveField)
