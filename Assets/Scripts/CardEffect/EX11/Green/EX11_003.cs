@@ -41,7 +41,8 @@ namespace DCGO.CardEffects.EX11
 
                 bool SecurityCondition(CardSource cardSource)
                 {
-                    return !cardSource.IsFlipped
+                    return (!cardSource.IsFlipped
+                            || cardSource.IsDigiEgg)
                         && cardSource.EqualsTraits("Royal Base");
                 }
 
