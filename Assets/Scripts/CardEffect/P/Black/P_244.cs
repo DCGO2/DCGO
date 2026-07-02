@@ -140,6 +140,7 @@ namespace DCGO.CardEffects.P
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanDeclareOptionDelayEffect(card)
+                        && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanTriggerOnAddDigivolutionCard(
                             hashtable: hashtable,
                             permanentCondition: TriggerPermanentCondition,
