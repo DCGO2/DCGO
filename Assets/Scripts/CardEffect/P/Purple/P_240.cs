@@ -293,11 +293,11 @@ namespace DCGO.CardEffects.P
                         #region Setup Location Selection
                         if (canSelectHand && canSelectTrash)
                         {
-                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>
                             {
-                                new SelectionElement<int>(message: $"From hand", value: 1, spriteIndex: 0);
-                                new SelectionElement<int>(message: $"From trash", value: 2, spriteIndex: 0);
-                                new SelectionElement<int>(message: $"Don't play", value: 3, spriteIndex: 1);
+                                new(message: $"From hand", value: 1, spriteIndex: 0),
+                                new(message: $"From trash", value: 2, spriteIndex: 0),
+                                new(message: $"Don't play", value: 3, spriteIndex: 1)
                             };
 
                             string selectPlayerMessage = "From which area do you select a card?";
