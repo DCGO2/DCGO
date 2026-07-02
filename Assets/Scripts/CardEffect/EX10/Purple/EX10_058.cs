@@ -66,7 +66,6 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region Shared On Play/When Digivolving
-
             string SharedEffectDiscription(string tag)
             {
                 return $"[{tag}] Until your opponent's turn ends, give 1 of their Digimon or Tamers \"[End of Your Turn] Delete 1 of your Digimon.\"";
@@ -90,7 +89,6 @@ namespace DCGO.CardEffects.EX10
                     Permanent selectedPermanent = null;
 
                     #region Select Permanent
-
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -115,24 +113,21 @@ namespace DCGO.CardEffects.EX10
 
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon/Tamer to gain effect", "The opponent is selecting 1 Digimon/Tamer to gain effect");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
                     #endregion
 
                     #region Gain Effect
                     if (selectedPermanent != null)
                     {
-                        Permanent permanent = selectedPermanent;
-
                         ActivateClass activateClass1 = new ActivateClass();
-                        activateClass1.SetUpICardEffect("Delete 1 of your Digimon", CanUseCondition1, permanent.TopCard);
+                        activateClass1.SetUpICardEffect("Delete 1 of your Digimon", CanUseCondition1, selectedPermanent.TopCard);
                         activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDescription1());
-                        activateClass1.SetEffectSourcePermanent(permanent);
-                        CardEffectCommons.AddEffectToPermanent(targetPermanent: permanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, card: card, cardEffect: PermanentEffectFactory.AddDetailClass(permanent, "[End of Your Turn] Delete 1 of your Digimon.", true, activateClass), timing: EffectTiming.None);
-                        CardEffectCommons.AddEffectToPermanent(targetPermanent: permanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, card: card, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
+                        activateClass1.SetEffectSourcePermanent(selectedPermanent);
+                        CardEffectCommons.AddEffectToPermanent(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, card: card, cardEffect: PermanentEffectFactory.AddDetailClass(selectedPermanent, "[End of Your Turn] Delete 1 of your Digimon.", true, activateClass), timing: EffectTiming.None);
+                        CardEffectCommons.AddEffectToPermanent(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, card: card, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
 
-                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                         {
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
                         }
 
                         string EffectDescription1()
@@ -142,16 +137,16 @@ namespace DCGO.CardEffects.EX10
 
                         bool CanUseCondition1(Hashtable hashtable)
                         {
-                            return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)
-                                && permanent.TopCard.Owner.GetBattleAreaDigimons().Contains(permanent)
-                                && GManager.instance.turnStateMachine.gameContext.TurnPlayer == permanent.TopCard.Owner
-                                && !permanent.TopCard.CanNotBeAffected(activateClass);
+                            return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent)
+                                && selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent)
+                                && GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner
+                                && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
                         }
 
                         bool CanActivateCondition1(Hashtable hashtable)
                         {
-                            return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)
-                                && !permanent.TopCard.CanNotBeAffected(activateClass);
+                            return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent)
+                                && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
                         }
 
                         bool CanSelectPermanentCondition(Permanent permanent)
@@ -164,7 +159,7 @@ namespace DCGO.CardEffects.EX10
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectPermanentEffect.SetUp(
-                                selectPlayer: permanent.TopCard.Owner,
+                                selectPlayer: selectedPermanent.TopCard.Owner,
                                 canTargetCondition: CanSelectPermanentCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
