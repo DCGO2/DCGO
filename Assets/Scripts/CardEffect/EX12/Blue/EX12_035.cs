@@ -188,14 +188,14 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsDigimonCondition)
                             || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsDigimonCondition));
                 }
 
                 bool IsDigimonCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
 
-                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleArea(card);
+                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 bool CanSelectPermanentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
@@ -227,25 +227,27 @@ namespace DCGO.CardEffects.EX12
                             if (permanent != null)
                             {
                                 #region Can't Suspend
+                                Permanent selectedPermanent = permanent;
+
                                 CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
                                 canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCondition1, card);
                                 canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCondition);
-                                permanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotSuspendClass);
+                                selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotSuspendClass);
 
-                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                                if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
                                 }
 
                                 bool CanUseCondition1(Hashtable hashtable)
                                 {
-                                    return permanent.TopCard != null
-                                        && !permanent.TopCard.CanNotBeAffected(activateClass);
+                                    return selectedPermanent.TopCard != null
+                                        && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
                                 }
 
                                 bool PermanentCondition(Permanent permanent)
                                 {
-                                    return true;
+                                    return permanent == selectedPermanent;
                                 }
                                 #endregion
                             }
