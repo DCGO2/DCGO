@@ -106,7 +106,7 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region Shared OP/WD/WA
-            string SharedEffectName = "<De-Digivolve 3> 1 enemy Digimon, then by placing 2 [Gammamon] text/[VB] from trash under, taunt 1 enemy Digimon";
+            string SharedEffectName = "<De-Digivolve 2> 1 enemy Digimon, then delete 1 enemy lowest DP Digimon";
             string SharedHashString = "EX12_017_OP_WD_WA";
 
             CardEffectFactory.ActivateClassesForSharedEffects
