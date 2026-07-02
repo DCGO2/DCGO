@@ -304,13 +304,13 @@ namespace DCGO.CardEffects.P
                             string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
 
                             GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                         }
                         else
                         {
                             GManager.instance.userSelectionManager.SetBool(canSelectHand);
                         }
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                         #endregion
 
                         bool doPlay = GManager.instance.userSelectionManager.SelectedIntValue != 3;
