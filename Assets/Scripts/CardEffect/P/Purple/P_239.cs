@@ -81,7 +81,8 @@ namespace DCGO.CardEffects.P
 
                         if (selectedPermanent != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { card.PermanentOfThisCard(), selectedPermanent } }, false, activateClass).PlacePermanentToDigivolutionCards());
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(new List<CardSource>() { card }, "Digivolution Cards", true, true));
+                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: selectedPermanent,
