@@ -41,9 +41,9 @@ namespace DCGO.CardEffects.EX12
                     whenAttacking: true,
                     counter: true);
 
-            bool CanSelectPermanentCondition(Permanent permanent)
+            bool CanSelectEnemyDigimonCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
@@ -81,13 +81,13 @@ namespace DCGO.CardEffects.EX12
                 }
 
                 if (cardSourcesCount >= 1
-                && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                && CardEffectCommons.HasMatchConditionPermanent(CanSelectEnemyDigimonCondition))
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition: CanSelectEnemyDigimonCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
@@ -226,14 +226,14 @@ namespace DCGO.CardEffects.EX12
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
 
-                bool CanSelectPermanentCondition1(Permanent permanent)
+                bool CanSelectEnemyDigiTamerPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
                         && (permanent.IsDigimon
                             || permanent.IsTamer);
                 }
 
-                bool CanSelectPermanentCondition2(Permanent permanent)
+                bool CanSelectEnemySourcelessPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
                         && (permanent.IsDigimon
@@ -243,10 +243,10 @@ namespace DCGO.CardEffects.EX12
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if(CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
+                    if(CardEffectCommons.HasMatchConditionPermanent(CanSelectEnemyDigiTamerPermanentCondition))
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
-                            permanentCondition: CanSelectPermanentCondition1,
+                            permanentCondition: CanSelectEnemyDigiTamerPermanentCondition,
                             cardCondition: _ => true,
                             maxCount: 4,
                             canNoTrash: false,
@@ -256,13 +256,13 @@ namespace DCGO.CardEffects.EX12
                         ));
                     }
 
-                    if(CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition2))
+                    if(CardEffectCommons.HasMatchConditionPermanent(CanSelectEnemySourcelessPermanentCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition2,
+                            canTargetCondition: CanSelectEnemySourcelessPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
