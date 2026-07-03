@@ -39,8 +39,7 @@ namespace DCGO.CardEffects.EX12
                 SharedEffectDescription,
                 optional: true,
                 onPlay: true,
-                whenDigivolving: true,
-                counter: true);
+                whenDigivolving: true);
 
             string SharedEffectDescription(string tag)
             {
