@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.EX12
                 bool PermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.EqualsTraits("Me");
+                        && permanent.TopCard.EqualsTraits("ME");
                 }
 
                 bool CardSourceCondition(CardSource cardSource)
