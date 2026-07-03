@@ -115,7 +115,7 @@ namespace DCGO.CardEffects.BT24
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendEffect(
                                 targetPermanent: permanent,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                effectDuration: EffectDuration.UntilOwnerTurnEnd,
                                 activateClass: activateClass,
                                 isOnlyActivePhase: false,
                                 effectName: "Can't Suspend"
