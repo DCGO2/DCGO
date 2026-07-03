@@ -76,13 +76,15 @@ public partial class CardEffectFactory
         if (guardPermanent == null) yield break;
         if (guardPermanent.TopCard == null) yield break;
 
+        CardSource topCard = guardPermanent.TopCard;
+
         bool PermanentCondition(Permanent otherPermanent)
         {
             return otherPermanent != guardPermanent
-                && CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(otherPermanent, guardPermanent.TopCard);
+                && CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(otherPermanent, topCard);
         }
 
-        Player owner = guardPermanent.TopCard.Owner;
+        Player owner = topCard.Owner;
 
         string selectPlayerMessage = "Will you delete this digimon to prevent the removal?";
         string notSelectPlayerMessage = "The opponent is choosing if they will use Guard.";
