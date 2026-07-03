@@ -252,7 +252,8 @@ namespace DCGO.CardEffects.EX12
                             canNoTrash: false,
                             isFromOnly1Permanent: false,
                             activateClass: activateClass,
-                            afterSelectionCoroutine: null
+                            afterSelectionCoroutine: null,
+                            selectString: "Digimon or Tamer"
                         ));
                     }
 
@@ -272,6 +273,8 @@ namespace DCGO.CardEffects.EX12
                             afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Bounce,
                             cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or Tamer without cards under it to return to the hand.", "The opponent is selecting 1 Digimon or Tamer without cards under it to return to the hand.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
