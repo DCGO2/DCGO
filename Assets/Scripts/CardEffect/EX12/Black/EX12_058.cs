@@ -158,7 +158,6 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region All Turns
-            if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent permanent)
                 {
@@ -171,8 +170,15 @@ namespace DCGO.CardEffects.EX12
                     return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
-                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(PermanentCondition, false, card, Condition));
-                cardEffects.Add(CardEffectFactory.RebootStaticEffect(PermanentCondition, false, card, Condition));
+                if (timing == EffectTiming.None)
+                {
+                    cardEffects.Add(CardEffectFactory.RebootStaticEffect(PermanentCondition, false, card, Condition));
+                }
+
+                if (timing == EffectTiming.OnAllyAttack)
+                {
+                    cardEffects.Add(CardEffectFactory.AllianceStaticEffect(PermanentCondition, false, card, Condition));
+                }
             }
             #endregion
 
