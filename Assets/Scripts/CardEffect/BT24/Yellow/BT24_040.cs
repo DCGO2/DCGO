@@ -146,7 +146,6 @@ namespace DCGO.CardEffects.BT24
                     }
                 }
             }
-
             #endregion
 
             #region All Turns
