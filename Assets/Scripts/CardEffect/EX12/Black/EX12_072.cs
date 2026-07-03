@@ -119,23 +119,12 @@ namespace DCGO.CardEffects.EX12
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectHandEffect selectHandEffect2 = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect2.SetUp(
-                        selectPlayer: card.Owner,
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                         canTargetCondition: CanPlayCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.PlayForFree,
-                        cardEffect: activateClass);
-
-                    yield return StartCoroutine(selectHandEffect2.Activate());
+                        SelectCardEffect.Root.Hand,
+                        activateClass,
+                        payCost: false
+                    ));
                 }
             }
             #endregion

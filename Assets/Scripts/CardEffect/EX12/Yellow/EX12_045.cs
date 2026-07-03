@@ -112,38 +112,22 @@ namespace DCGO.CardEffects.EX12
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    bool isUsed = false;
-
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                         canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        mode: SelectHandEffect.Mode.PlayForCost,
-                        cardEffect: activateClass);
-
-                    selectHandEffect.SetReducedCostTuple((2, null));
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to play", "The opponent is selecting 1 card to play");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                        SelectCardEffect.Root.Hand,
+                        activateClass,
+                        payCost: true,
+                        reduceCostTuple: (2, null),
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine
+                    ));
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        if (cardSources.Count > 0)
-                            isUsed = true;
+                        if (cardSources.Count == 0)
+                            activateClass.RemoveUse();
 
                         yield return null;
                     }
-
-                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion

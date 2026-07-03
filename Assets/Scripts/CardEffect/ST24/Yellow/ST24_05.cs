@@ -60,26 +60,15 @@ namespace DCGO.CardEffects.ST24
                         && CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass);
                 }
 
-                List<CardSource> selectedCards = new List<CardSource>();
-                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, HasTamerInHand));
-
-                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                selectHandEffect.SetUp(
-                    selectPlayer: card.Owner,
-                    canTargetCondition: HasTamerInHand,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: maxCount,
-                    canNoSelect: true,
-                    canEndNotMax: false,
-                    isShowOpponent: true,
-                    selectCardCoroutine: null,
-                    afterSelectCardCoroutine: null,
-                    mode: SelectHandEffect.Mode.PlayForFree,
-                    cardEffect: activateClass);
-
-                yield return StartCoroutine(selectHandEffect.Activate());
+                if (CardEffectCommons.HasMatchConditionOwnersHand(card, HasTamerInHand))
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                        canTargetCondition: HasTamerInHand,
+                        SelectCardEffect.Root.Hand,
+                        activateClass,
+                        payCost: false
+                    ));
+                }
             }
             #endregion
 
