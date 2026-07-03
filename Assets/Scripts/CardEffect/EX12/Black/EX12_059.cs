@@ -230,6 +230,9 @@ namespace DCGO.CardEffects.EX12
 
                     if (selectedCards.Count == 2)
                     {
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(new List<CardSource>() { card }, "Digivolution Cards", true, true));
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
+
                         bool DigimonCondition(Permanent permanent)
                         {
                             return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
