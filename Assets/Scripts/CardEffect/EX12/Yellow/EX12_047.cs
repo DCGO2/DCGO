@@ -247,23 +247,12 @@ namespace DCGO.CardEffects.EX12
 
                     if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectPlayCardCondition))
                     {
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                             canTargetCondition: CanSelectPlayCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.PlayForFree,
-                            cardEffect: activateClass);
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
+                            SelectCardEffect.Root.Hand,
+                            activateClass,
+                            payCost: false
+                        ));
                     }
                 }
             }
