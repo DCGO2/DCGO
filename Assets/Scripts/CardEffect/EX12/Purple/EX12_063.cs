@@ -135,27 +135,12 @@ namespace DCGO.CardEffects.EX12
                 
                 if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlayTrashDigimon))
                 {
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                    selectCardEffect.SetUp(
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                         canTargetCondition: CanPlayTrashDigimon,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 1 card to play.",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.PlayForFree,
-                        root: SelectCardEffect.Root.Trash,
-                        customRootCardList: null,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-                        
-                    yield return StartCoroutine(selectCardEffect.Activate());
+                        SelectCardEffect.Root.Trash,
+                        activateClass,
+                        payCost: false
+                    ));
                 }
             }
 

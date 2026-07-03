@@ -149,40 +149,23 @@ namespace DCGO.CardEffects.BT25
 
                     if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                     {
-                        List<CardSource> selectedCards = new List<CardSource>();
-
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                            mode: SelectHandEffect.Mode.PlayForFree,
-                            cardEffect: activateClass);
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
                         IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                         {
                             if (cardSources.Count > 0)
                             {
                                 Used = true;
-
-                                yield return null;
                             }
 
                             yield return null;
                         }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                            canTargetCondition: CanSelectCardCondition,
+                            SelectCardEffect.Root.Hand,
+                            activateClass,
+                            payCost: false,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine
+                        ));
                     }
 
                     if (!Used)
