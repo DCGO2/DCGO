@@ -274,7 +274,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     private bool CanSelectCard(CardSource cardSource)
     {
         
-        if (_root != Root.Library && _root != Root.Security && _root != Root.Custom)
+        if (_root != Root.Library && _root != Root.Security && _root != Root.DigivolutionCards && _root != Root.Custom)
         {
             if (cardSource.IsFlipped)
                 return false;
