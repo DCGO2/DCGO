@@ -58,8 +58,6 @@ namespace DCGO.CardEffects.EX12
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                bool Used = false;
-
                 bool CanPlayCardCondition(CardSource cardSource)
                 {
                     return cardSource.HasPlayCost
@@ -69,41 +67,22 @@ namespace DCGO.CardEffects.EX12
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 
-                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                selectCardEffect.SetUp(
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                     canTargetCondition: CanPlayCardCondition,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    canNoSelect: () => true,
-                    selectCardCoroutine: null,
-                    afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                    message: "Select 1 card to play.",
-                    maxCount: 1,
-                    canEndNotMax: false,
-                    isShowOpponent: true,
-                    mode: SelectCardEffect.Mode.PlayForFree,
-                    root: SelectCardEffect.Root.Trash,
-                    customRootCardList: null,
-                    canLookReverseCard: true,
-                    selectPlayer: card.Owner,
-                    cardEffect: activateClass);
+                    SelectCardEffect.Root.Trash,
+                    activateClass,
+                    payCost: false,
+                    afterSelectCardCoroutine: AfterSelectCardCoroutine
+                ));
 
                 IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                 {
-                    if (cardSources != null)
+                    if (cardSources.Count == 0)
                     {
-                        Used = true;
+                        activateClass.RemoveUse();
 
                         yield return null;
                     }
-                }
-
-                yield return StartCoroutine(selectCardEffect.Activate());
-
-                if (!Used)
-                {
-                    activateClass.RemoveUse();
                 }
             }
             #endregion

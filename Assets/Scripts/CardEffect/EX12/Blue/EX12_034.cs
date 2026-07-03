@@ -179,74 +179,19 @@ namespace DCGO.CardEffects.EX12
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
                         bool doPlay = GManager.instance.userSelectionManager.SelectedIntValue != 3;
-                        bool fromHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+                        SelectCardEffect.Root root = GManager.instance.userSelectionManager.SelectedIntValue == 1 ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.DigivolutionCards;
 
                         if (doPlay)
                         {
-                            if (fromHand)
-                            {
-                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                                selectHandEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: 1,
-                                    canNoSelect: true,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: null,
-                                    mode: SelectHandEffect.Mode.PlayForFree,
-                                    cardEffect: activateClass);
-
-                                yield return StartCoroutine(selectHandEffect.Activate());
-                            }
-                            else
-                            {
-                                List<CardSource> selectedCards = new List<CardSource>();
-
-                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => false,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 digivolution card to play.",
-                                    maxCount: 1,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.DigivolutionCards,
-                                    customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                                selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to play.", "The opponent is selecting 1 digivolution card to play.");
-                                selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                                yield return StartCoroutine(selectCardEffect.Activate());
-
-                                IEnumerator SelectCardCoroutine(CardSource cardSource)
-                                {
-                                    selectedCards.Add(cardSource);
-
-                                    yield return null;
-                                }
-
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                    cardSources: selectedCards,
-                                    activateClass: activateClass,
-                                    payCost: false,
-                                    isTapped: false,
-                                    root: SelectCardEffect.Root.DigivolutionCards,
-                                    activateETB: true));
-                            }
+                            #region Hand/Trash Card Selection & Play
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                                canTargetCondition: CanSelectCardCondition,
+                                root,
+                                activateClass,
+                                payCost: false,
+                                targetPermanent: card.PermanentOfThisCard()
+                            ));
+                            #endregion
                         }
                     }
                 }

@@ -128,8 +128,6 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
         PutLibraryTop,
         PutLibraryBottom,
         PutSecurityBottom,
-        PlayForFree,
-        PlayForCost,
         Custom
     }
 
@@ -228,14 +226,6 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
                             string str = _isFaceUp ? "faceup" : "facedown";
                             message = $"Select card(s) to put on bottom of the security {str}.";
 
-                            break;
-
-                        case Mode.PlayForFree:
-                            message = "Select cards to play for without paying the cost.";
-                            break;
-
-                        case Mode.PlayForCost:
-                            message = "Select cards to play.";
                             break;
 
                         case Mode.Custom:
@@ -684,13 +674,6 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
 
                                     break;
 
-                                case Mode.PlayForFree:
-                                case Mode.PlayForCost:
-
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_targetCards, "Played cards", true, true));
-
-                                    break;
-
                                 case Mode.Custom:
 
                                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_targetCards, "Selected cards", true, true));
@@ -745,154 +728,6 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource,false, _isFaceUp));
                         break;
 
-                    case Mode.PlayForFree:
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.PlayPermanentCards(
-                                cardSources: _targetCards, 
-                                activateClass: _cardEffect, 
-                                payCost: false, 
-                                isTapped: false, 
-                                root: SelectCardEffect.Root.Hand, 
-                                activateETB: true));
-                        break;
-
-                    case Mode.PlayForCost:
-                        {
-                            bool PermanentsCondition(List<Permanent> targetPermanents)
-                            {
-                                if (targetPermanents == null)
-                                {
-                                    return true;
-                                }
-
-                                else
-                                {
-                                    if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
-                            }
-
-                            bool SharedCardCondition(CardSource cardSource) => _targetCards.Contains(cardSource);
-                            bool RootCondition(SelectCardEffect.Root root) => true;
-                            bool CanUseCondition(Hashtable hashtable) => true;
-
-                            #region reduce cost
-
-                            Func<EffectTiming, ICardEffect> getChangeCostEffect = null;
-
-                            if (_reduceCostTuple != null)
-                            {
-                                bool CardCondition(CardSource cardSource)
-                                {
-                                    return SharedCardCondition(cardSource)
-                                        && (_reduceCostTuple.Value.reduceCostCardCondition == null || _reduceCostTuple.Value.reduceCostCardCondition(cardSource));
-                                }
-
-                                int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                                {
-                                    if (PermanentsCondition(targetPermanents))
-                                    {
-                                        Cost -= _reduceCostTuple.Value.reduceCost;
-                                    }
-
-                                    return Cost;
-                                }
-
-                                bool isUpDown() => true;
-
-                                ChangeCostClass changeCostClass = new ChangeCostClass();
-                                changeCostClass.SetUpICardEffect($"Play Cost -{_reduceCostTuple.Value.reduceCost}", CanUseCondition, _cardEffect.EffectSourceCard);
-                                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                                getChangeCostEffect = GetCardEffect;
-
-                                ICardEffect GetCardEffect(EffectTiming _timing)
-                                {
-                                    if (_timing == EffectTiming.None)
-                                    {
-                                        return changeCostClass;
-                                    }
-
-                                    return null;
-                                }
-
-                                if (getChangeCostEffect != null)
-                                {
-                                    _selectPlayer.UntilCalculateFixedCostEffect.Add(getChangeCostEffect);
-                                }
-                            }
-
-                            #endregion
-
-                            #region set fixed cost
-
-                            Func<EffectTiming, ICardEffect> getFixedCostEffect = null;
-
-                            if (_fixedCostTuple != null)
-                            {
-                                bool CardCondition(CardSource cardSource)
-                                {
-                                    return SharedCardCondition(cardSource)
-                                        && (_fixedCostTuple.Value.fixedCostCardCondition == null || _fixedCostTuple.Value.fixedCostCardCondition(cardSource));
-                                }
-
-                                int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                                {
-                                    if (PermanentsCondition(targetPermanents))
-                                    {
-                                        Cost = _fixedCostTuple.Value.fixedCost;
-                                    }
-
-                                    return Cost;
-                                }
-
-                                bool isUpDown() => false;
-
-                                ChangeCostClass changeCostClass = new ChangeCostClass();
-                                changeCostClass.SetUpICardEffect($"Play Cost {_fixedCostTuple.Value.fixedCost}", CanUseCondition, _cardEffect.EffectSourceCard);
-                                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                                getFixedCostEffect = GetCardEffect;
-
-                                ICardEffect GetCardEffect(EffectTiming _timing)
-                                {
-                                    if (_timing == EffectTiming.None)
-                                    {
-                                        return changeCostClass;
-                                    }
-
-                                    return null;
-                                }
-
-                                if (getFixedCostEffect != null)
-                                {
-                                    _selectPlayer.UntilCalculateFixedCostEffect.Add(getFixedCostEffect);
-                                }
-                            }
-
-                            #endregion
-
-                            yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.PlayPermanentCards(
-                                    cardSources: _targetCards, 
-                                    activateClass: _cardEffect, 
-                                    payCost: true, 
-                                    isTapped: false, 
-                                    root: SelectCardEffect.Root.Hand, 
-                                    activateETB: true));
-                            
-                            #region release effect
-                            if (getChangeCostEffect != null) _selectPlayer.UntilCalculateFixedCostEffect.Remove(getChangeCostEffect);
-                            #endregion
-
-                            #region release effect
-                            if (getFixedCostEffect != null) _selectPlayer.UntilCalculateFixedCostEffect.Remove(getFixedCostEffect);
-                            #endregion
-
-                            break;
-                        }
                 }
                 #endregion
 
