@@ -29,6 +29,7 @@ public partial class CardEffectFactory
         activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, DataBase.GuardEffectDescription());
         activateClass.SetIsInheritedEffect(isInheritedEffect);
         activateClass.SetIsLinkedEffect(isLinkedEffect);
+        activateClass.SetIsSkippable(true);
 
         if (rootCardEffect != null)
         {
@@ -54,7 +55,7 @@ public partial class CardEffectFactory
 
         IEnumerator ActivateCoroutine(Hashtable hashtable)
         {
-            return CardEffectFactory.GuardProcess(hashtable, activateClass, targetPermanent);
+            yield return ContinuousController.instance.StartCoroutine(GuardProcess(hashtable, activateClass, targetPermanent));
         }
 
         return activateClass;
