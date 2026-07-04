@@ -231,7 +231,7 @@ namespace DCGO.CardEffects.EX12
                             canNoSelect: () => true,
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: null,
-                            message: "Select 1 [TS] trait Option card to return to hand",
+                            message: "Select 1 [TB] card to return to hand",
                             maxCount: 1,
                             canEndNotMax: false,
                             isShowOpponent: true,
