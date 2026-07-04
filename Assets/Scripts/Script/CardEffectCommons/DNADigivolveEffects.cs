@@ -551,8 +551,13 @@ public partial class CardEffectCommons
         bool processSuccessful = false;
         if (dnaTarget != null)
         {
-            Component component = activateClass.EffectSourceCard.cEntity_EffectController.gameObject.AddComponent(typeof (SetJogressEvoRootsController));
-            SetJogressEvoRootsController controller = (SetJogressEvoRootsController)component;
+            SetJogressEvoRootsController controller;
+
+            if (!activateClass.EffectSourceCard.cEntity_EffectController.gameObject.TryGetComponent(out controller))
+            {
+                controller = activateClass.EffectSourceCard.cEntity_EffectController.gameObject.AddComponent<SetJogressEvoRootsController>();
+            }
+
             int[] _jogressEvoRootsFrameIDs = new int[0];
 
             if (owner.isYou || GManager.instance.IsAI)
