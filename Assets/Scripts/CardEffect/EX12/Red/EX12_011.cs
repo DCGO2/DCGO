@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region OP/WD Shared
-            string SharedEffectName = "Delete 1 Digimon with highest DP.";
+            string SharedEffectName = "Delete 1 enemy Digimon with 5K DP or less.";
 
             CardEffectFactory.ActivateClassesForSharedEffects
             (ref cardEffects, timing, card,
