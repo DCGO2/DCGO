@@ -183,14 +183,15 @@ namespace DCGO.CardEffects.BT25
                     {
                         bool WinnerCondition(Permanent permanent) => permanent.TopCard.Owner == card.Owner && permanent.TopCard.HasTSTraits;
 
-                        return CardEffectCommons.CanTriggerWhenWinBattle(
+                        if (CardEffectCommons.CanTriggerWhenWinBattle(
                             hashtable: hashtable,
-                            winnerCondition: WinnerCondition);
+                            winnerCondition: WinnerCondition))
+                        {
+                            return true;
+                        }
                     }
-                    else
-                    {
-                        return false;
-                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
