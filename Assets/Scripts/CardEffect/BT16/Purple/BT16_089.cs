@@ -156,20 +156,26 @@ namespace DCGO.CardEffects.BT16
                         afterSelectCardCoroutine: AfterSelectCardCoroutine
                         ));
 
+                    CardSource selectedCard = null;
+
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
                         if (cardSources.Count == 1)
                         { 
-                            if (CardEffectCommons.IsExistOnBattleArea(cardSources[0]))
-                            {
-                                Permanent selectedPermanent = cardSources[0].PermanentOfThisCard();
-
-                                yield return ContinuousController.instance.StartCoroutine(
-                                    CardEffectCommons.AddSelfDeleteEffect(selectedPermanent, CardEffectCommons.DeleteTiming.AtOpponentTurnEnd, activateClass));
-                            }
+                            selectedCard = cardSources[0];
                         }
 
                         yield return null;
+                    }
+
+                    if (selectedCard != null)
+                    {
+                        Permanent selectedPermanent = selectedCard.PermanentOfThisCard();
+                        if (selectedPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(
+                                CardEffectCommons.AddSelfDeleteEffect(selectedPermanent, CardEffectCommons.DeleteTiming.AtOpponentTurnEnd, activateClass));
+                        }
                     }
                 }
             }
