@@ -110,6 +110,8 @@ namespace DCGO.CardEffects.EX4
                             {
                                 if (selectedPermanent != null)
                                 {
+                                    CardSource topCard = null;
+
                                     ActivateClass activateClass1 = new ActivateClass();
                                     activateClass1.SetUpICardEffect("Play this card from trash", CanUseCondition1, selectedPermanent.TopCard);
                                     activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, true, EffectDiscription1());
@@ -127,7 +129,9 @@ namespace DCGO.CardEffects.EX4
                                     {
                                         if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent, activateClass1))
                                         {
-                                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                                            topCard = selectedPermanent.TopCard;
+
+                                            if (!topCard.CanNotBeAffected(activateClass))
                                             {
                                                 return true;
                                             }
@@ -138,41 +142,16 @@ namespace DCGO.CardEffects.EX4
 
                                     bool CanActivateCondition1(Hashtable hashtable1)
                                     {
-                                        if (CardEffectCommons.CanActivateOnDeletion(selectedPermanent.TopCard, activateClass1))
-                                        {
-                                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: selectedPermanent.TopCard, payCost: false, cardEffect: activateClass1))
-                                            {
-                                                return true;
-                                            }
-                                        }
-
-                                        if (CardEffectCommons.IsTopCardInTrashOnDeletion(hashtable1))
-                                        {
-                                            CardSource TopCard = CardEffectCommons.GetTopCardFromEffectHashtable(hashtable1);
-
-                                            if (TopCard != null)
-                                            {
-                                                if (CardEffectCommons.IsExistOnTrash(TopCard))
-                                                {
-                                                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: TopCard, payCost: false, cardEffect: activateClass1))
-                                                    {
-                                                        return true;
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        return false;
+                                        return CardEffectCommons.CanActivateOnDeletion(topCard, activateClass1)
+                                            && CardEffectCommons.CanPlayAsNewPermanent(cardSource: topCard, payCost: false, cardEffect: activateClass1);
                                     }
 
                                     IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                                     {
-                                        CardSource TopCard = CardEffectCommons.GetTopCardFromEffectHashtable(_hashtable1);
-
-                                        if (TopCard != null)
+                                        if (topCard != null)
                                         {
                                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                                cardSources: new List<CardSource>() { TopCard },
+                                                cardSources: new List<CardSource>() { topCard },
                                                 activateClass: activateClass1,
                                                 payCost: false,
                                                 isTapped: false,
