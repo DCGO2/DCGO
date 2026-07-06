@@ -113,13 +113,28 @@ namespace DCGO.CardEffects.BT24
                 {
                     if (permanent != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendEffect(
-                                targetPermanent: permanent,
-                                effectDuration: EffectDuration.UntilOwnerTurnEnd,
-                                activateClass: activateClass,
-                                isOnlyActivePhase: false,
-                                effectName: "Can't Suspend"
-                            ));
+                        #region Can't Suspend
+                        CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
+                        canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCondition1, card);
+                        canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCondition);
+                        permanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotSuspendClass);
+
+                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
+                        }
+
+                        bool CanUseCondition1(Hashtable hashtable)
+                        {
+                            return permanent.TopCard != null
+                                && !permanent.TopCard.CanNotBeAffected(activateClass);
+                        }
+
+                        bool PermanentCondition(Permanent permanent)
+                        {
+                            return true;
+                        }
+                        #endregion
 
                         #region Can't Activate When Digivolving
                         DisableEffectClass invalidationClass = new DisableEffectClass();
