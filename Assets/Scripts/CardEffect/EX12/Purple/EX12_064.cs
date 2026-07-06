@@ -136,6 +136,7 @@ namespace DCGO.CardEffects.EX12
                 activateClass.SetUpICardEffect("May activate 1 of this Digimon's [When Digivolving] effects", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("EX12_064_AT");
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
