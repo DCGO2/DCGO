@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -157,19 +158,26 @@ public partial class PermanentEffectFactory
     {
         if(targetPermanent == null || targetPermanent.TopCard == null) return null;
         
-        return CardEffectFactory.AddDetailClass(CanUseCondition, PermanentCondition, detail, triggerEffect, activateClass.EffectSourceCard);
+        return StaticAddDetailClass(CanUseCondition, PermanentCondition, detail, triggerEffect, activateClass);
 
         bool PermanentCondition(Permanent permanent)
         {
             return permanent != null
-                && permanent == targetPermanent;
+                && permanent == targetPermanent
+                && !targetPermanent.TopCard.CanNotBeAffected(activateClass);
         }
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent)
-                && !targetPermanent.TopCard.CanNotBeAffected(activateClass);
+            return CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent);
         }
+    }
+    #endregion
+
+    #region Add Global Detail for Display
+    public static AddDetailClass StaticAddDetailClass(Func<Hashtable, bool> canUseCondition, Func<Permanent, bool> permanentCondition, string detail, bool triggerEffect, ICardEffect activateClass)
+    {
+        return CardEffectFactory.AddDetailClass(canUseCondition, permanentCondition, detail, triggerEffect, activateClass.EffectSourceCard);
     }
     #endregion
 }
