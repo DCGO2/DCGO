@@ -91,17 +91,15 @@ namespace DCGO.CardEffects.EX7
                     addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
                     card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
 
+                    bool CanUseCondition(Hashtable hashtable)
+                    {
+                        return true;
+                    }
+
                     bool CardSourceCondition(CardSource cardSource)
                     {
-                        if (PermanentCondition(cardSource.PermanentOfThisCard()))
-                        {
-                            if (cardSource == cardSource.PermanentOfThisCard().TopCard)
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
+                        return PermanentCondition(cardSource.PermanentOfThisCard())
+                            && cardSource == cardSource.PermanentOfThisCard().TopCard;
                     }
 
                     List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
@@ -138,25 +136,22 @@ namespace DCGO.CardEffects.EX7
 
                             IEnumerator ActivateCoroutine1(Hashtable hashtable)
                             {
-                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                                {
-                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                                    selectPermanentEffect.SetUp(
-                                        selectPlayer: cardSource.Owner,
-                                        canTargetCondition: CanSelectPermanentCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        maxCount: 1,
-                                        canNoSelect: false,
-                                        canEndNotMax: false,
-                                        selectPermanentCoroutine: null,
-                                        afterSelectPermanentCoroutine: null,
-                                        mode: SelectPermanentEffect.Mode.Destroy,
-                                        cardEffect: activateClass1);
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: cardSource.Owner,
+                                    canTargetCondition: CanSelectPermanentCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Destroy,
+                                    cardEffect: activateClass1);
 
-                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                                }
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                             }
                         }
 
