@@ -243,6 +243,7 @@ namespace DCGO.CardEffects.EX12
                         immuneFromStackTrashingClass.SetUpICardEffect("Isn't affected by trashing any stacked card", hashtable => true, card);
                         immuneFromStackTrashingClass.SetUpImmuneFromStackTrashingClass(PermanentCondition: DigimonCondition, EffectCondition: EffectCondition);
                         card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => immuneFromStackTrashingClass);
+                        card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => PermanentEffectFactory.StaticAddDetailClass(_ => true, DigimonCondition, "Opponent's effects cannot trash stacked cards", false, activateClass));
 
                         bool EffectCondition(ICardEffect cardEffect) => CardEffectCommons.IsOpponentEffect(cardEffect, card);
                     }
