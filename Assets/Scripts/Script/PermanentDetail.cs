@@ -235,6 +235,20 @@ public class PermanentDetail : MonoBehaviour
         }
         #endregion
 
+        #region Guard
+        if (permanent.HasGuard)
+        {
+            effectString += $"- Guard\n";
+        }
+        #endregion
+
+        #region Engage
+        if (permanent.HasEngage)
+        {
+            effectString += $"- Engage\n";
+        }
+        #endregion
+
         #region Security Attack Changes
         if (permanent.HasSecurityAttackChanges)
         {
