@@ -3086,6 +3086,19 @@ public class IPlacePermanentToDigivolutionCards
                 {
                     if (DigivolutionPermanent.TopCard != null && getDigivolutionPermanent.TopCard != null && !getDigivolutionPermanent.IsToken && DigivolutionPermanent.willBeRemoveField)
                     {
+                        #region "When permanents leave the battle area" effect
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+                            CardEffectCommons.OnDeletionHashtable(
+                                new List<Permanent> { DigivolutionPermanent },
+                                _cardEffect,
+                                null,
+                                false
+                            ),
+                            EffectTiming.OnLeaveFieldAnyone));
+
+                        #endregion
+
                         yield return ContinuousController.instance.StartCoroutine(DigivolutionPermanent.DiscardEvoRoots());
 
                         CardSource cardSource = DigivolutionPermanent.TopCard;
