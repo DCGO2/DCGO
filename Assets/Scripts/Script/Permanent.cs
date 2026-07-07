@@ -863,6 +863,20 @@ public class Permanent
     {
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
         {
+            foreach (ICardEffect cardEffect1 in player.EffectList(EffectTiming.None))
+            {
+                if (cardEffect1 is IImmuneFromStackTrashingEffect)
+                {
+                    if (cardEffect1.CanUse(null))
+                    {
+                        if (((IImmuneFromStackTrashingEffect)cardEffect1).ImmuneStackTrashing(this, effect))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
             foreach (Permanent permanent in player.GetFieldPermanents())
             {
                 foreach (ICardEffect cardEffect1 in permanent.EffectList(EffectTiming.None))
