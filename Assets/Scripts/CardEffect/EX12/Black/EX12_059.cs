@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.EX12
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
 
-                if(card.Owner.HandCards.Count(CanSelectCardCondition) + card.Owner.TrashCards.Count(CanSelectCardCondition) >= 2)
+                if (card.Owner.HandCards.Count(CanSelectCardCondition) + card.Owner.TrashCards.Count(CanSelectCardCondition) >= 2)
                 {
                     int toSelect = 2;
                     List<CardSource> selectedCards = new List<CardSource>();
@@ -230,22 +230,40 @@ namespace DCGO.CardEffects.EX12
 
                     if (selectedCards.Count == 2)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(selectedCards, "Digivolution Cards", true, true));
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
+                        yield return CardEffectCommons.AddDigivolutionCardsAndProcessAccordingToResult(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            targetDigivolutionCards: selectedCards,
+                            isTop: false,
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess,
+                            failureProcess: null);
 
-                        bool DigimonCondition(Permanent permanent)
+                        IEnumerator SuccessProcess(List<CardSource> sources)
                         {
-                            return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                                && !permanent.TopCard.CanNotBeAffected(activateClass);
+                            #region Setup
+                            bool EffectCondition(ICardEffect cardEffect) => CardEffectCommons.IsOpponentEffect(cardEffect, card);
+                            bool DigimonCondition(Permanent permanent)
+                            {
+                                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                                    && !permanent.TopCard.CanNotBeAffected(activateClass);
+                            }
+
+                            ImmuneStackTrashingClass immuneFromStackTrashingClass = new ImmuneStackTrashingClass();
+                            immuneFromStackTrashingClass.SetUpICardEffect("Isn't affected by trashing any stacked card", hashtable => true, card);
+                            immuneFromStackTrashingClass.SetUpImmuneFromStackTrashingClass(PermanentCondition: DigimonCondition, EffectCondition: EffectCondition);
+
+                            ImmuneFromDeDigivolveClass immuneFromDeDigivolveClass = new ImmuneFromDeDigivolveClass();
+                            immuneFromDeDigivolveClass.SetUpICardEffect("Isn't affected by De-Digivolve", hashtable => true, card);
+                            immuneFromDeDigivolveClass.SetUpImmuneFromDeDigivolveClass(DigimonCondition);
+                            #endregion
+
+                            card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => immuneFromStackTrashingClass);
+                            card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => PermanentEffectFactory.StaticAddDetailClass(_ => true, DigimonCondition, "Opponent's effects cannot trash stacked cards", false, activateClass));
+
+                            card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => immuneFromDeDigivolveClass);
+                            card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => PermanentEffectFactory.StaticAddDetailClass(_ => true, DigimonCondition, "Opponent's effects cannot De-Digivolve", false, activateClass));
+                            return null;
                         }
-
-                        ImmuneStackTrashingClass immuneFromStackTrashingClass = new ImmuneStackTrashingClass();
-                        immuneFromStackTrashingClass.SetUpICardEffect("Isn't affected by trashing any stacked card", hashtable => true, card);
-                        immuneFromStackTrashingClass.SetUpImmuneFromStackTrashingClass(PermanentCondition: DigimonCondition, EffectCondition: EffectCondition);
-                        card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => immuneFromStackTrashingClass);
-                        card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => PermanentEffectFactory.StaticAddDetailClass(_ => true, DigimonCondition, "Opponent's effects cannot trash stacked cards", false, activateClass));
-
-                        bool EffectCondition(ICardEffect cardEffect) => CardEffectCommons.IsOpponentEffect(cardEffect, card);
                     }
                 }
             }

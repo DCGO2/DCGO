@@ -563,6 +563,36 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Add target digivolution cards, and the effect determines whether the digivolution cards were added or not
+
+    public static IEnumerator AddDigivolutionCardsAndProcessAccordingToResult(Permanent targetPermanent, List<CardSource> targetDigivolutionCards, bool isTop, ICardEffect activateClass, Func<List<CardSource>, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
+    {
+        if (targetPermanent == null) yield break;
+        if (targetDigivolutionCards == null) yield break;
+        if (targetDigivolutionCards.Count == 0) yield break;
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(targetDigivolutionCards, "Digivolution Cards", true, true));
+        if (isTop) yield return ContinuousController.instance.StartCoroutine(targetPermanent.AddDigivolutionCardsTop(targetDigivolutionCards, activateClass));
+        else yield return ContinuousController.instance.StartCoroutine(targetPermanent.AddDigivolutionCardsBottom(targetDigivolutionCards, activateClass));
+
+        if (targetDigivolutionCards.Some((sourceCard) => targetPermanent.DigivolutionCards.Contains(sourceCard)))
+        {
+            if (successProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(successProcess(targetDigivolutionCards));
+            }
+        }
+        else
+        {
+            if (failureProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(failureProcess());
+            }
+        }
+    }
+
+    #endregion
+
     #region Trash target digivolution cards, and the effect determines whether the digivolution cards were trashed or not
 
     public static IEnumerator TrashDigivolutionCardsAndProcessAccordingToResult(Permanent targetPermanent, List<CardSource> targetDigivolutionCards, ICardEffect activateClass, Func<List<CardSource>, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
