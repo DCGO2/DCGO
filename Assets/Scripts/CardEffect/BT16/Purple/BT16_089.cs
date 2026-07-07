@@ -171,10 +171,38 @@ namespace DCGO.CardEffects.BT16
                     if (selectedCard != null)
                     {
                         Permanent selectedPermanent = selectedCard.PermanentOfThisCard();
-                        if (selectedPermanent != null)
+
+                        ActivateClass activateClass1 = new ActivateClass();
+                        activateClass1.SetUpICardEffect("Delete the Digimon", CanUseCondition1, card);
+                        activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "");
+                        card.Owner.UntilOpponentTurnEndEffects.Add(GetCardEffect);
+
+                        bool CanUseCondition1(Hashtable hashtable)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.AddSelfDeleteEffect(selectedPermanent, CardEffectCommons.DeleteTiming.AtOpponentTurnEnd, activateClass));
+                            return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent)
+                                && CardEffectCommons.IsOpponentTurn(card);
+                        }
+
+                        bool CanActivateCondition1(Hashtable hashtable)
+                        {
+                            return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent)
+                                && selectedPermanent.CanBeDestroyedBySkill(activateClass1)
+                                && !selectedPermanent.TopCard.CanNotBeAffected(activateClass1);
+                        }
+
+                        IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent>() { selectedPermanent }, CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
+                        }
+
+                        ICardEffect GetCardEffect(EffectTiming _timing)
+                        {
+                            if (_timing == EffectTiming.OnEndTurn)
+                            {
+                                return activateClass1;
+                            }
+
+                            return null;
                         }
                     }
                 }
