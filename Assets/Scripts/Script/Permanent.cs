@@ -2849,6 +2849,51 @@ public class Permanent
     }
     #endregion
 
+    #region Has Guard
+    public bool HasGuard
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in EffectList(EffectTiming.WhenRemoveField))
+            {
+                if (cardEffect is ActivateICardEffect)
+                {
+                    if (cardEffect.EffectName == "Guard")
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
+    #region Has Engage
+    public bool HasEngage
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in EffectList(EffectTiming.OnEndTurn))
+            {
+                if (cardEffect is ActivateICardEffect)
+                {
+                    if (cardEffect.EffectName == "Engage")
+                    {
+                        if (cardEffect.CanTrigger(null))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
     #region Has Fortitude
     public bool HasFortitude
     {
