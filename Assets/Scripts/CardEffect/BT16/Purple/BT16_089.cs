@@ -117,13 +117,13 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 Digimon from trash", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 Digimon from trash, delete it at end of enemy turn", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return "[On Deletion] You may play 1 level 5 or lower Digimon card with [Myotismon] in it's text from your trash without paying the cost.";
+                    return "[On Deletion] You may play 1 level 5 or lower Digimon card with [Myotismon] in its text from your trash without paying the cost. At the next end of your opponent's turn, delete it.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -148,6 +148,8 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    CardSource selectedCard = null;
+
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                         canTargetCondition: CanSelectCardCondition,
                         SelectCardEffect.Root.Trash,
@@ -155,8 +157,6 @@ namespace DCGO.CardEffects.BT16
                         payCost: false,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine
                         ));
-
-                    CardSource selectedCard = null;
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
@@ -173,9 +173,9 @@ namespace DCGO.CardEffects.BT16
                         Permanent selectedPermanent = selectedCard.PermanentOfThisCard();
 
                         ActivateClass activateClass1 = new ActivateClass();
-                        activateClass1.SetUpICardEffect("Delete the Digimon", CanUseCondition1, card);
+                        activateClass1.SetUpICardEffect("Delete the played Digimon", CanUseCondition1, card);
                         activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "");
-                        card.Owner.UntilOpponentTurnEndEffects.Add(GetCardEffect);
+                        selectedPermanent.UntilOpponentTurnEndEffects.Add(GetCardEffect);
 
                         bool CanUseCondition1(Hashtable hashtable)
                         {
