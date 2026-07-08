@@ -191,14 +191,13 @@ namespace DCGO.CardEffects.EX8
                 {
                     // DNA digivolve
                     yield return ContinuousController.instance.StartCoroutine(
-                                         CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
-                                             CanSelectDNACardCondition,
-                                             payCost: true,
-                                             isHand: true,
-                                             activateClass,
-                                             permanentConditions: new Func<Permanent, bool>[] { (permanent) => permanent == card.PermanentOfThisCard() },
-                                             successProcess: OnDNASuccess
-                                         ));
+                        CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
+                            CanSelectDNACardCondition,
+                            payCost: true,
+                            isHand: true,
+                            activateClass,
+                            successProcess: OnDNASuccess
+                        ));
 
                     IEnumerator OnDNASuccess(CardSource cardSource)
                     {
