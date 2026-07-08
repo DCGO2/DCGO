@@ -57,107 +57,114 @@ namespace DCGO.CardEffects.BT24
             bool CanFreezeCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
-                    && (permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer);
+                    && (permanent.TopCard.IsDigimon
+                        || permanent.TopCard.IsTamer);
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanTrashDigivolutionCardsCondition));
-
-                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                selectPermanentEffect.SetUp(
-                    selectPlayer: card.Owner,
-                    canTargetCondition: CanTrashDigivolutionCardsCondition,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: maxCount,
-                    canNoSelect: false,
-                    canEndNotMax: false,
-                    selectPermanentCoroutine: SelectPermanentCoroutine,
-                    afterSelectPermanentCoroutine: null,
-                    mode: SelectPermanentEffect.Mode.Custom,
-                    cardEffect: activateClass);
-
-                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.", "The opponent is selecting 1 Digimon that will trash digivolution cards.");
-
-                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                if (CardEffectCommons.HasMatchConditionPermanent(CanTrashDigivolutionCardsCondition))
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanent, trashCount: permanent.DigivolutionCards.Count, isFromTop: true, activateClass: activateClass));
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanTrashDigivolutionCardsCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.", "The opponent is selecting 1 Digimon that will trash digivolution cards.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanent, trashCount: permanent.DigivolutionCards.Count, isFromTop: true, activateClass: activateClass));
+                    }
                 }
 
-                int maxCount1 = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanFreezeCondition));
-
-                SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                selectPermanentEffect1.SetUp(
-                    selectPlayer: card.Owner,
-                    canTargetCondition: CanFreezeCondition,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: maxCount1,
-                    canNoSelect: false,
-                    canEndNotMax: false,
-                    selectPermanentCoroutine: SelectPermanentCoroutine1,
-                    afterSelectPermanentCoroutine: null,
-                    mode: SelectPermanentEffect.Mode.Custom,
-                    cardEffect: activateClass);
-
-                selectPermanentEffect1.SetUpCustomMessage("Select 2 cards that cannot suspend or activate when digivolving.", "The opponent is selecting 2 cards that cannot suspend or activate when digivolving.");
-
-                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
-
-                IEnumerator SelectPermanentCoroutine1(Permanent permanent)
+                if (CardEffectCommons.HasMatchConditionPermanent(CanFreezeCondition))
                 {
-                    if (permanent != null)
+                    int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanFreezeCondition));
+
+                    SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect1.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanFreezeCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine1,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect1.SetUpCustomMessage($"Select {maxCount} card(s) that cannot suspend or activate when digivolving.", $"The opponent is selecting {maxCount} card(s) that cannot suspend or activate when digivolving.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+
+                    IEnumerator SelectPermanentCoroutine1(Permanent permanent)
                     {
-                        #region Can't Suspend
-                        CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
-                        canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCondition1, card);
-                        canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCondition);
-                        permanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotSuspendClass);
+                        Permanent selectedPermanent = permanent;
 
-                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                        if (selectedPermanent != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
-                        }
+                            #region Can't Suspend
+                            CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
+                            canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCondition1, card);
+                            canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCondition);
+                            selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotSuspendClass);
 
-                        bool CanUseCondition1(Hashtable hashtable)
-                        {
-                            return permanent.TopCard != null
-                                && !permanent.TopCard.CanNotBeAffected(activateClass);
-                        }
+                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                            }
 
-                        bool PermanentCondition(Permanent permanent)
-                        {
-                            return true;
-                        }
-                        #endregion
+                            bool CanUseCondition1(Hashtable hashtable)
+                            {
+                                return selectedPermanent.TopCard != null
+                                    && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
+                            }
 
-                        #region Can't Activate When Digivolving
-                        DisableEffectClass invalidationClass = new DisableEffectClass();
-                        invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", CanUseConditionDebuff, card);
-                        invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
-                        permanent.UntilOwnerTurnEndEffects.Add(_ => invalidationClass);
+                            bool PermanentCondition(Permanent permanent)
+                            {
+                                return permanent == selectedPermanent;
+                            }
+                            #endregion
 
-                        bool CanUseConditionDebuff(Hashtable hashtableDebuff)
-                        {
-                            return true;
-                        }
+                            #region Can't Activate When Digivolving
+                            DisableEffectClass invalidationClass = new DisableEffectClass();
+                            invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", CanUseConditionDebuff, card);
+                            invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
+                            selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => invalidationClass);
 
-                        bool InvalidateCondition(ICardEffect cardEffect)
-                        {
-                            return permanent.TopCard != null
-                                && cardEffect != null
-                                && cardEffect.EffectSourceCard != null
-                                && isExistOnField(cardEffect.EffectSourceCard)
-                                && cardEffect.EffectSourceCard.PermanentOfThisCard() == permanent
-                                && cardEffect.IsWhenDigivolving
-                                && !permanent.TopCard.CanNotBeAffected(activateClass);
+                            bool CanUseConditionDebuff(Hashtable hashtableDebuff)
+                            {
+                                return true;
+                            }
+
+                            bool InvalidateCondition(ICardEffect cardEffect)
+                            {
+                                return selectedPermanent.TopCard != null
+                                    && cardEffect != null
+                                    && cardEffect.EffectSourceCard != null
+                                    && isExistOnField(cardEffect.EffectSourceCard)
+                                    && cardEffect.EffectSourceCard.PermanentOfThisCard() == selectedPermanent
+                                    && cardEffect.IsWhenDigivolving
+                                    && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
+                            }
+                            #endregion
                         }
-                        #endregion
                     }
                 }
             }
