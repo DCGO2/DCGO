@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    return cardSource == card && CardEffectCommons.IsExistOnHand(cardSource);
+                    return cardSource == card;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
