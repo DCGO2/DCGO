@@ -1,8 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System;
-using System.Diagnostics;
 
 namespace DCGO.CardEffects.EX6
 {
@@ -42,9 +41,9 @@ namespace DCGO.CardEffects.EX6
                                 {
                                     if (xrosCardSource.IsDigimon)
                                     {
-                                        if (xrosCardSource.ContainsCardName("Gokuumon") ||
-                                            xrosCardSource.ContainsCardName("Sagomon") ||
-                                            xrosCardSource.ContainsCardName("Cho-Hakkaimon"))
+                                        if (xrosCardSource.EqualsCardNameDigiXros("Gokuumon") ||
+                                            xrosCardSource.EqualsCardNameDigiXros("Sagomon") ||
+                                            xrosCardSource.EqualsCardNameDigiXros("Cho-Hakkaimon"))
                                         {
                                             return true;
                                         }
@@ -70,38 +69,19 @@ namespace DCGO.CardEffects.EX6
 
             #region On Play/ When Attacking/ ESS Shared
 
-            bool HasGokuumonInName(CardSource cardSource)
-            {
-                return cardSource.ContainsCardName("Gokuumon");
-            }
+            bool IsGokuumon(CardSource cardSource) => cardSource.EqualsCardName("Gokuumon");
 
-            bool HasSagomonInName(CardSource cardSource)
-            {
-                return cardSource.ContainsCardName("Sagomon");
-            }
 
-            bool HasChoHakkaimonInName(CardSource cardSource)
-            {
-                return cardSource.ContainsCardName("Cho-Hakkaimon");
-            }
+            bool IsSagomon(CardSource cardSource) => cardSource.EqualsCardName("Sagomon");
 
-            bool HasShakamonInName(CardSource cardSource)
-            {
-                return cardSource.ContainsCardName("Shakamon");
-            }
+
+            bool IsChoHakkaimon(CardSource cardSource) => cardSource.EqualsCardName("Cho-Hakkaimon");
+
+
+            bool IsShakamon(CardSource cardSource) => cardSource.EqualsCardName("Shakamon");
 
             bool CanSelectSecMinusPermanentSharedCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
-                {
-                    if (permanent.IsDigimon)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
+                => CardEffectCommons.IsPermanentExistsOnBattleArea(permanent) && permanent.IsDigimon;
 
             #endregion
 
@@ -192,7 +172,7 @@ namespace DCGO.CardEffects.EX6
                             new SelectCardConditionClass[]
                             {
                                 new SelectCardConditionClass(
-                                    canTargetCondition:HasGokuumonInName,
+                                    canTargetCondition:IsGokuumon,
                                     canTargetCondition_ByPreSelecetedList:null,
                                     canEndSelectCondition:null,
                                     canNoSelect:false,
@@ -203,7 +183,7 @@ namespace DCGO.CardEffects.EX6
                                     mode: SelectCardEffect.Mode.AddHand
                                     ),
                                 new SelectCardConditionClass(
-                                    canTargetCondition:HasSagomonInName,
+                                    canTargetCondition:IsSagomon,
                                     canTargetCondition_ByPreSelecetedList:null,
                                     canEndSelectCondition:null,
                                     canNoSelect:false,
@@ -214,7 +194,7 @@ namespace DCGO.CardEffects.EX6
                                     mode: SelectCardEffect.Mode.AddHand
                                     ),
                                 new SelectCardConditionClass(
-                                    canTargetCondition:HasChoHakkaimonInName,
+                                    canTargetCondition:IsChoHakkaimon,
                                     canTargetCondition_ByPreSelecetedList:null,
                                     canEndSelectCondition:null,
                                     canNoSelect:false,
@@ -225,7 +205,7 @@ namespace DCGO.CardEffects.EX6
                                     mode: SelectCardEffect.Mode.AddHand
                                     ),
                                 new SelectCardConditionClass(
-                                    canTargetCondition:HasShakamonInName,
+                                    canTargetCondition:IsShakamon,
                                     canTargetCondition_ByPreSelecetedList:null,
                                     canEndSelectCondition:null,
                                     canNoSelect:false,
