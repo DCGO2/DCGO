@@ -125,11 +125,6 @@ namespace DCGO.CardEffects.EX12
                 return $"[{tag}] Trash any 4 digivolution cards from your opponent's Digimon. Then, return 1 of your opponent's Digimon with as many or fewer digivolution cards as this Digimon to the bottom of the deck.";
             }
 
-            bool CanSelectTrashPermanentCondition(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-            }
-
             bool CanSelectSpinPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
@@ -138,6 +133,12 @@ namespace DCGO.CardEffects.EX12
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool CanSelectTrashPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                        && permanent.DigivolutionCards.Some(CanSelectCardCondition);
+                }
+
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
