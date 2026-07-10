@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.EX12
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("<Draw 1> and trash 1>", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<Draw 1> and trash 1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("EX12_062_Inherited");
                 activateClass.SetIsInheritedEffect(true);
