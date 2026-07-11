@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 
 // Susanoomon
@@ -52,8 +53,19 @@ namespace DCGO.CardEffects.EX12
 
             bool IsOpponentsDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
-            int DigivolutionCardColors() => card.PermanentOfThisCard().DigivolutionCardsColors.Count;
 
+            #region Amount of colors in this Digimon's digivolution cards
+            List<CardColor> cardColors = new List<CardColor>();
+
+            foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
+            {
+                cardColors.AddRange(source.CardColors);
+            }
+
+            cardColors = cardColors.Distinct().ToList();
+
+            int DigivolutionCardColors = cardColors.Count;
+            #endregion
             #endregion
 
             #region Shared OP/WD
@@ -75,7 +87,7 @@ namespace DCGO.CardEffects.EX12
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                int dpChange = -3000 * DigivolutionCardColors();
+                int dpChange = -3000 * DigivolutionCardColors;
 
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDPPlayerEffect(
                         permanentCondition: IsOpponentsDigimon,
@@ -124,7 +136,7 @@ namespace DCGO.CardEffects.EX12
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
-                    if (DigivolutionCardColors() >= 4)
+                    if (DigivolutionCardColors >= 4)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                             player: card.Owner.Enemy,
