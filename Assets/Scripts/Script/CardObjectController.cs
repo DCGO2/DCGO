@@ -977,6 +977,8 @@ public class CardObjectController : MonoBehaviour
     {
         if (!cardSource.Owner.SecurityCards.Contains(cardSource))
         {
+            yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(new List<CardSource>() { cardSource }).Overflow());
+            
             yield return ContinuousController.instance.StartCoroutine(RemoveFromAllArea(cardSource));
 
             if (cardSource.IsDigiEgg)
