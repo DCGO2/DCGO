@@ -2432,8 +2432,8 @@ public class Permanent
                     && attackingPermanent.HasCollision)
                 {
                     ActivateClass fakeCollisionClass = new();
-                    fakeCollisionClass.SetIsDigimonEffect(true);
                     fakeCollisionClass.SetUpICardEffect("Collision", _ => true, attackingPermanent.TopCard);
+                    fakeCollisionClass.SetIsDigimonEffect(true);
                     
                     if (!TopCard.CanNotBeAffected(fakeCollisionClass))//Check can be affected by opponent's Digimon effects
                         return true;
