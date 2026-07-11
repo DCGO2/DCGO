@@ -1,10 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Photon.Pun;
-using UnityEngine;
 
+// Myotismon
 namespace DCGO.CardEffects.EX8
 {
     public class EX8_060 : CEntity_Effect
@@ -14,12 +11,11 @@ namespace DCGO.CardEffects.EX8
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Alternate Digivolution
-
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel4 && targetPermanent.TopCard.EqualsTraits("NSo");
+                    return targetPermanent.TopCard.EqualsTraits("NSo");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -27,19 +23,19 @@ namespace DCGO.CardEffects.EX8
                     digivolutionCost: 3,
                     ignoreDigivolutionRequirement: false,
                     card: card,
-                    condition: null)
+                    condition: null,
+                    level: 4)
                 );
             }
-
             #endregion
 
-            #region When Attacking
-            
+            #region When Attacking    
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may play 1 3 cost or less NSo Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -49,25 +45,23 @@ namespace DCGO.CardEffects.EX8
 
                 bool DigimonToPlay(CardSource cardSource)
                 {
-                    return CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, SelectCardEffect.Root.Trash) &&
-                           cardSource.IsDigimon &&
-                           cardSource.HasPlayCost &&
-                           cardSource.GetCostItself <= 3 &&
-                           cardSource.EqualsTraits("NSo");
+                    return cardSource.IsDigimon
+                        && cardSource.HasPlayCost
+                        && cardSource.GetCostItself <= 3
+                        && cardSource.EqualsTraits("NSo")
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, SelectCardEffect.Root.Trash);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, DigimonToPlay);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, DigimonToPlay);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -105,7 +99,7 @@ namespace DCGO.CardEffects.EX8
                         selectedCards = sources;
                         yield return null;
                     }
-                    
+
                     if (selectedCards.Count > 0)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
@@ -117,8 +111,7 @@ namespace DCGO.CardEffects.EX8
                             activateETB: true));
                     }
                 }
-            }
-            
+            }         
             #endregion
 
             #region Your Turn
@@ -137,53 +130,29 @@ namespace DCGO.CardEffects.EX8
 
                 bool PermanentConditionNSoEnterField(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.CardTraits.Contains("NSo"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent.TopCard.CardTraits.Contains("NSo");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentConditionNSoEnterField))
-                            {
-                                return true;
-                            }
-
-                            if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentConditionNSoEnterField))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.IsOwnerTurn(card)
+                        && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentConditionNSoEnterField)
+                            || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentConditionNSoEnterField));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectDNACardCondition);
                 }
 
                 bool CanSelectDNACardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon &&
-                           cardSource.CanPlayJogress(true) &&
-                           cardSource.ContainsTraits("NSo");
+                    return cardSource.IsDigimon
+                        && cardSource.CanPlayJogress(true)
+                        && cardSource.ContainsTraits("NSo");
                 }
                 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -214,18 +183,17 @@ namespace DCGO.CardEffects.EX8
                                 .Activate());
                         }
                     }
-
                 }
             }
             #endregion
             
             #region Inherited Effect
-            
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete your another Digimon to unsuspend this Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Unsuspend_EX8_060");
                 cardEffects.Add(activateClass);
@@ -237,41 +205,28 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent != card.PermanentOfThisCard())
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent != card.PermanentOfThisCard();
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    bool isUsed = false;
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        int maxCount = Math.Min(1, card.Owner.GetBattleAreaDigimons().Count(CanSelectPermanentCondition));
-
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -279,7 +234,7 @@ namespace DCGO.CardEffects.EX8
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -293,25 +248,31 @@ namespace DCGO.CardEffects.EX8
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent thisCardPermanent = card.PermanentOfThisCard();
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent },
-                            activateClass: activateClass,
-                            successProcess: permanents => SuccessProcess(),
-                            failureProcess: null));
-
-                            IEnumerator SuccessProcess()
+                            if (permanent != null)
                             {
-                                if (thisCardPermanent.TopCard != null)
+                                isUsed = true;
+
+                                Permanent thisCardPermanent = card.PermanentOfThisCard();
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent },
+                                activateClass: activateClass,
+                                successProcess: permanents => SuccessProcess(),
+                                failureProcess: null));
+
+                                IEnumerator SuccessProcess()
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { thisCardPermanent }, activateClass).Unsuspend());
+                                    if (thisCardPermanent.TopCard != null)
+                                    {
+                                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { thisCardPermanent }, activateClass).Unsuspend());
+                                    }
                                 }
                             }
                         }
                     }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
-            
             #endregion
 
             return cardEffects;
