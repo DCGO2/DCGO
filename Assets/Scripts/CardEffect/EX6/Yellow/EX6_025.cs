@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.EX6
             bool IsShakamon(CardSource cardSource) => cardSource.EqualsCardName("Shakamon");
 
             bool CanSelectSecMinusPermanentSharedCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) || CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
 
             #endregion
 
