@@ -1,10 +1,7 @@
-using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using System;
 
+// Plesiomon
 namespace DCGO.CardEffects.EX8
 {
     public class EX8_027 : CEntity_Effect
@@ -18,10 +15,10 @@ namespace DCGO.CardEffects.EX8
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsTraits("DS") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 5;
+                    return targetPermanent.TopCard.EqualsTraits("DS");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 5));
             }
             #endregion
 
@@ -30,47 +27,33 @@ namespace DCGO.CardEffects.EX8
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 digivolution card", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Digivolving] You may play 1 level 4 or lower Digimon card from this Digimon's digivolution cards without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                        {
-                            if (cardSource.HasLevel && cardSource.Level <= 4)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsDigimon
+                        && cardSource.HasLevel
+                        && cardSource.Level <= 4
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && card.PermanentOfThisCard().DigivolutionCards.Some(CanSelectCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -80,22 +63,22 @@ namespace DCGO.CardEffects.EX8
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                     selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 digivolution card to play.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
-                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: () => true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        message: "Select 1 digivolution card to play.",
+                        maxCount: 1,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.Custom,
+                        root: SelectCardEffect.Root.DigivolutionCards,
+                        customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                        canLookReverseCard: true,
+                        selectPlayer: card.Owner,
+                        cardEffect: activateClass);
 
                     selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to play.", "The opponent is selecting 1 digivolution card to play.");
 
@@ -124,67 +107,40 @@ namespace DCGO.CardEffects.EX8
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("DNA Digivolve into [DS] trait, then attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("DNA_EX8-027");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Your Turn] [Once Per Turn] When any of your Digimon are played or digivolve, if any of them have the [DS] trait, 2 of your Digimon may DNA digivolve into a Digimon card with the [DS] trait in the hand. Then, that DNA digivolved Digimon may attack.";
                 }
 
                 bool MyDigimonCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.EqualsTraits("DS"))
-                            return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent.TopCard.EqualsTraits("DS");
                 }
 
                 bool CanSelectDNACardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.EqualsTraits("DS"))
-                        {
-                            if (cardSource.CanPlayJogress(true))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsDigimon
+                        && cardSource.EqualsTraits("DS")
+                        && cardSource.CanPlayJogress(true);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, MyDigimonCondition))
-                                return true;
-
-                            if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, MyDigimonCondition))
-                                return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.IsOwnerTurn(card)
+                        && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, MyDigimonCondition)
+                            || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, MyDigimonCondition));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectDNACardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
