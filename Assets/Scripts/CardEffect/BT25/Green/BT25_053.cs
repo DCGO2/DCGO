@@ -96,7 +96,11 @@ namespace DCGO.CardEffects.BT25
                     if (selectedPermanent != null)
                     {
                         #region Suspend and Freeze
-                        yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { selectedPermanent }, hashtable).Tap());
+                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { selectedPermanent }, hashtable).Tap());
+                        }
+
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspend(selectedPermanent, EffectDuration.UntilOpponentTurnEnd, activateClass, null, "Can not unsuspend"));
                         #endregion
                     }
