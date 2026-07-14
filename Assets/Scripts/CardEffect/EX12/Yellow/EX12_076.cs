@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-
 // Susanoomon
 namespace DCGO.CardEffects.EX12
 {
@@ -50,22 +49,7 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region Shared Functions
-
             bool IsOpponentsDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-
-
-            #region Amount of colors in this Digimon's digivolution cards
-            List<CardColor> cardColors = new List<CardColor>();
-
-            foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
-            {
-                cardColors.AddRange(source.CardColors);
-            }
-
-            cardColors = cardColors.Distinct().ToList();
-
-            int DigivolutionCardColors = cardColors.Count;
-            #endregion
             #endregion
 
             #region Shared OP/WD
@@ -87,13 +71,26 @@ namespace DCGO.CardEffects.EX12
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                #region Amount of colors in this Digimon's digivolution cards
+                List<CardColor> cardColors = new List<CardColor>();
+
+                foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
+                {
+                    cardColors.AddRange(source.CardColors);
+                }
+
+                cardColors = cardColors.Distinct().ToList();
+
+                int DigivolutionCardColors = cardColors.Count;
+                #endregion
+
                 int dpChange = -3000 * DigivolutionCardColors;
 
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDPPlayerEffect(
-                        permanentCondition: IsOpponentsDigimon,
-                        changeValue: dpChange,
-                        effectDuration: EffectDuration.UntilEachTurnEnd,
-                        activateClass: activateClass));
+                    permanentCondition: IsOpponentsDigimon,
+                    changeValue: dpChange,
+                    effectDuration: EffectDuration.UntilEachTurnEnd,
+                    activateClass: activateClass));
             }
             #endregion
 
@@ -135,6 +132,19 @@ namespace DCGO.CardEffects.EX12
                         selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to place as top security", "The opponent is selecting 1 Digimon to place as top security");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
+
+                    #region Amount of colors in this Digimon's digivolution cards
+                    List<CardColor> cardColors = new List<CardColor>();
+
+                    foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
+                    {
+                        cardColors.AddRange(source.CardColors);
+                    }
+
+                    cardColors = cardColors.Distinct().ToList();
+
+                    int DigivolutionCardColors = cardColors.Count;
+                    #endregion
 
                     if (DigivolutionCardColors >= 4)
                     {
