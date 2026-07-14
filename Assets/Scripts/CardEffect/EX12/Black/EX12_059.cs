@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.EX12
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.EqualsTraits("Cyborg")
-                        && targetPermanent.TopCard.EqualsTraits("ME");
+                        || targetPermanent.TopCard.EqualsTraits("ME");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
