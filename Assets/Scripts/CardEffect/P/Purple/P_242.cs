@@ -89,13 +89,13 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanActivateSuspendCostEffect(card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
                 }
     
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -202,12 +202,10 @@ namespace DCGO.CardEffects.P
             #endregion
 
             #region Security
-
             if (timing == EffectTiming.SecuritySkill)
             {
                 cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
             }
-
             #endregion
 
             return cardEffects;
