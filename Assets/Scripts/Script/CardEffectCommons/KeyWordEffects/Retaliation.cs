@@ -21,8 +21,7 @@ public partial class CardEffectCommons
 
                     if (TopCard != null)
                     {
-                        bool sourceIsToken = cardEffect.EffectSourceCard?.IsToken ?? false;
-                        if (IsTopCardStillInTrash(cardEffect) || sourceIsToken)
+                        if (CanActivateOnDeletion(cardEffect.EffectSourceCard, cardEffect))
                         {
                             IBattle battle = GetBattleFromHashtable(hashtable);
 
