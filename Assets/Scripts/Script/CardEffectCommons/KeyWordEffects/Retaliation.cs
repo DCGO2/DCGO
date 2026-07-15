@@ -21,7 +21,7 @@ public partial class CardEffectCommons
 
                     if (TopCard != null)
                     {
-                        if (CanActivateOnDeletion(cardEffect.EffectSourceCard, cardEffect))
+                        if (CanActivateOnDeletion(TopCard, cardEffect))
                         {
                             IBattle battle = GetBattleFromHashtable(hashtable);
 
