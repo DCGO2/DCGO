@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -391,7 +391,8 @@ public abstract class ICardEffect
                 {
                     if (IsInheritedEffect || IsLinkedEffect)
                     {
-                        if (EffectSourceCard == EffectSourceCard.PermanentOfThisCard().TopCard)
+                        bool CardBelowBecameTopMostCard = EffectSourceCard == EffectSourceCard.PermanentOfThisCard().TopCard;
+                        if (CardBelowBecameTopMostCard)
                             return false;
 
                         if (EffectSourceCard.IsFlipped)
@@ -402,6 +403,28 @@ public abstract class ICardEffect
 
                         if (IsLinkedEffect && !EffectSourceCard.PermanentOfThisCard().LinkedCards.Contains(EffectSourceCard))
                             return false;
+
+                        #region Determination whether the permanent is same as when triggered
+                        
+                        bool CardBelowMovedFromUnderPermanentToAnother;
+                        if (((ActivateICardEffect)this).PermanentWhenTriggered != null)
+                        {
+                            if (EffectSourceCard != null)
+                            {
+                                Permanent currentPermanent = EffectSourceCard.PermanentOfThisCard();
+
+                                if (currentPermanent != null)
+                                {
+                                    CardBelowMovedFromUnderPermanentToAnother = currentPermanent != ((ActivateICardEffect)this).PermanentWhenTriggered;
+                                    if (CardBelowMovedFromUnderPermanentToAnother)
+                                    {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+
+                        #endregion
                     }
                     else
                     {
@@ -421,34 +444,6 @@ public abstract class ICardEffect
         if (IsDisabled)
         {
             return false;
-        }
-
-        #endregion
-        //TODO: Look into this for the on deletion General issue
-        #region Determination whether the permanent is same as when triggered
-
-        if (IsInheritedEffect || IsLinkedEffect)
-        {
-            if (this is ActivateICardEffect)
-            {
-                Permanent PermanentWhenTriggered = ((ActivateICardEffect)this).PermanentWhenTriggered;
-
-                if (PermanentWhenTriggered != null)
-                {
-                    if (EffectSourceCard != null)
-                    {
-                        Permanent currentPermanent = EffectSourceCard.PermanentOfThisCard();
-
-                        if (currentPermanent != null)
-                        {
-                            if (currentPermanent != PermanentWhenTriggered)
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         #endregion
@@ -807,14 +802,12 @@ public abstract class ICardEffect
                 {
                     if (EffectDiscription.StartsWith("[On Deletion]"))
                     {
-                        Permanent effectPermanent = EffectSourceCard.PermanentOfThisCard() ?? new Permanent(new List<CardSource>() { EffectSourceCard });
+                        // Permanent effectPermanent = EffectSourceCard.PermanentOfThisCard() ?? new Permanent(new List<CardSource>() { EffectSourceCard });
 
-                        Hashtable hashtable = CardEffectCommons.OnDeletionHashtable(new List<Permanent>() { effectPermanent }, null, null, false);
+                        // Hashtable hashtable = CardEffectCommons.OnDeletionHashtable(new List<Permanent>() { effectPermanent }, null, null, false);
 
-                        if (CanTrigger(hashtable))
-                        {
+                        // if (CanTrigger(hashtable))
                             return true;
-                        }
                     }
                 }
             }
