@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -22,10 +21,10 @@ namespace DCGO.CardEffects.BT19
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Give a Digimon Raid and it attacks", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription() => "[Your Turn] When any of your Digimon digivolve into a Digimon with [Growlmon]/[Gallantmon] in its name, by suspending this Tamer, that Digimon gains <Raid> for the turn. Then, that Digimon attacks a player.";
+                string EffectDescription() => "[Your Turn] When any of your Digimon digivolve into a Digimon with [Growlmon]/[Gallantmon] in its name, by suspending this Tamer, that Digimon gains <Raid> for the turn. Then, that Digimon attacks a player.";
 
                 bool CanSelectPermanentCondition(Permanent permanent) =>
                     CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
@@ -45,9 +44,10 @@ namespace DCGO.CardEffects.BT19
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     List<Permanent> digivolvedPermanent = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(hashtable, null);
-                    List<CardSource> selectedCards = new List<CardSource>();
 
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+
+                    if (digivolvedPermanent is null || digivolvedPermanent.Count == 0) yield break;
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(
                             targetPermanent: digivolvedPermanent[0],
