@@ -25,54 +25,22 @@ namespace DCGO.CardEffects.BT19
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
-                {
-                    return "[Your Turn] When any of your Digimon digivolve into a Digimon with [Growlmon]/[Gallantmon] in its name, by suspending this Tamer, that Digimon gains <Raid> for the turn. Then, that Digimon attacks a player.";
-                }
+                string EffectDiscription() => "[Your Turn] When any of your Digimon digivolve into a Digimon with [Growlmon]/[Gallantmon] in its name, by suspending this Tamer, that Digimon gains <Raid> for the turn. Then, that Digimon attacks a player.";
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.IsDigimon && permanent.TopCard.ContainsCardName("Growlmon") || permanent.IsDigimon && permanent.TopCard.ContainsCardName("Gallantmon"))
-                        {
-                            return true;
-                        }
-                    }
+                bool CanSelectPermanentCondition(Permanent permanent) =>
+                    CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                    permanent.IsDigimon &&
+                    permanent.TopCard.ContainsCardName("Growlmon") ||
+                        permanent.IsDigimon && permanent.TopCard.ContainsCardName("Gallantmon");
 
-                    return false;
-                }
+                bool CanUseCondition(Hashtable hashtable) =>
+                    CardEffectCommons.IsExistOnBattleArea(card) &&
+                    CardEffectCommons.IsOwnerTurn(card) &&
+                    CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, CanSelectPermanentCondition);
 
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, CanSelectPermanentCondition))
-                            {
-                                return true;
-
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.CanActivateSuspendCostEffect(card))
-                        {
-
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
+                bool CanActivateCondition(Hashtable hashtable) =>
+                    CardEffectCommons.IsExistOnBattleArea(card) &&
+                    CardEffectCommons.CanActivateSuspendCostEffect(card);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
