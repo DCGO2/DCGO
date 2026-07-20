@@ -59,7 +59,21 @@ public partial class CardEffectFactory
             {
                 DNACondition.Permanents = fieldPermanents.Filter(permanent => permanent.TopCard.EqualsCardName(DNACondition.Name));
                 DNACondition.CardSources = card.Owner.HandCards.Filter(cardSource => cardSource.EqualsCardName(DNACondition.Name));
-
+                var DNAConditionPermanents = DNACondition.Permanents.Filter(p =>
+                    DNACondition.CardSources.Any(cardSource => card.CanJogressFromTargetPermanents(
+                            new List<Permanent> { p, new Permanent(new List<CardSource> { cardSource }) },
+                            false
+                        )
+                    )
+                );
+                DNACondition.CardSources = DNACondition.CardSources.Filter(cardSource =>
+                    DNACondition.Permanents.Any(p => card.CanJogressFromTargetPermanents(
+                            new List<Permanent> { p, new Permanent(new List<CardSource> { cardSource }) }, 
+                            false
+                        )
+                    )
+                );
+                DNACondition.Permanents = DNAConditionPermanents;
                 permanentSources.AddRange(DNACondition.Permanents);
                 handSources.AddRange(DNACondition.CardSources);
             }
