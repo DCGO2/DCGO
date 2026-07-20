@@ -92,7 +92,7 @@ public partial class CardEffectFactory
 
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Blast DNA Digivolve", CanUseCondition, card);
-        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, DataBase.BlastDNADigivolveEffectDiscription());
+        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, DataBase.BlastDNADigivolveEffectDescription());
         activateClass.SetIsCounterEffect(true);
 
         bool CanSelectPermanent(Permanent permanent)

@@ -498,7 +498,7 @@ public class DataBase : MonoBehaviour
         return "[Hand] [Counter] <Blast Digivolve> (Your Digimon may digivolve into this card without paying the cost.)";
     }
 
-    public static string BlastDNADigivolveEffectDiscription()
+    public static string BlastDNADigivolveEffectDescription()
     {
         return "[Hand] [Counter] <Blast DNA Digivolve> (One of your specified Digimon and 1 of the specified card in the hand may DNA Digivolve into this card.)";
     }
