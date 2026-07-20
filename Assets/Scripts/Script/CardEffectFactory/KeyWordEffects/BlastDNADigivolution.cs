@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using UnityEngine;
-using Photon.Pun;
 
 public class BlastDNACondition
 {
@@ -33,53 +31,57 @@ public partial class CardEffectFactory
         List<Permanent> permanentSources = new List<Permanent>();
         List<CardSource> handSources = new List<CardSource>();
 
-        void FilterDNAPermanents()
-        {
-            if (blastDNAConditions[0].Permanents.Count >= 1 && blastDNAConditions[0].CardSources.Count == 0)
-                blastDNAConditions[1].Permanents.Clear();
-
-            if (blastDNAConditions[1].Permanents.Count >= 1 && blastDNAConditions[1].CardSources.Count == 0)
-                blastDNAConditions[0].Permanents.Clear();
-        }
-
-        void FilterDNAHandSources()
-        {
-            if (blastDNAConditions[0].CardSources.Count >= 1 && blastDNAConditions[0].CardSources.Count == 0)
-                blastDNAConditions[1].CardSources.Clear();
-
-            if (blastDNAConditions[1].CardSources.Count >= 1 && blastDNAConditions[1].CardSources.Count == 0)
-                blastDNAConditions[0].CardSources.Clear();
-        }
-
         bool HasValidDNATargets()
         {
-            fieldPermanents = card.Owner.GetBattleAreaDigimons();
+            Player owner = card.Owner;
+            fieldPermanents = owner.GetBattleAreaDigimons();
 
-            foreach (BlastDNACondition DNACondition in blastDNAConditions)
+            var namesOnField = blastDNAConditions
+                .Where(c => fieldPermanents.Any(p => p.TopCard.EqualsCardName(c.Name)))
+                .Select(c => c.Name)
+                .ToList();
+
+            var namesInHand = blastDNAConditions
+                .Where(c => owner.HandCards.Any(h => h.EqualsCardName(c.Name)))
+                .Select(c => c.Name)
+                .ToList();
+
+            foreach (var condition in blastDNAConditions)
             {
-                DNACondition.Permanents = fieldPermanents.Filter(permanent => permanent.TopCard.EqualsCardName(DNACondition.Name));
-                DNACondition.CardSources = card.Owner.HandCards.Filter(cardSource => cardSource.EqualsCardName(DNACondition.Name));
-                var DNAConditionPermanents = DNACondition.Permanents.Filter(p =>
-                    DNACondition.CardSources.Any(cardSource => card.CanJogressFromTargetPermanents(
-                            new List<Permanent> { p, new Permanent(new List<CardSource> { cardSource }) },
-                            false
-                        )
-                    )
-                );
-                DNACondition.CardSources = DNACondition.CardSources.Filter(cardSource =>
-                    DNACondition.Permanents.Any(p => card.CanJogressFromTargetPermanents(
-                            new List<Permanent> { p, new Permanent(new List<CardSource> { cardSource }) }, 
-                            false
-                        )
-                    )
-                );
-                DNACondition.Permanents = DNAConditionPermanents;
-                permanentSources.AddRange(DNACondition.Permanents);
-                handSources.AddRange(DNACondition.CardSources);
+                bool isValidForField = namesOnField.Contains(condition.Name) &&
+                                    namesInHand.Any(handName => handName != condition.Name);
+
+                bool isValidForHand = namesInHand.Contains(condition.Name) &&
+                                    namesOnField.Any(fieldName => fieldName != condition.Name);
+
+                if (isValidForField)
+                {
+                    condition.Permanents = fieldPermanents.Filter(p => p.TopCard.EqualsCardName(condition.Name));
+                    permanentSources.AddRange(condition.Permanents);
+                }
+
+                if (isValidForHand)
+                {
+                    condition.CardSources = owner.HandCards.Filter(c => c.EqualsCardName(condition.Name));
+                    handSources.AddRange(condition.CardSources);
+                }
             }
 
-            FilterDNAPermanents();
-            FilterDNAHandSources();
+            permanentSources = permanentSources.Filter(p => handSources.Any(handSource =>
+                p.TopCard.name != handSource.name &&
+                (
+                    CardEffectCommons.BlastDNAFulfillsRequirement(owner, new Permanent(new List<CardSource> { handSource }), card, p, true) ||
+                    CardEffectCommons.BlastDNAFulfillsRequirement(owner, p, card, new Permanent(new List<CardSource> { handSource }), true)
+                )
+            ));
+
+            handSources = handSources.Filter(handSource => permanentSources.Any(p =>
+                p.TopCard.name != handSource.name &&
+                (
+                    CardEffectCommons.BlastDNAFulfillsRequirement(owner, new Permanent(new List<CardSource> { handSource }), card, p, true) ||
+                    CardEffectCommons.BlastDNAFulfillsRequirement(owner, p, card, new Permanent(new List<CardSource> { handSource }), true)
+                )
+            ));
 
             if (blastDNAConditions[0].Permanents.Count(permanent => !permanent.TopCard.CanNotEvolve(permanent)) > 0 && blastDNAConditions[1].CardSources.Count > 0)
                 return true;
@@ -97,7 +99,7 @@ public partial class CardEffectFactory
 
         bool CanSelectPermanent(Permanent permanent)
         {
-            if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
             {
                 foreach (BlastDNACondition DNACondition in blastDNAConditions)
                 {
@@ -148,6 +150,7 @@ public partial class CardEffectFactory
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)
         {
+            Player owner = card.Owner;
             Permanent selectedPermanent = null;
             CardSource selectedCardSource = null;
 
@@ -156,7 +159,7 @@ public partial class CardEffectFactory
             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
             selectPermanentEffect.SetUp(
-                selectPlayer: card.Owner,
+                selectPlayer: owner,
                 canTargetCondition: CanSelectPermanent,
                 canTargetCondition_ByPreSelecetedList: null,
                 canEndSelectCondition: null,
@@ -176,32 +179,37 @@ public partial class CardEffectFactory
             {
                 selectedPermanent = permanent;
 
-                foreach(string name in selectedPermanent.TopCard.CardNames)
+                foreach (string name in selectedPermanent.TopCard.CardNames)
                 {
-                    handSources = handSources.Filter(source => !source.ContainsCardName(name));
+                    handSources = handSources.Filter(handSource => !handSource.ContainsCardName(name));
                 }
 
-                maxCount = Math.Min(1, handSources.Count);
+                // bool fizzle = handSources.Count == 0;
+                // if (fizzle) yield break;
+                // else
+                {
+                    maxCount = Math.Min(1, handSources.Count);
 
-                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                selectHandEffect.SetUp(
-                    selectPlayer: card.Owner,
-                    canTargetCondition: CanSelectHandSource,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: maxCount,
-                    canNoSelect: false,
-                    canEndNotMax: false,
-                    isShowOpponent: true,
-                    selectCardCoroutine: SelectCardCoroutine,
-                    afterSelectCardCoroutine: null,
-                    mode: SelectHandEffect.Mode.Custom,
-                    cardEffect: activateClass);
+                    selectHandEffect.SetUp(
+                        selectPlayer: owner,
+                        canTargetCondition: CanSelectHandSource,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
 
-                selectHandEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.", "The opponent is selecting 1 Digimon to DNA digivolve.");
+                    selectHandEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.", "The opponent is selecting 1 Digimon to DNA digivolve.");
 
-                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                }
             }
 
             IEnumerator SelectCardCoroutine(CardSource cardSource)
@@ -218,7 +226,7 @@ public partial class CardEffectFactory
                     frameID = preferredFrame.FrameID;
                 }
 
-                if (0 <= frameID && frameID < card.Owner.fieldCardFrames.Count)
+                if (0 <= frameID && frameID < owner.fieldCardFrames.Count)
                 {
                     playedPermanent = new Permanent(new List<CardSource>() { selectedCardSource }) { IsSuspended = false };
 
@@ -227,7 +235,7 @@ public partial class CardEffectFactory
 
                 int[] JogressEvoRootsFrameIDs = { 0, 0 };
 
-                if (selectedPermanent.TopCard.EqualsCardName(blastDNAConditions[0].Name))
+                if (CardEffectCommons.BlastDNAFulfillsRequirement(owner, new Permanent(new List<CardSource> { selectedCardSource }), card, selectedPermanent, true))
                 {
                     JogressEvoRootsFrameIDs[0] = selectedPermanent.PermanentFrame.FrameID;
                     JogressEvoRootsFrameIDs[1] = selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID;
@@ -263,7 +271,7 @@ public partial class CardEffectFactory
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCard(selectedCardSource, false));
                 }
-                
+
             }
         }
 

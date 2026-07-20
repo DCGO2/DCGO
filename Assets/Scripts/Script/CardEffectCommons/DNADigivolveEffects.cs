@@ -204,6 +204,11 @@ public partial class CardEffectCommons
         return false;
     }
 
+    public static bool BlastDNAFulfillsRequirement(Player owner, Permanent permanent, CardSource jogressTarget, Permanent firstCondition, bool isWithHandCard, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> cardCondition = null)
+    {
+        return PermanentFulfillsRequirement(owner,permanent,jogressTarget,firstCondition,isWithHandCard, permanentCondition,cardCondition);
+    }
+
     private static IEnumerator SelectPermanent(Player owner, CardSource jogressTarget, Permanent firstCondition, bool isOptional, ICardEffect activateClass, bool isWithHand, Func<Permanent, IEnumerator> SelectPermanentCoroutine, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> digivolutionCardCondition = null)
     {
         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
