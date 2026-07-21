@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.IO;
+using UnityEngine;
 using WebSocketSharp;
 
 public class DataBase : MonoBehaviour
@@ -567,7 +565,7 @@ public class DataBase : MonoBehaviour
     {
         return "<Guard> (When any of your other Digimon would leave the battle area by your opponent's effects, by deleting this Digimon, they don't leave.)";
     }
-    
+
     public static string EngageEffectDescription()
     {
         return "<Engage> (At the end of your turn, this Digimon may attack.)";
@@ -926,13 +924,13 @@ public class DictionaryUtility
         List<CardKind> Typing = new List<CardKind>();
         string[] Types = CardKindName.Split("/");
 
-        foreach(string Type in Types)
+        foreach (string Type in Types)
         {
             CardKind cardKind = Type.IsNullOrEmpty() ? CardKind.Tamer : CardKindNameDictionary.First(x => x.Value == Type).Key;
 
             Typing.Add(cardKind);
         }
-        
+
 
         return Typing;
     }
