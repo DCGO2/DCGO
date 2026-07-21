@@ -2549,8 +2549,17 @@ public class CardSource : MonoBehaviour
             {
                 if (!string.IsNullOrEmpty(_cEntity_Base.EffectDiscription_JPN))
                 {
-                    bool result = Regex.IsMatch(_cEntity_Base.EffectDiscription_JPN, DataBase.DigiburstRegex);
+                    bool result = Regex.IsMatch(_cEntity_Base.EffectDiscription_JPN, DataBase.DigiBurstJpnRegex);
 
+                    if (result)
+                    {
+                        return true;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(_cEntity_Base.EffectDiscription_ENG))
+                {
+                    bool result = Regex.IsMatch(_cEntity_Base.EffectDiscription_ENG, DataBase.DigiBurstEngRegex);
                     if (result)
                     {
                         return true;
