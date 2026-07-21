@@ -181,35 +181,35 @@ public partial class CardEffectFactory
 
                 foreach (string name in selectedPermanent.TopCard.CardNames)
                 {
-                    handSources = handSources.Filter(handSource => !handSource.ContainsCardName(name));
+                    handSources = handSources.Filter(handSource => !handSource.ContainsCardName(name) &&
+                    (
+                        CardEffectCommons.BlastDNAFulfillsRequirement(owner, new Permanent(new List<CardSource> { handSource }), card, selectedPermanent, true) ||
+                        CardEffectCommons.BlastDNAFulfillsRequirement(owner, selectedPermanent, card, new Permanent(new List<CardSource> { handSource }), true)
+                    ));
                 }
 
-                // bool fizzle = handSources.Count == 0;
-                // if (fizzle) yield break;
-                // else
-                {
-                    maxCount = Math.Min(1, handSources.Count);
+                maxCount = Math.Min(1, handSources.Count);
 
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                    selectHandEffect.SetUp(
-                        selectPlayer: owner,
-                        canTargetCondition: CanSelectHandSource,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
-                        cardEffect: activateClass);
+                selectHandEffect.SetUp(
+                    selectPlayer: owner,
+                    canTargetCondition: CanSelectHandSource,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: maxCount,
+                    canNoSelect: false,
+                    canEndNotMax: false,
+                    isShowOpponent: true,
+                    selectCardCoroutine: SelectCardCoroutine,
+                    afterSelectCardCoroutine: null,
+                    mode: SelectHandEffect.Mode.Custom,
+                    cardEffect: activateClass);
 
-                    selectHandEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.", "The opponent is selecting 1 Digimon to DNA digivolve.");
+                selectHandEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.", "The opponent is selecting 1 Digimon to DNA digivolve.");
 
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-                }
+                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
             }
 
             IEnumerator SelectCardCoroutine(CardSource cardSource)

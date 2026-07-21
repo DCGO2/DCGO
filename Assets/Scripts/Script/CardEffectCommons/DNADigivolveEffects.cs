@@ -156,7 +156,7 @@ public partial class CardEffectCommons
     /// <param name="permanentCondition">Condition to filter which permaments may be used for this effect</param>
     /// <param name="cardCondition">Condition to filter which cards may be used for this effect</param>
     /// <returns></returns>
-    private static bool PermanentFulfillsRequirement(Player owner, Permanent permanent, CardSource jogressTarget, Permanent firstCondition, bool isWithHandCard, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> cardCondition = null)
+    private static bool PermanentFulfillsRequirement(Player owner, Permanent permanent, CardSource jogressTarget, Permanent firstCondition, bool isWithHandCard, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> cardCondition = null, bool isBlast = false)
     {
         if (jogressTarget.jogressCondition.Count <= 0 || jogressTarget.CanNotEvolve(permanent))
             return false;
@@ -164,6 +164,7 @@ public partial class CardEffectCommons
         {
             if (firstCondition == null)
             {
+                if (isBlast) return false;
                 foreach (JogressCondition DNACondition in jogressTarget.jogressCondition)
                 {
                     if (DNACondition.elements[0].EvoRootCondition(permanent))
@@ -193,8 +194,35 @@ public partial class CardEffectCommons
                 }
                 foreach (JogressCondition DNACondition in jogressTarget.jogressCondition)
                 {
-                    if (DNACondition.elements[0].EvoRootCondition(firstCondition) && DNACondition.elements[1].EvoRootCondition(permanent))
+                    bool testedCardOnHand = false, 
+                    firstOnHand = false;
+                    Permanent truePermanentTest = permanent, 
+                    trueFirstCondition = firstCondition;
+                    if (isBlast)
                     {
+                        var ownerHand = jogressTarget.Owner.HandCards;
+                        if (ownerHand.Contains(permanent.TopCard))
+                        {
+                            testedCardOnHand = true;
+                            truePermanentTest = PlayTempPermanent(permanent.TopCard);
+                            if (truePermanentTest == null)
+                                continue;
+                        } else if (ownerHand.Contains(firstCondition.TopCard))
+                        {
+                            firstOnHand = true;
+                            trueFirstCondition = PlayTempPermanent(firstCondition.TopCard);
+                            if (truePermanentTest == null)
+                                continue;
+                        }
+                    }
+                    if (DNACondition.elements[0].EvoRootCondition(trueFirstCondition) && DNACondition.elements[1].EvoRootCondition(truePermanentTest))
+                    {
+                        if (testedCardOnHand)
+                        {
+                            owner.FieldPermanents[truePermanentTest.PermanentFrame.FrameID] = null;
+                        } else if (firstOnHand){
+                            owner.FieldPermanents[trueFirstCondition.PermanentFrame.FrameID] = null;
+                        }
                         return true;
                     }
                 }
@@ -206,7 +234,7 @@ public partial class CardEffectCommons
 
     public static bool BlastDNAFulfillsRequirement(Player owner, Permanent permanent, CardSource jogressTarget, Permanent firstCondition, bool isWithHandCard, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> cardCondition = null)
     {
-        return PermanentFulfillsRequirement(owner,permanent,jogressTarget,firstCondition,isWithHandCard, permanentCondition,cardCondition);
+        return PermanentFulfillsRequirement(owner,permanent,jogressTarget,firstCondition,isWithHandCard, permanentCondition,cardCondition, true);
     }
 
     private static IEnumerator SelectPermanent(Player owner, CardSource jogressTarget, Permanent firstCondition, bool isOptional, ICardEffect activateClass, bool isWithHand, Func<Permanent, IEnumerator> SelectPermanentCoroutine, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> digivolutionCardCondition = null)
