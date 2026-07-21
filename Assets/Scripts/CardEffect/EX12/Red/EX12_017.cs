@@ -223,13 +223,17 @@ namespace DCGO.CardEffects.EX12
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool isUsed = false;
+
                     #region DNA digivolve
                     yield return ContinuousController.instance.StartCoroutine(
                         CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
                             CanSelectDNACardCondition,
                             payCost: true,
                             isHand: true,
-                            activateClass
+                            activateClass,
+                            successProcess: _ => { isUsed = true; return null; },
+                            failedProcess: () => { isUsed = true; return null; }
                         ));
                     #endregion
 
@@ -263,12 +267,16 @@ namespace DCGO.CardEffects.EX12
 
                     if (selectedPermanent != null)
                     {
+                        isUsed = true;
+
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SwitchDefender(
                             activateClass,
                             false,
                             selectedPermanent));
                     }
                     #endregion
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
