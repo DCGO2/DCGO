@@ -186,8 +186,7 @@ namespace DCGO.CardEffects.EX12
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("2 of your Digimon may DNA into [Omnimon]/[ME]/[VB] in hand, then may redirect attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
-                activateClass.SetIsSkippable(true);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("EX12_017_Counter");
                 activateClass.SetIsCounterEffect(true);
                 cardEffects.Add(activateClass);
