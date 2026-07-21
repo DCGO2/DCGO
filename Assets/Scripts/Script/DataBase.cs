@@ -591,7 +591,9 @@ public class DataBase : MonoBehaviour
         .Replace("！", "!");
     }
 
-    public static string DigiburstRegex = "デジバースト[0-9]";
+    public static readonly string DigiBurstJpnRegex = "デジバースト[0-9]";
+    public static readonly string DigiBurstEngRegex = "Digi-Burst [0-9]";
+
 
     public static string FirstPlayerKey = "FirstPlayerId";
 
