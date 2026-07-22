@@ -30,10 +30,75 @@ public partial class CardEffectFactory
         List<Permanent> fieldPermanents = new List<Permanent>();
         List<Permanent> permanentSources = new List<Permanent>();
         List<CardSource> handSources = new List<CardSource>();
+        Player owner = card.Owner;
+
+        void FilterDNAPermanents()
+        {
+            foreach (var condition in blastDNAConditions)
+            {
+                bool PreviousBlastAlreadyDigestedSources = condition.Permanents.Count > 0 && condition.CardSources.Count == 0;
+                if (PreviousBlastAlreadyDigestedSources)
+                {
+                    foreach (var partner in blastDNAConditions.Where(c => c != condition))
+                    {
+                        partner.Permanents.Clear();
+                    }
+                }
+            }
+        }
+
+        void FilterDNAHandSources()
+        {
+            foreach (var condition in blastDNAConditions)
+            {
+                bool PreviousBlastAlreadyDigestedSources = condition.CardSources.Count > 0 && condition.Permanents.Count == 0;
+                if (PreviousBlastAlreadyDigestedSources)
+                {
+                    foreach (var partner in blastDNAConditions.Where(c => c != condition))
+                    {
+                        partner.CardSources.Clear();
+                    }
+                }
+            }
+        }
+
+        void FilterAllDigested()
+        {
+            FilterDNAPermanents();
+            FilterDNAHandSources();
+
+            if (permanentSources != null && handSources != null)
+            {
+                permanentSources = permanentSources.Filter(p =>
+                    p != null &&
+                    p.TopCard != null &&
+                    handSources.Any(handSource =>
+                        handSource != null &&
+                        p.TopCard.name != handSource.name &&
+                        (
+                            CardEffectCommons.BlastDNAFulfillsRequirement(owner, new Permanent(new List<CardSource> { handSource }), card, p, true) ||
+                            CardEffectCommons.BlastDNAFulfillsRequirement(owner, p, card, new Permanent(new List<CardSource> { handSource }), true)
+                        )
+                    )
+                );
+
+                handSources = handSources.Filter(handSource =>
+                    handSource != null &&
+                    permanentSources.Any(p =>
+                        p != null &&
+                        p.TopCard != null &&
+                        p.TopCard.name != handSource.name &&
+                        (
+                            CardEffectCommons.BlastDNAFulfillsRequirement(owner, new Permanent(new List<CardSource> { handSource }), card, p, true) ||
+                            CardEffectCommons.BlastDNAFulfillsRequirement(owner, p, card, new Permanent(new List<CardSource> { handSource }), true)
+                        )
+                    )
+                );
+            }
+        }
 
         bool HasValidDNATargets()
         {
-            Player owner = card.Owner;
             fieldPermanents = owner.GetBattleAreaDigimons();
 
             var namesOnField = blastDNAConditions
@@ -67,21 +132,7 @@ public partial class CardEffectFactory
                 }
             }
 
-            permanentSources = permanentSources.Filter(p => handSources.Any(handSource =>
-                p.TopCard.name != handSource.name &&
-                (
-                    CardEffectCommons.BlastDNAFulfillsRequirement(owner, new Permanent(new List<CardSource> { handSource }), card, p, true) ||
-                    CardEffectCommons.BlastDNAFulfillsRequirement(owner, p, card, new Permanent(new List<CardSource> { handSource }), true)
-                )
-            ));
-
-            handSources = handSources.Filter(handSource => permanentSources.Any(p =>
-                p.TopCard.name != handSource.name &&
-                (
-                    CardEffectCommons.BlastDNAFulfillsRequirement(owner, new Permanent(new List<CardSource> { handSource }), card, p, true) ||
-                    CardEffectCommons.BlastDNAFulfillsRequirement(owner, p, card, new Permanent(new List<CardSource> { handSource }), true)
-                )
-            ));
+            FilterAllDigested();
 
             if (blastDNAConditions[0].Permanents.Count(permanent => !permanent.TopCard.CanNotEvolve(permanent)) > 0 && blastDNAConditions[1].CardSources.Count > 0)
                 return true;
@@ -150,7 +201,6 @@ public partial class CardEffectFactory
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)
         {
-            Player owner = card.Owner;
             Permanent selectedPermanent = null;
             CardSource selectedCardSource = null;
 

@@ -211,7 +211,7 @@ public partial class CardEffectCommons
                         {
                             firstOnHand = true;
                             trueFirstCondition = PlayTempPermanent(firstCondition.TopCard);
-                            if (truePermanentTest == null)
+                            if (trueFirstCondition == null)
                                 continue;
                         }
                     }
