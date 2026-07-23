@@ -474,7 +474,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                         {
                             if (_skillInfos.Count == 0)
                             {
-                                if (_root == Root.Trash || _root == Root.DigivolutionCards || _root == Root.LinkedCards)
+                                if (CardEffectCommons.IsExistOnTrash(_cardEffect.EffectSourceCard) || CardEffectCommons.IsExistOnField(_cardEffect.EffectSourceCard))
                                 {
                                     SkillInfo[] skillInfoArray = new SkillInfo[RootCards.Count];
 
