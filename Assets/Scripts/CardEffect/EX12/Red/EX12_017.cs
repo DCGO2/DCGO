@@ -232,10 +232,16 @@ namespace DCGO.CardEffects.EX12
                             payCost: true,
                             isHand: true,
                             activateClass,
-                            successProcess: _ => { isUsed = true; return null; },
-                            failedProcess: () => { isUsed = true; return null; }
+                            successProcess: _ => SetUsed(),
+                            failedProcess: () => SetUsed()
                         ));
                     #endregion
+
+                    IEnumerator SetUsed()
+                    {
+                        isUsed= true;
+                        yield return null;
+                    }
 
                     #region Redirect attack
                     Permanent selectedPermanent = null;
