@@ -232,8 +232,7 @@ namespace DCGO.CardEffects.EX12
                             payCost: true,
                             isHand: true,
                             activateClass,
-                            successProcess: _ => SetUsed(),
-                            failedProcess: () => SetUsed()
+                            successProcess: _ => SetUsed()
                         ));
                     #endregion
 
