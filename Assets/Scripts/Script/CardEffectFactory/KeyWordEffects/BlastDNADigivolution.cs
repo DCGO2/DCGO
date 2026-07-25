@@ -71,7 +71,7 @@ public partial class CardEffectFactory
             }
         }
 
-        void FilterAllDigested()
+        void KeepValidDNAPairs()
         {
             FilterDNAPermanents();
             FilterDNAHandSources();
@@ -141,7 +141,7 @@ public partial class CardEffectFactory
                 }
             }
 
-            FilterAllDigested();
+            KeepValidDNAPairs();
 
             if (blastDNAConditions[0].Permanents.Count(permanent => !permanent.TopCard.CanNotEvolve(permanent)) > 0 && blastDNAConditions[1].CardSources.Count > 0)
                 return true;
