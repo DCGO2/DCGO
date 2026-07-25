@@ -52,7 +52,7 @@ public partial class CardEffectCommons
         if (jogressTarget.jogressCondition.Count <= 0)
             return false;
         bool isValid = false;
-        if(cardCondition == null || cardCondition(cardSource))
+        if (cardCondition == null || cardCondition(cardSource))
         {
             Permanent tempPermanent = PlayTempPermanent(cardSource);
             if (tempPermanent == null)
@@ -61,15 +61,15 @@ public partial class CardEffectCommons
             {
                 foreach (JogressCondition DNACondition in jogressTarget.jogressCondition)
                 {
-                    if(isValid)
+                    if (isValid)
                         break;
                     if (DNACondition.elements[0].EvoRootCondition(tempPermanent))
                     {
-                        foreach(Permanent secondPermanent in owner.GetBattleAreaDigimons().Filter(permanent => permanentCondition == null || permanentCondition(permanent)))
+                        foreach (Permanent secondPermanent in owner.GetBattleAreaDigimons().Filter(permanent => permanentCondition == null || permanentCondition(permanent)))
                         {
                             if (secondPermanent == tempPermanent)
                                 continue;
-                            if(DNACondition.elements[1].EvoRootCondition(secondPermanent))
+                            if (DNACondition.elements[1].EvoRootCondition(secondPermanent))
                             {
                                 isValid = true;
                                 break;
@@ -158,9 +158,10 @@ public partial class CardEffectCommons
     /// <returns></returns>
     private static bool PermanentFulfillsRequirement(Player owner, Permanent permanent, CardSource jogressTarget, Permanent firstCondition, bool isWithHandCard, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> cardCondition = null, bool isBlast = false)
     {
-        if (jogressTarget.jogressCondition.Count <= 0 || jogressTarget.CanNotEvolve(permanent))
-            return false;
-        if(permanentCondition == null || permanentCondition(permanent))
+        var fulfilled = !(jogressTarget.jogressCondition.Count <= 0 || jogressTarget.CanNotEvolve(permanent));
+        if (fulfilled is not true) return false;
+        else fulfilled = false;
+        if (permanentCondition == null || permanentCondition(permanent))
         {
             if (firstCondition == null)
             {
@@ -171,7 +172,7 @@ public partial class CardEffectCommons
                     {
                         List<CardSource> sources = isWithHandCard ? owner.HandCards : owner.TrashCards;
 
-                        foreach(CardSource cardSource in sources.Filter(cardSource => cardCondition == null || cardCondition(cardSource)))
+                        foreach (CardSource cardSource in sources.Filter(cardSource => cardCondition == null || cardCondition(cardSource)))
                         {
                             Permanent tempPermanent = PlayTempPermanent(cardSource);
                             if (tempPermanent == null)
@@ -179,7 +180,7 @@ public partial class CardEffectCommons
                             bool isValid = DNACondition.elements[1].EvoRootCondition(tempPermanent);
                             owner.FieldPermanents[tempPermanent.PermanentFrame.FrameID] = null;
 
-                            if(isValid)
+                            if (isValid)
                                 return true;
 
                         }
@@ -194,47 +195,47 @@ public partial class CardEffectCommons
                 }
                 foreach (JogressCondition DNACondition in jogressTarget.jogressCondition)
                 {
-                    bool testedCardOnHand = false, 
-                    firstOnHand = false;
-                    Permanent truePermanentTest = permanent, 
+                    var ownerHand = owner.HandCards;
+                    bool testedCardOnHand = ownerHand.Contains(permanent.TopCard),
+                    firstOnHand = ownerHand.Contains(firstCondition.TopCard);
+                    Permanent truePermanentTest = permanent,
                     trueFirstCondition = firstCondition;
                     if (isBlast)
                     {
-                        var ownerHand = jogressTarget.Owner.HandCards;
-                        if (ownerHand.Contains(permanent.TopCard))
+                        if (firstOnHand && testedCardOnHand) return false;
+                        if (testedCardOnHand)
                         {
-                            testedCardOnHand = true;
                             truePermanentTest = PlayTempPermanent(permanent.TopCard);
                             if (truePermanentTest == null)
                                 continue;
-                        } else if (ownerHand.Contains(firstCondition.TopCard))
+                        }
+                        else if (firstOnHand)
                         {
-                            firstOnHand = true;
                             trueFirstCondition = PlayTempPermanent(firstCondition.TopCard);
                             if (trueFirstCondition == null)
                                 continue;
                         }
                     }
-                    if (DNACondition.elements[0].EvoRootCondition(trueFirstCondition) && DNACondition.elements[1].EvoRootCondition(truePermanentTest))
+                    fulfilled = DNACondition.elements[0].EvoRootCondition(trueFirstCondition) &&
+                        DNACondition.elements[1].EvoRootCondition(truePermanentTest);
                     {
                         if (testedCardOnHand)
-                        {
                             owner.FieldPermanents[truePermanentTest.PermanentFrame.FrameID] = null;
-                        } else if (firstOnHand){
+                        else if (firstOnHand)
                             owner.FieldPermanents[trueFirstCondition.PermanentFrame.FrameID] = null;
-                        }
-                        return true;
                     }
+                    if (fulfilled) break;
+
                 }
             }
         }
 
-        return false;
+        return fulfilled;
     }
 
     public static bool BlastDNAFulfillsRequirement(Player owner, Permanent permanent, CardSource jogressTarget, Permanent firstCondition, bool isWithHandCard, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> cardCondition = null)
     {
-        return PermanentFulfillsRequirement(owner,permanent,jogressTarget,firstCondition,isWithHandCard, permanentCondition,cardCondition, true);
+        return PermanentFulfillsRequirement(owner, permanent, jogressTarget, firstCondition, isWithHandCard, permanentCondition, cardCondition, true);
     }
 
     private static IEnumerator SelectPermanent(Player owner, CardSource jogressTarget, Permanent firstCondition, bool isOptional, ICardEffect activateClass, bool isWithHand, Func<Permanent, IEnumerator> SelectPermanentCoroutine, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> digivolutionCardCondition = null)
@@ -262,11 +263,11 @@ public partial class CardEffectCommons
     public static bool CanJogressWithHandOrTrash(CardSource source, Player owner, bool isWithHandCard, bool isIntoHandCard, Func<CardSource, bool> targetCardCondition = null, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> digivolutionCardCondition = null)
     {
         return (isIntoHandCard ? IsExistOnHand(source) : IsExistOnTrash(source))
-            && (targetCardCondition == null || targetCardCondition(source)) 
+            && (targetCardCondition == null || targetCardCondition(source))
             && source.jogressCondition.Count > 0
-            && (HasMatchConditionPermanent(permanent => PermanentFulfillsRequirement(owner, permanent, source, null, isWithHandCard, permanentCondition, digivolutionCardCondition)) 
+            && (HasMatchConditionPermanent(permanent => PermanentFulfillsRequirement(owner, permanent, source, null, isWithHandCard, permanentCondition, digivolutionCardCondition))
                 || (isWithHandCard ?
-                    owner.HandCards.Some(cardSource => CardFulfillsRequirement(owner, cardSource, source, null, permanentCondition, digivolutionCardCondition)) : 
+                    owner.HandCards.Some(cardSource => CardFulfillsRequirement(owner, cardSource, source, null, permanentCondition, digivolutionCardCondition)) :
                     owner.TrashCards.Some(cardSource => CardFulfillsRequirement(owner, cardSource, source, null, permanentCondition, digivolutionCardCondition))));
     }
 
@@ -285,11 +286,11 @@ public partial class CardEffectCommons
     /// <param name="isOptional">If this effect is optional. If true, the user may no select at any time</param>
     /// <returns></returns>
     public static IEnumerator DNADigivolveWithHandOrTrashCardIntoHandOrTrash(
-        Func<CardSource, bool> targetCardCondition, 
-        Func<Permanent, bool> permanentCondition, 
+        Func<CardSource, bool> targetCardCondition,
+        Func<Permanent, bool> permanentCondition,
         Func<CardSource, bool> digivolutionCardCondition,
         bool payCost,
-        bool isWithHandCard, 
+        bool isWithHandCard,
         bool isIntoHandCard,
         ICardEffect activateClass,
         IEnumerator successProcess,
@@ -324,7 +325,7 @@ public partial class CardEffectCommons
             yield return null;
         }
 
-        if(ignoreSelection)
+        if (ignoreSelection)
         {
             dnaTarget = activateClass.EffectSourceCard;
         }
@@ -383,10 +384,10 @@ public partial class CardEffectCommons
 
         bool validPermanent = HasMatchConditionPermanent(permanent => PermanentFulfillsRequirement(owner, permanent, dnaTarget, null, isWithHandCard, permanentCondition, digivolutionCardCondition));
         bool validHandOrTrash = isWithHandCard ?
-                    owner.HandCards.Some(cardSource => CardFulfillsRequirement(owner, cardSource, dnaTarget, null, permanentCondition, digivolutionCardCondition)) : 
+                    owner.HandCards.Some(cardSource => CardFulfillsRequirement(owner, cardSource, dnaTarget, null, permanentCondition, digivolutionCardCondition)) :
                     owner.TrashCards.Some(cardSource => CardFulfillsRequirement(owner, cardSource, dnaTarget, null, permanentCondition, digivolutionCardCondition));
 
-        if(validPermanent || validHandOrTrash)
+        if (validPermanent || validHandOrTrash)
         {
             #region select source cards
             if (validPermanent && validHandOrTrash)
@@ -418,14 +419,14 @@ public partial class CardEffectCommons
                 {
                     if (isWithHandCard)
                         yield return ContinuousController.instance.StartCoroutine(SelectHandCard(owner, dnaTarget, selectedPermanent, isOptional, activateClass, SelectCardCoroutine, permanentCondition, digivolutionCardCondition));
-                    else 
+                    else
                         yield return ContinuousController.instance.StartCoroutine(SelectTrashCard(owner, dnaTarget, selectedPermanent, isOptional, activateClass, SelectCardCoroutine, permanentCondition, digivolutionCardCondition));
                     if (selectedCardSource != null)
                     {
                         playedPermanent = PlayTempPermanent(selectedCardSource, true);
                         if (playedPermanent != null) yield return ContinuousController.instance.StartCoroutine(CardObjectController.CreateNewPermanent(playedPermanent, selectedCardSource.PreferredFrame().FrameID));
                     }
-                            
+
                 }
             }
             else
@@ -435,15 +436,15 @@ public partial class CardEffectCommons
                 else
                     yield return ContinuousController.instance.StartCoroutine(SelectTrashCard(owner, dnaTarget, null, isOptional, activateClass, SelectCardCoroutine, permanentCondition, digivolutionCardCondition));
 
-                if(selectedCardSource != null)
+                if (selectedCardSource != null)
                 {
                     playedPermanent = PlayTempPermanent(selectedCardSource, true);
                     if (playedPermanent != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.CreateNewPermanent(playedPermanent, selectedCardSource.PreferredFrame().FrameID));
-                        
+
                         yield return ContinuousController.instance.StartCoroutine(SelectPermanent(owner, dnaTarget, playedPermanent, isOptional, activateClass, isWithHandCard, SelectPermanentCoroutine, permanentCondition, digivolutionCardCondition));
-                    }                  
+                    }
                 }
             }
             #endregion
@@ -552,28 +553,28 @@ public partial class CardEffectCommons
             selectHandEffect.SetNotShowCard();
 
             yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-        } 
-        else if(!isHand && owner.TrashCards.Some(canSelectDNACardCondition))
+        }
+        else if (!isHand && owner.TrashCards.Some(canSelectDNACardCondition))
         {
             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                selectCardEffect.SetUp(
-                    canTargetCondition: canSelectDNACardCondition,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    canNoSelect: () => isOptional,
-                    selectCardCoroutine: SelectCardCoroutine,
-                    afterSelectCardCoroutine: null,
-                    message: "Select 1 card to digivolve.",
-                    maxCount: maxCount,
-                    canEndNotMax: false,
-                    isShowOpponent: true,
-                    mode: SelectCardEffect.Mode.Custom,
-                    root: SelectCardEffect.Root.Trash,
-                    customRootCardList: null,
-                    canLookReverseCard: true,
-                    selectPlayer: owner,
-                    cardEffect: activateClass);
+            selectCardEffect.SetUp(
+                canTargetCondition: canSelectDNACardCondition,
+                canTargetCondition_ByPreSelecetedList: null,
+                canEndSelectCondition: null,
+                canNoSelect: () => isOptional,
+                selectCardCoroutine: SelectCardCoroutine,
+                afterSelectCardCoroutine: null,
+                message: "Select 1 card to digivolve.",
+                maxCount: maxCount,
+                canEndNotMax: false,
+                isShowOpponent: true,
+                mode: SelectCardEffect.Mode.Custom,
+                root: SelectCardEffect.Root.Trash,
+                customRootCardList: null,
+                canLookReverseCard: true,
+                selectPlayer: owner,
+                cardEffect: activateClass);
 
             selectCardEffect.SetUpCustomMessage("Select 1 card to DNA digivolve.", "The opponent is selecting 1 card to DNA digivolve.");
             selectCardEffect.SetUpCustomMessage_ShowCard("Selected Card");
@@ -603,7 +604,7 @@ public partial class CardEffectCommons
                                             endSelectCoroutine_SelectDigivolutionRoots: EndSelectCoroutine_SelectDigivolutionRoots,
                                             noSelectCoroutine: null);
 
-                if(permanentConditions != null)
+                if (permanentConditions != null)
                     GManager.instance.selectJogressEffect.SetUpCustomPermanentConditions(permanentConditions);
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectJogressEffect.SelectDigivolutionRoots());
@@ -668,13 +669,13 @@ public partial class CardEffectCommons
 
     public static JogressCondition GetJogressConditions(Func<Permanent, bool> permanentCondition1, string description1, Func<Permanent, bool> permanentCondition2, string description2, CardSource card, int cost = 0)
     {
-        JogressConditionElement[] elements = 
+        JogressConditionElement[] elements =
             {
                 new JogressConditionElement(permanentCondition1, description1),
                 new JogressConditionElement(permanentCondition2, description2)
             };
 
-        JogressCondition jogressCondition = new (elements, cost);
+        JogressCondition jogressCondition = new(elements, cost);
 
         return jogressCondition;
 
@@ -707,7 +708,7 @@ public partial class CardEffectCommons
 
             selectionPlayer.QueuePlayerSelection(new PermanentSelection(null, jogressEvoRootsFrameIDs));
         }
-    } 
+    }
 
     #endregion
 }
