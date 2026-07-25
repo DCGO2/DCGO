@@ -293,8 +293,12 @@ public partial class CardEffectFactory
                 }
 
                 int[] JogressEvoRootsFrameIDs = { 0, 0 };
-
-                if (CardEffectCommons.BlastDNAFulfillsRequirement(owner, new Permanent(new List<CardSource> { selectedCardSource }), card, selectedPermanent, true))
+                if (CardEffectCommons.BlastDNAFulfillsRequirement(owner, selectedPermanent, card, new Permanent(new List<CardSource> { selectedCardSource }), true) ||
+                CardEffectCommons.BlastDNAFulfillsRequirement(owner, new Permanent(new List<CardSource> { selectedCardSource }), card, selectedPermanent, true))
+                {
+                    // TO-DO: Select cards effect routine to sort how they will be placed under commutative conditions
+                }
+                else if (CardEffectCommons.BlastDNAFulfillsRequirement(owner, new Permanent(new List<CardSource> { selectedCardSource }), card, selectedPermanent, true))
                 {
                     JogressEvoRootsFrameIDs[0] = selectedPermanent.PermanentFrame.FrameID;
                     JogressEvoRootsFrameIDs[1] = selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID;
