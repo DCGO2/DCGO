@@ -28,17 +28,15 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanSelectPermanentCondition(Permanent permanent) =>
                     CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                    permanent.IsDigimon &&
-                    permanent.TopCard.ContainsCardName("Growlmon") ||
-                        permanent.IsDigimon && permanent.TopCard.ContainsCardName("Gallantmon");
+                    (permanent.TopCard.ContainsCardName("Growlmon") || permanent.TopCard.ContainsCardName("Gallantmon"));
 
                 bool CanUseCondition(Hashtable hashtable) =>
-                    CardEffectCommons.IsExistOnBattleArea(card) &&
+                    CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass) &&
                     CardEffectCommons.IsOwnerTurn(card) &&
                     CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, CanSelectPermanentCondition);
 
                 bool CanActivateCondition(Hashtable hashtable) =>
-                    CardEffectCommons.IsExistOnBattleArea(card) &&
+                    CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass) &&
                     CardEffectCommons.CanActivateSuspendCostEffect(card);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
