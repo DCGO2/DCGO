@@ -36,12 +36,15 @@ public partial class CardEffectFactory
         {
             foreach (var condition in blastDNAConditions)
             {
-                bool PreviousBlastAlreadyDigestedSources = condition.Permanents.Count > 0 && condition.CardSources.Count == 0;
-                if (PreviousBlastAlreadyDigestedSources)
+                if (condition.Permanents.Count > 0)
                 {
-                    foreach (var partner in blastDNAConditions.Where(c => c != condition))
+                    bool hasMatchingPartner = blastDNAConditions
+                        .Where(partner => partner != condition)
+                        .Any(partner => partner.CardSources.Count > 0);
+
+                    if (!hasMatchingPartner)
                     {
-                        partner.Permanents.Clear();
+                        condition.Permanents.Clear();
                     }
                 }
             }
@@ -51,12 +54,18 @@ public partial class CardEffectFactory
         {
             foreach (var condition in blastDNAConditions)
             {
-                bool PreviousBlastAlreadyDigestedSources = condition.CardSources.Count > 0 && condition.Permanents.Count == 0;
-                if (PreviousBlastAlreadyDigestedSources)
+                if (condition.CardSources.Count > 0)
                 {
-                    foreach (var partner in blastDNAConditions.Where(c => c != condition))
+                    bool hasMatchingPartner = blastDNAConditions
+                        .Where(partner => partner != condition)
+                        .Any(partner => partner.Permanents.Count > 0);
+
+                    if (!hasMatchingPartner)
                     {
-                        partner.CardSources.Clear();
+                        foreach (var partner in blastDNAConditions.Where(partner => partner != condition))
+                        {
+                            partner.CardSources.Clear();
+                        }
                     }
                 }
             }
