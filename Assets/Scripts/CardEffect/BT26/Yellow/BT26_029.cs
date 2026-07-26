@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Aegiochusmon: Holy
 namespace DCGO.CardEffects.BT26
@@ -25,8 +24,7 @@ namespace DCGO.CardEffects.BT26
                     digivolutionCost: 3,
                     ignoreDigivolutionRequirement: false,
                     card: card,
-                    condition: null,
-                    level: 4));
+                    condition: null));
             }
             #endregion
 
@@ -56,7 +54,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared OP / WD
-
             string SharedEffectName = "By trashing your top security, grant DP-immunity, stack-trash-immunity, return-immunity on 1 Digimon";
 
             string SharedEffectDescription(string tag)
@@ -67,7 +64,6 @@ namespace DCGO.CardEffects.BT26
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 #region Selection
-
                 List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                 {
                     new SelectionElement<int>(message: "Trash 1 security and grant immunities", value: 1, spriteIndex: 0),
@@ -80,23 +76,19 @@ namespace DCGO.CardEffects.BT26
                 GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                 int chosenOption = GManager.instance.userSelectionManager.SelectedIntValue;
-
                 #endregion
 
                 if (chosenOption == 1)
                 {
                     #region Trash Top Security
-
                     yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                         player: card.Owner,
                         destroySecurityCount: 1,
                         cardEffect: activateClass,
                         fromTop: true).DestroySecurity());
-
                     #endregion
 
                     #region Select Your Digimon
-
                     bool CanSelectPermanentCondition(Permanent permanent)
                     {
                         return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
@@ -167,10 +159,10 @@ namespace DCGO.CardEffects.BT26
                                 effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass,
                                 effectName: "Can't return to deck"));
+                        }
                     }
+                    #endregion
                 }
-                #endregion
-            }
             }
 
             CardEffectFactory.ActivateClassesForSharedEffects
@@ -188,11 +180,9 @@ namespace DCGO.CardEffects.BT26
             {
                 return card.Owner.SecurityCards.Count > 0;
             }
-
             #endregion
 
             #region All Turns
-
             if (timing == EffectTiming.OnLoseSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -219,8 +209,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -242,7 +231,7 @@ namespace DCGO.CardEffects.BT26
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select up to 3 Digimon to -5000 DP.", "The opponent is selecting Digimon to -5000 DP.");
+                    selectPermanentEffect.SetUpCustomMessage($"Select {maxCount} Digimon to -5000 DP.", "The opponent is selecting Digimon to -5000 DP.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -251,16 +240,14 @@ namespace DCGO.CardEffects.BT26
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                             targetPermanent: permanent,
                             changeValue: -5000,
-                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            effectDuration: EffectDuration.UntilEachTurnEnd,
                             activateClass: activateClass));
                     }
                 }
             }
-
             #endregion
 
             #region Inherited Effect
-
             if (timing == EffectTiming.OnLoseSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -288,40 +275,39 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.", "The opponent is selecting 1 Digimon to De-Digivolve.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.", "The opponent is selecting 1 Digimon to De-Digivolve.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                        }
                     }
                 }
             }
-
             #endregion
 
             return cardEffects;
