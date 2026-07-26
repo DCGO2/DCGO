@@ -19,8 +19,7 @@ namespace DCGO.CardEffects.BT26
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel5
-                        && targetPermanent.TopCard.HasTSTraits;
+                    return targetPermanent.TopCard.HasTSTraits;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -94,7 +93,6 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Add top sec to hand, may play/use 1 [Iliad]/[TS] from hand cost -5", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetHashString("BT26_033_WD");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -104,13 +102,13 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card)
-                        && CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -132,7 +130,6 @@ namespace DCGO.CardEffects.BT26
                     #region If your turn, play/use Iliad cost -5
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        bool isUsed = false;
                         CardSource selectedCard = null;
 
                         bool CanSelectCardCondition(CardSource cardSource)
@@ -176,8 +173,6 @@ namespace DCGO.CardEffects.BT26
 
                         if (selectedCard != null)
                         {
-                            isUsed = true;
-
                             #region Reduce Cost by 5
                             IEnumerator ReduceCost()
                             {
@@ -236,7 +231,6 @@ namespace DCGO.CardEffects.BT26
                             }
                         }
 
-                        if (!isUsed) activateClass.RemoveUse();
                     }
                     #endregion
                 }
@@ -248,8 +242,7 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By placing top stacked card as bottom security, card doesn't leave", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
-                activateClass.SetHashString("BT26_033_AT_Protect_TS");
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -259,20 +252,21 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && card.PermanentOfThisCard().DigivolutionCards.Count > 0;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && card.PermanentOfThisCard().DigivolutionCards.Count > 0
+                        && card.Owner.CanAddSecurity(activateClass);
                 }
 
                 bool PermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                        && (permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer)
+                        && (permanent.IsDigimon || permanent.IsTamer)
                         && permanent.TopCard.HasTSTraits;
                 }
 
@@ -284,25 +278,17 @@ namespace DCGO.CardEffects.BT26
                     Permanent thisPermanent = card.PermanentOfThisCard();
                     CardSource topStacked = card;
 
-                    if (card.Owner.CanAddSecurity(activateClass))
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(topStacked, thisPermanent));
+
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(topStacked, toTop: false, faceUp: false));
+
+                    foreach (Permanent permanent in protectedPermanents)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(topStacked, thisPermanent));
-
-                        if (topStacked.IsACE)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(new List<CardSource> { topStacked }).Overflow());
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(topStacked, toTop: false, faceUp: false));
-
-                        foreach (Permanent permanent in protectedPermanents)
-                        {
-                            permanent.willBeRemoveField = false;
-                            permanent.HideDeleteEffect();
-                            permanent.HideHandBounceEffect();
-                            permanent.HideDeckBounceEffect();
-                            permanent.HideWillRemoveFieldEffect();
-                        }
+                        permanent.willBeRemoveField = false;
+                        permanent.HideDeleteEffect();
+                        permanent.HideHandBounceEffect();
+                        permanent.HideDeckBounceEffect();
+                        permanent.HideWillRemoveFieldEffect();
                     }
                 }
             }
