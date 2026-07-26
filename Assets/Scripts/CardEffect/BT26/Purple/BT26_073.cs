@@ -224,8 +224,6 @@ namespace DCGO.CardEffects.BT26
                 }
 
                 #endregion
-
-                if (!hasPaidCost) activateClass.RemoveUse();
             }
 
             CardEffectFactory.ActivateClassesForSharedEffects
@@ -247,7 +245,6 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [TS] trait card with play cost 5 or less from hand or trash without paying cost", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
-                activateClass.SetHashString("BT26_073_OD");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
