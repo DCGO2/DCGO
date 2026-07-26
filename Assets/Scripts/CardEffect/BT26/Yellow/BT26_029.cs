@@ -171,10 +171,6 @@ namespace DCGO.CardEffects.BT26
                 }
                 #endregion
             }
-            else
-                {
-                    activateClass.RemoveUse();
-                }
             }
 
             CardEffectFactory.ActivateClassesForSharedEffects
@@ -185,7 +181,13 @@ namespace DCGO.CardEffects.BT26
                     optional: false,
                     isSkippable: true,
                     onPlay: true,
-                    whenDigivolving: true);
+                    whenDigivolving: true,
+                    additionalActivateCondition: AdditionalActivateCondition);
+
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+            {
+                return card.Owner.SecurityCards.Count > 0;
+            }
 
             #endregion
 
@@ -206,7 +208,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner);
                 }
 
@@ -217,7 +219,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
@@ -275,7 +277,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner);
                 }
 
@@ -286,7 +288,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
