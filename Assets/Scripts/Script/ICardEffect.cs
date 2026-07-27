@@ -1276,13 +1276,16 @@ public static class ActivateICardEffectExtensionClass
     #endregion
 }
 
-public static class CopyICardEffectExtensions
+public static class CopyICardEffectExtensionClass
 {
     /// <summary>
     /// Evaluates a list of card effects and expands any dynamic skill wrappers (IAddSkillEffect) 
     /// into their underlying ICardEffects for a specific CardSource and Timing.
     /// </summary>
-    public static IEnumerable<ICardEffect> FlattenEffects(this IEnumerable<ICardEffect> rawEffects, CardSource cardSource, EffectTiming timing = EffectTiming.None)
+    public static IEnumerable<ICardEffect> FlattenEffects(
+        this IEnumerable<ICardEffect> rawEffects, 
+        EffectTiming timing  = EffectTiming.None,
+        EffectTiming timingLimit = EffectTiming.None)
     {
         if (rawEffects == null) yield break;
 
@@ -1292,10 +1295,10 @@ public static class CopyICardEffectExtensions
 
             yield return effect;
 
-            if (effect is IAddSkillEffect skillWrapper && skillWrapper.ShouldAddEffect(timing))
+            if (effect is IAddSkillEffect skillWrapper && skillWrapper.ShouldAddEffect(timingLimit))
             {
                 var grantedEffects = new List<ICardEffect>();
-                grantedEffects = skillWrapper.GetCardEffect(cardSource, grantedEffects, timing);
+                grantedEffects = skillWrapper.GetCardEffect(effect.EffectSourceCard, grantedEffects, timing);
 
                 if (grantedEffects != null)
                 {
@@ -1311,9 +1314,12 @@ public static class CopyICardEffectExtensions
     /// <summary>
     /// Gets all active effects of type T (including dynamically granted skills) for a given card/permanent.
     /// </summary>
-    public static IEnumerable<T> GetEffects<T>(this IEnumerable<ICardEffect> rawEffects, CardSource cardSource, EffectTiming timing = EffectTiming.None) where T : class
+    public static IEnumerable<T> GetFlatEffects<T>(
+        this IEnumerable<ICardEffect> rawEffects, 
+        EffectTiming timing  = EffectTiming.None,
+        EffectTiming timingLimit = EffectTiming.None) where T : class
     {
-        foreach (var effect in rawEffects.FlattenEffects(cardSource, timing))
+        foreach (var effect in rawEffects.FlattenEffects(timing, timingLimit))
         {
             if (effect is T matchedEffect)
             {
@@ -1325,9 +1331,14 @@ public static class CopyICardEffectExtensions
     /// <summary>
     /// Checks if any active effect (including added skills) matches type T and satisfies a condition.
     /// </summary>
-    public static bool HasEffect<T>(this IEnumerable<ICardEffect> rawEffects, CardSource cardSource, System.Predicate<T> condition = null, EffectTiming timing = EffectTiming.None) where T : class
+    public static bool HasEffect<T>(
+        this IEnumerable<ICardEffect> rawEffects, 
+        CardSource cardSource, 
+        System.Predicate<T> condition = null, 
+        EffectTiming timing = EffectTiming.None,
+        EffectTiming timingLimit = EffectTiming.None) where T : class
     {
-        foreach (var effect in rawEffects.GetEffects<T>(cardSource, timing))
+        foreach (var effect in rawEffects.GetFlatEffects<T>(timing, timingLimit))
         {
             if (condition == null || condition(effect))
             {
