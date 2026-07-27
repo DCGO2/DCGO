@@ -802,12 +802,7 @@ public abstract class ICardEffect
                 {
                     if (EffectDiscription.StartsWith("[On Deletion]"))
                     {
-                        // Permanent effectPermanent = EffectSourceCard.PermanentOfThisCard() ?? new Permanent(new List<CardSource>() { EffectSourceCard });
-
-                        // Hashtable hashtable = CardEffectCommons.OnDeletionHashtable(new List<Permanent>() { effectPermanent }, null, null, false);
-
-                        // if (CanTrigger(hashtable))
-                            return true;
+                        return true;
                     }
                 }
             }
