@@ -2738,19 +2738,10 @@ public class Permanent
                 foreach (Permanent permanent in player.GetFieldPermanents())
                 {
                     #region 場のパーマネントの効果
-                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
-                    {
-                        if (cardEffect is IRushEffect)
-                        {
-                            if (cardEffect.CanTrigger(null))
-                            {
-                                if (((IRushEffect)cardEffect).HasRush(this))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
+                    var rushConfirmed = permanent.EffectList(EffectTiming.None)
+                        .GetEffects<IRushEffect>(permanent.TopCard, EffectTiming.None)
+                        .Any(e => e.HasRush(this));
+                    if (rushConfirmed) return true;
                     #endregion
                 }
 
