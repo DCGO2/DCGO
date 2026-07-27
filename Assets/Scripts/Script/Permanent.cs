@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -706,19 +706,10 @@ public class Permanent
         {
             foreach (Permanent permanent in player.GetFieldPermanents())
             {
-                foreach (ICardEffect cardEffect1 in permanent.EffectList(EffectTiming.None))
-                {
-                    if (cardEffect1 is IImmuneFromDPMinusEffect)
-                    {
-                        if (cardEffect1.CanUse(null))
-                        {
-                            if (((IImmuneFromDPMinusEffect)cardEffect1).ImmuneFromDPMinus(this, cardEffect))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
+                var immunityConfirmed = permanent.EffectList(EffectTiming.None)
+                .GetFlatEffects<IImmuneFromDPMinusEffect>()
+                .Any(e => ((ICardEffect)e).CanUse(null) && e.ImmuneFromDPMinus(this, cardEffect));
+                if (immunityConfirmed) return true;
             }
 
             foreach (ICardEffect cardEffect1 in player.EffectList(EffectTiming.None))
@@ -1765,19 +1756,20 @@ public class Permanent
             {
                 foreach (Permanent permanent in player.GetFieldPermanents())
                 {
+                    var sAttackEffects = permanent.EffectList(EffectTiming.None)
+                        .GetFlatEffects<IChangeSAttackEffect>()
+                        .Where(e => e.PermanentCondition(this));
+
                     #region 場のパーマネントの効果
-                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                    foreach (ICardEffect cardEffect in sAttackEffects)
                     {
-                        if (cardEffect is IChangeSAttackEffect)
+                        if (cardEffect.CanUse(null))
                         {
-                            if (cardEffect.CanUse(null))
+                            if (!TopCard.CanNotBeAffected(cardEffect))
                             {
-                                if (!TopCard.CanNotBeAffected(cardEffect))
+                                if (((IChangeSAttackEffect)cardEffect).isUpDown() == CalculateOrder.UpDownValue)
                                 {
-                                    if (((IChangeSAttackEffect)cardEffect).isUpDown() == CalculateOrder.UpDownValue)
-                                    {
-                                        cardEffects_ChangeDirectStrike.Add(cardEffect);
-                                    }
+                                    cardEffects_ChangeDirectStrike.Add(cardEffect);
                                 }
                             }
                         }
@@ -2739,8 +2731,8 @@ public class Permanent
                 {
                     #region 場のパーマネントの効果
                     var rushConfirmed = permanent.EffectList(EffectTiming.None)
-                        .GetEffects<IRushEffect>(permanent.TopCard, EffectTiming.None)
-                        .Any(e => e.HasRush(this));
+                        .GetFlatEffects<IRushEffect>()
+                        .Any(e => ((ICardEffect)e).CanTrigger(null) && e.HasRush(this));
                     if (rushConfirmed) return true;
                     #endregion
                 }
