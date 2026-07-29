@@ -14,10 +14,13 @@ public class SelectRandomDeckButton : MonoBehaviour
 
     public void OnClick()
     {
-        long random = RandomUtility.GetSecureRandom();
-        GameRandom.Seed(random);
-        int randomDeck = GameRandom.Range(1,deckInfoPrefabParentScroll.content.childCount);
-        deckInfoPrefabParentScroll.content.GetChild(randomDeck).GetComponent<DeckInfoPrefab>().OnClick();
+        if(deckInfoPrefabParentScroll.content.childCount > 1)
+        {
+            long random = RandomUtility.GetSecureRandom();
+            GameRandom.Seed(random);
+            int randomDeck = GameRandom.Range(1,deckInfoPrefabParentScroll.content.childCount);
+            deckInfoPrefabParentScroll.content.GetChild(randomDeck).GetComponent<DeckInfoPrefab>().OnClick();
+        }
     }
 
     public void OnEnter()
