@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Thetismon
 namespace DCGO.CardEffects.EX12
@@ -170,7 +169,8 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
+                        && CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition) >= 3;
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -181,62 +181,59 @@ namespace DCGO.CardEffects.EX12
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.TrashCards.Count(CanSelectCardCondition) >= 3)
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                    canTargetCondition: (cardSource) => CanSelectCardCondition(cardSource),
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    canNoSelect: () => true,
+                    selectCardCoroutine: null,
+                    afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                    message: "Select cards to place at the bottom of the deck to unsuspend\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
+                    maxCount: 3,
+                    canEndNotMax: false,
+                    isShowOpponent: false,
+                    mode: SelectCardEffect.Mode.Custom,
+                    root: SelectCardEffect.Root.Trash,
+                    customRootCardList: null,
+                    canLookReverseCard: true,
+                    selectPlayer: card.Owner,
+                    cardEffect: activateClass);
+
+                    selectCardEffect.SetNotAddLog();
+                    selectCardEffect.SetUpCustomMessage_ShowCard("Deck Bottom Cards");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                        canTargetCondition: (cardSource) => CanSelectCardCondition(cardSource),
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        message: "Select cards to place at the bottom of the deck to unsuspend\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
-                        maxCount: 3,
-                        canEndNotMax: false,
-                        isShowOpponent: false,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Trash,
-                        customRootCardList: null,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                        selectCardEffect.SetNotAddLog();
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Deck Bottom Cards");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                        if (cardSources.Count == 3)
                         {
-                            if (cardSources.Count == 3)
+                            cardSources.Reverse();
+
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+
+                            string selectPlayerMessage = "Will you unsuspend this card?";
+                            string notSelectPlayerMessage = "The opponent is choosing if they will unsuspend.";
+
+                            List<SelectionElement<bool>> command_SelectCommands = new List<SelectionElement<bool>>()
                             {
-                                cardSources.Reverse();
+                                new SelectionElement<bool>(message: $"Yes", value: true, spriteIndex: 0),
+                                new SelectionElement<bool>(message: $"No", value: false, spriteIndex: 1),
+                            };
 
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: command_SelectCommands, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                                string selectPlayerMessage = "Will you unsuspend this card?";
-                                string notSelectPlayerMessage = "The opponent is choosing if they will unsuspend.";
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                                List<SelectionElement<bool>> command_SelectCommands = new List<SelectionElement<bool>>()
-                                {
-                                    new SelectionElement<bool>(message: $"Yes", value: true, spriteIndex: 0),
-                                    new SelectionElement<bool>(message: $"No", value: false, spriteIndex: 1),
-                                };
+                            bool unsuspend = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: command_SelectCommands, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                                bool unsuspend = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                                if (unsuspend)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
-                                        new List<Permanent>() { card.PermanentOfThisCard() },
-                                        activateClass).Unsuspend());
-                                }
+                            if (unsuspend)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
+                                    new List<Permanent>() { card.PermanentOfThisCard() },
+                                    activateClass).Unsuspend());
                             }
                         }
                     }
