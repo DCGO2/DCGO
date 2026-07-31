@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 // ZeigGreymon
 namespace DCGO.CardEffects.AD1
@@ -199,9 +199,22 @@ namespace DCGO.CardEffects.AD1
                             || card.PermanentOfThisCard().TopCard.EqualsTraits("Xros Heart"));
                 }
 
+                #region Amount of colors in this Digimon's digivolution cards
+                List<CardColor> cardColors = new List<CardColor>();
+
+                foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
+                {
+                    cardColors.AddRange(source.CardColors);
+                }
+
+                cardColors = cardColors.Distinct().ToList();
+
+                int DigivolutionCardColors = cardColors.Count;
+                #endregion
+
                 int changeDP()
                 {
-                    return 1000 * card.PermanentOfThisCard().DigivolutionCardsColors.Count;
+                    return 1000 * DigivolutionCardColors;
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(
