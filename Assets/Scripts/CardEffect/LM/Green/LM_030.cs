@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// Green Scramble
 namespace DCGO.CardEffects.LM
 {
     public class LM_030 : CEntity_Effect
@@ -245,36 +246,23 @@ namespace DCGO.CardEffects.LM
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect($"Play a green Digimon from trash.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("May play 1 green 2K DP or lower Digimon from trash for free.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Security] You may play 1 green Digimon card with 2000 DP or less from your trash without paying the cost. Then, add this card to the hand.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource != null)
-                    {
-                        if (cardSource.Owner == card.Owner)
-                        {
-                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                            {
-                                if (cardSource.IsDigimon)
-                                {
-                                    if (cardSource.HasCardColor(CardColor.Green) && cardSource.CardDP <= 2000)
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsDigimon
+                        && cardSource.HasCardColor(CardColor.Green)
+                        && cardSource.HasDP
+                        && cardSource.CardDP <= 2000
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -284,45 +272,13 @@ namespace DCGO.CardEffects.LM
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                     {
-                        int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardCondition(cardSource)));
-
-                        List<CardSource> selectedCards = new List<CardSource>();
-
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 green Digimon with 2000 DP or less to play.",
-                                    maxCount: maxCount,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Trash,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                        selectCardEffect.SetUpCustomMessage("Select 1 green Digimon with 2000 DP or less to play.", "The opponent is selecting 1 card to play.");
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                        yield return StartCoroutine(selectCardEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCards.Add(cardSource);
-
-                            yield return null;
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                        canTargetCondition: CanSelectCardCondition,
+                        SelectCardEffect.Root.Trash,
+                        activateClass,
+                        payCost: false));
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.AddThisCardToHand(card, activateClass));
