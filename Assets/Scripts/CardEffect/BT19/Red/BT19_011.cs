@@ -83,7 +83,6 @@ namespace DCGO.CardEffects.BT19
                 }
 
                 int destroyCount = card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectOpponentsPermanent);
-                int destroyedCount = 0;
 
                 List<Permanent> destroyTargetPermanents = new List<Permanent>();
 
