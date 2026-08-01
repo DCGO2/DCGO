@@ -83,7 +83,6 @@ namespace DCGO.CardEffects.BT19
                 }
 
                 int destroyCount = card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectOpponentsPermanent);
-                int destroyedCount = 0;
 
                 List<Permanent> destroyTargetPermanents = new List<Permanent>();
 
@@ -97,35 +96,27 @@ namespace DCGO.CardEffects.BT19
                     maxCount: destroyCount,
                     canNoSelect: false,
                     canEndNotMax: true,
-                    selectPermanentCoroutine: SelectPermanentCoroutine,
-                    afterSelectPermanentCoroutine: null,
+                    selectPermanentCoroutine: null,
+                    afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                     mode: SelectPermanentEffect.Mode.Custom,
                     cardEffect: activateClass);
 
                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                 {
-                    destroyTargetPermanents.Add(permanent);
-
-                    foreach (Permanent permanent1 in destroyTargetPermanents)
+                    if (permanents.Count > 0)
                     {
-                        if (permanent1 != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent1 }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: permanents, activateClass: activateClass, successProcess: SuccessProcess, failureProcess: null));
                     }
                 }
 
-                IEnumerator SuccessProcess()
+                IEnumerator SuccessProcess(List<Permanent> permanents)
                 {
-                    destroyedCount ++;
-                    yield return null;
-                }
-
-                if (card.Owner.CanAddMemory(activateClass))
-                {
-                    if (destroyedCount > 0) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(destroyedCount, activateClass));
+                    if (card.Owner.CanAddMemory(activateClass))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(permanents.Count, activateClass));
+                    }
                 }
             }
             #endregion
