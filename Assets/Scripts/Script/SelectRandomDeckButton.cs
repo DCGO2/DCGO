@@ -15,47 +15,35 @@ public class SelectRandomDeckButton : MonoBehaviour
 
     public DeckInfoPanel deckInfoPanel;
 
+    public List<int> validDeckList;
+
     public void OnClick()
     {
-        if (haveValidDecks())
+        validDeckList.Clear();
+        haveValidDecks();
+        if (validDeckList.Count > 0)
         {
-            if(deckInfoPrefabParentScroll.content.childCount > 1)
-            {
-                int randomDeck = getRandomDeck();
-                deckInfoPrefabParentScroll.content.GetChild(randomDeck).GetComponent<DeckInfoPrefab>().OnClick();
-                //If it selects a invalid deck, it will keep randomly tryig decks until it finds a valid one
-                while (deckInfoPanel.ShowingDeckData.IsValidDeckData() == false)
-                {
-                    randomDeck = getRandomDeck();
-                    deckInfoPrefabParentScroll.content.GetChild(randomDeck).GetComponent<DeckInfoPrefab>().OnClick();
-                }
-            }
+            int randomDeck = getRandomDeck();
+            deckInfoPrefabParentScroll.content.GetChild(validDeckList[randomDeck]).GetComponent<DeckInfoPrefab>().OnClick();
         }
     }
 
-    //Ensures the player has at least one valid deck
-    public Boolean haveValidDecks()
+    public void haveValidDecks()
     {
-        int validDecks = 0;
         for (int i=1; i < deckInfoPrefabParentScroll.content.childCount; i++)
         {
             if (deckInfoPrefabParentScroll.content.GetChild(i).GetComponent<DeckInfoPrefab>().thisDeckData.IsValidDeckData() == true)
             {
-                validDecks++;
+                validDeckList.Add(i);
             }
         }
-        if (validDecks > 0)
-        {
-            return true;
-        }
-        return false;
     }
 
     public int getRandomDeck()
     {
         long random = RandomUtility.GetSecureRandom();
         GameRandom.Seed(random);
-        int randomDeck = GameRandom.Range(1,deckInfoPrefabParentScroll.content.childCount);
+        int randomDeck = GameRandom.Range(0,validDeckList.Count);
         return randomDeck;
     }
 
@@ -67,6 +55,7 @@ public class SelectRandomDeckButton : MonoBehaviour
 
     public void OnExit()
     {
+
         if (Opening.instance != null)
             this.gameObject.transform.localScale = Opening.instance.DeckInfoPrefabStartScale;
     }
