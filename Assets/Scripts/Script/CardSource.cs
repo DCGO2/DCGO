@@ -4227,6 +4227,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has Seven Code trait
+
+    public bool HasSevenCodeTraits
+    {
+        get
+        {
+            return EqualsTraits("Seven Code");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
