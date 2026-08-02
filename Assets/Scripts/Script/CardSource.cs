@@ -4227,6 +4227,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has DATA SQUAD trait
+
+    public bool HasDataSquadTraits
+    {
+        get
+        {
+            return EqualsTraits("DATA SQUAD");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
