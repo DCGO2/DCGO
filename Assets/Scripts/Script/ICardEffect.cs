@@ -44,8 +44,13 @@ public abstract class ICardEffect
 
     #region The source card of this effect
 
+    CardSource _originalEffectSourceCard = null;
+    public CardSource OriginalEffectSourceCard
+    {
+        get { return _originalEffectSourceCard; }
+        private set { _originalEffectSourceCard = value; }
+    }
     CardSource _effectSourceCard = null;
-
     public CardSource EffectSourceCard
     {
         get
@@ -63,7 +68,10 @@ public abstract class ICardEffect
 
         private set { _effectSourceCard = value; }
     }
-
+    public void SetOriginalEffectSourceCard(CardSource originalEffectSourceCard)
+    {
+        OriginalEffectSourceCard = originalEffectSourceCard;
+    }
     public void SetEffectSourceCard(CardSource effectSourceCard)
     {
         EffectSourceCard = effectSourceCard;
@@ -162,6 +170,22 @@ public abstract class ICardEffect
 
     string _effectDiscription = "";
 
+    public string EffectDescription
+    {
+        get { return _effectDiscription; }
+        private set
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                _effectDiscription = "";
+            }
+            else
+            {
+                _effectDiscription = value;
+            }
+        }
+    }
+    
     public string EffectDiscription
     {
         get { return _effectDiscription; }

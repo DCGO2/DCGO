@@ -1,60 +1,153 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 public partial class CardEffectFactory
 {
     /// <summary>
-    /// Effect to copy through the effects of digivolution cards as effect of the top card. Done directly in CEntity_Effect.CardEffects for efficiency
+    /// Creates an AddSkillClass static effect that dynamically copies non-inherited effects 
+    /// from digivolution cards under this Permanent.
     /// </summary>
-    /// <param name="cardEffects">Reference to the list of effects for this card to add effects to</param>
-    /// <param name="timing">timing being queried</param>
-    /// <param name="card">Card with the copy effect</param>
-    /// <param name="canUseCondition">Condition to use this effect (Current turn, This digimon with X trait, etc.)</param>
-    /// <param name="cardCondition">Condition of the cards to copy from (gammamon in name, MachineDramon or Chaosdramon, etc.)</param>
-    /// <param name="effectCondition">Conditions on the effects to copy (Only On Plays, only activate effects, etc.)</param>
-    public static void CopyDigivolutionCardEffects(ref List<ICardEffect> cardEffects,
-                                                   EffectTiming timing, 
-                                                   CardSource card,
-                                                   bool isInheritedEffect = false,
-                                                   bool isLinkedEffect = false,
-                                                   Func<bool> canUseCondition = null,
-                                                   Func<CardSource, bool> cardCondition = null,
-                                                   Func<ICardEffect, bool> effectCondition = null
-                                                   )
+    public static void CopyDigivolutionCardEffects(
+        ref List<ICardEffect> cardEffects,
+        EffectTiming timing,
+        CardSource card,
+        bool isInheritedEffect = false,
+        bool isLinkedEffect = false,
+        Func<List<CardSource>, List<CardSource>> targetSources = null,
+        Func<Hashtable, bool> canUseCondition = null,
+        Func<Permanent, bool> permanentCondition = null,
+        Func<CardSource, bool> cardSourceCondition = null,
+        Func<CardSource, bool> cardCondition = null,
+        Func<ICardEffect, bool> effectCondition = null
+        )
     {
-        if (card.PermanentOfThisCard() == null) return;
-        if (canUseCondition != null && !canUseCondition()) return;
-
-        Permanent thisPermanent = card.PermanentOfThisCard();
-
-        //If it is an inherited effect it should be in digivolution cards, if link effect should be linked, if neither it should not be in either (leaving only topcard)
-        if (isInheritedEffect != thisPermanent.DigivolutionCards.Contains(card)) return;
-        if (isLinkedEffect != thisPermanent.LinkedCards.Contains(card)) return;
-
-        List<CardSource> validSources = thisPermanent.DigivolutionCards.Filter(cardSource => cardSource != card && (cardCondition == null || cardCondition(cardSource)));
-
-        foreach (CardSource cardSource in validSources)
+        
+        if (timing is not EffectTiming.None)
         {
-            List<ICardEffect> toCopyEffects = cardSource.EffectList(timing);
-            int i = 0;
-            foreach (ICardEffect cardEffect in toCopyEffects)
-            {
-                if (cardEffect.IsInheritedEffect || cardEffect.IsLinkedEffect) continue;
+            return;
+        }
 
-                if (cardEffect is ActivateClass)
+        bool DefaultCanUseCondition(Hashtable hashtable)
+        {
+            return CardEffectCommons.IsExistOnBattleArea(card);
+        }
+
+        bool DefaultPermanentCondition(Permanent permanent)
+        {
+            return permanent != null && permanent == card.PermanentOfThisCard();
+        }
+
+        bool DefaultCardSourceCondition(CardSource cardSource)
+        {
+            if (cardSource == null) return false;
+
+            Permanent permanent = cardSource.PermanentOfThisCard();
+            if (permanent == null) return false;
+
+            if (permanentCondition(permanent))
+            {
+                if (cardSource == permanent.TopCard)
                 {
-                    ActivateClass activateClass = (ActivateClass)cardEffect;
-                    activateClass.SetHashString(GenerateHashString(card, cardSource, i));//Set unique hashstring so OPTs work correctly
-                    cardEffects.Add(activateClass);
-                    cardEffects.Add(PermanentEffectFactory.AddDetailClass(thisPermanent, activateClass.EffectDiscription, true, activateClass));
-                }
-                else//If any other effect types need their can use condition changed to work correctly those can be handled here, otherwise just copied through
-                {
-                    cardEffects.Add(cardEffect);
+                    return true;
                 }
             }
+            return false;
         }
+
+        List<CardSource> validSources(List<CardSource> availableSources) => availableSources.Filter(
+            cardSource => cardCondition == null || cardCondition(cardSource)
+        );
+
+        canUseCondition ??= DefaultCanUseCondition;
+        permanentCondition ??= DefaultPermanentCondition;
+        cardSourceCondition ??= DefaultCardSourceCondition;
+
+        AddSkillClass addSkillClass = new AddSkillClass();
+        addSkillClass.SetUpICardEffect("Copy Digivolution Card Effects", canUseCondition, card);
+        addSkillClass.SetIsInheritedEffect(isInheritedEffect);
+        addSkillClass.SetIsLinkedEffect(isLinkedEffect);
+
+        List<ICardEffect> GetEffects(CardSource sourceCard, List<ICardEffect> getCardEffects, EffectTiming _timing)
+        {
+            if (getCardEffects == null)
+                getCardEffects = new List<ICardEffect>();
+
+            if (sourceCard == null)
+                return getCardEffects;
+
+            if (cardSourceCondition != null && !cardSourceCondition(sourceCard))
+                return getCardEffects;
+
+            Permanent thisPermanent = sourceCard.PermanentOfThisCard();
+
+            if (targetSources == null)
+            {
+                if (thisPermanent == null || thisPermanent.DigivolutionCards == null)
+                    return getCardEffects;
+                targetSources = _ => validSources(sourceCard.PermanentOfThisCard().DigivolutionCards);
+            } 
+
+            foreach (CardSource cardSource in targetSources(null))
+            {
+                List<ICardEffect> toCopyEffects = cardSource.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(_timing, sourceCard);
+                toCopyEffects.ForEach(eff => eff.SetOriginalEffectSourceCard(cardSource));
+                toCopyEffects = toCopyEffects.Filter(
+                    cardEffect => effectCondition == null || effectCondition(cardEffect)
+                );
+                foreach (ICardEffect cardEffect in toCopyEffects)
+                {
+                    if (cardEffect.IsInheritedEffect || cardEffect.IsLinkedEffect)
+                    {
+                        continue;
+                    }
+
+                    if (cardEffect is ActivateClass activateClass)
+                    {
+                        getCardEffects.Add(activateClass);
+
+                        var originalUseCondition = activateClass.CanUseCondition;
+                        activateClass.SetCanUseCondition(
+                            hashtable => validSources(targetSources(null)).Contains(activateClass.OriginalEffectSourceCard) 
+                            && (originalUseCondition is null || originalUseCondition(hashtable))
+                        );
+
+                        var originalActivateCondition = activateClass.CanActivateCondition;
+                        activateClass.SetCanActivateCondition(
+                            hashtable => validSources(targetSources(null)).Contains(activateClass.OriginalEffectSourceCard) 
+                            && (originalActivateCondition is null || originalActivateCondition(hashtable))
+                        );
+
+                        getCardEffects.Add(PermanentEffectFactory.AddDetailClass(
+                            thisPermanent,
+                            activateClass.EffectDescription,
+                            true,
+                            activateClass));
+                    }
+                    else
+                    {
+                        getCardEffects.Add(cardEffect);
+                        getCardEffects.Add(PermanentEffectFactory.AddDetailClass(
+                            thisPermanent,
+                            cardEffect.EffectDescription,
+                            true,
+                            cardEffect));
+                    }
+                }
+            }
+
+            return getCardEffects;
+        }
+
+        addSkillClass.SetUpAddSkillClass(
+            cardSourceCondition: cardSourceCondition,
+            getEffects: GetEffects,
+            limitTiming: null
+        );
+
+        cardEffects.Add(addSkillClass);
     }
 
-    private static string GenerateHashString(CardSource card, CardSource cardSource, int i) => $"Card-{card.CardIndex}-Copying-Card-{cardSource.CardIndex}-effect-{i}";
+    private static string GenerateHashString(CardSource card, CardSource cardSource, int i)
+        => $"Card-{card.CardIndex}-Copying-Card-{cardSource.CardIndex}-effect-{i}";
 }
