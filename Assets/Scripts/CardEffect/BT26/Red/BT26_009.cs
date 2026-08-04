@@ -145,7 +145,6 @@ namespace DCGO.CardEffects.BT26
             }
             #endregion
 
-
             return cardEffects;
         }
     }
