@@ -27,10 +27,10 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 [Chronomon] text/[Shaman] trait from hand to <Draw 1> and gain 1 memory", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Start of Your Main Phase] By trashing 1 card with the [Chronomon] in its text or [Shaman] trait from your hand, <Draw 1> and gain 1 memory.";
                 }
