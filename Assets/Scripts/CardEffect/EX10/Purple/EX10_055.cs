@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 // Tactimon
 namespace DCGO.CardEffects.EX10
@@ -140,7 +138,7 @@ namespace DCGO.CardEffects.EX10
 
                         #endregion
 
-                        if (permanentList.Any())
+                        if (permanentList.Count > 0)
                         {
                             bool CanSelectOpponentDigimon(Permanent permanent)
                             {
@@ -262,7 +260,7 @@ namespace DCGO.CardEffects.EX10
 
                         #endregion
 
-                        if (permanentList.Any())
+                        if (permanentList.Count > 0)
                         {
                             bool CanSelectOpponentDigimon(Permanent permanent)
                             {
@@ -338,7 +336,8 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && card.PermanentOfThisCard().DigivolutionCards.Count >= 2
                         && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, IsBagraArmyDigimon)
                         && CardEffectCommons.IsByEffect(hashtable, effect => effect != null);
                 }
@@ -347,8 +346,9 @@ namespace DCGO.CardEffects.EX10
                 {
                     removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(IsBagraArmyDigimon);
 
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && card.PermanentOfThisCard().DigivolutionCards.Count >= 2;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && card.PermanentOfThisCard().DigivolutionCards.Count >= 2
+                        && removedPermanents.Count > 0;
                 }
 
                 bool IsBagraArmyDigimon(Permanent permanent)

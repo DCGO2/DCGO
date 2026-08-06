@@ -423,13 +423,17 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, IsAttackingDigimon);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && card.PermanentOfThisCard().DigivolutionCards.Count >= 2)
+                    {
+                        return CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, IsAttackingDigimon);
+                    }
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card,activateClass)
                         && card.PermanentOfThisCard().DigivolutionCards.Count >= 2;
                 }
 
