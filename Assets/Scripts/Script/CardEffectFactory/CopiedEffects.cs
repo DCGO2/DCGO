@@ -118,7 +118,7 @@ public partial class CardEffectFactory
                             && (originalActivateCondition is null || originalActivateCondition(hashtable))
                         );
 
-                        activateClass.SetHashString(GenerateHashString(activateClass.OriginalEffectSourceCard, activateClass.HashString, isInheritedEffect, isLinkedEffect));
+                        activateClass.SetHashString(GenerateHashString(card, activateClass.OriginalEffectSourceCard, activateClass.HashString, isInheritedEffect, isLinkedEffect));
 
                         getCardEffects.Add(PermanentEffectFactory.AddDetailClass(
                             thisPermanent,
@@ -150,11 +150,11 @@ public partial class CardEffectFactory
         return addSkillClass;
     }
 
-    private static string GenerateHashString(CardSource cardSource, string source, bool isInherited, bool isLinked)
+    private static string GenerateHashString(CardSource card, CardSource cardSource, string source, bool isInherited, bool isLinked)
     {
         string sourceHashString = source ??= "";
         string inherited = isInherited ? "-inherited" : "";
         string linked = isLinked ? "-linked" : "";
-        return $"Copied-Card-{cardSource.CardIndex}-effect-{sourceHashString}{inherited}{linked}";
+        return $"{card.CardIndex}-copying-{cardSource.CardIndex}-effect-{sourceHashString}{inherited}{linked}";
     }
 }
