@@ -199,10 +199,8 @@ namespace DCGO.CardEffects.AD1
                             || card.PermanentOfThisCard().TopCard.EqualsTraits("Xros Heart"));
                 }
 
-                int DigivolutionCardColors = 0;
-
                 #region Amount of colors in this Digimon's digivolution cards
-                if (Condition())
+                int DigivolutionCardColors()
                 {
                     List<CardColor> cardColors = new List<CardColor>();
 
@@ -213,13 +211,13 @@ namespace DCGO.CardEffects.AD1
 
                     cardColors = cardColors.Distinct().ToList();
 
-                    DigivolutionCardColors = cardColors.Count;
+                    return cardColors.Count;
                 }
                 #endregion
 
                 int changeDP()
                 {
-                    return 1000 * DigivolutionCardColors;
+                    return 1000 * DigivolutionCardColors();
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(
