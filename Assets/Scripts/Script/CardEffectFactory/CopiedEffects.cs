@@ -8,13 +8,13 @@ public partial class CardEffectFactory
     /// Creates an AddSkillClass static effect that dynamically copies non-inherited effects 
     /// from digivolution cards under this Permanent.
     /// </summary>
-    public static void CopyDigivolutionCardEffects(
+    public static AddSkillClass CopyDigivolutionCardEffects(
         ref List<ICardEffect> cardEffects,
         EffectTiming timing,
         CardSource card,
         bool isInheritedEffect = false,
         bool isLinkedEffect = false,
-        Func<List<CardSource>, List<CardSource>> targetSources = null,
+        Func<List<CardSource>> targetSources = null,
         Func<Hashtable, bool> canUseCondition = null,
         Func<Permanent, bool> permanentCondition = null,
         Func<CardSource, bool> cardSourceCondition = null,
@@ -25,7 +25,7 @@ public partial class CardEffectFactory
         
         if (timing is not EffectTiming.None)
         {
-            return;
+            return null;
         }
 
         bool DefaultCanUseCondition(Hashtable hashtable)
@@ -85,10 +85,10 @@ public partial class CardEffectFactory
             {
                 if (thisPermanent == null || thisPermanent.DigivolutionCards == null)
                     return getCardEffects;
-                targetSources = _ => validSources(sourceCard.PermanentOfThisCard().DigivolutionCards);
+                targetSources = () => validSources(sourceCard.PermanentOfThisCard().DigivolutionCards);
             } 
 
-            foreach (CardSource cardSource in targetSources(null))
+            foreach (CardSource cardSource in targetSources())
             {
                 List<ICardEffect> toCopyEffects = cardSource.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(_timing, sourceCard);
                 toCopyEffects.ForEach(eff => eff.SetOriginalEffectSourceCard(cardSource));
@@ -108,15 +108,17 @@ public partial class CardEffectFactory
 
                         var originalUseCondition = activateClass.CanUseCondition;
                         activateClass.SetCanUseCondition(
-                            hashtable => validSources(targetSources(null)).Contains(activateClass.OriginalEffectSourceCard) 
+                            hashtable => validSources(targetSources()).Contains(activateClass.OriginalEffectSourceCard) 
                             && (originalUseCondition is null || originalUseCondition(hashtable))
                         );
 
                         var originalActivateCondition = activateClass.CanActivateCondition;
                         activateClass.SetCanActivateCondition(
-                            hashtable => validSources(targetSources(null)).Contains(activateClass.OriginalEffectSourceCard) 
+                            hashtable => validSources(targetSources()).Contains(activateClass.OriginalEffectSourceCard) 
                             && (originalActivateCondition is null || originalActivateCondition(hashtable))
                         );
+
+                        activateClass.SetHashString(GenerateHashString(activateClass.OriginalEffectSourceCard, activateClass.HashString, isInheritedEffect, isLinkedEffect));
 
                         getCardEffects.Add(PermanentEffectFactory.AddDetailClass(
                             thisPermanent,
@@ -145,9 +147,14 @@ public partial class CardEffectFactory
             limitTiming: null
         );
 
-        cardEffects.Add(addSkillClass);
+        return addSkillClass;
     }
 
-    private static string GenerateHashString(CardSource card, CardSource cardSource, int i)
-        => $"Card-{card.CardIndex}-Copying-Card-{cardSource.CardIndex}-effect-{i}";
+    private static string GenerateHashString(CardSource cardSource, string source, bool isInherited, bool isLinked)
+    {
+        string sourceHashString = source ??= "";
+        string inherited = isInherited ? "-inherited" : "";
+        string linked = isLinked ? "-linked" : "";
+        return $"Copied-Card-{cardSource.CardIndex}-effect-{sourceHashString}{inherited}{linked}";
+    }
 }
