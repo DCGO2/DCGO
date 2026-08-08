@@ -14,79 +14,40 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play [Lucemon] card", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Security] You may play 1 [Lucemon] from your trash without paying the cost.";
                 }
 
-                bool LucemonCard(CardSource cardSource)
+                bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.EqualsCardName("Lucemon") &&
-                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
+                    return cardSource.EqualsCardName("Lucemon")
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
                 }
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (card.Owner.ExecutingCards.Contains(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, LucemonCard))
-                            return true;
-                    }
-
-                    return false;
+                    return card.Owner.ExecutingCards.Contains(card)
+                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    List<CardSource> selectedCards = new List<CardSource>();
-
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                    selectCardEffect.SetUp(
-                        canTargetCondition: LucemonCard,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => false,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 1 card to play.",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Trash,
-                        customRootCardList: null,
-                        canLookReverseCard: false,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                    selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                    yield return StartCoroutine(selectCardEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                    {
-                        selectedCards.Add(cardSource);
-
-                        yield return null;
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                        cardSources: selectedCards, 
-                        activateClass: activateClass, 
-                        payCost: false, 
-                        isTapped: false, 
-                        root: SelectCardEffect.Root.Trash, 
-                        activateETB: true));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                        canTargetCondition: CanSelectCardCondition,
+                        SelectCardEffect.Root.Trash,
+                        activateClass,
+                        payCost: false
+                    ));
                 }
             }
             #endregion
@@ -96,10 +57,10 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Prevent Removal", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Breeding] [All Turns] When any of your [Lucemon: Satan Mode] would leave the battle area, by moving this Digimon to battle area, they don't leave.";
                 }
