@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine.Analytics;
 
 // DarknessBagramon
 namespace DCGO.CardEffects.EX10
@@ -511,69 +509,53 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
-            #region All Turns
+            #region Copy [All Turns] effects of level 6 [Bagra Army] in digivolution cards
+            bool CopyCardCondition(CardSource cardSource) =>
+                !cardSource.IsFlipped &&
+                cardSource.HasBagraArmyTraits &&
+                cardSource.HasLevel &&
+                cardSource.IsLevel6;
 
-            if (timing == EffectTiming.None)
+            bool CopyEffectCondition(ICardEffect cardEffect)
             {
-                AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("This Digimon gains all [All Turns] effects on all level 6 [Bagra Army] trait Digimon cards in its digivolution cards.", CanUseCondition, card);
-                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-
-                cardEffects.Add(addSkillClass);
-
-                bool CanUseCondition(Hashtable hashtable)
+                if (cardEffect == null)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return permanent == card.PermanentOfThisCard();
-                }
-
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    if (PermanentCondition(cardSource.PermanentOfThisCard()))
-                    {
-                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
-                        {
-                            return true;
-                        }
-                    }
-
                     return false;
                 }
 
-                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                string effectName = cardEffect.EffectName ?? "Unknown Effect";
+
+                var permanent = card.PermanentOfThisCard();
+                if (permanent == null)
                 {
-                    if (CardSourceCondition(cardSource))
-                    {
-                        foreach (CardSource cardSource1 in cardSource.PermanentOfThisCard().DigivolutionCards)
-                        {
-                            if (cardSource1.IsFlipped)
-                                continue;
-
-                            if (cardSource1.HasBagraArmyTraits)
-                            {
-                                if (cardSource1.HasLevel && cardSource1.IsLevel6)
-                                {
-                                    foreach (ICardEffect cardEffect in cardSource1.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(_timing, card))
-                                    {
-                                        if (!cardEffect.IsSecurityEffect && !cardEffect.IsInheritedEffect)
-                                        {
-                                            if (cardEffect.EffectDiscription.StartsWith("[All Turns]"))
-                                                cardEffects.Add(cardEffect);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    return cardEffects;
+                    return false;
                 }
+
+                if (permanent.cardSources == null || !permanent.cardSources.Contains(cardEffect.OriginalEffectSourceCard))
+                {
+                    return false;
+                }
+
+                if (cardEffect.IsSecurityEffect)
+                {
+                    return false;
+                }
+
+                string description = cardEffect.EffectDiscription ?? "";
+                if (!description.StartsWith("[All Turns]"))
+                {
+                    return false;
+                }
+
+                return true;
             }
 
+            CardEffectFactory.CopyDigivolutionCardEffects(
+                ref cardEffects,
+                timing,
+                card,
+                cardCondition: CopyCardCondition,
+                effectCondition: CopyEffectCondition);
             #endregion
 
             return cardEffects;

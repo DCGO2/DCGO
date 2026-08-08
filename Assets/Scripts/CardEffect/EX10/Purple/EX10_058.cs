@@ -222,37 +222,36 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("by trashing any 2 sources, Play a level 4 from trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("AT_EX10_058");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] [Once Per Turn] When any of your opponent's Digimon are played or deleted, by trashing any 2 of this Digimon's digivolution cards, you may play 1 level 4 or lower purple Digimon card from your trash without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && card.PermanentOfThisCard().DigivolutionCards.Count >= 2)
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count >= 2)
+                        if (timing == EffectTiming.OnEnterFieldAnyone)
                         {
-                            if (timing == EffectTiming.OnEnterFieldAnyone)
-                            {
-                                return CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, OpponentsDigimon);
-                            }
-
-                            if (timing == EffectTiming.OnDestroyedAnyone)
-                                return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, OpponentsDigimon, activateClass);
+                            return CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, OpponentsDigimon);
                         }
-                    }
 
+                        if (timing == EffectTiming.OnDestroyedAnyone)
+                            return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, OpponentsDigimon, activateClass
+                        );
+                    }
                     return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && card.PermanentOfThisCard().DigivolutionCards.Count >= 2;
                 }
 
                 bool OpponentsDigimon(Permanent permanent)
@@ -291,7 +290,7 @@ namespace DCGO.CardEffects.EX10
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.Custom,
                                 customRootCardList: thisPermanent.DigivolutionCards,
-                                canLookReverseCard: false,
+                                canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
 
@@ -335,7 +334,7 @@ namespace DCGO.CardEffects.EX10
                                             afterSelectCardCoroutine: null,
                                             message: "Select 1 card to play.",
                                             maxCount: maxCount,
-                                            canEndNotMax: false,
+                                            canEndNotMax: true,
                                             isShowOpponent: true,
                                             mode: SelectCardEffect.Mode.Custom,
                                             root: SelectCardEffect.Root.Trash,
