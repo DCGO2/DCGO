@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT16
             {
                 bool CopyCardCondition(CardSource cardSource) => cardSource.EqualsCardName("Goldramon");
 
-                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, cardCondition: CopyCardCondition));
+                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(card, cardCondition: CopyCardCondition));
             }
             #endregion
 
