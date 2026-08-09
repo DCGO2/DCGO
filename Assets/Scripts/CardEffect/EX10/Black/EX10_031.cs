@@ -187,7 +187,8 @@ namespace DCGO.CardEffects.EX10
                         canTargetCondition: CanSelectCardCondition,
                         SelectCardEffect.Root.DigivolutionCards,
                         activateClass,
-                        payCost: false
+                        payCost: false,
+                        targetPermanent: card.PermanentOfThisCard()
                     ));
                 }
             }
