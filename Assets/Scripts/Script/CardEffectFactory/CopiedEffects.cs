@@ -14,7 +14,7 @@ public partial class CardEffectFactory
         CardSource card,
         bool isInheritedEffect = false,
         bool isLinkedEffect = false,
-        Func<List<CardSource>> targetSources = null,
+        Func<List<CardSource>, List<CardSource>> targetSources = null,
         Func<Hashtable, bool> canUseCondition = null,
         Func<Permanent, bool> permanentCondition = null,
         Func<CardSource, bool> cardSourceCondition = null,
@@ -85,10 +85,10 @@ public partial class CardEffectFactory
             {
                 if (thisPermanent == null || thisPermanent.DigivolutionCards == null)
                     return getCardEffects;
-                targetSources = () => validSources(sourceCard.PermanentOfThisCard().DigivolutionCards);
+                targetSources = cardSources => cardSources;
             } 
 
-            foreach (CardSource cardSource in targetSources())
+            foreach (CardSource cardSource in validSources(targetSources(sourceCard.PermanentOfThisCard().DigivolutionCards)))
             {
                 List<ICardEffect> toCopyEffects = cardSource.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(_timing, sourceCard);
                 toCopyEffects.ForEach(eff => eff.SetOriginalEffectSourceCard(cardSource));
@@ -106,15 +106,33 @@ public partial class CardEffectFactory
                     {
                         getCardEffects.Add(activateClass);
 
+                        List<CardSource> ValidCardSources = null;
+
+                        bool ValidCardSourceAtTrigger()
+                        {
+                            ValidCardSources = validSources(targetSources(sourceCard.PermanentOfThisCard().DigivolutionCards));
+                            return ValidCardSources.Contains(activateClass.OriginalEffectSourceCard);
+                        }
+
+                        bool ValidCardSourceAtActivate()
+                        {
+                            Permanent thisPermanent = sourceCard.PermanentOfThisCard();
+                            if (thisPermanent != null)
+                            {
+                                ValidCardSources = validSources(targetSources(sourceCard.PermanentOfThisCard().DigivolutionCards));
+                            }
+                            return ValidCardSources.Contains(activateClass.OriginalEffectSourceCard);
+                        }
+
                         var originalUseCondition = activateClass.CanUseCondition;
                         activateClass.SetCanUseCondition(
-                            hashtable => validSources(targetSources()).Contains(activateClass.OriginalEffectSourceCard) 
+                            hashtable => ValidCardSourceAtTrigger() 
                             && (originalUseCondition is null || originalUseCondition(hashtable))
                         );
 
                         var originalActivateCondition = activateClass.CanActivateCondition;
                         activateClass.SetCanActivateCondition(
-                            hashtable => validSources(targetSources()).Contains(activateClass.OriginalEffectSourceCard) 
+                            hashtable => ValidCardSourceAtActivate()
                             && (originalActivateCondition is null || originalActivateCondition(hashtable))
                         );
 
@@ -132,7 +150,7 @@ public partial class CardEffectFactory
                         getCardEffects.Add(PermanentEffectFactory.AddDetailClass(
                             thisPermanent,
                             cardEffect.EffectDescription,
-                            true,
+                            false,
                             cardEffect));
                     }
                 }
