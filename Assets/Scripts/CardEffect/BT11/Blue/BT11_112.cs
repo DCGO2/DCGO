@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Rina Shinomiya
 namespace DCGO.CardEffects.BT11
@@ -76,6 +77,8 @@ namespace DCGO.CardEffects.BT11
             #region All Turns
             if (timing == EffectTiming.OnTappedAnyone)
             {
+                List<Permanent> tappedPermanents = null;
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Activate [When Digivolving] effect", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
@@ -88,19 +91,20 @@ namespace DCGO.CardEffects.BT11
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return YourDigimon(permanent)
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.ContainsCardName("Veedramon");
-                }
-
-                bool YourDigimon(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, PermanentCondition);
+                    if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, PermanentCondition))
+                    {
+                        tappedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(PermanentCondition);
+                        return true;
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -113,10 +117,7 @@ namespace DCGO.CardEffects.BT11
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                    List<Permanent> tappedPermanents = CardEffectCommons.GetPermanentsFromHashtable(_hashtable)
-                        .Filter(YourDigimon);
-
-                    if (tappedPermanents != null)
+                    if (tappedPermanents != null && tappedPermanents.Any() && CardEffectCommons.HasMatchConditionPermanent(tappedPermanents.Contains))
                     {
                         List<ICardEffect> candidateEffects = tappedPermanents
                             .Map(permanent => permanent.EffectList(EffectTiming.OnEnterFieldAnyone))
