@@ -66,7 +66,7 @@ namespace DCGO.CardEffects.EX9
                         }
 
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
-                            element:element,
+                            element: element,
                             CanTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                             selectMessage: "7 level 4 [DM] trait Digimon cards w/different names",
                             elementCount: 7,
@@ -110,15 +110,15 @@ namespace DCGO.CardEffects.EX9
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.IsDigimon 
-                    && cardSource.HasLevel 
-                    && cardSource.Level <= 4 
+                return cardSource.IsDigimon
+                    && cardSource.HasLevel
+                    && cardSource.Level <= 4
                     && cardSource.HasDMTraits;
             }
 
             bool CanSelectPermanentCondition(Permanent permanent, List<CardColor> cardColors)
             {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) 
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                     && permanent.TopCard.CardColors.Exists(color => cardColors.Contains(color));
             }
 
@@ -295,15 +295,11 @@ namespace DCGO.CardEffects.EX9
                         if (isNotImmune.Count > 0)
                         {
                             yield return ContinuousController.instance.StartCoroutine(
-                                new DestroyPermanentsClass(isNotImmune, hashtable).Destroy());
+                        new DestroyPermanentsClass(isNotImmune, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                         }
                     }
                 }
-                    if (permanentToDelete.Count > 0)
-{
-                            yield return ContinuousController.instance.StartCoroutine(
-                                new DestroyPermanentsClass(isNotImmune, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
-}
+            }
             #endregion
 
             #region All Turns
