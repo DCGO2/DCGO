@@ -299,7 +299,11 @@ namespace DCGO.CardEffects.EX9
                         }
                     }
                 }
-            }
+                    if (permanentToDelete.Count > 0)
+{
+                            yield return ContinuousController.instance.StartCoroutine(
+                                new DestroyPermanentsClass(isNotImmune, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
+}
             #endregion
 
             #region All Turns
