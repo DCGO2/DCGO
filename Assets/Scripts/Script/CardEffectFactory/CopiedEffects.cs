@@ -17,7 +17,8 @@ public partial class CardEffectFactory
         Func<Permanent, bool> permanentCondition = null,
         Func<CardSource, bool> cardSourceCondition = null,
         Func<CardSource, bool> cardCondition = null,
-        Func<ICardEffect, bool> effectCondition = null
+        Func<ICardEffect, bool> effectCondition = null,
+        bool isSuccession = false
         )
     {
 
@@ -57,7 +58,7 @@ public partial class CardEffectFactory
         cardSourceCondition ??= DefaultCardSourceCondition;
 
         AddSkillClass addSkillClass = new AddSkillClass();
-        addSkillClass.SetUpICardEffect("Copy Digivolution Card Effects", canUseCondition, card);
+        addSkillClass.SetUpICardEffect(isSuccession ? "Succession" : "Copy Digivolution Card Effects", canUseCondition, card);
         addSkillClass.SetIsInheritedEffect(isInheritedEffect);
         addSkillClass.SetIsLinkedEffect(isLinkedEffect);
 
@@ -137,7 +138,7 @@ public partial class CardEffectFactory
                             true,
                             activateClass));
                     }
-                    else
+                    else if (!isSuccession || cardEffect.EffectName != "Succession") // Succession can never copy another succession skill
                     {
                         getCardEffects.Add(cardEffect);
                         getCardEffects.Add(PermanentEffectFactory.AddDetailClass(
@@ -147,6 +148,9 @@ public partial class CardEffectFactory
                             cardEffect));
                     }
                 }
+                // If succession, break loop after first valid card to only copy topmost.
+                // break instead of return in case we ever need to perform more actions before returning
+                if (isSuccession) break; 
             }
 
             return getCardEffects;
