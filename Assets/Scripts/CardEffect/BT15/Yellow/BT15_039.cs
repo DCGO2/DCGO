@@ -286,8 +286,8 @@ namespace DCGO.CardEffects.BT15
             {
                 bool CopyCardCondition(CardSource cardSource) => cardSource.ContainsCardName("Gammamon");
 
-                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, cardCondition: CopyCardCondition));
-                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, isInheritedEffect: true, cardCondition: CopyCardCondition));
+                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(card, cardCondition: CopyCardCondition));
+                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(card, isInheritedEffect: true, cardCondition: CopyCardCondition));
             }
             #endregion
 
