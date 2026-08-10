@@ -31,93 +31,97 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region Your Turn
-            if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnDigivolutionCardDiscarded)
+            if (timing == EffectTiming.None)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Add [End of Attack] to all of this Digimon's [On Deletion] effects.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                activateClass.SetIsBackgroundProcess(true);
-                activateClass.SetIsDigimonEffect(true);
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
+                bool CanUseEndOfAttackCondition(Hashtable hashtable, ActivateClass activateClass)
                 {
-                    return "[Your Turn] While [Phoenixmon] or [X Antibody] is in this Digimon's digivolution cards, attach [End of Attack] to all of this Digimon's [On Deletion] effects.";
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
-                bool CanUseCondition(Hashtable hashtable)
+                bool CanActivateEndOfAttackCondition(Hashtable hashtable, ActivateClass activateClass)
                 {
-                    return CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && card.PermanentOfThisCard().TopCard == card
+                        && PermanentHasCorrectSources();//check this card is still top card and still has correct sources, so the card still has the copy effect
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
+                bool GainEffectCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Phoenixmon") || cardSource.EqualsCardName("X Antibody")) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsOwnerTurn(card)
+                        && CardEffectCommons.IsExistOnBattleArea(card)
+                        && PermanentHasCorrectSources();
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                bool PermanentHasCorrectSources() => card.PermanentOfThisCard() != null && card.PermanentOfThisCard().DigivolutionCards.Any((cardSource) => cardSource.EqualsCardName("Phoenixmon") || cardSource.EqualsCardName("X Antibody"));
+
+                bool cardSourceCondition(CardSource cardSource) => cardSource == card;
+
+                AddSkillClass addSkillClass = new AddSkillClass();
+                addSkillClass.SetUpICardEffect("Attach [End of Attack] to all this Digimon's [On Deletion]", GainEffectCondition, card);
+                cardEffects.Add(addSkillClass);
+
+                List<ICardEffect> GetEffects(CardSource sourceCard, List<ICardEffect> getCardEffects, EffectTiming _timing)
                 {
-                    List<ICardEffect> onDeletionEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnDestroyedAnyone).Where(x => x.IsOnDeletion && !x.IsSecurityEffect).ToList();
-                    List<Func<EffectTiming, ICardEffect>> onEndAttackEffects = card.PermanentOfThisCard().UntilOwnerTurnEndEffects.Where(x => x(EffectTiming.OnEndAttack).HashString.StartsWith("EndOfAttack")).ToList();
-                    List<ICardEffect> effectsToAdd = new List<ICardEffect>();
+                    getCardEffects ??= new List<ICardEffect>();
 
-                    foreach (ICardEffect deletionEffect in onDeletionEffects)
+                    if (sourceCard == null || _timing is not EffectTiming.OnEndAttack)
+                        return getCardEffects;
+
+                    List<ActivateClass> onDeletionEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnDestroyedAnyone).Where(x => x.IsOnDeletion && !x.IsSecurityEffect).Cast<ActivateClass>().ToList();
+
+                    foreach(ActivateClass activateClass in onDeletionEffects)
                     {
-                        List<bool> foundMatchingEffect = onEndAttackEffects.Select(x => x(EffectTiming.OnEndAttack).HashString.EndsWith(deletionEffect.EffectSourceCard.CardID)).ToList();
+                        getCardEffects.Add(activateClass);
 
-                        if (foundMatchingEffect.Count == 0)
-                            effectsToAdd.Add(deletionEffect);
-                    }
+                        activateClass.SetOriginalEffectSourceCard(activateClass.EffectSourceCard);
 
-                    foreach (ICardEffect endOfAttackEffect in effectsToAdd)
-                    {
-                        ActivateClass activateEndofAttack = new ActivateClass();
-                        activateEndofAttack.SetUpICardEffect(endOfAttackEffect.EffectName, CanUseEndOfAttackCondition, card);
-                        activateEndofAttack.SetUpActivateClass(CanActivateEndOfAttackCondition, ActivateEndOfAttackCoroutine, endOfAttackEffect.MaxCountPerTurn, endOfAttackEffect.IsOptional, endOfAttackEffect.EffectDiscription);
-                        activateEndofAttack.SetIsInheritedEffect(endOfAttackEffect.IsInheritedEffect);
-                        activateEndofAttack.SetHashString($"EndOfAttack_{endOfAttackEffect.EffectSourceCard.CardID}");
-                        activateEndofAttack.SetEffectSourceCard(endOfAttackEffect.EffectSourceCard);
-                        activateEndofAttack.SetEffectSourcePermanent(card.PermanentOfThisCard());
-                        activateEndofAttack.SetIsDigimonEffect(true);
+                        //EOA version of effect is on Phoenixmon X but will need to check if the source card is still in the expected place to activate. Capturing this information when the class is created for reference in conditions below
+                        bool wasInherited = activateClass.IsInheritedEffect;
+                        bool wasLinked = activateClass.IsLinkedEffect;
 
-                        bool CanUseEndOfAttackCondition(Hashtable hashtable1)
-                        {
-                            if (card.PermanentOfThisCard().TopCard != card)
+                        activateClass.SetIsInheritedEffect(false);
+                        activateClass.SetIsLinkedEffect(false);
+
+                        activateClass.SetCanUseCondition(
+                            hashtable => CanUseEndOfAttackCondition(hashtable, activateClass)
+                        );
+
+                        Permanent thisPermanent = card.PermanentOfThisCard();
+                        CardSource originalCard = activateClass.OriginalEffectSourceCard;
+
+                        activateClass.SetCanActivateCondition(
+                            hashtable => {
+                                if (CanActivateEndOfAttackCondition(hashtable, activateClass))
+                                {
+                                    //Check source card is still in position to activate
+                                    if (wasInherited)
+                                        return thisPermanent.DigivolutionCards.Contains(originalCard);
+                                    else if (wasLinked)
+                                        return thisPermanent.LinkedCards.Contains(originalCard);
+                                    else
+                                        return thisPermanent.TopCard == originalCard;
+                                }
                                 return false;
+                            }
+                        );
 
-                            if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Phoenixmon") || cardSource.EqualsCardName("X Antibody")) == 0)
-                                return false;
-
-                            return CardEffectCommons.CanTriggerOnEndAttack(hashtable1, card);
-                        }
-
-                        bool CanActivateEndOfAttackCondition(Hashtable hashtable1)
-                        {
-                            return CardEffectCommons.IsExistOnBattleArea(card);
-                        }
-
-                        IEnumerator ActivateEndOfAttackCoroutine(Hashtable hashtable)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)endOfAttackEffect).Activate(hashtable));
-                        }
-
-                        CardEffectCommons.AddEffectToPermanent(
-                                   targetPermanent: card.PermanentOfThisCard(),
-                                   effectDuration: EffectDuration.UntilOwnerTurnEnd,
-                                   card: card,
-                                   cardEffect: activateEndofAttack,
-                                   timing: EffectTiming.OnEndAttack);
+                        activateClass.SetHashString(GenerateHashString(card, activateClass.OriginalEffectSourceCard, activateClass.HashString));
                     }
 
-                    yield return null;
+                    return getCardEffects;
+                }
+
+                addSkillClass.SetUpAddSkillClass(
+                    cardSourceCondition: cardSourceCondition,
+                    getEffects: GetEffects,
+                    limitTiming: EffectTiming.OnEndAttack //important as it also prevents stack overflow on this effect
+                );
+
+                string GenerateHashString(CardSource card, CardSource cardSource, string source)
+                {
+                    string sourceHashString = source ??= "";
+                    return $"{card.CardIndex}-copying-{cardSource.CardIndex}-effect-{sourceHashString}";
                 }
             }
             #endregion
