@@ -428,7 +428,7 @@ namespace DCGO.CardEffects.BT15
                     {
                         Permanent thisPermanent = card.PermanentOfThisCard();
 
-                        #region Add other card's effects to this card for "as effect of this card
+                        #region Add other card's effects to this card for "as effect of this card"
                         AddSkillClass addSkillClass = new AddSkillClass();
                         addSkillClass.SetUpICardEffect("Copy Digivolution Card Effects", _ => true, card);
 
@@ -441,13 +441,12 @@ namespace DCGO.CardEffects.BT15
 
                         List<ICardEffect> GetEffects(CardSource sourceCard, List<ICardEffect> getCardEffects, EffectTiming _timing)
                         {
-                            if (getCardEffects == null)
-                                getCardEffects = new List<ICardEffect>();
+                            getCardEffects ??= new List<ICardEffect>();
 
                             if (sourceCard == null || _timing is not EffectTiming.OnEnterFieldAnyone)
                                 return getCardEffects;
 
-                            foreach(ICardEffect cardEffect in candidateEffects)
+                            foreach (ICardEffect cardEffect in candidateEffects)
                             {
                                 if (cardEffect.IsInheritedEffect || cardEffect.IsLinkedEffect)
                                 {
