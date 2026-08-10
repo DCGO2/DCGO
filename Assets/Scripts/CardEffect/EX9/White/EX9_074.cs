@@ -200,17 +200,19 @@ namespace DCGO.CardEffects.EX9
                 if (colours.Count >= 6 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)))
                 {
                     List<Permanent> permanentToDelete = new List<Permanent>();
-                    List<CardColor> selectableColors = new List<CardColor>();
                     List<Permanent> isNotImmune = new List<Permanent>();
+                    List<CardColor> selectableColors = new List<CardColor>();
 
                     foreach (string cardColor in DataBase.CardColorNameDictionary.Values)
                     {
-                        CardColor compareColor = DictionaryUtility.GetCardColor(cardColor.Trim(), DataBase.CardColorNameDictionary);
+                        CardColor compareColor = DictionaryUtility.GetCardColor(
+                            cardColor.Trim(),
+                            DataBase.CardColorNameDictionary);
 
                         bool CanSelectOpponentDigimon(Permanent permanent)
                         {
-                            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                                   permanent.TopCard.CardColors.Contains(compareColor);
+                            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                                && permanent.TopCard.CardColors.Contains(compareColor);
                         }
 
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentDigimon))
@@ -219,18 +221,27 @@ namespace DCGO.CardEffects.EX9
                         }
                     }
 
+                    selectableColors = selectableColors
+                        .OrderBy(color =>
+                            card.Owner.Enemy.GetBattleAreaDigimons().Count(permanent =>
+                                CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                                && permanent.TopCard.CardColors.Contains(color)))
+                        .ToList();
+
                     foreach (CardColor deletableColor in selectableColors)
                     {
                         bool CanSelectOpponentDigimon(Permanent permanent)
                         {
                             return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                                 && permanent.TopCard.CardColors.Contains(deletableColor)
+                                && !permanentToDelete.Contains(permanent)
                                 && CanTargetCondition_ByPreSelecetedList(permanentToDelete, permanent);
                         }
 
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentDigimon))
                         {
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            SelectPermanentEffect selectPermanentEffect =
+                                GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectPermanentEffect.SetUp(
                                 selectPlayer: card.Owner,
@@ -245,26 +256,30 @@ namespace DCGO.CardEffects.EX9
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage($"Select 1 {deletableColor} Digimon to delete", $"Opponent is selecting 1 {deletableColor} Digimon to delete");
+                            selectPermanentEffect.SetUpCustomMessage(
+                                $"Select 1 {deletableColor} Digimon to delete",
+                                $"Opponent is selecting 1 {deletableColor} Digimon to delete");
 
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(
+                                selectPermanentEffect.Activate());
+                        }
+
+                        IEnumerator DigimonToDelete(Permanent permanent)
+                        {
+                            if (permanent != null)
+                            {
+                                permanentToDelete.Add(permanent);
+                            }
+
+                            yield return null;
                         }
                     }
 
-                    bool CanTargetCondition_ByPreSelecetedList(List<Permanent> permanents, Permanent permanent)
+                    bool CanTargetCondition_ByPreSelecetedList(
+                        List<Permanent> permanents,
+                        Permanent permanent)
                     {
-                        if (permanentToDelete.Contains(permanent))
-                            return false;
-
-                        return true;
-                    }
-
-                    IEnumerator DigimonToDelete(Permanent permanent)
-                    {
-                        if (permanent != null)
-                            permanentToDelete.Add(permanent);
-
-                        yield return null;
+                        return !permanentToDelete.Contains(permanent);
                     }
 
                     if (permanentToDelete.Count > 0)
@@ -279,7 +294,8 @@ namespace DCGO.CardEffects.EX9
 
                         if (isNotImmune.Count > 0)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(isNotImmune, hashtable).Destroy());
+                            yield return ContinuousController.instance.StartCoroutine(
+                                new DestroyPermanentsClass(isNotImmune, hashtable).Destroy());
                         }
                     }
                 }
