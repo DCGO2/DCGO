@@ -9,8 +9,6 @@ public partial class CardEffectFactory
     /// from digivolution cards under this Permanent.
     /// </summary>
     public static AddSkillClass CopyDigivolutionCardEffects(
-        ref List<ICardEffect> cardEffects,
-        EffectTiming timing,
         CardSource card,
         bool isInheritedEffect = false,
         bool isLinkedEffect = false,
@@ -22,11 +20,6 @@ public partial class CardEffectFactory
         Func<ICardEffect, bool> effectCondition = null
         )
     {
-        
-        if (timing is not EffectTiming.None)
-        {
-            return null;
-        }
 
         bool DefaultCanUseCondition(Hashtable hashtable)
         {
