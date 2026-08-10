@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+
 public partial class CardEffectFactory
 {    
     #region Trigger effect of [Succession] on oneself
