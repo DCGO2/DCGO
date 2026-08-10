@@ -21,6 +21,7 @@ public partial class CardEffectFactory
         bool isSuccession = false
         )
     {
+
         bool DefaultCanUseCondition(Hashtable hashtable)
         {
             return CardEffectCommons.IsExistOnBattleArea(card);
