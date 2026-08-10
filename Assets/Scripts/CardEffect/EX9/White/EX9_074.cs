@@ -200,7 +200,6 @@ namespace DCGO.CardEffects.EX9
                 if (colours.Count >= 6 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)))
                 {
                     List<Permanent> permanentToDelete = new List<Permanent>();
-                    List<Permanent> isNotImmune = new List<Permanent>();
                     List<CardColor> selectableColors = new List<CardColor>();
 
                     foreach (string cardColor in DataBase.CardColorNameDictionary.Values)
@@ -284,19 +283,8 @@ namespace DCGO.CardEffects.EX9
 
                     if (permanentToDelete.Count > 0)
                     {
-                        foreach (Permanent permanent in permanentToDelete)
-                        {
-                            if (permanent.CanBeDestroyedBySkill(activateClass))
-                            {
-                                isNotImmune.Add(permanent);
-                            }
-                        }
-
-                        if (isNotImmune.Count > 0)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(
-                        new DestroyPermanentsClass(isNotImmune, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(
+                            new DestroyPermanentsClass(permanentToDelete, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                     }
                 }
             }
