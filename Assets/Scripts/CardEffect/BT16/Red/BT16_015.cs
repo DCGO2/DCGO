@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.BT16
 
                     List<ActivateClass> onDeletionEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnDestroyedAnyone).Where(x => x.IsOnDeletion && !x.IsSecurityEffect).Cast<ActivateClass>().ToList();
 
-                    foreach(ActivateClass activateClass in onDeletionEffects)
+                    foreach (ActivateClass activateClass in onDeletionEffects)
                     {
                         getCardEffects.Add(activateClass);
 
@@ -131,32 +131,22 @@ namespace DCGO.CardEffects.BT16
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 digimon, delete 1 digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[On Deletion] You may play 1 11000 DP or lower red Digimon card with [Avian], [Bird], [Beast], [Animal], or [Sovereign], other than [Sea Animal] in one of its traits from your hand without paying the cost. Delete 1 of your opponent's Digimon with as much or less DP as the Digimon this effect played.";
                 }
 
                 bool CanPlayTargetCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardKinds.Contains(CardKind.Digimon))
-                    {
-                        if (cardSource.HasDP && cardSource.CardDP <= 11000)
-                        {
-                            if (cardSource.HasCardColor(CardColor.Red))
-                            {
-                                if (cardSource.HasAvianBeastAnimalTraits)
-                                {
-                                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass))
-                                        return true;
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsDigimon
+                        && cardSource.HasDP
+                        && cardSource.CardDP <= 11000
+                        && cardSource.HasCardColor(CardColor.Red)
+                        && cardSource.HasAvianBeastAnimalTraits
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -229,15 +219,9 @@ namespace DCGO.CardEffects.BT16
 
                         bool CanDestroyTargetCondition(Permanent permanent)
                         {
-                            if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                            {
-                                if (permanent.TopCard.HasDP && permanent.DP <= cardToPlay.PermanentOfThisCard().DP)
-                                {
-                                    return true;
-                                }
-                            }
-
-                            return false;
+                            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                                && permanent.TopCard.HasDP
+                                && permanent.DP <= cardToPlay.PermanentOfThisCard().DP;
                         }
                     }
                 }
