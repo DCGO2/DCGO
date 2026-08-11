@@ -11,7 +11,7 @@ public class ResultObject : MonoBehaviour
     [SerializeField] Image WinImage;
     [SerializeField] Image LoseImage;
     [SerializeField] Text ResultText;
-    public Button ReturnToSelectCardButton;
+    public Button ReturnToResultButton;
 
     public void Init()
     {
@@ -116,15 +116,15 @@ public class ResultObject : MonoBehaviour
     public void OnClickReturnToResultsdButton()
     {
         this.gameObject.SetActive(true);
-        ReturnToSelectCardButton.gameObject.SetActive(false);
+        ReturnToResultButton.gameObject.SetActive(false);
     }
 
     public void OnClickCheckFieldResultsButton()
     {
         this.gameObject.SetActive(false);
-        ReturnToSelectCardButton.gameObject.SetActive(true);
-        ReturnToSelectCardButton.onClick.RemoveAllListeners();
-        ReturnToSelectCardButton.onClick.AddListener(() => OnClickReturnToResultsdButton());
+        ReturnToResultButton.gameObject.SetActive(true);
+        ReturnToResultButton.onClick.RemoveAllListeners();
+        ReturnToResultButton.onClick.AddListener(() => OnClickReturnToResultsdButton());
     }
     #endregion
 }

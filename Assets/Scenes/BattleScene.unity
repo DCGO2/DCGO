@@ -1680,7 +1680,7 @@ MonoBehaviour:
   WinImage: {fileID: 5415108216310341451}
   LoseImage: {fileID: 674688098458604440}
   ResultText: {fileID: 1912860607}
-  ReturnToSelectCardButton: {fileID: 218748637}
+  ReturnToResultButton: {fileID: 218748637}
 --- !u!1 &35120713
 GameObject:
   m_ObjectHideFlags: 0
