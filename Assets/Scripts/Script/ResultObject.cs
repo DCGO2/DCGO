@@ -11,6 +11,7 @@ public class ResultObject : MonoBehaviour
     [SerializeField] Image WinImage;
     [SerializeField] Image LoseImage;
     [SerializeField] Text ResultText;
+    public Button ReturnToSelectCardButton;
 
     public void Init()
     {
@@ -111,4 +112,19 @@ public class ResultObject : MonoBehaviour
 
         PlayLog.OnAddLog?.Invoke(log);
     }
+    #region Temporarily display/hide Result Screen
+    public void OnClickReturnToResultsdButton()
+    {
+        this.gameObject.SetActive(true);
+        ReturnToSelectCardButton.gameObject.SetActive(false);
+    }
+
+    public void OnClickCheckFieldResultsButton()
+    {
+        this.gameObject.SetActive(false);
+        ReturnToSelectCardButton.gameObject.SetActive(true);
+        ReturnToSelectCardButton.onClick.RemoveAllListeners();
+        ReturnToSelectCardButton.onClick.AddListener(() => OnClickReturnToResultsdButton());
+    }
+    #endregion
 }
