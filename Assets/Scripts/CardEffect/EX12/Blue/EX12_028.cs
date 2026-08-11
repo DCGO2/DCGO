@@ -107,7 +107,7 @@ namespace DCGO.CardEffects.EX12
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("You may DNA digivolve. Then you may change the attack target to 1 Digimon.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place a [DS] Digimon card from hand under to <De-Digivolve 1> 1 enemy digimon, if at 0 mem, gain 1.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("EX12_028_AT");
@@ -135,7 +135,8 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.EqualsTraits("DS");
+                    return cardSource.IsDigimon
+                        && cardSource.EqualsTraits("DS");
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);

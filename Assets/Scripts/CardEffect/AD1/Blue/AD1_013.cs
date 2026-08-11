@@ -200,21 +200,24 @@ namespace DCGO.CardEffects.AD1
                 }
 
                 #region Amount of colors in this Digimon's digivolution cards
-                List<CardColor> cardColors = new List<CardColor>();
-
-                foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
+                int DigivolutionCardColors()
                 {
-                    cardColors.AddRange(source.CardColors);
+                    List<CardColor> cardColors = new List<CardColor>();
+
+                    foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
+                    {
+                        cardColors.AddRange(source.CardColors);
+                    }
+
+                    cardColors = cardColors.Distinct().ToList();
+
+                    return cardColors.Count;
                 }
-
-                cardColors = cardColors.Distinct().ToList();
-
-                int DigivolutionCardColors = cardColors.Count;
                 #endregion
 
                 int changeDP()
                 {
-                    return 1000 * DigivolutionCardColors;
+                    return 1000 * DigivolutionCardColors();
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(

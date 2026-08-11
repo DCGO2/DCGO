@@ -282,10 +282,13 @@ namespace DCGO.CardEffects.BT15
             #endregion
 
             #region All Turns Copy effects of Gammamon in digivolution cards
-            bool CopyCardCondition(CardSource cardSource) => cardSource.ContainsCardName("Gammamon");
+            if (timing == EffectTiming.None)
+            {
+                bool CopyCardCondition(CardSource cardSource) => cardSource.ContainsCardName("Gammamon");
 
-            CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, cardCondition: CopyCardCondition);
-            CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, isInheritedEffect: true, cardCondition: CopyCardCondition);
+                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(card, cardCondition: CopyCardCondition));
+                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(card, isInheritedEffect: true, cardCondition: CopyCardCondition));
+            }
             #endregion
 
             return cardEffects;
