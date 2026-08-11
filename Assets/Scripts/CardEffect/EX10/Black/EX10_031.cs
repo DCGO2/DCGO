@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.EX10
                         {
                             return cardSource != null
                                 && cardSource.Owner == card.Owner
-                                && cardSource.CardNames_DigiXros.Equals("SkullKnightmon");
+                                && cardSource.CardNames_DigiXros.Contains("SkullKnightmon");
                         }
 
                         DigiXrosConditionElement element1 = new DigiXrosConditionElement(CanSelectCardCondition1, "DeadlyAxemon");
@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.EX10
                         {
                             return cardSource != null
                                 && cardSource.Owner == card.Owner
-                                && cardSource.CardNames_DigiXros.Equals("DeadlyAxemon");
+                                && cardSource.CardNames_DigiXros.Contains("DeadlyAxemon");
                         }
 
                         List<DigiXrosConditionElement> elements = new List<DigiXrosConditionElement>() { element, element1 };
