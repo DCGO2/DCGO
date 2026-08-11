@@ -125,82 +125,80 @@ namespace DCGO.CardEffects.BT11
             }
             #endregion
 
-            #region Shared All Turns
-            string SharedEffectName2() => "Trash 1 of this Digimon's sources to trash enemy top sec";
-
-            string SharedEffectDescription2() => "[All Turns][Once Per Turn] When an opponent's Digimon digivolves or an effect adds cards to the digivolution cards of an opponent's Digimon, by trashing 1 card in this Digimon's digivolution cards, trash the top card of your opponent's security stack.";
-
-            string SharedHashString2 = "BT11_088_AT";
-
-            bool SharedCanActivateCondition2(Hashtable hashtable, ActivateClass activateClass)
+            #region All Turns
+            if (timing == EffectTiming.OnAddDigivolutionCards || timing == EffectTiming.OnEnterFieldAnyone)
             {
-                return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                    && card.PermanentOfThisCard().DigivolutionCards.Count(cardSource => CanSelectCardCondition2(cardSource, activateClass)) >= 1;
-            }
+                #region Shared All Turns
+                string SharedEffectName2() => "Trash 1 of this Digimon's sources to trash enemy top sec";
 
-            bool CanSelectCardCondition2(CardSource cardSource, ActivateClass activateClass)
-            {
-                return !cardSource.CanNotTrashFromDigivolutionCards(activateClass)
-                    || cardSource.IsFaceDown;
-            }
+                string SharedEffectDescription2() => "[All Turns][Once Per Turn] When an opponent's Digimon digivolves or an effect adds cards to the digivolution cards of an opponent's Digimon, by trashing 1 card in this Digimon's digivolution cards, trash the top card of your opponent's security stack.";
 
-            IEnumerator SharedActivateCoroutine2(Hashtable hashtable, ActivateClass activateClass)
-            {
-                List<CardSource> selectedCards = new List<CardSource>();
+                string SharedHashString2 = "BT11_088_AT";
 
-                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                selectCardEffect.SetUp(
-                    canTargetCondition: (cardSource) => CanSelectCardCondition2(cardSource, activateClass),
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    canNoSelect: () => false,
-                    selectCardCoroutine: SelectCardCoroutine,
-                    afterSelectCardCoroutine: null,
-                    message: "Select 1 digivolution card to discard.",
-                    maxCount: 1,
-                    canEndNotMax: false,
-                    isShowOpponent: true,
-                    mode: SelectCardEffect.Mode.Custom,
-                    root: SelectCardEffect.Root.DigivolutionCards,
-                    customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                    canLookReverseCard: true,
-                    selectPlayer: card.Owner,
-                    cardEffect: null);
-
-                selectCardEffect.SetUseFaceDown();
-                selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to discard.", "The opponent is selecting 1 digivolution card to discard.");
-
-                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                bool CanSelectCardCondition2(CardSource cardSource, ActivateClass activateClass)
                 {
-                    selectedCards.Add(cardSource);
-
-                    yield return null;
+                    return !cardSource.CanNotTrashFromDigivolutionCards(activateClass)
+                        || cardSource.IsFaceDown;
                 }
 
-                if (selectedCards.Count >= 1)
+                IEnumerator SharedActivateCoroutine2(Hashtable hashtable, ActivateClass activateClass)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(card.PermanentOfThisCard(), selectedCards, activateClass).TrashDigivolutionCards());
+                    List<CardSource> selectedCards = new List<CardSource>();
 
-                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner.Enemy,
-                        destroySecurityCount: 1,
-                        cardEffect: activateClass,
-                        fromTop: true).DestroySecurity());
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                        canTargetCondition: (cardSource) => CanSelectCardCondition2(cardSource, activateClass),
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: () => false,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        message: "Select 1 digivolution card to discard.",
+                        maxCount: 1,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.Custom,
+                        root: SelectCardEffect.Root.DigivolutionCards,
+                        customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                        canLookReverseCard: true,
+                        selectPlayer: card.Owner,
+                        cardEffect: null);
+
+                    selectCardEffect.SetUseFaceDown();
+                    selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to discard.", "The opponent is selecting 1 digivolution card to discard.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    {
+                        selectedCards.Add(cardSource);
+
+                        yield return null;
+                    }
+
+                    if (selectedCards.Count >= 1)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(card.PermanentOfThisCard(), selectedCards, activateClass).TrashDigivolutionCards());
+
+                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                            player: card.Owner.Enemy,
+                            destroySecurityCount: 1,
+                            cardEffect: activateClass,
+                            fromTop: true).DestroySecurity());
+                    }
                 }
-            }
-            #endregion
+                #endregion
 
-            #region All Turns - Digivolve
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectName2(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(hash => SharedCanActivateCondition2(hash, activateClass), hash => SharedActivateCoroutine2(hash, activateClass), 1, true, SharedEffectDescription2());
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine2(hash, activateClass), 1, true, SharedEffectDescription2());
                 activateClass.SetHashString(SharedHashString2);
                 cardEffects.Add(activateClass);
+
+                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                    && card.PermanentOfThisCard().DigivolutionCards.Count(cardSource => CanSelectCardCondition2(cardSource, activateClass)) >= 1;
 
                 bool PermanentCondition(Permanent permanent)
                 {
@@ -209,29 +207,13 @@ namespace DCGO.CardEffects.BT11
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition);
-                }
-            }
-            #endregion
-
-            #region All Turns - Add Digivolution Card
-            if (timing == EffectTiming.OnAddDigivolutionCards)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName2(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(hash => SharedCanActivateCondition2(hash, activateClass), hash => SharedActivateCoroutine2(hash, activateClass), 1, true, SharedEffectDescription2());
-                activateClass.SetHashString(SharedHashString2);
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnAddDigivolutionCard(
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass) && 
+                        (timing == EffectTiming.OnAddDigivolutionCards && CardEffectCommons.CanTriggerOnAddDigivolutionCard(
                             hashtable: hashtable,
-                            permanentCondition: permanent => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card),
+                            permanentCondition: PermanentCondition,
                             cardEffectCondition: cardEffect => cardEffect != null,
-                            cardCondition: null);
+                            cardCondition: null)) ||
+                        (timing == EffectTiming.OnEnterFieldAnyone && CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition));
                 }
             }
             #endregion

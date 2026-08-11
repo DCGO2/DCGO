@@ -426,25 +426,67 @@ namespace DCGO.CardEffects.BT15
 
                     if (selectedCard != null)
                     {
+                        Permanent thisPermanent = card.PermanentOfThisCard();
+
+                        #region Add other card's effects to this card for "as effect of this card"
+                        AddSkillClass addSkillClass = new AddSkillClass();
+                        addSkillClass.SetUpICardEffect("Copy Digivolution Card Effects", _ => true, card);
+
+                        ICardEffect GetAddSkillEffect(EffectTiming _timing) => addSkillClass;
+
+                        card.Owner.UntilCalculateFixedCostEffect.Add(GetAddSkillEffect);
+
                         List<ICardEffect> candidateEffects = selectedCard.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
-                            .Clone()
                             .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnPlay);
 
-                        if (candidateEffects.Count >= 1)
+                        List<ICardEffect> GetEffects(CardSource sourceCard, List<ICardEffect> getCardEffects, EffectTiming _timing)
+                        {
+                            getCardEffects ??= new List<ICardEffect>();
+
+                            if (sourceCard == null || _timing is not EffectTiming.OnEnterFieldAnyone)
+                                return getCardEffects;
+
+                            foreach (ICardEffect cardEffect in candidateEffects)
+                            {
+                                if (cardEffect.IsInheritedEffect || cardEffect.IsLinkedEffect)
+                                {
+                                    continue;
+                                }
+
+                                cardEffect.SetOriginalEffectSourceCard(selectedCard);
+
+                                getCardEffects.Add(cardEffect);
+                            }
+
+                            return getCardEffects;
+                        }
+
+                        addSkillClass.SetUpAddSkillClass(
+                            cardSourceCondition: cardSource => cardSource == card,
+                            getEffects: GetEffects,
+                            limitTiming: EffectTiming.OnEnterFieldAnyone
+                        );
+                        #endregion
+
+                        #region Activate one of the added effects
+                        List<ICardEffect> activatableEffects = thisPermanent.EffectList(EffectTiming.OnEnterFieldAnyone)
+                            .Filter(cardEffect => cardEffect != null && cardEffect.OriginalEffectSourceCard == selectedCard && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnPlay);
+
+                        if (activatableEffects.Count >= 1)
                         {
                             ICardEffect selectedEffect = null;
 
-                            if (candidateEffects.Count == 1)
+                            if (activatableEffects.Count == 1)
                             {
-                                selectedEffect = candidateEffects[0];
+                                selectedEffect = activatableEffects[0];
                             }
                             else
                             {
-                                List<SkillInfo> skillInfos = candidateEffects
+                                List<SkillInfo> skillInfos = activatableEffects
                                     .Map(cardEffect => new SkillInfo(cardEffect, null, EffectTiming.None));
 
-                                List<CardSource> cardSources = candidateEffects
-                                    .Map(cardEffect => cardEffect.EffectSourceCard);
+                                List<CardSource> cardSources = activatableEffects
+                                    .Map(cardEffect => cardEffect.OriginalEffectSourceCard);
 
                                 SelectCardEffect selectSourceCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -493,11 +535,16 @@ namespace DCGO.CardEffects.BT15
                                 }
                             }
                         }
+                        #endregion
+
+                        #region Remove effects
+                        card.Owner.UntilCalculateFixedCostEffect.Remove(GetAddSkillEffect);
+                        #endregion
+
+                        int trashCount = 2 * card.PermanentOfThisCard().DigivolutionCards.Count(cardSource => cardSource.IsFaceUp && cardSource.IsLevel6);
+
+                        yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(trashCount, card.Owner.Enemy, activateClass).AddTrashCardsFromLibraryTop());
                     }
-
-                    int trashCount = 2 * card.PermanentOfThisCard().cardSources.Filter(cardSource => cardSource != card && cardSource.HasLevel && cardSource.Level == 6).Count;
-
-                    yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(trashCount, card.Owner.Enemy, activateClass).AddTrashCardsFromLibraryTop());
                 }
             }
             #endregion
