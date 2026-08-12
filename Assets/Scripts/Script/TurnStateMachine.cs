@@ -344,6 +344,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     bool _isRedraw = false;
     IEnumerator StartGame()
     {
+        PlayLog.OnAddLog?.Invoke($"\n-------------Turn: 0-------------\n");
 #if UNITY_EDITOR
         //gameContext.TurnPlayer = GManager.instance.Opponent;
 #endif
@@ -547,13 +548,13 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             player.FirstObject.SetActive(false);
         }
 
-        #region ログ追加
-        PlayLog.OnAddLog?.Invoke($"\n---------------------------------\nActive Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
-        #endregion
-
         TurnCount++;
 
         gameContext.TurnPlayer.TurnCount++;
+
+        #region ログ追加
+        PlayLog.OnAddLog?.Invoke($"\n-------------Turn: {TurnCount}-------------\n\nActive Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
+        #endregion
 
         gameContext.TurnPhase = GameContext.phase.Active;
         Debug.Log($"{gameContext.TurnPlayer}:Start Turn({TurnCount}th Turn)");
