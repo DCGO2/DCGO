@@ -18,7 +18,6 @@ namespace DCGO.CardEffects.BT26
                 activateClass.SetUpICardEffect("Trash a Tamer's bottom face-down card to play [Avian]/[DATA SQUAD] from trash", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("BT26_005_Inherit");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
