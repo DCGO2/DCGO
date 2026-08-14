@@ -44,8 +44,13 @@ public abstract class ICardEffect
 
     #region The source card of this effect
 
+    CardSource _originalEffectSourceCard = null;
+    public CardSource OriginalEffectSourceCard
+    {
+        get { return _originalEffectSourceCard; }
+        private set { _originalEffectSourceCard = value; }
+    }
     CardSource _effectSourceCard = null;
-
     public CardSource EffectSourceCard
     {
         get
@@ -63,7 +68,10 @@ public abstract class ICardEffect
 
         private set { _effectSourceCard = value; }
     }
-
+    public void SetOriginalEffectSourceCard(CardSource originalEffectSourceCard)
+    {
+        OriginalEffectSourceCard = originalEffectSourceCard;
+    }
     public void SetEffectSourceCard(CardSource effectSourceCard)
     {
         EffectSourceCard = effectSourceCard;
@@ -162,6 +170,22 @@ public abstract class ICardEffect
 
     string _effectDiscription = "";
 
+    public string EffectDescription
+    {
+        get { return _effectDiscription; }
+        private set
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                _effectDiscription = "";
+            }
+            else
+            {
+                _effectDiscription = value;
+            }
+        }
+    }
+    
     public string EffectDiscription
     {
         get { return _effectDiscription; }
@@ -802,12 +826,7 @@ public abstract class ICardEffect
                 {
                     if (EffectDiscription.StartsWith("[On Deletion]"))
                     {
-                        // Permanent effectPermanent = EffectSourceCard.PermanentOfThisCard() ?? new Permanent(new List<CardSource>() { EffectSourceCard });
-
-                        // Hashtable hashtable = CardEffectCommons.OnDeletionHashtable(new List<Permanent>() { effectPermanent }, null, null, false);
-
-                        // if (CanTrigger(hashtable))
-                            return true;
+                        return true;
                     }
                 }
             }
@@ -1281,4 +1300,77 @@ public static class ActivateICardEffectExtensionClass
     #endregion
 }
 
+public static class CopyICardEffectExtensionClass
+{
+    /// <summary>
+    /// Evaluates a list of card effects and expands any dynamic skill wrappers (IAddSkillEffect) 
+    /// into their underlying ICardEffects for a specific CardSource and Timing.
+    /// </summary>
+    public static IEnumerable<ICardEffect> FlattenEffects(
+        this IEnumerable<ICardEffect> rawEffects, 
+        EffectTiming timing  = EffectTiming.None,
+        EffectTiming timingLimit = EffectTiming.None)
+    {
+        if (rawEffects == null) yield break;
+
+        foreach (var effect in rawEffects)
+        {
+            if (effect == null) continue;
+
+            yield return effect;
+
+            if (effect is IAddSkillEffect skillWrapper && skillWrapper.ShouldAddEffect(timingLimit))
+            {
+                var grantedEffects = new List<ICardEffect>();
+                grantedEffects = skillWrapper.GetCardEffect(effect.EffectSourceCard, grantedEffects, timing);
+
+                if (grantedEffects != null)
+                {
+                    foreach (var innerEffect in grantedEffects)
+                    {
+                        yield return innerEffect;
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets all active effects of type T (including dynamically granted skills) for a given card/permanent.
+    /// </summary>
+    public static IEnumerable<T> GetFlatEffects<T>(
+        this IEnumerable<ICardEffect> rawEffects, 
+        EffectTiming timing  = EffectTiming.None,
+        EffectTiming timingLimit = EffectTiming.None) where T : class
+    {
+        foreach (var effect in rawEffects.FlattenEffects(timing, timingLimit))
+        {
+            if (effect is T matchedEffect)
+            {
+                yield return matchedEffect;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Checks if any active effect (including added skills) matches type T and satisfies a condition.
+    /// </summary>
+    public static bool HasEffect<T>(
+        this IEnumerable<ICardEffect> rawEffects, 
+        CardSource cardSource, 
+        System.Predicate<T> condition = null, 
+        EffectTiming timing = EffectTiming.None,
+        EffectTiming timingLimit = EffectTiming.None) where T : class
+    {
+        foreach (var effect in rawEffects.GetFlatEffects<T>(timing, timingLimit))
+        {
+            if (condition == null || condition(effect))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
 #endregion

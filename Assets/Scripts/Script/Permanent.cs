@@ -706,19 +706,10 @@ public class Permanent
         {
             foreach (Permanent permanent in player.GetFieldPermanents())
             {
-                foreach (ICardEffect cardEffect1 in permanent.EffectList(EffectTiming.None))
-                {
-                    if (cardEffect1 is IImmuneFromDPMinusEffect)
-                    {
-                        if (cardEffect1.CanUse(null))
-                        {
-                            if (((IImmuneFromDPMinusEffect)cardEffect1).ImmuneFromDPMinus(this, cardEffect))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
+                var immunityConfirmed = permanent.EffectList(EffectTiming.None)
+                .GetFlatEffects<IImmuneFromDPMinusEffect>()
+                .Any(e => ((ICardEffect)e).CanUse(null) && e.ImmuneFromDPMinus(this, cardEffect));
+                if (immunityConfirmed) return true;
             }
 
             foreach (ICardEffect cardEffect1 in player.EffectList(EffectTiming.None))
@@ -951,29 +942,29 @@ public class Permanent
                 }
 
                 #region Effects of face up security
-                    foreach (CardSource cardSource in player.SecurityCards)
-                    {
-                        if (cardSource.IsFlipped)
-                            continue;
+                foreach (CardSource cardSource in player.SecurityCards)
+                {
+                    if (cardSource.IsFlipped)
+                        continue;
 
-                        foreach (ICardEffect cardEffect in cardSource.EffectList(EffectTiming.None))
+                    foreach (ICardEffect cardEffect in cardSource.EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is IChangeLinkMaxEffect)
                         {
-                            if (cardEffect is IChangeLinkMaxEffect)
+                            if (((IChangeLinkMaxEffect)cardEffect).PermanentCondition(this))
                             {
-                                if (((IChangeLinkMaxEffect)cardEffect).PermanentCondition(this))
+                                if (cardEffect.CanUse(null))
                                 {
-                                    if (cardEffect.CanUse(null))
+                                    if (!TopCard.CanNotBeAffected(cardEffect))
                                     {
-                                        if (!TopCard.CanNotBeAffected(cardEffect))
-                                        {
-                                            cardEffects_ChangeLinkedMax.Add(cardEffect);
-                                        }
+                                        cardEffects_ChangeLinkedMax.Add(cardEffect);
                                     }
                                 }
                             }
                         }
                     }
-                    #endregion
+                }
+                #endregion
 
                 #region player effect
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
@@ -1765,19 +1756,19 @@ public class Permanent
             {
                 foreach (Permanent permanent in player.GetFieldPermanents())
                 {
+                    var sAttackEffects = permanent.EffectList(EffectTiming.None)
+                        .GetFlatEffects<IChangeSAttackEffect>();
+
                     #region 場のパーマネントの効果
-                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                    foreach (ICardEffect cardEffect in sAttackEffects)
                     {
-                        if (cardEffect is IChangeSAttackEffect)
+                        if (cardEffect.CanUse(null))
                         {
-                            if (cardEffect.CanUse(null))
+                            if (!TopCard.CanNotBeAffected(cardEffect))
                             {
-                                if (!TopCard.CanNotBeAffected(cardEffect))
+                                if (((IChangeSAttackEffect)cardEffect).isUpDown() == CalculateOrder.UpDownValue)
                                 {
-                                    if (((IChangeSAttackEffect)cardEffect).isUpDown() == CalculateOrder.UpDownValue)
-                                    {
-                                        cardEffects_ChangeDirectStrike.Add(cardEffect);
-                                    }
+                                    cardEffects_ChangeDirectStrike.Add(cardEffect);
                                 }
                             }
                         }
@@ -1852,20 +1843,18 @@ public class Permanent
             {
                 foreach (Permanent permanent in player.GetFieldPermanents())
                 {
+                    var sAttackEffects = permanent.EffectList(EffectTiming.None)
+                        .GetFlatEffects<IChangeSAttackEffect>()
+                        .Where(e => e.PermanentCondition(this));
+
                     #region Effects of permanents in play
-                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                    foreach (ICardEffect cardEffect in sAttackEffects)
                     {
-                        if (cardEffect is IChangeSAttackEffect)
+                        if (cardEffect.CanUse(null))
                         {
-                            if (((IChangeSAttackEffect)cardEffect).PermanentCondition(this))
+                            if (!TopCard.CanNotBeAffected(cardEffect))
                             {
-                                if (cardEffect.CanUse(null))
-                                {
-                                    if (!TopCard.CanNotBeAffected(cardEffect))
-                                    {
-                                        cardEffects_ChangeDirectStrike.Add(cardEffect);
-                                    }
-                                }
+                                cardEffects_ChangeDirectStrike.Add(cardEffect);
                             }
                         }
                     }
@@ -2738,19 +2727,10 @@ public class Permanent
                 foreach (Permanent permanent in player.GetFieldPermanents())
                 {
                     #region 場のパーマネントの効果
-                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
-                    {
-                        if (cardEffect is IRushEffect)
-                        {
-                            if (cardEffect.CanTrigger(null))
-                            {
-                                if (((IRushEffect)cardEffect).HasRush(this))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
+                    var rushConfirmed = permanent.EffectList(EffectTiming.None)
+                        .GetFlatEffects<IRushEffect>()
+                        .Any(e => ((ICardEffect)e).CanTrigger(null) && e.HasRush(this));
+                    if (rushConfirmed) return true;
                     #endregion
                 }
 

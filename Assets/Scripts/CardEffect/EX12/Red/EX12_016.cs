@@ -103,7 +103,7 @@ namespace DCGO.CardEffects.EX12
 
                 if(CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition2))
                 {
-                    Permanent selectedPermanment = null;
+                    Permanent selectedPermanent = null;
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -122,17 +122,17 @@ namespace DCGO.CardEffects.EX12
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        selectedPermanment = permanent;
+                        selectedPermanent = permanent;
                         yield return null;
                     }
 
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain [Start of Your Main Phase] This Digimon attacks", "The opponent is selecting 1 Digimon to gain [Start of Your Main Phase] This Digimon attacks");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    if (selectedPermanment != null)
+                    if (selectedPermanent != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.StartOfMainAttack(
-                            targetPermanent: selectedPermanment,
+                            targetPermanent: selectedPermanent,
                             cardEffect: activateClass));
                     }
                 }

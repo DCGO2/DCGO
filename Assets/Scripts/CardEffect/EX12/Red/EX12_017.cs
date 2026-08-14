@@ -186,8 +186,7 @@ namespace DCGO.CardEffects.EX12
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("2 of your Digimon may DNA into [Omnimon]/[ME]/[VB] in hand, then may redirect attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
-                activateClass.SetIsSkippable(true);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("EX12_017_Counter");
                 activateClass.SetIsCounterEffect(true);
                 cardEffects.Add(activateClass);
@@ -224,15 +223,24 @@ namespace DCGO.CardEffects.EX12
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool isUsed = false;
+
                     #region DNA digivolve
                     yield return ContinuousController.instance.StartCoroutine(
                         CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
                             CanSelectDNACardCondition,
                             payCost: true,
                             isHand: true,
-                            activateClass
+                            activateClass,
+                            successProcess: _ => SetUsed()
                         ));
                     #endregion
+
+                    IEnumerator SetUsed()
+                    {
+                        isUsed= true;
+                        yield return null;
+                    }
 
                     #region Redirect attack
                     Permanent selectedPermanent = null;
@@ -264,12 +272,16 @@ namespace DCGO.CardEffects.EX12
 
                     if (selectedPermanent != null)
                     {
+                        isUsed = true;
+
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SwitchDefender(
                             activateClass,
                             false,
                             selectedPermanent));
                     }
                     #endregion
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
