@@ -856,6 +856,18 @@ public class CardObjectController : MonoBehaviour
             }
         }
         #endregion
+
+        #region "When cards are added to the library" effect, regardless of origin (hand/security/field/digivolution source/trash)
+
+        System.Collections.Hashtable addLibraryTopHashtable = new System.Collections.Hashtable()
+        {
+            {"CardSources", cardSources},
+            {"IsTop", true}
+        };
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(addLibraryTopHashtable, EffectTiming.OnAddLibraryAnyone));
+
+        #endregion
     }
     #endregion
 
@@ -949,6 +961,18 @@ public class CardObjectController : MonoBehaviour
                 PlayLog.OnAddLog?.Invoke(log);
             }
         }
+        #endregion
+
+        #region "When cards are added to the library" effect, regardless of origin (hand/security/field/digivolution source/trash)
+
+        System.Collections.Hashtable addLibraryBottomHashtable = new System.Collections.Hashtable()
+        {
+            {"CardSources", cardSources},
+            {"IsTop", false}
+        };
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(addLibraryBottomHashtable, EffectTiming.OnAddLibraryAnyone));
+
         #endregion
     }
     #endregion
