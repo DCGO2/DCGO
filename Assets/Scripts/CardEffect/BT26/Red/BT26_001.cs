@@ -23,6 +23,9 @@ namespace DCGO.CardEffects.BT26
                 string EffectDescription()
                     => "[Your Turn] [Once Per Turn] When your effects add to decks, this Digimon may digivolve into a Digimon card with [Chronomon] in its text in the hand with the cost reduced by 1.";
 
+                // Approximates "your effects" by checking who owns the returned card, since
+                // AddLibraryTopCards/BottomCards don't carry which player's effect caused the
+                // move (same limitation the existing OnReturnCardsToLibraryFromTrash timing has).
                 bool CardSourceCondition(CardSource cardSource)
                     => cardSource.Owner == card.Owner;
 
