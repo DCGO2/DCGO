@@ -33,14 +33,15 @@ namespace DCGO.CardEffects.BT26
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
-                    => "[All Turns] When this Digimon would leave the battle area, by trashing 1 of its link cards with the [Seven Code] trait, it doesn't leave.";
+                    => "[All Turns] When this Digimon would leave the battle area other than by your effects, by trashing 1 of its link cards with the [Seven Code] trait, it doesn't leave.";
 
                 bool CanSelectLinkCardCondition(CardSource cardSource)
                     => cardSource.ContainsTraits("Seven Code");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card)
+                        && !CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card));
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
