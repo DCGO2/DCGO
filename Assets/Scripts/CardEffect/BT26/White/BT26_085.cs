@@ -101,47 +101,55 @@ namespace DCGO.CardEffects.BT26
                     bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                     bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
 
-                    if (!canSelectHand && !canSelectTrash) yield break;
-
-                    bool isHand = canSelectHand;
-
                     if (canSelectHand && canSelectTrash)
                     {
-                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
-                        {
-                            new(message: "From hand", value: 1, spriteIndex: 0),
-                            new(message: "From trash", value: 2, spriteIndex: 1),
-                        };
+                        List<SelectionElement<int>> selectionElements1 = new List<SelectionElement<int>>()
+                    {
+                        new (message: $"From hand", value : 1, spriteIndex: 0),
+                        new (message: $"From trash", value : 2, spriteIndex: 0),
+                        new (message: $"Don't Digivolve", value: 3, spriteIndex: 1)
+                    };
 
-                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Digivolve into [Chronomon: Destroy Mode] from which area?", notSelectPlayerMessage: "The opponent is choosing which area to digivolve from.");
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                        string selectPlayerMessage1 = "From which area will you Digivolve?";
+                        string notSelectPlayerMessage1 = "The opponent is choosing from which area to select a card.";
 
-                        isHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
+                    }
+                    else
+                    {
+                        GManager.instance.userSelectionManager.SetInt(canSelectHand ? 1 : 2);
                     }
 
-                    Permanent thisPermanent = card.PermanentOfThisCard();
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                        thisPermanent,
-                        CanSelectCardCondition,
-                        payCost: false,
-                        reduceCostTuple: null,
-                        fixedCostTuple: null,
-                        ignoreDigivolutionRequirementFixedCost: -1,
-                        isHand: isHand,
-                        activateClass: activateClass,
-                        successProcess: SuccessProcess()
-                    ));
+                    bool doSelect = GManager.instance.userSelectionManager.SelectedIntValue != 3;
 
-                    IEnumerator SuccessProcess()
+                    if (doSelect)
                     {
-                        thisPermanent.willBeRemoveField = false;
-                        thisPermanent.HideDeleteEffect();
-                        thisPermanent.HideHandBounceEffect();
-                        thisPermanent.HideDeckBounceEffect();
-                        thisPermanent.HideWillRemoveFieldEffect();
+                        Permanent thisPermanent = card.PermanentOfThisCard();
 
-                        yield return null;
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                            thisPermanent,
+                            CanSelectCardCondition,
+                            payCost: false,
+                            reduceCostTuple: null,
+                            fixedCostTuple: null,
+                            ignoreDigivolutionRequirementFixedCost: -1,
+                            isHand: canSelectHand,
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess()
+                        ));
+
+                        IEnumerator SuccessProcess()
+                        {
+                            thisPermanent.willBeRemoveField = false;
+                            thisPermanent.HideDeleteEffect();
+                            thisPermanent.HideHandBounceEffect();
+                            thisPermanent.HideDeckBounceEffect();
+                            thisPermanent.HideWillRemoveFieldEffect();
+
+                            yield return null;
+                        }
                     }
                 }
             }
@@ -165,7 +173,7 @@ namespace DCGO.CardEffects.BT26
                         AssemblyConditionElement element = new AssemblyConditionElement(CanSelectCardCondition);
 
                         bool CanSelectCardCondition(CardSource cs)
-                            => cs.HasText("Chronomon") || cs.ContainsTraits("Shaman");
+                            => cs.HasText("Chronomon") || cs.EqualsTraits("Shaman");
 
                         bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
                         {
