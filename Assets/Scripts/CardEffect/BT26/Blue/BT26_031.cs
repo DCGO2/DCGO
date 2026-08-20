@@ -170,6 +170,14 @@ namespace DCGO.CardEffects.BT26
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedTamer, trashCount: 1, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
                         yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                     }
+                    else
+                    {
+                        activateClass.RemoveUse();
+                    }
+                }
+                else
+                {
+                    activateClass.RemoveUse();
                 }
             }
 
