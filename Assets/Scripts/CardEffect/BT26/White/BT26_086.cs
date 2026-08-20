@@ -125,7 +125,8 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("May delete 1 opponent Digimon, then if 7 link cards bounce opponent top security", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("BT26_086_AT");
                 cardEffects.Add(activateClass);
 
@@ -146,6 +147,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    bool isUsed = false;
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetCondition))
                     {
                         SelectPermanentEffect selectDeleteEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -159,20 +162,30 @@ namespace DCGO.CardEffects.BT26
                             canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                             mode: SelectPermanentEffect.Mode.Destroy,
                             cardEffect: activateClass);
 
                         selectDeleteEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectDeleteEffect.Activate());
+
+                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                        {
+                            if (permanents != null && permanents.Count > 0) isUsed = true;
+                            yield return null;
+                        }
                     }
 
                     if (CardEffectCommons.IsExistOnBattleArea(card) && card.PermanentOfThisCard().LinkedCards.Count >= 7 && card.Owner.Enemy.SecurityCards.Count >= 1)
                     {
+                        isUsed = true;
+
                         List<CardSource> topSecurity = new List<CardSource>() { card.Owner.Enemy.SecurityCards[0] };
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(topSecurity));
                     }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
