@@ -101,6 +101,10 @@ namespace DCGO.CardEffects.BT26
                 }
             }
 
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendCondition)
+                    && CardEffectCommons.HasMatchConditionPermanent(CanSelectDebuffTargetCondition);
+
             #endregion
 
             #region Start of Opponent's Main Phase
@@ -115,31 +119,17 @@ namespace DCGO.CardEffects.BT26
                     optional: false,
                     isSkippable: true
                 ));
-
-                bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                    => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendCondition)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectDebuffTargetCondition);
             }
             #endregion
 
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, (hash) => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendCondition)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectDebuffTargetCondition);
-            }
-            #endregion
+            CardEffectFactory.ActivateClassesForSharedEffects(
+                ref cardEffects, timing, card,
+                SharedEffectName(),
+                SharedActivateCoroutine,
+                SharedEffectDescription,
+                optional: false,
+                additionalActivateCondition: AdditionalActivateCondition,
+                onPlay: true);
 
             #region Inherit - Barrier
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
