@@ -75,7 +75,8 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into [CS] card in hand free", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("BT26_054_AllTurns");
                 cardEffects.Add(activateClass);
 
@@ -97,6 +98,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    bool isUsed = false;
+
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                         targetPermanent: card.PermanentOfThisCard(),
                         cardCondition: CardCondition,
@@ -106,8 +109,16 @@ namespace DCGO.CardEffects.BT26
                         ignoreDigivolutionRequirementFixedCost: -1,
                         isHand: true,
                         activateClass: activateClass,
-                        successProcess: null,
+                        successProcess: SuccessProcess(),
                         isOptional: true));
+
+                    IEnumerator SuccessProcess()
+                    {
+                        isUsed = true;
+                        yield return null;
+                    }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
