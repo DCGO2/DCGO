@@ -174,6 +174,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool isUsed = false;
+
                     Permanent thisPermanent = card.PermanentOfThisCard();
                     CardSource topSecurityCard = card.Owner.SecurityCards[0];
 
@@ -205,6 +207,8 @@ namespace DCGO.CardEffects.BT26
                     {
                         if (cardSources.Count >= 1)
                         {
+                            isUsed = true;
+
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
 
                             thisPermanent.willBeRemoveField = false;
@@ -215,6 +219,8 @@ namespace DCGO.CardEffects.BT26
                             thisPermanent.HideDeleteEffect();
                         }
                     }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
