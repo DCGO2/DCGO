@@ -79,9 +79,8 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                     && permanent.DP <= card.Owner.MaxDP_DeleteEffect(7000, activateClass);
 
-            bool SharedCanActivateCondition(Hashtable hashtable, ICardEffect activateClass)
-                => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                    && CardEffectCommons.HasMatchConditionPermanent(permanent => CanSelectPermanentCondition(permanent, activateClass));
+            bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+                => CardEffectCommons.HasMatchConditionPermanent(permanent => CanSelectPermanentCondition(permanent, activateClass));
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -114,33 +113,15 @@ namespace DCGO.CardEffects.BT26
 
             #endregion
 
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateCondition(hash, activateClass), (hash) => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-            #endregion
-
-            #region When Digivolving
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateCondition(hash, activateClass), (hash) => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("When Digivolving"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-            }
-            #endregion
+            CardEffectFactory.ActivateClassesForSharedEffects(
+                ref cardEffects, timing, card,
+                SharedEffectName(),
+                SharedActivateCoroutine,
+                SharedEffectDescription,
+                optional: false,
+                additionalActivateCondition: SharedAdditionalActivateCondition,
+                onPlay: true,
+                whenDigivolving: true);
 
             #region On Deletion
             if (timing == EffectTiming.OnDestroyedAnyone)
