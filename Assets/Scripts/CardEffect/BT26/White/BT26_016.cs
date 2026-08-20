@@ -53,6 +53,8 @@ namespace DCGO.CardEffects.BT26
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool isUsed = false;
+
                 bool CanSelectDeleteTargetConditionBound(Permanent permanent) => CanSelectDeleteTargetCondition(permanent, activateClass);
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetConditionBound))
@@ -70,13 +72,19 @@ namespace DCGO.CardEffects.BT26
                         canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                         mode: SelectPermanentEffect.Mode.Destroy,
                         cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                    {
+                        if (permanents != null && permanents.Count > 0) isUsed = true;
+                        yield return null;
+                    }
                 }
 
                 // "Cards in trashes" (plural) is read as either player's trash pile combined.
@@ -121,8 +129,12 @@ namespace DCGO.CardEffects.BT26
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(selectedCards));
 
                         yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+
+                        isUsed = true;
                     }
                 }
+
+                if (!isUsed) activateClass.RemoveUse();
             }
 
             #endregion
