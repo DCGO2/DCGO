@@ -152,7 +152,8 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into [Titamon]/[Titan] trash card for 1 less", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT26_069_Inherit");
                 cardEffects.Add(activateClass);
@@ -173,6 +174,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool isUsed = false;
+
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                         targetPermanent: card.PermanentOfThisCard(),
                         cardCondition: CardCondition,
@@ -182,8 +185,16 @@ namespace DCGO.CardEffects.BT26
                         ignoreDigivolutionRequirementFixedCost: -1,
                         isHand: false,
                         activateClass: activateClass,
-                        successProcess: null,
+                        successProcess: SuccessProcess(),
                         isOptional: true));
+
+                    IEnumerator SuccessProcess()
+                    {
+                        isUsed = true;
+                        yield return null;
+                    }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
