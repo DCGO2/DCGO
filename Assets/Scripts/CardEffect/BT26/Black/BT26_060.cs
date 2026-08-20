@@ -11,13 +11,24 @@ namespace DCGO.CardEffects.BT26
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alternate Digivolution Requirement
+            #region Alternate Digivolution Requirement - Lv.6 w/[Chronomon] in text
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return (targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 6 && targetPermanent.TopCard.HasText("Chronomon"))
-                        || targetPermanent.TopCard.ContainsCardName("Giant Slayer");
+                    return targetPermanent.TopCard.HasText("Chronomon");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 6));
+            }
+            #endregion
+
+            #region Alternate Digivolution Requirement - [Giant Slayer]
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.ContainsCardName("Giant Slayer");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -65,10 +76,6 @@ namespace DCGO.CardEffects.BT26
             bool CanSelectTargetCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
-            bool SharedCanActivateCondition(Hashtable hashtable, ICardEffect activateClass)
-                => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                    && CardEffectCommons.HasMatchConditionPermanent(CanSelectTargetCondition);
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTargetCondition))
@@ -104,50 +111,23 @@ namespace DCGO.CardEffects.BT26
 
                     foreach (Permanent selectedPermanent in selectedPermanents)
                     {
-                        if (selectedPermanent.TopCard == null) continue;
-                        if (selectedPermanent.TopCard.CanNotBeAffected(activateClass)) continue;
-
-                        int returnCount = Math.Min(5, selectedPermanent.DigivolutionCards.Count);
-
-                        if (returnCount >= 1)
-                        {
-                            List<CardSource> returnedCards = selectedPermanent.DigivolutionCards.GetRange(0, returnCount);
-                            returnedCards.Reverse();
-
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(returnedCards));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(new IReturnStackToLibrary(selectedPermanent, 5, activateClass).ReturnStackToLibrary());
                     }
                 }
             }
 
             #endregion
 
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateCondition(hash, activateClass), (hash) => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-            #endregion
-
-            #region When Digivolving
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateCondition(hash, activateClass), (hash) => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("When Digivolving"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-            }
+            #region On Play / When Digivolving
+            CardEffectFactory.ActivateClassesForSharedEffects(
+                ref cardEffects, timing, card,
+                SharedEffectName(),
+                SharedActivateCoroutine,
+                SharedEffectDescription,
+                optional: false,
+                additionalActivateCondition: (hash, ac) => CardEffectCommons.HasMatchConditionPermanent(CanSelectTargetCondition),
+                onPlay: true,
+                whenDigivolving: true);
             #endregion
 
             #region All Turns - Reactive Delete
@@ -155,20 +135,19 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("May delete 1 opponent's Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                     => "[All Turns] [Once Per Turn] When your effects add to decks, you may delete 1 of your opponent's Digimon.";
-
-                bool CardSourceCondition(CardSource cardSource) => cardSource.Owner == card.Owner;
 
                 bool CanSelectDeleteTargetCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnAddLibrary(hashtable, CardSourceCondition);
+                        && CardEffectCommons.CanTriggerOnAddLibrary(hashtable, null);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
@@ -176,6 +155,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    bool isUsed = false;
+
                     SelectPermanentEffect selectDeleteEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectDeleteEffect.SetUp(
@@ -186,14 +167,22 @@ namespace DCGO.CardEffects.BT26
                         maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: null,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.Destroy,
                         cardEffect: activateClass);
 
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        if (permanent != null) isUsed = true;
+                        yield return null;
+                    }
+
                     selectDeleteEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectDeleteEffect.Activate());
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion

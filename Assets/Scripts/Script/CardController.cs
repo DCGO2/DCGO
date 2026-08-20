@@ -5905,6 +5905,58 @@ public class AceOverflowClass
 
 #endregion
 
+#region ReturnStackToLibrary
+
+public class IReturnStackToLibrary
+{
+    /// <summary>
+    /// Return Stack To Library Class
+    /// </summary>
+    /// <param name="permanent">Target Permanent</param>
+    /// <param name="ReturnCount">Amount of digivolution cards to return to the top of the library</param>
+    /// <param name="cardEffect">Card Effect</param>
+    /// <param name="fromTop">Should the returned cards start from the top of the stack, true by default</param>
+    public IReturnStackToLibrary(Permanent permanent, int ReturnCount, ICardEffect cardEffect, bool fromTop = true)
+    {
+        _permanent = permanent;
+        _returnCount = ReturnCount;
+        _cardEffect = cardEffect;
+        _fromTop = fromTop;
+    }
+
+    Permanent _permanent = null;
+    int _returnCount;
+    ICardEffect _cardEffect = null;
+    bool _fromTop;
+
+    public IEnumerator ReturnStackToLibrary()
+    {
+        if (_cardEffect == null) yield break;
+        if (_cardEffect.EffectSourceCard == null) yield break;
+        if (_permanent == null) yield break;
+        if (_permanent.TopCard == null) yield break;
+        // Reuses the existing stack-trashing immunity as the closest analog until a card grants a
+        // dedicated "can't return stacked cards to the library" immunity.
+        if (_permanent.ImmuneFromStackTrashing(_cardEffect)) yield break;
+        if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
+
+        int count = Math.Min(_permanent.DigivolutionCards.Count, _returnCount);
+
+        if (count >= 1)
+        {
+            List<CardSource> returnedCards = _fromTop
+                ? _permanent.DigivolutionCards.GetRange(0, count)
+                : _permanent.DigivolutionCards.GetRange(_permanent.DigivolutionCards.Count - count, count);
+
+            returnedCards.Reverse();
+
+            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(returnedCards));
+        }
+    }
+}
+
+#endregion
+
 #region TrashStack
 
 public class ITrashStack
