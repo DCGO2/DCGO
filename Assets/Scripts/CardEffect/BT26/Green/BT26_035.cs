@@ -82,7 +82,8 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve 1 [Insectoid]/[NSp] Digimon into hand card for 1 less", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT26_035_Inherit");
                 cardEffects.Add(activateClass);
@@ -110,6 +111,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool isUsed = false;
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTargetPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectTargetPermanentCondition));
@@ -143,6 +146,8 @@ namespace DCGO.CardEffects.BT26
 
                         if (selectedPermanent != null)
                         {
+                            isUsed = true;
+
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: selectedPermanent,
                                 cardCondition: CardCondition,
@@ -156,6 +161,8 @@ namespace DCGO.CardEffects.BT26
                                 isOptional: true));
                         }
                     }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
