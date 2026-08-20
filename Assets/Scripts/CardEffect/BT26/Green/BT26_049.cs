@@ -11,16 +11,27 @@ namespace DCGO.CardEffects.BT26
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alternate Digivolution Requirement
+            #region Alternate Digivolution Requirement - [Lilamon]
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsCardName("Lilamon")
-                        || (targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 5 && targetPermanent.TopCard.ContainsTraits("DATA SQUAD"));
+                    return targetPermanent.TopCard.EqualsCardName("Lilamon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
+            #region Alternate Digivolution Requirement - Lv.5 w/[DATA SQUAD] trait
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.ContainsTraits("DATA SQUAD");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 5));
             }
             #endregion
 
