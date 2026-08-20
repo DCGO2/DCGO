@@ -16,8 +16,8 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 6
-                        && (targetPermanent.TopCard.HasText("Chronomon") || targetPermanent.TopCard.HasText("Giant Slayer"));
+                    return (targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 6 && targetPermanent.TopCard.HasText("Chronomon"))
+                        || targetPermanent.TopCard.ContainsCardName("Giant Slayer");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
