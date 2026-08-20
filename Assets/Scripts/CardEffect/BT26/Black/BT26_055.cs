@@ -48,6 +48,8 @@ namespace DCGO.CardEffects.BT26
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool isUsed = false;
+
                 if (card.Owner.HandCards.Count >= 1)
                 {
                     CardSource selectedCard = null;
@@ -80,6 +82,8 @@ namespace DCGO.CardEffects.BT26
 
                     if (selectedCard != null)
                     {
+                        isUsed = true;
+
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
                     }
                 }
@@ -111,16 +115,26 @@ namespace DCGO.CardEffects.BT26
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
-                                canNoSelect: false,
+                                canNoSelect: true,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                                 mode: SelectPermanentEffect.Mode.Destroy,
                                 cardEffect: activateClass);
 
                             selectVer3Effect.SetUpCustomMessage("Select 1 [Ver.3] trait Digimon to delete.", "The opponent is selecting 1 [Ver.3] trait Digimon to delete.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectVer3Effect.Activate());
+
+                            IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                            {
+                                if (permanents != null && permanents.Count > 0)
+                                {
+                                    isUsed = true;
+
+                                    yield return null;
+                                }
+                            }
                         }
 
                         if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentDigimon))
@@ -135,6 +149,8 @@ namespace DCGO.CardEffects.BT26
                                 yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(targetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                             }
                         }
+
+                        if (!isUsed) activateClass.RemoveUse();
                     }
                 }
             }
