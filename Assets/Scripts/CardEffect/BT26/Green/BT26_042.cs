@@ -40,9 +40,8 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
                     && (permanent.IsDigimon || permanent.IsTamer);
 
-            bool SharedCanActivateConditionA(Hashtable hashtable, ICardEffect activateClass)
-                => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                    && CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition);
+            bool SharedAdditionalActivateConditionA(Hashtable hashtable, ActivateClass activateClass)
+                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition);
 
             IEnumerator SharedActivateCoroutineA(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -102,33 +101,15 @@ namespace DCGO.CardEffects.BT26
 
             #endregion
 
-            #region On Play A
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectNameA(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateConditionA(hash, activateClass), (hash) => SharedActivateCoroutineA(hash, activateClass), -1, false, SharedEffectDescriptionA("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-            #endregion
-
-            #region When Digivolving A
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectNameA(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateConditionA(hash, activateClass), (hash) => SharedActivateCoroutineA(hash, activateClass), -1, false, SharedEffectDescriptionA("When Digivolving"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-            }
-            #endregion
+            CardEffectFactory.ActivateClassesForSharedEffects(
+                ref cardEffects, timing, card,
+                SharedEffectNameA(),
+                SharedActivateCoroutineA,
+                SharedEffectDescriptionA,
+                optional: false,
+                additionalActivateCondition: SharedAdditionalActivateConditionA,
+                onPlay: true,
+                whenDigivolving: true);
 
             #region Shared B: On Play / When Attacking - Grant Piercing + DP
 
@@ -142,9 +123,8 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && (permanent.TopCard.ContainsTraits("Insectoid") || permanent.TopCard.ContainsTraits("Titan"));
 
-            bool SharedCanActivateConditionB(Hashtable hashtable, ICardEffect activateClass)
-                => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                    && CardEffectCommons.HasMatchConditionPermanent(CanSelectGrantTargetCondition);
+            bool SharedAdditionalActivateConditionB(Hashtable hashtable, ActivateClass activateClass)
+                => CardEffectCommons.HasMatchConditionPermanent(CanSelectGrantTargetCondition);
 
             IEnumerator SharedActivateCoroutineB(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -178,35 +158,17 @@ namespace DCGO.CardEffects.BT26
 
             #endregion
 
-            #region On Play B
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectNameB(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateConditionB(hash, activateClass), (hash) => SharedActivateCoroutineB(hash, activateClass), 1, false, SharedEffectDescriptionB("On Play"));
-                activateClass.SetHashString("BT26_042_OP_WA");
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-            #endregion
-
-            #region When Attacking B
-            if (timing == EffectTiming.OnAllyAttack)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectNameB(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateConditionB(hash, activateClass), (hash) => SharedActivateCoroutineB(hash, activateClass), 1, false, SharedEffectDescriptionB("When Attacking"));
-                activateClass.SetHashString("BT26_042_OP_WA");
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-            }
-            #endregion
+            CardEffectFactory.ActivateClassesForSharedEffects(
+                ref cardEffects, timing, card,
+                SharedEffectNameB(),
+                SharedActivateCoroutineB,
+                SharedEffectDescriptionB,
+                optional: false,
+                maxCountPerTurn: 1,
+                hashValue: "BT26_042_OP_WA",
+                additionalActivateCondition: SharedAdditionalActivateConditionB,
+                onPlay: true,
+                whenAttacking: true);
 
             #region Inherit - Deletes in Battle
             if (timing == EffectTiming.OnEndBattle)
