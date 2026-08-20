@@ -98,7 +98,8 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Add top security to hand, then Recovery +1 if 0 security", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT26_025_Inherit");
                 cardEffects.Add(activateClass);
@@ -116,6 +117,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool isUsed = false;
+
                     CardSource topCard = card.Owner.SecurityCards[0];
 
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -126,7 +129,7 @@ namespace DCGO.CardEffects.BT26
                         canEndSelectCondition: null,
                         canNoSelect: () => true,
                         selectCardCoroutine: null,
-                        afterSelectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         message: "Add your top security card to the hand?",
                         maxCount: 1,
                         canEndNotMax: false,
@@ -138,12 +141,20 @@ namespace DCGO.CardEffects.BT26
                         selectPlayer: card.Owner,
                         cardEffect: activateClass);
 
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                    {
+                        if (cardSources != null && cardSources.Count > 0) isUsed = true;
+                        yield return null;
+                    }
+
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
                     if (card.Owner.SecurityCards.Count == 0)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                     }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
