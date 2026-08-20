@@ -32,9 +32,8 @@ namespace DCGO.CardEffects.BT26
             string SharedEffectDescription(string tag)
                 => $"[{tag}] [Once Per Turn] If it's your turn, by trashing 1 card in your hand, you may use 1 Option card with the [Titan] trait from your trash with the cost reduced by 2.";
 
-            bool SharedCanActivateCondition(Hashtable hashtable, ICardEffect activateClass)
-                => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                    && CardEffectCommons.IsOwnerTurn(card)
+            bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+                => CardEffectCommons.IsOwnerTurn(card)
                     && card.Owner.HandCards.Count >= 1;
 
             bool CanSelectOptionCardCondition(CardSource cardSource, ICardEffect activateClass)
@@ -160,50 +159,18 @@ namespace DCGO.CardEffects.BT26
 
             #endregion
 
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateCondition(hash, activateClass), (hash) => SharedActivateCoroutine(hash, activateClass), 1, false, SharedEffectDescription("On Play"));
-                activateClass.SetHashString(SharedHashString);
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-            #endregion
-
-            #region When Digivolving
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateCondition(hash, activateClass), (hash) => SharedActivateCoroutine(hash, activateClass), 1, false, SharedEffectDescription("When Digivolving"));
-                activateClass.SetHashString(SharedHashString);
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-            }
-            #endregion
-
-            #region When Attacking
-            if (timing == EffectTiming.OnAllyAttack)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateCondition(hash, activateClass), (hash) => SharedActivateCoroutine(hash, activateClass), 1, false, SharedEffectDescription("When Attacking"));
-                activateClass.SetHashString(SharedHashString);
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-            }
-            #endregion
+            CardEffectFactory.ActivateClassesForSharedEffects(
+                ref cardEffects, timing, card,
+                SharedEffectName(),
+                SharedActivateCoroutine,
+                SharedEffectDescription,
+                optional: false,
+                maxCountPerTurn: 1,
+                hashValue: SharedHashString,
+                additionalActivateCondition: SharedAdditionalActivateCondition,
+                onPlay: true,
+                whenDigivolving: true,
+                whenAttacking: true);
 
             #region Inherit - On Deletion
             if (timing == EffectTiming.OnDestroyedAnyone)
