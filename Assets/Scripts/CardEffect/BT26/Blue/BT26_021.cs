@@ -227,6 +227,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool isUsed = false;
+
                     if (card.Owner.HandCards.Count >= 1)
                     {
                         CardSource selectedCardToTrash = null;
@@ -259,6 +261,8 @@ namespace DCGO.CardEffects.BT26
 
                         if (selectedCardToTrash != null)
                         {
+                            isUsed = true;
+
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashHandAndProcessAccordingToResult(
                                 player: card.Owner,
                                 hashtable: hashtable,
@@ -300,6 +304,8 @@ namespace DCGO.CardEffects.BT26
                             }
                         }
                     }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
