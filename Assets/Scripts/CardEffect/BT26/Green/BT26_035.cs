@@ -35,9 +35,8 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
                     && !permanent.IsSuspended && permanent.CanSuspend;
 
-            bool SharedCanActivateCondition(Hashtable hashtable, ICardEffect activateClass)
-                => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                    && CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendCondition);
+            bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendCondition);
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -68,36 +67,15 @@ namespace DCGO.CardEffects.BT26
 
             #endregion
 
-            #region When Moving
-            if (timing == EffectTiming.OnMove)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateCondition(hash, activateClass), (hash) => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("When Moving"));
-                cardEffects.Add(activateClass);
-
-                bool PermanentCondition(Permanent permanent)
-                    => permanent == card.PermanentOfThisCard();
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnMove(hashtable, PermanentCondition);
-            }
-            #endregion
-
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateCondition(hash, activateClass), (hash) => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-            #endregion
+            CardEffectFactory.ActivateClassesForSharedEffects(
+                ref cardEffects, timing, card,
+                SharedEffectName(),
+                SharedActivateCoroutine,
+                SharedEffectDescription,
+                optional: false,
+                additionalActivateCondition: SharedAdditionalActivateCondition,
+                whenMoving: true,
+                onPlay: true);
 
             #region Inherit - Win Battle
             if (timing == EffectTiming.OnEndBattle)
