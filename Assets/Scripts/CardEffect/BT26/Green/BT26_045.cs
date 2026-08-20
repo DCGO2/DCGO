@@ -93,6 +93,8 @@ namespace DCGO.CardEffects.BT26
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool isUsed = false;
+
                 bool CanSelectHandCardConditionBound(CardSource cardSource) => CanSelectHandCardCondition(cardSource, activateClass);
 
                 if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardConditionBound))
@@ -101,8 +103,17 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectHandCardConditionBound,
                         root: SelectCardEffect.Root.Hand,
                         cardEffect: activateClass,
-                        payCost: false));
+                        payCost: false,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine));
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                    {
+                        if (cardSources != null && cardSources.Count > 0) isUsed = true;
+                        yield return null;
+                    }
                 }
+
+                if (!isUsed) activateClass.RemoveUse();
             }
 
             #endregion
