@@ -30,9 +30,6 @@ namespace DCGO.CardEffects.BT26
 
             string SharedEffectDescriptionA(string tag) => $"[{tag}] <Draw 1> and trash 1 card in your hand.";
 
-            bool SharedCanActivateConditionA(Hashtable hashtable, ICardEffect activateClass)
-                => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
-
             IEnumerator SharedActivateCoroutineA(Hashtable hashtable, ActivateClass activateClass)
             {
                 yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
@@ -61,33 +58,14 @@ namespace DCGO.CardEffects.BT26
 
             #endregion
 
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectNameA(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateConditionA(hash, activateClass), (hash) => SharedActivateCoroutineA(hash, activateClass), -1, false, SharedEffectDescriptionA("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-            #endregion
-
-            #region When Digivolving
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectNameA(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateConditionA(hash, activateClass), (hash) => SharedActivateCoroutineA(hash, activateClass), -1, false, SharedEffectDescriptionA("When Digivolving"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-            }
-            #endregion
+            CardEffectFactory.ActivateClassesForSharedEffects(
+                ref cardEffects, timing, card,
+                SharedEffectNameA(),
+                SharedActivateCoroutineA,
+                SharedEffectDescriptionA,
+                optional: false,
+                onPlay: true,
+                whenDigivolving: true);
 
             #region Main - Trash 2 Facedown
             if (timing == EffectTiming.OnDeclaration)
