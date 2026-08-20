@@ -15,10 +15,10 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4 && targetPermanent.TopCard.HasDMTraits;
+                    return targetPermanent.TopCard.HasDMTraits;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 4));
             }
             #endregion
 
@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectOwnVer3Condition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && permanent.TopCard.ContainsTraits("Ver.3");
+                    && permanent.TopCard.EqualsTraits("Ver.3");
 
             bool IsOpponentDigimon(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -78,7 +78,7 @@ namespace DCGO.CardEffects.BT26
 
                     yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                    if (selectedCard != null && CardEffectCommons.IsExistOnBattleArea(card))
+                    if (selectedCard != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
                     }
@@ -148,6 +148,7 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
+                isSkippable: true,
                 maxCountPerTurn: 1,
                 hashValue: "BT26_055_Shared",
                 onPlay: true,
@@ -172,8 +173,7 @@ namespace DCGO.CardEffects.BT26
                         && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && card.Owner.Enemy.SecurityCards.Count >= 1;
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
