@@ -156,7 +156,8 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your Digimon gets +3000 DP and attacks", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("BT26_015_YourTurn");
                 cardEffects.Add(activateClass);
 
@@ -180,6 +181,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    bool isUsed = false;
+
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -203,6 +206,8 @@ namespace DCGO.CardEffects.BT26
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
+                        isUsed = true;
+
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: 3000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
 
                         if (permanent.CanAttack(activateClass))
@@ -218,6 +223,8 @@ namespace DCGO.CardEffects.BT26
                             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
                     }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
