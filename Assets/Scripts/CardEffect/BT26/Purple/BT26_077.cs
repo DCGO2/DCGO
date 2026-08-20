@@ -15,10 +15,10 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 5 && targetPermanent.TopCard.HasDMTraits;
+                    return targetPermanent.TopCard.HasDMTraits;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 5));
             }
             #endregion
 
@@ -47,84 +47,47 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving / When Attacking
+            string SharedEffectName = "May play 1 [Ver.3] Digimon cost 6 (+1 per own face-down source) or lower from trash";
 
-            string SharedEffectName() => "May play 1 [Ver.3] Digimon cost 6 (+1 per own face-down source) or lower from trash";
+            string SharedHashValue = "BT26_077_OP_WD_WA";
+
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    SharedEffectName,
+                    SharedActivateCoroutine,
+                    SharedEffectDescription,
+                    hashValue: SharedHashValue,
+                    optional: false,
+                    isSkippable: true,
+                    maxCountPerTurn: 1,
+                    onPlay: true,
+                    whenDigivolving: true,
+                    whenAttacking: true);
+
 
             string SharedEffectDescription(string tag)
                 => $"[{tag}] [Once Per Turn] You may play 1 play cost 6 or lower [Ver.3] trait Digimon card from your trash without paying the cost. For each of this Digimon's face-down digivolution cards, add 1 to the play cost maximum.";
-
-            bool SharedCanActivateCondition(Hashtable hashtable, ICardEffect activateClass)
-                => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
             bool FaceDownCondition(CardSource cardSource) => cardSource.IsFaceDown;
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                int maxCost = 6 + card.PermanentOfThisCard().DigivolutionCards.Filter(FaceDownCondition).Count;
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                    => cardSource.IsDigimon
+                        && cardSource.EqualsTraits("Ver.3")
+                        && cardSource.HasPlayCost && cardSource.GetCostItself <= maxCost
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, root: SelectCardEffect.Root.Trash);
+
+                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                 {
-                    int maxCost = 6 + card.PermanentOfThisCard().DigivolutionCards.Filter(FaceDownCondition).Count;
-
-                    bool CanSelectCardCondition(CardSource cardSource)
-                        => cardSource.IsDigimon
-                            && cardSource.ContainsTraits("Ver.3")
-                            && cardSource.HasCost && cardSource.GetCostItself <= maxCost
-                            && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, root: SelectCardEffect.Root.Trash);
-
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
-                            canTargetCondition: CanSelectCardCondition,
-                            root: SelectCardEffect.Root.Trash,
-                            cardEffect: activateClass,
-                            payCost: false));
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                        canTargetCondition: CanSelectCardCondition,
+                        root: SelectCardEffect.Root.Trash,
+                        cardEffect: activateClass,
+                        payCost: false));
                 }
-            }
-
-            #endregion
-
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateCondition(hash, activateClass), (hash) => SharedActivateCoroutine(hash, activateClass), 1, false, SharedEffectDescription("On Play"));
-                activateClass.SetHashString("BT26_077_Shared");
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-            #endregion
-
-            #region When Digivolving
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateCondition(hash, activateClass), (hash) => SharedActivateCoroutine(hash, activateClass), 1, false, SharedEffectDescription("When Digivolving"));
-                activateClass.SetHashString("BT26_077_Shared");
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-            }
-            #endregion
-
-            #region When Attacking
-            if (timing == EffectTiming.OnAllyAttack)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName(), CanUseCondition, card);
-                activateClass.SetUpActivateClass((hash) => SharedCanActivateCondition(hash, activateClass), (hash) => SharedActivateCoroutine(hash, activateClass), 1, false, SharedEffectDescription("When Attacking"));
-                activateClass.SetHashString("BT26_077_Shared");
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
             }
             #endregion
 
@@ -148,8 +111,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetCondition);
+                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
