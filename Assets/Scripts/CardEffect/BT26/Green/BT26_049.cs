@@ -95,7 +95,8 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("May play/use 1 [DATA SQUAD] card cost 3 (+1 per suspended opponent) or lower from hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -123,6 +124,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    bool isUsed = false;
+
                     int maxCost = 3 + card.Owner.Enemy.GetFieldPermanents().Filter(IsSuspendedOpponentPermanent).Count;
 
                     bool CanSelectCardCondition(CardSource cardSource)
@@ -136,8 +139,17 @@ namespace DCGO.CardEffects.BT26
                             canTargetCondition: CanSelectCardCondition,
                             root: SelectCardEffect.Root.Hand,
                             cardEffect: activateClass,
-                            payCost: false));
+                            payCost: false,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine));
+
+                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                        {
+                            if (cardSources != null && cardSources.Count > 0) isUsed = true;
+                            yield return null;
+                        }
                     }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
