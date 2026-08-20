@@ -127,6 +127,8 @@ namespace DCGO.CardEffects.BT26
 
             IEnumerator SharedActivateCoroutineC(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool isUsed = false;
+
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                     targetPermanent: card.PermanentOfThisCard(),
                     cardCondition: CardConditionC,
@@ -136,8 +138,16 @@ namespace DCGO.CardEffects.BT26
                     ignoreDigivolutionRequirementFixedCost: -1,
                     isHand: true,
                     activateClass: activateClass,
-                    successProcess: null,
+                    successProcess: SuccessProcess(),
                     isOptional: true));
+
+                IEnumerator SuccessProcess()
+                {
+                    isUsed = true;
+                    yield return null;
+                }
+
+                if (!isUsed) activateClass.RemoveUse();
             }
 
             #endregion
@@ -147,7 +157,8 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectNameC(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, (hash) => SharedActivateCoroutineC(hash, activateClass), 1, true, SharedEffectDescriptionC());
+                activateClass.SetUpActivateClass(CanActivateCondition, (hash) => SharedActivateCoroutineC(hash, activateClass), 1, false, SharedEffectDescriptionC());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("BT26_044_YourTurn");
                 cardEffects.Add(activateClass);
 
@@ -166,7 +177,8 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectNameC(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, (hash) => SharedActivateCoroutineC(hash, activateClass), 1, true, SharedEffectDescriptionC());
+                activateClass.SetUpActivateClass(CanActivateCondition, (hash) => SharedActivateCoroutineC(hash, activateClass), 1, false, SharedEffectDescriptionC());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("BT26_044_YourTurn");
                 cardEffects.Add(activateClass);
 
@@ -212,6 +224,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool isUsed = false;
+
                     Permanent thisPermanent = card.PermanentOfThisCard();
 
                     bool IsTamerWithFaceDownCardBound(Permanent permanent) => IsTamerWithFaceDownCard(activateClass, permanent);
@@ -245,6 +259,8 @@ namespace DCGO.CardEffects.BT26
 
                     if (selectedTamer != null)
                     {
+                        isUsed = true;
+
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedTamer, trashCount: 1, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
 
                         thisPermanent.willBeRemoveField = false;
@@ -254,6 +270,8 @@ namespace DCGO.CardEffects.BT26
                         thisPermanent.HideWillRemoveFieldEffect();
                         thisPermanent.HideDeleteEffect();
                     }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
