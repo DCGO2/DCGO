@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.ContainsTraits("Shambala") || targetPermanent.TopCard.ContainsTraits("TS");
+                    => targetPermanent.TopCard.EqualsTraits("Shambala") || targetPermanent.TopCard.EqualsTraits("TS");
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 2));
@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectPermanentCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && (permanent.TopCard.ContainsTraits("Shambala") || permanent.TopCard.ContainsTraits("TS"));
+                    && (permanent.TopCard.EqualsTraits("Shambala") || permanent.TopCard.EqualsTraits("TS"));
 
             bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
                 => CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
