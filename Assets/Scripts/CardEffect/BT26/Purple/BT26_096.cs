@@ -22,11 +22,11 @@ namespace DCGO.CardEffects.BT26
                     => "[Start of Your Turn] If you have 2 or less memory, set it to 3.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && card.Owner.MemoryForPlayer <= 2;
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Main] By returning this Tamer to the bottom of the deck, you may play 1 Digimon card with [Chronomon] in its text or 1 Tamer card with the [TS] trait from your hand or trash with the cost reduced by 2.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card);
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
 
                 bool CanPlayCondition(CardSource cardSource)
                     => ((cardSource.IsDigimon && cardSource.HasText("Chronomon")) || (cardSource.IsTamer && cardSource.HasTSTraits))
