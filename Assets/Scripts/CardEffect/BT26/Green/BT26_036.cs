@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("DATA SQUAD");
+                    return targetPermanent.TopCard.EqualsTraits("DATA SQUAD");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 2));
@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.BT26
                 => $"[{tag}] Reveal the top 3 cards of your deck. Add 1 card with the [Vegetation], [Fairy] or [DATA SQUAD] trait or 1 green Tamer card among them to the hand. Return the rest to the bottom of the deck.";
 
             bool CanSelectRevealCardCondition(CardSource cardSource)
-                => cardSource.ContainsTraits("Vegetation") || cardSource.ContainsTraits("Fairy") || cardSource.ContainsTraits("DATA SQUAD")
+                => cardSource.ContainsTraits("Vegetation") || cardSource.ContainsTraits("Fairy") || cardSource.EqualsTraits("DATA SQUAD")
                     || (cardSource.IsTamer && cardSource.HasCardColor(CardColor.Green));
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
