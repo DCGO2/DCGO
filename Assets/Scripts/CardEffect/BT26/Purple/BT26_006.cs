@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool TrashSourcePermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.ContainsTraits("Bagra Army");
+                        && permanent.TopCard.EqualsTraits("Bagra Army");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
@@ -53,7 +53,7 @@ namespace DCGO.CardEffects.BT26
                         if (trashedCards.Count == 2)
                         {
                             bool CanSelectCardCondition(CardSource cardSource)
-                                => cardSource.ContainsTraits("Bagra Army")
+                                => cardSource.EqualsTraits("Bagra Army")
                                     && ((cardSource.IsOption
                                         && !cardSource.CanNotPlayThisOption)
                                     || (cardSource.HasPlayCost
