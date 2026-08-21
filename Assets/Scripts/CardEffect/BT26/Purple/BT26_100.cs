@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT26
 
             bool IsOwnTitanDigimon(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && permanent.TopCard.ContainsTraits("Titan");
+                    && permanent.TopCard.EqualsTraits("Titan");
 
             bool HasPlutomonOrTitamon(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
@@ -74,7 +74,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.IsDigimon && cardSource.HasLevel && cardSource.Level <= 4
-                        && cardSource.ContainsTraits("Titan")
+                        && cardSource.EqualsTraits("Titan")
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanPlayCondition(CardSource cardSource)
                     => cardSource.IsDigimon && cardSource.HasLevel && cardSource.Level <= 4
-                        && cardSource.ContainsTraits("Titan")
+                        && cardSource.EqualsTraits("Titan")
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
