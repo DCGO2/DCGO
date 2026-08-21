@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -78,12 +79,65 @@ namespace DCGO.CardEffects.BT26
                         {
                             int reduceCost = card.Owner.Enemy.MemoryForPlayer;
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                            CardSource selectedCard = null;
+
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
                                 canTargetCondition: CanSelectOptionCardConditionBound,
-                                root: SelectCardEffect.Root.Hand,
-                                cardEffect: activateClass,
-                                payCost: true,
-                                reduceCostTuple: (reduceCost, null)));
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            {
+                                selectedCard = cardSource;
+                                yield return null;
+                            }
+
+                            selectHandEffect.SetUpCustomMessage("Select 1 [TS] Option card to use.", "The opponent is selecting 1 [TS] Option card to use.");
+                            selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
+                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
+                            if (selectedCard != null)
+                            {
+                                ChangeCostClass changeCostClass = new ChangeCostClass();
+                                changeCostClass.SetUpICardEffect($"Use Cost -{reduceCost}", _ => true, card);
+                                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: PlayCondition, rootCondition: _ => true, isUpDown: () => true, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                                Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
+                                card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
+
+                                ICardEffect GetCardEffect(EffectTiming _timing)
+                                    => _timing == EffectTiming.None ? changeCostClass : null;
+
+                                bool PlayCondition(CardSource cs) => cs == selectedCard;
+
+                                int ChangeCost(CardSource cs, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                                {
+                                    if (PlayCondition(cs))
+                                    {
+                                        cost -= reduceCost;
+                                    }
+
+                                    return cost;
+                                }
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
+                                    cardSources: new List<CardSource>() { selectedCard },
+                                    activateClass: activateClass,
+                                    payCost: true,
+                                    root: SelectCardEffect.Root.Hand));
+
+                                card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
+                            }
                         }
                     }
                 }
