@@ -39,12 +39,12 @@ namespace DCGO.CardEffects.BT26
                     => cardSource.EqualsTraits("Seven Code");
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card)
                         && !CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card));
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && card.PermanentOfThisCard().LinkedCards.Exists(CanSelectLinkCardCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -158,7 +158,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
