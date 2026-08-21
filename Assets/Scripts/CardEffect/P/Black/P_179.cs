@@ -47,10 +47,10 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place [Device] option from hand or trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                     => "[When Digivolving] By placing 1 Option card with the [Device] trait from your hand or trash into the battle area, this Digimon gets +3000 DP until your opponent's turn ends.";
 
                 bool CanSelectOption(CardSource cardSource)
@@ -236,11 +236,11 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 [Device] Option on field", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), 1, true, SharedEffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), 1, true, SharedEffectDescription());
                 activateClass.SetHashString("P_179_Trash&Delete");
                 cardEffects.Add(activateClass);
 
-                string SharedEffectDiscription()
+                string SharedEffectDescription()
                 => "[When Digivolving] By trashing 1 [Device] Option on the field, you can select 1 of your opponent's Digimon with a play cost of 9 or less to delete.";
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -259,11 +259,11 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 [Device] Option on field", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), 1, true, SharedEffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), 1, true, SharedEffectDescription());
                 activateClass.SetHashString("P_179_Trash&Delete");
                 cardEffects.Add(activateClass);
 
-                string SharedEffectDiscription()
+                string SharedEffectDescription()
                 => "[When Attacking] By trashing 1 [Device] Option on the field, you can select 1 of your opponent's Digimon with a play cost of 9 or less to delete.";
 
                 bool CanUseCondition(Hashtable hashtable)
