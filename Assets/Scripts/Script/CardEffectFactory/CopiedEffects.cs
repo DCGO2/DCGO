@@ -85,7 +85,11 @@ public partial class CardEffectFactory
             foreach (CardSource cardSource in validSources(targetSources(sourceCard.PermanentOfThisCard().DigivolutionCards)))
             {
                 List<ICardEffect> toCopyEffects = cardSource.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(_timing, sourceCard);
-                toCopyEffects.ForEach(eff => eff.SetOriginalEffectSourceCard(cardSource));
+                toCopyEffects.ForEach(eff =>
+                    {
+                        eff.SetOriginalEffectSourceCard(cardSource);
+                    }
+                );
                 toCopyEffects = toCopyEffects.Filter(
                     cardEffect => effectCondition == null || effectCondition(cardEffect)
                 );
@@ -167,9 +171,12 @@ public partial class CardEffectFactory
 
     private static string GenerateHashString(CardSource card, CardSource cardSource, string source, bool isInherited, bool isLinked)
     {
-        string sourceHashString = source ??= "";
-        string inherited = isInherited ? "-inherited" : "";
-        string linked = isLinked ? "-linked" : "";
-        return $"{card.CardIndex}-copying-{cardSource.CardIndex}-effect-{sourceHashString}{inherited}{linked}";
+        var sb = new System.Text.StringBuilder();
+        sb.Append(card is not null ? card.GetHashCode() : 0 );
+        sb.Append($"//copy//{cardSource.GetHashCode()}//effect");
+        sb.Append(source is not null && !source.Equals(string.Empty) ? $"//{source}" : "");
+        sb.Append(isInherited ? "//inherited" : "");
+        sb.Append(isLinked ? "//linked" : "");
+        return sb.ToString();
     }
 }
