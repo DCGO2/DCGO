@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.BT26
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.IsDigimon
                         && cardSource.HasLevel && cardSource.Level <= 4
-                        && cardSource.ContainsTraits("Titan")
+                        && cardSource.EqualsTraits("Titan")
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
