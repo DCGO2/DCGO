@@ -140,7 +140,7 @@ namespace DCGO.CardEffects.BT26
                 cardEffects.Add(addSkillClass);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card);
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
 
                 bool PermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
