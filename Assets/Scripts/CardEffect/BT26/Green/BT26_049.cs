@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Rosemon
 namespace DCGO.CardEffects.BT26
@@ -67,7 +68,7 @@ namespace DCGO.CardEffects.BT26
                         mode: SelectPermanentEffect.Mode.Tap,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select up to 2 Digimon or Tamers to suspend.", "The opponent is selecting up to 2 Digimon or Tamers to suspend.");
+                    selectPermanentEffect.SetUpCustomMessage($"Select {maxCount} Digimon or Tamers to suspend.", $"The opponent is selecting {maxCount} Digimon or Tamers to suspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
@@ -120,37 +121,80 @@ namespace DCGO.CardEffects.BT26
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     maxCost = 3 + card.Owner.Enemy.GetFieldPermanents().Filter(IsSuspendedPermanent).Count;
-                    
+
                     return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                         => cardSource.EqualsTraits("DATA SQUAD")
-                            && cardSource.HasPlayCost && cardSource.GetCostItself <= maxCost
-                            && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, isPlayOption: true);
+                        && cardSource.GetCostItself <= maxCost
+                        && ((cardSource.IsOption
+                                && !cardSource.CanNotPlayThisOption)
+                            || (cardSource.HasPlayCost
+                                && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass)));
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    bool isUsed = false;
+
                     if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
-                            canTargetCondition: CanSelectCardCondition,
-                            root: SelectCardEffect.Root.Hand,
-                            cardEffect: activateClass,
-                            payCost: false,
-                            afterSelectCardCoroutine: AfterSelectCardCoroutine));
+                        CardSource selectCard = null;
 
-                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectHandEffect.SetUpCustomMessage("Select 1 card to play/use.", "The opponent is selecting 1 card to play/use.");
+                        selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            if (cardSources == null || cardSources.Count == 0) activateClass.RemoveUse();
+                            selectCard = cardSource;
                             yield return null;
                         }
+
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
+                        if (selectCard != null)
+                        {
+                            isUsed = true;
+
+                            if (selectCard.IsOption)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
+                                    cardSources: new List<CardSource>() { selectCard },
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    root: SelectCardEffect.Root.Hand));
+                            }
+                            else
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                    new List<CardSource>() { selectCard },
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    isTapped: false,
+                                    root: SelectCardEffect.Root.Hand,
+                                    activateETB: true));
+                            }
+                        }
                     }
-                    else
-                    {
-                        activateClass.RemoveUse();
-                    }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
