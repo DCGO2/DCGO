@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT26
                     => !CardEffectCommons.IsByEffect(hashtable, ce => ce.EffectSourceCard != null && ce.EffectSourceCard.Owner == card.Owner);
 
                 bool CanSelectLinkCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("Seven Code");
+                    => cardSource.EqualsTraits("Seven Code");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
@@ -116,7 +116,7 @@ namespace DCGO.CardEffects.BT26
                 bool ThisPermanentCondition(Permanent permanent) => permanent == card.PermanentOfThisCard();
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("Seven Code")
+                    => cardSource.EqualsTraits("Seven Code")
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, root: SelectCardEffect.Root.Library, isPlayOption: true, fixedCost: cardSource.GetCostItself - 3);
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -227,7 +227,7 @@ namespace DCGO.CardEffects.BT26
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.HasLevel && cardSource.Level <= 4
                         && !cardSource.HasCardColor(CardColor.White)
-                        && (cardSource.EqualsTraits("System") || cardSource.ContainsTraits("Seven Code"));
+                        && (cardSource.EqualsTraits("System") || cardSource.EqualsTraits("Seven Code"));
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
