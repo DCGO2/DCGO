@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.BT26
                     => "[On Play] By trashing 1 [Shambala] trait card from your hand, <Draw 2>.";
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("Shambala");
+                    => cardSource.EqualsTraits("Shambala");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectOptionCardCondition(CardSource cardSource, ICardEffect effect)
                     => cardSource.IsOption
-                        && cardSource.ContainsTraits("Shambala")
+                        && cardSource.EqualsTraits("Shambala")
                         && !cardSource.CanNotPlayThisOption
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, effect);
 
