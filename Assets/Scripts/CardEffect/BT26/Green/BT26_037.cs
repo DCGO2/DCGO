@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT26
                     => "[All Turns] When this Digimon would leave the battle area other than by your effects, by trashing 1 of its link cards with the [Seven Code] trait, it doesn't leave.";
 
                 bool CanSelectLinkCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("Seven Code");
+                    => cardSource.EqualsTraits("Seven Code");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT26
                                 && cardSource.Owner == card.Owner
                                 && cardSource.IsDigimon
                                 && cardSource.IsLevel3
-                                && (cardSource.EqualsTraits("Navi") || cardSource.EqualsTraits("System") || cardSource.ContainsTraits("Seven Code"));
+                                && (cardSource.EqualsTraits("Navi") || cardSource.EqualsTraits("System") || cardSource.EqualsTraits("Seven Code"));
                         }
 
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.BT26
             bool CanSelectSourceCardCondition(CardSource cardSource)
                 => cardSource.IsDigimon
                     && cardSource.IsLevel3
-                    && (cardSource.EqualsTraits("Navi") || cardSource.EqualsTraits("System") || cardSource.ContainsTraits("Seven Code"))
+                    && (cardSource.EqualsTraits("Navi") || cardSource.EqualsTraits("System") || cardSource.EqualsTraits("Seven Code"))
                     && cardSource.CanLinkToTargetPermanent(card.PermanentOfThisCard(), false);
 
             bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
