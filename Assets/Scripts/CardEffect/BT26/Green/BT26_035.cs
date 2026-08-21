@@ -95,10 +95,10 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectTargetPermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && (permanent.TopCard.ContainsTraits("Insectoid") || permanent.TopCard.ContainsTraits("NSp"));
+                        && (permanent.TopCard.EqualsTraits("Insectoid") || permanent.TopCard.ContainsTraits("NSp"));
 
                 bool CardCondition(CardSource cardSource)
-                    => cardSource.IsDigimon && (cardSource.ContainsTraits("Insectoid") || cardSource.ContainsTraits("NSp"));
+                    => cardSource.IsDigimon && (cardSource.EqualsTraits("Insectoid") || cardSource.ContainsTraits("NSp"));
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
