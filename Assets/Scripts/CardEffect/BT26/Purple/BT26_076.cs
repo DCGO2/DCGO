@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("DATA SQUAD");
+                    return targetPermanent.TopCard.EqualsTraits("DATA SQUAD");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 4));
@@ -158,7 +158,7 @@ namespace DCGO.CardEffects.BT26
                             || CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, OwnerTamerCondition, null, _ => true));
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.EqualsCardName("Ravemon") || cardSource.ContainsTraits("DATA SQUAD");
+                    => cardSource.EqualsCardName("Ravemon") || cardSource.EqualsTraits("DATA SQUAD");
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
@@ -196,7 +196,7 @@ namespace DCGO.CardEffects.BT26
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.HasPlayCost
                         && cardSource.GetCostItself <= 5
-                        && (cardSource.ContainsTraits("Avian") || cardSource.ContainsTraits("Bird") || cardSource.ContainsTraits("DATA SQUAD"))
+                        && (cardSource.ContainsTraits("Avian") || cardSource.ContainsTraits("Bird") || cardSource.EqualsTraits("DATA SQUAD"))
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
