@@ -95,7 +95,7 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectGrantTargetCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && permanent.TopCard.ContainsTraits("Iliad");
+                    && permanent.TopCard.EqualsTraits("Iliad");
 
             bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
                 => card.Owner.HandCards.Count >= 1
