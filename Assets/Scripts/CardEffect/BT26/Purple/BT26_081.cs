@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT26
 
             bool IsOwnIliadDigimon(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && permanent.TopCard.ContainsTraits("Iliad");
+                    && permanent.TopCard.EqualsTraits("Iliad");
 
             bool GrantCondition() => CardEffectCommons.IsExistOnBattleArea(card);
 
@@ -74,12 +74,12 @@ namespace DCGO.CardEffects.BT26
             bool IliadOrTSPermanentCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
                     && (permanent.IsDigimon || permanent.IsTamer)
-                    && (permanent.TopCard.ContainsTraits("Iliad") || permanent.TopCard.HasTSTraits);
+                    && (permanent.TopCard.EqualsTraits("Iliad") || permanent.TopCard.HasTSTraits);
 
             IEnumerator PlayUpToBudgetCoroutine(int totalCost, SelectCardEffect.Root root, ActivateClass activateClass, Action<int> onSpent)
             {
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("Iliad")
+                    => cardSource.EqualsTraits("Iliad")
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, root: root, isPlayOption: true);
 
                 if (!CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition) && root == SelectCardEffect.Root.Trash) yield break;
@@ -148,7 +148,7 @@ namespace DCGO.CardEffects.BT26
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("Iliad");
+                    => cardSource.EqualsTraits("Iliad");
 
                 if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition)
                     || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
