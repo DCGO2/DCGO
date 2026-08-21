@@ -41,12 +41,12 @@ namespace DCGO.CardEffects.BT26
                     => cardSource.EqualsTraits("Seven Code");
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card)
                         && NotByYourEffects(hashtable);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionPermanent(p => p == card.PermanentOfThisCard())
                         && card.PermanentOfThisCard().LinkedCards.Exists(CanSelectLinkCardCondition);
 
