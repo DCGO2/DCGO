@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("Insectoid") || targetPermanent.TopCard.HasTSTraits;
+                    return targetPermanent.TopCard.EqualsTraits("Insectoid") || targetPermanent.TopCard.HasTSTraits;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 5));
@@ -85,7 +85,7 @@ namespace DCGO.CardEffects.BT26
             bool CanSelectHandCardCondition(CardSource cardSource, ICardEffect activateClass)
                 => cardSource.IsDigimon
                     && cardSource.HasLevel && cardSource.Level <= 4
-                    && (cardSource.ContainsTraits("Insectoid") || cardSource.EqualsTraits("Titan"))
+                    && (cardSource.EqualsTraits("Insectoid") || cardSource.EqualsTraits("Titan"))
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
             bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool PermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && (permanent.TopCard.ContainsTraits("Insectoid") || permanent.TopCard.EqualsTraits("Titan"));
+                        && (permanent.TopCard.EqualsTraits("Insectoid") || permanent.TopCard.EqualsTraits("Titan"));
 
                 bool CardSourceCondition(CardSource cardSource)
                     => cardSource.PermanentOfThisCard() != null
