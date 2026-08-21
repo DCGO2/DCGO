@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectBuffTargetCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && (permanent.TopCard.ContainsTraits("Insectoid") || permanent.TopCard.ContainsTraits("Titan"));
+                    && (permanent.TopCard.ContainsTraits("Insectoid") || permanent.TopCard.EqualsTraits("Titan"));
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -125,10 +125,10 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectTargetPermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && (permanent.TopCard.ContainsTraits("Insectoid") || permanent.TopCard.ContainsTraits("Titan"));
+                        && (permanent.TopCard.ContainsTraits("Insectoid") || permanent.TopCard.EqualsTraits("Titan"));
 
                 bool CardCondition(CardSource cardSource)
-                    => cardSource.IsDigimon && (cardSource.ContainsTraits("Insectoid") || cardSource.ContainsTraits("Titan"));
+                    => cardSource.IsDigimon && (cardSource.ContainsTraits("Insectoid") || cardSource.EqualsTraits("Titan"));
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
