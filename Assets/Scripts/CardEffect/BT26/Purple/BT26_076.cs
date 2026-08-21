@@ -194,7 +194,7 @@ namespace DCGO.CardEffects.BT26
                     => "[On Deletion] You may play 1 play cost 5 or lower card with [Avian] or [Bird] in any of its traits or the [DATA SQUAD] trait from your trash without paying the cost.";
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.HasCost
+                    => cardSource.HasPlayCost
                         && cardSource.GetCostItself <= 5
                         && (cardSource.ContainsTraits("Avian") || cardSource.ContainsTraits("Bird") || cardSource.ContainsTraits("DATA SQUAD"))
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
