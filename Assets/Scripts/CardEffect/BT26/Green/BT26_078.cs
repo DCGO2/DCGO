@@ -105,7 +105,7 @@ namespace DCGO.CardEffects.BT26
                 => $"[{tag}] By deleting this Digimon, you may play 1 play cost 12 or lower [Chronomon] text or [Titan] trait card from your trash without paying the cost.";
 
             bool CanSelectCardCondition(CardSource cardSource, ICardEffect activateClass)
-                => cardSource.HasCost
+                => cardSource.HasPlayCost
                     && cardSource.GetCostItself <= 12
                     && (cardSource.HasText("Chronomon") || cardSource.ContainsTraits("Titan"))
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
