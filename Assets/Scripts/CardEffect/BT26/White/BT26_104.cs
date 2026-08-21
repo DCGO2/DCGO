@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool HasTenteiHachibushu(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.ContainsTraits("Tentei Hachibushu");
+                        && permanent.TopCard.EqualsTraits("Tentei Hachibushu");
 
                 bool CanSelectOptionCardCondition(CardSource cardSource, ICardEffect effect)
                     => cardSource.IsOption
