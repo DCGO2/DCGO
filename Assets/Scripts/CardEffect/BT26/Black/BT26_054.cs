@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("CS");
+                    return targetPermanent.TopCard.EqualsTraits("CS");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 4));
@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectHandCardCondition(CardSource cardSource, ICardEffect activateClass)
                 => cardSource.IsTamer
-                    && cardSource.ContainsTraits("CS")
+                    && cardSource.EqualsTraits("CS")
                     && !HasSameNameAsOwnedTamer(cardSource)
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
@@ -85,9 +85,9 @@ namespace DCGO.CardEffects.BT26
 
                 bool PermanentCondition(Permanent permanent) => permanent == card.PermanentOfThisCard();
 
-                bool AddedCardCondition(CardSource cardSource) => cardSource.IsDigimon && cardSource.ContainsTraits("CS");
+                bool AddedCardCondition(CardSource cardSource) => cardSource.IsDigimon && cardSource.EqualsTraits("CS");
 
-                bool CardCondition(CardSource cardSource) => cardSource.IsDigimon && cardSource.ContainsTraits("CS");
+                bool CardCondition(CardSource cardSource) => cardSource.IsDigimon && cardSource.EqualsTraits("CS");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
