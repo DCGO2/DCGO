@@ -22,11 +22,11 @@ namespace DCGO.CardEffects.BT26
                     => "[Start of Your Main Phase] If your opponent has a Digimon, gain 1 memory.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && card.Owner.CanAddMemory(activateClass)
                         && card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1;
 
@@ -54,12 +54,12 @@ namespace DCGO.CardEffects.BT26
                         && cardSource.Owner == card.Owner;
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, PlayCardCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
