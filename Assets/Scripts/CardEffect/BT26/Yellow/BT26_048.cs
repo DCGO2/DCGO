@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("DM");
+                    return targetPermanent.TopCard.EqualsTraits("DM");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 5));
@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectHandCardCondition(CardSource cardSource, ICardEffect activateClass)
                 => cardSource.IsDigimon
-                    && cardSource.ContainsTraits("Ver.4")
+                    && cardSource.EqualsTraits("Ver.4")
                     && cardSource.HasDP && cardSource.CardDP <= 6000
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
