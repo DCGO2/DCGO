@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanLinkCardCondition(CardSource cardSource, bool payCost)
                     => cardSource.IsDigimon
-                        && cardSource.ContainsTraits("Seven Code")
+                        && cardSource.EqualsTraits("Seven Code")
                         && cardSource.CanLink(payCost);
 
                 bool CanLinkCardActivateCondition(CardSource cardSource) => CanLinkCardCondition(cardSource, false);
