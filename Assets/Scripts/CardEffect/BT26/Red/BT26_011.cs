@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.ContainsTraits("TS");
+                    => targetPermanent.TopCard.EqualsTraits("TS");
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 3));
@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.BT26
                 => $"[{tag}] By trashing 1 card with [Chronomon] in its text or the [Shaman] trait from your hand, <Draw 2>.";
 
             bool CanSelectCardCondition(CardSource cardSource)
-                => cardSource.HasText("Chronomon") || cardSource.ContainsTraits("Shaman");
+                => cardSource.HasText("Chronomon") || cardSource.EqualsTraits("Shaman");
 
             bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
                 => CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
