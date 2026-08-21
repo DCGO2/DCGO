@@ -117,7 +117,10 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.EqualsTraits("Seven Code")
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, root: SelectCardEffect.Root.Library, isPlayOption: true, fixedCost: cardSource.GetCostItself - 3);
+                        && ((cardSource.IsOption
+                                && !cardSource.CanNotPlayThisOption)
+                            || (cardSource.HasPlayCost
+                                && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass, fixedCost: cardSource.GetCostItself - 3)));
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
