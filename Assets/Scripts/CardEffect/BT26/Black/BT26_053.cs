@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("Glowing Dawn");
+                    return targetPermanent.TopCard.EqualsTraits("Glowing Dawn");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 3));
@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectOptionCardCondition(CardSource cardSource)
                     => cardSource.IsOption
-                        && cardSource.ContainsTraits("Glowing Dawn")
+                        && cardSource.EqualsTraits("Glowing Dawn")
                         && cardSource.HasPlayCost && cardSource.GetCostItself <= 4
                         && !cardSource.CanNotPlayThisOption;
 
