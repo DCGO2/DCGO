@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("NSo");
+                    return targetPermanent.TopCard.EqualsTraits("NSo");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 2));
@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Start of Your Main Phase] By trashing 1 card with the [Ghost] or [NSo] trait from your hand, <Draw 1> and gain 1 memory.";
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("Ghost") || cardSource.ContainsTraits("NSo");
+                    => cardSource.EqualsTraits("Ghost") || cardSource.EqualsTraits("NSo");
 
                 bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
                     => CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardCondition);
