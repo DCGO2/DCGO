@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// Blue Card
 namespace DCGO.CardEffects.EX2
 {
     public class EX2_072 : CEntity_Effect
@@ -11,6 +12,7 @@ namespace DCGO.CardEffects.EX2
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Ignore Color Requirements
             if (timing == EffectTiming.None)
             {
                 IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
@@ -21,49 +23,37 @@ namespace DCGO.CardEffects.EX2
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (card.Owner.GetBattleAreaPermanents().Count((permanet) => permanet.IsTamer) >= 1)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return card.Owner.GetBattleAreaPermanents().Count((permanet) => permanet.IsTamer) >= 1;
                 }
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    if (cardSource == card)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return cardSource == card;
                 }
             }
+            #endregion
+
+            #region Main
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Main] Reveal the top 5 cards of your deck. You may digivolve 1 of your Digimon into 1 non-white Digimon card among them without paying its memory cost. If you don't, add 1 Digimon card among them to your hand. Place the remaining cards at the bottom of your deck in any order.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon)
+                    if (cardSource.IsDigimon
+                    && !cardSource.HasCardColor(CardColor.White))
                     {
-                        if (!cardSource.HasCardColor(CardColor.White))
+                        foreach (Permanent permanent in card.Owner.GetBattleAreaDigimons())
                         {
-                            foreach (Permanent permanent in card.Owner.GetBattleAreaDigimons())
-                            {
-                                if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
-                                {
-                                    return true;
-                                }
-                            }
+                            return cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass);
                         }
                     }
 
@@ -147,22 +137,13 @@ namespace DCGO.CardEffects.EX2
 
                                 bool CanSelectPermanentCondition(Permanent permanent)
                                 {
-                                    if (permanent != null)
-                                    {
-                                        if (candidatePermanents.Contains(permanent))
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
+                                    return permanent != null
+                                        && candidatePermanents.Contains(permanent);
                                 }
 
                                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                                 {
                                     Permanent selectedPermanent = null;
-
-                                    maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
                                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -171,7 +152,7 @@ namespace DCGO.CardEffects.EX2
                                         canTargetCondition: CanSelectPermanentCondition,
                                         canTargetCondition_ByPreSelecetedList: null,
                                         canEndSelectCondition: null,
-                                        maxCount: maxCount,
+                                        maxCount: 1,
                                         canNoSelect: true,
                                         canEndNotMax: false,
                                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -225,8 +206,6 @@ namespace DCGO.CardEffects.EX2
 
                         if (!digivolved)
                         {
-                            maxCount = Math.Min(1, revealLibrary.RevealedCards.Count(CanSelectCardCondition1));
-
                             selectCardEffect.SetUp(
                                 canTargetCondition: CanSelectCardCondition1,
                                 canTargetCondition_ByPreSelecetedList: null,
@@ -235,7 +214,7 @@ namespace DCGO.CardEffects.EX2
                                 selectCardCoroutine: null,
                                 afterSelectCardCoroutine: AfterSelectCardCoroutine,
                                 message: "Select 1 card to add to your hand.",
-                                maxCount: maxCount,
+                                maxCount: 1,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.AddHand,
@@ -265,78 +244,70 @@ namespace DCGO.CardEffects.EX2
                     }
                 }
             }
+            #endregion
 
+            #region Security
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect($"Play 1 Tamer from hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Play 1 Tamer from hand", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Security] You may play 1 Tamer card from your hand without paying its memory cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsTamer)
-                    {
-                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsTamer
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
+                    return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        List<CardSource> selectedCards = new List<CardSource>();
+                        selectedCards.Add(cardSource);
 
-                        int maxCount = 1;
-
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCards.Add(cardSource);
-
-                            yield return null;
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
+                        yield return null;
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
                 }
             }
+            #endregion
 
             return cardEffects;
         }
