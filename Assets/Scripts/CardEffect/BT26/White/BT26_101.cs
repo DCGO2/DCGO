@@ -156,7 +156,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Security] You may play 1 play cost 4 or lower [TS] trait card from your hand or trash without paying the cost.";
 
                 bool CanPlayCondition(CardSource cardSource)
-                    => cardSource.HasCost && cardSource.GetCostItself <= 4 && cardSource.HasTSTraits
+                    => cardSource.HasPlayCost && cardSource.GetCostItself <= 4 && cardSource.HasTSTraits
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, isPlayOption: true);
 
                 bool CanUseCondition(Hashtable hashtable)
