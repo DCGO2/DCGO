@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.BT26
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("DATA SQUAD");
+                    return targetPermanent.TopCard.EqualsTraits("DATA SQUAD");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 5));
@@ -45,9 +45,6 @@ namespace DCGO.CardEffects.BT26
             bool CanSelectSuspendTargetCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
                     && (permanent.IsDigimon || permanent.IsTamer);
-
-            bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition);
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -86,15 +83,16 @@ namespace DCGO.CardEffects.BT26
                 optional: false,
                 maxCountPerTurn: 1,
                 hashValue: "BT26_049_Shared",
-                additionalActivateCondition: SharedAdditionalActivateCondition,
                 whenDigivolving: true,
                 whenAttacking: true);
 
             #region All Turns - Reactive Play
             if (timing == EffectTiming.OnTappedAnyone || timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
+                int maxCost = 3;
+
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("May play/use 1 [DATA SQUAD] card cost 3 (+1 per suspended opponent) or lower from hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("May play/use 1 [DATA SQUAD] card cost 3 (+1 per suspended Digimon/Tamer) or lower from hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
@@ -109,8 +107,8 @@ namespace DCGO.CardEffects.BT26
                 bool OwnTamerCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card);
 
-                bool IsSuspendedOpponentPermanent(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                bool IsSuspendedPermanent(Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)
                         && (permanent.IsDigimon || permanent.IsTamer)
                         && permanent.IsSuspended;
 
@@ -120,18 +118,23 @@ namespace DCGO.CardEffects.BT26
                             || CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, OwnTamerCondition, null, _ => true));
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
+                {
+                    maxCost = 3 + card.Owner.Enemy.GetFieldPermanents().Filter(IsSuspendedPermanent).Count;
+                    
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                        => cardSource.EqualsTraits("DATA SQUAD")
+                            && cardSource.HasPlayCost && cardSource.GetCostItself <= maxCost
+                            && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, isPlayOption: true);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    maxCost = 3 + card.Owner.Enemy.GetFieldPermanents().Filter(IsSuspendedPermanent).Count;
+
                     bool isUsed = false;
-
-                    int maxCost = 3 + card.Owner.Enemy.GetFieldPermanents().Filter(IsSuspendedOpponentPermanent).Count;
-
-                    bool CanSelectCardCondition(CardSource cardSource)
-                        => cardSource.ContainsTraits("DATA SQUAD")
-                            && cardSource.HasCost && cardSource.GetCostItself <= maxCost
-                            && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, isPlayOption: true);
 
                     if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                     {
