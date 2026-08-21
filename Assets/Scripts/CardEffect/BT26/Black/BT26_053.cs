@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.BT26
                 bool CanSelectOptionCardCondition(CardSource cardSource)
                     => cardSource.IsOption
                         && cardSource.EqualsTraits("Glowing Dawn")
-                        && cardSource.HasPlayCost && cardSource.GetCostItself <= 4
+                        && cardSource.GetCostItself <= 4
                         && !cardSource.CanNotPlayThisOption;
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -102,11 +102,42 @@ namespace DCGO.CardEffects.BT26
 
                             if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectOptionCardCondition))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                                CardSource selectedCard = null;
+
+                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                selectHandEffect.SetUp(
+                                    selectPlayer: card.Owner,
                                     canTargetCondition: CanSelectOptionCardCondition,
-                                    root: SelectCardEffect.Root.Hand,
-                                    cardEffect: activateClass,
-                                    payCost: false));
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: true,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    mode: SelectHandEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                                {
+                                    selectedCard = cardSource;
+                                    yield return null;
+                                }
+
+                                selectHandEffect.SetUpCustomMessage("Select 1 [Glowing Dawn] Option card to use.", "The opponent is selecting 1 [Glowing Dawn] Option card to use.");
+                                selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
+                                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
+                                if (selectedCard != null)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
+                                        cardSources: new List<CardSource>() { selectedCard },
+                                        activateClass: activateClass,
+                                        payCost: false,
+                                        root: SelectCardEffect.Root.Hand));
+                                }
                             }
                         }
                     }
