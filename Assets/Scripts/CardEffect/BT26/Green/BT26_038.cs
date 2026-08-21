@@ -131,12 +131,12 @@ namespace DCGO.CardEffects.BT26
                     => cardSource.IsDigimon && (cardSource.EqualsTraits("Insectoid") || cardSource.EqualsTraits("Titan"));
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanTriggerWhenWinBattle(hashtable, WinnerCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionPermanent(CanSelectTargetPermanentCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
