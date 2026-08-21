@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("TS");
+                    return targetPermanent.TopCard.EqualsTraits("TS");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 6));
@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.BT26
                 bool SourceCondition(CardSource cardSource)
                     => cardSource.IsDigimon
                         && (cardSource.EqualsCardName("Junomon")
-                            || (cardSource.HasLevel && cardSource.Level <= 5 && cardSource.ContainsTraits("Iliad")));
+                            || (cardSource.HasLevel && cardSource.Level <= 5 && cardSource.EqualsTraits("Iliad")));
 
                 string[] decodeStrings = { "(w/[Junomon] in name or Lv.5 or lower w/[Iliad] trait)", "Digimon card with [Junomon] in its name or a level 5 or lower Digimon card with the [Iliad] trait" };
                 cardEffects.Add(CardEffectFactory.DecodeSelfEffect(card: card, isInheritedEffect: false, decodeStrings: decodeStrings, sourceCondition: SourceCondition, condition: null));
