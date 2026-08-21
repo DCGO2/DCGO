@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT26
             {
                 cardEffects.Add(CardEffectFactory.UseRequirements(card, CardCondition));
 
-                bool CardCondition(CardSource cardSource) => cardSource.ContainsTraits("Seven Code");
+                bool CardCondition(CardSource cardSource) => cardSource.EqualsTraits("Seven Code");
             }
             #endregion
 
@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectTargetCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.ContainsTraits("Seven Code");
+                        && permanent.TopCard.EqualsTraits("Seven Code");
 
                 bool CanSelectBattleAreaSourceCondition(Permanent permanent)
                     => permanent != null && CanSelectTargetCondition(permanent);
@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.BT26
                     }
 
                     bool CanSelectLinkedOrTrashCondition(CardSource cardSource)
-                        => cardSource.IsDigimon && cardSource.ContainsTraits("Seven Code");
+                        => cardSource.IsDigimon && cardSource.EqualsTraits("Seven Code");
 
                     while (remaining > 0)
                     {
