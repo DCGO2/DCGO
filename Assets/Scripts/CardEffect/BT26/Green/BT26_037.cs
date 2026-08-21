@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT26
                                 && cardSource.Owner == card.Owner
                                 && cardSource.IsDigimon
                                 && cardSource.IsLevel3
-                                && (cardSource.ContainsTraits("Navi") || cardSource.EqualsTraits("System") || cardSource.ContainsTraits("Seven Code"));
+                                && (cardSource.EqualsTraits("Navi") || cardSource.EqualsTraits("System") || cardSource.ContainsTraits("Seven Code"));
                         }
 
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.BT26
             bool CanSelectSourceCardCondition(CardSource cardSource)
                 => cardSource.IsDigimon
                     && cardSource.IsLevel3
-                    && (cardSource.ContainsTraits("Navi") || cardSource.EqualsTraits("System") || cardSource.ContainsTraits("Seven Code"))
+                    && (cardSource.EqualsTraits("Navi") || cardSource.EqualsTraits("System") || cardSource.ContainsTraits("Seven Code"))
                     && cardSource.CanLinkToTargetPermanent(card.PermanentOfThisCard(), false);
 
             bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
