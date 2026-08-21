@@ -92,7 +92,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
                     => cardSource.IsDigimon
-                        && cardSource.ContainsTraits("Iliad")
+                        && cardSource.EqualsTraits("Iliad")
                         && (cardSource.CardColors.Contains(CardColor.Blue) || cardSource.CardColors.Contains(CardColor.Red))
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 4);
 
