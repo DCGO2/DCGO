@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerOnPlay(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 bool DarkTraitCondition(CardSource cardSource)
                     => cardSource.EqualsTraits("Fallen Angel") || cardSource.EqualsTraits("Undead") || cardSource.EqualsTraits("Wizard") || cardSource.ContainsTraits("Demon Lord");
