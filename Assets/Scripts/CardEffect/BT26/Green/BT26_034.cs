@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Start of Your Main Phase] If you have 4 or less memory, this Digimon may digivolve into a Digimon card with the [Vegetation] or [TS] trait in the hand without paying the cost.";
 
                 bool CardCondition(CardSource cardSource)
-                    => cardSource.IsDigimon && (cardSource.ContainsTraits("Vegetation") || cardSource.HasTSTraits);
+                    => cardSource.IsDigimon && (cardSource.EqualsTraits("Vegetation") || cardSource.HasTSTraits);
 
                 bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
                     => card.Owner.MemoryForPlayer <= 4;
