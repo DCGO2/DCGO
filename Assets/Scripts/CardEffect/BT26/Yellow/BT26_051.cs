@@ -107,7 +107,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && (permanent.TopCard.ContainsTraits("Social") || permanent.TopCard.ContainsTraits("Tool") || permanent.TopCard.ContainsTraits("Open") || permanent.TopCard.ContainsTraits("Seven Code"));
+                        && (permanent.TopCard.EqualsTraits("Social") || permanent.TopCard.EqualsTraits("Tool") || permanent.TopCard.ContainsTraits("Open") || permanent.TopCard.ContainsTraits("Seven Code"));
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsOwnerTurn(card)
