@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("DATA SQUAD");
+                    return targetPermanent.TopCard.EqualsTraits("DATA SQUAD");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 2));
@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsExistOnBattleArea(card);
 
                 bool DataSquadCondition(CardSource cardSource)
-                    => cardSource.EqualsCardName("Keenan Crier") || cardSource.ContainsTraits("DATA SQUAD");
+                    => cardSource.EqualsCardName("Keenan Crier") || cardSource.EqualsTraits("DATA SQUAD");
 
                 bool PurpleRavemonCondition(CardSource cardSource)
                     => cardSource.HasCardColor(CardColor.Purple)
