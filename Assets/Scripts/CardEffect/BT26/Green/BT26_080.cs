@@ -159,7 +159,7 @@ namespace DCGO.CardEffects.BT26
             {
                 cardEffects.Add(CardEffectFactory.UseRequirements(card, CardCondition));
 
-                bool CardCondition(CardSource cardSource) => cardSource.ContainsTraits("TS");
+                bool CardCondition(CardSource cardSource) => cardSource.EqualsTraits("TS");
             }
             #endregion
 
