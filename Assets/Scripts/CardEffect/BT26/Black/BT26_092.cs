@@ -25,11 +25,11 @@ namespace DCGO.CardEffects.BT26
                     => cardSource.HasTSTraits;
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -110,12 +110,12 @@ namespace DCGO.CardEffects.BT26
                         && permanent.TopCard.HasTSTraits;
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && !CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, OpponentAttackerCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerCondition)
                         && CardEffectCommons.HasMatchConditionPermanent(YourDigimonThatCanAttack);
 
