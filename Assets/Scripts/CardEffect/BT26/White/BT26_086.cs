@@ -208,7 +208,7 @@ namespace DCGO.CardEffects.BT26
                         AssemblyConditionElement element = new AssemblyConditionElement(CanSelectCardCondition);
 
                         bool CanSelectCardCondition(CardSource cs)
-                            => cs.IsDigimon && cs.ContainsTraits("Seven Code");
+                            => cs.IsDigimon && cs.EqualsTraits("Seven Code");
 
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
                             element: element,
