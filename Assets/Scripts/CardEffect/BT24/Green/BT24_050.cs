@@ -103,7 +103,7 @@ namespace DCGO.CardEffects.BT24
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or Tamer that will get unable to suspend.", "The opponent is selecting 1 Digimon or Tamer that will get unable to suspend.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or Tamer that will be unable to unsuspend.", "The opponent is selecting 1 Digimon or Tamer that will be unable to unsuspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

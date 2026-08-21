@@ -476,6 +476,7 @@ public class DataBase : MonoBehaviour
         return "[On Deletion] <Save> (You may place this card under one of your Tamers.)";
     }
 
+
     public static string EvadeEffectDiscription()
     {
         return "<Evade> (When this Digimon would be deleted, you may suspend it to prevent that deletion.)";
@@ -543,7 +544,7 @@ public class DataBase : MonoBehaviour
 
     public static string DetachEffectDescription(string condition)
     {
-        return $"<Detach 《{condition}》> (when this Digimon would leave the battle area other than by your effects, by trashing 1of its {condition} link cards, it doesn't leave.)";
+        return $"<Detach 《{condition}》> (When this Digimon would leave the battle area other than by your effects, by trashing 1 of its {condition} link cards, it doesn't leave.)";
     }
 
     public static string DecodeEffectDiscription(string[] decodeStrings)
