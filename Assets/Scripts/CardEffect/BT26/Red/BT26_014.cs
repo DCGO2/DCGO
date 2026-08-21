@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("Shambala");
+                    return targetPermanent.TopCard.EqualsTraits("Shambala");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 4));
@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.BT26
                                 && cardSource.IsDigimon
                                 && cardSource.HasLevel
                                 && cardSource.Level <= 4
-                                && cardSource.ContainsTraits("TB");
+                                && cardSource.EqualsTraits("TB");
                         }
 
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
@@ -135,11 +135,11 @@ namespace DCGO.CardEffects.BT26
                     => "[On Deletion] You may return 1 card with the [Shambala] trait from your trash to the hand. Then, you may play 1 Digimon card with the [TB] trait and 6000 DP or less from your hand without paying the cost.";
 
                 bool CanSelectTrashCardCondition(CardSource cardSource)
-                    => cardSource.IsDigimon && cardSource.ContainsTraits("Shambala");
+                    => cardSource.IsDigimon && cardSource.EqualsTraits("Shambala");
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
                     => cardSource.IsDigimon
-                        && cardSource.ContainsTraits("TB")
+                        && cardSource.EqualsTraits("TB")
                         && cardSource.HasDP && cardSource.CardDP <= 6000
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
 
@@ -207,7 +207,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
                     => cardSource.IsDigimon
-                        && cardSource.ContainsTraits("TB")
+                        && cardSource.EqualsTraits("TB")
                         && cardSource.HasDP && cardSource.CardDP <= 6000
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
 
