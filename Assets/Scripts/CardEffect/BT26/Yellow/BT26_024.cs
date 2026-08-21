@@ -37,11 +37,11 @@ namespace DCGO.CardEffects.BT26
                 bool PlayedPermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent != card.PermanentOfThisCard()
-                        && (permanent.TopCard.ContainsTraits("Vegetation") || permanent.TopCard.ContainsTraits("Fairy") || permanent.TopCard.EqualsTraits("WG"));
+                        && (permanent.TopCard.EqualsTraits("Vegetation") || permanent.TopCard.ContainsTraits("Fairy") || permanent.TopCard.EqualsTraits("WG"));
 
                 bool CardCondition(CardSource cardSource)
                     => cardSource.IsDigimon
-                        && (cardSource.ContainsTraits("Vegetation") || cardSource.ContainsTraits("Fairy") || cardSource.EqualsTraits("WG"));
+                        && (cardSource.EqualsTraits("Vegetation") || cardSource.ContainsTraits("Fairy") || cardSource.EqualsTraits("WG"));
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
