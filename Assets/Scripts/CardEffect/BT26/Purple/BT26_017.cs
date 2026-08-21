@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("Shambala") || targetPermanent.TopCard.HasTSTraits;
+                    return targetPermanent.TopCard.EqualsTraits("Shambala") || targetPermanent.TopCard.HasTSTraits;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 5));
@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.BT26
                                 && cardSource.IsDigimon
                                 && cardSource.HasLevel
                                 && cardSource.Level <= 5
-                                && cardSource.ContainsTraits("Shambala");
+                                && cardSource.EqualsTraits("Shambala");
                         }
 
                         bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
@@ -119,7 +119,7 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectPermanentCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && permanent.TopCard.ContainsTraits("Shambala");
+                    && permanent.TopCard.EqualsTraits("Shambala");
 
             bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
                 => CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.BT26
                     => "[On Deletion] You may play 1 card with the [Shambala] or [TS] trait and a play cost of 5 or less from your trash without paying the cost.";
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => (cardSource.ContainsTraits("Shambala") || cardSource.HasTSTraits)
+                    => (cardSource.EqualsTraits("Shambala") || cardSource.HasTSTraits)
                         && cardSource.HasPlayCost && cardSource.GetCostItself <= 5
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
 
