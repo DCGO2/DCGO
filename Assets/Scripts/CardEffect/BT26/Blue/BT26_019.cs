@@ -103,13 +103,11 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                    => CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -117,7 +115,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -131,6 +129,7 @@ namespace DCGO.CardEffects.BT26
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
+                        if (permanent == null) yield break;
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantSuspendUntilOpponentTurnEnd(permanent, activateClass));
                     }
                 }
