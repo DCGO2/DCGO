@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("Glowing Dawn");
+                    return targetPermanent.TopCard.EqualsTraits("Glowing Dawn");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 2));
@@ -40,9 +40,9 @@ namespace DCGO.CardEffects.BT26
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card);
 
-                bool GlowingDawnCondition(CardSource cardSource) => cardSource.ContainsTraits("Glowing Dawn");
+                bool GlowingDawnCondition(CardSource cardSource) => cardSource.EqualsTraits("Glowing Dawn");
 
-                bool PurpleBeatbreakCondition(CardSource cardSource) => cardSource.HasCardColor(CardColor.Purple) && cardSource.ContainsTraits("BEATBREAK");
+                bool PurpleBeatbreakCondition(CardSource cardSource) => cardSource.HasCardColor(CardColor.Purple) && cardSource.EqualsTraits("BEATBREAK");
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
