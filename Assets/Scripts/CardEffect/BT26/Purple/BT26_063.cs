@@ -106,7 +106,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Your Turn] [Once Per Turn] When this Digimon gets linked, reveal the top 3 cards of your deck. Add 1 card with the [Entertainment], [Open] or [Seven Code] trait among them to the hand. Return the rest to the top or bottom of the deck.";
 
                 bool CanSelectRevealCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("Entertainment") || cardSource.ContainsTraits("Open") || cardSource.ContainsTraits("Seven Code");
+                    => cardSource.EqualsTraits("Entertainment") || cardSource.ContainsTraits("Open") || cardSource.ContainsTraits("Seven Code");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsOwnerTurn(card)
