@@ -224,7 +224,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.HasCost && cardSource.GetCostItself <= 5 && cardSource.HasTSTraits
+                    => cardSource.HasPlayCost && cardSource.GetCostItself <= 5 && cardSource.HasTSTraits
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, isPlayOption: true);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
