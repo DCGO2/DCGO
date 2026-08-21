@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Start of Your Main Phase] By placing 1 [DATA SQUAD] trait card from your hand face down under this Tamer, <Draw 1> and gain 1 memory.";
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("DATA SQUAD");
+                    => cardSource.EqualsTraits("DATA SQUAD");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
@@ -97,7 +97,7 @@ namespace DCGO.CardEffects.BT26
                     => permanent == card.PermanentOfThisCard();
 
                 bool CanSelectDigivolveCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("Vegetation") || cardSource.ContainsTraits("Fairy") || cardSource.ContainsTraits("DATA SQUAD");
+                    => cardSource.ContainsTraits("Vegetation") || cardSource.ContainsTraits("Fairy") || cardSource.EqualsTraits("DATA SQUAD");
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
