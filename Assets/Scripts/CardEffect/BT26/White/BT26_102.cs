@@ -34,17 +34,15 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.EqualsTraits("Seven Code");
 
-                bool CanSelectBattleAreaSourceCondition(Permanent permanent)
-                    => permanent != null && CanSelectTargetCondition(permanent);
-
                 bool CanSelectDantemonCondition(CardSource cardSource) => cardSource.EqualsCardName("Dantemon");
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectTargetCondition);
+                    => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectTargetCondition)) yield break;
+
                     Permanent selectedTarget = null;
 
                     SelectPermanentEffect selectTargetEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -74,94 +72,124 @@ namespace DCGO.CardEffects.BT26
 
                     if (selectedTarget == null) yield break;
 
-                    List<CardSource> materialCards = new List<CardSource>();
-                    int remaining = 6;
-
                     bool CanSelectOtherBattleAreaCondition(Permanent permanent)
-                        => permanent != selectedTarget && CanSelectBattleAreaSourceCondition(permanent);
-
-                    while (remaining > 0 && CardEffectCommons.HasMatchConditionPermanent(CanSelectOtherBattleAreaCondition))
-                    {
-                        Permanent selectedSource = null;
-
-                        SelectPermanentEffect selectSourceEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectSourceEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectOtherBattleAreaCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectSourceCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        IEnumerator SelectSourceCoroutine(Permanent permanent)
-                        {
-                            selectedSource = permanent;
-                            yield return null;
-                        }
-
-                        selectSourceEffect.SetUpCustomMessage($"Select 1 [Seven Code] trait Digimon from your battle area to place as material ({remaining} remaining). You may stop selecting.", "The opponent is selecting material.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectSourceEffect.Activate());
-
-                        if (selectedSource == null) break;
-
-                        materialCards.Add(selectedSource.TopCard);
-                        remaining--;
-
-                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent>() { selectedSource }, CardEffectCommons.CardEffectHashtable(activateClass), notShowCards: true).Destroy());
-                    }
+                        => permanent != selectedTarget && CanSelectTargetCondition(permanent);
 
                     bool CanSelectLinkedOrTrashCondition(CardSource cardSource)
                         => cardSource.IsDigimon && cardSource.EqualsTraits("Seven Code");
 
+                    int availableBattleArea = CardEffectCommons.MatchConditionPermanentCount(CanSelectOtherBattleAreaCondition);
+                    int availableLinked = selectedTarget.LinkedCards.Filter(CanSelectLinkedOrTrashCondition).Count;
+                    int availableTrash = card.Owner.TrashCards.Filter(CanSelectLinkedOrTrashCondition).Count;
+
+                    if (availableBattleArea + availableLinked + availableTrash < 6) yield break;
+
+                    List<CardSource> materialCards = new List<CardSource>();
+                    int remaining = 6;
+
                     while (remaining > 0)
                     {
-                        List<CardSource> pool = new List<CardSource>();
-                        pool.AddRange(selectedTarget.LinkedCards.Filter(CanSelectLinkedOrTrashCondition));
-                        pool.AddRange(card.Owner.TrashCards.Filter(CanSelectLinkedOrTrashCondition));
+                        bool canPickBattleArea = CardEffectCommons.HasMatchConditionPermanent(CanSelectOtherBattleAreaCondition);
+                        bool canPickLinked = selectedTarget.LinkedCards.Exists(CanSelectLinkedOrTrashCondition);
+                        bool canPickTrash = card.Owner.TrashCards.Exists(CanSelectLinkedOrTrashCondition);
 
-                        if (pool.Count == 0) break;
+                        if (!canPickBattleArea && !canPickLinked && !canPickTrash) break;
 
-                        CardSource selectedCard = null;
+                        List<SelectionElement<int>> locationElements = new List<SelectionElement<int>>();
+                        if (canPickBattleArea) locationElements.Add(new(message: "Battle area", value: 1, spriteIndex: 0));
+                        if (canPickLinked) locationElements.Add(new(message: "Link cards", value: 2, spriteIndex: 1));
+                        if (canPickTrash) locationElements.Add(new(message: "Trash", value: 3, spriteIndex: 2));
 
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                        int selectedLocation;
 
-                        selectCardEffect.SetUp(
-                            canTargetCondition: CanSelectLinkedOrTrashCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: $"Select 1 [Seven Code] trait Digimon card from your link cards or trash to place as material ({remaining} remaining). You may stop selecting.",
-                            maxCount: 1,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Custom,
-                            customRootCardList: pool,
-                            canLookReverseCard: true,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        if (locationElements.Count > 1)
                         {
-                            selectedCard = cardSource;
-                            yield return null;
+                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: locationElements, selectPlayer: card.Owner, selectPlayerMessage: $"Select a location to take [Seven Code] digivolution material from ({remaining} remaining).", notSelectPlayerMessage: "The opponent is selecting a location for digivolution material.");
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                            selectedLocation = GManager.instance.userSelectionManager.SelectedIntValue;
+                        }
+                        else
+                        {
+                            selectedLocation = locationElements[0].value;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        if (selectedLocation == 1)
+                        {
+                            Permanent selectedSource = null;
 
-                        if (selectedCard == null) break;
+                            SelectPermanentEffect selectSourceEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        materialCards.Add(selectedCard);
-                        remaining--;
+                            selectSourceEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectOtherBattleAreaCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectSourceCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            IEnumerator SelectSourceCoroutine(Permanent permanent)
+                            {
+                                selectedSource = permanent;
+                                yield return null;
+                            }
+
+                            selectSourceEffect.SetUpCustomMessage($"Select 1 [Seven Code] trait Digimon from your battle area to place as material ({remaining} remaining).", "The opponent is selecting material.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectSourceEffect.Activate());
+
+                            if (selectedSource == null) continue;
+
+                            materialCards.Add(selectedSource.TopCard);
+                            remaining--;
+
+                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent>() { selectedSource }, CardEffectCommons.CardEffectHashtable(activateClass), notShowCards: true).Destroy());
+                        }
+                        else
+                        {
+                            List<CardSource> pool = selectedLocation == 2
+                                ? selectedTarget.LinkedCards.Filter(CanSelectLinkedOrTrashCondition)
+                                : card.Owner.TrashCards.Filter(CanSelectLinkedOrTrashCondition);
+
+                            CardSource selectedCard = null;
+
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectLinkedOrTrashCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => false,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: $"Select 1 [Seven Code] trait Digimon card from your {(selectedLocation == 2 ? "link cards" : "trash")} to place as material ({remaining} remaining).",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: pool,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            {
+                                selectedCard = cardSource;
+                                yield return null;
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                            if (selectedCard == null) continue;
+
+                            materialCards.Add(selectedCard);
+                            remaining--;
+                        }
                     }
 
                     if (materialCards.Count >= 1)
@@ -211,43 +239,34 @@ namespace DCGO.CardEffects.BT26
                     bool canPlayFromHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                     bool canPlayFromTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
 
-                    if (canPlayFromHand || canPlayFromTrash)
+                    bool shouldPlay = canPlayFromHand || canPlayFromTrash;
+                    SelectCardEffect.Root root = canPlayFromTrash && !canPlayFromHand ? SelectCardEffect.Root.Trash : SelectCardEffect.Root.Hand;
+
+                    if (canPlayFromHand && canPlayFromTrash)
                     {
-                        SelectCardEffect.Root root = canPlayFromHand ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
-
-                        if (canPlayFromHand && canPlayFromTrash)
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
-                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
-                            {
-                                new(message: "Play from hand", value: 1, spriteIndex: 0),
-                                new(message: "Play from trash", value: 2, spriteIndex: 1),
-                                new(message: "Don't play a card", value: 3, spriteIndex: 2),
-                            };
+                            new(message: "Play from hand", value: 1, spriteIndex: 0),
+                            new(message: "Play from trash", value: 2, spriteIndex: 1),
+                            new(message: "Don't play a card", value: 3, spriteIndex: 2),
+                        };
 
-                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Will you play an [Appmon] card?", notSelectPlayerMessage: "The opponent is choosing whether to play an [Appmon] card.");
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Will you play an [Appmon] card?", notSelectPlayerMessage: "The opponent is choosing whether to play an [Appmon] card.");
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                            int selected = GManager.instance.userSelectionManager.SelectedIntValue;
+                        int selected = GManager.instance.userSelectionManager.SelectedIntValue;
 
-                            if (selected != 3)
-                            {
-                                root = selected == 1 ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
+                        shouldPlay = selected != 3;
+                        root = selected == 1 ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
+                    }
 
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
-                                    canTargetCondition: CanSelectCardCondition,
-                                    root: root,
-                                    cardEffect: activateClass,
-                                    payCost: false));
-                            }
-                        }
-                        else
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
-                                canTargetCondition: CanSelectCardCondition,
-                                root: root,
-                                cardEffect: activateClass,
-                                payCost: false));
-                        }
+                    if (shouldPlay)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                            canTargetCondition: CanSelectCardCondition,
+                            root: root,
+                            cardEffect: activateClass,
+                            payCost: false));
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.AddThisCardToHand(card, activateClass));
