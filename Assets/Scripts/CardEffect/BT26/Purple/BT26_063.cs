@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.BT26
                     => "[All Turns] When this Digimon would leave the battle area other than by your effects, by trashing 1 of its link cards with the [Seven Code] trait, it doesn't leave.";
 
                 bool CanSelectLinkCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("Seven Code");
+                    => cardSource.EqualsTraits("Seven Code");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
@@ -106,7 +106,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Your Turn] [Once Per Turn] When this Digimon gets linked, reveal the top 3 cards of your deck. Add 1 card with the [Entertainment], [Open] or [Seven Code] trait among them to the hand. Return the rest to the top or bottom of the deck.";
 
                 bool CanSelectRevealCardCondition(CardSource cardSource)
-                    => cardSource.EqualsTraits("Entertainment") || cardSource.ContainsTraits("Open") || cardSource.ContainsTraits("Seven Code");
+                    => cardSource.EqualsTraits("Entertainment") || cardSource.EqualsTraits("Open") || cardSource.EqualsTraits("Seven Code");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsOwnerTurn(card)
