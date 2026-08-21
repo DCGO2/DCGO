@@ -115,7 +115,7 @@ namespace DCGO.CardEffects.BT26
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, OpponentPermanentCondition)
-                            || CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, OwnTamerCondition, null, _ => true));
+                            || CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, OwnTamerCondition, cardEffect => cardEffect != null, _ => true));
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
@@ -132,10 +132,6 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    maxCost = 3 + card.Owner.Enemy.GetFieldPermanents().Filter(IsSuspendedPermanent).Count;
-
-                    bool isUsed = false;
-
                     if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
@@ -147,12 +143,14 @@ namespace DCGO.CardEffects.BT26
 
                         IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                         {
-                            if (cardSources != null && cardSources.Count > 0) isUsed = true;
+                            if (cardSources == null || cardSources.Count == 0) activateClass.RemoveUse();
                             yield return null;
                         }
                     }
-
-                    if (!isUsed) activateClass.RemoveUse();
+                    else
+                    {
+                        activateClass.RemoveUse();
+                    }
                 }
             }
             #endregion
