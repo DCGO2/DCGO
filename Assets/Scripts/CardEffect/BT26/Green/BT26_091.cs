@@ -25,11 +25,11 @@ namespace DCGO.CardEffects.BT26
                     => cardSource.EqualsTraits("DATA SQUAD");
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -103,13 +103,13 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, OpponentPermanentCondition)
                             || CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, ThisTamerCondition, null, _ => true));
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.CanActivateSuspendCostEffect(card)
                         && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
 
