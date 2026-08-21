@@ -80,11 +80,11 @@ namespace DCGO.CardEffects.BT26
                     => cardSource.IsDigimon && cardSource.HasLevel && cardSource.Level <= 6 && cardSource.EqualsTraits("DM");
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, OwnerDigimonCondition, null, FaceDownCardCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
