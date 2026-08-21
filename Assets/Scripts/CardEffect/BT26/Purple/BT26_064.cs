@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsExistOnBattleArea(card);
 
                 bool DarkTraitCondition(CardSource cardSource)
-                    => cardSource.EqualsTraits("Fallen Angel") || cardSource.ContainsTraits("Undead") || cardSource.ContainsTraits("Wizard") || cardSource.ContainsTraits("Demon Lord");
+                    => cardSource.EqualsTraits("Fallen Angel") || cardSource.EqualsTraits("Undead") || cardSource.EqualsTraits("Wizard") || cardSource.ContainsTraits("Demon Lord");
 
                 bool TSCondition(CardSource cardSource) => cardSource.HasTSTraits;
 
