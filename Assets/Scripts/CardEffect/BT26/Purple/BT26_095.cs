@@ -25,11 +25,11 @@ namespace DCGO.CardEffects.BT26
                     => cardSource.EqualsTraits("BEATBREAK");
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -95,11 +95,11 @@ namespace DCGO.CardEffects.BT26
                     => cardSource.EqualsTraits("BEATBREAK") && !cardSource.IsDigiEgg;
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, AnyDigimonDeletedCondition, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
