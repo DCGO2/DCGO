@@ -201,7 +201,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Security] You may play 1 play cost 5 or lower [Appmon] trait card from your hand or trash without paying the cost. Then, add this card to the hand.";
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.HasPlayCost && cardSource.GetCostItself <= 5 && cardSource.ContainsTraits("Appmon")
+                    => cardSource.HasPlayCost && cardSource.GetCostItself <= 5 && cardSource.EqualsTraits("Appmon")
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
                 bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
