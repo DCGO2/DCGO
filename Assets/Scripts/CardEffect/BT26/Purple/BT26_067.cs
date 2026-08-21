@@ -94,7 +94,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsOwnerTurn(card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionPermanent(HasBlueOrYellowDigimonCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
