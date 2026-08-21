@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -59,6 +60,8 @@ namespace DCGO.CardEffects.BT26
                 {
                     List<CardSource> selectedCards = new List<CardSource>();
 
+                    int maxCount = Math.Min(7, availableSources.Count);
+
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                     selectCardEffect.SetUp(
@@ -68,8 +71,8 @@ namespace DCGO.CardEffects.BT26
                         canNoSelect: () => true,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
-                        message: "Select up to 7 [Appmon] trait cards with different names to link to this Digimon.",
-                        maxCount: 7,
+                        message: $"Select up to {maxCount} [Appmon] trait cards with different names to link to this Digimon.",
+                        maxCount: maxCount,
                         canEndNotMax: true,
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
@@ -93,7 +96,7 @@ namespace DCGO.CardEffects.BT26
                     }
                 }
 
-                if (CardEffectCommons.IsExistOnBattleArea(card) && card.PermanentOfThisCard().CanAttack(activateClass, withoutTap: true))
+                if (card.PermanentOfThisCard().CanAttack(activateClass, withoutTap: true))
                 {
                     SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
@@ -117,6 +120,7 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
+                isSkippable: true,
                 onPlay: true,
                 whenDigivolving: true);
 
@@ -126,12 +130,17 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("May delete 1 opponent Digimon, then if 7 link cards bounce opponent top security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
-                activateClass.SetIsSkippable(true);
+                activateClass.SetIsSkippableFunction(IsSkippable);
                 activateClass.SetHashString("BT26_086_AT");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                     => "[All Turns] [Once Per Turn] When this Digimon gets linked, you may delete 1 of your opponent's Digimon. Then, if this Digimon has 7 link cards, return your opponent's top security card to the bottom of the deck.";
+
+                bool IsSkippable(Hashtable hashtable)
+                {
+                    return card.PermanentOfThisCard().LinkedCards.Count != 7;
+                }
 
                 bool ThisPermanentCondition(Permanent permanent) => permanent == card.PermanentOfThisCard();
 
@@ -177,7 +186,7 @@ namespace DCGO.CardEffects.BT26
                         }
                     }
 
-                    if (CardEffectCommons.IsExistOnBattleArea(card) && card.PermanentOfThisCard().LinkedCards.Count >= 7 && card.Owner.Enemy.SecurityCards.Count >= 1)
+                    if (CardEffectCommons.IsExistOnBattleArea(card) && card.PermanentOfThisCard().LinkedCards.Count == 7)
                     {
                         isUsed = true;
 
