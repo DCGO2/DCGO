@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectGrantTargetCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && (permanent.TopCard.ContainsTraits("Insectoid") || permanent.TopCard.ContainsTraits("Titan"));
+                    && (permanent.TopCard.ContainsTraits("Insectoid") || permanent.TopCard.EqualsTraits("Titan"));
 
             bool SharedAdditionalActivateConditionB(Hashtable hashtable, ActivateClass activateClass)
                 => CardEffectCommons.HasMatchConditionPermanent(CanSelectGrantTargetCondition);
