@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("TS");
+                    return targetPermanent.TopCard.EqualsTraits("TS");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 4));
@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectOptionCardCondition(CardSource cardSource, ICardEffect activateClass)
                 => cardSource.IsOption
-                    && cardSource.ContainsTraits("Titan")
+                    && cardSource.EqualsTraits("Titan")
                     && !cardSource.CanNotPlayThisOption
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 2);
 
