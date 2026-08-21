@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectTrashCardCondition(CardSource cardSource)
                     => cardSource.IsDigimon
-                        && cardSource.ContainsTraits("Iliad")
+                        && cardSource.EqualsTraits("Iliad")
                         && (cardSource.CardColors.Contains(CardColor.Red) || cardSource.CardColors.Contains(CardColor.Blue))
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 4);
 
