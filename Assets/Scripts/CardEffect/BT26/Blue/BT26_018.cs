@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("DS");
+                    return targetPermanent.TopCard.EqualsTraits("DS");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 2));
@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.BT26
                 => $"[{tag}] Reveal the top 3 cards of your deck. Add 1 card with [Aqua] or [Sea Animal] in any of its traits or 1 card with the [DS] trait among them to the hand. Return the rest to the bottom of the deck. Then, trash the bottom digivolution card of 1 of your opponent's Digimon.";
 
             bool CanSelectRevealCardCondition(CardSource cardSource)
-                => cardSource.ContainsTraits("Aqua") || cardSource.ContainsTraits("Sea Animal") || cardSource.ContainsTraits("DS");
+                => cardSource.ContainsTraits("Aqua") || cardSource.ContainsTraits("Sea Animal") || cardSource.EqualsTraits("DS");
 
             bool CanSelectTrashDigivolutionTargetCondition(Permanent permanent, ICardEffect activateClass)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
