@@ -53,7 +53,7 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectPlayCardCondition(CardSource cardSource, ICardEffect activateClass)
                 => cardSource.ContainsTraits("Glowing Dawn")
-                    && cardSource.HasCost
+                    && cardSource.HasPlayCost
                     && cardSource.GetCostItself <= 5
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
