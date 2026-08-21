@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("Appmon");
+                    return targetPermanent.TopCard.EqualsTraits("Appmon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 2));
@@ -199,7 +199,7 @@ namespace DCGO.CardEffects.BT26
             #region Link Condition
             if (timing == EffectTiming.None)
             {
-                static bool LinkPermanentCondition(Permanent targetPermanent) => targetPermanent.TopCard.ContainsTraits("Appmon");
+                static bool LinkPermanentCondition(Permanent targetPermanent) => targetPermanent.TopCard.EqualsTraits("Appmon");
 
                 cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: LinkPermanentCondition, linkCost: 3, card: card));
             }
@@ -227,7 +227,7 @@ namespace DCGO.CardEffects.BT26
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.HasLevel && cardSource.Level <= 4
                         && !cardSource.HasCardColor(CardColor.White)
-                        && (cardSource.ContainsTraits("System") || cardSource.ContainsTraits("Seven Code"));
+                        && (cardSource.EqualsTraits("System") || cardSource.ContainsTraits("Seven Code"));
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
