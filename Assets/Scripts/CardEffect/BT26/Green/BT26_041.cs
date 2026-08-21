@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("Larva") || targetPermanent.TopCard.EqualsTraits("Insectoid") || targetPermanent.TopCard.EqualsTraits("NSp");
+                    return targetPermanent.TopCard.EqualsTraits("Larva") || targetPermanent.TopCard.EqualsTraits("Insectoid") || targetPermanent.TopCard.EqualsTraits("NSp");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 3));
