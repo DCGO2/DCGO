@@ -127,11 +127,11 @@ namespace DCGO.CardEffects.BT26
                         && permanent.TopCard.EqualsTraits("CS");
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, ProtectedPermanentCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && card.PermanentOfThisCard().DigivolutionCards.Count >= 1;
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
