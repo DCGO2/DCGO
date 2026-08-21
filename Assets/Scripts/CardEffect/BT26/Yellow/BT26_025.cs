@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("Glowing Dawn");
+                    return targetPermanent.TopCard.EqualsTraits("Glowing Dawn");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 2));
@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectTamerCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
-                    && permanent.TopCard.ContainsTraits("Glowing Dawn");
+                    && permanent.TopCard.EqualsTraits("Glowing Dawn");
 
             bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
                 => card.Owner.SecurityCards.Count >= 1
