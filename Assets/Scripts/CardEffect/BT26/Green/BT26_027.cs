@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.BT26
             bool CanSelectSuspendCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && !permanent.IsSuspended && permanent.CanSuspend
-                    && (permanent.TopCard.ContainsTraits("Vegetation") || permanent.TopCard.ContainsTraits("Fairy") || permanent.TopCard.EqualsTraits("WG"));
+                    && (permanent.TopCard.EqualsTraits("Vegetation") || permanent.TopCard.ContainsTraits("Fairy") || permanent.TopCard.EqualsTraits("WG"));
 
             bool CanSelectDebuffTargetCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
