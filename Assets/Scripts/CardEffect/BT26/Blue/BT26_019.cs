@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.BT26
                     => "[All Turns] When this Digimon would leave the battle area other than by your effects, by trashing 1 of its link cards with the [Seven Code] trait, it doesn't leave.";
 
                 bool CanSelectLinkCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("Seven Code");
+                    => cardSource.EqualsTraits("Seven Code");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
