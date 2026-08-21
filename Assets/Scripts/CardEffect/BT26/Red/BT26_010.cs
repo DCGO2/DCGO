@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Roleplaymon
 namespace DCGO.CardEffects.BT26
@@ -69,8 +68,6 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    CardSource selectedCard = null;
-
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                     selectHandEffect.SetUp(
