@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Start of Your Main Phase] By placing 1 [BEATBREAK] trait card from your hand face down under this Tamer, <Draw 1> and gain 1 memory.";
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("BEATBREAK");
+                    => cardSource.EqualsTraits("BEATBREAK");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
@@ -92,7 +92,7 @@ namespace DCGO.CardEffects.BT26
                 bool AnyDigimonDeletedCondition(Permanent permanent) => permanent.IsDigimon;
 
                 bool CanSelectPlaceCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("BEATBREAK") && !cardSource.IsDigiEgg;
+                    => cardSource.EqualsTraits("BEATBREAK") && !cardSource.IsDigiEgg;
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
