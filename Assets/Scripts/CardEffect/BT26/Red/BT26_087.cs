@@ -28,11 +28,11 @@ namespace DCGO.CardEffects.BT26
                     => cardSource.EqualsCardName("Giant Slayer");
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectReturnCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
