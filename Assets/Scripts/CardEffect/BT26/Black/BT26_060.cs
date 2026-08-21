@@ -145,9 +145,12 @@ namespace DCGO.CardEffects.BT26
                 bool CanSelectDeleteTargetCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
+                bool CardEffectCondition(ICardEffect cardEffect)
+                    => CardEffectCommons.IsOwnerEffect(cardEffect, card);
+
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnAddLibrary(hashtable, null);
+                        && CardEffectCommons.CanTriggerOnAddLibrary(hashtable, null, CardEffectCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)

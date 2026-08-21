@@ -9,10 +9,25 @@ public partial class CardEffectCommons
     #region Can trigger "When cards are added to the library" effect, regardless of origin
     public static bool CanTriggerOnAddLibrary(Hashtable hashtable, Func<CardSource, bool> cardCondition)
     {
+        return CanTriggerOnAddLibrary(hashtable, cardCondition, null);
+    }
+
+    public static bool CanTriggerOnAddLibrary(Hashtable hashtable, Func<CardSource, bool> cardCondition, Func<ICardEffect, bool> cardEffectCondition)
+    {
         List<CardSource> CardSources = GetCardSourcesFromHashtable(hashtable);
 
         if (CardSources != null)
         {
+            if (cardEffectCondition != null)
+            {
+                ICardEffect CardEffect = GetCardEffectFromHashtable(hashtable);
+
+                if (CardEffect == null || !cardEffectCondition(CardEffect))
+                {
+                    return false;
+                }
+            }
+
             if (CardSources.Some(cardSource =>
                 cardSource != null
                 && !cardSource.IsBeingRevealed
