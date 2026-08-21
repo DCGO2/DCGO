@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Your Turn] [Once Per Turn] When your hand is trashed from, this [Titan] trait Digimon may digivolve into [Titamon] or a Digimon card with the [Titan] trait in the trash with the cost reduced by 1.";
 
                 bool CardCondition(CardSource cardSource)
-                    => cardSource.IsDigimon && (cardSource.EqualsCardName("Titamon") || cardSource.ContainsTraits("Titan"));
+                    => cardSource.IsDigimon && (cardSource.EqualsCardName("Titamon") || cardSource.EqualsTraits("Titan"));
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
