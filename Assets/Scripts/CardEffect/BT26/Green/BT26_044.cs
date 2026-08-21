@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("DATA SQUAD");
+                    return targetPermanent.TopCard.EqualsTraits("DATA SQUAD");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 4));
@@ -123,7 +123,7 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card);
 
             bool CardConditionC(CardSource cardSource)
-                => cardSource.IsDigimon && (cardSource.ContainsTraits("Vegetation") || cardSource.ContainsTraits("Fairy") || cardSource.ContainsTraits("DATA SQUAD"));
+                => cardSource.IsDigimon && (cardSource.ContainsTraits("Vegetation") || cardSource.ContainsTraits("Fairy") || cardSource.EqualsTraits("DATA SQUAD"));
 
             IEnumerator SharedActivateCoroutineC(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -219,7 +219,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
-                        && (card.HasText("Rosemon") || card.ContainsTraits("DATA SQUAD"))
+                        && (card.HasText("Rosemon") || card.EqualsTraits("DATA SQUAD"))
                         && CardEffectCommons.HasMatchConditionPermanent(permanent => IsTamerWithFaceDownCard(activateClass, permanent));
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
