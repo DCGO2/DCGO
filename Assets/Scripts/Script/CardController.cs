@@ -1391,6 +1391,8 @@ public class PlayPermanentClass
 
                             PlayLog.OnAddLog?.Invoke($"\nEvolution:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
+                            card.cEntity_EffectController.UseEffectsThisTurn.AddRange(_targetPermanent.TopCard.cEntity_EffectController.UseEffectsThisTurn);
+
                             permanent = _targetPermanent;
                             evoRoots.Add(_targetPermanent.TopCard);
                             evoRootTops.Add(_targetPermanent.TopCard);
