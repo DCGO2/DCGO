@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("WG");
+                    return targetPermanent.TopCard.EqualsTraits("WG");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 2));
@@ -37,11 +37,11 @@ namespace DCGO.CardEffects.BT26
                 bool PlayedPermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent != card.PermanentOfThisCard()
-                        && (permanent.TopCard.ContainsTraits("Vegetation") || permanent.TopCard.ContainsTraits("Fairy") || permanent.TopCard.ContainsTraits("WG"));
+                        && (permanent.TopCard.ContainsTraits("Vegetation") || permanent.TopCard.ContainsTraits("Fairy") || permanent.TopCard.EqualsTraits("WG"));
 
                 bool CardCondition(CardSource cardSource)
                     => cardSource.IsDigimon
-                        && (cardSource.ContainsTraits("Vegetation") || cardSource.ContainsTraits("Fairy") || cardSource.ContainsTraits("WG"));
+                        && (cardSource.ContainsTraits("Vegetation") || cardSource.ContainsTraits("Fairy") || cardSource.EqualsTraits("WG"));
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
