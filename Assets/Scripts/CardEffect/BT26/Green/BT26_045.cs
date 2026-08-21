@@ -85,7 +85,7 @@ namespace DCGO.CardEffects.BT26
             bool CanSelectHandCardCondition(CardSource cardSource, ICardEffect activateClass)
                 => cardSource.IsDigimon
                     && cardSource.HasLevel && cardSource.Level <= 4
-                    && (cardSource.ContainsTraits("Insectoid") || cardSource.ContainsTraits("Titan"))
+                    && (cardSource.ContainsTraits("Insectoid") || cardSource.EqualsTraits("Titan"))
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
             bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool PermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && (permanent.TopCard.ContainsTraits("Insectoid") || permanent.TopCard.ContainsTraits("Titan"));
+                        && (permanent.TopCard.ContainsTraits("Insectoid") || permanent.TopCard.EqualsTraits("Titan"));
 
                 bool CardSourceCondition(CardSource cardSource)
                     => cardSource.PermanentOfThisCard() != null
