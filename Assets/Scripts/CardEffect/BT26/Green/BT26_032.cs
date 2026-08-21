@@ -61,7 +61,7 @@ namespace DCGO.CardEffects.BT26
                         && !permanent.IsSuspended && permanent.CanSuspend;
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
-                    => (cardSource.ContainsTraits("Vegetation") || cardSource.HasTSTraits)
+                    => (cardSource.EqualsTraits("Vegetation") || cardSource.HasTSTraits)
                         && ((cardSource.IsOption && !cardSource.CanNotPlayThisOption)
                             || (cardSource.HasPlayCost && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 5)));
 
