@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.BT26
                                 && cardSource.Owner == card.Owner
                                 && cardSource.IsDigimon
                                 && cardSource.HasLevel
-                                && (cardSource.ContainsTraits("Larva") || cardSource.EqualsTraits("Insectoid") || cardSource.EqualsTraits("Titan"));
+                                && (cardSource.EqualsTraits("Larva") || cardSource.EqualsTraits("Insectoid") || cardSource.EqualsTraits("Titan"));
                         }
 
                         bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
