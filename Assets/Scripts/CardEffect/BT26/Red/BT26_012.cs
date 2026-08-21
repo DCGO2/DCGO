@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Main] [Once Per Turn] You may play or use 1 card with the [TB] trait from your hand with the cost reduced by 2.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
 
                 bool CanSelectCardCondition(CardSource cardSource)
