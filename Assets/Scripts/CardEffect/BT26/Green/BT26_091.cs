@@ -97,7 +97,7 @@ namespace DCGO.CardEffects.BT26
                     => permanent == card.PermanentOfThisCard();
 
                 bool CanSelectDigivolveCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("Vegetation") || cardSource.ContainsTraits("Fairy") || cardSource.EqualsTraits("DATA SQUAD");
+                    => cardSource.EqualsTraits("Vegetation") || cardSource.ContainsTraits("Fairy") || cardSource.EqualsTraits("DATA SQUAD");
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
