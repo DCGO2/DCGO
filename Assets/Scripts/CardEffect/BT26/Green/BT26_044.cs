@@ -214,11 +214,11 @@ namespace DCGO.CardEffects.BT26
                 bool FaceDownCards(CardSource cardSource) => cardSource.IsFaceDown;
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && (card.HasText("Rosemon") || card.EqualsTraits("DATA SQUAD"))
                         && CardEffectCommons.HasMatchConditionPermanent(permanent => IsTamerWithFaceDownCard(activateClass, permanent));
 
