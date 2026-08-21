@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.BT26
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("TB")
+                    => cardSource.EqualsTraits("TB")
                         && ((cardSource.IsOption && !cardSource.CanNotPlayThisOption)
                             || (cardSource.HasPlayCost && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 2)));
 
