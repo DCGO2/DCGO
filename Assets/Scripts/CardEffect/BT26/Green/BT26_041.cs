@@ -118,12 +118,12 @@ namespace DCGO.CardEffects.BT26
                 bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanTriggerWhenWinBattle(hashtable, WinnerCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
