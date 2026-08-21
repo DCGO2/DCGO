@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT26
             {
                 cardEffects.Add(CardEffectFactory.UseRequirements(card, CardCondition));
 
-                bool CardCondition(CardSource cardSource) => cardSource.ContainsTraits("DM");
+                bool CardCondition(CardSource cardSource) => cardSource.EqualsTraits("DM");
             }
             #endregion
 
@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.BT26
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
 
-                bool CanSelectCardCondition(CardSource cardSource) => cardSource.ContainsTraits("DM");
+                bool CanSelectCardCondition(CardSource cardSource) => cardSource.EqualsTraits("DM");
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
@@ -77,7 +77,7 @@ namespace DCGO.CardEffects.BT26
                         && permanent.DigivolutionCards.Exists(FaceDownCardCondition);
 
                 bool CanSelectDMCardCondition(CardSource cardSource)
-                    => cardSource.IsDigimon && cardSource.HasLevel && cardSource.Level <= 6 && cardSource.ContainsTraits("DM");
+                    => cardSource.IsDigimon && cardSource.HasLevel && cardSource.Level <= 6 && cardSource.EqualsTraits("DM");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
