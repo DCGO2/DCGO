@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT26
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("TS");
+                    return targetPermanent.TopCard.EqualsTraits("TS");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 5));
@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool MatchingPermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && (permanent.TopCard.HasText("Chronomon") || permanent.TopCard.ContainsTraits("Titan"));
+                        && (permanent.TopCard.HasText("Chronomon") || permanent.TopCard.EqualsTraits("Titan"));
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnTrash(card)
@@ -107,7 +107,7 @@ namespace DCGO.CardEffects.BT26
             bool CanSelectCardCondition(CardSource cardSource, ICardEffect activateClass)
                 => cardSource.HasPlayCost
                     && cardSource.GetCostItself <= 12
-                    && (cardSource.HasText("Chronomon") || cardSource.ContainsTraits("Titan"))
+                    && (cardSource.HasText("Chronomon") || cardSource.EqualsTraits("Titan"))
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
