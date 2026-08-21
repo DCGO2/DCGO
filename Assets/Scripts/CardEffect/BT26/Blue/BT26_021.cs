@@ -97,7 +97,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Main] [Once Per Turn] You may play 1 Tamer card with the [TS] trait from your trash with the cost reduced by 2.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
 
                 bool CanSelectCardCondition(CardSource cardSource)
