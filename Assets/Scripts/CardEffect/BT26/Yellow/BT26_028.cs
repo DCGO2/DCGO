@@ -71,6 +71,7 @@ namespace DCGO.CardEffects.BT26
 
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
                             element: element,
+                            CanTargetCondition_ByPreSelecetedList: null,
                             selectMessage: "1 level 3 [Life]/[System]/[Seven Code] trait Digimon card",
                             elementCount: 1,
                             reduceCost: 2);
@@ -102,45 +103,42 @@ namespace DCGO.CardEffects.BT26
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (card.PermanentOfThisCard().DigivolutionCards.Exists(CanSelectSourceCardCondition))
+                CardSource selectedCard = null;
+
+                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                selectCardEffect.SetUp(
+                    canTargetCondition: CanSelectSourceCardCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    canNoSelect: () => true,
+                    selectCardCoroutine: SelectCardCoroutine,
+                    afterSelectCardCoroutine: null,
+                    message: "Select 1 card from this Digimon's digivolution cards to link.",
+                    maxCount: 1,
+                    canEndNotMax: false,
+                    isShowOpponent: true,
+                    mode: SelectCardEffect.Mode.Custom,
+                    root: SelectCardEffect.Root.DigivolutionCards,
+                    customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                    canLookReverseCard: true,
+                    selectPlayer: card.Owner,
+                    cardEffect: activateClass);
+
+                IEnumerator SelectCardCoroutine(CardSource cardSource)
                 {
-                    CardSource selectedCard = null;
+                    selectedCard = cardSource;
+                    yield return null;
+                }
 
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                selectCardEffect.SetUpCustomMessage("Select 1 card from this Digimon's digivolution cards to link.", "The opponent is selecting 1 card to link.");
+                selectCardEffect.SetUpCustomMessage_ShowCard("Selected Card");
 
-                    selectCardEffect.SetUp(
-                        canTargetCondition: CanSelectSourceCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 1 card from this Digimon's digivolution cards to link.",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.DigivolutionCards,
-                        customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
+                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                    {
-                        selectedCard = cardSource;
-                        yield return null;
-                    }
-
-                    selectCardEffect.SetUpCustomMessage("Select 1 card from this Digimon's digivolution cards to link.", "The opponent is selecting 1 card to link.");
-                    selectCardEffect.SetUpCustomMessage_ShowCard("Selected Card");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                    if (selectedCard != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCard, activateClass));
-                    }
+                if (selectedCard != null)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCard, activateClass));
                 }
             }
 
@@ -152,6 +150,7 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
+                isSkippable: true,
                 additionalActivateCondition: SharedAdditionalActivateCondition,
                 onPlay: true,
                 whenDigivolving: true);
@@ -194,13 +193,11 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                    => CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -208,7 +205,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
