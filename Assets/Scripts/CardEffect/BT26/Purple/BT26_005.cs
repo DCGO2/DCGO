@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT26
                     IEnumerator SuccessProcess(List<CardSource> trashedCards)
                     {
                         bool CanSelectCardCondition(CardSource cardSource)
-                            => (cardSource.ContainsTraits("Avian") || cardSource.ContainsTraits("DATA SQUAD"))
+                            => (cardSource.ContainsTraits("Avian") || cardSource.EqualsTraits("DATA SQUAD"))
                                 && cardSource.HasPlayCost && cardSource.GetCostItself <= 5
                                 && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, root: SelectCardEffect.Root.Trash);
 
