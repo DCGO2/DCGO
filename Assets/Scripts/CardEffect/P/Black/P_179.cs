@@ -264,7 +264,7 @@ namespace DCGO.CardEffects.P
                 cardEffects.Add(activateClass);
 
                 string SharedEffectDiscription()
-                => "[When Attacking] By trashing 1 [Device] Option on the field, you can select 1 of your opponent's Digimon with a level of 9 or less to delete.";
+                => "[When Attacking] By trashing 1 [Device] Option on the field, you can select 1 of your opponent's Digimon with a play cost of 9 or less to delete.";
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaDigimon(card);
