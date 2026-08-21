@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectTrashCardCondition(CardSource cardSource, ICardEffect activateClass)
                 => cardSource.IsDigimon
-                    && cardSource.ContainsTraits("Titan")
+                    && cardSource.EqualsTraits("Titan")
                     && !cardSource.EqualsCardName("Plutomon")
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 7);
 
