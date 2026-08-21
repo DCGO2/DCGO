@@ -164,8 +164,8 @@ namespace DCGO.CardEffects.BT26
                 string EffectDescription()
                     => "[Your Turn] [Once Per Turn] When your effects add to decks, 1 of your Digimon may get +3000 DP until your opponent's turn ends and attack.";
 
-                bool CardSourceCondition(CardSource cardSource)
-                    => cardSource.Owner == card.Owner;
+                bool CardEffectCondition(ICardEffect cardEffect)
+                    => CardEffectCommons.IsOwnerEffect(cardEffect, card);
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.BT26
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.CanTriggerOnAddLibrary(hashtable, CardSourceCondition);
+                        && CardEffectCommons.CanTriggerOnAddLibrary(hashtable, null, CardEffectCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
@@ -242,12 +242,12 @@ namespace DCGO.CardEffects.BT26
                 string EffectDescription()
                     => "[All Turns] [Once Per Turn] When your effects add to decks, this Digimon with [Chronomon] in its text may unsuspend.";
 
-                bool CardSourceCondition(CardSource cardSource)
-                    => cardSource.Owner == card.Owner;
+                bool CardEffectCondition(ICardEffect cardEffect)
+                    => CardEffectCommons.IsOwnerEffect(cardEffect, card);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnAddLibrary(hashtable, CardSourceCondition);
+                        && CardEffectCommons.CanTriggerOnAddLibrary(hashtable, null, CardEffectCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)

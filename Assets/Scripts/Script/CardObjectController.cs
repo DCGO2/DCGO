@@ -778,9 +778,17 @@ public class CardObjectController : MonoBehaviour
     #endregion
 
     #region place a card on top of the deck
-    public static IEnumerator AddLibraryTopCards(List<CardSource> cardSources, bool notAddLog = false)
+    public static IEnumerator AddLibraryTopCards(List<CardSource> cardSources, bool notAddLog = false, ICardEffect cardEffect = null)
     {
         if (cardSources.Count <= 0) yield break;
+
+        // Cards revealed from the library (eg. "reveal the top X cards" effects) and then returned
+        // there were never truly added from outside — track them here so they can be excluded from
+        // the OnAddLibraryAnyone trigger below.
+        bool WasAlreadyInLibrary(CardSource cardSource)
+            => cardSource.Owner.LibraryCards.Contains(cardSource) || cardSource.Owner.DigitamaLibraryCards.Contains(cardSource);
+
+        List<CardSource> newlyAddedCardSources = cardSources.Filter(cardSource => !WasAlreadyInLibrary(cardSource));
 
         bool isFromTrash = cardSources.Some(cardSource => CardEffectCommons.IsExistOnTrash(cardSource));
 
@@ -859,22 +867,34 @@ public class CardObjectController : MonoBehaviour
 
         #region "When cards are added to the library" effect, regardless of origin (hand/security/field/digivolution source/trash)
 
-        System.Collections.Hashtable addLibraryTopHashtable = new System.Collections.Hashtable()
+        if (newlyAddedCardSources.Count >= 1)
         {
-            {"CardSources", cardSources},
-            {"IsTop", true}
-        };
+            System.Collections.Hashtable addLibraryTopHashtable = new System.Collections.Hashtable()
+            {
+                {"CardSources", newlyAddedCardSources},
+                {"IsTop", true},
+                {"CardEffect", cardEffect}
+            };
 
-        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(addLibraryTopHashtable, EffectTiming.OnAddLibraryAnyone));
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(addLibraryTopHashtable, EffectTiming.OnAddLibraryAnyone));
+        }
 
         #endregion
     }
     #endregion
 
     #region put a card at the bottom of the deck
-    public static IEnumerator AddLibraryBottomCards(List<CardSource> cardSources, bool notAddLog = false)
+    public static IEnumerator AddLibraryBottomCards(List<CardSource> cardSources, bool notAddLog = false, ICardEffect cardEffect = null)
     {
         if (cardSources.Count <= 0) yield break;
+
+        // Cards revealed from the library (eg. "reveal the top X cards" effects) and then returned
+        // there were never truly added from outside — track them here so they can be excluded from
+        // the OnAddLibraryAnyone trigger below.
+        bool WasAlreadyInLibrary(CardSource cardSource)
+            => cardSource.Owner.LibraryCards.Contains(cardSource) || cardSource.Owner.DigitamaLibraryCards.Contains(cardSource);
+
+        List<CardSource> newlyAddedCardSources = cardSources.Filter(cardSource => !WasAlreadyInLibrary(cardSource));
 
         bool isFromTrash = cardSources.Some(cardSource => CardEffectCommons.IsExistOnTrash(cardSource));
 
@@ -965,13 +985,17 @@ public class CardObjectController : MonoBehaviour
 
         #region "When cards are added to the library" effect, regardless of origin (hand/security/field/digivolution source/trash)
 
-        System.Collections.Hashtable addLibraryBottomHashtable = new System.Collections.Hashtable()
+        if (newlyAddedCardSources.Count >= 1)
         {
-            {"CardSources", cardSources},
-            {"IsTop", false}
-        };
+            System.Collections.Hashtable addLibraryBottomHashtable = new System.Collections.Hashtable()
+            {
+                {"CardSources", newlyAddedCardSources},
+                {"IsTop", false},
+                {"CardEffect", cardEffect}
+            };
 
-        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(addLibraryBottomHashtable, EffectTiming.OnAddLibraryAnyone));
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(addLibraryBottomHashtable, EffectTiming.OnAddLibraryAnyone));
+        }
 
         #endregion
     }
