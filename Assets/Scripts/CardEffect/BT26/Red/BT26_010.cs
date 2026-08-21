@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 [Game]/[Open]/[Seven Code] card to Draw 2", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1 [Game]/[Open]/[Seven Code] card to <Draw 2>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
