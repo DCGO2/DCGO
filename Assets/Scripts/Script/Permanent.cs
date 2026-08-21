@@ -890,6 +890,47 @@ public class Permanent
     }
     #endregion
 
+    #region Immune From Stack Being Returned To Library
+    public bool ImmuneFromStackReturnToLibrary(ICardEffect effect)
+    {
+        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
+        {
+            foreach (ICardEffect cardEffect1 in player.EffectList(EffectTiming.None))
+            {
+                if (cardEffect1 is IImmuneFromStackReturnToLibraryEffect)
+                {
+                    if (cardEffect1.CanUse(null))
+                    {
+                        if (((IImmuneFromStackReturnToLibraryEffect)cardEffect1).ImmuneStackReturnToLibrary(this, effect))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            foreach (Permanent permanent in player.GetFieldPermanents())
+            {
+                foreach (ICardEffect cardEffect1 in permanent.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect1 is IImmuneFromStackReturnToLibraryEffect)
+                    {
+                        if (cardEffect1.CanUse(null))
+                        {
+                            if (((IImmuneFromStackReturnToLibraryEffect)cardEffect1).ImmuneStackReturnToLibrary(this, effect))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+    #endregion
+
     #region Card Sources
     public List<CardSource> cardSources = new List<CardSource>();
     #endregion

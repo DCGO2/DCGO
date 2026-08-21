@@ -5935,9 +5935,7 @@ public class IReturnStackToLibrary
         if (_cardEffect.EffectSourceCard == null) yield break;
         if (_permanent == null) yield break;
         if (_permanent.TopCard == null) yield break;
-        // Reuses the existing stack-trashing immunity as the closest analog until a card grants a
-        // dedicated "can't return stacked cards to the library" immunity.
-        if (_permanent.ImmuneFromStackTrashing(_cardEffect)) yield break;
+        if (_permanent.ImmuneFromStackReturnToLibrary(_cardEffect)) yield break;
         if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
 
         int count = Math.Min(_permanent.DigivolutionCards.Count, _returnCount);
