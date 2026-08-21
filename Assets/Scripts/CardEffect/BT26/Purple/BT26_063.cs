@@ -109,24 +109,15 @@ namespace DCGO.CardEffects.BT26
                     => cardSource.EqualsTraits("Entertainment") || cardSource.EqualsTraits("Open") || cardSource.EqualsTraits("Seven Code");
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsOwnerTurn(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanTriggerWhenLinked(hashtable, permanent => permanent == card.PermanentOfThisCard(), null);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                    {
-                        new SelectionElement<bool>(message: "Top", value: true, spriteIndex: 0),
-                        new SelectionElement<bool>(message: "Bottom", value: false, spriteIndex: 1),
-                    };
-
-                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Return the rest to the top or bottom of the deck?", notSelectPlayerMessage: "The opponent is choosing where to return the rest of the deck.");
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                    bool toTop = GManager.instance.userSelectionManager.SelectedBoolValue;
-
+                {             
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
                         revealCount: 3,
                         simplifiedSelectCardConditions: new SimplifiedSelectCardConditionClass[]
@@ -138,7 +129,7 @@ namespace DCGO.CardEffects.BT26
                                 maxCount: 1,
                                 selectCardCoroutine: null),
                         },
-                        remainingCardsPlace: toTop ? RemainingCardsPlace.DeckTop : RemainingCardsPlace.DeckBottom,
+                        remainingCardsPlace: RemainingCardsPlace.DeckTopOrBottom,
                         activateClass: activateClass
                     ));
                 }
@@ -189,8 +180,6 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -198,7 +187,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
