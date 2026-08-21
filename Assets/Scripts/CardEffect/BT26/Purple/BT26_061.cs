@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerOnPlay(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 bool GlowingDawnCondition(CardSource cardSource) => cardSource.EqualsTraits("Glowing Dawn");
 
