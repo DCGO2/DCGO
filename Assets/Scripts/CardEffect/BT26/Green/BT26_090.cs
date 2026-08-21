@@ -22,11 +22,11 @@ namespace DCGO.CardEffects.BT26
                     => "[Start of Your Main Phase] If you have 4 or less memory, gain 1 memory.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && card.Owner.CanAddMemory(activateClass)
                         && card.Owner.MemoryForPlayer <= 4;
 
@@ -55,11 +55,11 @@ namespace DCGO.CardEffects.BT26
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, effect, fixedCost: cardSource.GetCostItself - card.Owner.Enemy.MemoryForPlayer);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
