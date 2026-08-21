@@ -24,80 +24,17 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Detach
-            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
+            if (timing == EffectTiming.WhenRemoveField)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashing 1 of its [Seven Code] link cards, it doesn't leave", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                    => "<Detach [Seven Code] trait> (When this Digimon would leave the battle area other than by your effects, by trashing 1 of its specified link cards, it doesn't leave.)";
-
-                bool NotByYourEffects(Hashtable hashtable)
-                    => !CardEffectCommons.IsByEffect(hashtable, ce => ce.EffectSourceCard != null && ce.EffectSourceCard.Owner == card.Owner);
-
                 bool CanSelectLinkCardCondition(CardSource cardSource)
                     => cardSource.EqualsTraits("Seven Code");
 
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card)
-                        && NotByYourEffects(hashtable);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(p => p == card.PermanentOfThisCard())
-                        && card.PermanentOfThisCard().LinkedCards.Exists(CanSelectLinkCardCondition);
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    Permanent thisPermanent = card.PermanentOfThisCard();
-
-                    if (thisPermanent != null && thisPermanent.LinkedCards.Exists(CanSelectLinkCardCondition))
-                    {
-                        CardSource selectedLinkCard = null;
-
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                            canTargetCondition: CanSelectLinkCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: "Select 1 [Seven Code] trait link card to trash so this Digimon doesn't leave.",
-                            maxCount: 1,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Custom,
-                            customRootCardList: thisPermanent.LinkedCards,
-                            canLookReverseCard: true,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedLinkCard = cardSource;
-                            yield return null;
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                        if (selectedLinkCard != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new ITrashLinkCards(thisPermanent, new List<CardSource>() { selectedLinkCard }, activateClass).TrashLinkCards());
-
-                            thisPermanent.willBeRemoveField = false;
-                            thisPermanent.HideDeleteEffect();
-                            thisPermanent.HideHandBounceEffect();
-                            thisPermanent.HideDeckBounceEffect();
-                            thisPermanent.HideWillRemoveFieldEffect();
-                        }
-                    }
-                }
+                cardEffects.Add(CardEffectFactory.DetachSelfEffect(
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: null,
+                    conditionString: "[Seven Code] trait",
+                    cardCondition: CanSelectLinkCardCondition));
             }
             #endregion
 
