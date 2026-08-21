@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.ContainsTraits("Appmon");
+                    => targetPermanent.TopCard.EqualsTraits("Appmon");
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 2));
@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.ContainsTraits("Appmon");
+                    => targetPermanent.TopCard.EqualsTraits("Appmon");
 
                 cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 3, card: card));
             }
@@ -129,7 +129,7 @@ namespace DCGO.CardEffects.BT26
                     => "[When Attacking] By trashing 1 [Game], [Open] or [Seven Code] trait card from your hand, <Draw 2>.";
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.ContainsTraits("Game") || cardSource.ContainsTraits("Open") || cardSource.ContainsTraits("Seven Code");
+                    => cardSource.EqualsTraits("Game") || cardSource.ContainsTraits("Open") || cardSource.ContainsTraits("Seven Code");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
