@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Zanbamon
 namespace DCGO.CardEffects.BT26
@@ -86,7 +87,7 @@ namespace DCGO.CardEffects.BT26
                                 }
                             }
 
-                            if (cardSource.Level_Assembly.Count((level) => cardLevels.Contains(level)) >= 1 || cardLevels.Contains(cardSource.Level))
+                            if (cardSource.Level_Assembly.Any((level) => cardLevels.Contains(level)) || cardLevels.Contains(cardSource.Level))
                             {
                                 return false;
                             }
