@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Roleplaymon
 namespace DCGO.CardEffects.BT26
@@ -14,8 +13,7 @@ namespace DCGO.CardEffects.BT26
             #region Alternate Digivolution Requirement
             if (timing == EffectTiming.None)
             {
-                static bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.EqualsTraits("Appmon");
+                bool PermanentCondition(Permanent targetPermanent) => targetPermanent.TopCard.HasAppmonTraits;
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 2));
@@ -25,49 +23,33 @@ namespace DCGO.CardEffects.BT26
             #region Link Condition
             if (timing == EffectTiming.None)
             {
-                static bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.EqualsTraits("Appmon");
+                bool PermanentCondition(Permanent targetPermanent) => targetPermanent.TopCard.HasAppmonTraits;
 
                 cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 3, card: card));
             }
             #endregion
 
-            #region Progress
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.ProgressSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
-            }
-            #endregion
-
-            #region Piercing
-            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
-            {
-                cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card, condition: null));
-            }
-            #endregion
-
-            #region Detach
+            #region Detach (Seven Code)
             if (timing == EffectTiming.WhenRemoveField)
             {
-                bool CanSelectLinkCardCondition(CardSource cardSource)
-                    => cardSource.EqualsTraits("Seven Code");
+                bool cardCondition(CardSource cardSource) => cardSource.EqualsTraits("Seven Code");
 
                 cardEffects.Add(CardEffectFactory.DetachSelfEffect(
                     isInheritedEffect: false,
                     card: card,
                     condition: null,
                     conditionString: "[Seven Code] trait",
-                    cardCondition: CanSelectLinkCardCondition));
+                    cardCondition: cardCondition));
             }
             #endregion
 
-            #region Inherit
+            #region When Attacking
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 [Game]/[Open]/[Seven Code] card to Draw 2", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
-                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetUpICardEffect("Trash 1 [Game]/[Open]/[Seven Code] card to <Draw 2>", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -86,8 +68,6 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    CardSource selectedCard = null;
-
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                     selectHandEffect.SetUp(
@@ -99,8 +79,8 @@ namespace DCGO.CardEffects.BT26
                         canNoSelect: true,
                         canEndNotMax: false,
                         isShowOpponent: true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         mode: SelectHandEffect.Mode.Discard,
                         cardEffect: activateClass);
 
@@ -108,17 +88,28 @@ namespace DCGO.CardEffects.BT26
 
                     yield return StartCoroutine(selectHandEffect.Activate());
 
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        selectedCard = cardSource;
-                        yield return null;
-                    }
-
-                    if (selectedCard != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
+                        if (cardSources.Count > 0)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
+                        }
                     }
                 }
+            }
+            #endregion
+
+            #region Progress
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.ProgressSelfStaticEffect(isInheritedEffect: false, card: card, condition: null, isLinkedEffect: true));
+            }
+            #endregion
+
+            #region Piercing
+            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
+            {
+                cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card, condition: null, isLinkedEffect: true));
             }
             #endregion
 
