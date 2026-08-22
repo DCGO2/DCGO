@@ -166,12 +166,6 @@ public class SelectBattleMode : MonoBehaviour
 
         if (selectBattleModeWindow != null && selectBattleModeWindow.InfoText != null)
         {
-            // === DCGO-CUSTOM:ranked begin ===
-            Opening.instance.battle.selectBattleDeck.SetUpSelectBattleDeck(Opening.instance.battle.selectBattleDeck.OnClickSelectButton_RankedMatch, 0);
-            // === DCGO-CUSTOM:ranked end ===
-            // === DCGO-CUSTOM:ranked begin ===
-            ContinuousController.instance.useBanlist = true;
-            // === DCGO-CUSTOM:ranked end ===
             selectBattleModeWindow.InfoText.text = $"{baseInfo}\n{rankLine}";
         }
 

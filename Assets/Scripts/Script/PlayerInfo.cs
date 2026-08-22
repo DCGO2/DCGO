@@ -201,6 +201,10 @@ public class PlayerInfo : MonoBehaviour
 
         this.gameObject.SetActive(true);
         PlayerNameInputField.onEndEdit.AddListener(SavePlayerName);
+        // === DCGO-CUSTOM:ranked begin ===
+        RefreshRankedStatus();
+        LoadRankedProfileAsync();
+        // === DCGO-CUSTOM:ranked end ===
     }
 
     public void OffPlayerInfo()
