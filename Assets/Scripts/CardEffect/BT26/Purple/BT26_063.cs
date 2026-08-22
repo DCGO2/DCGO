@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -62,7 +61,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {             
+                {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
                         revealCount: 3,
                         simplifiedSelectCardConditions: new SimplifiedSelectCardConditionClass[]
@@ -117,7 +116,8 @@ namespace DCGO.CardEffects.BT26
                         && CardEffectCommons.IsMinLevel(permanent, card.Owner.Enemy);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
+                    => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card)
+                        && CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
