@@ -55,6 +55,7 @@ namespace DCGO.CardEffects.BT26
 
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
                             element: element,
+                            CanTargetCondition_ByPreSelecetedList: null,
                             selectMessage: "1 level 4 or lower [TB] trait Digimon card",
                             elementCount: 1,
                             reduceCost: 2);
