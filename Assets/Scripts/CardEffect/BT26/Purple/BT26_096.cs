@@ -13,26 +13,7 @@ namespace DCGO.CardEffects.BT26
             #region Start of Your Turn
             if (timing == EffectTiming.OnStartTurn)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Set memory to 3", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                    => "[Start of Your Turn] If you have 2 or less memory, set it to 3.";
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.IsOwnerTurn(card);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && card.Owner.MemoryForPlayer <= 2;
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.SetFixedMemory(3, activateClass));
-                }
+                cardEffects.Add(CardEffectFactory.SetMemoryTo3TamerEffect(card));
             }
             #endregion
 
@@ -40,7 +21,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By returning this Tamer to bottom of deck, play 1 [Chronomon]/[TS] card from hand or trash for 2 less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By returning this Tamer to bottom of deck, play 1 [Chronomon] in text Digimon or [TS] Tamer from hand or trash for 2 less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -70,8 +51,8 @@ namespace DCGO.CardEffects.BT26
                             List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                             {
                                 new(message: "From hand", value: 1, spriteIndex: 0),
-                                new(message: "From trash", value: 2, spriteIndex: 1),
-                                new(message: "Don't play", value: 3, spriteIndex: 2),
+                                new(message: "From trash", value: 2, spriteIndex: 0),
+                                new(message: "Don't play", value: 3, spriteIndex: 1),
                             };
 
                             GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "From which area will you play a card?", notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
