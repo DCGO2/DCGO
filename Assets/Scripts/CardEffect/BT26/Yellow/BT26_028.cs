@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -190,54 +189,56 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
+                    => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card)
+                        && CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that can't activate [When Digivolving] effects and gets -3000 DP.", "The opponent is selecting 1 Digimon that can't activate [When Digivolving] effects and gets -3000 DP.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent selectedPermanent)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        DisableEffectClass invalidationClass = new DisableEffectClass();
-                        invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", CanUseConditionDebuff, card);
-                        invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
-                        selectedPermanent.UntilOpponentTurnEndEffects.Add(_ => invalidationClass);
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        bool CanUseConditionDebuff(Hashtable hashtableDebuff)
-                            => selectedPermanent.TopCard != null
-                                && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
 
-                        bool InvalidateCondition(ICardEffect cardEffect)
-                            => selectedPermanent.TopCard != null
-                                && cardEffect != null
-                                && cardEffect.EffectSourceCard != null
-                                && isExistOnField(cardEffect.EffectSourceCard)
-                                && cardEffect.EffectSourceCard.PermanentOfThisCard() == selectedPermanent
-                                && cardEffect.IsWhenDigivolving
-                                && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that can't activate [When Digivolving] effects and gets -3000 DP.", "The opponent is selecting 1 Digimon that can't activate [When Digivolving] effects and gets -3000 DP.");
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: selectedPermanent, changeValue: -3000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent selectedPermanent)
+                        {
+                            DisableEffectClass invalidationClass = new DisableEffectClass();
+                            invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", CanUseConditionDebuff, card);
+                            invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
+                            selectedPermanent.UntilOpponentTurnEndEffects.Add(_ => invalidationClass);
+
+                            bool CanUseConditionDebuff(Hashtable hashtableDebuff)
+                                => selectedPermanent.TopCard != null;
+
+                            bool InvalidateCondition(ICardEffect cardEffect)
+                                => selectedPermanent.TopCard != null
+                                    && cardEffect != null
+                                    && cardEffect.EffectSourceCard != null
+                                    && isExistOnField(cardEffect.EffectSourceCard)
+                                    && cardEffect.EffectSourceCard.PermanentOfThisCard() == selectedPermanent
+                                    && cardEffect.IsWhenDigivolving
+                                    && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: selectedPermanent, changeValue: -3000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                        }
                     }
                 }
             }
