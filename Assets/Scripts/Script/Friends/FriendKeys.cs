@@ -18,6 +18,8 @@ public static class FriendKeys
     public const string SeriesWinsBProperty = "FriendSeriesWinsB";
     public const string GameIndexProperty = "FriendGameIndex";
     public const string LastLoserProperty = "FriendLastLoser";
+    public const string NextFirstUserIdProperty = "FriendNextFirstUserId";
+    public const string NextFirstGameIndexProperty = "FriendNextFirstGameIndex";
     public const string OnResultProperty = "FriendOnResult";
     public const string UserIdAProperty = "FriendUserIdA";
     public const string UserIdBProperty = "FriendUserIdB";

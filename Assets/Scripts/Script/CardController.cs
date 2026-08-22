@@ -1947,17 +1947,35 @@ public class DrawClass
 
         for (int i = 0; i < _drawCount; i++)
         {
+            if (BattleEnded())
+            {
+                yield break;
+            }
+
             if (_player.LibraryCards.Count > 0)
             {
                 CardSource DrawCard = _player.LibraryCards[0];
 
                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(DrawCard));
+                if (BattleEnded())
+                {
+                    yield break;
+                }
 
                 DrawCards.Add(DrawCard);
             }
         }
 
+        if (BattleEnded())
+        {
+            yield break;
+        }
+
         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(DrawCards, true, _cardEffect));
+        if (BattleEnded())
+        {
+            yield break;
+        }
 
         #region add log
 
@@ -1986,6 +2004,13 @@ public class DrawClass
         }
 
         #endregion
+    }
+
+    static bool BattleEnded()
+    {
+        return GManager.instance == null ||
+               GManager.instance.turnStateMachine == null ||
+               GManager.instance.turnStateMachine.endGame;
     }
 }
 

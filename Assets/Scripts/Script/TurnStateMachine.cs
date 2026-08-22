@@ -1,4 +1,4 @@
-﻿using Photon.Pun;
+using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using Photon.Realtime;
 using System;
@@ -391,9 +391,13 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
             if (!string.IsNullOrEmpty(loserId) && !TournamentKeys.IsBye(loserId))
             {
-                bool localGoesFirst = loserId == localId;
-                gameContext.TurnPlayer = localGoesFirst ? gameContext.Opponent : gameContext.You;
-                Debug.Log($"[Battle] Rematch first=loser {loserId} youAreFirst={localGoesFirst} room={PhotonNetwork.CurrentRoom?.Name}");
+                yield return ApplyRematchFirstPlayer(
+                    TournamentKeys.NextFirstUserIdProperty,
+                    TournamentKeys.NextFirstGameIndexProperty,
+                    match.gameIndex,
+                    localId,
+                    loserId);
+                Debug.Log($"[Battle] Rematch first chosen youAreFirst={gameContext.NonTurnPlayer != null && gameContext.NonTurnPlayer.isYou} loser={loserId} room={PhotonNetwork.CurrentRoom?.Name}");
                 yield break;
             }
         }
@@ -426,9 +430,13 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                 if (!string.IsNullOrEmpty(loserId))
                 {
-                    bool localGoesFirst = loserId == friendLocalId;
-                    gameContext.TurnPlayer = localGoesFirst ? gameContext.Opponent : gameContext.You;
-                    Debug.Log($"[Battle] Friend rematch first=loser {loserId} youAreFirst={localGoesFirst}");
+                    yield return ApplyRematchFirstPlayer(
+                        FriendKeys.NextFirstUserIdProperty,
+                        FriendKeys.NextFirstGameIndexProperty,
+                        friendDirector.GameIndex,
+                        friendLocalId,
+                        loserId);
+                    Debug.Log($"[Battle] Friend rematch first chosen youAreFirst={gameContext.NonTurnPlayer != null && gameContext.NonTurnPlayer.isYou} loser={loserId}");
                     yield break;
                 }
             }
@@ -446,6 +454,36 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         Debug.Log($"[Battle] First player rematch={rematch} youAreFirst={gameContext.NonTurnPlayer != null && gameContext.NonTurnPlayer.isYou} room={PhotonNetwork.CurrentRoom?.Name}");
+    }
+
+    IEnumerator ApplyRematchFirstPlayer(
+        string userIdKey,
+        string gameIndexKey,
+        int gameIndex,
+        string localId,
+        string fallbackLoserId)
+    {
+        string firstId = Bo3FirstPlayerChoice.ReadChosenFirstUserId(userIdKey, gameIndexKey, gameIndex);
+        float waited = 0f;
+        while (string.IsNullOrEmpty(firstId) && waited < 8f)
+        {
+            firstId = Bo3FirstPlayerChoice.ReadChosenFirstUserId(userIdKey, gameIndexKey, gameIndex);
+            if (!string.IsNullOrEmpty(firstId))
+            {
+                break;
+            }
+
+            waited += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        if (string.IsNullOrEmpty(firstId))
+        {
+            firstId = fallbackLoserId;
+        }
+
+        bool localGoesFirst = string.Equals(firstId, localId, System.StringComparison.OrdinalIgnoreCase);
+        gameContext.TurnPlayer = localGoesFirst ? gameContext.Opponent : gameContext.You;
     }
 
     static int ReadRoomFirstPlayerActor()
@@ -547,17 +585,20 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         gameContext.FirstPlayer = gameContext.NonTurnPlayer;
         gameContext.NonTurnPlayer.FirstObject.SetActive(true);
 
-        //yield return new WaitForSeconds(0.6f);
-
-        GManager.instance.commandText.CloseCommandText();
-        yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
-
-
+        GManager.instance.commandText.Off();
+        if (endGame)
+        {
+            yield break;
+        }
         #endregion
 
         foreach (Player player in gameContext.Players_ForNonTurnPlayer)
         {
             yield return StartCoroutine(new DrawClass(player, 5, null).Draw());
+            if (endGame)
+            {
+                yield break;
+            }
         }
 
         #region マリガン
@@ -607,6 +648,11 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         CanLookReverseCard: true,
                         skillInfos: null,
                         root: SelectCardEffect.Root.None));
+                    if (endGame)
+                    {
+                        GManager.instance.selectCardPanel.ForceCloseForEndGame();
+                        yield break;
+                    }
 
                     void SetRedraw_RPC(int playerId, bool _isDraw)
                     {
@@ -632,7 +678,13 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 #endregion
             }
 
-            yield return new WaitUntil(() => player.HasPlayerSelection());
+            yield return new WaitUntil(() => player.HasPlayerSelection() || endGame);
+            if (endGame)
+            {
+                GManager.instance.selectCardPanel.ForceCloseForEndGame();
+                GManager.instance.commandText.CloseCommandText();
+                yield break;
+            }
             ValueSelection valueSeletion = player.DequeuePlayerSelection<ValueSelection>();
             _isRedraw = valueSeletion != null ? valueSeletion.ValueAsBool() : false;
 
@@ -3522,6 +3574,54 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         endGame = true;
+        IsSelecting = false;
+
+        if (GManager.instance.selectCardPanel != null)
+        {
+            GManager.instance.selectCardPanel.ForceCloseForEndGame();
+        }
+
+        if (GManager.instance.selectCommandPanel != null)
+        {
+            GManager.instance.selectCommandPanel.Off(false);
+        }
+
+        if (GManager.instance.BackButton != null)
+        {
+            GManager.instance.BackButton.CloseSelectCommandButton();
+        }
+
+        if (GManager.instance.cardDetail != null)
+        {
+            GManager.instance.cardDetail.CloseCardDetail();
+        }
+
+        if (GManager.instance.sideBar != null)
+        {
+            GManager.instance.sideBar.OffSideBar(false);
+        }
+
+        var selectHand = GManager.instance.GetComponent<SelectHandEffect>();
+        if (selectHand != null)
+        {
+            selectHand.StopAllCoroutines();
+        }
+
+        if (GManager.instance.checkCardPanel != null)
+        {
+            GManager.instance.checkCardPanel.gameObject.SetActive(false);
+        }
+
+        if (gameContext != null)
+        {
+            foreach (Player player in gameContext.Players)
+            {
+                if (player != null && !player.HasPlayerSelection())
+                {
+                    player.QueuePlayerSelection(new ValueSelection(false));
+                }
+            }
+        }
 
         if (gameContext != null && gameContext.TurnPlayer != null)
         {
@@ -3547,23 +3647,25 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         GManager.instance.resultObject.ShowResult(Winner, Surrendered, effectName);
 
-        EventSystem.current.SetSelectedGameObject(GManager.instance.resultObject.transform.GetChild(3).gameObject);
+        if (EventSystem.current != null &&
+            GManager.instance.resultObject != null &&
+            GManager.instance.resultObject.transform.childCount > 3)
+        {
+            EventSystem.current.SetSelectedGameObject(
+                GManager.instance.resultObject.transform.GetChild(3).gameObject);
+        }
 
-        GManager.instance.commandText.CloseCommandText();
+        GManager.instance.commandText.Off();
 
         StopAllCoroutines();
         GManager.instance.StopAllCoroutines();
-        // === DCGO-CUSTOM:ranked begin ===
-        // Do NOT StopAllCoroutines on ContinuousController while ranked/tournament/friend
-        // teardown needs DontDestroyOnLoad hosts / EndBattle to keep working.
-        if (cc != null && !cc.isRanked && !cc.isTournament && !cc.isFriendDuel)
-        {
-            cc.StopAllCoroutines();
-        }
-        // === DCGO-CUSTOM:ranked end ===
-
+        // Opening-draw / card-move coroutines live on ContinuousController.
+        // Leave them running and rematch unloads BattleScene while they still
+        // hold GManager, so game 2 never starts. Tournament/friend hosts are
+        // separate DontDestroyOnLoad objects.
         if (cc != null)
         {
+            cc.StopAllCoroutines();
             cc.StartCoroutine(GManager.instance.BattleBGM.FadeOut(1));
         }
 

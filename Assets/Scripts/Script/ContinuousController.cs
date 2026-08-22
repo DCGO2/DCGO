@@ -1,4 +1,4 @@
-﻿using Photon.Pun;
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1280,7 +1280,19 @@ public class ContinuousController : MonoBehaviour
         bool friendNextGame = wasFriendDuel && friendDirector != null && friendDirector.ShouldReloadNextGame;
         // === DCGO-CUSTOM:friends end ===
 
-        Opening.instance.openingObject.SetActive(true);
+        bool rematchNextGame = tournamentNextGame || friendNextGame;
+        if (rematchNextGame)
+        {
+            Opening.instance.openingObject.SetActive(false);
+            if (Opening.instance.LoadingObject_Unload != null)
+            {
+                yield return StartCoroutine(Opening.instance.LoadingObject_Unload.StartLoading("Now Loading"));
+            }
+        }
+        else
+        {
+            Opening.instance.openingObject.SetActive(true);
+        }
 
         long random = RandomUtility.GetSecureRandom();
         GameRandom.Seed(random);
@@ -1309,7 +1321,10 @@ public class ContinuousController : MonoBehaviour
             yield return null;
         }
 
-        yield return Resources.UnloadUnusedAssets();
+        if (!rematchNextGame)
+        {
+            yield return Resources.UnloadUnusedAssets();
+        }
 
         if (!tournamentNextGame && !friendNextGame && !wasFriendDuel)
         {

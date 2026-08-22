@@ -584,7 +584,17 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
             #endregion
 
             //Wait for selection to be completed
-            yield return new WaitUntil(() => _selectPlayer.HasPlayerSelection());
+            yield return new WaitUntil(() =>
+                _selectPlayer.HasPlayerSelection() ||
+                (GManager.instance.turnStateMachine != null && GManager.instance.turnStateMachine.endGame));
+            if (GManager.instance.turnStateMachine != null && GManager.instance.turnStateMachine.endGame)
+            {
+                GManager.instance.selectCommandPanel.Off(false);
+                GManager.instance.commandText.CloseCommandText();
+                GManager.instance.sideBar.OffSideBar(false);
+                GManager.instance.turnStateMachine.IsSelecting = oldIsSelecting;
+                yield break;
+            }
             CardSelection cardSeletion = _selectPlayer.DequeuePlayerSelection<CardSelection>();
 
             _targetCards = new List<CardSource>();

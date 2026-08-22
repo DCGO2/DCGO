@@ -397,6 +397,9 @@ public class ResultObject : MonoBehaviour
                     ResultText.text += "\n" + seriesLine;
                 }
             }
+
+            director.BeginAutoAdvanceFromResult();
+            RelabelTournamentReturnButton(director.ShouldReloadNextGame);
         }
         // === DCGO-CUSTOM:friends end ===
 

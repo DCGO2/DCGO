@@ -367,13 +367,20 @@ public class FriendDuelDirector : MonoBehaviour
         }
 
         _autoAdvancingResult = false;
+        Bo3FirstPlayerChoice.Hide();
     }
 
     IEnumerator AutoAdvanceFromResultCoroutine()
     {
         _autoAdvancingResult = true;
+        float start = Time.unscaledTime;
 
-        float shown = 0f;
+        if (ShouldReloadNextGame)
+        {
+            yield return WaitForLoserFirstPlayerChoice();
+        }
+
+        float shown = Time.unscaledTime - start;
         const float minShowSeconds = 2f;
         while (shown < minShowSeconds)
         {
@@ -397,6 +404,7 @@ public class FriendDuelDirector : MonoBehaviour
             }
         }
 
+        Bo3FirstPlayerChoice.Hide();
         _autoAdvanceFromResult = null;
         _autoAdvancingResult = false;
 
@@ -426,6 +434,41 @@ public class FriendDuelDirector : MonoBehaviour
         {
             ContinuousController.instance.EndBattle();
         }
+    }
+
+    IEnumerator WaitForLoserFirstPlayerChoice()
+    {
+        SyncFromRoom();
+        string localId = FriendListService.LocalPlayFabId() ?? PhotonNetwork.LocalPlayer?.UserId;
+        string loserId = LastLoserUserId;
+        float waitedLoser = 0f;
+        while (string.IsNullOrEmpty(loserId) && waitedLoser < 4f)
+        {
+            if (PhotonNetwork.InRoom &&
+                PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(FriendKeys.LastLoserProperty, out object loserObj) &&
+                loserObj is string roomLoser &&
+                !string.IsNullOrEmpty(roomLoser))
+            {
+                loserId = roomLoser;
+                LastLoserUserId = roomLoser;
+                break;
+            }
+
+            waitedLoser += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        if (string.IsNullOrEmpty(loserId))
+        {
+            yield break;
+        }
+
+        yield return Bo3FirstPlayerChoice.WaitForChoice(
+            FriendKeys.NextFirstUserIdProperty,
+            FriendKeys.NextFirstGameIndexProperty,
+            GameIndex,
+            localId,
+            loserId);
     }
 
     static void SetLocalOnResult(bool onResult)
@@ -616,7 +659,7 @@ public class FriendDuelDirector : MonoBehaviour
         }
 
         var unloadLoading = Opening.instance != null ? Opening.instance.LoadingObject_Unload : null;
-        if (unloadLoading != null)
+        if (unloadLoading != null && !unloadLoading.gameObject.activeSelf)
         {
             yield return ContinuousController.instance.StartCoroutine(
                 unloadLoading.StartLoading("Now Loading"));
@@ -630,6 +673,7 @@ public class FriendDuelDirector : MonoBehaviour
 
         if (Opening.instance != null)
         {
+            Opening.instance.openingObject.SetActive(false);
             foreach (Camera camera in Opening.instance.openingCameras)
             {
                 camera.gameObject.SetActive(false);
@@ -638,10 +682,39 @@ public class FriendDuelDirector : MonoBehaviour
             ContinuousController.instance.StartCoroutine(Opening.instance.OpeningBGM.FadeOut(0.5f));
         }
 
-        SceneManager.LoadSceneAsync("BattleScene", LoadSceneMode.Additive);
-        if (Opening.instance != null)
+        var load = SceneManager.LoadSceneAsync("BattleScene", LoadSceneMode.Additive);
+        while (load != null && !load.isDone)
         {
-            Opening.instance.openingObject.SetActive(false);
+            yield return null;
+        }
+
+        float waitGm = 0f;
+        while (GManager.instance == null && waitGm < 20f)
+        {
+            waitGm += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        if (unloadLoading != null)
+        {
+            float waitCover = 0f;
+            while (waitCover < 3f)
+            {
+                var loading = GManager.instance != null ? GManager.instance.LoadingObject : null;
+                if (loading != null && loading.gameObject.activeSelf)
+                {
+                    break;
+                }
+
+                waitCover += Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            unloadLoading.Off();
+            if (unloadLoading.transform.parent != null)
+            {
+                unloadLoading.transform.parent.gameObject.SetActive(false);
+            }
         }
 
         _startedBattleOk = true;
@@ -660,16 +733,18 @@ public class FriendDuelDirector : MonoBehaviour
         int firstPlayerId = -1;
         string loserId = LastLoserUserId;
 
-        if (isRematch && !string.IsNullOrEmpty(loserId))
+        string firstUserId = Bo3FirstPlayerChoice.ReadChosenFirstUserId(
+            FriendKeys.NextFirstUserIdProperty,
+            FriendKeys.NextFirstGameIndexProperty,
+            GameIndex);
+        if (string.IsNullOrEmpty(firstUserId))
         {
-            foreach (var p in PhotonNetwork.PlayerList)
-            {
-                if (ReadPlayerId(p) == loserId)
-                {
-                    firstPlayerId = p.ActorNumber;
-                    break;
-                }
-            }
+            firstUserId = loserId;
+        }
+
+        if (isRematch && !string.IsNullOrEmpty(firstUserId))
+        {
+            firstPlayerId = Bo3FirstPlayerChoice.ActorNumberForUserId(firstUserId);
         }
 
         var hash = PhotonNetwork.CurrentRoom.CustomProperties ?? new Hashtable();

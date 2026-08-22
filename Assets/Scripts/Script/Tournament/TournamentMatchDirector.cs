@@ -427,13 +427,20 @@ public class TournamentMatchDirector : MonoBehaviourPunCallbacks
         }
 
         _autoAdvancingResult = false;
+        Bo3FirstPlayerChoice.Hide();
     }
 
     IEnumerator AutoAdvanceFromResultCoroutine()
     {
         _autoAdvancingResult = true;
+        float start = Time.unscaledTime;
 
-        float shown = 0f;
+        if (ShouldReloadNextGame)
+        {
+            yield return WaitForLoserFirstPlayerChoice();
+        }
+
+        float shown = Time.unscaledTime - start;
         const float minShowSeconds = 2f;
         while (shown < minShowSeconds)
         {
@@ -457,6 +464,7 @@ public class TournamentMatchDirector : MonoBehaviourPunCallbacks
             }
         }
 
+        Bo3FirstPlayerChoice.Hide();
         _autoAdvanceFromResult = null;
         _autoAdvancingResult = false;
 
@@ -474,6 +482,47 @@ public class TournamentMatchDirector : MonoBehaviourPunCallbacks
         {
             ContinuousController.instance.EndBattle();
         }
+    }
+
+    IEnumerator WaitForLoserFirstPlayerChoice()
+    {
+        var state = ContinuousController.instance != null ? ContinuousController.instance.TournamentState : null;
+        var match = state != null ? state.GetMatch(_round, _matchIndex) : null;
+        string localId = TournamentState.EnsureLocalPlayerId();
+        if (match == null && state != null)
+        {
+            match = state.FindActiveMatchFor(localId);
+        }
+
+        string loserId = match != null ? match.lastGameLoserUserId : null;
+        float waitedLoser = 0f;
+        while (string.IsNullOrEmpty(loserId) && waitedLoser < 4f)
+        {
+            if (PhotonNetwork.InRoom &&
+                PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(TournamentKeys.LastLoserProperty, out object loserObj) &&
+                loserObj is string roomLoser &&
+                !string.IsNullOrEmpty(roomLoser))
+            {
+                loserId = roomLoser;
+                break;
+            }
+
+            waitedLoser += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        if (string.IsNullOrEmpty(loserId) || TournamentKeys.IsBye(loserId))
+        {
+            yield break;
+        }
+
+        int gameIndex = match != null ? match.gameIndex : 1;
+        yield return Bo3FirstPlayerChoice.WaitForChoice(
+            TournamentKeys.NextFirstUserIdProperty,
+            TournamentKeys.NextFirstGameIndexProperty,
+            gameIndex,
+            localId,
+            loserId);
     }
 
     static void SetLocalOnResult(bool onResult)
@@ -649,6 +698,11 @@ public class TournamentMatchDirector : MonoBehaviourPunCallbacks
         _startingBattle = true;
 
         yield return ClearLeftoverBattleSceneCoroutine();
+        if (isRematch && (GManager.instance != null || ContinuousController.IsBattleSceneLoaded()))
+        {
+            Debug.LogWarning("[Tournament] Leftover battle after rematch teardown — retrying unload");
+            yield return ClearLeftoverBattleSceneCoroutine();
+        }
 
         if (GManager.instance != null || ContinuousController.IsBattleSceneLoaded())
         {
@@ -688,7 +742,7 @@ public class TournamentMatchDirector : MonoBehaviourPunCallbacks
             }
 
             var unloadLoading = Opening.instance != null ? Opening.instance.LoadingObject_Unload : null;
-            if (unloadLoading != null)
+            if (unloadLoading != null && !unloadLoading.gameObject.activeSelf)
             {
                 yield return ContinuousController.instance.StartCoroutine(
                     unloadLoading.StartLoading("Now Loading"));
@@ -721,13 +775,21 @@ public class TournamentMatchDirector : MonoBehaviourPunCallbacks
             PhotonNetwork.LocalPlayer.SetCustomProperties(playerProp);
             yield return Wait01;
 
-            foreach (Camera camera in Opening.instance.openingCameras)
+            if (Opening.instance != null)
             {
-                camera.gameObject.SetActive(false);
+                Opening.instance.openingObject.SetActive(false);
+                foreach (Camera camera in Opening.instance.openingCameras)
+                {
+                    camera.gameObject.SetActive(false);
+                }
+
+                ContinuousController.instance.StartCoroutine(Opening.instance.OpeningBGM.FadeOut(0.5f));
             }
 
-            ContinuousController.instance.StartCoroutine(Opening.instance.OpeningBGM.FadeOut(0.5f));
-            yield return Wait1;
+            if (!isRematch)
+            {
+                yield return Wait1;
+            }
 
             ContinuousController.CleanStalePhotonViews();
             PhotonNetwork.IsMessageQueueRunning = true;
@@ -759,16 +821,40 @@ public class TournamentMatchDirector : MonoBehaviourPunCallbacks
                 yield return null;
             }
 
-            if (unloadLoading != null)
-            {
-                yield return ContinuousController.instance.StartCoroutine(unloadLoading.EndLoading());
-            }
+            yield return DismissUnloadLoadingWhenBattleCovered(unloadLoading);
 
             StartCoroutine(AttachSeriesOverlayWhenReady());
         }
         finally
         {
             _startingBattle = false;
+        }
+    }
+
+    static IEnumerator DismissUnloadLoadingWhenBattleCovered(LoadingObject unloadLoading)
+    {
+        if (unloadLoading == null)
+        {
+            yield break;
+        }
+
+        float wait = 0f;
+        while (wait < 3f)
+        {
+            var loading = GManager.instance != null ? GManager.instance.LoadingObject : null;
+            if (loading != null && loading.gameObject.activeSelf)
+            {
+                break;
+            }
+
+            wait += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        unloadLoading.Off();
+        if (unloadLoading.transform.parent != null)
+        {
+            unloadLoading.transform.parent.gameObject.SetActive(false);
         }
     }
 
@@ -897,16 +983,18 @@ public class TournamentMatchDirector : MonoBehaviourPunCallbacks
             loserId = roomLoser;
         }
 
-        if (isRematch && !string.IsNullOrEmpty(loserId))
+        string firstUserId = Bo3FirstPlayerChoice.ReadChosenFirstUserId(
+            TournamentKeys.NextFirstUserIdProperty,
+            TournamentKeys.NextFirstGameIndexProperty,
+            match != null ? match.gameIndex : 0);
+        if (string.IsNullOrEmpty(firstUserId))
         {
-            foreach (var p in PhotonNetwork.PlayerList)
-            {
-                if (TournamentState.ReadPlayerId(p) == loserId)
-                {
-                    firstPlayerId = p.ActorNumber;
-                    break;
-                }
-            }
+            firstUserId = loserId;
+        }
+
+        if (isRematch && !string.IsNullOrEmpty(firstUserId))
+        {
+            firstPlayerId = Bo3FirstPlayerChoice.ActorNumberForUserId(firstUserId);
         }
 
         var hash = PhotonNetwork.CurrentRoom.CustomProperties;
@@ -917,7 +1005,7 @@ public class TournamentMatchDirector : MonoBehaviourPunCallbacks
         }
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(hash);
-        Debug.Log($"[Tournament] FirstPlayer actor={firstPlayerId} rematch={isRematch} loser={loserId}");
+        Debug.Log($"[Tournament] FirstPlayer actor={firstPlayerId} rematch={isRematch} firstUser={firstUserId} loser={loserId}");
     }
 
     void AwardSeriesForfeitIfAlone()

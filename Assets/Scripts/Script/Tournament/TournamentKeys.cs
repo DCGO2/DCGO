@@ -176,6 +176,10 @@ public static class TournamentKeys
     public const string SeriesWinsBProperty = "TourneySeriesWinsB";
     public const string GameIndexProperty = "TourneyGameIndex";
     public const string LastLoserProperty = "TourneyLastLoser";
+    /// <summary>User id the loser chose to go first in the next Bo3 game.</summary>
+    public const string NextFirstUserIdProperty = "TourneyNextFirstUserId";
+    /// <summary>Game index the next-first choice applies to (avoids reusing game 2's pick for game 3).</summary>
+    public const string NextFirstGameIndexProperty = "TourneyNextFirstGameIndex";
     /// <summary>Local player is on the post-game result screen (used to auto-start the next Bo3 game together).</summary>
     public const string OnResultProperty = "TourneyOnResult";
 
