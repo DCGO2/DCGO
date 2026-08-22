@@ -110,8 +110,6 @@ namespace DCGO.CardEffects.BT26
                         if (canPickTrash) locationElements.Add(new(message: "Trash", value: 3, spriteIndex: 0));
                         locationElements.Add(new(message: "Cancel", value: 4, spriteIndex: 1));
 
-                        if (locationElements.Count == 1) yield break;
-
                         GManager.instance.userSelectionManager.SetIntSelection(selectionElements: locationElements, selectPlayer: card.Owner, selectPlayerMessage: $"Select a location to take [Seven Code] digivolution material from ({remaining} remaining).", notSelectPlayerMessage: "The opponent is selecting a location for digivolution material.");
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                         int selectedLocation = GManager.instance.userSelectionManager.SelectedIntValue;
@@ -127,7 +125,7 @@ namespace DCGO.CardEffects.BT26
                             selectSourceEffect.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: CanSelectOtherBattleAreaCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
+                                canTargetCondition_ByPreSelecetedList: (_, permanent) => !materialCards.Contains(permanent.TopCard),
                                 canEndSelectCondition: null,
                                 maxCount: 1,
                                 canNoSelect: false,
@@ -154,11 +152,9 @@ namespace DCGO.CardEffects.BT26
 
                             yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent>() { selectedSource }, CardEffectCommons.CardEffectHashtable(activateClass), notShowCards: true).Destroy());
                         }
-                        else
+                        else if (selectedLocation == 2)
                         {
-                            List<CardSource> pool = selectedLocation == 2
-                                ? card.Owner.GetBattleAreaDigimons().SelectMany(permanent => permanent.LinkedCards).Where(CanSelectLinkedOrTrashCondition).ToList()
-                                : card.Owner.TrashCards.Filter(CanSelectLinkedOrTrashCondition);
+                            List<CardSource> pool = card.Owner.GetBattleAreaDigimons().SelectMany(permanent => permanent.LinkedCards).Where(CanSelectLinkedOrTrashCondition).ToList();
 
                             CardSource selectedCard = null;
 
@@ -166,17 +162,56 @@ namespace DCGO.CardEffects.BT26
 
                             selectCardEffect.SetUp(
                                 canTargetCondition: CanSelectLinkedOrTrashCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
+                                canTargetCondition_ByPreSelecetedList: (_, cardSource) => !materialCards.Contains(cardSource),
                                 canEndSelectCondition: null,
                                 canNoSelect: () => false,
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
-                                message: $"Select 1 [Seven Code] trait Digimon card from your {(selectedLocation == 2 ? "link cards" : "trash")} to place as material ({remaining} remaining).",
+                                message: $"Select 1 [Seven Code] trait Digimon card from your link cards to place as material ({remaining} remaining).",
                                 maxCount: 1,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
+                                root: SelectCardEffect.Root.LinkedCards,
+                                customRootCardList: pool,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            {
+                                selectedCard = cardSource;
+                                yield return null;
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                            if (selectedCard == null) continue;
+
+                            materialCards.Add(selectedCard);
+                            remaining--;
+                        }
+                        else
+                        {
+                            List<CardSource> pool = card.Owner.TrashCards.Filter(CanSelectLinkedOrTrashCondition);
+
+                            CardSource selectedCard = null;
+
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectLinkedOrTrashCondition,
+                                canTargetCondition_ByPreSelecetedList: (_, cardSource) => !materialCards.Contains(cardSource),
+                                canEndSelectCondition: null,
+                                canNoSelect: () => false,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: $"Select 1 [Seven Code] trait Digimon card from your trash to place as material ({remaining} remaining).",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
                                 customRootCardList: pool,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
@@ -249,8 +284,8 @@ namespace DCGO.CardEffects.BT26
                         List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new(message: "Play from hand", value: 1, spriteIndex: 0),
-                            new(message: "Play from trash", value: 2, spriteIndex: 1),
-                            new(message: "Don't play a card", value: 3, spriteIndex: 2),
+                            new(message: "Play from trash", value: 2, spriteIndex: 0),
+                            new(message: "Don't play a card", value: 3, spriteIndex: 1),
                         };
 
                         GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Will you play an [Appmon] card?", notSelectPlayerMessage: "The opponent is choosing whether to play an [Appmon] card.");
