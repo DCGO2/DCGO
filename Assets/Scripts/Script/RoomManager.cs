@@ -85,6 +85,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
         endSetUp = false;
 
         Parent.SetActive(true);
+        // === DCGO-CUSTOM:friends begin ===
+        if (FriendKeys.IsInFriendDuelRoom())
+        {
+            ContinuousController.instance.isFriendDuel = true;
+            FriendServices.EnsureExists().Director.BeginSeriesFromRoom();
+        }
+        // === DCGO-CUSTOM:friends end ===
 
         if (!PhotonNetwork.InRoom)
         {
@@ -182,6 +189,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
     #region Initialized when room screen is opened
     public IEnumerator Init(bool OnUnload)
     {
+        // === DCGO-CUSTOM:friends begin ===
+        if (OnUnload && FriendKeys.IsInFriendDuelRoom())
+        {
+            Off();
+            yield break;
+        }
+        // === DCGO-CUSTOM:friends end ===
         Opening.instance.battle.selectBattleDeck.Off();
         DoneStartBattle = false;
         _isReady = false;
@@ -420,6 +434,16 @@ public class RoomManager : MonoBehaviourPunCallbacks
     bool DoneStartBattle;
     public void CheckPlayerState()
     {
+        // === DCGO-CUSTOM:friends begin ===
+        if (ContinuousController.instance != null &&
+            ContinuousController.instance.isFriendDuel &&
+            FriendServices.Instance != null &&
+            FriendServices.Instance.Director != null &&
+            FriendServices.Instance.Director.ShouldReloadNextGame)
+        {
+            return;
+        }
+        // === DCGO-CUSTOM:friends end ===
         if (PhotonNetwork.InRoom && endSetUp)
         {
             if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers && AllPlayerIsReady())
@@ -496,6 +520,23 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     IEnumerator GoToBattleSceneCoroutine()
     {
+        // === DCGO-CUSTOM:friends begin ===
+        if (FriendKeys.IsInFriendDuelRoom())
+        {
+            ContinuousController.instance.isFriendDuel = true;
+        }
+
+        if (ContinuousController.instance.isFriendDuel &&
+            SceneManager.GetSceneByName("BattleScene").isLoaded)
+        {
+            yield break;
+        }
+
+        if (ContinuousController.instance.isFriendDuel)
+        {
+            FriendServices.EnsureExists().Director.BeginSeriesFromRoom();
+        }
+        // === DCGO-CUSTOM:friends end ===
         yield return ContinuousController.instance.StartCoroutine(Opening.instance.LoadingObject_Unload.StartLoading("Now Loading"));
 
         DoneStartBattle = true;
@@ -799,6 +840,21 @@ public class RoomManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.InRoom)
         {
+            // === DCGO-CUSTOM:friends begin ===
+            if (ContinuousController.instance != null && ContinuousController.instance.isFriendDuel)
+            {
+                List<UnityAction> friendCmds = new List<UnityAction>() { null };
+                List<string> friendTexts = new List<string>() { "OK" };
+                Opening.instance.SetUpActiveYesNoObject(
+                    friendCmds,
+                    friendTexts,
+                    LocalizeUtility.GetLocalizedString(
+                        EngMessage: "Waiting for your friend to accept the invite.\nNo room code is needed.",
+                        JpnMessage: "フレンドの招待承認を待っています。\nルームIDの共有は不要です。"),
+                    false);
+                return;
+            }
+            // === DCGO-CUSTOM:friends end ===
             #region クリップボードにデッキコードをコピー
             GUIUtility.systemCopyBuffer = PhotonNetwork.CurrentRoom.Name[..5];
             #endregion

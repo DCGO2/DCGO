@@ -64,6 +64,26 @@ public class ContinuousController : MonoBehaviour
     public bool NeedUpdate { get; set; }
 
     public bool isRandomMatch { get; set; }
+    public bool isRanked { get; set; }
+    public bool isTournament { get; set; }
+
+    public static bool IsBattleSceneLoaded()
+    {
+        var scene = SceneManager.GetSceneByName("BattleScene");
+        return scene.IsValid() && scene.isLoaded;
+    }
+
+    // === DCGO-CUSTOM:friends begin ===
+    public bool isFriendDuel { get; set; }
+    public int FriendWinsToTake { get; set; } = 1;
+
+    public void ClearFriendDuel()
+    {
+        isFriendDuel = false;
+        FriendWinsToTake = 1;
+        FriendServices.Instance?.Director?.ResetDirector();
+    }
+    // === DCGO-CUSTOM:friends end ===
     [HideInInspector] public List<SkillInfo> nullSkillInfos = null;
     public String GameVerString => Application.version;//GameVer.ToString(CultureInfo.InvariantCulture);
     #region Key for property to save deck data for battle
@@ -552,6 +572,12 @@ public class ContinuousController : MonoBehaviour
         // player data
         LoadPlayerName();
         LoadWinCount();
+
+        // === DCGO-CUSTOM:friends begin ===
+        RankedServices.EnsureExists();
+        FriendServices.EnsureExists();
+        OnlinePlayerCountService.EnsureExists();
+        // === DCGO-CUSTOM:friends end ===
 
         // game play
         LoadAutoEffectOrder();
@@ -1154,6 +1180,9 @@ public class ContinuousController : MonoBehaviour
 
     public void EndBattle()
     {
+        // === DCGO-CUSTOM:friends begin ===
+        FriendServices.Instance?.Director?.CancelAutoAdvanceFromResult();
+        // === DCGO-CUSTOM:friends end ===
         if (!_endBattle)
         {
             _endBattle = true;
@@ -1178,6 +1207,17 @@ public class ContinuousController : MonoBehaviour
         //yield return null;
 
         isAI = false;
+        // === DCGO-CUSTOM:friends begin ===
+        bool wasFriendDuel = isFriendDuel || FriendKeys.IsInFriendDuelRoom();
+        if (wasFriendDuel)
+        {
+            isFriendDuel = true;
+            Opening.instance.battle?.roomManager?.Off();
+        }
+
+        var friendDirector = wasFriendDuel ? FriendServices.EnsureExists().Director : null;
+        bool friendNextGame = wasFriendDuel && friendDirector != null && friendDirector.ShouldReloadNextGame;
+        // === DCGO-CUSTOM:friends end ===
 
         long random = RandomUtility.GetSecureRandom();
         GameRandom.Seed(random);
@@ -1200,7 +1240,48 @@ public class ContinuousController : MonoBehaviour
         Opening.instance.LoadingObject_light.gameObject.SetActive(false);
         yield return ContinuousController.instance.StartCoroutine(PhotonUtility.SetPlayerName());
 
-        if (isRandomMatch)
+        if (wasFriendDuel || FriendKeys.IsInFriendDuelRoom())
+        {
+            // === DCGO-CUSTOM:friends begin ===
+            wasFriendDuel = true;
+            isFriendDuel = true;
+            if (friendDirector == null)
+            {
+                friendDirector = FriendServices.EnsureExists().Director;
+            }
+
+            friendNextGame = friendDirector != null && friendDirector.ShouldReloadNextGame;
+            Debug.Log(friendNextGame
+                ? "Unload from Friend Duel (next game)"
+                : "Unload from Friend Duel (series end)");
+            if (friendNextGame)
+            {
+                _endBattle = false;
+                yield return friendDirector.StartNextGameCoroutine();
+                yield break;
+            }
+
+            if (PhotonNetwork.InRoom)
+            {
+                Hashtable endSeriesProp = PhotonNetwork.LocalPlayer.CustomProperties ?? new Hashtable();
+                endSeriesProp["isBattle"] = false;
+                PhotonNetwork.LocalPlayer.SetCustomProperties(endSeriesProp);
+            }
+
+            Scene openingScene = SceneManager.GetSceneByName("Opening");
+            if (openingScene.IsValid())
+            {
+                SceneManager.SetActiveScene(openingScene);
+            }
+
+            _endBattle = false;
+            yield return friendDirector.EndSeriesToHomeCoroutine();
+            Opening.instance.LoadingObject.gameObject.SetActive(false);
+            yield return StartCoroutine(Opening.instance.LoadingObject_Unload.EndLoading());
+            yield break;
+            // === DCGO-CUSTOM:friends end ===
+        }
+        else if (isRandomMatch)
         {
             Debug.Log("Unload from Random Match");
             yield return StartCoroutine(Opening.instance.battle.lobbyManager_RandomMatch.CloseLobbyCoroutine());
@@ -1834,6 +1915,57 @@ public class PhotonUtility
         }
     }
     #endregion
+
+    // === DCGO-CUSTOM:ranked begin ===
+    #region Ranked player properties (PlayFabId + MMR)
+    public static IEnumerator SetRankedPlayerProperties()
+    {
+        var ranked = RankedServices.EnsureExists();
+        if (ranked.Auth == null || !ranked.Auth.IsLoggedIn)
+        {
+            yield break;
+        }
+
+        int mmr = ranked.Profile.Cached?.mmr ?? RankedRating.DefaultMmr;
+        string playFabId = ranked.Auth.PlayFabId;
+
+        Hashtable hash = PhotonNetwork.LocalPlayer.CustomProperties;
+
+        if (hash.ContainsKey(RankedKeys.MmrProperty))
+        {
+            hash[RankedKeys.MmrProperty] = mmr;
+        }
+        else
+        {
+            hash.Add(RankedKeys.MmrProperty, mmr);
+        }
+
+        if (hash.ContainsKey(RankedKeys.PlayFabIdProperty))
+        {
+            hash[RankedKeys.PlayFabIdProperty] = playFabId;
+        }
+        else
+        {
+            hash.Add(RankedKeys.PlayFabIdProperty, playFabId);
+        }
+
+        PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+
+        while (true)
+        {
+            Hashtable _hash = PhotonNetwork.LocalPlayer.CustomProperties;
+            bool mmrOk = _hash.TryGetValue(RankedKeys.MmrProperty, out object mmrVal) && Convert.ToInt32(mmrVal) == mmr;
+            bool idOk = _hash.TryGetValue(RankedKeys.PlayFabIdProperty, out object idVal) && (string)idVal == playFabId;
+            if (mmrOk && idOk)
+            {
+                break;
+            }
+
+            yield return null;
+        }
+    }
+    #endregion
+    // === DCGO-CUSTOM:ranked end ===
 }
 #endregion
 

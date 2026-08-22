@@ -59,6 +59,11 @@ public class SelectBattleMode : MonoBehaviour
         selectRoomMatchWindow.Off();
         enterRoom.Off();
 
+        // === DCGO-CUSTOM:friends begin ===
+        ContinuousController.instance.ClearFriendDuel();
+        FriendListPanel.HideIfOpen();
+        // === DCGO-CUSTOM:friends end ===
+
         Opening.instance.battle.selectBattleDeck.Off();
 
         if (PhotonNetwork.IsConnected)
@@ -133,6 +138,9 @@ public class SelectBattleMode : MonoBehaviour
 
         ContinuousController.instance.isAI = isAI;
         ContinuousController.instance.isRandomMatch = true;
+        // === DCGO-CUSTOM:friends begin ===
+        ContinuousController.instance.ClearFriendDuel();
+        // === DCGO-CUSTOM:friends end ===
 
         Opening.instance.battle.selectBattleDeck.Off();
 

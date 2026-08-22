@@ -31,6 +31,10 @@ public class BattleMode : MonoBehaviour
 
         lobbyManager_RandomMatch.OffLobby();
 
+        // === DCGO-CUSTOM:friends begin ===
+        FriendListPanel.HideIfOpen();
+        // === DCGO-CUSTOM:friends end ===
+
         if (!first)
         {
             BattleButton.OnExit();

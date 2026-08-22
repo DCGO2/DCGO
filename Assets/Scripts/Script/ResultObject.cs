@@ -47,8 +47,14 @@ public class ResultObject : MonoBehaviour
 
             if (!GManager.instance.IsAI)
             {
-                ContinuousController.instance.WinCount++;
-                ContinuousController.instance.SaveWinCount();
+                // === DCGO-CUSTOM:friends begin ===
+                bool isFriendDuel = ContinuousController.instance != null && ContinuousController.instance.isFriendDuel;
+                if (!isFriendDuel)
+                {
+                    ContinuousController.instance.WinCount++;
+                    ContinuousController.instance.SaveWinCount();
+                }
+                // === DCGO-CUSTOM:friends end ===
 
                 if (Surrendered)
                     ResultText.text = "The opponent has surrendered.";
@@ -109,6 +115,83 @@ public class ResultObject : MonoBehaviour
             }
         }
 
+        // === DCGO-CUSTOM:friends begin ===
+        if (!GManager.instance.IsAI)
+        {
+            RememberLastOpponentFromRoom();
+        }
+
+        bool friendDuel = ContinuousController.instance != null && ContinuousController.instance.isFriendDuel;
+        if (friendDuel && !GManager.instance.IsAI)
+        {
+            bool? localWon = null;
+            if (Winner == GManager.instance.You)
+            {
+                localWon = true;
+            }
+            else if (Winner != null)
+            {
+                localWon = false;
+            }
+
+            bool disconnect = Winner == null;
+            var director = FriendServices.EnsureExists().Director;
+            director.NotifyGameEnded(localWon, disconnect, Winner == null && !disconnect);
+
+            string seriesLine = director.FormatSeriesStatusLine();
+            if (!string.IsNullOrEmpty(seriesLine))
+            {
+                if (string.IsNullOrEmpty(ResultText.text))
+                {
+                    ResultText.text = seriesLine;
+                }
+                else
+                {
+                    ResultText.text += "\n" + seriesLine;
+                }
+            }
+        }
+        // === DCGO-CUSTOM:friends end ===
+
         PlayLog.OnAddLog?.Invoke(log);
     }
+
+    // === DCGO-CUSTOM:friends begin ===
+    static void RememberLastOpponentFromRoom()
+    {
+        if (!PhotonNetwork.InRoom || PhotonNetwork.PlayerList == null)
+        {
+            return;
+        }
+
+        string localId = FriendListService.LocalPlayFabId();
+        foreach (var p in PhotonNetwork.PlayerList)
+        {
+            if (p == null || p.IsLocal)
+            {
+                continue;
+            }
+
+            string id = FriendDuelDirector.ReadPlayerId(p);
+            string name = p.NickName;
+            if (p.CustomProperties != null &&
+                p.CustomProperties.TryGetValue(ContinuousController.PlayerNameKey, out object nObj) &&
+                nObj is string ns &&
+                !string.IsNullOrEmpty(ns))
+            {
+                name = ns;
+            }
+
+            if (string.IsNullOrEmpty(id) ||
+                (!string.IsNullOrEmpty(localId) &&
+                 string.Equals(id, localId, StringComparison.OrdinalIgnoreCase)))
+            {
+                continue;
+            }
+
+            FriendServices.EnsureExists().List.RememberLastOpponent(id, name);
+            break;
+        }
+    }
+    // === DCGO-CUSTOM:friends end ===
 }

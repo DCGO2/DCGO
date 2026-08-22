@@ -386,6 +386,14 @@ public class GManager : MonoBehaviourPun
     {
         yield return StartCoroutine(LoadingObject.StartLoading("Now Loading"));
 
+        // === DCGO-CUSTOM:friends begin ===
+        if (FriendKeys.IsInFriendDuelRoom() && ContinuousController.instance != null)
+        {
+            ContinuousController.instance.isFriendDuel = true;
+            FriendServices.EnsureExists().Director.BeginSeriesFromRoom();
+        }
+        // === DCGO-CUSTOM:friends end ===
+
         selectCommandPanel.Off();
 
         BackButton.CloseSelectCommandButton();
@@ -540,7 +548,12 @@ public class GManager : MonoBehaviourPun
     #region Cheats
     public bool AllowCheats()
     {
-        return !ContinuousController.instance.isRandomMatch || ContinuousController.instance.isAI;
+        return ContinuousController.instance.isAI ||
+               (!ContinuousController.instance.isRandomMatch
+                // === DCGO-CUSTOM:friends begin ===
+                && !ContinuousController.instance.isFriendDuel
+                // === DCGO-CUSTOM:friends end ===
+               );
     }
 
     void AllowAlphaInputs()

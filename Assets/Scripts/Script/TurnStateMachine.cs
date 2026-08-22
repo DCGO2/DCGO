@@ -258,6 +258,43 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         #region Deciding whether to attack first or last
         gameContext.TurnPlayer = gameContext.PlayerFromID(GameRandom.Range(0, 2));
 
+        // === DCGO-CUSTOM:friends begin ===
+        var cc = ContinuousController.instance;
+        if (cc != null && cc.isFriendDuel)
+        {
+            var friendDirector = FriendServices.EnsureExists().Director;
+            friendDirector.SyncFromRoom();
+            if (friendDirector.GameIndex > 0)
+            {
+                string friendLocalId = FriendListService.LocalPlayFabId() ?? PhotonNetwork.LocalPlayer?.UserId;
+                string loserId = friendDirector.LastLoserUserId;
+                float waited = 0f;
+                while (string.IsNullOrEmpty(loserId) && waited < 4f)
+                {
+                    if (PhotonNetwork.InRoom &&
+                        PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(FriendKeys.LastLoserProperty, out object loserObj) &&
+                        loserObj is string roomLoser &&
+                        !string.IsNullOrEmpty(roomLoser))
+                    {
+                        loserId = roomLoser;
+                        break;
+                    }
+
+                    waited += Time.unscaledDeltaTime;
+                    yield return null;
+                }
+
+                if (!string.IsNullOrEmpty(loserId))
+                {
+                    bool localGoesFirst = loserId == friendLocalId;
+                    gameContext.TurnPlayer = localGoesFirst ? gameContext.Opponent : gameContext.You;
+                    Debug.Log($"[Battle] Friend rematch first=loser {loserId} youAreFirst={localGoesFirst}");
+                    yield break;
+                }
+            }
+        }
+        // === DCGO-CUSTOM:friends end ===
+
         #region get first player from room custom property
         int firstPlayerId = -1;
 
