@@ -174,10 +174,11 @@ namespace DCGO.CardEffects.BT26
                         && (cardSource.EqualsTraits("System") || cardSource.EqualsTraits("Seven Code"));
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
+                    => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card)
+                        && CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
