@@ -71,6 +71,7 @@ namespace DCGO.CardEffects.BT26
 
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
                             element: element,
+                            CanTargetCondition_ByPreSelecetedList: null,
                             selectMessage: "1 level 3 [Navi]/[System]/[Seven Code] trait Digimon card",
                             elementCount: 1,
                             reduceCost: 2);
@@ -152,6 +153,7 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
+                isSkippable: true,
                 additionalActivateCondition: SharedAdditionalActivateCondition,
                 onPlay: true,
                 whenDigivolving: true);
@@ -188,11 +190,11 @@ namespace DCGO.CardEffects.BT26
                     => "[When Linking] This Digimon may battle 1 of your opponent's Digimon.";
 
                 bool CanSelectPermanentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && permanent.HasDP;
+                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
+                    => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card)
+                        && CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
@@ -200,8 +202,6 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -209,7 +209,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
