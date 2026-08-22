@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -55,6 +55,46 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     void Awake()
     {
+        // === DCGO-CUSTOM:tournament begin ===
+        if (ContinuousController.instance.isTournament || ContinuousController.IsBattleSceneLoaded())
+        {
+            yield break;
+        }
+        // === DCGO-CUSTOM:tournament end ===
+        // === DCGO-CUSTOM:tournament begin ===
+        if (ContinuousController.instance != null && ContinuousController.instance.isTournament)
+        {
+            // === DCGO-CUSTOM:reconnect begin ===
+            if (BattleReconnectService.CountActivePlayers() == PhotonNetwork.CurrentRoom.MaxPlayers && AllPlayerIsReady())
+            // === DCGO-CUSTOM:reconnect end ===
+            // Tournament rooms are driven by TournamentMatchDirector.
+            return;
+        }
+        // === DCGO-CUSTOM:friends begin ===
+        // Friend rematch is started by FriendDuelDirector. Room lobby must not
+        // auto-start, but after a finished game DoneStartBattle can leave players
+        // stuck with only Quit — reset the gate when series is over.
+        if (ContinuousController.instance != null &&
+            ContinuousController.instance.isFriendDuel &&
+            FriendServices.Instance != null &&
+            FriendServices.Instance.Director != null &&
+            FriendServices.Instance.Director.ShouldReloadNextGame)
+        {
+            return;
+        }
+        // === DCGO-CUSTOM:friends end ===
+        // === DCGO-CUSTOM:tournament end ===
+        // === DCGO-CUSTOM:friends begin ===
+        // Friend matches must not land on Room Match rematch UI after a game.
+        if (OnUnload && FriendKeys.IsInFriendDuelRoom())
+        {
+            // === DCGO-CUSTOM:reconnect begin ===
+            PhotonUtility.LeaveRoomImmediate();
+            // === DCGO-CUSTOM:reconnect end ===
+            Off();
+            yield break;
+        }
+        // === DCGO-CUSTOM:friends end ===
         foreach (FirstPlayerIndexIdToggle firstPlayerIndexIdToggle in _firstPlayerIndexIdToggles)
         {
             firstPlayerIndexIdToggle.OnClickAction = OnClickFirstPlayerIndexIDButton;
@@ -156,6 +196,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
                     "UseBanlist"
                 }
             };
+            // === DCGO-CUSTOM:reconnect begin ===
+            BattleReconnectService.ApplyBattleTtl(roomOptions);
+            // === DCGO-CUSTOM:reconnect end ===
 
             string RoomName = StringUtils.GeneratePassword_Num(5);
 

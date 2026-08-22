@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -204,6 +204,9 @@ public class LobbyManager_FriendMatch : MonoBehaviourPunCallbacks
             { "RoomCreator",ContinuousController.instance.PlayerName },
 
         };
+        // === DCGO-CUSTOM:reconnect begin ===
+        BattleReconnectService.ApplyBattleTtl(roomOptions);
+        // === DCGO-CUSTOM:reconnect end ===
 
         //Display custom property information in the lobby
         roomOptions.CustomRoomPropertiesForLobby = new string[]

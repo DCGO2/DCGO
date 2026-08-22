@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
@@ -33,6 +33,10 @@ public class BGMObject : MonoBehaviour
         {
             _audio.clip = clip;
         }
+        // === DCGO-CUSTOM:android begin ===
+        // Lower number = higher priority; keep BGM above SE pool (priority ~200).
+        _audio.priority = 32;
+        // === DCGO-CUSTOM:android end ===
 
         if (ContinuousController.instance != null)
         {

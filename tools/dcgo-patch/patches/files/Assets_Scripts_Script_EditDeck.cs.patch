@@ -1,0 +1,55 @@
+diff --git a/Assets/Scripts/Script/EditDeck.cs b/Assets/Scripts/Script/EditDeck.cs
+index d58d3632e..159f80ece 100644
+--- a/Assets/Scripts/Script/EditDeck.cs
++++ b/Assets/Scripts/Script/EditDeck.cs
+@@ -693,7 +693,13 @@ public class EditDeck : MonoBehaviour
+ 
+         _cardPrefab_CreateDeck.OnClickAction = () =>
+         {
++#if !UNITY_EDITOR && UNITY_ANDROID
++            // Tap shows detail and ┬▒ buttons; use Remove button or long-press workflow instead of instant remove.
++            OnDetailCard(cEntity_Base);
++            _cardPrefab_CreateDeck.SetupAddRemoveButton(EdittingDeckData);
++#else
+             StartCoroutine(RemoveDeckCardCoroutine_OnClick(_cardPrefab_CreateDeck));
++#endif
+         };
+ 
+         _cardPrefab_CreateDeck.OnBeginDragAction = (cardPrefab_CreateDeck) => { StartCoroutine(OnBeginDrag(cardPrefab_CreateDeck)); };
+@@ -706,7 +712,9 @@ public class EditDeck : MonoBehaviour
+ 
+         _cardPrefab_CreateDeck.OnExitAction = (cardPrefab) =>
+         {
++#if UNITY_EDITOR || !UNITY_ANDROID
+             cardPrefab.OffAddRemoveButton();
++#endif
+         };
+ 
+         _cardPrefab_CreateDeck.Parent.localScale = new Vector3(0.76f, 0.76f, 0.76f);
+@@ -896,7 +904,7 @@ public class EditDeck : MonoBehaviour
+                 CardPoolDropArea.OnDropPanel();
+ 
+                 _cardPrefab_CreateDeck.HideDeckCardTab();
+-                _cardPrefab_CreateDeck.OffAddRemoveButton();
++                _cardPrefab_CreateDeck.OffAddRemoveButton(force: true);
+             }
+ 
+             else if (_cardPrefab_CreateDeck.transform.parent == CardPoolScroll.content)
+@@ -1022,7 +1030,7 @@ public class EditDeck : MonoBehaviour
+             if (cardPrefab_CreateDeck != null)
+             {
+                 cardPrefab_CreateDeck.uIShiny.enabled = false;
+-                cardPrefab_CreateDeck.OffAddRemoveButton();
++                cardPrefab_CreateDeck.OffAddRemoveButton(force: true);
+             }
+         }
+         Debug.Log($"CARD TO ADD: {_cardPrefab_CreateDeck.cEntity_Base}");
+@@ -1054,7 +1062,7 @@ public class EditDeck : MonoBehaviour
+ 
+                 if (cardPrefab.AddRemoveButtonParent.activeSelf)
+                 {
+-                    cardPrefab.OffAddRemoveButton();
++                    cardPrefab.OffAddRemoveButton(force: true);
+                     cardPrefab.SetupAddRemoveButton(EdittingDeckData);
+                 }
+             }

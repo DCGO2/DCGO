@@ -1,0 +1,106 @@
+diff --git a/Assets/Scripts/Script/CardObjectController.cs b/Assets/Scripts/Script/CardObjectController.cs
+index 88c98753a..55618dc5a 100644
+--- a/Assets/Scripts/Script/CardObjectController.cs
++++ b/Assets/Scripts/Script/CardObjectController.cs
+@@ -132,14 +132,11 @@ public class CardObjectController : MonoBehaviour
+             #region Õ»¥õ║║µêª
+             if (!GManager.instance.IsAI)
+             {
+-                Hashtable hashtable = player.CustomProperties;
+-
+                 if (HasDeckRecipie(player))
+                 {
+-                    if (hashtable.TryGetValue(ContinuousController.DeckDataPropertyKey, out object value))
++                    DeckData deckData = ResolveOnlineDeckData(player);
++                    if (deckData != null)
+                     {
+-                        DeckData deckData = new DeckData((string)value);
+-
+                         return RandomUtility.ShuffledDeckCards(deckData.DeckCards());
+                     }
+                 }
+@@ -218,14 +215,11 @@ public class CardObjectController : MonoBehaviour
+             #region Õ»¥õ║║µêª
+             if (!GManager.instance.IsAI)
+             {
+-                Hashtable hashtable = player.CustomProperties;
+-
+                 if (HasDeckRecipie(player))
+                 {
+-                    if (hashtable.TryGetValue(ContinuousController.DeckDataPropertyKey, out object value))
++                    DeckData deckData = ResolveOnlineDeckData(player);
++                    if (deckData != null)
+                     {
+-                        DeckData deckData = new DeckData((string)value);
+-
+                         return RandomUtility.ShuffledDeckCards(deckData.DigitamaDeckCards());
+                     }
+                 }
+@@ -300,19 +294,61 @@ public class CardObjectController : MonoBehaviour
+         #region ÒüØÒü«PhotonÒé»Òâ®ÒéñÒéóÒâ│ÒâêÒüîÒâçÒââÒé¡Òâ¼ÒéÀÒâöÒü«Òé¡Òâ╝ÒéÆµîüÒüúÒüªÒüäÒéïÒüïÒü«ÕêñÕ«Ü
+         bool HasDeckRecipie(Photon.Realtime.Player _player)
+         {
+-            Hashtable _hashtable = _player.CustomProperties;
++            DeckData deckData = ResolveOnlineDeckData(_player);
++            return deckData != null && deckData.IsValidDeckData();
++        }
+ 
+-            if (_hashtable.TryGetValue(ContinuousController.DeckDataPropertyKey, out object value))
++        DeckData ResolveOnlineDeckData(Photon.Realtime.Player _player)
++        {
++            var cc = ContinuousController.instance;
++            // === DCGO-CUSTOM:tournament begin ===
++            if (cc != null && cc.isTournamentStarted)
+             {
+-                DeckData deckData = new DeckData((string)value);
++                string userId = TournamentState.ReadPlayerId(_player);
++                string locked = cc.TournamentState != null ? cc.TournamentState.LockedDeckCode(userId) : null;
++                if (string.IsNullOrEmpty(locked) &&
++                    _player.CustomProperties != null &&
++                    _player.CustomProperties.TryGetValue(TournamentKeys.LockedDeckProperty, out object lockedObj) &&
++                    lockedObj is string lockedProp)
++                {
++                    locked = lockedProp;
++                }
++
++                if (!string.IsNullOrEmpty(locked))
++                {
++                    try
++                    {
++                        var lockedDeck = new DeckData(locked);
++                        if (lockedDeck.IsValidDeckData())
++                        {
++                            return lockedDeck;
++                        }
++                    }
++                    catch
++                    {
++                    }
++                }
++            }
++            // === DCGO-CUSTOM:tournament end ===
+ 
+-                if (deckData.IsValidDeckData())
++            Hashtable _hashtable = _player.CustomProperties;
++            if (_hashtable != null && _hashtable.TryGetValue(ContinuousController.DeckDataPropertyKey, out object value) &&
++                value is string code)
++            {
++                try
++                {
++                    var deckData = new DeckData(code);
++                    if (deckData.IsValidDeckData())
++                    {
++                        return deckData;
++                    }
++                }
++                catch
+                 {
+-                    return true;
+                 }
+             }
+ 
+-            return false;
++            return null;
+         }
+         #endregion
+ 

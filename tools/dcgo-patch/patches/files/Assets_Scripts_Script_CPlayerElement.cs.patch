@@ -1,0 +1,57 @@
+diff --git a/Assets/Scripts/Script/CPlayerElement.cs b/Assets/Scripts/Script/CPlayerElement.cs
+index 861ffd54b..8f02212a3 100644
+--- a/Assets/Scripts/Script/CPlayerElement.cs
++++ b/Assets/Scripts/Script/CPlayerElement.cs
+@@ -15,30 +15,34 @@ public class CPlayerElement : MonoBehaviour
+     //Function to set Room information from GetRoomList to RoomElement
+     public void SetPlayerInfo(string _PlayerName, bool _IsReady)
+     {
+-        //Obtain roomname for room entry button
+-        playername = _PlayerName;
+-        PlayerName.text = _PlayerName;
+-
+         if (_IsReady)
+         {
+-            IsReady.text = LocalizeUtility.
+-            GetLocalizedString(
+-                EngMessage: "Ready",
+-                JpnMessage: "µ║ûÕéÖÕ«îõ║å"
+-            );
+-
+-            IsReady.color = new Color32(53, 255, 4, 255);
++            SetPlayerInfo(
++                _PlayerName,
++                LocalizeUtility.GetLocalizedString(EngMessage: "Ready", JpnMessage: "µ║ûÕéÖÕ«îõ║å"),
++                new Color32(53, 255, 4, 255));
+         }
+-
+         else
+         {
+-            IsReady.text = LocalizeUtility.
+-            GetLocalizedString(
+-                EngMessage: "Not Ready",
+-                JpnMessage: "µ║ûÕéÖõ©¡"
+-            );
++            SetPlayerInfo(
++                _PlayerName,
++                LocalizeUtility.GetLocalizedString(EngMessage: "Not Ready", JpnMessage: "µ║ûÕéÖõ©¡"),
++                Color.red);
++        }
++    }
++
++    public void SetPlayerInfo(string _PlayerName, string statusText, Color statusColor)
++    {
++        playername = _PlayerName;
++        if (PlayerName != null)
++        {
++            PlayerName.text = _PlayerName;
++        }
+ 
+-            IsReady.color = Color.red;
++        if (IsReady != null)
++        {
++            IsReady.text = statusText;
++            IsReady.color = statusColor;
+         }
+     }
+ }

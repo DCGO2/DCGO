@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +10,12 @@ public class SoundObject : MonoBehaviour
 
     public void PlaySE(AudioClip clip)
     {
+        // === DCGO-CUSTOM:android begin ===
+        if (_audio == null)
+        {
+            return;
+        }
+        // === DCGO-CUSTOM:android end ===
         _audio = GetComponent<AudioSource>();
 
         _audio.clip = clip;

@@ -35,6 +35,43 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
     public IEnumerator Init()
     {
+        // === DCGO-CUSTOM:tournament begin ===
+        string localId = TournamentState.EnsureLocalPlayerId();
+        var cc = ContinuousController.instance;
+        var match = cc != null && cc.isTournament && cc.TournamentState != null
+            ? cc.TournamentState.FindActiveMatchFor(localId)
+            : null;
+        bool rematch = match != null && match.gameIndex > 0;
+
+        if (rematch)
+        {
+            string loserId = match.lastGameLoserUserId;
+            float waited = 0f;
+            while (string.IsNullOrEmpty(loserId) && waited < 4f)
+            {
+                if (PhotonNetwork.InRoom &&
+                    PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(TournamentKeys.LastLoserProperty, out object loserObj) &&
+                    loserObj is string roomLoser &&
+                    !string.IsNullOrEmpty(roomLoser))
+                {
+                    loserId = roomLoser;
+                    match.lastGameLoserUserId = roomLoser;
+                    break;
+                }
+
+                waited += Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            if (!string.IsNullOrEmpty(loserId) && !TournamentKeys.IsBye(loserId))
+            {
+                bool localGoesFirst = loserId == localId;
+                gameContext.TurnPlayer = localGoesFirst ? gameContext.Opponent : gameContext.You;
+                Debug.Log($"[Battle] Rematch first=loser {loserId} youAreFirst={localGoesFirst} room={PhotonNetwork.CurrentRoom?.Name}");
+                yield break;
+            }
+        }
+        // === DCGO-CUSTOM:tournament end ===
         yield return StartCoroutine(GManager.instance.LoadingObject.StartLoading("Now Loading"));
 
         yield return StartCoroutine(ContinuousController.LoadCoroutine());
@@ -59,6 +96,71 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             {
                 yield return ContinuousController.instance.StartCoroutine(PhotonUtility.ConnectToMasterServerCoroutine());
             }
+        // === DCGO-CUSTOM:ranked begin ===
+        IEnumerator RefreshRankedNamePlatesLater(
+            Photon.Realtime.Player masterPhoton,
+            Photon.Realtime.Player nonMasterPhoton)
+        {
+            // Props can arrive shortly after room enter — re-apply once after a short wait.
+            const float totalWait = 1.5f;
+            const float step = 0.25f;
+            float waited = 0f;
+
+            while (waited < totalWait)
+            {
+                yield return new WaitForSeconds(step);
+                waited += step;
+
+                bool bothHaveMmr =
+                    (masterPhoton == null || PhotonHasMmr(masterPhoton)) &&
+                    (nonMasterPhoton == null || PhotonHasMmr(nonMasterPhoton));
+
+                if (bothHaveMmr)
+                {
+                    break;
+                }
+            }
+
+            ApplyPlayerNamePlate(0, masterPhoton);
+            ApplyPlayerNamePlate(1, nonMasterPhoton);
+        }
+
+        bool PhotonHasMmr(Photon.Realtime.Player photonPlayer)
+        {
+            return photonPlayer != null &&
+                   photonPlayer.CustomProperties != null &&
+                   photonPlayer.CustomProperties.ContainsKey(RankedKeys.MmrProperty);
+        }
+        // === DCGO-CUSTOM:ranked end ===
+        // === DCGO-CUSTOM:ranked begin ===
+        int ResolvePhotonMmr(Photon.Realtime.Player photonPlayer, bool isLocalGamePlayer)
+        {
+            if (photonPlayer != null &&
+                photonPlayer.CustomProperties != null &&
+                photonPlayer.CustomProperties.TryGetValue(RankedKeys.MmrProperty, out object mmrObj) &&
+                mmrObj != null)
+            {
+                try
+                {
+                    return Convert.ToInt32(mmrObj);
+                }
+                catch
+                {
+                    // fall through
+                }
+            }
+
+            if (isLocalGamePlayer &&
+                RankedServices.Instance != null &&
+                RankedServices.Instance.Profile != null &&
+                RankedServices.Instance.Profile.Cached != null)
+            {
+                return RankedServices.Instance.Profile.Cached.mmr;
+            }
+
+            return RankedRating.DefaultMmr;
+        }
+        // === DCGO-CUSTOM:ranked end ===
 
             yield return new WaitWhile(() => !PhotonNetwork.IsConnectedAndReady);
 
@@ -3351,11 +3453,18 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         ContinuousController.instance.CanSetRandom = false;
-
-        if (PhotonNetwork.InRoom)
+        // === DCGO-CUSTOM:tournament begin ===
+        // Do not wipe Photon room/player props mid-tournament — Bo3 rematch needs
+        // TourneyLockedDeck, TourneyPlayerId, and series room keys.
+        bool isTournament = ContinuousController.instance.isTournament;
+        // === DCGO-CUSTOM:friends begin ===
+        bool isFriendDuel = ContinuousController.instance.isFriendDuel;
+        // === DCGO-CUSTOM:friends end ===
+        if (PhotonNetwork.InRoom && !isTournament && !isFriendDuel)
         {
             PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable());
         }
+        // === DCGO-CUSTOM:tournament end ===
 
         if (!ContinuousController.instance.isRandomMatch && !ContinuousController.instance.isAI)
         {
@@ -3389,7 +3498,16 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         StopAllCoroutines();
         GManager.instance.StopAllCoroutines();
-        ContinuousController.instance.StopAllCoroutines();
+        // === DCGO-CUSTOM:ranked begin ===
+        // Do NOT StopAllCoroutines on ContinuousController while ranked/tournament/friend
+        // teardown needs DontDestroyOnLoad hosts / EndBattle to keep working.
+        if (!ContinuousController.instance.isRanked &&
+            !ContinuousController.instance.isTournament &&
+            !ContinuousController.instance.isFriendDuel)
+        {
+            ContinuousController.instance.StopAllCoroutines();
+        }
+        // === DCGO-CUSTOM:ranked end ===
 
         ContinuousController.instance.StartCoroutine(GManager.instance.BattleBGM.FadeOut(1));
 

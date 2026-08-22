@@ -1,0 +1,18 @@
+diff --git a/Assets/Scripts/Script/SoundObject.cs b/Assets/Scripts/Script/SoundObject.cs
+index 718c1bace..4d1270506 100644
+--- a/Assets/Scripts/Script/SoundObject.cs
++++ b/Assets/Scripts/Script/SoundObject.cs
+@@ -25,6 +25,13 @@ public class SoundObject : MonoBehaviour
+ 
+     private void Update()
+     {
++        // === DCGO-CUSTOM:android begin ===
++        if (_audio == null)
++        {
++            return;
++        }
++        // === DCGO-CUSTOM:android end ===
++
+         if (ContinuousController.instance != null)
+         {
+             ContinuousController.instance.ChangeSEVolume(_audio);

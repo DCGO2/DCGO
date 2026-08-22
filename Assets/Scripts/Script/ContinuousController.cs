@@ -66,6 +66,23 @@ public class ContinuousController : MonoBehaviour
     public bool isRandomMatch { get; set; }
     public bool isRanked { get; set; }
     public bool isTournament { get; set; }
+    public bool isTournamentStarted { get; set; }
+    public TournamentState TournamentState { get; set; }
+    public string TournamentPlayerId { get; set; }
+    public int TournamentPlayerCount { get; set; } = TournamentKeys.DefaultPlayerCount;
+
+    public void ClearTournament()
+    {
+        isTournament = false;
+        isTournamentStarted = false;
+        TournamentState = null;
+        TournamentPlayerId = null;
+        TournamentPlayerCount = TournamentKeys.DefaultPlayerCount;
+        TournamentServices.Instance?.Match?.ResetDirector();
+    }
+
+    public static string RankedMmrKey => RankedKeys.MmrProperty;
+    public static string RankedPlayFabIdKey => RankedKeys.PlayFabIdProperty;
 
     public static bool IsBattleSceneLoaded()
     {
@@ -544,9 +561,15 @@ public class ContinuousController : MonoBehaviour
     public async void Init()
     {
         Application.targetFrameRate = 60;
+#if !UNITY_EDITOR && UNITY_ANDROID
+        if (EventSystem.current != null)
+            EventSystem.current.pixelDragThreshold = Mathf.Max(EventSystem.current.pixelDragThreshold, 25);
+#endif
         long random = RandomUtility.GetSecureRandom();
         GameRandom.Seed(random);
         Debug.Log($"Game Initialize - random number sequence initialization, GameRandom.Seed:{random}");
+
+        await StreamingAssetsUtility.EnsureBundledTexturesSeeded();
 
         Sprite reverseCardSprite = await StreamingAssetsUtility.GetSprite("card_back_main");
 
@@ -1677,8 +1700,29 @@ public class PhotonUtility
     public static string RetryStatus { get; set; } = null;
 
     #region Disconnected from Photon
+    public static void LeaveRoomImmediate()
+    {
+        BattleReconnectService.EnsureExists().NotifyLeftRoomIntentionally();
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LeaveRoom(false);
+        }
+    }
+
+    public static void DisconnectImmediate()
+    {
+        BattleReconnectService.EnsureExists().MarkIntentionalDisconnect();
+        OnlinePlayerCountService.EnsureExists().SetMatchmakingOwnsConnection(false);
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.Disconnect();
+        }
+    }
+
     public static IEnumerator DisconnectCoroutine()
     {
+        BattleReconnectService.EnsureExists().MarkIntentionalDisconnect();
+        OnlinePlayerCountService.EnsureExists().SetMatchmakingOwnsConnection(false);
         #region Exit Room
         if (PhotonNetwork.InRoom)
         {

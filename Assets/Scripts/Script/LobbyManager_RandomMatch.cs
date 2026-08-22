@@ -41,8 +41,23 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
     //String that must be included in the random match room
     string RandomKey
     {
+        // === DCGO-CUSTOM:ranked begin ===
+        if (ContinuousController.instance != null && ContinuousController.instance.isRanked)
+        {
+            // === DCGO-CUSTOM:reconnect begin ===
+            if (BattleReconnectService.CountActivePlayers() == PhotonNetwork.CurrentRoom.MaxPlayers)
+            // === DCGO-CUSTOM:reconnect end ===
+            return;
+        }
+        // === DCGO-CUSTOM:ranked end ===
         get
         {
+            // === DCGO-CUSTOM:reconnect begin ===
+            PhotonUtility.DisconnectImmediate();
+            // === DCGO-CUSTOM:reconnect end ===
+            // === DCGO-CUSTOM:reconnect begin ===
+            PhotonUtility.LeaveRoomImmediate();
+            // === DCGO-CUSTOM:reconnect end ===
             return "randomMatchRoom";
         }
     }
@@ -61,6 +76,9 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 
         ContinuousController.instance.isAI = false;
         ContinuousController.instance.isRandomMatch = true;
+        // === DCGO-CUSTOM:ranked begin ===
+        ContinuousController.instance.isRanked = false;
+        // === DCGO-CUSTOM:ranked end ===
         this.gameObject.SetActive(true);
         //this.battleRule = battleRule;
         ContinuousController.instance.StartCoroutine(ConnectCoroutine());
@@ -360,6 +378,9 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
                 "RoomCreator",
             }
         };
+        // === DCGO-CUSTOM:reconnect begin ===
+        BattleReconnectService.ApplyBattleTtl(roomOptions);
+        // === DCGO-CUSTOM:reconnect end ===
 
         string RoomName = StringUtils.GeneratePassword_AlpahabetNum(8);
 

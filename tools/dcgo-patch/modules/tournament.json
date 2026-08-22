@@ -1,0 +1,34 @@
+{
+  "id": "tournament",
+  "description": "8/4/16 player single-elim tournament, Bo3 series, wait hub.",
+  "dependsOn": [],
+  "overlay": [
+    "Assets/Scripts/Script/Tournament"
+  ],
+  "overlayFiles": [
+    "Assets/Scenes/Opening.unity"
+  ],
+  "patchFiles": [
+    "Assets/Scripts/Script/BattleMode.cs",
+    "Assets/Scripts/Script/ContinuousController.cs",
+    "Assets/Scripts/Script/CardObjectController.cs",
+    "Assets/Scripts/Script/EnterRoom.cs",
+    "Assets/Scripts/Script/GManager.cs",
+    "Assets/Scripts/Script/ResultObject.cs",
+    "Assets/Scripts/Script/RoomManager.cs",
+    "Assets/Scripts/Script/SelectBattleDeck.cs",
+    "Assets/Scripts/Script/SelectBattleMode.cs",
+    "Assets/Scripts/Script/TurnStateMachine.cs",
+    "Assets/Photon/PhotonUnityNetworking/Code/PhotonNetworkPart.cs"
+  ],
+  "anchors": [
+    {
+      "file": "Assets/Scripts/Script/BattleMode.cs",
+      "afterContains": "public RoomManager roomManager;"
+    },
+    {
+      "file": "Assets/Scripts/Script/EnterRoom.cs",
+      "afterContains": "public Button EnterRoomButton;"
+    }
+  ]
+}

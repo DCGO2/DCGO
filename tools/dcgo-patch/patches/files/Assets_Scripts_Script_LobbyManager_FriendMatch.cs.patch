@@ -1,0 +1,15 @@
+diff --git a/Assets/Scripts/Script/LobbyManager_FriendMatch.cs b/Assets/Scripts/Script/LobbyManager_FriendMatch.cs
+index c664de4e6..7e07083df 100644
+--- a/Assets/Scripts/Script/LobbyManager_FriendMatch.cs
++++ b/Assets/Scripts/Script/LobbyManager_FriendMatch.cs
+@@ -211,6 +211,10 @@ public class LobbyManager_FriendMatch : MonoBehaviourPunCallbacks
+             "RoomCreator",
+         };
+ 
++        // === DCGO-CUSTOM:reconnect begin ===
++        BattleReconnectService.ApplyBattleTtl(roomOptions);
++        // === DCGO-CUSTOM:reconnect end ===
++
+         string RoomName = StringUtils.GeneratePassword(8);
+ 
+         //Create Room

@@ -1,0 +1,36 @@
+diff --git a/Assets/Scripts/Script/BGMObject.cs b/Assets/Scripts/Script/BGMObject.cs
+index 1f4c9e42d..b706cdc02 100644
+--- a/Assets/Scripts/Script/BGMObject.cs
++++ b/Assets/Scripts/Script/BGMObject.cs
+@@ -18,7 +18,9 @@ public class BGMObject : MonoBehaviour
+     {
+         _audio = GetComponent<AudioSource>();
+ 
++        // === DCGO-CUSTOM:android begin ===
+         _audio.Stop();
++        // === DCGO-CUSTOM:android end ===
+ 
+         _audio.clip = null;
+ 
+@@ -34,6 +36,11 @@ public class BGMObject : MonoBehaviour
+             _audio.clip = clip;
+         }
+ 
++        // === DCGO-CUSTOM:android begin ===
++        // Lower number = higher priority; keep BGM above SE pool (priority ~200).
++        _audio.priority = 32;
++        // === DCGO-CUSTOM:android end ===
++
+         if (ContinuousController.instance != null)
+         {
+             ContinuousController.instance.ChangeBGMVolume(_audio);
+@@ -72,6 +79,9 @@ public class BGMObject : MonoBehaviour
+ 
+         yield return new WaitWhile(() => !end);
+ 
++        // === DCGO-CUSTOM:android begin ===
++        _audio.Stop();
++        // === DCGO-CUSTOM:android end ===
+         isPlaying = false;
+         isFading = false;
+     }

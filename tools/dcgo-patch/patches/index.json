@@ -1,0 +1,37 @@
+{
+    "baseline":  "6faae89a7",
+    "label":  "Public 1.17.3",
+    "generatedUtc":  "2026-08-14T07:56:50.0663970Z",
+    "modules":  [
+                    "android",
+                    "ranked",
+                    "tournament",
+                    "chat",
+                    "reconnect"
+                ],
+    "patchCount":  31,
+    "overlayCount":  4270,
+    "regionFiles":  [
+                        "Assets/Scripts/Script/ContinuousController.cs",
+                        "Assets/Scripts/Script/BGMObject.cs",
+                        "Assets/Scripts/Script/SoundObject.cs",
+                        "Assets/Scripts/Script/OpeningButton.cs",
+                        "Assets/Scripts/Script/Draggable_HandCard.cs",
+                        "Assets/Scripts/Script/CardObjectController.cs",
+                        "Assets/Scripts/Script/BattleMode.cs",
+                        "Assets/Scripts/Script/GManager.cs",
+                        "Assets/Scripts/Script/Player.cs",
+                        "Assets/Scripts/Script/PlayerInfo.cs",
+                        "Assets/Scripts/Script/ResultObject.cs",
+                        "Assets/Scripts/Script/SelectBattleDeck.cs",
+                        "Assets/Scripts/Script/SelectBattleMode.cs",
+                        "Assets/Scripts/Script/TurnStateMachine.cs",
+                        "Assets/Scripts/Script/LobbyManager_RandomMatch.cs",
+                        "Assets/Scripts/Script/EnterRoom.cs",
+                        "Assets/Scripts/Script/RoomManager.cs",
+                        "Assets/Photon/PhotonUnityNetworking/Code/PhotonNetworkPart.cs",
+                        "Assets/Scripts/Script/LoadingObject.cs",
+                        "Assets/Scripts/Script/LobbyManager_FriendMatch.cs",
+                        "Assets/Scripts/Script/Opening.cs"
+                    ]
+}

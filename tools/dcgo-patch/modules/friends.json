@@ -1,0 +1,35 @@
+{
+  "id": "friends",
+  "description": "Home friend list, PlayFab/local storage, online direct duel Bo1/Bo3.",
+  "dependsOn": ["ranked"],
+  "overlay": [
+    "Assets/Scripts/Script/Friends"
+  ],
+  "overlayFiles": [],
+  "patchFiles": [
+    "Assets/Scripts/Script/ContinuousController.cs",
+    "Assets/Scripts/Script/ResultObject.cs",
+    "Assets/Scripts/Script/RoomManager.cs",
+    "Assets/Scripts/Script/TurnStateMachine.cs",
+    "Assets/Scripts/Script/SelectBattleMode.cs",
+    "Assets/Scripts/Script/HomeMode.cs",
+    "Assets/Scripts/Script/Opening.cs",
+    "Assets/Scripts/Script/BattleMode.cs",
+    "Assets/Scripts/Script/GManager.cs",
+    "Assets/Scripts/Script/Ranked/PlayFabClientApi.cs"
+  ],
+  "anchors": [
+    {
+      "file": "Assets/Scripts/Script/ContinuousController.cs",
+      "afterContains": "public bool isRandomMatch { get; set; }"
+    },
+    {
+      "file": "Assets/Scripts/Script/HomeMode.cs",
+      "afterContains": "OnlinePlayerCountService.EnsureExists().SetMenuPresenceEnabled(true);"
+    },
+    {
+      "file": "Assets/Scripts/Script/BattleMode.cs",
+      "afterContains": "lobbyManager_RankedMatch.OffLobby();"
+    }
+  ]
+}

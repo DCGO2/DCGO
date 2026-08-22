@@ -1,0 +1,60 @@
+diff --git a/Assets/Scripts/Script/RoomManager.cs b/Assets/Scripts/Script/RoomManager.cs
+index 41df9dcdf..9c75b7fa8 100644
+--- a/Assets/Scripts/Script/RoomManager.cs
++++ b/Assets/Scripts/Script/RoomManager.cs
+@@ -149,6 +149,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
+                     "UseBanlist"
+                 }
+             };
++            // === DCGO-CUSTOM:reconnect begin ===
++            BattleReconnectService.ApplyBattleTtl(roomOptions);
++            // === DCGO-CUSTOM:reconnect end ===
+ 
+             string RoomName = StringUtils.GeneratePassword_Num(5);
+ 
+@@ -314,7 +317,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
+         #region Leave Room
+         if (PhotonNetwork.InRoom)
+         {
+-            PhotonNetwork.LeaveRoom();
++            // === DCGO-CUSTOM:reconnect begin ===
++            PhotonUtility.LeaveRoomImmediate();
++            // === DCGO-CUSTOM:reconnect end ===
+         }
+ 
+         yield return new WaitWhile(() => PhotonNetwork.InRoom);
+@@ -420,9 +425,19 @@ public class RoomManager : MonoBehaviourPunCallbacks
+     bool DoneStartBattle;
+     public void CheckPlayerState()
+     {
++        // === DCGO-CUSTOM:tournament begin ===
++        if (ContinuousController.instance != null && ContinuousController.instance.isTournament)
++        {
++            // Tournament rooms are driven by TournamentMatchDirector.
++            return;
++        }
++        // === DCGO-CUSTOM:tournament end ===
++
+         if (PhotonNetwork.InRoom && endSetUp)
+         {
+-            if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers && AllPlayerIsReady())
++            // === DCGO-CUSTOM:reconnect begin ===
++            if (BattleReconnectService.CountActivePlayers() == PhotonNetwork.CurrentRoom.MaxPlayers && AllPlayerIsReady())
++            // === DCGO-CUSTOM:reconnect end ===
+             {
+                 if (PhotonNetwork.IsMasterClient && !DoneStartBattle)
+                 {
+@@ -496,6 +511,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
+ 
+     IEnumerator GoToBattleSceneCoroutine()
+     {
++        // === DCGO-CUSTOM:tournament begin ===
++        if (ContinuousController.instance.isTournament || ContinuousController.IsBattleSceneLoaded())
++        {
++            yield break;
++        }
++        // === DCGO-CUSTOM:tournament end ===
++
+         yield return ContinuousController.instance.StartCoroutine(Opening.instance.LoadingObject_Unload.StartLoading("Now Loading"));
+ 
+         DoneStartBattle = true;

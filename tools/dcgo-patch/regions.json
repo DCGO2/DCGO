@@ -1,0 +1,663 @@
+{
+    "baseline":  "6faae89a7",
+    "generatedUtc":  "2026-08-14T07:56:50.0643973Z",
+    "files":  {
+                  "Assets/Scripts/Script/ContinuousController.cs":  [
+                                                                        {
+                                                                            "module":  "ranked",
+                                                                            "indent":  "    ",
+                                                                            "body":  "    public bool isRanked { get; set; }"
+                                                                        },
+                                                                        {
+                                                                            "module":  "tournament",
+                                                                            "indent":  "    ",
+                                                                            "body":  "    public bool isTournament { get; set; }\r\n    public bool isTournamentStarted { get; set; }\r\n    public TournamentState TournamentState { get; set; }\r\n    public string TournamentPlayerId { get; set; }\r\n    public int TournamentPlayerCount { get; set; } = TournamentKeys.DefaultPlayerCount;\r\n\r\n    public void ClearTournament()\r\n    {\r\n        isTournament = false;\r\n        isTournamentStarted = false;\r\n        TournamentState = null;\r\n        TournamentPlayerId = null;\r\n        TournamentPlayerCount = TournamentKeys.DefaultPlayerCount;\r\n        TournamentServices.Instance?.Match?.ResetDirector();\r\n    }"
+                                                                        },
+                                                                        {
+                                                                            "module":  "ranked",
+                                                                            "indent":  "    ",
+                                                                            "body":  "    public static string RankedMmrKey =\u003e RankedKeys.MmrProperty;\r\n    public static string RankedPlayFabIdKey =\u003e RankedKeys.PlayFabIdProperty;"
+                                                                        },
+                                                                        {
+                                                                            "module":  "reconnect",
+                                                                            "indent":  "        ",
+                                                                            "body":  "        BattleReconnectService.EnsureExists();"
+                                                                        },
+                                                                        {
+                                                                            "module":  "android",
+                                                                            "indent":  "        ",
+                                                                            "body":  "#if !UNITY_EDITOR \u0026\u0026 UNITY_ANDROID\r\n        // Easier scroll-vs-drag distinction on touchscreens (default is often too low).\r\n        if (EventSystem.current != null)\r\n            EventSystem.current.pixelDragThreshold = Mathf.Max(EventSystem.current.pixelDragThreshold, 25);\r\n#endif"
+                                                                        },
+                                                                        {
+                                                                            "module":  "android",
+                                                                            "indent":  "        ",
+                                                                            "body":  "        // Android APK has no Assets/Textures next to the binary (PC layout). Seed UI mats/backs from StreamingAssets.\r\n        await StreamingAssetsUtility.EnsureBundledTexturesSeeded();"
+                                                                        },
+                                                                        {
+                                                                            "module":  "ranked",
+                                                                            "indent":  "        ",
+                                                                            "body":  "        // Ranked / PlayFab services (DontDestroyOnLoad host)\r\n        RankedServices.EnsureExists();"
+                                                                        },
+                                                                        {
+                                                                            "module":  "reconnect",
+                                                                            "indent":  "        ",
+                                                                            "body":  "        BattleReconnectService.EnsureExists();"
+                                                                        },
+                                                                        {
+                                                                            "module":  "tournament",
+                                                                            "indent":  "    ",
+                                                                            "body":  "    public static void CleanStalePhotonViews()\r\n    {\r\n        var stale = new List\u003cPhotonView\u003e();\r\n        foreach (PhotonView view in PhotonNetwork.PhotonViewCollection)\r\n        {\r\n            if ((object)view == null)\r\n            {\r\n                continue;\r\n            }\r\n\r\n            if (view == null || view.gameObject == null || !view.gameObject.scene.isLoaded)\r\n            {\r\n                stale.Add(view);\r\n            }\r\n        }\r\n\r\n        for (int i = 0; i \u003c stale.Count; i++)\r\n        {\r\n            PhotonNetwork.LocalCleanPhotonView(stale[i]);\r\n        }\r\n    }"
+                                                                        },
+                                                                        {
+                                                                            "module":  "tournament",
+                                                                            "indent":  "        ",
+                                                                            "body":  "        TournamentServices.Instance?.Match?.CancelAutoAdvanceFromResult();"
+                                                                        },
+                                                                        {
+                                                                            "module":  "ranked",
+                                                                            "indent":  "        ",
+                                                                            "body":  "        bool wasRanked = isRanked;"
+                                                                        },
+                                                                        {
+                                                                            "module":  "tournament",
+                                                                            "indent":  "        ",
+                                                                            "body":  "        bool wasTournament = isTournament;\r\n        var tournamentMatch = wasTournament ? TournamentServices.EnsureExists().Match : null;\r\n        bool tournamentNextGame = wasTournament \u0026\u0026 tournamentMatch != null \u0026\u0026 tournamentMatch.ShouldReloadNextGame;"
+                                                                        },
+                                                                        {
+                                                                            "module":  "ranked",
+                                                                            "indent":  "            ",
+                                                                            "body":  "            Debug.Log(\"Unload from Ranked Match\");\r\n            // Fully tear down ranked + shared random-match UI so queue cannot keep running\r\n            if (Opening.instance.battle.lobbyManager_RankedMatch != null)\r\n            {\r\n                yield return StartCoroutine(Opening.instance.battle.lobbyManager_RankedMatch.CloseLobbyCoroutine());\r\n            }\r\n            else if (Opening.instance.battle.lobbyManager_RandomMatch != null)\r\n            {\r\n                yield return StartCoroutine(Opening.instance.battle.lobbyManager_RandomMatch.CloseLobbyCoroutine());\r\n            }\r\n\r\n            isRanked = false;\r\n            isRandomMatch = false;\r\n\r\n            // Ensure both lobby panels are hidden before mode select\r\n            Opening.instance.battle.lobbyManager_RandomMatch?.OffLobby();\r\n            Opening.instance.battle.lobbyManager_RankedMatch?.OffLobby();\r\n\r\n            yield return StartCoroutine(Opening.instance.battle.selectBattleMode.SetUpSelectBattleModeCoroutine());"
+                                                                        },
+                                                                        {
+                                                                            "module":  "tournament",
+                                                                            "indent":  "            ",
+                                                                            "body":  "            Debug.Log(tournamentNextGame\r\n                ? \"Unload from Tournament (next game)\"\r\n                : \"Unload from Tournament (series/hub)\");\r\n            if (tournamentNextGame)\r\n            {\r\n                // Release the EndBattle lock before rematch loading. If EndLoading hangs,\r\n                // the next result screen (e.g. 1-1) must still be able to call EndBattle.\r\n                _endBattle = false;\r\n                yield return tournamentMatch.StartNextGameCoroutine();\r\n                yield break;\r\n            }\r\n\r\n            // Clear the previous game\u0027s battle flag before hub routing so a leftover\r\n            // isBattle=true cannot collide with the final. The next StartBattle sets it again.\r\n            if (PhotonNetwork.InRoom)\r\n            {\r\n                Hashtable endSeriesProp = PhotonNetwork.LocalPlayer.CustomProperties ?? new Hashtable();\r\n                endSeriesProp[\"isBattle\"] = false;\r\n                PhotonNetwork.LocalPlayer.SetCustomProperties(endSeriesProp);\r\n            }\r\n\r\n            Scene openingScene = SceneManager.GetSceneByName(\"Opening\");\r\n            if (openingScene.IsValid())\r\n            {\r\n                SceneManager.SetActiveScene(openingScene);\r\n            }\r\n\r\n            // Release before hub routing. Dispatching the final inside WaitWhile(GManager)\r\n            // soft-locks the quarterfinal winner on the loading screen.\r\n            _endBattle = false;\r\n            yield return tournamentMatch.RouteAfterSeriesCoroutine();\r\n\r\n            Opening.instance.LoadingObject.gameObject.SetActive(false);\r\n            yield return StartCoroutine(Opening.instance.LoadingObject_Unload.EndLoading());\r\n            tournamentMatch.EndRoutingAfterSeries();\r\n            yield break;"
+                                                                        },
+                                                                        {
+                                                                            "module":  "tournament",
+                                                                            "indent":  "                ",
+                                                                            "body":  "                // Tournament lobby / wait hub are 8-player rooms. Only apply the 1v1\r\n                // disconnect lock while a battle is actually running.\r\n                // Tournament rooms (lobby / wait hub / match) must stay joinable.\r\n                // Shrinking MaxPlayers to 1 while a bye player is alone in battle\r\n                // locked the finalist out of the room — surrender then never reached them.\r\n                if (isTournament)\r\n                {\r\n                    return;\r\n                }"
+                                                                        },
+                                                                        {
+                                                                            "module":  "tournament",
+                                                                            "indent":  "                    ",
+                                                                            "body":  "                    if (PhotonNetwork.CurrentRoom.MaxPlayers != 2)\r\n                    {\r\n                        PhotonNetwork.CurrentRoom.MaxPlayers = 2;\r\n                    }"
+                                                                        },
+                                                                        {
+                                                                            "module":  "chat",
+                                                                            "indent":  "    ",
+                                                                            "body":  "    public const int BattleChatMaxLength = 120;\r\n    const float BattleChatCooldownSeconds = 0.5f;\r\n    float _lastBattleChatSendTime = -999f;\r\n\r\n    /// \u003csummary\u003eRaised on every client when a battle chat message is received (senderName, text, photonActorNumber).\u003c/summary\u003e\r\n    public static event Action\u003cstring, string, int\u003e OnBattleChatReceived;\r\n\r\n    /// \u003csummary\u003e\r\n    /// Send free-text chat to both players in the current PvP room. No-op for AI / offline / empty / rate-limited.\r\n    /// \u003c/summary\u003e\r\n    public void SendBattleChat(string text)\r\n    {\r\n        if (isAI || !PhotonNetwork.InRoom)\r\n            return;\r\n\r\n        if (string.IsNullOrWhiteSpace(text))\r\n            return;\r\n\r\n        if (Time.unscaledTime - _lastBattleChatSendTime \u003c BattleChatCooldownSeconds)\r\n            return;\r\n\r\n        string sanitized = SanitizeBattleChat(text);\r\n        if (string.IsNullOrEmpty(sanitized))\r\n            return;\r\n\r\n        _lastBattleChatSendTime = Time.unscaledTime;\r\n\r\n        string senderName = PlayerName;\r\n        if (string.IsNullOrEmpty(senderName))\r\n            senderName = \"Player\";\r\n\r\n        PhotonView view = GetComponent\u003cPhotonView\u003e();\r\n        if (view == null)\r\n            return;\r\n\r\n        view.RPC(nameof(ReceiveBattleChat), RpcTarget.All, senderName, sanitized);\r\n    }\r\n\r\n    public static string SanitizeBattleChat(string text)\r\n    {\r\n        if (string.IsNullOrEmpty(text))\r\n            return string.Empty;\r\n\r\n        string sanitized = text.Replace(\u0027\\r\u0027, \u0027 \u0027).Replace(\u0027\\n\u0027, \u0027 \u0027).Trim();\r\n        if (sanitized.Length \u003e BattleChatMaxLength)\r\n            sanitized = sanitized.Substring(0, BattleChatMaxLength);\r\n\r\n        return sanitized;\r\n    }\r\n\r\n    [PunRPC]\r\n    public void ReceiveBattleChat(string senderName, string text, PhotonMessageInfo info)\r\n    {\r\n        string safeName = string.IsNullOrEmpty(senderName) ? \"Player\" : senderName.Trim();\r\n        if (safeName.Length \u003e PlayerNameMaxLength \u0026\u0026 PlayerNameMaxLength \u003e 0)\r\n            safeName = safeName.Substring(0, PlayerNameMaxLength);\r\n\r\n        string sanitized = SanitizeBattleChat(text);\r\n        if (string.IsNullOrEmpty(sanitized))\r\n            return;\r\n\r\n        int actorNumber = info.Sender != null ? info.Sender.ActorNumber : -1;\r\n        OnBattleChatReceived?.Invoke(safeName, sanitized, actorNumber);\r\n    }"
+                                                                        },
+                                                                        {
+                                                                            "module":  "ranked",
+                                                                            "indent":  "    ",
+                                                                            "body":  "    /// \u003csummary\u003e\r\n    /// Ranked matchmaking complete — both clients enter battle (master invokes via RpcTarget.All).\r\n    /// \u003c/summary\u003e\r\n    [PunRPC]\r\n    public void RankedGoToBattleScene(string matchId)\r\n    {\r\n        if (!isRanked)\r\n        {\r\n            Debug.LogWarning(\"[Ranked] RankedGoToBattleScene received but isRanked is false.\");\r\n            // Still try to recover — force ranked flag for this session start\r\n            isRanked = true;\r\n            isRandomMatch = false;\r\n        }\r\n\r\n        var rankedLobby = Opening.instance != null ? Opening.instance.battle?.lobbyManager_RankedMatch : null;\r\n        if (rankedLobby == null)\r\n        {\r\n            rankedLobby = FindObjectOfType\u003cLobbyManager_RankedMatch\u003e();\r\n        }\r\n\r\n        if (rankedLobby != null)\r\n        {\r\n            rankedLobby.BeginBattleTransition(matchId);\r\n            return;\r\n        }\r\n\r\n        // Absolute fallback if lobby was destroyed: load battle directly\r\n        Debug.LogWarning(\"[Ranked] No LobbyManager_RankedMatch — loading BattleScene directly.\");\r\n        StartCoroutine(RankedDirectLoadBattleCoroutine());\r\n    }\r\n\r\n    IEnumerator RankedDirectLoadBattleCoroutine()\r\n    {\r\n        if (Opening.instance != null)\r\n        {\r\n            ContinuousController.instance.StartCoroutine(Opening.instance.OpeningBGM.FadeOut(0.2f));\r\n            foreach (Camera camera in Opening.instance.openingCameras)\r\n            {\r\n                camera.gameObject.SetActive(false);\r\n            }\r\n        }\r\n\r\n        yield return new WaitForSeconds(0.1f);\r\n        SceneManager.LoadSceneAsync(\"BattleScene\", LoadSceneMode.Additive);\r\n    }"
+                                                                        },
+                                                                        {
+                                                                            "module":  "reconnect",
+                                                                            "indent":  "        ",
+                                                                            "body":  "        BattleReconnectService.EnsureExists().NotifyLeftRoomIntentionally();"
+                                                                        },
+                                                                        {
+                                                                            "module":  "reconnect",
+                                                                            "indent":  "        ",
+                                                                            "body":  "        BattleReconnectService.EnsureExists().MarkIntentionalDisconnect();"
+                                                                        },
+                                                                        {
+                                                                            "module":  "reconnect",
+                                                                            "indent":  "        ",
+                                                                            "body":  "        BattleReconnectService.EnsureExists().MarkIntentionalDisconnect();"
+                                                                        },
+                                                                        {
+                                                                            "module":  "reconnect",
+                                                                            "indent":  "        ",
+                                                                            "body":  "        BattleReconnectService.EnsureExists().ClearIntentionalDisconnect();"
+                                                                        },
+                                                                        {
+                                                                            "module":  "ranked",
+                                                                            "indent":  "                ",
+                                                                            "body":  "                if (ContinuousController.instance.isRanked \u0026\u0026 RankedServices.Instance != null)\r\n                {\r\n                    RankedServices.Instance.Auth.ApplyPhotonAuthValues();\r\n                }"
+                                                                        },
+                                                                        {
+                                                                            "module":  "ranked",
+                                                                            "indent":  "    ",
+                                                                            "body":  "    #region Ranked player properties (PlayFabId + MMR)\r\n    public static IEnumerator SetRankedPlayerProperties()\r\n    {\r\n        var ranked = RankedServices.EnsureExists();\r\n        if (ranked.Auth == null || !ranked.Auth.IsLoggedIn)\r\n        {\r\n            yield break;\r\n        }\r\n\r\n        int mmr = ranked.Profile.Cached?.mmr ?? RankedRating.DefaultMmr;\r\n        string playFabId = ranked.Auth.PlayFabId;\r\n\r\n        Hashtable hash = PhotonNetwork.LocalPlayer.CustomProperties;\r\n\r\n        if (hash.ContainsKey(RankedKeys.MmrProperty))\r\n        {\r\n            hash[RankedKeys.MmrProperty] = mmr;\r\n        }\r\n        else\r\n        {\r\n            hash.Add(RankedKeys.MmrProperty, mmr);\r\n        }\r\n\r\n        if (hash.ContainsKey(RankedKeys.PlayFabIdProperty))\r\n        {\r\n            hash[RankedKeys.PlayFabIdProperty] = playFabId;\r\n        }\r\n        else\r\n        {\r\n            hash.Add(RankedKeys.PlayFabIdProperty, playFabId);\r\n        }\r\n\r\n        PhotonNetwork.LocalPlayer.SetCustomProperties(hash);\r\n\r\n        while (true)\r\n        {\r\n            Hashtable _hash = PhotonNetwork.LocalPlayer.CustomProperties;\r\n            bool mmrOk = _hash.TryGetValue(RankedKeys.MmrProperty, out object mmrVal) \u0026\u0026 Convert.ToInt32(mmrVal) == mmr;\r\n            bool idOk = _hash.TryGetValue(RankedKeys.PlayFabIdProperty, out object idVal) \u0026\u0026 (string)idVal == playFabId;\r\n            if (mmrOk \u0026\u0026 idOk)\r\n            {\r\n                break;\r\n            }\r\n\r\n            yield return null;\r\n        }\r\n    }\r\n    #endregion"
+                                                                        }
+                                                                    ],
+                  "Assets/Scripts/Script/BGMObject.cs":  [
+                                                             {
+                                                                 "module":  "android",
+                                                                 "indent":  "        ",
+                                                                 "body":  "        _audio.Stop();"
+                                                             },
+                                                             {
+                                                                 "module":  "android",
+                                                                 "indent":  "        ",
+                                                                 "body":  "        // Lower number = higher priority; keep BGM above SE pool (priority ~200).\r\n        _audio.priority = 32;"
+                                                             },
+                                                             {
+                                                                 "module":  "android",
+                                                                 "indent":  "        ",
+                                                                 "body":  "        _audio.Stop();"
+                                                             }
+                                                         ],
+                  "Assets/Scripts/Script/SoundObject.cs":  [
+                                                               {
+                                                                   "module":  "android",
+                                                                   "indent":  "        ",
+                                                                   "body":  "        if (_audio == null)\r\n        {\r\n            return;\r\n        }"
+                                                               }
+                                                           ],
+                  "Assets/Scripts/Script/OpeningButton.cs":  [
+                                                                 {
+                                                                     "module":  "android",
+                                                                     "indent":  "    ",
+                                                                     "body":  "    const float TitleButtonSECooldown = 0.08f;\r\n    static float _lastTitleButtonSETime = float.NegativeInfinity;"
+                                                                 },
+                                                                 {
+                                                                     "module":  "android",
+                                                                     "indent":  "            ",
+                                                                     "body":  "            float now = Time.unscaledTime;\r\n            if (now - _lastTitleButtonSETime \u003e= TitleButtonSECooldown)\r\n            {\r\n                _lastTitleButtonSETime = now;\r\n                ContinuousController.instance.PlaySE(Opening.instance.TitleButtonSE);\r\n            }"
+                                                                 }
+                                                             ],
+                  "Assets/Scripts/Script/Draggable_HandCard.cs":  [
+                                                                      {
+                                                                          "module":  "android",
+                                                                          "indent":  "                ",
+                                                                          "body":  "                handCard.CancelLongPress();"
+                                                                      }
+                                                                  ],
+                  "Assets/Scripts/Script/CardObjectController.cs":  [
+                                                                        {
+                                                                            "module":  "tournament",
+                                                                            "indent":  "            ",
+                                                                            "body":  "            if (cc != null \u0026\u0026 cc.isTournamentStarted)\r\n            {\r\n                string userId = TournamentState.ReadPlayerId(_player);\r\n                string locked = cc.TournamentState != null ? cc.TournamentState.LockedDeckCode(userId) : null;\r\n                if (string.IsNullOrEmpty(locked) \u0026\u0026\r\n                    _player.CustomProperties != null \u0026\u0026\r\n                    _player.CustomProperties.TryGetValue(TournamentKeys.LockedDeckProperty, out object lockedObj) \u0026\u0026\r\n                    lockedObj is string lockedProp)\r\n                {\r\n                    locked = lockedProp;\r\n                }\r\n\r\n                if (!string.IsNullOrEmpty(locked))\r\n                {\r\n                    try\r\n                    {\r\n                        var lockedDeck = new DeckData(locked);\r\n                        if (lockedDeck.IsValidDeckData())\r\n                        {\r\n                            return lockedDeck;\r\n                        }\r\n                    }\r\n                    catch\r\n                    {\r\n                    }\r\n                }\r\n            }"
+                                                                        }
+                                                                    ],
+                  "Assets/Scripts/Script/BattleMode.cs":  [
+                                                              {
+                                                                  "module":  "ranked",
+                                                                  "indent":  "    ",
+                                                                  "body":  "    [Header(\"RankedMatch\")]\r\n    public LobbyManager_RankedMatch lobbyManager_RankedMatch;"
+                                                              },
+                                                              {
+                                                                  "module":  "tournament",
+                                                                  "indent":  "    ",
+                                                                  "body":  "    [Header(\"Tournament\")]\r\n    public TournamentLobbyManager tournamentLobbyManager;"
+                                                              },
+                                                              {
+                                                                  "module":  "tournament",
+                                                                  "indent":  "        ",
+                                                                  "body":  "        tournamentLobbyManager?.Off();"
+                                                              },
+                                                              {
+                                                                  "module":  "ranked",
+                                                                  "indent":  "        ",
+                                                                  "body":  "        if (lobbyManager_RankedMatch != null)\r\n        {\r\n            lobbyManager_RankedMatch.OffLobby();\r\n        }"
+                                                              }
+                                                          ],
+                  "Assets/Scripts/Script/GManager.cs":  [
+                                                            {
+                                                                "module":  "chat",
+                                                                "indent":  "    ",
+                                                                "body":  "    [Header(\"バトルチャット\")]\r\n    public BattleChatPanel battleChat;"
+                                                            },
+                                                            {
+                                                                "module":  "chat",
+                                                                "indent":  "        ",
+                                                                "body":  "        EnsureBattleChat();"
+                                                            },
+                                                            {
+                                                                "module":  "chat",
+                                                                "indent":  "    ",
+                                                                "body":  "    void EnsureBattleChat()\r\n    {\r\n        bool enableChat = ContinuousController.instance != null\r\n            \u0026\u0026 !ContinuousController.instance.isAI\r\n            \u0026\u0026 !IsAI\r\n            \u0026\u0026 PhotonNetwork.InRoom;\r\n\r\n        if (!enableChat)\r\n        {\r\n            if (battleChat != null)\r\n            {\r\n                battleChat.Clear();\r\n                battleChat.OffChat(playSe: false);\r\n                battleChat.gameObject.SetActive(false);\r\n            }\r\n            return;\r\n        }\r\n\r\n        if (battleChat == null)\r\n        {\r\n            BattleChatPanel prefab = Resources.Load\u003cBattleChatPanel\u003e(\"BattleChatPanel\");\r\n            if (prefab != null \u0026\u0026 canvas != null)\r\n            {\r\n                battleChat = Instantiate(prefab, canvas.transform);\r\n            }\r\n            else if (canvas != null)\r\n            {\r\n                GameObject go = new GameObject(\"BattleChatPanel\", typeof(RectTransform));\r\n                go.layer = 5;\r\n                go.transform.SetParent(canvas.transform, false);\r\n                battleChat = go.AddComponent\u003cBattleChatPanel\u003e();\r\n            }\r\n        }\r\n\r\n        if (battleChat != null)\r\n            battleChat.Init();\r\n    }"
+                                                            },
+                                                            {
+                                                                "module":  "reconnect",
+                                                                "indent":  "            ",
+                                                                "body":  "            var reconnect = BattleReconnectService.Instance;\r\n            bool reconnecting = reconnect != null \u0026\u0026 reconnect.IsReconnecting;\r\n\r\n            if (!PhotonNetwork.IsConnected || !PhotonNetwork.InRoom)\r\n            {\r\n                if (reconnecting)\r\n                {\r\n                    yield return null;\r\n                    continue;\r\n                }\r\n\r\n                break;\r\n            }\r\n\r\n            if (PhotonNetwork.CurrentRoom != null \u0026\u0026 BattleReconnectService.CountActivePlayers() \u003c 2)\r\n            {\r\n                if (BattleReconnectService.HasInactiveOpponent())\r\n                {\r\n                    reconnect?.EnsureHoldForOpponent();\r\n                    yield return null;\r\n                    continue;\r\n                }\r\n\r\n                if (reconnecting)\r\n                {\r\n                    yield return null;\r\n                    continue;\r\n                }\r\n\r\n                break;\r\n            }"
+                                                            },
+                                                            {
+                                                                "module":  "reconnect",
+                                                                "indent":  "            ",
+                                                                "body":  "            BattleReconnectService.Instance?.ReleaseBattleHold();\r\n            bool weDisconnected = !PhotonNetwork.IsConnected || !PhotonNetwork.InRoom;\r\n            turnStateMachine.EndGame(weDisconnected ? null : You, false);"
+                                                            },
+                                                            {
+                                                                "module":  "ranked",
+                                                                "indent":  "                ",
+                                                                "body":  "                \u0026\u0026 !ContinuousController.instance.isRanked"
+                                                            },
+                                                            {
+                                                                "module":  "tournament",
+                                                                "indent":  "                ",
+                                                                "body":  "                \u0026\u0026 !ContinuousController.instance.isTournament"
+                                                            }
+                                                        ],
+                  "Assets/Scripts/Script/Player.cs":  [
+                                                          {
+                                                              "module":  "ranked",
+                                                              "indent":  "    ",
+                                                              "body":  "    /// \u003csummary\u003eMMR shown on the battle name plate (ranked only).\u003c/summary\u003e\r\n    public int BattleDisplayedMmr { get; set; } = RankedRating.DefaultMmr;"
+                                                          }
+                                                      ],
+                  "Assets/Scripts/Script/PlayerInfo.cs":  [
+                                                              {
+                                                                  "module":  "ranked",
+                                                                  "indent":  "    ",
+                                                                  "body":  "    [Header(\"Ranked (optional – created at runtime if missing)\")]\r\n    public Text RankedStatusText;"
+                                                              },
+                                                              {
+                                                                  "module":  "ranked",
+                                                                  "indent":  "        ",
+                                                                  "body":  "        EnsureRankStatusTextVisible();\r\n        LayoutRankStatusText();\r\n        RefreshRankedStatus();\r\n        LoadRankedProfileAsync();"
+                                                              },
+                                                              {
+                                                                  "module":  "ranked",
+                                                                  "indent":  "    ",
+                                                                  "body":  "    /// \u003csummary\u003e\r\n    /// Home \"WinCount\" is inactive in Opening, so rank uses a dedicated Text under PlayerInfo.\r\n    /// \u003c/summary\u003e\r\n    void EnsureRankStatusTextVisible()\r\n    {\r\n        if (RankedStatusText != null)\r\n        {\r\n            RankedStatusText.gameObject.SetActive(true);\r\n            ApplyRankTextStyle(RankedStatusText);\r\n            return;\r\n        }\r\n\r\n        var go = new GameObject(\"RankedStatusText\", typeof(RectTransform));\r\n        go.layer = gameObject.layer;\r\n        var text = go.AddComponent\u003cText\u003e();\r\n        ApplyRankTextStyle(text);\r\n        text.raycastTarget = false;\r\n        RankedStatusText = text;\r\n        LayoutRankStatusText();\r\n    }\r\n\r\n    /// \u003csummary\u003e\r\n    /// Place rank directly under the nick InputField (PlayerName bar).\r\n    /// \u003c/summary\u003e\r\n    void LayoutRankStatusText()\r\n    {\r\n        if (RankedStatusText == null)\r\n        {\r\n            return;\r\n        }\r\n\r\n        var rt = RankedStatusText.GetComponent\u003cRectTransform\u003e();\r\n        if (rt == null)\r\n        {\r\n            return;\r\n        }\r\n\r\n        ApplyRankTextStyle(RankedStatusText);\r\n\r\n        RectTransform nameRt = PlayerNameInputField != null\r\n            ? PlayerNameInputField.GetComponent\u003cRectTransform\u003e()\r\n            : null;\r\n\r\n        rt.localRotation = Quaternion.identity;\r\n        rt.localScale = Vector3.one;\r\n\r\n        if (nameRt != null)\r\n        {\r\n            // Child of the nick field so y=0 is the bar bottom — no world-corner math.\r\n            if (rt.parent != nameRt)\r\n            {\r\n                rt.SetParent(nameRt, false);\r\n            }\r\n\r\n            rt.anchorMin = new Vector2(0f, 0f);\r\n            rt.anchorMax = new Vector2(0f, 0f);\r\n            rt.pivot = new Vector2(0f, 1f);\r\n            // A few units under the bottom-left of the name/nick input\r\n            rt.anchoredPosition = new Vector2(12f, -10f);\r\n            rt.sizeDelta = new Vector2(Mathf.Max(700f, nameRt.rect.width \u003e 1f ? nameRt.rect.width + 80f : 800f), 52f);\r\n        }\r\n        else\r\n        {\r\n            if (rt.parent != transform)\r\n            {\r\n                rt.SetParent(transform, false);\r\n            }\r\n\r\n            rt.anchorMin = new Vector2(0.5f, 0.5f);\r\n            rt.anchorMax = new Vector2(0.5f, 0.5f);\r\n            rt.pivot = new Vector2(0f, 1f);\r\n            rt.anchoredPosition = new Vector2(-80f, -55f);\r\n            rt.sizeDelta = new Vector2(720f, 52f);\r\n        }\r\n    }\r\n\r\n    void ApplyRankTextStyle(Text text)\r\n    {\r\n        if (text == null)\r\n        {\r\n            return;\r\n        }\r\n\r\n        Text sample = null;\r\n        if (PlayerNameInputField != null \u0026\u0026 PlayerNameInputField.textComponent != null)\r\n        {\r\n            sample = PlayerNameInputField.textComponent;\r\n        }\r\n        else if (WinCountText != null)\r\n        {\r\n            sample = WinCountText;\r\n        }\r\n\r\n        if (sample != null \u0026\u0026 sample.font != null)\r\n        {\r\n            text.font = sample.font;\r\n            text.material = sample.material;\r\n        }\r\n        else\r\n        {\r\n            text.font = Resources.GetBuiltinResource\u003cFont\u003e(\"Arial.ttf\");\r\n        }\r\n\r\n        text.color = Color.white;\r\n        // Match nick field text scale (name text component is often ~40)\r\n        int size = 36;\r\n        if (sample != null \u0026\u0026 sample.fontSize \u003e 0 \u0026\u0026 sample.fontSize \u003c= 80)\r\n        {\r\n            size = Mathf.Clamp(sample.fontSize, 28, 44);\r\n        }\r\n\r\n        text.fontSize = size;\r\n        text.fontStyle = FontStyle.Bold;\r\n        text.alignment = TextAnchor.UpperLeft;\r\n        text.horizontalOverflow = HorizontalWrapMode.Overflow;\r\n        text.verticalOverflow = VerticalWrapMode.Overflow;\r\n        text.resizeTextForBestFit = false;\r\n        text.lineSpacing = 1f;\r\n    }\r\n\r\n    public void RefreshRankedStatus()\r\n    {\r\n        EnsureRankStatusTextVisible();\r\n        LayoutRankStatusText();\r\n\r\n        var ranked = RankedServices.Instance;\r\n        var profile = ranked != null \u0026\u0026 ranked.Auth != null \u0026\u0026 ranked.Auth.IsLoggedIn\r\n            ? ranked.Profile?.Cached\r\n            : null;\r\n\r\n        if (profile != null)\r\n        {\r\n            if (RankedStatusText != null)\r\n            {\r\n                RankedStatusText.gameObject.SetActive(true);\r\n                RankedStatusText.text = profile.FormatStatusLine();\r\n            }\r\n\r\n            return;\r\n        }\r\n\r\n        if (RankedStatusText != null)\r\n        {\r\n            RankedStatusText.text = LocalizeUtility.GetLocalizedString(\r\n                EngMessage: \"Ranked: …\",\r\n                JpnMessage: \"ランク: …\");\r\n        }\r\n    }\r\n\r\n    public void LoadRankedProfileAsync()\r\n    {\r\n        if (ContinuousController.instance != null)\r\n        {\r\n            ContinuousController.instance.StartCoroutine(LoadRankedProfileCoroutine());\r\n        }\r\n    }\r\n\r\n    IEnumerator LoadRankedProfileCoroutine()\r\n    {\r\n        yield return RankedServices.EnsureExists().BootstrapForRanked();\r\n        // Layout again after canvas settles\r\n        yield return null;\r\n        RefreshRankedStatus();\r\n    }"
+                                                              }
+                                                          ],
+                  "Assets/Scripts/Script/ResultObject.cs":  [
+                                                                {
+                                                                    "module":  "chat",
+                                                                    "indent":  "            ",
+                                                                    "body":  "            GManager.instance.battleChat.OffChat(playSe: false);"
+                                                                },
+                                                                {
+                                                                    "module":  "ranked",
+                                                                    "indent":  "        ",
+                                                                    "body":  "        bool isRanked = ContinuousController.instance != null \u0026\u0026 ContinuousController.instance.isRanked;"
+                                                                },
+                                                                {
+                                                                    "module":  "tournament",
+                                                                    "indent":  "        ",
+                                                                    "body":  "        bool isTournament = ContinuousController.instance != null \u0026\u0026 ContinuousController.instance.isTournament;"
+                                                                },
+                                                                {
+                                                                    "module":  "ranked",
+                                                                    "indent":  "        ",
+                                                                    "body":  "        if (isRanked \u0026\u0026 !GManager.instance.IsAI \u0026\u0026 !skipRankedReport)\r\n        {\r\n            // Capture battle-scene state now — ReportRankedOutcome outlives BattleScene unload\r\n            bool localWon = Winner == GManager.instance.You;\r\n            bool disconnect = Winner == null;\r\n            var ranked = RankedServices.EnsureExists();\r\n            ranked.StartCoroutine(ReportRankedOutcome(localWon, disconnect, Surrendered));\r\n        }"
+                                                                },
+                                                                {
+                                                                    "module":  "tournament",
+                                                                    "indent":  "        ",
+                                                                    "body":  "        if (isTournament \u0026\u0026 !GManager.instance.IsAI)\r\n        {\r\n            bool? localWon = null;\r\n            if (Winner == GManager.instance.You)\r\n            {\r\n                localWon = true;\r\n            }\r\n            else if (Winner != null)\r\n            {\r\n                localWon = false;\r\n            }\r\n\r\n            bool disconnect = Winner == null \u0026\u0026 !skipRankedReport;\r\n            bool draw = Winner == null \u0026\u0026 skipRankedReport;\r\n            var match = TournamentServices.EnsureExists().Match;\r\n            match.NotifyGameEnded(localWon, disconnect, draw);\r\n\r\n            string seriesLine = match.FormatSeriesStatusLine();\r\n            if (!string.IsNullOrEmpty(seriesLine))\r\n            {\r\n                if (string.IsNullOrEmpty(ResultText.text))\r\n                {\r\n                    ResultText.text = seriesLine;\r\n                }\r\n                else\r\n                {\r\n                    ResultText.text += \"\\n\" + seriesLine;\r\n                }\r\n            }\r\n\r\n            TournamentServices.EnsureExists().Match.BeginAutoAdvanceFromResult();\r\n            RelabelTournamentReturnButton(match.ShouldReloadNextGame);\r\n        }"
+                                                                },
+                                                                {
+                                                                    "module":  "tournament",
+                                                                    "indent":  "    ",
+                                                                    "body":  "    static void RelabelTournamentReturnButton(bool nextGame)\r\n    {\r\n        if (GManager.instance == null || GManager.instance.resultObject == null)\r\n        {\r\n            return;\r\n        }\r\n\r\n        var buttons = GManager.instance.resultObject.GetComponentsInChildren\u003cButton\u003e(true);\r\n        for (int i = 0; i \u003c buttons.Length; i++)\r\n        {\r\n            if (buttons[i] == null)\r\n            {\r\n                continue;\r\n            }\r\n\r\n            var label = buttons[i].GetComponentInChildren\u003cText\u003e(true);\r\n            string current = label != null ? label.text ?? \"\" : \"\";\r\n            bool isReturn = buttons[i].name.IndexOf(\"Return\", StringComparison.OrdinalIgnoreCase) \u003e= 0 ||\r\n                            buttons[i].name.IndexOf(\"Title\", StringComparison.OrdinalIgnoreCase) \u003e= 0 ||\r\n                            current.IndexOf(\"title\", StringComparison.OrdinalIgnoreCase) \u003e= 0 ||\r\n                            current.IndexOf(\"タイトル\", StringComparison.OrdinalIgnoreCase) \u003e= 0;\r\n            if (!isReturn)\r\n            {\r\n                continue;\r\n            }\r\n\r\n            buttons[i].interactable = false;\r\n\r\n            if (label == null)\r\n            {\r\n                continue;\r\n            }\r\n\r\n            label.text = nextGame\r\n                ? LocalizeUtility.GetLocalizedString(\r\n                    EngMessage: \"Next game starting...\",\r\n                    JpnMessage: \"次のゲームを開始します…\")\r\n                : LocalizeUtility.GetLocalizedString(\r\n                    EngMessage: \"Returning...\",\r\n                    JpnMessage: \"戻っています…\");\r\n        }\r\n    }"
+                                                                },
+                                                                {
+                                                                    "module":  "ranked",
+                                                                    "indent":  "    ",
+                                                                    "body":  "    IEnumerator ReportRankedOutcome(bool localWon, bool disconnect, bool surrendered)\r\n    {\r\n        var ranked = RankedServices.EnsureExists();\r\n\r\n        // Re-login if session was lost mid-match\r\n        if (ranked.Auth == null || !ranked.Auth.IsLoggedIn ||\r\n            (!ranked.Auth.IsOfflineMode \u0026\u0026 !PlayFabClientApi.IsLoggedIn))\r\n        {\r\n            bool ok = false;\r\n            yield return ranked.BootstrapForRanked((success, err) =\u003e\r\n            {\r\n                ok = success;\r\n                if (!success) Debug.LogWarning($\"[Ranked] Re-login before report failed: {err}\");\r\n            });\r\n            if (!ok)\r\n            {\r\n                AppendRankedText(\"\\nRank update failed: not signed in to PlayFab\");\r\n                yield break;\r\n            }\r\n        }\r\n\r\n        if (disconnect)\r\n        {\r\n            if (PhotonNetwork.IsConnected \u0026\u0026 PhotonNetwork.PlayerList.Length \u003c 2)\r\n            {\r\n                localWon = true;\r\n            }\r\n            else if (!PhotonNetwork.IsConnected)\r\n            {\r\n                localWon = false;\r\n            }\r\n            else\r\n            {\r\n                AppendRankedText(\"\\nRank unchanged\");\r\n                yield break;\r\n            }\r\n        }\r\n\r\n        // Resolve opponent id late (props may arrive mid-match)\r\n        if (string.IsNullOrEmpty(ranked.Match.OpponentPlayFabId) ||\r\n            ranked.Match.OpponentPlayFabId == \"unknown\")\r\n        {\r\n            foreach (var p in PhotonNetwork.PlayerList)\r\n            {\r\n                if (p.IsLocal) continue;\r\n                if (p.CustomProperties.TryGetValue(RankedKeys.PlayFabIdProperty, out object idObj) \u0026\u0026\r\n                    idObj is string id \u0026\u0026 !string.IsNullOrEmpty(id))\r\n                {\r\n                    int mmr = RankedRating.DefaultMmr;\r\n                    if (p.CustomProperties.TryGetValue(RankedKeys.MmrProperty, out object mmrObj))\r\n                    {\r\n                        mmr = Convert.ToInt32(mmrObj);\r\n                    }\r\n\r\n                    ranked.Match.EnsureActiveMatch(\r\n                        ranked.Match.ActiveMatchId ?? Guid.NewGuid().ToString(\"N\"),\r\n                        id,\r\n                        mmr);\r\n                    break;\r\n                }\r\n            }\r\n        }\r\n\r\n        if (string.IsNullOrEmpty(ranked.Match.ActiveMatchId))\r\n        {\r\n            string matchId = null;\r\n            if (PhotonNetwork.InRoom \u0026\u0026 PhotonNetwork.CurrentRoom != null \u0026\u0026\r\n                PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(RankedKeys.MatchIdProperty, out object mid))\r\n            {\r\n                matchId = mid as string;\r\n            }\r\n\r\n            if (string.IsNullOrEmpty(matchId))\r\n            {\r\n                matchId = Guid.NewGuid().ToString(\"N\");\r\n            }\r\n\r\n            ranked.Match.EnsureActiveMatch(\r\n                matchId,\r\n                ranked.Match.OpponentPlayFabId ?? \"unknown\",\r\n                ranked.Match.OpponentMmr);\r\n        }\r\n\r\n        Debug.Log(\r\n            $\"[Ranked] Reporting matchId={ranked.Match.ActiveMatchId} \" +\r\n            $\"self={ranked.Auth.PlayFabId} opp={ranked.Match.OpponentPlayFabId} \" +\r\n            $\"won={localWon} offline={ranked.Auth.IsOfflineMode}\");\r\n\r\n        RankedMatchReportResult report = null;\r\n        yield return ranked.Match.ReportResult(\r\n            ranked.Auth,\r\n            ranked.Profile,\r\n            localWon,\r\n            surrendered,\r\n            disconnect,\r\n            r =\u003e report = r);\r\n\r\n        if (report == null || !report.success)\r\n        {\r\n            AppendRankedText($\"\\nRank update failed: {report?.errorMessage ?? \"unknown\"}\");\r\n            Debug.LogWarning($\"[Ranked] Report failed: {report?.errorMessage}\");\r\n            yield break;\r\n        }\r\n\r\n        if (report.pendingOpponent)\r\n        {\r\n            AppendRankedText(\"\\nWaiting for opponent rank confirmation...\");\r\n            yield break;\r\n        }\r\n\r\n        string delta = report.mmrDelta \u003e= 0 ? $\"+{report.mmrDelta}\" : report.mmrDelta.ToString();\r\n        string tier = string.IsNullOrEmpty(report.tierName)\r\n            ? RankedRating.GetTierName(report.mmr)\r\n            : report.tierName;\r\n        AppendRankedText($\"\\n{tier} {report.mmr} ({delta} MMR)\");\r\n        if (ranked.Auth != null \u0026\u0026 ranked.Auth.IsOfflineMode)\r\n        {\r\n            AppendRankedText(\"\\nOffline rank\");\r\n        }\r\n\r\n        Debug.Log($\"[Ranked] Stats updated: {tier} {report.mmr} ({delta}) W{report.wins}/L{report.losses} offline={ranked.Auth?.IsOfflineMode}\");\r\n    }\r\n\r\n    void AppendRankedText(string extra)\r\n    {\r\n        // Report runs on RankedServices and may finish after BattleScene unload destroyed this UI\r\n        if (!this || !ResultText)\r\n        {\r\n            return;\r\n        }\r\n\r\n        if (string.IsNullOrEmpty(ResultText.text))\r\n        {\r\n            ResultText.text = extra.TrimStart(\u0027\\n\u0027);\r\n        }\r\n        else\r\n        {\r\n            ResultText.text += extra;\r\n        }\r\n    }"
+                                                                }
+                                                            ],
+                  "Assets/Scripts/Script/SelectBattleDeck.cs":  [
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        ContinuousController.instance.isRanked = false;"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "    ",
+                                                                        "body":  "    public void OnClickSelectButton_RankedMatch()\r\n    {\r\n        if (_once || deckInfoPanel.ShowingDeckData == null)\r\n        {\r\n            return;\r\n        }\r\n\r\n        ContinuousController.instance.StartCoroutine(SetOnce());\r\n\r\n        ContinuousController.instance.BattleDeckData = deckInfoPanel.ShowingDeckData;\r\n        ContinuousController.instance.isRanked = true;\r\n        ContinuousController.instance.isRandomMatch = false;\r\n        ContinuousController.instance.isAI = false;\r\n        ContinuousController.instance.useBanlist = true;\r\n\r\n        var rankedLobby = Opening.instance.battle.lobbyManager_RankedMatch;\r\n        if (rankedLobby == null)\r\n        {\r\n            // Auto-create ranked lobby component if not wired in the scene yet\r\n            rankedLobby = Opening.instance.battle.gameObject.GetComponent\u003cLobbyManager_RankedMatch\u003e();\r\n            if (rankedLobby == null)\r\n            {\r\n                rankedLobby = Opening.instance.battle.gameObject.AddComponent\u003cLobbyManager_RankedMatch\u003e();\r\n            }\r\n\r\n            Opening.instance.battle.lobbyManager_RankedMatch = rankedLobby;\r\n        }\r\n\r\n        rankedLobby.SetUpLobby();\r\n    }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        ContinuousController.instance.isRanked = false;"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        if (ContinuousController.instance != null \u0026\u0026 ContinuousController.instance.isTournamentStarted)\r\n        {\r\n            return;\r\n        }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        else if (ContinuousController.instance.isRanked)\r\n        {\r\n            message = LocalizeUtility.GetLocalizedString(\r\n                EngMessage: \"Select Your Deck - Ranked Match\",\r\n                JpnMessage: \"使用デッキ選択 - ランクマッチ\"\r\n                );\r\n\r\n            var profile = RankedServices.Instance != null ? RankedServices.Instance.Profile?.Cached : null;\r\n            if (profile != null)\r\n            {\r\n                message = $\"{message}\\n{profile.FormatStatusLine()}\";\r\n            }\r\n            else\r\n            {\r\n                ContinuousController.instance.StartCoroutine(AppendRankToDeckTitleWhenReady(message));\r\n            }\r\n        }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        else if (ContinuousController.instance.isTournament)\r\n        {\r\n            message = LocalizeUtility.GetLocalizedString(\r\n                EngMessage: \"Select Your Deck - Tournament (locked after start)\",\r\n                JpnMessage: \"使用デッキ選択 - トーナメント（開始後は変更不可）\"\r\n                );\r\n        }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "    ",
+                                                                        "body":  "    IEnumerator AppendRankToDeckTitleWhenReady(string baseMessage)\r\n    {\r\n        yield return RankedServices.EnsureExists().BootstrapForRanked();\r\n        var profile = RankedServices.Instance != null ? RankedServices.Instance.Profile?.Cached : null;\r\n        if (TitleText != null \u0026\u0026 profile != null \u0026\u0026 ContinuousController.instance != null \u0026\u0026\r\n            ContinuousController.instance.isRanked)\r\n        {\r\n            TitleText.text = $\"{baseMessage}\\n{profile.FormatStatusLine()}\";\r\n        }\r\n    }"
+                                                                    }
+                                                                ],
+                  "Assets/Scripts/Script/SelectBattleMode.cs":  [
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        enterRoom.JoinTournament = false;"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        Opening.instance.battle.lobbyManager_RandomMatch?.OffLobby();\r\n        Opening.instance.battle.lobbyManager_RankedMatch?.OffLobby();\r\n        ContinuousController.instance.isRanked = false;"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        Opening.instance.battle.tournamentLobbyManager?.Off();\r\n        ContinuousController.instance.ClearTournament();"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "                    ",
+                                                                        "body":  "                    StartSelectBattleDeck(isAI: false, isRanked: true);"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "                    ",
+                                                                        "body":  "                    StartSelectTournament();"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "                ",
+                                                                        "body":  "                LocalizeUtility.GetLocalizedString(\r\n                    EngMessage:\"Ranked Match\",\r\n                    JpnMessage:\"ランクマッチ\"\r\n                ),"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "                ",
+                                                                        "body":  "                LocalizeUtility.GetLocalizedString(\r\n                    EngMessage:\"Tournament\",\r\n                    JpnMessage:\"トーナメント\"\r\n                ),"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        ContinuousController.instance.StartCoroutine(ShowRankOnBattleModeSelect(baseInfo));"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "    ",
+                                                                        "body":  "    IEnumerator ShowRankOnBattleModeSelect(string baseInfo)\r\n    {\r\n        yield return RankedServices.EnsureExists().BootstrapForRanked();\r\n\r\n        var profile = RankedServices.Instance != null ? RankedServices.Instance.Profile.Cached : null;\r\n        string rankLine = profile != null\r\n            ? profile.FormatStatusLine()\r\n            : LocalizeUtility.GetLocalizedString(\r\n                EngMessage: \"Ranked: —\",\r\n                JpnMessage: \"ランク: —\");\r\n\r\n        if (selectBattleModeWindow != null \u0026\u0026 selectBattleModeWindow.InfoText != null)\r\n        {\r\n            selectBattleModeWindow.InfoText.text = $\"{baseInfo}\\n{rankLine}\";\r\n        }\r\n\r\n        // Append short tier/MMR under the Ranked Match button label (index 1).\r\n        if (selectBattleModeWindow != null \u0026\u0026\r\n            selectBattleModeWindow.Buttons != null \u0026\u0026\r\n            selectBattleModeWindow.Buttons.Count \u003e 1 \u0026\u0026\r\n            profile != null)\r\n        {\r\n            var label = selectBattleModeWindow.Buttons[1].transform.GetChild(0).GetComponent\u003cText\u003e();\r\n            if (label != null)\r\n            {\r\n                string modeName = LocalizeUtility.GetLocalizedString(\r\n                    EngMessage: \"Ranked Match\",\r\n                    JpnMessage: \"ランクマッチ\");\r\n                label.text = $\"{modeName}\\n{profile.FormatShort()}\";\r\n            }\r\n        }\r\n    }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        ContinuousController.instance.isRanked = isRanked \u0026\u0026 !isAI;\r\n        ContinuousController.instance.isRandomMatch = !isAI \u0026\u0026 !isRanked;"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        ContinuousController.instance.isTournament = false;"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "            ",
+                                                                        "body":  "            ContinuousController.instance.useBanlist = true;"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "            ",
+                                                                        "body":  "            Opening.instance.battle.selectBattleDeck.SetUpSelectBattleDeck(Opening.instance.battle.selectBattleDeck.OnClickSelectButton_RankedMatch, 0);"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        ContinuousController.instance.isRanked = false;"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        ContinuousController.instance.isTournament = false;"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        enterRoom.JoinTournament = false;"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        enterRoom.JoinTournament = false;"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "    ",
+                                                                        "body":  "    public void StartSelectTournament()\r\n    {\r\n        Opening.instance.OffYesNoObjects();\r\n\r\n        Opening.instance.deck.trialDraw.Close();\r\n\r\n        Opening.instance.deck.deckListPanel.Close();\r\n\r\n        Opening.instance.battle.selectBattleDeck.Off();\r\n        ContinuousController.instance.isAI = false;\r\n        ContinuousController.instance.isRanked = false;\r\n        ContinuousController.instance.isRandomMatch = false;\r\n        ContinuousController.instance.isTournament = true;\r\n\r\n        List\u003cUnityAction\u003e Commands = new List\u003cUnityAction\u003e()\r\n            {\r\n                () =\u003e\r\n                {\r\n                    StartSelectTournamentSize();\r\n                },\r\n\r\n                () =\u003e\r\n                {\r\n                    StartEnterTournamentID();\r\n                },\r\n            };\r\n\r\n        List\u003cstring\u003e CommandTexts = new List\u003cstring\u003e()\r\n            {\r\n                LocalizeUtility.GetLocalizedString(\r\n                    EngMessage:\"Create Tournament\",\r\n                    JpnMessage:\"トーナメント作成\"\r\n                ),\r\n                LocalizeUtility.GetLocalizedString(\r\n                    EngMessage:\"Join Tournament\",\r\n                    JpnMessage:\"トーナメントに入る\"\r\n                ),\r\n            };\r\n\r\n        selectRoomMatchWindow.SetUpYesNoObject(\r\n            Commands,\r\n            CommandTexts,\r\n            LocalizeUtility.GetLocalizedString(\r\n                    EngMessage: \"Create a 4 / 8 / 16 player tournament or join with a room ID. Host can start early — empty seats become byes.\",\r\n                    JpnMessage: \"4 / 8 / 16人トーナメントを作成するか、ルームIDで参加。人数が足りなくても開始でき、空き枠はBYEになります\"\r\n                ),\r\n            true);\r\n    }\r\n\r\n    void StartSelectTournamentSize()\r\n    {\r\n        Opening.instance.OffYesNoObjects();\r\n\r\n        Opening.instance.deck.trialDraw.Close();\r\n\r\n        Opening.instance.deck.deckListPanel.Close();\r\n\r\n        List\u003cUnityAction\u003e Commands = new List\u003cUnityAction\u003e();\r\n        List\u003cstring\u003e CommandTexts = new List\u003cstring\u003e();\r\n\r\n        foreach (int size in TournamentKeys.AllowedPlayerCounts)\r\n        {\r\n            int captured = size;\r\n            Commands.Add(() =\u003e StartCreateTournament(captured));\r\n            CommandTexts.Add(LocalizeUtility.GetLocalizedString(\r\n                EngMessage: $\"{captured} Players\",\r\n                JpnMessage: $\"{captured}人\"));\r\n        }\r\n\r\n        selectRoomMatchWindow.SetUpYesNoObject(\r\n            Commands,\r\n            CommandTexts,\r\n            LocalizeUtility.GetLocalizedString(\r\n                EngMessage: \"Choose tournament size (Best of 3, single elimination). Fewer players → byes.\",\r\n                JpnMessage: \"トーナメント人数を選んでください（3本先取・シングルエリミネーション）。不足分はBYE。\"),\r\n            true);\r\n    }\r\n\r\n    void StartCreateTournament(int playerCount)\r\n    {\r\n        HideOverlayDialogs();\r\n        TournamentKeys.ActivePlayerCount = playerCount;\r\n        TournamentLobbyManager.EnsureExists().SetUpLobby(createNew: true);\r\n    }\r\n\r\n    void StartEnterTournamentID()\r\n    {\r\n        HideOverlayDialogs();\r\n\r\n        Opening.instance.deck.trialDraw.Close();\r\n\r\n        Opening.instance.deck.deckListPanel.Close();\r\n\r\n        enterRoom.JoinTournament = true;\r\n        enterRoom.SetUpEnterRoom();\r\n    }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        enterRoom.JoinTournament = false;"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        enterRoom.JoinTournament = false;"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        if (ContinuousController.instance.isTournament \u0026\u0026 !PhotonNetwork.InRoom)\r\n        {\r\n            ContinuousController.instance.ClearTournament();\r\n        }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        enterRoom.JoinTournament = false;"
+                                                                    }
+                                                                ],
+                  "Assets/Scripts/Script/TurnStateMachine.cs":  [
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        if (ContinuousController.instance != null \u0026\u0026 ContinuousController.instance.isRanked)\r\n        {\r\n            StartCoroutine(RefreshRankedNamePlatesLater(MasterPlayer, nonMasterPlayer));\r\n        }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        int ResolvePhotonMmr(Photon.Realtime.Player photonPlayer, bool isLocalGamePlayer)\r\n        {\r\n            if (photonPlayer != null \u0026\u0026\r\n                photonPlayer.CustomProperties != null \u0026\u0026\r\n                photonPlayer.CustomProperties.TryGetValue(RankedKeys.MmrProperty, out object mmrObj) \u0026\u0026\r\n                mmrObj != null)\r\n            {\r\n                try\r\n                {\r\n                    return Convert.ToInt32(mmrObj);\r\n                }\r\n                catch\r\n                {\r\n                    // fall through\r\n                }\r\n            }\r\n\r\n            if (isLocalGamePlayer \u0026\u0026\r\n                RankedServices.Instance != null \u0026\u0026\r\n                RankedServices.Instance.Profile != null \u0026\u0026\r\n                RankedServices.Instance.Profile.Cached != null)\r\n            {\r\n                return RankedServices.Instance.Profile.Cached.mmr;\r\n            }\r\n\r\n            return RankedRating.DefaultMmr;\r\n        }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "            ",
+                                                                        "body":  "            if (ContinuousController.instance != null \u0026\u0026 ContinuousController.instance.isRanked)\r\n            {\r\n                int mmr = ResolvePhotonMmr(photonPlayer, player.isYou);\r\n                player.BattleDisplayedMmr = mmr;\r\n                display = $\"{display}  {RankedRating.FormatBesideName(mmr)}\";\r\n\r\n                // Fit \"Name  Silver 1056\" in the name bar\r\n                player.PlayerNameText.enableAutoSizing = true;\r\n                player.PlayerNameText.fontSizeMin = 14f;\r\n                if (player.PlayerNameText.fontSize \u003e 1f)\r\n                {\r\n                    player.PlayerNameText.fontSizeMax = player.PlayerNameText.fontSize;\r\n                }\r\n                else\r\n                {\r\n                    player.PlayerNameText.fontSizeMax = 36f;\r\n                }\r\n            }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        IEnumerator RefreshRankedNamePlatesLater(\r\n            Photon.Realtime.Player masterPhoton,\r\n            Photon.Realtime.Player nonMasterPhoton)\r\n        {\r\n            // Props can arrive shortly after room enter — re-apply once after a short wait.\r\n            const float totalWait = 1.5f;\r\n            const float step = 0.25f;\r\n            float waited = 0f;\r\n\r\n            while (waited \u003c totalWait)\r\n            {\r\n                yield return new WaitForSeconds(step);\r\n                waited += step;\r\n\r\n                bool bothHaveMmr =\r\n                    (masterPhoton == null || PhotonHasMmr(masterPhoton)) \u0026\u0026\r\n                    (nonMasterPhoton == null || PhotonHasMmr(nonMasterPhoton));\r\n\r\n                if (bothHaveMmr)\r\n                {\r\n                    break;\r\n                }\r\n            }\r\n\r\n            ApplyPlayerNamePlate(0, masterPhoton);\r\n            ApplyPlayerNamePlate(1, nonMasterPhoton);\r\n        }\r\n\r\n        bool PhotonHasMmr(Photon.Realtime.Player photonPlayer)\r\n        {\r\n            return photonPlayer != null \u0026\u0026\r\n                   photonPlayer.CustomProperties != null \u0026\u0026\r\n                   photonPlayer.CustomProperties.ContainsKey(RankedKeys.MmrProperty);\r\n        }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        string localId = TournamentState.EnsureLocalPlayerId();\r\n        var cc = ContinuousController.instance;\r\n        var match = cc != null \u0026\u0026 cc.isTournament \u0026\u0026 cc.TournamentState != null\r\n            ? cc.TournamentState.FindActiveMatchFor(localId)\r\n            : null;\r\n        bool rematch = match != null \u0026\u0026 match.gameIndex \u003e 0;\r\n\r\n        if (rematch)\r\n        {\r\n            string loserId = match.lastGameLoserUserId;\r\n            float waited = 0f;\r\n            while (string.IsNullOrEmpty(loserId) \u0026\u0026 waited \u003c 4f)\r\n            {\r\n                if (PhotonNetwork.InRoom \u0026\u0026\r\n                    PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(TournamentKeys.LastLoserProperty, out object loserObj) \u0026\u0026\r\n                    loserObj is string roomLoser \u0026\u0026\r\n                    !string.IsNullOrEmpty(roomLoser))\r\n                {\r\n                    loserId = roomLoser;\r\n                    match.lastGameLoserUserId = roomLoser;\r\n                    break;\r\n                }\r\n\r\n                waited += Time.unscaledDeltaTime;\r\n                yield return null;\r\n            }\r\n\r\n            if (!string.IsNullOrEmpty(loserId) \u0026\u0026 !TournamentKeys.IsBye(loserId))\r\n            {\r\n                bool localGoesFirst = loserId == localId;\r\n                gameContext.TurnPlayer = localGoesFirst ? gameContext.Opponent : gameContext.You;\r\n                Debug.Log($\"[Battle] Rematch first=loser {loserId} youAreFirst={localGoesFirst} room={PhotonNetwork.CurrentRoom?.Name}\");\r\n                yield break;\r\n            }\r\n        }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "tournament",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        // Do not wipe Photon room/player props mid-tournament — Bo3 rematch needs\r\n        // TourneyLockedDeck, TourneyPlayerId, and series room keys.\r\n        bool isTournament = ContinuousController.instance.isTournament;\r\n        if (PhotonNetwork.InRoom \u0026\u0026 !isTournament)\r\n        {\r\n            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable());\r\n        }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        if (!ContinuousController.instance.isRandomMatch \u0026\u0026\r\n            !ContinuousController.instance.isRanked \u0026\u0026\r\n            !ContinuousController.instance.isAI \u0026\u0026\r\n            !isTournament)\r\n        {\r\n            Debug.Log(\"Player property initialization\");\r\n            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable());\r\n        }"
+                                                                    },
+                                                                    {
+                                                                        "module":  "ranked",
+                                                                        "indent":  "        ",
+                                                                        "body":  "        // Do NOT StopAllCoroutines on ContinuousController while ranked/tournament\r\n        // teardown needs DontDestroyOnLoad hosts / EndBattle to keep working.\r\n        if (!ContinuousController.instance.isRanked \u0026\u0026 !ContinuousController.instance.isTournament)\r\n        {\r\n            ContinuousController.instance.StopAllCoroutines();\r\n        }"
+                                                                    }
+                                                                ],
+                  "Assets/Scripts/Script/LobbyManager_RandomMatch.cs":  [
+                                                                            {
+                                                                                "module":  "ranked",
+                                                                                "indent":  "        ",
+                                                                                "body":  "        ContinuousController.instance.isRanked = false;"
+                                                                            },
+                                                                            {
+                                                                                "module":  "reconnect",
+                                                                                "indent":  "            ",
+                                                                                "body":  "            PhotonUtility.LeaveRoomImmediate();"
+                                                                            },
+                                                                            {
+                                                                                "module":  "reconnect",
+                                                                                "indent":  "            ",
+                                                                                "body":  "            PhotonUtility.DisconnectImmediate();"
+                                                                            },
+                                                                            {
+                                                                                "module":  "ranked",
+                                                                                "indent":  "        ",
+                                                                                "body":  "        if (ContinuousController.instance != null \u0026\u0026 ContinuousController.instance.isRanked)\r\n        {\r\n            return;\r\n        }"
+                                                                            },
+                                                                            {
+                                                                                "module":  "ranked",
+                                                                                "indent":  "        ",
+                                                                                "body":  "        if (ContinuousController.instance != null \u0026\u0026 ContinuousController.instance.isRanked)\r\n        {\r\n            return;\r\n        }"
+                                                                            },
+                                                                            {
+                                                                                "module":  "ranked",
+                                                                                "indent":  "        ",
+                                                                                "body":  "        if (ContinuousController.instance != null \u0026\u0026 ContinuousController.instance.isRanked)\r\n        {\r\n            return;\r\n        }"
+                                                                            },
+                                                                            {
+                                                                                "module":  "reconnect",
+                                                                                "indent":  "        ",
+                                                                                "body":  "        BattleReconnectService.ApplyBattleTtl(roomOptions);"
+                                                                            },
+                                                                            {
+                                                                                "module":  "ranked",
+                                                                                "indent":  "        ",
+                                                                                "body":  "        if (ContinuousController.instance != null \u0026\u0026 ContinuousController.instance.isRanked)\r\n        {\r\n            return;\r\n        }"
+                                                                            },
+                                                                            {
+                                                                                "module":  "reconnect",
+                                                                                "indent":  "            ",
+                                                                                "body":  "            if (BattleReconnectService.CountActivePlayers() == PhotonNetwork.CurrentRoom.MaxPlayers)"
+                                                                            }
+                                                                        ],
+                  "Assets/Scripts/Script/EnterRoom.cs":  [
+                                                             {
+                                                                 "module":  "tournament",
+                                                                 "indent":  "    ",
+                                                                 "body":  "    [System.NonSerialized]\r\n    public bool JoinTournament;"
+                                                             },
+                                                             {
+                                                                 "module":  "tournament",
+                                                                 "indent":  "        ",
+                                                                 "body":  "        if (JoinTournament)\r\n        {\r\n            yield return JoinTournamentLobbyCoroutine(id);\r\n        }"
+                                                             },
+                                                             {
+                                                                 "module":  "tournament",
+                                                                 "indent":  "    ",
+                                                                 "body":  "    IEnumerator JoinTournamentLobbyCoroutine(string tourneyId)\r\n    {\r\n        bool preferBanlist = ContinuousController.instance.useBanlist;\r\n        string[] candidates = TournamentKeys.LobbyRoomNameJoinCandidates(tourneyId, preferBanlist);\r\n\r\n        for (int i = 0; i \u003c candidates.Length; i++)\r\n        {\r\n            string roomName = candidates[i];\r\n            if (string.IsNullOrEmpty(roomName))\r\n            {\r\n                continue;\r\n            }\r\n\r\n            if (!PhotonNetwork.IsConnectedAndReady)\r\n            {\r\n                yield break;\r\n            }\r\n\r\n            if (!PhotonNetwork.InLobby)\r\n            {\r\n                PhotonNetwork.JoinLobby();\r\n                yield return new WaitUntil(() =\u003e PhotonNetwork.InLobby \u0026\u0026 PhotonNetwork.IsConnectedAndReady);\r\n            }\r\n\r\n            _joinAttemptFailed = false;\r\n            Debug.Log($\"[Tournament] Join lobby attempt: {roomName}\");\r\n            PhotonNetwork.JoinRoom(roomName);\r\n\r\n            float t = 0f;\r\n            while (!PhotonNetwork.InRoom \u0026\u0026 !_joinAttemptFailed \u0026\u0026 t \u003c 12f)\r\n            {\r\n                t += Time.deltaTime;\r\n                yield return null;\r\n            }\r\n\r\n            if (PhotonNetwork.InRoom)\r\n            {\r\n                SyncBanlistFromJoinedRoom();\r\n                yield break;\r\n            }\r\n        }\r\n\r\n        if (_expectingJoin)\r\n        {\r\n            _expectingJoin = false;\r\n            ShowRoomNotFoundDialog();\r\n        }\r\n    }\r\n\r\n    static void SyncBanlistFromJoinedRoom()\r\n    {\r\n        if (!PhotonNetwork.InRoom)\r\n        {\r\n            return;\r\n        }\r\n\r\n        var props = PhotonNetwork.CurrentRoom.CustomProperties;\r\n        if (props != null \u0026\u0026\r\n            props.TryGetValue(TournamentKeys.UseBanlistProperty, out object banObj) \u0026\u0026\r\n            banObj is bool ban)\r\n        {\r\n            ContinuousController.instance.useBanlist = ban;\r\n        }\r\n    }"
+                                                             },
+                                                             {
+                                                                 "module":  "tournament",
+                                                                 "indent":  "                ",
+                                                                 "body":  "                EngMessage: JoinTournament\r\n                    ? \"Error!\\nTournament room not found.\\nCheck the Room ID (host must still be in the lobby).\"\r\n                    : \"Error!\\nThe room could not be found.\",\r\n                JpnMessage: JoinTournament\r\n                    ? \"エラー!\\nトーナメントルームが見つかりません。\\nルームIDを確認してください（ホストがロビーにいる必要があります）。\"\r\n                    : \"エラー!\\nルームが見つかりませんでした\""
+                                                             },
+                                                             {
+                                                                 "module":  "tournament",
+                                                                 "indent":  "        ",
+                                                                 "body":  "        if (JoinTournament)\r\n        {\r\n            SyncBanlistFromJoinedRoom();\r\n            ContinuousController.instance.isTournament = true;\r\n            TournamentLobbyManager.EnsureExists().SetUpAfterJoin();\r\n            JoinTournament = false;\r\n            Close_(false);\r\n            return;\r\n        }\r\n\r\n        ContinuousController.instance.isTournament = false;"
+                                                             },
+                                                             {
+                                                                 "module":  "tournament",
+                                                                 "indent":  "        ",
+                                                                 "body":  "        // Tournament join retries other room-name candidates in the coroutine.\r\n        // Casual room match: show dialog when the wait loop notices the failure.\r\n        if (!JoinTournament)\r\n        {\r\n            // Dialog is shown by JoinRoomCoroutine after the wait loop.\r\n        }"
+                                                             }
+                                                         ],
+                  "Assets/Scripts/Script/RoomManager.cs":  [
+                                                               {
+                                                                   "module":  "reconnect",
+                                                                   "indent":  "            ",
+                                                                   "body":  "            BattleReconnectService.ApplyBattleTtl(roomOptions);"
+                                                               },
+                                                               {
+                                                                   "module":  "reconnect",
+                                                                   "indent":  "            ",
+                                                                   "body":  "            PhotonUtility.LeaveRoomImmediate();"
+                                                               },
+                                                               {
+                                                                   "module":  "tournament",
+                                                                   "indent":  "        ",
+                                                                   "body":  "        if (ContinuousController.instance != null \u0026\u0026 ContinuousController.instance.isTournament)\r\n        {\r\n            // Tournament rooms are driven by TournamentMatchDirector.\r\n            return;\r\n        }"
+                                                               },
+                                                               {
+                                                                   "module":  "reconnect",
+                                                                   "indent":  "            ",
+                                                                   "body":  "            if (BattleReconnectService.CountActivePlayers() == PhotonNetwork.CurrentRoom.MaxPlayers \u0026\u0026 AllPlayerIsReady())"
+                                                               },
+                                                               {
+                                                                   "module":  "tournament",
+                                                                   "indent":  "        ",
+                                                                   "body":  "        if (ContinuousController.instance.isTournament || ContinuousController.IsBattleSceneLoaded())\r\n        {\r\n            yield break;\r\n        }"
+                                                               }
+                                                           ],
+                  "Assets/Photon/PhotonUnityNetworking/Code/PhotonNetworkPart.cs":  [
+                                                                                        {
+                                                                                            "module":  "tournament",
+                                                                                            "indent":  "                ",
+                                                                                            "body":  "                // Additive reload of the same scene (tournament Bo3 rematch) leaves the old\r\n                // scene view in this list. RemoveInstantiatedGO does not LocalClean scene views\r\n                // (InstantiationId == 0), so Add() used to throw Duplicate key and the NEW\r\n                // GManager never received RPCs (mulligan / surrender freeze).\r\n                photonViewList.Remove(netView.ViewID);\r\n                if (listedView != null)\r\n                {\r\n                    listedView.removedFromLocalViewList = true;\r\n                    if (listedView.gameObject != null)\r\n                    {\r\n                        RemoveInstantiatedGO(listedView.gameObject, true);\r\n                    }\r\n                }"
+                                                                                        },
+                                                                                        {
+                                                                                            "module":  "tournament",
+                                                                                            "indent":  "                ",
+                                                                                            "body":  "                // UnloadSceneAsync (additive battle rematch) does not fire this callback.\r\n                // Drop views whose scene is already gone so the next BattleScene can register.\r\n                if (view.gameObject == null || !view.gameObject.scene.isLoaded)\r\n                {\r\n                    view.removedFromLocalViewList = true;\r\n                    removeKeys.Add(kvp.Key);\r\n                }"
+                                                                                        }
+                                                                                    ],
+                  "Assets/Scripts/Script/LoadingObject.cs":  [
+                                                                 {
+                                                                     "module":  "reconnect",
+                                                                     "indent":  "        ",
+                                                                     "body":  "        if (anim != null)\r\n        {\r\n            anim.updateMode = AnimatorUpdateMode.UnscaledTime;\r\n            anim.SetInteger(\"Close\", 0);\r\n        }\r\n        LoadingText.gameObject.SetActive(true);\r\n\r\n        yield return new WaitWhile(() =\u003e !this.gameObject.activeSelf || !this.transform.parent.gameObject.activeSelf);\r\n\r\n        StopLoadingTextCoroutine();\r\n\r\n        if(ContinuousController.instance != null)\r\n        {\r\n            setLoadingTextHost = ContinuousController.instance;\r\n            setLoadingTextCoroutine = ContinuousController.instance.StartCoroutine(SetLoadingText(DefaultString));\r\n        }\r\n        else\r\n        {\r\n            setLoadingTextHost = this;\r\n            setLoadingTextCoroutine = StartCoroutine(SetLoadingText(DefaultString));\r\n        }"
+                                                                 },
+                                                                 {
+                                                                     "module":  "reconnect",
+                                                                     "indent":  "    ",
+                                                                     "body":  "    Coroutine setLoadingTextCoroutine = null;\r\n    MonoBehaviour setLoadingTextHost = null;"
+                                                                 },
+                                                                 {
+                                                                     "module":  "reconnect",
+                                                                     "indent":  "        ",
+                                                                     "body":  "        while (LoadingText)\r\n        {\r\n            count++;\r\n\r\n            if(count \u003e= 4)\r\n            {\r\n                count = 0;\r\n            }\r\n\r\n            LoadingText.text = DefaultString;\r\n\r\n            for(int i=0;i\u003ccount;i++)\r\n            {\r\n                LoadingText.text += \".\";\r\n            }\r\n\r\n            yield return new WaitForSecondsRealtime(waitTime);\r\n        }\r\n\r\n        setLoadingTextCoroutine = null;\r\n        setLoadingTextHost = null;"
+                                                                 },
+                                                                 {
+                                                                     "module":  "reconnect",
+                                                                     "indent":  "    ",
+                                                                     "body":  "    void StopLoadingTextCoroutine()\r\n    {\r\n        if (setLoadingTextCoroutine == null)\r\n        {\r\n            return;\r\n        }\r\n\r\n        if (setLoadingTextHost != null)\r\n        {\r\n            setLoadingTextHost.StopCoroutine(setLoadingTextCoroutine);\r\n        }\r\n\r\n        setLoadingTextCoroutine = null;\r\n        setLoadingTextHost = null;\r\n    }"
+                                                                 },
+                                                                 {
+                                                                     "module":  "reconnect",
+                                                                     "indent":  "            ",
+                                                                     "body":  "            Agumon.transform.localPosition -= new Vector3(speed * Time.unscaledDeltaTime, 0, 0);\r\n\r\n            if (Mathf.Abs(Agumon.transform.localPosition.x - Meat.transform.localPosition.x) \u003c speed * Time.unscaledDeltaTime * 2)\r\n            {\r\n                Agumon.transform.localPosition = Meat.transform.localPosition;\r\n                yield break;\r\n            }"
+                                                                 },
+                                                                 {
+                                                                     "module":  "reconnect",
+                                                                     "indent":  "                ",
+                                                                     "body":  "                .SetUpdate(true);"
+                                                                 },
+                                                                 {
+                                                                     "module":  "reconnect",
+                                                                     "indent":  "        ",
+                                                                     "body":  "        if (anim != null)\r\n        {\r\n            anim.updateMode = AnimatorUpdateMode.UnscaledTime;\r\n            anim.SetInteger(\"Close\", 1);\r\n        }"
+                                                                 },
+                                                                 {
+                                                                     "module":  "reconnect",
+                                                                     "indent":  "        ",
+                                                                     "body":  "        float closeWait = 0f;\r\n        while (this.gameObject.activeSelf \u0026\u0026 closeWait \u003c 3f)\r\n        {\r\n            closeWait += Time.unscaledDeltaTime;\r\n            yield return null;\r\n        }\r\n\r\n        if (this.gameObject.activeSelf)\r\n        {\r\n            Off();\r\n        }"
+                                                                 }
+                                                             ],
+                  "Assets/Scripts/Script/LobbyManager_FriendMatch.cs":  [
+                                                                            {
+                                                                                "module":  "reconnect",
+                                                                                "indent":  "        ",
+                                                                                "body":  "        BattleReconnectService.ApplyBattleTtl(roomOptions);"
+                                                                            }
+                                                                        ],
+                  "Assets/Scripts/Script/Opening.cs":  [
+                                                           {
+                                                               "module":  "reconnect",
+                                                               "indent":  "            ",
+                                                               "body":  "            PhotonUtility.DisconnectImmediate();"
+                                                           }
+                                                       ]
+              }
+}

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -29,6 +29,9 @@ public class Draggable_HandCard : Draggable
         {
             if (!handCard.cardSource.Owner.isYou)
             {
+                // === DCGO-CUSTOM:android begin ===
+                handCard.CancelLongPress();
+                // === DCGO-CUSTOM:android end ===
                 return;
             }
 

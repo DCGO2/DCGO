@@ -1,0 +1,162 @@
+diff --git a/Assets/Scripts/Script/GManager.cs b/Assets/Scripts/Script/GManager.cs
+index 3771412fe..a23d78bf4 100644
+--- a/Assets/Scripts/Script/GManager.cs
++++ b/Assets/Scripts/Script/GManager.cs
+@@ -89,6 +89,11 @@ public class GManager : MonoBehaviourPun
+     [Header("ÒâùÒâ¼ÒéñÒâ¡Òé░")]
+     public PlayLog playLog;
+ 
++    // === DCGO-CUSTOM:chat begin ===
++    [Header("ÒâÉÒâêÒâ½ÒâüÒâúÒââÒâê")]
++    public BattleChatPanel battleChat;
++    // === DCGO-CUSTOM:chat end ===
++
+     [Header("ÒâíÒâóÒâ¬Òâ╝")]
+     public MemoryObject memoryObject;
+ 
+@@ -275,6 +280,10 @@ public class GManager : MonoBehaviourPun
+ 
+         playLog.Init();
+ 
++        // === DCGO-CUSTOM:chat begin ===
++        EnsureBattleChat();
++        // === DCGO-CUSTOM:chat end ===
++
+         hideCannotSelectObject.Init();
+ 
+         ChangeBackground();
+@@ -315,6 +324,46 @@ public class GManager : MonoBehaviourPun
+         ContinuousController.instance.PlaySE(CancelSE);
+     }
+ 
++    // === DCGO-CUSTOM:chat begin ===
++    void EnsureBattleChat()
++    {
++        bool enableChat = ContinuousController.instance != null
++            && !ContinuousController.instance.isAI
++            && !IsAI
++            && PhotonNetwork.InRoom;
++
++        if (!enableChat)
++        {
++            if (battleChat != null)
++            {
++                battleChat.Clear();
++                battleChat.OffChat(playSe: false);
++                battleChat.gameObject.SetActive(false);
++            }
++            return;
++        }
++
++        if (battleChat == null)
++        {
++            BattleChatPanel prefab = Resources.Load<BattleChatPanel>("BattleChatPanel");
++            if (prefab != null && canvas != null)
++            {
++                battleChat = Instantiate(prefab, canvas.transform);
++            }
++            else if (canvas != null)
++            {
++                GameObject go = new GameObject("BattleChatPanel", typeof(RectTransform));
++                go.layer = 5;
++                go.transform.SetParent(canvas.transform, false);
++                battleChat = go.AddComponent<BattleChatPanel>();
++            }
++        }
++
++        if (battleChat != null)
++            battleChat.Init();
++    }
++    // === DCGO-CUSTOM:chat end ===
++
+     public async void ChangeBackground()
+     {
+         Sprite backgroundSprite = await StreamingAssetsUtility.GetSprite("Background_battle");
+@@ -345,40 +394,54 @@ public class GManager : MonoBehaviourPun
+ 
+         yield return new WaitWhile(() => turnStateMachine == null);
+ 
+-        yield return _waitForSeconds5;
++        yield return new WaitForSecondsRealtime(2f);
+ 
+         while (true)
+         {
+-            if (!PhotonNetwork.IsConnected)
++            // === DCGO-CUSTOM:reconnect begin ===
++            var reconnect = BattleReconnectService.Instance;
++            bool reconnecting = reconnect != null && reconnect.IsReconnecting;
++
++            if (!PhotonNetwork.IsConnected || !PhotonNetwork.InRoom)
+             {
++                if (reconnecting)
++                {
++                    yield return null;
++                    continue;
++                }
++
+                 break;
+             }
+ 
+-            else
++            if (PhotonNetwork.CurrentRoom != null && BattleReconnectService.CountActivePlayers() < 2)
+             {
+-                if (!PhotonNetwork.InRoom)
++                if (BattleReconnectService.HasInactiveOpponent())
+                 {
+-                    break;
++                    reconnect?.EnsureHoldForOpponent();
++                    yield return null;
++                    continue;
+                 }
+ 
+-                else
++                if (reconnecting)
+                 {
+-                    if (PhotonNetwork.CurrentRoom != null)
+-                    {
+-                        if (PhotonNetwork.PlayerList.Length < 2)
+-                        {
+-                            break;
+-                        }
+-                    }
++                    yield return null;
++                    continue;
+                 }
++
++                break;
+             }
++            // === DCGO-CUSTOM:reconnect end ===
+ 
+             yield return null;
+         }
+ 
+-        if (!turnStateMachine.endGame)
++        if (turnStateMachine != null && !turnStateMachine.endGame)
+         {
+-            turnStateMachine.EndGame(null, false);
++            // === DCGO-CUSTOM:reconnect begin ===
++            BattleReconnectService.Instance?.ReleaseBattleHold();
++            bool weDisconnected = !PhotonNetwork.IsConnected || !PhotonNetwork.InRoom;
++            turnStateMachine.EndGame(weDisconnected ? null : You, false);
++            // === DCGO-CUSTOM:reconnect end ===
+         }
+     }
+ 
+@@ -540,7 +603,16 @@ public class GManager : MonoBehaviourPun
+     #region Cheats
+     public bool AllowCheats()
+     {
+-        return !ContinuousController.instance.isRandomMatch || ContinuousController.instance.isAI;
++        // Disable cheats in any online competitive mode
++        return ContinuousController.instance.isAI ||
++               (!ContinuousController.instance.isRandomMatch
++                // === DCGO-CUSTOM:ranked begin ===
++                && !ContinuousController.instance.isRanked
++                // === DCGO-CUSTOM:ranked end ===
++                // === DCGO-CUSTOM:tournament begin ===
++                && !ContinuousController.instance.isTournament
++                // === DCGO-CUSTOM:tournament end ===
++               );
+     }
+ 
+     void AllowAlphaInputs()

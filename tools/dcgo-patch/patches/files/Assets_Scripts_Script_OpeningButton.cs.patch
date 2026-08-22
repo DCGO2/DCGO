@@ -1,0 +1,37 @@
+diff --git a/Assets/Scripts/Script/OpeningButton.cs b/Assets/Scripts/Script/OpeningButton.cs
+index d383c918b..ea5b4e9c0 100644
+--- a/Assets/Scripts/Script/OpeningButton.cs
++++ b/Assets/Scripts/Script/OpeningButton.cs
+@@ -5,6 +5,11 @@ using UnityEngine.UI;
+ 
+ public class OpeningButton : MonoBehaviour
+ {
++    // === DCGO-CUSTOM:android begin ===
++    const float TitleButtonSECooldown = 0.08f;
++    static float _lastTitleButtonSETime = float.NegativeInfinity;
++    // === DCGO-CUSTOM:android end ===
++
+     [Header("Button Animator")]
+     public Animator ButtonAnimator;
+ 
+@@ -16,7 +21,19 @@ public class OpeningButton : MonoBehaviour
+         {
+             selectedObject.SetActive(true);
+ 
+-            ContinuousController.instance.PlaySE(Opening.instance.TitleButtonSE);
++            if (ContinuousController.instance == null || Opening.instance == null)
++            {
++                return;
++            }
++
++            // === DCGO-CUSTOM:android begin ===
++            float now = Time.unscaledTime;
++            if (now - _lastTitleButtonSETime >= TitleButtonSECooldown)
++            {
++                _lastTitleButtonSETime = now;
++                ContinuousController.instance.PlaySE(Opening.instance.TitleButtonSE);
++            }
++            // === DCGO-CUSTOM:android end ===
+         }
+     }
+ 

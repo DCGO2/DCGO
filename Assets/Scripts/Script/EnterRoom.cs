@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +19,10 @@ public class EnterRoom : MonoBehaviourPunCallbacks
 
     [Header("Enter Room Button")]
     public Button EnterRoomButton;
+    // === DCGO-CUSTOM:tournament begin ===
+    [System.NonSerialized]
+    public bool JoinTournament;
+    // === DCGO-CUSTOM:tournament end ===
 
     Image _enterRoomButtonImage;
 
@@ -26,6 +30,72 @@ public class EnterRoom : MonoBehaviourPunCallbacks
     {
         _enterRoomButtonImage = EnterRoomButton.GetComponent<Image>();
     }
+    // === DCGO-CUSTOM:tournament begin ===
+    IEnumerator JoinTournamentLobbyCoroutine(string tourneyId)
+    {
+        bool preferBanlist = ContinuousController.instance.useBanlist;
+        string[] candidates = TournamentKeys.LobbyRoomNameJoinCandidates(tourneyId, preferBanlist);
+
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            string roomName = candidates[i];
+            if (string.IsNullOrEmpty(roomName))
+            {
+                continue;
+            }
+
+            if (!PhotonNetwork.IsConnectedAndReady)
+            {
+                yield break;
+            }
+
+            if (!PhotonNetwork.InLobby)
+            {
+                PhotonNetwork.JoinLobby();
+                yield return new WaitUntil(() => PhotonNetwork.InLobby && PhotonNetwork.IsConnectedAndReady);
+            }
+
+            _joinAttemptFailed = false;
+            Debug.Log($"[Tournament] Join lobby attempt: {roomName}");
+            PhotonNetwork.JoinRoom(roomName);
+
+            float t = 0f;
+            while (!PhotonNetwork.InRoom && !_joinAttemptFailed && t < 12f)
+            {
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            if (PhotonNetwork.InRoom)
+            {
+                SyncBanlistFromJoinedRoom();
+                yield break;
+            }
+        }
+
+        if (_expectingJoin)
+        {
+            _expectingJoin = false;
+            ShowRoomNotFoundDialog();
+        }
+    }
+
+    static void SyncBanlistFromJoinedRoom()
+    {
+        if (!PhotonNetwork.InRoom)
+        {
+            return;
+        }
+
+        var props = PhotonNetwork.CurrentRoom.CustomProperties;
+        if (props != null &&
+            props.TryGetValue(TournamentKeys.UseBanlistProperty, out object banObj) &&
+            banObj is bool ban)
+        {
+            ContinuousController.instance.useBanlist = ban;
+        }
+    }
+    // === DCGO-CUSTOM:tournament end ===
 
 
     public void SetUpEnterRoom()
@@ -96,6 +166,19 @@ public class EnterRoom : MonoBehaviourPunCallbacks
     {
         ContinuousController.instance.isAI = false;
         ContinuousController.instance.isRandomMatch = false;
+        // === DCGO-CUSTOM:tournament begin ===
+        if (JoinTournament)
+        {
+            SyncBanlistFromJoinedRoom();
+            ContinuousController.instance.isTournament = true;
+            TournamentLobbyManager.EnsureExists().SetUpAfterJoin();
+            JoinTournament = false;
+            Close_(false);
+            return;
+        }
+
+        ContinuousController.instance.isTournament = false;
+        // === DCGO-CUSTOM:tournament end ===
         roomManager.SetUpRoom();
         Close_(false);
     }
@@ -103,11 +186,27 @@ public class EnterRoom : MonoBehaviourPunCallbacks
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         Debug.Log($"{returnCode} - {message}");
+        // === DCGO-CUSTOM:tournament begin ===
+        // Tournament join retries other room-name candidates in the coroutine.
+        // Casual room match: show dialog when the wait loop notices the failure.
+        if (!JoinTournament)
+        {
+            // Dialog is shown by JoinRoomCoroutine after the wait loop.
+        }
+        // === DCGO-CUSTOM:tournament end ===
         Opening.instance.PlayDecisionSE();
         Opening.instance.SetUpActiveYesNoObject(
             new List<UnityAction>() { null },
             new List<string>() { "OK" },
             LocalizeUtility.GetLocalizedString(
+                // === DCGO-CUSTOM:tournament begin ===
+                EngMessage: JoinTournament
+                    ? "Error!\nTournament room not found.\nCheck the Room ID (host must still be in the lobby)."
+                    : "Error!\nThe room could not be found.",
+                JpnMessage: JoinTournament
+                    ? "エラー!\nトーナメントルームが見つかりません。\nルームIDを確認してください（ホストがロビーにいる必要があります）。"
+                    : "エラー!\nルームが見つかりませんでした"
+                // === DCGO-CUSTOM:tournament end ===
             EngMessage: "Error!\nThe room could not be found.",
             JpnMessage: "エラー!\nルームが見つかりませんでした"
             ),

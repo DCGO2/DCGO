@@ -1,0 +1,356 @@
+{
+  "baseline": "6faae89a7",
+  "generatedUtc": "2026-08-14T07:56:49.9088471Z",
+  "includeUncommitted": true,
+  "files": [
+    "build-android-dev.bat",
+    "push-pc-card-textures.bat",
+    "Assets/Editor/AndroidDevelopmentBuild.cs",
+    "Assets/Editor/AndroidDevelopmentBuild.cs.meta",
+    "Assets/Plugins/Android/gradleTemplate.properties",
+    "Assets/Plugins/Android/gradleTemplate.properties.meta",
+    "Assets/StreamingAssets/Textures/Backgrounds.meta",
+    "Assets/StreamingAssets/Textures/Background_battle.png",
+    "Assets/StreamingAssets/Textures/Background_battle.png.meta",
+    "Assets/StreamingAssets/Textures/Background_home.png",
+    "Assets/StreamingAssets/Textures/Background_home.png.meta",
+    "Assets/StreamingAssets/Textures/Card.meta",
+    "Assets/StreamingAssets/Textures/card_back_main.png",
+    "Assets/StreamingAssets/Textures/card_back_main.png.meta",
+    "Assets/StreamingAssets/Textures/card_back_sub.png",
+    "Assets/StreamingAssets/Textures/card_back_sub.png.meta",
+    "Assets/StreamingAssets/Textures/CurrentPhaseBar_Opponent.png",
+    "Assets/StreamingAssets/Textures/CurrentPhaseBar_Opponent.png.meta",
+    "Assets/StreamingAssets/Textures/CurrentPhaseBar_You.png",
+    "Assets/StreamingAssets/Textures/CurrentPhaseBar_You.png.meta",
+    "Assets/StreamingAssets/Textures/PlayMat_Opponent.png",
+    "Assets/StreamingAssets/Textures/PlayMat_Opponent.png.meta",
+    "Assets/StreamingAssets/Textures/PlayMat_You.png",
+    "Assets/StreamingAssets/Textures/PlayMat_You.png.meta",
+    "Assets/StreamingAssets/Textures/SecurityIcon_Opponent.png",
+    "Assets/StreamingAssets/Textures/SecurityIcon_Opponent.png.meta",
+    "Assets/StreamingAssets/Textures/SecurityIcon_You.png",
+    "Assets/StreamingAssets/Textures/SecurityIcon_You.png.meta",
+    "Assets/StreamingAssets/Textures/UI.meta",
+    "Assets/StreamingAssets/Textures/Backgrounds/Grass.png",
+    "Assets/StreamingAssets/Textures/Backgrounds/Grass.png.meta",
+    "Assets/StreamingAssets/Textures/Backgrounds/Lava.png",
+    "Assets/StreamingAssets/Textures/Backgrounds/Lava.png.meta",
+    "Assets/StreamingAssets/Textures/Backgrounds/Night_Forest.png",
+    "Assets/StreamingAssets/Textures/Backgrounds/Night_Forest.png.meta",
+    "Assets/StreamingAssets/Textures/Backgrounds/Rock.png",
+    "Assets/StreamingAssets/Textures/Backgrounds/Rock.png.meta",
+    "Assets/StreamingAssets/Textures/Backgrounds/Sand.png",
+    "Assets/StreamingAssets/Textures/Backgrounds/Sand.png.meta",
+    "Assets/StreamingAssets/Textures/Backgrounds/Snow.png",
+    "Assets/StreamingAssets/Textures/Backgrounds/Snow.png.meta",
+    "Assets/StreamingAssets/Textures/UI/CardMask.png",
+    "Assets/StreamingAssets/Textures/UI/CardMask.png.meta",
+    "Assets/StreamingAssets/Textures/UI/Cost_Circle.png",
+    "Assets/StreamingAssets/Textures/UI/Cost_Circle.png.meta",
+    "Assets/StreamingAssets/Textures/UI/Cost_Circle_Rotated.png",
+    "Assets/StreamingAssets/Textures/UI/Cost_Circle_Rotated.png.meta",
+    "Assets/StreamingAssets/Textures/UI/Glow_Cutoff.png",
+    "Assets/StreamingAssets/Textures/UI/Glow_Cutoff.png.meta",
+    "Assets/StreamingAssets/Textures/UI/LinkIcon.png",
+    "Assets/StreamingAssets/Textures/UI/LinkIcon.png.meta",
+    "Assets/StreamingAssets/Textures/UI/UnitFrame_Base.png",
+    "Assets/StreamingAssets/Textures/UI/UnitFrame_Base.png.meta",
+    "Assets/StreamingAssets/Textures/UI/UnitFrame_Mask_Left.png",
+    "Assets/StreamingAssets/Textures/UI/UnitFrame_Mask_Left.png.meta",
+    "Assets/StreamingAssets/Textures/UI/UnitFrame_Mask_Right.png",
+    "Assets/StreamingAssets/Textures/UI/UnitFrame_Mask_Right.png.meta",
+    "Assets/StreamingAssets/Textures/UI/UnitFrame_Stats.png",
+    "Assets/StreamingAssets/Textures/UI/UnitFrame_Stats.png.meta",
+    "ProjectSettings/ProjectSettings.asset",
+    "ProjectSettings/GraphicsSettings.asset",
+    "ProjectSettings/URPProjectSettings.asset",
+    "Assets/UniversalRenderPipelineGlobalSettings.asset",
+    "Assets/Scripts/Script/Ranked/LobbyManager_RankedMatch.cs",
+    "Assets/Scripts/Script/Ranked/LobbyManager_RankedMatch.cs.meta",
+    "Assets/Scripts/Script/Ranked/PlayFabAuthService.cs",
+    "Assets/Scripts/Script/Ranked/PlayFabAuthService.cs.meta",
+    "Assets/Scripts/Script/Ranked/PlayFabClientApi.cs",
+    "Assets/Scripts/Script/Ranked/PlayFabClientApi.cs.meta",
+    "Assets/Scripts/Script/Ranked/PlayFabConfig.cs",
+    "Assets/Scripts/Script/Ranked/PlayFabConfig.cs.meta",
+    "Assets/Scripts/Script/Ranked/RankedKeys.cs",
+    "Assets/Scripts/Script/Ranked/RankedKeys.cs.meta",
+    "Assets/Scripts/Script/Ranked/RankedMatchService.cs",
+    "Assets/Scripts/Script/Ranked/RankedMatchService.cs.meta",
+    "Assets/Scripts/Script/Ranked/RankedProfile.cs",
+    "Assets/Scripts/Script/Ranked/RankedProfile.cs.meta",
+    "Assets/Scripts/Script/Ranked/RankedProfileService.cs",
+    "Assets/Scripts/Script/Ranked/RankedProfileService.cs.meta",
+    "Assets/Scripts/Script/Ranked/RankedRating.cs",
+    "Assets/Scripts/Script/Ranked/RankedRating.cs.meta",
+    "Assets/Scripts/Script/Ranked/RankedServices.cs",
+    "Assets/Scripts/Script/Ranked/RankedServices.cs.meta",
+    "Assets/PlayFabCloudScript/RankedCloudScript.js",
+    "Assets/PlayFabCloudScript/RankedCloudScript.js.meta",
+    "Assets/PlayFabCloudScript/README.md",
+    "Assets/PlayFabCloudScript/README.md.meta",
+    "Assets/Resources/Ranked/PlayFabConfig.json",
+    "Assets/Resources/Ranked/PlayFabConfig.json.meta",
+    "Assets/Scenes/Opening.unity",
+    "Assets/Photon/PhotonUnityNetworking/Resources/PhotonServerSettings.asset",
+    "Assets/Scripts/Script/Tournament/TournamentKeys.cs",
+    "Assets/Scripts/Script/Tournament/TournamentKeys.cs.meta",
+    "Assets/Scripts/Script/Tournament/TournamentLobbyManager.cs",
+    "Assets/Scripts/Script/Tournament/TournamentLobbyManager.cs.meta",
+    "Assets/Scripts/Script/Tournament/TournamentMatchDirector.cs",
+    "Assets/Scripts/Script/Tournament/TournamentMatchDirector.cs.meta",
+    "Assets/Scripts/Script/Tournament/TournamentServices.cs",
+    "Assets/Scripts/Script/Tournament/TournamentServices.cs.meta",
+    "Assets/Scripts/Script/Tournament/TournamentState.cs",
+    "Assets/Scripts/Script/Tournament/TournamentState.cs.meta",
+    "Assets/Scripts/Script/BattleChatPanel.cs",
+    "Assets/Scripts/Script/BattleChatPanel.cs.meta",
+    "Assets/Prefab/UI/Battle Scene/BattleChatPanel.prefab",
+    "Assets/Prefab/UI/Battle Scene/BattleChatPanel.prefab.meta",
+    "Assets/Resources/BattleChatPanel.prefab",
+    "Assets/Resources/BattleChatPanel.prefab.meta",
+    "Assets/Scripts/Script/BattleReconnectService.cs",
+    "Assets/Scripts/Script/BattleReconnectService.cs.meta"
+  ],
+  "patches": [
+    {
+      "file": "Assets/Scripts/Script/ContinuousController.cs",
+      "patch": "patches/files/Assets_Scripts_Script_ContinuousController.cs.patch",
+      "modules": [
+        "android",
+        "ranked",
+        "tournament",
+        "chat",
+        "reconnect"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/StreamingAssetsUtility.cs",
+      "patch": "patches/files/Assets_Scripts_Script_StreamingAssetsUtility.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/BGMObject.cs",
+      "patch": "patches/files/Assets_Scripts_Script_BGMObject.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/SoundObject.cs",
+      "patch": "patches/files/Assets_Scripts_Script_SoundObject.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/OpeningButton.cs",
+      "patch": "patches/files/Assets_Scripts_Script_OpeningButton.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/Draggable_HandCard.cs",
+      "patch": "patches/files/Assets_Scripts_Script_Draggable_HandCard.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/CPlayerElement.cs",
+      "patch": "patches/files/Assets_Scripts_Script_CPlayerElement.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/CheckCardPanel.cs",
+      "patch": "patches/files/Assets_Scripts_Script_CheckCardPanel.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/SelectCardPanel.cs",
+      "patch": "patches/files/Assets_Scripts_Script_SelectCardPanel.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/SelectDeck.cs",
+      "patch": "patches/files/Assets_Scripts_Script_SelectDeck.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/FieldPermanentCard.cs",
+      "patch": "patches/files/Assets_Scripts_Script_FieldPermanentCard.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/HandCard.cs",
+      "patch": "patches/files/Assets_Scripts_Script_HandCard.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/CardPrefab_CreateDeck.cs",
+      "patch": "patches/files/Assets_Scripts_Script_CardPrefab_CreateDeck.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/EditDeck.cs",
+      "patch": "patches/files/Assets_Scripts_Script_EditDeck.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/YesNoObject.cs",
+      "patch": "patches/files/Assets_Scripts_Script_YesNoObject.cs.patch",
+      "modules": [
+        "android"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/CardObjectController.cs",
+      "patch": "patches/files/Assets_Scripts_Script_CardObjectController.cs.patch",
+      "modules": [
+        "android",
+        "tournament"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/BattleMode.cs",
+      "patch": "patches/files/Assets_Scripts_Script_BattleMode.cs.patch",
+      "modules": [
+        "ranked",
+        "tournament"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/GManager.cs",
+      "patch": "patches/files/Assets_Scripts_Script_GManager.cs.patch",
+      "modules": [
+        "ranked",
+        "tournament",
+        "chat",
+        "reconnect"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/Player.cs",
+      "patch": "patches/files/Assets_Scripts_Script_Player.cs.patch",
+      "modules": [
+        "ranked"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/PlayerInfo.cs",
+      "patch": "patches/files/Assets_Scripts_Script_PlayerInfo.cs.patch",
+      "modules": [
+        "ranked"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/ResultObject.cs",
+      "patch": "patches/files/Assets_Scripts_Script_ResultObject.cs.patch",
+      "modules": [
+        "ranked",
+        "tournament",
+        "chat"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/SelectBattleDeck.cs",
+      "patch": "patches/files/Assets_Scripts_Script_SelectBattleDeck.cs.patch",
+      "modules": [
+        "ranked",
+        "tournament"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/SelectBattleMode.cs",
+      "patch": "patches/files/Assets_Scripts_Script_SelectBattleMode.cs.patch",
+      "modules": [
+        "ranked",
+        "tournament"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/TurnStateMachine.cs",
+      "patch": "patches/files/Assets_Scripts_Script_TurnStateMachine.cs.patch",
+      "modules": [
+        "ranked",
+        "tournament"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/LobbyManager_RandomMatch.cs",
+      "patch": "patches/files/Assets_Scripts_Script_LobbyManager_RandomMatch.cs.patch",
+      "modules": [
+        "ranked",
+        "reconnect"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/EnterRoom.cs",
+      "patch": "patches/files/Assets_Scripts_Script_EnterRoom.cs.patch",
+      "modules": [
+        "tournament"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/RoomManager.cs",
+      "patch": "patches/files/Assets_Scripts_Script_RoomManager.cs.patch",
+      "modules": [
+        "tournament",
+        "reconnect"
+      ]
+    },
+    {
+      "file": "Assets/Photon/PhotonUnityNetworking/Code/PhotonNetworkPart.cs",
+      "patch": "patches/files/Assets_Photon_PhotonUnityNetworking_Code_PhotonNetworkPart.cs.patch",
+      "modules": [
+        "tournament"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/LoadingObject.cs",
+      "patch": "patches/files/Assets_Scripts_Script_LoadingObject.cs.patch",
+      "modules": [
+        "reconnect"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/LobbyManager_FriendMatch.cs",
+      "patch": "patches/files/Assets_Scripts_Script_LobbyManager_FriendMatch.cs.patch",
+      "modules": [
+        "reconnect"
+      ]
+    },
+    {
+      "file": "Assets/Scripts/Script/Opening.cs",
+      "patch": "patches/files/Assets_Scripts_Script_Opening.cs.patch",
+      "modules": [
+        "reconnect"
+      ]
+    }
+  ],
+  "optionalAssets": [
+    "Assets/Sound",
+    "Assets/SCI-FI UI Components",
+    "Assets/Effect/DigitalEnvironmentEffects"
+  ]
+}

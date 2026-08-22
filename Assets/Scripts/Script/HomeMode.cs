@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -43,6 +43,9 @@ public class HomeMode : MonoBehaviour
         // === DCGO-CUSTOM:friends begin ===
         FriendListPanel.HideIfOpen();
         FriendServices.Instance?.Duel?.SetInviteListening(false);
+        // === DCGO-CUSTOM:recovery begin ===
+        AccountRecoveryPanel.HideIfOpen();
+        // === DCGO-CUSTOM:recovery end ===
         // === DCGO-CUSTOM:friends end ===
     }
 
@@ -76,9 +79,19 @@ public class HomeMode : MonoBehaviour
         }
 
         Opening.instance.optionPanel.CloseOptionPanel();
+        // === DCGO-CUSTOM:onlinecount begin ===
+        if (Opening.instance != null)
+        {
+            Opening.instance.EnsureOnlinePlayerCountUi();
+        }
+        OnlinePlayerCountService.EnsureExists().SetMenuPresenceEnabled(true);
+        // === DCGO-CUSTOM:onlinecount end ===
         // === DCGO-CUSTOM:friends begin ===
         Opening.instance?.EnsureFriendsButton();
         ContinuousController.instance?.StartCoroutine(BootstrapFriendsHomeCoroutine());
+        // === DCGO-CUSTOM:recovery begin ===
+        Opening.instance?.EnsureAccountButton();
+        // === DCGO-CUSTOM:recovery end ===
         // === DCGO-CUSTOM:friends end ===
     }
 

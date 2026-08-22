@@ -1,0 +1,14 @@
+diff --git a/Assets/Scripts/Script/Draggable_HandCard.cs b/Assets/Scripts/Script/Draggable_HandCard.cs
+index d69d2fc4c..01bd350cf 100644
+--- a/Assets/Scripts/Script/Draggable_HandCard.cs
++++ b/Assets/Scripts/Script/Draggable_HandCard.cs
+@@ -114,6 +114,9 @@ public class Draggable_HandCard : Draggable
+ 
+             if (handCard.CanDrag)
+             {
++                // === DCGO-CUSTOM:android begin ===
++                handCard.CancelLongPress();
++                // === DCGO-CUSTOM:android end ===
+                 base.OnBeginDrag(eventData);
+ 
+                 isExpand = false;

@@ -1,0 +1,43 @@
+{
+  "id": "android",
+  "description": "Android port: Gradle/plugins, StreamingAssets card textures, mobile UI packs, touch/audio helpers.",
+  "dependsOn": [],
+  "overlay": [
+    "build-android-dev.bat",
+    "push-pc-card-textures.bat",
+    "Assets/Editor/AndroidDevelopmentBuild.cs",
+    "Assets/Editor/AndroidDevelopmentBuild.cs.meta",
+    "Assets/Plugins/Android",
+    "Assets/StreamingAssets/Textures"
+  ],
+  "overlayFiles": [
+    "ProjectSettings/ProjectSettings.asset",
+    "ProjectSettings/GraphicsSettings.asset",
+    "ProjectSettings/URPProjectSettings.asset",
+    "Assets/UniversalRenderPipelineGlobalSettings.asset"
+  ],
+  "patchFiles": [
+    "Assets/Scripts/Script/ContinuousController.cs",
+    "Assets/Scripts/Script/StreamingAssetsUtility.cs",
+    "Assets/Scripts/Script/BGMObject.cs",
+    "Assets/Scripts/Script/SoundObject.cs",
+    "Assets/Scripts/Script/OpeningButton.cs",
+    "Assets/Scripts/Script/Draggable_HandCard.cs",
+    "Assets/Scripts/Script/CPlayerElement.cs",
+    "Assets/Scripts/Script/CheckCardPanel.cs",
+    "Assets/Scripts/Script/SelectCardPanel.cs",
+    "Assets/Scripts/Script/SelectDeck.cs",
+    "Assets/Scripts/Script/FieldPermanentCard.cs",
+    "Assets/Scripts/Script/HandCard.cs",
+    "Assets/Scripts/Script/CardPrefab_CreateDeck.cs",
+    "Assets/Scripts/Script/EditDeck.cs",
+    "Assets/Scripts/Script/YesNoObject.cs",
+    "Assets/Scripts/Script/CardObjectController.cs"
+  ],
+  "anchors": [
+    {
+      "file": "Assets/Scripts/Script/ContinuousController.cs",
+      "afterContains": "Application.targetFrameRate = 60;"
+    }
+  ]
+}

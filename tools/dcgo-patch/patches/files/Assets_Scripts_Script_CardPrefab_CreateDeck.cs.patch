@@ -1,0 +1,44 @@
+diff --git a/Assets/Scripts/Script/CardPrefab_CreateDeck.cs b/Assets/Scripts/Script/CardPrefab_CreateDeck.cs
+index 0b1d2c8f0..babfa9008 100644
+--- a/Assets/Scripts/Script/CardPrefab_CreateDeck.cs
++++ b/Assets/Scripts/Script/CardPrefab_CreateDeck.cs
+@@ -90,7 +90,7 @@ public class CardPrefab_CreateDeck : MonoBehaviour
+             CardImage.GetComponent<UIShiny>().enabled = false;
+         }
+ 
+-        OffAddRemoveButton();
++        OffAddRemoveButton(force: true);
+ 
+         if (CostText != null)
+         {
+@@ -141,9 +141,6 @@ public class CardPrefab_CreateDeck : MonoBehaviour
+ 
+     public void SetupAddRemoveButton(DeckData deckData)
+     {
+-#if !UNITY_EDITOR && UNITY_ANDROID
+-        return;
+-#endif
+         if (AddRemoveButtonParent != null)
+         {
+             AddRemoveButtonParent.SetActive(true);
+@@ -171,13 +168,18 @@ public class CardPrefab_CreateDeck : MonoBehaviour
+ 
+                 if (cardPrefab_CreateDeck != null && cardPrefab_CreateDeck != this)
+                 {
+-                    cardPrefab_CreateDeck.OffAddRemoveButton();
++                    cardPrefab_CreateDeck.OffAddRemoveButton(force: true);
+                 }
+             }
+         }
+     }
+-    public void OffAddRemoveButton()
++    public void OffAddRemoveButton(bool force = false)
+     {
++#if !UNITY_EDITOR && UNITY_ANDROID
++        // Ignore hover-exit hide on Android so buttons stay usable without hover.
++        if (!force)
++            return;
++#endif
+         if (AddRemoveButtonParent != null)
+         {
+             AddRemoveButtonParent.SetActive(false);

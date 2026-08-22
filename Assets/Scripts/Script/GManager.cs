@@ -1,4 +1,4 @@
-﻿using Photon.Pun;
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -88,6 +88,10 @@ public class GManager : MonoBehaviourPun
 
     [Header("プレイログ")]
     public PlayLog playLog;
+    // === DCGO-CUSTOM:chat begin ===
+    [Header("バトルチャット")]
+    public BattleChatPanel battleChat;
+    // === DCGO-CUSTOM:chat end ===
 
     [Header("メモリー")]
     public MemoryObject memoryObject;
@@ -235,10 +239,87 @@ public class GManager : MonoBehaviourPun
 
         if (Opening.instance != null)
         {
+            // === DCGO-CUSTOM:reconnect begin ===
+            BattleReconnectService.Instance?.ReleaseBattleHold();
+            bool weDisconnected = !PhotonNetwork.IsConnected || !PhotonNetwork.InRoom;
+            turnStateMachine.EndGame(weDisconnected ? null : You, false);
+            // === DCGO-CUSTOM:reconnect end ===
+            // === DCGO-CUSTOM:reconnect begin ===
+            var reconnect = BattleReconnectService.Instance;
+            bool reconnecting = reconnect != null && reconnect.IsReconnecting;
+
+            if (!PhotonNetwork.IsConnected || !PhotonNetwork.InRoom)
+            {
+                if (reconnecting)
+                {
+                    yield return null;
+                    continue;
+                }
+
+                break;
+            }
+
+            if (PhotonNetwork.CurrentRoom != null && BattleReconnectService.CountActivePlayers() < 2)
+            {
+                if (BattleReconnectService.HasInactiveOpponent())
+                {
+                    reconnect?.EnsureHoldForOpponent();
+                    yield return null;
+                    continue;
+                }
+
+                if (reconnecting)
+                {
+                    yield return null;
+                    continue;
+                }
+
+                break;
+            }
+            // === DCGO-CUSTOM:reconnect end ===
             if (Opening.instance.OpeningBGM != null)
             {
                 Opening.instance.OpeningBGM.StopPlayBGM();
             }
+    // === DCGO-CUSTOM:chat begin ===
+    void EnsureBattleChat()
+    {
+        bool enableChat = ContinuousController.instance != null
+            && !ContinuousController.instance.isAI
+            && !IsAI
+            && PhotonNetwork.InRoom;
+
+        if (!enableChat)
+        {
+            if (battleChat != null)
+            {
+                battleChat.Clear();
+                battleChat.OffChat(playSe: false);
+                battleChat.gameObject.SetActive(false);
+            }
+            return;
+        }
+
+        if (battleChat == null)
+        {
+            BattleChatPanel prefab = Resources.Load<BattleChatPanel>("BattleChatPanel");
+            if (prefab != null && canvas != null)
+            {
+                battleChat = Instantiate(prefab, canvas.transform);
+            }
+            else if (canvas != null)
+            {
+                GameObject go = new GameObject("BattleChatPanel", typeof(RectTransform));
+                go.layer = 5;
+                go.transform.SetParent(canvas.transform, false);
+                battleChat = go.AddComponent<BattleChatPanel>();
+            }
+        }
+
+        if (battleChat != null)
+            battleChat.Init();
+    }
+    // === DCGO-CUSTOM:chat end ===
         }
 
         instance = this;
@@ -274,6 +355,9 @@ public class GManager : MonoBehaviourPun
         GetComponent<Effects>().Init();
 
         playLog.Init();
+        // === DCGO-CUSTOM:chat begin ===
+        EnsureBattleChat();
+        // === DCGO-CUSTOM:chat end ===
 
         hideCannotSelectObject.Init();
 
@@ -550,6 +634,12 @@ public class GManager : MonoBehaviourPun
     {
         return ContinuousController.instance.isAI ||
                (!ContinuousController.instance.isRandomMatch
+                // === DCGO-CUSTOM:ranked begin ===
+                && !ContinuousController.instance.isRanked
+                // === DCGO-CUSTOM:tournament begin ===
+                && !ContinuousController.instance.isTournament
+                // === DCGO-CUSTOM:tournament end ===
+                // === DCGO-CUSTOM:ranked end ===
                 // === DCGO-CUSTOM:friends begin ===
                 && !ContinuousController.instance.isFriendDuel
                 // === DCGO-CUSTOM:friends end ===
