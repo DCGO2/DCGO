@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Rosemon
 namespace DCGO.CardEffects.BT26
@@ -49,29 +48,26 @@ namespace DCGO.CardEffects.BT26
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition))
-                {
-                    int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendTargetCondition));
+                int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendTargetCondition));
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectSuspendTargetCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Tap,
-                        cardEffect: activateClass);
+                selectPermanentEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: CanSelectSuspendTargetCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: maxCount,
+                    canNoSelect: false,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: null,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Tap,
+                    cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage($"Select {maxCount} Digimon or Tamers to suspend.", $"The opponent is selecting {maxCount} Digimon or Tamers to suspend.");
+                selectPermanentEffect.SetUpCustomMessage($"Select {maxCount} Digimon or Tamers to suspend.", $"The opponent is selecting {maxCount} Digimon or Tamers to suspend.");
 
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                }
+                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
             }
 
             #endregion
