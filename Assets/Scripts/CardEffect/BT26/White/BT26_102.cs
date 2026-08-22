@@ -110,7 +110,7 @@ namespace DCGO.CardEffects.BT26
                         }
                         else
                         {
-                            selectedLocation = locationElements[0].value;
+                            selectedLocation = canPickBattleArea ? 1 : (canPickLinked ? 2 : 3);
                         }
 
                         if (selectedLocation == 1)
