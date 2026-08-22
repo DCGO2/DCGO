@@ -35,13 +35,6 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.EqualsTraits("Seven Code");
 
-                bool CanSelectLinkedOrTrashCondition(CardSource cardSource)
-                    => cardSource.IsDigimon && cardSource.EqualsTraits("Seven Code");
-
-                bool CanSelectLinkPermanentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.LinkedCards.Filter(CanSelectLinkedOrTrashCondition).Count > 0;
-
                 bool CanSelectDantemonCondition(CardSource cardSource) => cardSource.EqualsCardName("Dantemon");
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -80,8 +73,17 @@ namespace DCGO.CardEffects.BT26
 
                     if (selectedTarget == null) yield break;
 
+                    List<CardSource> materialCards = new List<CardSource>();
+
                     bool CanSelectOtherBattleAreaCondition(Permanent permanent)
                         => permanent != selectedTarget && CanSelectTargetCondition(permanent);
+
+                    bool CanSelectLinkedOrTrashCondition(CardSource cardSource)
+                        => cardSource.IsDigimon && cardSource.EqualsTraits("Seven Code") && !materialCards.Contains(cardSource);
+
+                    bool CanSelectLinkPermanentCondition(Permanent permanent)
+                        => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                            && permanent.LinkedCards.Filter(CanSelectLinkedOrTrashCondition).Count > 0;
 
                     int availableBattleArea = CardEffectCommons.MatchConditionPermanentCount(CanSelectOtherBattleAreaCondition);
                     int availableLinked = 0;
@@ -94,7 +96,6 @@ namespace DCGO.CardEffects.BT26
 
                     if (availableBattleArea + availableLinked + availableTrash < 6) yield break;
 
-                    List<CardSource> materialCards = new List<CardSource>();
                     int remaining = 6;
 
                     while (remaining > 0)
@@ -109,11 +110,13 @@ namespace DCGO.CardEffects.BT26
                         if (canPickTrash) locationElements.Add(new(message: "Trash", value: 3, spriteIndex: 0));
                         locationElements.Add(new(message: "Cancel", value: 4, spriteIndex: 1));
 
-                        if (locationElements.Count == 4) yield break;
+                        if (locationElements.Count == 1) yield break;
 
                         GManager.instance.userSelectionManager.SetIntSelection(selectionElements: locationElements, selectPlayer: card.Owner, selectPlayerMessage: $"Select a location to take [Seven Code] digivolution material from ({remaining} remaining).", notSelectPlayerMessage: "The opponent is selecting a location for digivolution material.");
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                         int selectedLocation = GManager.instance.userSelectionManager.SelectedIntValue;
+
+                        if (selectedLocation == 4) yield break;
 
                         if (selectedLocation == 1)
                         {
@@ -154,7 +157,7 @@ namespace DCGO.CardEffects.BT26
                         else
                         {
                             List<CardSource> pool = selectedLocation == 2
-                                ? selectedTarget.LinkedCards.Filter(CanSelectLinkedOrTrashCondition)
+                                ? card.Owner.GetBattleAreaDigimons().SelectMany(permanent => permanent.LinkedCards).Where(CanSelectLinkedOrTrashCondition).ToList()
                                 : card.Owner.TrashCards.Filter(CanSelectLinkedOrTrashCondition);
 
                             CardSource selectedCard = null;
