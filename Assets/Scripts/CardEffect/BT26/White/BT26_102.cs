@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Seven Code PAD
 namespace DCGO.CardEffects.BT26
@@ -34,6 +35,13 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.EqualsTraits("Seven Code");
 
+                bool CanSelectLinkedOrTrashCondition(CardSource cardSource)
+                    => cardSource.IsDigimon && cardSource.EqualsTraits("Seven Code");
+
+                bool CanSelectLinkPermanentCondition(Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent.LinkedCards.Filter(CanSelectLinkedOrTrashCondition).Count > 0;
+
                 bool CanSelectDantemonCondition(CardSource cardSource) => cardSource.EqualsCardName("Dantemon");
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -53,7 +61,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: false,
+                        canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectTargetCoroutine,
                         afterSelectPermanentCoroutine: null,
@@ -75,12 +83,14 @@ namespace DCGO.CardEffects.BT26
                     bool CanSelectOtherBattleAreaCondition(Permanent permanent)
                         => permanent != selectedTarget && CanSelectTargetCondition(permanent);
 
-                    bool CanSelectLinkedOrTrashCondition(CardSource cardSource)
-                        => cardSource.IsDigimon && cardSource.EqualsTraits("Seven Code");
-
                     int availableBattleArea = CardEffectCommons.MatchConditionPermanentCount(CanSelectOtherBattleAreaCondition);
-                    int availableLinked = selectedTarget.LinkedCards.Filter(CanSelectLinkedOrTrashCondition).Count;
+                    int availableLinked = 0;
                     int availableTrash = card.Owner.TrashCards.Filter(CanSelectLinkedOrTrashCondition).Count;
+
+                    foreach (Permanent permanent in card.Owner.GetBattleAreaDigimons().Where((permanent) => permanent.LinkedCards.Any(CanSelectLinkedOrTrashCondition)))
+                    {
+                        availableLinked += permanent.LinkedCards.Count(CanSelectLinkedOrTrashCondition);
+                    }
 
                     if (availableBattleArea + availableLinked + availableTrash < 6) yield break;
 
@@ -90,28 +100,20 @@ namespace DCGO.CardEffects.BT26
                     while (remaining > 0)
                     {
                         bool canPickBattleArea = CardEffectCommons.HasMatchConditionPermanent(CanSelectOtherBattleAreaCondition);
-                        bool canPickLinked = selectedTarget.LinkedCards.Exists(CanSelectLinkedOrTrashCondition);
+                        bool canPickLinked = CardEffectCommons.HasMatchConditionPermanent(CanSelectLinkPermanentCondition);
                         bool canPickTrash = card.Owner.TrashCards.Exists(CanSelectLinkedOrTrashCondition);
-
-                        if (!canPickBattleArea && !canPickLinked && !canPickTrash) break;
 
                         List<SelectionElement<int>> locationElements = new List<SelectionElement<int>>();
                         if (canPickBattleArea) locationElements.Add(new(message: "Battle area", value: 1, spriteIndex: 0));
-                        if (canPickLinked) locationElements.Add(new(message: "Link cards", value: 2, spriteIndex: 1));
-                        if (canPickTrash) locationElements.Add(new(message: "Trash", value: 3, spriteIndex: 2));
+                        if (canPickLinked) locationElements.Add(new(message: "Link cards", value: 2, spriteIndex: 0));
+                        if (canPickTrash) locationElements.Add(new(message: "Trash", value: 3, spriteIndex: 0));
+                        locationElements.Add(new(message: "Cancel", value: 4, spriteIndex: 1));
 
-                        int selectedLocation;
+                        if (locationElements.Count == 4) yield break;
 
-                        if (locationElements.Count > 1)
-                        {
-                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: locationElements, selectPlayer: card.Owner, selectPlayerMessage: $"Select a location to take [Seven Code] digivolution material from ({remaining} remaining).", notSelectPlayerMessage: "The opponent is selecting a location for digivolution material.");
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                            selectedLocation = GManager.instance.userSelectionManager.SelectedIntValue;
-                        }
-                        else
-                        {
-                            selectedLocation = canPickBattleArea ? 1 : (canPickLinked ? 2 : 3);
-                        }
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: locationElements, selectPlayer: card.Owner, selectPlayerMessage: $"Select a location to take [Seven Code] digivolution material from ({remaining} remaining).", notSelectPlayerMessage: "The opponent is selecting a location for digivolution material.");
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                        int selectedLocation = GManager.instance.userSelectionManager.SelectedIntValue;
 
                         if (selectedLocation == 1)
                         {
@@ -192,20 +194,17 @@ namespace DCGO.CardEffects.BT26
                         }
                     }
 
-                    if (materialCards.Count >= 1)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(selectedTarget.AddDigivolutionCardsBottom(materialCards, activateClass));
-                    }
-
                     if (materialCards.Count == 6)
                     {
+                        yield return ContinuousController.instance.StartCoroutine(selectedTarget.AddDigivolutionCardsBottom(materialCards, activateClass));
+                    
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                             selectedTarget,
                             CanSelectDantemonCondition,
                             payCost: false,
                             reduceCostTuple: null,
                             fixedCostTuple: null,
-                            ignoreDigivolutionRequirementFixedCost: -1,
+                            ignoreDigivolutionRequirementFixedCost: 1,
                             isHand: true,
                             activateClass: activateClass,
                             successProcess: null,
