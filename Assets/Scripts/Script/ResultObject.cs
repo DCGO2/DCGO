@@ -207,6 +207,14 @@ public class ResultObject : MonoBehaviour
     {
         this.gameObject.SetActive(true);
 
+        // === DCGO-CUSTOM:ranked begin ===
+        bool isRanked = ContinuousController.instance != null && ContinuousController.instance.isRanked;
+        // === DCGO-CUSTOM:tournament begin ===
+        bool isTournament = ContinuousController.instance != null && ContinuousController.instance.isTournament;
+        // === DCGO-CUSTOM:tournament end ===
+        // === DCGO-CUSTOM:ranked end ===
+        bool skipRankedReport = false;
+
         string log = "";
 
         log += "\nEnd Game";
@@ -214,61 +222,13 @@ public class ResultObject : MonoBehaviour
         if (Winner != null)
         {
             // === DCGO-CUSTOM:chat begin ===
-            GManager.instance.battleChat.OffChat(playSe: false);
+            if (GManager.instance.battleChat != null)
+            {
+                GManager.instance.battleChat.OffChat(playSe: false);
+            }
             // === DCGO-CUSTOM:chat end ===
             log += $"\nWinner:{Winner.PlayerName}";
         }
-        // === DCGO-CUSTOM:tournament begin ===
-        if (isTournament && !GManager.instance.IsAI)
-        {
-            bool? localWon = null;
-            if (Winner == GManager.instance.You)
-            {
-                localWon = true;
-            }
-            else if (Winner != null)
-            {
-                localWon = false;
-            }
-
-            bool disconnect = Winner == null && !skipRankedReport;
-            bool draw = Winner == null && skipRankedReport;
-            var match = TournamentServices.EnsureExists().Match;
-            match.NotifyGameEnded(localWon, disconnect, draw);
-
-            string seriesLine = match.FormatSeriesStatusLine();
-            if (!string.IsNullOrEmpty(seriesLine))
-            {
-                if (string.IsNullOrEmpty(ResultText.text))
-                {
-                    ResultText.text = seriesLine;
-                }
-                else
-                {
-                    ResultText.text += "\n" + seriesLine;
-                }
-            }
-
-            TournamentServices.EnsureExists().Match.BeginAutoAdvanceFromResult();
-            RelabelTournamentReturnButton(match.ShouldReloadNextGame);
-        }
-        // === DCGO-CUSTOM:tournament end ===
-        // === DCGO-CUSTOM:ranked begin ===
-        if (isRanked && !GManager.instance.IsAI && !skipRankedReport)
-        {
-            // Capture battle-scene state now — ReportRankedOutcome outlives BattleScene unload
-            bool localWon = Winner == GManager.instance.You;
-            bool disconnect = Winner == null;
-            var ranked = RankedServices.EnsureExists();
-            ranked.StartCoroutine(ReportRankedOutcome(localWon, disconnect, Surrendered));
-        }
-        // === DCGO-CUSTOM:ranked end ===
-        // === DCGO-CUSTOM:ranked begin ===
-        bool isRanked = ContinuousController.instance != null && ContinuousController.instance.isRanked;
-        // === DCGO-CUSTOM:tournament begin ===
-        bool isTournament = ContinuousController.instance != null && ContinuousController.instance.isTournament;
-        // === DCGO-CUSTOM:tournament end ===
-        // === DCGO-CUSTOM:ranked end ===
 
         ResultText.text = "";
 
@@ -289,7 +249,7 @@ public class ResultObject : MonoBehaviour
             {
                 // === DCGO-CUSTOM:friends begin ===
                 bool isFriendDuel = ContinuousController.instance != null && ContinuousController.instance.isFriendDuel;
-                if (!isFriendDuel)
+                if (!isRanked && !isTournament && !isFriendDuel)
                 {
                     ContinuousController.instance.WinCount++;
                     ContinuousController.instance.SaveWinCount();
@@ -352,8 +312,55 @@ public class ResultObject : MonoBehaviour
                 log += $"\nDraw";
 
                 ResultText.text = "Draw.";
+                skipRankedReport = true;
             }
         }
+
+        // === DCGO-CUSTOM:ranked begin ===
+        if (isRanked && !GManager.instance.IsAI && !skipRankedReport)
+        {
+            // Capture battle-scene state now — ReportRankedOutcome outlives BattleScene unload
+            bool localWon = Winner == GManager.instance.You;
+            bool disconnect = Winner == null;
+            var ranked = RankedServices.EnsureExists();
+            ranked.StartCoroutine(ReportRankedOutcome(localWon, disconnect, Surrendered));
+        }
+        // === DCGO-CUSTOM:ranked end ===
+        // === DCGO-CUSTOM:tournament begin ===
+        if (isTournament && !GManager.instance.IsAI)
+        {
+            bool? localWon = null;
+            if (Winner == GManager.instance.You)
+            {
+                localWon = true;
+            }
+            else if (Winner != null)
+            {
+                localWon = false;
+            }
+
+            bool disconnect = Winner == null && !skipRankedReport;
+            bool draw = Winner == null && skipRankedReport;
+            var match = TournamentServices.EnsureExists().Match;
+            match.NotifyGameEnded(localWon, disconnect, draw);
+
+            string seriesLine = match.FormatSeriesStatusLine();
+            if (!string.IsNullOrEmpty(seriesLine))
+            {
+                if (string.IsNullOrEmpty(ResultText.text))
+                {
+                    ResultText.text = seriesLine;
+                }
+                else
+                {
+                    ResultText.text += "\n" + seriesLine;
+                }
+            }
+
+            TournamentServices.EnsureExists().Match.BeginAutoAdvanceFromResult();
+            RelabelTournamentReturnButton(match.ShouldReloadNextGame);
+        }
+        // === DCGO-CUSTOM:tournament end ===
 
         // === DCGO-CUSTOM:friends begin ===
         if (!GManager.instance.IsAI)

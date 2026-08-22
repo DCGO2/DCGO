@@ -84,11 +84,37 @@ public class ContinuousController : MonoBehaviour
     public static string RankedMmrKey => RankedKeys.MmrProperty;
     public static string RankedPlayFabIdKey => RankedKeys.PlayFabIdProperty;
 
+    public const string BattleSceneName = "BattleScene";
+
     public static bool IsBattleSceneLoaded()
     {
-        var scene = SceneManager.GetSceneByName("BattleScene");
+        var scene = SceneManager.GetSceneByName(BattleSceneName);
         return scene.IsValid() && scene.isLoaded;
     }
+
+    // === DCGO-CUSTOM:tournament begin ===
+    public static void CleanStalePhotonViews()
+    {
+        var stale = new List<PhotonView>();
+        foreach (PhotonView view in PhotonNetwork.PhotonViewCollection)
+        {
+            if ((object)view == null)
+            {
+                continue;
+            }
+
+            if (view == null || view.gameObject == null || !view.gameObject.scene.isLoaded)
+            {
+                stale.Add(view);
+            }
+        }
+
+        for (int i = 0; i < stale.Count; i++)
+        {
+            PhotonNetwork.LocalCleanPhotonView(stale[i]);
+        }
+    }
+    // === DCGO-CUSTOM:tournament end ===
 
     // === DCGO-CUSTOM:friends begin ===
     public bool isFriendDuel { get; set; }
@@ -1064,11 +1090,21 @@ public class ContinuousController : MonoBehaviour
 
     public void ChangeBGMVolume(AudioSource audioSource)
     {
+        if (audioSource == null)
+        {
+            return;
+        }
+
         audioSource.volume = BGMVolume * 0.25f * 0.8f;
     }
 
     public void ChangeSEVolume(AudioSource audioSource)
     {
+        if (audioSource == null)
+        {
+            return;
+        }
+
         audioSource.volume = SEVolume * 0.5f * 0.8f;
     }
 
@@ -1436,11 +1472,118 @@ public class ContinuousController : MonoBehaviour
     //Flag that the sharing of the random number sequence is over.
     public bool DoneSetRandom { get; set; } = false;
     public bool CanSetRandom { get; set; } = false;
+
+    // === DCGO-CUSTOM:chat begin ===
+    public const int BattleChatMaxLength = 120;
+    const float BattleChatCooldownSeconds = 0.5f;
+    float _lastBattleChatSendTime = -999f;
+
+    public static event Action<string, string, int> OnBattleChatReceived;
+
+    public void SendBattleChat(string text)
+    {
+        if (isAI || !PhotonNetwork.InRoom)
+            return;
+
+        if (string.IsNullOrWhiteSpace(text))
+            return;
+
+        if (Time.unscaledTime - _lastBattleChatSendTime < BattleChatCooldownSeconds)
+            return;
+
+        string sanitized = SanitizeBattleChat(text);
+        if (string.IsNullOrEmpty(sanitized))
+            return;
+
+        _lastBattleChatSendTime = Time.unscaledTime;
+
+        string senderName = PlayerName;
+        if (string.IsNullOrEmpty(senderName))
+            senderName = "Player";
+
+        PhotonView view = GetComponent<PhotonView>();
+        if (view == null)
+            return;
+
+        view.RPC(nameof(ReceiveBattleChat), RpcTarget.All, senderName, sanitized);
+    }
+
+    public static string SanitizeBattleChat(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return string.Empty;
+
+        string sanitized = text.Replace('\r', ' ').Replace('\n', ' ').Trim();
+        if (sanitized.Length > BattleChatMaxLength)
+            sanitized = sanitized.Substring(0, BattleChatMaxLength);
+
+        return sanitized;
+    }
+
+    [PunRPC]
+    public void ReceiveBattleChat(string senderName, string text, PhotonMessageInfo info)
+    {
+        string safeName = string.IsNullOrEmpty(senderName) ? "Player" : senderName.Trim();
+        if (safeName.Length > PlayerNameMaxLength && PlayerNameMaxLength > 0)
+            safeName = safeName.Substring(0, PlayerNameMaxLength);
+
+        string sanitized = SanitizeBattleChat(text);
+        if (string.IsNullOrEmpty(sanitized))
+            return;
+
+        int actorNumber = info.Sender != null ? info.Sender.ActorNumber : -1;
+        OnBattleChatReceived?.Invoke(safeName, sanitized, actorNumber);
+    }
+    // === DCGO-CUSTOM:chat end ===
+
     [PunRPC]
     public void SetRandom(long random)
     {
         StartCoroutine(SetRandomCoroutine(random));
     }
+
+    // === DCGO-CUSTOM:ranked begin ===
+    [PunRPC]
+    public void RankedGoToBattleScene(string matchId)
+    {
+        if (!isRanked)
+        {
+            Debug.LogWarning("[Ranked] RankedGoToBattleScene received but isRanked is false.");
+            isRanked = true;
+            isRandomMatch = false;
+        }
+
+        var rankedLobby = Opening.instance != null ? Opening.instance.battle?.lobbyManager_RankedMatch : null;
+        if (rankedLobby == null)
+        {
+            rankedLobby = FindObjectOfType<LobbyManager_RankedMatch>();
+        }
+
+        if (rankedLobby != null)
+        {
+            rankedLobby.BeginBattleTransition(matchId);
+            return;
+        }
+
+        Debug.LogWarning("[Ranked] No LobbyManager_RankedMatch — loading BattleScene directly.");
+        StartCoroutine(RankedDirectLoadBattleCoroutine());
+    }
+
+    IEnumerator RankedDirectLoadBattleCoroutine()
+    {
+        if (Opening.instance != null)
+        {
+            ContinuousController.instance.StartCoroutine(Opening.instance.OpeningBGM.FadeOut(0.2f));
+            foreach (Camera camera in Opening.instance.openingCameras)
+            {
+                camera.gameObject.SetActive(false);
+            }
+        }
+
+        yield return new WaitForSeconds(0.1f);
+        SceneManager.LoadSceneAsync(BattleSceneName, LoadSceneMode.Additive);
+    }
+    // === DCGO-CUSTOM:ranked end ===
 
     IEnumerator SetRandomCoroutine(long random)
     {
@@ -1753,7 +1896,7 @@ public class PhotonUtility
     #endregion
 
     #region Connect to Photon server
-    public static IEnumerator ConnectToMasterServerCoroutine()
+    public static IEnumerator ConnectToMasterServerCoroutine(bool matchmakingOwnsConnection = true)
     {
         int maxRetries = 5;
         float retryDelay = 3f;
@@ -1769,11 +1912,27 @@ public class PhotonUtility
                     yield return new WaitWhile(() => PhotonNetwork.IsConnected);
                 }
 
+                // === DCGO-CUSTOM:onlinecount begin ===
+                if (matchmakingOwnsConnection)
+                {
+                    OnlinePlayerCountService.EnsureExists().SetMatchmakingOwnsConnection(true);
+                }
+                // === DCGO-CUSTOM:onlinecount end ===
+
                 PhotonNetwork.NetworkingClient.AppId = PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime;
                 PhotonNetwork.ConnectToRegion(ContinuousController.instance.serverRegion);
                 PhotonNetwork.NickName = ContinuousController.instance.PlayerName;
                 PhotonNetwork.GameVersion = ContinuousController.instance.GameVerString;
                 ContinuousController.instance.LastConnectServerRegion = ContinuousController.instance.serverRegion;
+            }
+            else
+            {
+                // === DCGO-CUSTOM:onlinecount begin ===
+                if (matchmakingOwnsConnection)
+                {
+                    OnlinePlayerCountService.EnsureExists().SetMatchmakingOwnsConnection(true);
+                }
+                // === DCGO-CUSTOM:onlinecount end ===
             }
 
             yield return new WaitUntil(() =>

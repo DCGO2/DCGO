@@ -96,71 +96,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             {
                 yield return ContinuousController.instance.StartCoroutine(PhotonUtility.ConnectToMasterServerCoroutine());
             }
-        // === DCGO-CUSTOM:ranked begin ===
-        IEnumerator RefreshRankedNamePlatesLater(
-            Photon.Realtime.Player masterPhoton,
-            Photon.Realtime.Player nonMasterPhoton)
-        {
-            // Props can arrive shortly after room enter — re-apply once after a short wait.
-            const float totalWait = 1.5f;
-            const float step = 0.25f;
-            float waited = 0f;
-
-            while (waited < totalWait)
-            {
-                yield return new WaitForSeconds(step);
-                waited += step;
-
-                bool bothHaveMmr =
-                    (masterPhoton == null || PhotonHasMmr(masterPhoton)) &&
-                    (nonMasterPhoton == null || PhotonHasMmr(nonMasterPhoton));
-
-                if (bothHaveMmr)
-                {
-                    break;
-                }
-            }
-
-            ApplyPlayerNamePlate(0, masterPhoton);
-            ApplyPlayerNamePlate(1, nonMasterPhoton);
-        }
-
-        bool PhotonHasMmr(Photon.Realtime.Player photonPlayer)
-        {
-            return photonPlayer != null &&
-                   photonPlayer.CustomProperties != null &&
-                   photonPlayer.CustomProperties.ContainsKey(RankedKeys.MmrProperty);
-        }
-        // === DCGO-CUSTOM:ranked end ===
-        // === DCGO-CUSTOM:ranked begin ===
-        int ResolvePhotonMmr(Photon.Realtime.Player photonPlayer, bool isLocalGamePlayer)
-        {
-            if (photonPlayer != null &&
-                photonPlayer.CustomProperties != null &&
-                photonPlayer.CustomProperties.TryGetValue(RankedKeys.MmrProperty, out object mmrObj) &&
-                mmrObj != null)
-            {
-                try
-                {
-                    return Convert.ToInt32(mmrObj);
-                }
-                catch
-                {
-                    // fall through
-                }
-            }
-
-            if (isLocalGamePlayer &&
-                RankedServices.Instance != null &&
-                RankedServices.Instance.Profile != null &&
-                RankedServices.Instance.Profile.Cached != null)
-            {
-                return RankedServices.Instance.Profile.Cached.mmr;
-            }
-
-            return RankedRating.DefaultMmr;
-        }
-        // === DCGO-CUSTOM:ranked end ===
 
             yield return new WaitWhile(() => !PhotonNetwork.IsConnectedAndReady);
 
@@ -218,8 +153,12 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         #endregion
 
         #region Save each player name
-        SetPlayerName(0, PlayerName(MasterPlayer));
-        SetPlayerName(1, PlayerName(nonMasterPlayer));
+        ApplyPlayerNamePlate(0, MasterPlayer);
+        ApplyPlayerNamePlate(1, nonMasterPlayer);
+        if (ContinuousController.instance != null && ContinuousController.instance.isRanked)
+        {
+            StartCoroutine(RefreshRankedNamePlatesLater(MasterPlayer, nonMasterPlayer));
+        }
         #endregion
 
         #region Player name for that Photon client
@@ -321,6 +260,91 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     player.PlayerNameText.text = player.PlayerName;
             }
         }
+
+        void ApplyPlayerNamePlate(int playerId, Photon.Realtime.Player photonPlayer)
+        {
+            string rawName = PlayerName(photonPlayer);
+            SetPlayerName(playerId, rawName);
+            Player player = gameContext.PlayerFromID(playerId);
+            if (player == null || player.PlayerNameText == null)
+            {
+                return;
+            }
+
+            if (ContinuousController.instance != null && ContinuousController.instance.isRanked)
+            {
+                int mmr = ResolvePhotonMmr(photonPlayer, player.isYou);
+                player.BattleDisplayedMmr = mmr;
+                string display = string.IsNullOrEmpty(rawName) ? (player.isYou ? "You" : "Opponent") : rawName;
+                player.PlayerNameText.text = $"{display}  {RankedRating.FormatBesideName(mmr)}";
+                player.PlayerNameText.enableAutoSizing = true;
+                player.PlayerNameText.fontSizeMin = 14f;
+                player.PlayerNameText.fontSizeMax = player.PlayerNameText.fontSize > 1f
+                    ? player.PlayerNameText.fontSize
+                    : 36f;
+            }
+        }
+
+        IEnumerator RefreshRankedNamePlatesLater(
+            Photon.Realtime.Player masterPhoton,
+            Photon.Realtime.Player nonMasterPhoton)
+        {
+            const float totalWait = 1.5f;
+            const float step = 0.25f;
+            float waited = 0f;
+
+            while (waited < totalWait)
+            {
+                yield return new WaitForSeconds(step);
+                waited += step;
+
+                bool bothHaveMmr =
+                    (masterPhoton == null || PhotonHasMmr(masterPhoton)) &&
+                    (nonMasterPhoton == null || PhotonHasMmr(nonMasterPhoton));
+
+                if (bothHaveMmr)
+                {
+                    break;
+                }
+            }
+
+            ApplyPlayerNamePlate(0, masterPhoton);
+            ApplyPlayerNamePlate(1, nonMasterPhoton);
+        }
+
+        bool PhotonHasMmr(Photon.Realtime.Player photonPlayer)
+        {
+            return photonPlayer != null &&
+                   photonPlayer.CustomProperties != null &&
+                   photonPlayer.CustomProperties.ContainsKey(RankedKeys.MmrProperty);
+        }
+
+        int ResolvePhotonMmr(Photon.Realtime.Player photonPlayer, bool isLocalGamePlayer)
+        {
+            if (photonPlayer != null &&
+                photonPlayer.CustomProperties != null &&
+                photonPlayer.CustomProperties.TryGetValue(RankedKeys.MmrProperty, out object mmrObj) &&
+                mmrObj != null)
+            {
+                try
+                {
+                    return Convert.ToInt32(mmrObj);
+                }
+                catch
+                {
+                }
+            }
+
+            if (isLocalGamePlayer &&
+                RankedServices.Instance != null &&
+                RankedServices.Instance.Profile != null &&
+                RankedServices.Instance.Profile.Cached != null)
+            {
+                return RankedServices.Instance.Profile.Cached.mmr;
+            }
+
+            return RankedRating.DefaultMmr;
+        }
         #endregion
         #endregion
 
@@ -361,8 +385,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         gameContext.TurnPlayer = gameContext.PlayerFromID(GameRandom.Range(0, 2));
 
         // === DCGO-CUSTOM:friends begin ===
-        var cc = ContinuousController.instance;
-        if (cc != null && cc.isFriendDuel)
+        var friendCc = ContinuousController.instance;
+        if (friendCc != null && friendCc.isFriendDuel)
         {
             var friendDirector = FriendServices.EnsureExists().Director;
             friendDirector.SyncFromRoom();

@@ -28,6 +28,16 @@ public class SelectBattleMode : MonoBehaviour
     [Header("LoadingObject")]
     public LoadingObject loadingObject;
 
+    public void HideOverlayDialogs()
+    {
+        selectRoomMatchWindow.Off();
+        enterRoom.Off();
+        // === DCGO-CUSTOM:tournament begin ===
+        enterRoom.JoinTournament = false;
+        // === DCGO-CUSTOM:tournament end ===
+        Opening.instance.OffYesNoObjects();
+    }
+
     public void OffSelectBattleMode()
     {
         Off();

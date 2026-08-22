@@ -10,12 +10,6 @@ public class SoundObject : MonoBehaviour
 
     public void PlaySE(AudioClip clip)
     {
-        // === DCGO-CUSTOM:android begin ===
-        if (_audio == null)
-        {
-            return;
-        }
-        // === DCGO-CUSTOM:android end ===
         _audio = GetComponent<AudioSource>();
 
         _audio.clip = clip;
@@ -31,6 +25,13 @@ public class SoundObject : MonoBehaviour
 
     private void Update()
     {
+        // === DCGO-CUSTOM:android begin ===
+        if (_audio == null)
+        {
+            return;
+        }
+        // === DCGO-CUSTOM:android end ===
+
         if (ContinuousController.instance != null)
         {
             ContinuousController.instance.ChangeSEVolume(_audio);

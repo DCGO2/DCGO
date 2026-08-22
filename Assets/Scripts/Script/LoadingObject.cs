@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,48 +26,9 @@ public class LoadingObject : MonoBehaviour
         // === DCGO-CUSTOM:reconnect begin ===
         if (anim != null)
         {
-            // === DCGO-CUSTOM:reconnect begin ===
-            Agumon.transform.localPosition -= new Vector3(speed * Time.unscaledDeltaTime, 0, 0);
-
-            if (Mathf.Abs(Agumon.transform.localPosition.x - Meat.transform.localPosition.x) < speed * Time.unscaledDeltaTime * 2)
-            {
-                Agumon.transform.localPosition = Meat.transform.localPosition;
-                yield break;
-            }
-        // === DCGO-CUSTOM:reconnect begin ===
-        float closeWait = 0f;
-        while (this.gameObject.activeSelf && closeWait < 3f)
-        {
-            closeWait += Time.unscaledDeltaTime;
-            yield return null;
-        }
-
-        if (this.gameObject.activeSelf)
-        {
-            Off();
-        }
-        // === DCGO-CUSTOM:reconnect end ===
-            // === DCGO-CUSTOM:reconnect end ===
             anim.updateMode = AnimatorUpdateMode.UnscaledTime;
             anim.SetInteger("Close", 0);
         }
-    // === DCGO-CUSTOM:reconnect begin ===
-    void StopLoadingTextCoroutine()
-    {
-        if (setLoadingTextCoroutine == null)
-        {
-            return;
-        }
-
-        if (setLoadingTextHost != null)
-        {
-            setLoadingTextHost.StopCoroutine(setLoadingTextCoroutine);
-        }
-
-        setLoadingTextCoroutine = null;
-        setLoadingTextHost = null;
-    }
-    // === DCGO-CUSTOM:reconnect end ===
         LoadingText.gameObject.SetActive(true);
 
         yield return new WaitWhile(() => !this.gameObject.activeSelf || !this.transform.parent.gameObject.activeSelf);
@@ -85,22 +46,8 @@ public class LoadingObject : MonoBehaviour
             setLoadingTextCoroutine = StartCoroutine(SetLoadingText(DefaultString));
         }
         // === DCGO-CUSTOM:reconnect end ===
-        anim.SetInteger("Close", 0);
-        LoadingText.gameObject.SetActive(true);
 
-        yield return new WaitWhile(() => !this.gameObject.activeSelf || !this.transform.parent.gameObject.activeSelf);
-
-        if(ContinuousController.instance != null)
-        {
-            ContinuousController.instance.StartCoroutine(SetLoadingText(DefaultString));
-        }
-
-        else
-        {
-            StartCoroutine(SetLoadingText(DefaultString));
-        }
-
-        if (AnimationParent.activeSelf)
+        if (AnimationParent != null && AnimationParent.activeSelf)
         {
             Agumon.transform.localPosition = defaultAgumonPos;
             moveAgumonCoroutine = StartCoroutine(moveAgumonIEnumerator());
@@ -118,6 +65,7 @@ public class LoadingObject : MonoBehaviour
         float waitTime = 0.18f;
 
         int count = 0;
+
         // === DCGO-CUSTOM:reconnect begin ===
         while (LoadingText)
         {
@@ -141,38 +89,39 @@ public class LoadingObject : MonoBehaviour
         setLoadingTextCoroutine = null;
         setLoadingTextHost = null;
         // === DCGO-CUSTOM:reconnect end ===
-
-        while(true)
-        {
-            count++;
-
-            if(count >= 4)
-            {
-                count = 0;
-            }
-
-            LoadingText.text = DefaultString;
-
-            for(int i=0;i<count;i++)
-            {
-                LoadingText.text += ".";
-            }
-
-            yield return new WaitForSeconds(waitTime);
-        }
     }
+
+    // === DCGO-CUSTOM:reconnect begin ===
+    void StopLoadingTextCoroutine()
+    {
+        if (setLoadingTextCoroutine == null)
+        {
+            return;
+        }
+
+        if (setLoadingTextHost != null)
+        {
+            setLoadingTextHost.StopCoroutine(setLoadingTextCoroutine);
+        }
+
+        setLoadingTextCoroutine = null;
+        setLoadingTextHost = null;
+    }
+    // === DCGO-CUSTOM:reconnect end ===
 
     IEnumerator moveAgumonIEnumerator()
     {
         while(true)
         {
-            Agumon.transform.localPosition -= new Vector3(speed*Time.deltaTime, 0 ,0);
+            // === DCGO-CUSTOM:reconnect begin ===
+            Agumon.transform.localPosition -= new Vector3(speed * Time.unscaledDeltaTime, 0, 0);
 
-            if(Mathf.Abs(Agumon.transform.localPosition.x - Meat.transform.localPosition.x) < speed * Time.deltaTime * 2)
+            if (Mathf.Abs(Agumon.transform.localPosition.x - Meat.transform.localPosition.x) < speed * Time.unscaledDeltaTime * 2)
             {
                 Agumon.transform.localPosition = Meat.transform.localPosition;
                 yield break;
             }
+            // === DCGO-CUSTOM:reconnect end ===
 
             yield return null;
         }
@@ -180,19 +129,22 @@ public class LoadingObject : MonoBehaviour
 
     public IEnumerator EndLoading()
     {
+        StopLoadingTextCoroutine();
+
         if(moveAgumonCoroutine != null)
         {
             StopCoroutine(moveAgumonCoroutine);
+            moveAgumonCoroutine = null;
         }
 
-        if(AnimationParent.activeSelf)
+        if(AnimationParent != null && AnimationParent.activeSelf)
         {
             bool end = false;
             Sequence sequence = DOTween.Sequence();
 
             sequence
                 .Append(Agumon.transform.DOLocalMove(Meat.transform.localPosition, 0.1f))
-                .AppendCallback(() => end = true);
+                .AppendCallback(() => end = true)
                 // === DCGO-CUSTOM:reconnect begin ===
                 .SetUpdate(true);
                 // === DCGO-CUSTOM:reconnect end ===
@@ -203,13 +155,34 @@ public class LoadingObject : MonoBehaviour
             end = false;
         }
         
-        anim.SetInteger("Close", 1);
+        // === DCGO-CUSTOM:reconnect begin ===
+        if (anim != null)
+        {
+            anim.updateMode = AnimatorUpdateMode.UnscaledTime;
+            anim.SetInteger("Close", 1);
+        }
+        // === DCGO-CUSTOM:reconnect end ===
 
-        LoadingText.gameObject.SetActive(false);
+        if (LoadingText)
+        {
+            LoadingText.gameObject.SetActive(false);
+        }
 
-        yield return new WaitWhile(() => this.gameObject.activeSelf);
+        // === DCGO-CUSTOM:reconnect begin ===
+        float closeWait = 0f;
+        while (this.gameObject.activeSelf && closeWait < 3f)
+        {
+            closeWait += Time.unscaledDeltaTime;
+            yield return null;
+        }
 
-        if (AnimationParent.activeSelf)
+        if (this.gameObject.activeSelf)
+        {
+            Off();
+        }
+        // === DCGO-CUSTOM:reconnect end ===
+
+        if (AnimationParent != null && AnimationParent.activeSelf)
         {
             Agumon.transform.localPosition = defaultAgumonPos;
         }

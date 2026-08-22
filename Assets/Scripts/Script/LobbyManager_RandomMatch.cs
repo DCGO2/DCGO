@@ -41,23 +41,8 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
     //String that must be included in the random match room
     string RandomKey
     {
-        // === DCGO-CUSTOM:ranked begin ===
-        if (ContinuousController.instance != null && ContinuousController.instance.isRanked)
-        {
-            // === DCGO-CUSTOM:reconnect begin ===
-            if (BattleReconnectService.CountActivePlayers() == PhotonNetwork.CurrentRoom.MaxPlayers)
-            // === DCGO-CUSTOM:reconnect end ===
-            return;
-        }
-        // === DCGO-CUSTOM:ranked end ===
         get
         {
-            // === DCGO-CUSTOM:reconnect begin ===
-            PhotonUtility.DisconnectImmediate();
-            // === DCGO-CUSTOM:reconnect end ===
-            // === DCGO-CUSTOM:reconnect begin ===
-            PhotonUtility.LeaveRoomImmediate();
-            // === DCGO-CUSTOM:reconnect end ===
             return "randomMatchRoom";
         }
     }
@@ -114,7 +99,9 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         #region Leave From Room
         if (PhotonNetwork.InRoom)
         {
-            PhotonNetwork.LeaveRoom();
+            // === DCGO-CUSTOM:reconnect begin ===
+            PhotonUtility.LeaveRoomImmediate();
+            // === DCGO-CUSTOM:reconnect end ===
         }
 
         yield return new WaitWhile(() => PhotonNetwork.InRoom);
@@ -155,7 +142,9 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.Disconnect();
+            // === DCGO-CUSTOM:reconnect begin ===
+            PhotonUtility.DisconnectImmediate();
+            // === DCGO-CUSTOM:reconnect end ===
         }
 
         yield return new WaitWhile(() => PhotonNetwork.IsConnected);
@@ -261,6 +250,14 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
     bool n;
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
+        // Ranked reuses this panel — do not bounce the Photon lobby while ranked is searching
+        // === DCGO-CUSTOM:ranked begin ===
+        if (ContinuousController.instance != null && ContinuousController.instance.isRanked)
+        {
+            return;
+        }
+        // === DCGO-CUSTOM:ranked end ===
+
         if (this.gameObject.activeSelf)
         {
             if (!PhotonNetwork.InRoom && PhotonNetwork.InLobby && !m)
@@ -317,6 +314,13 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
     #region Callback when leaving the lobby
     public override void OnLeftLobby()
     {
+        // === DCGO-CUSTOM:ranked begin ===
+        if (ContinuousController.instance != null && ContinuousController.instance.isRanked)
+        {
+            return;
+        }
+        // === DCGO-CUSTOM:ranked end ===
+
         if (this.gameObject.activeSelf)
         {
             if (m)
@@ -332,6 +336,13 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
     #region Callback when joining a room fails
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
+        // === DCGO-CUSTOM:ranked begin ===
+        if (ContinuousController.instance != null && ContinuousController.instance.isRanked)
+        {
+            return;
+        }
+        // === DCGO-CUSTOM:ranked end ===
+
         if (this.gameObject.activeSelf && !DoneCompleteMatching)
         {
             Debug.Log($"[RandomMatch] Join room failed: [{returnCode}] {message}, retrying...");
@@ -497,9 +508,19 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
     }
     private void LateUpdate()
     {
+        // Ranked reuses this UI host; do not run casual transition during ranked queue
+        // === DCGO-CUSTOM:ranked begin ===
+        if (ContinuousController.instance != null && ContinuousController.instance.isRanked)
+        {
+            return;
+        }
+        // === DCGO-CUSTOM:ranked end ===
+
         if (PhotonNetwork.InRoom)
         {
-            if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
+            // === DCGO-CUSTOM:reconnect begin ===
+            if (BattleReconnectService.CountActivePlayers() == PhotonNetwork.CurrentRoom.MaxPlayers)
+            // === DCGO-CUSTOM:reconnect end ===
             {
                 if (PhotonNetwork.IsMasterClient)
                 {

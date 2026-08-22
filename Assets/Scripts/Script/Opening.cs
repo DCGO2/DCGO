@@ -104,11 +104,10 @@ public class Opening : MonoBehaviour
 
         if (openingCameras.Count >= 1)
         {
-            // === DCGO-CUSTOM:reconnect begin ===
-            PhotonUtility.DisconnectImmediate();
-            // === DCGO-CUSTOM:reconnect end ===
             MainCamera = openingCameras[0];
         }
+    }
+
     // === DCGO-CUSTOM:onlinecount begin ===
     void OnDestroy()
     {
@@ -402,13 +401,6 @@ public class Opening : MonoBehaviour
         }
     }
     // === DCGO-CUSTOM:onlinecount end ===
-        // === DCGO-CUSTOM:recovery begin ===
-        if (AccountButton != null)
-        {
-            AccountButton.gameObject.SetActive(false);
-        }
-        // === DCGO-CUSTOM:recovery end ===
-    }
 
     int count = 0;
     int UpdateFrame = 5;
@@ -710,6 +702,12 @@ public class Opening : MonoBehaviour
             FriendsButton.gameObject.SetActive(false);
         }
         // === DCGO-CUSTOM:friends end ===
+        // === DCGO-CUSTOM:recovery begin ===
+        if (AccountButton != null)
+        {
+            AccountButton.gameObject.SetActive(false);
+        }
+        // === DCGO-CUSTOM:recovery end ===
     }
 
     public void OnModeButtons()
@@ -722,97 +720,6 @@ public class Opening : MonoBehaviour
         // === DCGO-CUSTOM:recovery end ===
         // === DCGO-CUSTOM:friends end ===
     }
-
-    // === DCGO-CUSTOM:friends begin ===
-    public void EnsureFriendsButton()
-    {
-        if (VerText == null && canvasRect == null)
-        {
-            return;
-        }
-
-        if (FriendsButton != null)
-        {
-            Transform expectedParent = VerText != null && VerText.transform.parent != null
-                ? VerText.transform.parent
-                : (canvasRect != null ? canvasRect.transform : null);
-            if (FriendsButton.transform.parent == expectedParent)
-            {
-                FriendsButton.gameObject.SetActive(true);
-                return;
-            }
-
-            Destroy(FriendsButton.gameObject);
-            FriendsButton = null;
-        }
-
-        Transform parent = VerText != null && VerText.transform.parent != null
-            ? VerText.transform.parent
-            : (canvasRect != null ? canvasRect.transform : null);
-        if (parent == null)
-        {
-            return;
-        }
-
-        Font font = VerText != null && VerText.font != null
-            ? VerText.font
-            : Resources.GetBuiltinResource<Font>("Arial.ttf");
-
-        var go = new GameObject("FriendsButton", typeof(RectTransform), typeof(Image), typeof(Button));
-        go.layer = VerText != null ? VerText.gameObject.layer : parent.gameObject.layer;
-        go.transform.SetParent(parent, false);
-
-        var rt = go.GetComponent<RectTransform>();
-        if (VerText != null)
-        {
-            var verRt = VerText.GetComponent<RectTransform>();
-            rt.localRotation = verRt.localRotation;
-            rt.localScale = Vector3.one;
-            rt.anchorMin = verRt.anchorMin;
-            rt.anchorMax = verRt.anchorMax;
-            rt.pivot = verRt.pivot;
-            rt.anchoredPosition = verRt.anchoredPosition + new Vector2(-20f, 210f);
-        }
-        else
-        {
-            rt.anchorMin = new Vector2(1f, 0f);
-            rt.anchorMax = new Vector2(1f, 0f);
-            rt.pivot = new Vector2(1f, 0f);
-            rt.anchoredPosition = new Vector2(-40f, 220f);
-        }
-
-        rt.sizeDelta = new Vector2(200f, 56f);
-        go.GetComponent<Image>().color = new Color(0.18f, 0.42f, 0.85f, 0.95f);
-
-        FriendsButton = go.GetComponent<Button>();
-        FriendsButton.onClick.AddListener(() =>
-        {
-            PlayDecisionSE();
-            FriendListPanel.ShowFromHome();
-        });
-
-        var labelGo = new GameObject("Label", typeof(RectTransform));
-        labelGo.transform.SetParent(go.transform, false);
-        var text = labelGo.AddComponent<Text>();
-        text.font = font;
-        text.fontSize = 24;
-        text.fontStyle = FontStyle.Bold;
-        text.alignment = TextAnchor.MiddleCenter;
-        text.color = Color.white;
-        text.text = LocalizeUtility.GetLocalizedString(EngMessage: "Friends", JpnMessage: "フレンド");
-        text.raycastTarget = false;
-        if (VerText != null && VerText.material != null)
-        {
-            text.material = VerText.material;
-        }
-
-        var lrt = text.GetComponent<RectTransform>();
-        lrt.anchorMin = Vector2.zero;
-        lrt.anchorMax = Vector2.one;
-        lrt.offsetMin = Vector2.zero;
-        lrt.offsetMax = Vector2.zero;
-    }
-    // === DCGO-CUSTOM:friends end ===
 
     public void CreateOnClickEffect()
     {
@@ -886,7 +793,9 @@ public class Opening : MonoBehaviour
 
         if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.Disconnect();
+            // === DCGO-CUSTOM:reconnect begin ===
+            PhotonUtility.DisconnectImmediate();
+            // === DCGO-CUSTOM:reconnect end ===
 
             while (PhotonNetwork.IsConnected)
             {

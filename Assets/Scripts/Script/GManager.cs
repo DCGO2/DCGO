@@ -239,48 +239,17 @@ public class GManager : MonoBehaviourPun
 
         if (Opening.instance != null)
         {
-            // === DCGO-CUSTOM:reconnect begin ===
-            BattleReconnectService.Instance?.ReleaseBattleHold();
-            bool weDisconnected = !PhotonNetwork.IsConnected || !PhotonNetwork.InRoom;
-            turnStateMachine.EndGame(weDisconnected ? null : You, false);
-            // === DCGO-CUSTOM:reconnect end ===
-            // === DCGO-CUSTOM:reconnect begin ===
-            var reconnect = BattleReconnectService.Instance;
-            bool reconnecting = reconnect != null && reconnect.IsReconnecting;
-
-            if (!PhotonNetwork.IsConnected || !PhotonNetwork.InRoom)
-            {
-                if (reconnecting)
-                {
-                    yield return null;
-                    continue;
-                }
-
-                break;
-            }
-
-            if (PhotonNetwork.CurrentRoom != null && BattleReconnectService.CountActivePlayers() < 2)
-            {
-                if (BattleReconnectService.HasInactiveOpponent())
-                {
-                    reconnect?.EnsureHoldForOpponent();
-                    yield return null;
-                    continue;
-                }
-
-                if (reconnecting)
-                {
-                    yield return null;
-                    continue;
-                }
-
-                break;
-            }
-            // === DCGO-CUSTOM:reconnect end ===
             if (Opening.instance.OpeningBGM != null)
             {
                 Opening.instance.OpeningBGM.StopPlayBGM();
             }
+        }
+
+        instance = this;
+
+        StartCoroutine(AwakeCoroutine());
+    }
+
     // === DCGO-CUSTOM:chat begin ===
     void EnsureBattleChat()
     {
@@ -320,12 +289,6 @@ public class GManager : MonoBehaviourPun
             battleChat.Init();
     }
     // === DCGO-CUSTOM:chat end ===
-        }
-
-        instance = this;
-
-        StartCoroutine(AwakeCoroutine());
-    }
 
     IEnumerator AwakeCoroutine()
     {
@@ -429,40 +392,54 @@ public class GManager : MonoBehaviourPun
 
         yield return new WaitWhile(() => turnStateMachine == null);
 
-        yield return _waitForSeconds5;
+        yield return new WaitForSecondsRealtime(2f);
 
         while (true)
         {
-            if (!PhotonNetwork.IsConnected)
+            // === DCGO-CUSTOM:reconnect begin ===
+            var reconnect = BattleReconnectService.Instance;
+            bool reconnecting = reconnect != null && reconnect.IsReconnecting;
+
+            if (!PhotonNetwork.IsConnected || !PhotonNetwork.InRoom)
             {
+                if (reconnecting)
+                {
+                    yield return null;
+                    continue;
+                }
+
                 break;
             }
 
-            else
+            if (PhotonNetwork.CurrentRoom != null && BattleReconnectService.CountActivePlayers() < 2)
             {
-                if (!PhotonNetwork.InRoom)
+                if (BattleReconnectService.HasInactiveOpponent())
                 {
-                    break;
+                    reconnect?.EnsureHoldForOpponent();
+                    yield return null;
+                    continue;
                 }
 
-                else
+                if (reconnecting)
                 {
-                    if (PhotonNetwork.CurrentRoom != null)
-                    {
-                        if (PhotonNetwork.PlayerList.Length < 2)
-                        {
-                            break;
-                        }
-                    }
+                    yield return null;
+                    continue;
                 }
+
+                break;
             }
+            // === DCGO-CUSTOM:reconnect end ===
 
             yield return null;
         }
 
-        if (!turnStateMachine.endGame)
+        if (turnStateMachine != null && !turnStateMachine.endGame)
         {
-            turnStateMachine.EndGame(null, false);
+            // === DCGO-CUSTOM:reconnect begin ===
+            BattleReconnectService.Instance?.ReleaseBattleHold();
+            bool weDisconnected = !PhotonNetwork.IsConnected || !PhotonNetwork.InRoom;
+            turnStateMachine.EndGame(weDisconnected ? null : You, false);
+            // === DCGO-CUSTOM:reconnect end ===
         }
     }
 

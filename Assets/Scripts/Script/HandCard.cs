@@ -677,18 +677,17 @@ public class HandCard : MonoBehaviour
 
     public void PointerUp(BaseEventData eventData)
     {
-        if (_pressing)
-        {
-            _pressing = false;
-        }
+        CancelLongPress();
     }
 
     public void PointerExit(BaseEventData eventData)
     {
-        if (_pressing)
-        {
-            _pressing = false;
-        }
+        CancelLongPress();
+    }
+
+    public void CancelLongPress()
+    {
+        _pressing = false;
     }
 
     public async void SetUpHandCardImage()
