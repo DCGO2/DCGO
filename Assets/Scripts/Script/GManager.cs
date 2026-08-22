@@ -411,6 +411,19 @@ public class GManager : MonoBehaviourPun
                 break;
             }
 
+            if (reconnect != null && (reconnect.IsHoldingForOpponent || reconnect.HasHoldExpired()))
+            {
+                if (reconnect.HasHoldExpired())
+                {
+                    reconnect.ReleaseBattleHold();
+                    break;
+                }
+
+                reconnect.EnsureHoldForOpponent();
+                yield return null;
+                continue;
+            }
+
             if (PhotonNetwork.CurrentRoom != null && BattleReconnectService.CountActivePlayers() < 2)
             {
                 if (BattleReconnectService.HasInactiveOpponent())

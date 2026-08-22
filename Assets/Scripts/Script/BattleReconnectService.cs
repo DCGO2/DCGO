@@ -2,6 +2,8 @@ using System.Collections;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 /// <summary>
@@ -17,6 +19,12 @@ public class BattleReconnectService : MonoBehaviourPunCallbacks
     public const int PlayerTtlMs = 90000;
     public const int MinEmptyRoomTtlMs = 90000;
     public const float KeepAliveInBackgroundSeconds = 90f;
+    /// <summary>
+    /// Max time the remaining player waits after the opponent goes silent.
+    /// A force-closed app can stay "active" via KeepAlive while heartbeat is stale,
+    /// which used to freeze the survivor on "Waiting for opponent" until PlayerTtl.
+    /// </summary>
+    public const float HoldForfeitSeconds = 20f;
 
     const string PausePropKey = "BattlePaused";
     const string HeartbeatPropKey = "BattleHb";
@@ -40,9 +48,12 @@ public class BattleReconnectService : MonoBehaviourPunCallbacks
     bool _overlayOwned;
     bool _localPausedFlag;
     float _savedTimeScale = 1f;
+    float _holdStartedUnscaled = -1f;
+    bool _holdExpired;
     int _lastHeartbeatSent;
     Coroutine _reconnectCoroutine;
-    Coroutine _overlayCoroutine;
+    GameObject _waitOverlay;
+    Text _waitText;
 
     void Awake()
     {
@@ -167,18 +178,46 @@ public class BattleReconnectService : MonoBehaviourPunCallbacks
 
     public void EnsureHoldForOpponent()
     {
-        if (!IsInBattle() || IsHoldingForOpponent)
+        if (!IsInBattle() || _holdExpired)
         {
             return;
         }
 
-        IsHoldingForOpponent = true;
+        if (!IsHoldingForOpponent)
+        {
+            _holdStartedUnscaled = Time.unscaledTime;
+            IsHoldingForOpponent = true;
+        }
+
         SyncFreezeAndOverlay();
+    }
+
+    public bool HasHoldExpired()
+    {
+        if (_holdExpired)
+        {
+            return true;
+        }
+
+        if (!IsHoldingForOpponent || _holdStartedUnscaled < 0f)
+        {
+            return false;
+        }
+
+        if (Time.unscaledTime - _holdStartedUnscaled < HoldForfeitSeconds)
+        {
+            return false;
+        }
+
+        _holdExpired = true;
+        Debug.LogWarning("[BattleReconnect] Opponent hold timed out — remaining player wins");
+        return true;
     }
 
     public void ReleaseBattleHold()
     {
         IsHoldingForOpponent = false;
+        _holdStartedUnscaled = -1f;
         if (!IsReconnecting)
         {
             HideOverlay();
@@ -339,7 +378,7 @@ public class BattleReconnectService : MonoBehaviourPunCallbacks
             RefreshOpponentHold();
         }
 
-        if (IsHoldingForOpponent && (!IsInBattle() || !ShouldHoldForOpponent()))
+        if (IsHoldingForOpponent && (!IsInBattle() || !ShouldHoldForOpponent() || HasHoldExpired()))
         {
             IsHoldingForOpponent = false;
             if (!IsReconnecting)
@@ -354,6 +393,8 @@ public class BattleReconnectService : MonoBehaviourPunCallbacks
 
             return;
         }
+
+        UpdateHoldCountdown();
 
         if (!IsHoldingForOpponent && !IsReconnecting)
         {
@@ -383,10 +424,19 @@ public class BattleReconnectService : MonoBehaviourPunCallbacks
             IsHoldingForOpponent = false;
             SyncFreezeAndOverlay();
         }
+        else if (_holdExpired && OpponentLooksConnected())
+        {
+            _holdExpired = false;
+        }
     }
 
     bool ShouldHoldForOpponent()
     {
+        if (_holdExpired)
+        {
+            return false;
+        }
+
         if (HasInactiveOpponent())
         {
             return true;
@@ -411,6 +461,34 @@ public class BattleReconnectService : MonoBehaviourPunCallbacks
         }
 
         return false;
+    }
+
+    bool OpponentLooksConnected()
+    {
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom?.Players == null)
+        {
+            return false;
+        }
+
+        if (HasInactiveOpponent() || CountActivePlayers() < 2)
+        {
+            return false;
+        }
+
+        foreach (var player in PhotonNetwork.CurrentRoom.Players.Values)
+        {
+            if (player == null || player.IsLocal)
+            {
+                continue;
+            }
+
+            if (IsPlayerMarkedPaused(player) || IsHeartbeatStale(player))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     static bool IsPlayerMarkedPaused(Photon.Realtime.Player player)
@@ -682,12 +760,39 @@ public class BattleReconnectService : MonoBehaviourPunCallbacks
                 ? LocalizeUtility.GetLocalizedString(EngMessage: "Reconnecting", JpnMessage: "再接続中")
                 : LocalizeUtility.GetLocalizedString(EngMessage: "Waiting for opponent", JpnMessage: "相手を待っています");
             ShowOverlay(message);
+            UpdateHoldCountdown();
         }
         else
         {
             HideOverlay();
             UnfreezeBattle();
         }
+    }
+
+    void UpdateHoldCountdown()
+    {
+        if (_waitText == null)
+        {
+            return;
+        }
+
+        if (IsReconnecting)
+        {
+            _waitText.text = LocalizeUtility.GetLocalizedString(
+                EngMessage: "Reconnecting...",
+                JpnMessage: "再接続中…");
+            return;
+        }
+
+        if (!IsHoldingForOpponent || _holdStartedUnscaled < 0f)
+        {
+            return;
+        }
+
+        int remain = Mathf.Max(0, Mathf.CeilToInt(HoldForfeitSeconds - (Time.unscaledTime - _holdStartedUnscaled)));
+        _waitText.text = LocalizeUtility.GetLocalizedString(
+            EngMessage: $"Opponent disconnected\nWaiting for them to return ({remain}s)",
+            JpnMessage: $"相手が切断しました\n復帰を待っています（{remain}秒）");
     }
 
     void FreezeBattle()
@@ -720,57 +825,107 @@ public class BattleReconnectService : MonoBehaviourPunCallbacks
 
     void ShowOverlay(string message)
     {
-        var loading = GManager.instance != null ? GManager.instance.LoadingObject : null;
-        if (loading == null)
-        {
-            return;
-        }
-
-        if (loading.anim != null)
-        {
-            loading.anim.updateMode = AnimatorUpdateMode.UnscaledTime;
-        }
-
         _overlayOwned = true;
-        if (_overlayCoroutine != null)
+        EnsureWaitOverlay();
+        if (_waitText != null && !string.IsNullOrEmpty(message))
         {
-            StopCoroutine(_overlayCoroutine);
-            _overlayCoroutine = null;
+            _waitText.text = message;
         }
 
-        _overlayCoroutine = StartCoroutine(loading.StartLoading(message));
+        UpdateHoldCountdown();
     }
 
     void HideOverlay()
     {
-        if (!_overlayOwned)
-        {
-            return;
-        }
-
         _overlayOwned = false;
-        var loading = GManager.instance != null ? GManager.instance.LoadingObject : null;
-        if (loading == null)
+        if (_waitOverlay != null)
         {
-            return;
+            Destroy(_waitOverlay);
+            _waitOverlay = null;
+            _waitText = null;
         }
-
-        if (_overlayCoroutine != null)
-        {
-            StopCoroutine(_overlayCoroutine);
-            _overlayCoroutine = null;
-        }
-
-        _overlayCoroutine = StartCoroutine(EndOverlay(loading));
     }
 
-    IEnumerator EndOverlay(LoadingObject loading)
+    void EnsureWaitOverlay()
     {
-        if (loading != null)
+        if (_waitOverlay != null)
         {
-            yield return loading.EndLoading();
+            return;
         }
 
-        _overlayCoroutine = null;
+        if (EventSystem.current == null)
+        {
+            var es = new GameObject("BattleReconnectEventSystem");
+            es.AddComponent<EventSystem>();
+            es.AddComponent<StandaloneInputModule>();
+            DontDestroyOnLoad(es);
+        }
+
+        Font font = ResolveOverlayFont();
+        _waitOverlay = new GameObject("BattleReconnectOverlay");
+        DontDestroyOnLoad(_waitOverlay);
+
+        var rootRt = _waitOverlay.AddComponent<RectTransform>();
+        rootRt.anchorMin = Vector2.zero;
+        rootRt.anchorMax = Vector2.one;
+        rootRt.offsetMin = Vector2.zero;
+        rootRt.offsetMax = Vector2.zero;
+
+        var canvas = _waitOverlay.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 32750;
+        canvas.overrideSorting = true;
+        _waitOverlay.AddComponent<GraphicRaycaster>();
+
+        var dim = _waitOverlay.AddComponent<Image>();
+        dim.color = new Color(0f, 0f, 0f, 0.72f);
+        dim.raycastTarget = true;
+
+        var panel = new GameObject("Panel", typeof(RectTransform), typeof(Image));
+        panel.transform.SetParent(_waitOverlay.transform, false);
+        var panelRt = panel.GetComponent<RectTransform>();
+        panelRt.anchorMin = new Vector2(0.5f, 0.5f);
+        panelRt.anchorMax = new Vector2(0.5f, 0.5f);
+        panelRt.pivot = new Vector2(0.5f, 0.5f);
+        panelRt.sizeDelta = new Vector2(720f, 240f);
+        panel.GetComponent<Image>().color = new Color(0.1f, 0.12f, 0.2f, 0.98f);
+
+        var infoGo = new GameObject("Info", typeof(RectTransform));
+        infoGo.transform.SetParent(panel.transform, false);
+        _waitText = infoGo.AddComponent<Text>();
+        _waitText.font = font;
+        _waitText.fontSize = 30;
+        _waitText.alignment = TextAnchor.MiddleCenter;
+        _waitText.color = Color.white;
+        _waitText.raycastTarget = false;
+        _waitText.horizontalOverflow = HorizontalWrapMode.Wrap;
+        _waitText.verticalOverflow = VerticalWrapMode.Overflow;
+        var infoRt = _waitText.GetComponent<RectTransform>();
+        infoRt.anchorMin = new Vector2(0.06f, 0.08f);
+        infoRt.anchorMax = new Vector2(0.94f, 0.92f);
+        infoRt.offsetMin = Vector2.zero;
+        infoRt.offsetMax = Vector2.zero;
+    }
+
+    static Font ResolveOverlayFont()
+    {
+        if (Opening.instance != null && Opening.instance.VerText != null && Opening.instance.VerText.font != null)
+        {
+            return Opening.instance.VerText.font;
+        }
+
+        Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        if (font != null)
+        {
+            return font;
+        }
+
+        font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        if (font != null)
+        {
+            return font;
+        }
+
+        return Font.CreateDynamicFontFromOSFont("Arial", 28);
     }
 }
