@@ -15,7 +15,7 @@ public class Permanent
     {
         List<CardSource> newCardSources = cardSources.Clone();
 
-        //TODO: Attempted fix for random face up secuirty/flipped sources
+        //TODO: Attempted fix for random face up security/flipped sources
         //newCardSources.Reverse();
 
         foreach (CardSource cardSource in newCardSources)
@@ -466,7 +466,7 @@ public class Permanent
                     }
                 }
             }
-            
+
             DP += LinkedDP;
 
             foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown.OrderBy(cardEffect => cardEffect.ActivatedTime))
@@ -635,7 +635,7 @@ public class Permanent
                         }
                     }
                 }
-                
+
                 DP += LinkedDP;
 
                 foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown)
@@ -651,7 +651,7 @@ public class Permanent
                 #endregion
 
                 #region DP Boosts
-                foreach(DPBoost boost in Boosts)
+                foreach (DPBoost boost in Boosts)
                 {
                     DP += boost.DP;
                 }
@@ -676,7 +676,7 @@ public class Permanent
         if (Boosts.Any(x => x.ID == boost.ID))
             Boosts.First(x => x.ID == boost.ID).DP = boost.DP;
         else
-            Boosts.Add(boost);            
+            Boosts.Add(boost);
     }
 
     public void RemoveBoost(string ID)
@@ -1264,8 +1264,8 @@ public class Permanent
 
         if (LinkedCards.Count >= LinkedMax)
         {
-            if(LinkedMax > 1)
-                yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(null,((LinkedCards.Count + 1) - LinkedMax)));
+            if (LinkedMax > 1)
+                yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(null, ((LinkedCards.Count + 1) - LinkedMax)));
             else
                 yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(LinkedCards[0]));
         }
@@ -1329,10 +1329,10 @@ public class Permanent
             if (trashCard)
             {
                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
-            }        
+            }
         }
 
-        if(removeCount > 0)
+        if (removeCount > 0)
         {
             int maxCount = Mathf.Min(removeCount, LinkedCards.Count);
             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -1516,13 +1516,13 @@ public class Permanent
         {
             foreach (CardSource cardSource in cardSources)
             {
-                
+
                 if (cardSource != null)
                 {
                     if (!cardSource.IsFlipped)
                     {
                         bool isTopCard = cardSource == TopCard;
-                        
+
                         if (!isTopCard)
                         {
                             if (!IsDigimon)
@@ -1549,11 +1549,11 @@ public class Permanent
                                     continue;
                                 }
 
-                                if(isTopCard && !cardEffect.IsInheritedEffect && !cardEffect.IsLinkedEffect)
+                                if (isTopCard && !cardEffect.IsInheritedEffect && !cardEffect.IsLinkedEffect)
                                 {
                                     _EffectList.Add(cardEffect);
                                 }
-                                
+
                                 #endregion
                             }
                         }
@@ -1739,7 +1739,7 @@ public class Permanent
                 Invert = ((IInvertSAttackEffect)cardEffect).InversionValue(this, Invert);
             }
 
-            return Mathf.Clamp(Invert,-1,1);
+            return Mathf.Clamp(Invert, -1, 1);
         }
     }
     public List<int> SecurityAttackChanges
@@ -1760,7 +1760,7 @@ public class Permanent
                         .GetFlatEffects<IChangeSAttackEffect>();
 
                     #region 場のパーマネントの効果
-                    foreach (ICardEffect cardEffect in sAttackEffects)
+                    foreach (ICardEffect cardEffect in sAttackEffects.Cast<ICardEffect>())
                     {
                         if (cardEffect.CanUse(null))
                         {
@@ -1848,7 +1848,7 @@ public class Permanent
                         .Where(e => e.PermanentCondition(this));
 
                     #region Effects of permanents in play
-                    foreach (ICardEffect cardEffect in sAttackEffects)
+                    foreach (ICardEffect cardEffect in sAttackEffects.Cast<ICardEffect>())
                     {
                         if (cardEffect.CanUse(null))
                         {
@@ -2423,7 +2423,7 @@ public class Permanent
                     ActivateClass fakeCollisionClass = new();
                     fakeCollisionClass.SetUpICardEffect("Collision", _ => true, attackingPermanent.TopCard);
                     fakeCollisionClass.SetIsDigimonEffect(true);
-                    
+
                     if (!TopCard.CanNotBeAffected(fakeCollisionClass))//Check can be affected by opponent's Digimon effects
                         return true;
                 }
@@ -3033,7 +3033,7 @@ public class Permanent
             Hashtable hashtable = new Hashtable(){
                 {"AttackingPermanent", this}
             };
-            
+
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
             {
                 foreach (Permanent permanent in player.GetFieldPermanents())
@@ -3582,7 +3582,7 @@ public class Permanent
         }
     }
     #endregion
-    
+
     #region Is an Option card
     public bool IsOption
     {
@@ -3665,7 +3665,7 @@ public class Permanent
 
         if (cardSource != null)
         {
-            foreach(string name in cardSource.CardNames)
+            foreach (string name in cardSource.CardNames)
                 names.Add(name);
 
             #region Effect of "adding names handled by DNA evolution"
