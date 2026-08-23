@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.BT26
             #region Raid
             if (timing == EffectTiming.OnAllyAttack)
             {
-                cardEffects.Add(CardEffectFactory.RaidSelfEffect(isInheritedEffect: true, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.RaidSelfEffect(isInheritedEffect: false, card: card, condition: null));
             }
             #endregion
 
@@ -88,6 +88,13 @@ namespace DCGO.CardEffects.BT26
                 onPlay: true,
                 whenDigivolving: true);
 
+            #endregion
+
+            #region Inherit
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                cardEffects.Add(CardEffectFactory.RaidSelfEffect(isInheritedEffect: true, card: card, condition: null));
+            }
             #endregion
 
             return cardEffects;
