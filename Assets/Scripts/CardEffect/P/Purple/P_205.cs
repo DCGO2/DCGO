@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.P
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon
-                        && cardSource.ContainsCardName("Kimeramon") || cardSource.ContainsCardName("Millenniummon")
+                        && (cardSource.ContainsCardName("Kimeramon") || cardSource.ContainsCardName("Millenniummon"))
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 

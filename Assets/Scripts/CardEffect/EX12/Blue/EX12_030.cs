@@ -154,6 +154,7 @@ namespace DCGO.CardEffects.EX12
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetIsSkippable(true);
+                activateClass.SetHashString("EX12_030_Inherited");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -181,6 +182,8 @@ namespace DCGO.CardEffects.EX12
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool isUsed = false;
+
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                     selectCardEffect.SetUp(
@@ -210,6 +213,8 @@ namespace DCGO.CardEffects.EX12
                     {
                         if (cardSources.Count == 3)
                         {
+                            isUsed = true;
+
                             cardSources.Reverse();
 
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
@@ -236,6 +241,8 @@ namespace DCGO.CardEffects.EX12
                                     activateClass).Unsuspend());
                             }
                         }
+
+                        if (!isUsed) activateClass.RemoveUse();
                     }
                 }
             }
