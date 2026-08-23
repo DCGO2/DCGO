@@ -10,6 +10,18 @@ namespace DCGO.CardEffects
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Alternate Digivolution Requirement
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("Glowing Dawn");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 2));
+            }
+            #endregion
+
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -25,13 +37,13 @@ namespace DCGO.CardEffects
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
                 }
 
                 bool CanSelectGlowingDawnTraitCardCondition(CardSource cardSource)
