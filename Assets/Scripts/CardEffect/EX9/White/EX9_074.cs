@@ -306,7 +306,7 @@ namespace DCGO.CardEffects.EX9
 
                     foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
                     {
-                        if(source.IsFaceUp)
+                        if (source.IsFaceUp)
                         {
                             cardColors.AddRange(source.CardColors);
                         }
