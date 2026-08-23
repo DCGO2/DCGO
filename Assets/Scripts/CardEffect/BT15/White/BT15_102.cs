@@ -436,7 +436,7 @@ namespace DCGO.CardEffects.BT15
 
                         card.Owner.UntilCalculateFixedCostEffect.Add(GetAddSkillEffect);
 
-                        List<ICardEffect> candidateEffects = selectedCard.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
+                        List<ICardEffect> candidateEffects = selectedCard.EffectList(EffectTiming.OnEnterFieldAnyone)
                             .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnPlay);
 
                         List<ICardEffect> GetEffects(CardSource sourceCard, List<ICardEffect> getCardEffects, EffectTiming _timing)
