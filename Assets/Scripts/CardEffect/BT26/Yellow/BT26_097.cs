@@ -47,160 +47,188 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectTamerCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
-                        && (permanent.TopCard.HasText("Dan Yuki") || permanent.TopCard.HasText("Kanan Yuki"));
+                        && (permanent.TopCard.ContainsCardName("Dan Yuki") || permanent.TopCard.ContainsCardName("Kanan Yuki"));
 
                 bool CanSelectAegiomonCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.EqualsCardName("Aegiomon");
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerCondition)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectAegiomonCondition);
+                    => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
 
                 bool CanSelectJupitermonCondition(CardSource cardSource)
                     => cardSource.EqualsCardName("Jupitermon");
 
                 bool CanSelectAegiochusmonCondition(CardSource cardSource)
-                    => cardSource.HasText("Aegiochusmon");
+                    => cardSource.ContainsCardName("Aegiochusmon");
+
+                bool CanSelectJupitermonPermanentCondition(Permanent permanent)
+                    => permanent.TopCard.EqualsCardName("Jupitermon");
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    Permanent selectedTamer = null;
-                    Permanent selectedAegiomon = null;
-
-                    SelectPermanentEffect selectTamerEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectTamerEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectTamerCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectTamerCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    IEnumerator SelectTamerCoroutine(Permanent permanent)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerCondition)
+                    && CardEffectCommons.HasMatchConditionPermanent(CanSelectAegiomonCondition))
                     {
-                        selectedTamer = permanent;
-                        yield return null;
-                    }
+                        Permanent selectedTamer = null;
+                        Permanent selectedAegiomon = null;
 
-                    selectTamerEffect.SetUpCustomMessage("Select 1 [Dan Yuki]/[Kanan Yuki] Tamer to place as an [Aegiomon]'s bottom digivolution card.", "The opponent is selecting 1 Tamer.");
+                        SelectPermanentEffect selectTamerEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    yield return ContinuousController.instance.StartCoroutine(selectTamerEffect.Activate());
+                        selectTamerEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectTamerCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectTamerCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
 
-                    if (selectedTamer == null) yield break;
-
-                    SelectPermanentEffect selectAegiomonEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectAegiomonEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectAegiomonCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectAegiomonCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    IEnumerator SelectAegiomonCoroutine(Permanent permanent)
-                    {
-                        selectedAegiomon = permanent;
-                        yield return null;
-                    }
-
-                    selectAegiomonEffect.SetUpCustomMessage("Select 1 [Aegiomon].", "The opponent is selecting 1 [Aegiomon].");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectAegiomonEffect.Activate());
-
-                    if (selectedAegiomon == null) yield break;
-
-                    yield return ContinuousController.instance.StartCoroutine(selectedAegiomon.AddDigivolutionCardsBottom(new List<CardSource>() { selectedTamer.TopCard }, activateClass, isFacedown: false));
-
-                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectJupitermonCondition);
-                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectJupitermonCondition);
-
-                    if (canSelectHand || canSelectTrash)
-                    {
-                        bool isHand = canSelectHand;
-
-                        if (canSelectHand && canSelectTrash)
+                        IEnumerator SelectTamerCoroutine(Permanent permanent)
                         {
-                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
-                            {
-                                new(message: "From hand", value: 1, spriteIndex: 0),
-                                new(message: "From trash", value: 2, spriteIndex: 1),
-                                new(message: "Don't digivolve", value: 3, spriteIndex: 2),
-                            };
-
-                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "From which area will [Jupitermon] digivolve?", notSelectPlayerMessage: "The opponent is choosing.");
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                            if (GManager.instance.userSelectionManager.SelectedIntValue == 3) yield break;
-
-                            isHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+                            selectedTamer = permanent;
+                            yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                            selectedAegiomon,
-                            CanSelectJupitermonCondition,
-                            payCost: false,
-                            reduceCostTuple: null,
-                            fixedCostTuple: null,
-                            ignoreDigivolutionRequirementFixedCost: -1,
-                            isHand: isHand,
-                            activateClass: activateClass,
-                            successProcess: SuccessProcess(),
-                            ignoreRequirements: CardEffectCommons.IgnoreRequirement.All
-                        ));
+                        selectTamerEffect.SetUpCustomMessage("Select 1 [Dan Yuki]/[Kanan Yuki] Tamer to place as an [Aegiomon]'s bottom digivolution card.", "The opponent is selecting 1 Tamer.");
 
-                        IEnumerator SuccessProcess()
+                        yield return ContinuousController.instance.StartCoroutine(selectTamerEffect.Activate());
+
+                        if (selectedTamer == null) yield break;
+
+                        SelectPermanentEffect selectAegiomonEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectAegiomonEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectAegiomonCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectAegiomonCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        IEnumerator SelectAegiomonCoroutine(Permanent permanent)
                         {
-                            if (selectedAegiomon.TopCard != null && selectedAegiomon.TopCard.EqualsCardName("Jupitermon")
-                                && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectAegiochusmonCondition))
+                            selectedAegiomon = permanent;
+                            yield return null;
+                        }
+
+                        selectAegiomonEffect.SetUpCustomMessage("Select 1 [Aegiomon].", "The opponent is selecting 1 [Aegiomon].");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectAegiomonEffect.Activate());
+
+                        if (selectedAegiomon == null) yield break;
+
+                        yield return ContinuousController.instance.StartCoroutine(selectedAegiomon.AddDigivolutionCardsBottom(new List<CardSource>() { selectedTamer.TopCard }, activateClass, isFacedown: false));
+
+                        bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectJupitermonCondition);
+                        bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectJupitermonCondition);
+
+                        if (canSelectHand || canSelectTrash)
+                        {
+                            bool isHand = canSelectHand;
+
+                            if (canSelectHand && canSelectTrash)
                             {
-                                CardSource selectedCard = null;
-
-                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectAegiochusmonCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 card with [Aegiochusmon] in its name to place as [Jupitermon]'s top digivolution card.",
-                                    maxCount: 1,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Trash,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                                List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                                 {
-                                    selectedCard = cardSource;
-                                    yield return null;
-                                }
+                                    new(message: "From hand", value: 1, spriteIndex: 0),
+                                    new(message: "From trash", value: 2, spriteIndex: 0),
+                                    new(message: "Don't digivolve", value: 3, spriteIndex: 1),
+                                };
 
-                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                                GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "From which area will [Jupitermon] digivolve?", notSelectPlayerMessage: "The opponent is choosing.");
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                                if (selectedCard != null)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(selectedAegiomon.AddDigivolutionCardsTop(new List<CardSource>() { selectedCard }, activateClass));
-                                }
+                                if (GManager.instance.userSelectionManager.SelectedIntValue == 3) yield break;
+
+                                isHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                selectedAegiomon,
+                                CanSelectJupitermonCondition,
+                                payCost: false,
+                                reduceCostTuple: null,
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: 1,
+                                isHand: isHand,
+                                activateClass: activateClass,
+                                ignoreRequirements: CardEffectCommons.IgnoreRequirement.All,
+                                successProcess: null));
+                        }
+
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectJupitermonPermanentCondition)
+                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectAegiochusmonCondition))
+                        {
+                            CardSource selectedCard = null;
+
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectAegiochusmonCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 card with [Aegiochusmon] in its name to place as [Jupitermon]'s top digivolution card.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            {
+                                selectedCard = cardSource;
+                                yield return null;
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                            Permanent selectedJupitermon = null;
+
+                            SelectPermanentEffect selectJupitermonEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectJupitermonEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectJupitermonPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectJupitermonCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            IEnumerator SelectJupitermonCoroutine(Permanent permanent)
+                            {
+                                selectedJupitermon = permanent;
+                                yield return null;
+                            }
+
+                            selectJupitermonEffect.SetUpCustomMessage("Select 1 [Jupitermon].", "The opponent is selecting 1 [Jupitermon].");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectJupitermonEffect.Activate());
+
+                            if (selectedCard != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(selectedJupitermon.AddDigivolutionCardsTop(new List<CardSource>() { selectedCard }, activateClass));
                             }
                         }
                     }
