@@ -270,7 +270,7 @@ namespace DCGO.CardEffects
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     #region Suspend 2 Opponent's Digimon or Tamers
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectSuspendOpponentPermamentCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendOpponentPermamentCondition))
                     {
                         int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendOpponentPermamentCondition));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
