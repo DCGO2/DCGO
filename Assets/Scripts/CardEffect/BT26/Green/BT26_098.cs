@@ -329,9 +329,10 @@ namespace DCGO.CardEffects.BT26
                                     payCost: false,
                                     reduceCostTuple: null,
                                     fixedCostTuple: null,
-                                    ignoreDigivolutionRequirementFixedCost: 1,
+                                    ignoreDigivolutionRequirementFixedCost: -1,
                                     isHand: true,
                                     activateClass: activateClass,
+                                    ignoreRequirements: CardEffectCommons.IgnoreRequirement.All,
                                     successProcess: null));
                             }
                         }
