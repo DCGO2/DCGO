@@ -41,7 +41,7 @@ public partial class CardEffectFactory
 
             if (permanentCondition(permanent))
             {
-                if (cardSource == permanent.TopCard)
+                if (cardSource == card)
                 {
                     return true;
                 }
@@ -133,6 +133,9 @@ public partial class CardEffectFactory
                             hashtable => ValidCardSourceAtActivate()
                             && (originalActivateCondition is null || originalActivateCondition(hashtable))
                         );
+
+                        activateClass.SetIsInheritedEffect(isInheritedEffect);
+                        activateClass.SetIsLinkedEffect(isLinkedEffect);
 
                         activateClass.SetHashString(GenerateHashString(card, activateClass.OriginalEffectSourceCard, activateClass.HashString, isInheritedEffect, isLinkedEffect));
 
