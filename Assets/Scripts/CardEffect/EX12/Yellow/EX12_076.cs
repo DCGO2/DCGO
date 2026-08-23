@@ -141,7 +141,10 @@ namespace DCGO.CardEffects.EX12
 
                     foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
                     {
-                        cardColors.AddRange(source.CardColors);
+                        if (source.IsFaceUp)
+                        {
+                            cardColors.AddRange(source.CardColors);
+                        }
                     }
 
                     cardColors = cardColors.Distinct().ToList();
