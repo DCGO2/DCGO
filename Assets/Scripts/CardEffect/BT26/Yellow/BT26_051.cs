@@ -116,7 +116,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.WhenLinked)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("De-Digivolve 2 1 opponent's Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 2> 1 opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
