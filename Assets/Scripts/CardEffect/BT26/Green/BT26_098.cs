@@ -12,7 +12,7 @@ namespace DCGO.CardEffects.BT26
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Reduce Play Cost
+            #region Reduce Use Cost
             bool SharedCanSelectTamerCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
                     && permanent.HasFaceDownDigivolutionCards;
