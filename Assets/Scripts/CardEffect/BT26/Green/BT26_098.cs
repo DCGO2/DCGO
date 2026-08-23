@@ -20,7 +20,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.BeforePayCost)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reduce Play Cost -2", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Reduce Use Cost -2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.None)
             {
                 ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -2", CanUseCondition, card);
+                changeCostClass.SetUpICardEffect("Play Use -2", CanUseCondition, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
                 changeCostClass.SetNotShowUI(true);
                 cardEffects.Add(changeCostClass);
