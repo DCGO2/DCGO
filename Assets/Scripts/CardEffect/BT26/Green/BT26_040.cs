@@ -26,6 +26,21 @@ namespace DCGO.CardEffects.BT26
             }
             #endregion
 
+            #region Alt Digivolve
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent) => targetPermanent.TopCard.EqualsTraits("DM");
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 2,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null,
+                    level: 3));
+            }
+            #endregion
+
             #region Shared When Moving / On Play
 
             string SharedEffectName()
@@ -39,7 +54,8 @@ namespace DCGO.CardEffects.BT26
                     && !permanent.IsSuspended && permanent.CanSuspend;
 
             bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition);
+                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition)
+                    || card.Owner.HandCards.Count >= 1;
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
