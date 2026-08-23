@@ -1760,7 +1760,7 @@ public class Permanent
                         .GetFlatEffects<IChangeSAttackEffect>();
 
                     #region 場のパーマネントの効果
-                    foreach (ICardEffect cardEffect in sAttackEffects.Cast<ICardEffect>())
+                    foreach (ICardEffect cardEffect in sAttackEffects)
                     {
                         if (cardEffect.CanUse(null))
                         {
@@ -1848,7 +1848,7 @@ public class Permanent
                         .Where(e => e.PermanentCondition(this));
 
                     #region Effects of permanents in play
-                    foreach (ICardEffect cardEffect in sAttackEffects.Cast<ICardEffect>())
+                    foreach (ICardEffect cardEffect in sAttackEffects)
                     {
                         if (cardEffect.CanUse(null))
                         {
