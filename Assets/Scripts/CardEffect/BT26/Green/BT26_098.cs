@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +19,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.BeforePayCost)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reduce Play Cost -2", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Reduce Use Cost -2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
@@ -86,7 +85,7 @@ namespace DCGO.CardEffects.BT26
                                 if (card.Owner.CanReduceCost(null, card)) ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
 
                                 ChangeCostClass changeCostClass = new ChangeCostClass();
-                                changeCostClass.SetUpICardEffect("Play Cost -2", CanUseCondition1, card);
+                                changeCostClass.SetUpICardEffect("Play Use -2", CanUseCondition1, card);
                                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
                                 card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
 
@@ -128,7 +127,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.None)
             {
                 ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -2", CanUseCondition, card);
+                changeCostClass.SetUpICardEffect("Play Use -2", CanUseCondition, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
                 changeCostClass.SetNotShowUI(true);
                 cardEffects.Add(changeCostClass);
@@ -299,7 +298,7 @@ namespace DCGO.CardEffects.BT26
                                     canEndSelectCondition: null,
                                     canNoSelect: () => false,
                                     selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: AfterSelectCardCoroutine1,
+                                    afterSelectCardCoroutine: AfterSelectCardCoroutine,
                                     message: "Specify the order to place the cards in the digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
                                     maxCount: selectedTrashCards.Count,
                                     canEndNotMax: false,
@@ -315,7 +314,7 @@ namespace DCGO.CardEffects.BT26
 
                                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect2.Activate());
 
-                                IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+                                IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                                 {
                                     digivolutionCards = cardSources.Clone();
 
