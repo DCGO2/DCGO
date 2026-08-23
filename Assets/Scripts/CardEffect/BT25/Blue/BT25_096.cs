@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 // Mirage Beast Knight
-namespace DCGO.CardEffects.BT26
+namespace DCGO.CardEffects.BT25
 {
-    public class BT26_098 : CEntity_Effect
+    public class BT25_096 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
