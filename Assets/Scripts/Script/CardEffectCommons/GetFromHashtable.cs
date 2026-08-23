@@ -726,6 +726,44 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Get simultaneous Permanents from an OnAddDigivolutionCards hashtable
+    /// <summary>
+    /// Unlike OnEnterFieldAnyone/OnDestroyedAnyone, OnAddDigivolutionCards fires from a single Permanent's own
+    /// instance method (Permanent.AddDigivolutionCards/AddDigivolutionCardsBottom), one hashtable per affected
+    /// Digimon, each pushed independently rather than pre-batched by a single caller that already knows every
+    /// affected Permanent up front. So this hashtable's own "Permanent" can't be batched at construction time —
+    /// it has to be gathered here, at check/resolution time, once any sibling pushes from the same still-pending
+    /// window have already been queued. Returns this hashtable's own Permanent plus any other Permanents with a
+    /// still-pending OnAddDigivolutionCards trigger in GManager.instance.autoProcessing.StackedSkillInfos (e.g. an
+    /// effect that places 1 face-down card under each of 2 selected Digimon in the same action) — callers should
+    /// still apply their own eligibility filter (existence/ownership/face-down checks) to the result.
+    /// </summary>
+    public static List<Permanent> GetSimultaneousPermanentsFromAddDigivolutionCardsHashtable(Hashtable hashtable)
+    {
+        List<Permanent> permanents = new List<Permanent>();
+
+        void AddPermanent(Permanent permanent)
+        {
+            if (permanent != null && !permanents.Contains(permanent))
+            {
+                permanents.Add(permanent);
+            }
+        }
+
+        AddPermanent(GetPermanentFromHashtable(hashtable));
+
+        foreach (SkillInfo skillInfo in GManager.instance.autoProcessing.StackedSkillInfos)
+        {
+            if (skillInfo.Timing == EffectTiming.OnAddDigivolutionCards && skillInfo.Hashtable != hashtable)
+            {
+                AddPermanent(GetPermanentFromHashtable(skillInfo.Hashtable));
+            }
+        }
+
+        return permanents;
+    }
+    #endregion
+
     #region Get whether to digivolve from the same level from hashtable
     public static bool IsDigivolvedFromSameLevelFromEnterFieldHashtable(Hashtable hashtable, Permanent permanent)
     {

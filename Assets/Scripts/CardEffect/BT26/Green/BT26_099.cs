@@ -88,31 +88,7 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    List<Permanent> triggeringPermanents = new List<Permanent>();
-
-                    void AddTriggeringPermanent(Permanent permanent)
-                    {
-                        if (permanent != null && !triggeringPermanents.Contains(permanent))
-                        {
-                            triggeringPermanents.Add(permanent);
-                        }
-                    }
-
-                    AddTriggeringPermanent(CardEffectCommons.GetPermanentFromHashtable(_hashtable));
-
-                    // Other Digimon that had face-down cards placed on them by the same effect, in the same
-                    // window, before this trigger got resolved (e.g. an effect that places 1 card face down under
-                    // each of 2 selected Digimon at once) — each Digimon fires its own OnAddDigivolutionCards
-                    // hashtable, so gather any still-pending sibling triggers for this same card's ability.
-                    foreach (SkillInfo skillInfo in GManager.instance.autoProcessing.StackedSkillInfos)
-                    {
-                        if (skillInfo.Timing == EffectTiming.OnAddDigivolutionCards
-                            && skillInfo.CardEffect != null
-                            && skillInfo.CardEffect.EffectSourceCard == card)
-                        {
-                            AddTriggeringPermanent(CardEffectCommons.GetPermanentFromHashtable(skillInfo.Hashtable));
-                        }
-                    }
+                    List<Permanent> triggeringPermanents = CardEffectCommons.GetSimultaneousPermanentsFromAddDigivolutionCardsHashtable(_hashtable);
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                         targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
