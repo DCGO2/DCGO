@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -4016,22 +4016,9 @@ public class Permanent
 
             foreach (CardSource cardSource in DigivolutionCards)
             {
-                if (cardSource.IsFlipped)
-                    continue;
-
-                foreach (CardColor cardColor in cardSource.CardColors)
+                if (cardSource.IsFaceUp)
                 {
-                    if (!cardColors.Contains(cardColor))
-                    {
-                        cardColors.Add(cardColor);
-                    }
-                }
-                foreach (CardColor cardColor in cardSource.DualCardColors)
-                {
-                    if (!cardColors.Contains(cardColor))
-                    {
-                        cardColors.Add(cardColor);
-                    }
+                    cardColors.AddRange(cardSource.CardColors);
                 }
             }
 
