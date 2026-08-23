@@ -12,7 +12,7 @@ namespace DCGO.CardEffects.BT26
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Reduce Use Cost
+            #region Reduce Play Cost
             bool SharedCanSelectTamerCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
                     && permanent.HasFaceDownDigivolutionCards;
@@ -20,7 +20,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.BeforePayCost)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reduce Use Cost -2", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Reduce Play Cost -2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.None)
             {
                 ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Use -2", CanUseCondition, card);
+                changeCostClass.SetUpICardEffect("Play Cost -2", CanUseCondition, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
                 changeCostClass.SetNotShowUI(true);
                 cardEffects.Add(changeCostClass);
@@ -188,25 +188,26 @@ namespace DCGO.CardEffects.BT26
                     bool IsLilamon(CardSource cardSource)
                         => cardSource.EqualsCardName("Lilamon");
 
-                    bool IsRosemon(CardSource cardSource) => cardSource.EqualsCardName("Rosemon");
+                    bool IsRosemon(CardSource cardSource)
+                        => cardSource.EqualsCardName("Rosemon");
 
                     #endregion
 
-                    if (!(CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsSunflowmon) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsLilamon))) yield break;
-                    Permanent selectedPermanent = null;
-
-                    #region Select Lalamon
-                    if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsLalamon) > 1)
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsLalamon)
+                    && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsSunflowmon)
+                    && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsLilamon))
                     {
+                        Permanent selectedPermanent = null;
+
+                        #region Select Lalamon
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsLalamon));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: IsLalamon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -222,26 +223,20 @@ namespace DCGO.CardEffects.BT26
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 [Lalamon] to gain digivolution sources", "The opponent is selecting 1 [Lalamon] to gain digivolution sources.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
-                    if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsLalamon) == 1)
-                        selectedPermanent = card.Owner.GetBattleAreaDigimons().Find(IsLalamon);
-                    #endregion
+                        #endregion
 
-                    if (selectedPermanent != null)
-                    {
-                        List<CardSource> selectedTrashCards = new List<CardSource>();
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        if (selectedPermanent != null)
                         {
-                            selectedTrashCards.Add(cardSource);
-                            yield return null;
-                        }
+                            List<CardSource> selectedTrashCards = new List<CardSource>();
 
-                        #region Select Gaogamon
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsSunflowmon))
-                        {
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            {
+                                selectedTrashCards.Add(cardSource);
+                                yield return null;
+                            }
+
+                            #region Select Sunflowmon
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsSunflowmon));
 
                             selectCardEffect.SetUp(
                                 canTargetCondition: IsSunflowmon,
@@ -251,7 +246,7 @@ namespace DCGO.CardEffects.BT26
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
                                 message: "Select 1 [Sunflowmon] card",
-                                maxCount: maxCount,
+                                maxCount: 1,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
@@ -264,16 +259,12 @@ namespace DCGO.CardEffects.BT26
                             selectCardEffect.SetUpCustomMessage("Select 1 [Sunflowmon] card to place under [Lalamon].", "The opponent is selecting a [Sunflowmon] card to place under [Lalamon].");
                             selectCardEffect.SetUpCustomMessage_ShowCard("Selected [Sunflowmon]");
                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        }
-                        #endregion
+                            #endregion
 
-                        #region Select MachGaogamon
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsLilamon) && selectedTrashCards.Find(IsSunflowmon))
-                        {
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsLilamon));
+                            #region Select Lilamon
+                            SelectCardEffect selectCardEffect1 = GManager.instance.GetComponent<SelectCardEffect>();
 
-                            selectCardEffect.SetUp(
+                            selectCardEffect1.SetUp(
                                 canTargetCondition: IsLilamon,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
@@ -281,7 +272,7 @@ namespace DCGO.CardEffects.BT26
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
                                 message: "Select 1 [Lilamon] card",
-                                maxCount: maxCount,
+                                maxCount: 1,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
@@ -291,29 +282,60 @@ namespace DCGO.CardEffects.BT26
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
 
-                            selectCardEffect.SetUpCustomMessage("Select 1 [Lilamon] card to place under [Lalamon].", "The opponent is selecting a [Lilamon] card to place under [Lalamon].");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Selected [Lilamon]");
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        }
-                        #endregion
+                            selectCardEffect1.SetUpCustomMessage("Select 1 [Lilamon] card to place under [Lalamon].", "The opponent is selecting a [Lilamon] card to place under [Lalamon].");
+                            selectCardEffect1.SetUpCustomMessage_ShowCard("Selected [Lilamon]");
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect1.Activate());
+                            #endregion
 
-                        if (selectedTrashCards.Find(IsSunflowmon) && selectedTrashCards.Find(IsLilamon))
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(
-                                addedDigivolutionCards: selectedTrashCards,
-                                cardEffect: activateClass));
+                            if (selectedTrashCards.Count == 2)
+                            {
+                                List<CardSource> digivolutionCards = new List<CardSource>();
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                targetPermanent: selectedPermanent,
-                                cardCondition: IsRosemon,
-                                payCost: false,
-                                reduceCostTuple: null,
-                                fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: 1,
-                                isHand: true,
-                                activateClass: activateClass,
-                                successProcess: null));
+                                SelectCardEffect selectCardEffect2 = GManager.instance.GetComponent<SelectCardEffect>();
 
+                                selectCardEffect2.SetUp(
+                                    canTargetCondition: (cardSource) => true,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => false,
+                                    selectCardCoroutine: null,
+                                    afterSelectCardCoroutine: AfterSelectCardCoroutine1,
+                                    message: "Specify the order to place the cards in the digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
+                                    maxCount: selectedTrashCards.Count,
+                                    canEndNotMax: false,
+                                    isShowOpponent: false,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Custom,
+                                    customRootCardList: selectedTrashCards,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
+
+                                selectCardEffect2.SetUpCustomMessage_ShowCard("Digivolution Cards");
+
+                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect2.Activate());
+
+                                IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+                                {
+                                    digivolutionCards = cardSources.Clone();
+
+                                    yield return null;
+                                }
+
+                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(digivolutionCards, activateClass));
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                    targetPermanent: selectedPermanent,
+                                    cardCondition: IsRosemon,
+                                    payCost: false,
+                                    reduceCostTuple: null,
+                                    fixedCostTuple: null,
+                                    ignoreDigivolutionRequirementFixedCost: 1,
+                                    isHand: true,
+                                    activateClass: activateClass,
+                                    successProcess: null));
+
+                            }
                         }
                     }
                 }
