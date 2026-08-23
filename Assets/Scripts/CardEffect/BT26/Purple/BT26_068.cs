@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -78,70 +77,67 @@ namespace DCGO.CardEffects.BT26
                 {
                     bool isUsed = false;
 
-                    if (card.Owner.HandCards.Count >= 1)
+                    CardSource selectedCardToTrash = null;
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: _ => true,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        CardSource selectedCardToTrash = null;
+                        selectedCardToTrash = cardSource;
+                        yield return null;
+                    }
 
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to trash.", "The opponent is selecting 1 card to trash.");
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: _ => true,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    if (selectedCardToTrash != null)
+                    {
+                        isUsed = true;
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashHandAndProcessAccordingToResult(
+                            player: card.Owner,
+                            hashtable: hashtable,
+                            cardToTrash: selectedCardToTrash,
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess,
+                            failureProcess: null));
+
+                        IEnumerator SuccessProcess(CardSource cardSource)
                         {
-                            selectedCardToTrash = cardSource;
-                            yield return null;
-                        }
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to trash.", "The opponent is selecting 1 card to trash.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                        if (selectedCardToTrash != null)
-                        {
-                            isUsed = true;
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashHandAndProcessAccordingToResult(
-                                player: card.Owner,
-                                hashtable: hashtable,
-                                cardToTrash: selectedCardToTrash,
-                                activateClass: activateClass,
-                                successProcess: SuccessProcess,
-                                failureProcess: null));
-
-                            IEnumerator SuccessProcess(CardSource cardSource)
+                            if (card.Owner.Enemy.HandCards.Count >= 1)
                             {
-                                if (card.Owner.Enemy.HandCards.Count >= 1)
-                                {
-                                    SelectHandEffect opponentSelectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                                SelectHandEffect opponentSelectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                                    opponentSelectHandEffect.SetUp(
-                                        selectPlayer: card.Owner.Enemy,
-                                        canTargetCondition: _ => true,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        maxCount: 1,
-                                        canNoSelect: false,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        selectCardCoroutine: null,
-                                        afterSelectCardCoroutine: null,
-                                        mode: SelectHandEffect.Mode.Discard,
-                                        cardEffect: activateClass);
+                                opponentSelectHandEffect.SetUp(
+                                    selectPlayer: card.Owner.Enemy,
+                                    canTargetCondition: _ => true,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    selectCardCoroutine: null,
+                                    afterSelectCardCoroutine: null,
+                                    mode: SelectHandEffect.Mode.Discard,
+                                    cardEffect: activateClass);
 
-                                    yield return ContinuousController.instance.StartCoroutine(opponentSelectHandEffect.Activate());
-                                }
+                                yield return ContinuousController.instance.StartCoroutine(opponentSelectHandEffect.Activate());
                             }
                         }
                     }
