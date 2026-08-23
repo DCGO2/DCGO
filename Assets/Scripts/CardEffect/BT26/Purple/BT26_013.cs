@@ -38,13 +38,8 @@ namespace DCGO.CardEffects.BT26
             string SharedEffectDescription(string tag)
                 => $"[{tag}] By trashing 1 card in your hand, delete 1 of your opponent's Digimon with 6000 DP or less.";
 
-            bool CanSelectPermanentCondition(Permanent permanent, ICardEffect activateClass)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && permanent.DP <= card.Owner.MaxDP_DeleteEffect(6000, activateClass);
-
             bool SharedTargetCostCheck(Hashtable hashtable, ActivateClass activateClass)
-                => card.Owner.HandCards.Count >= 1
-                    && CardEffectCommons.HasMatchConditionPermanent(permanent => CanSelectPermanentCondition(permanent, activateClass));
+                => card.Owner.HandCards.Count >= 1;
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -93,20 +88,20 @@ namespace DCGO.CardEffects.BT26
 
                         IEnumerator SuccessProcess(CardSource cardSource)
                         {
-                            bool CanSelectPermanentConditionBound(Permanent permanent) => CanSelectPermanentCondition(permanent, activateClass);
+                            bool CanSelectPermanentCondition(Permanent permanent)
+                                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                                && permanent.DP <= card.Owner.MaxDP_DeleteEffect(6000, activateClass);
 
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentConditionBound))
+                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
-                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentConditionBound));
-
                                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                                 selectPermanentEffect.SetUp(
                                     selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectPermanentConditionBound,
+                                    canTargetCondition: CanSelectPermanentCondition,
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
-                                    maxCount: maxCount,
+                                    maxCount: 1,
                                     canNoSelect: false,
                                     canEndNotMax: false,
                                     selectPermanentCoroutine: null,
