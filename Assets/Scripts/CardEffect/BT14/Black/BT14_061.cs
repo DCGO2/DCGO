@@ -80,7 +80,7 @@ namespace DCGO.CardEffects.BT14
                         {
                             if (cardSources.Count == 1)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources));
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources, cardEffect: activateClass));
 
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Top Cards", true, true));
 
@@ -161,7 +161,7 @@ namespace DCGO.CardEffects.BT14
                         {
                             if (cardSources.Count == 1)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources));
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources, cardEffect: activateClass));
 
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Top Cards", true, true));
 

@@ -591,7 +591,7 @@ public class CardObjectController : MonoBehaviour
         List<CardSource> addedCards = cardSources.Filter(cardSource => !cardSource.IsDigiEgg && !cardSource.IsToken);
 
         if (eggCards.Count <= 0)
-            yield return ContinuousController.instance.StartCoroutine(AddLibraryBottomCards(eggCards));
+            yield return ContinuousController.instance.StartCoroutine(AddLibraryBottomCards(eggCards, cardEffect: cardEffect));
 
         if (addedCards.Count <= 0) yield break;
 
@@ -840,7 +840,9 @@ public class CardObjectController : MonoBehaviour
                     if (!cardSource.Owner.DigitamaLibraryCards.Contains(cardSource))
                     {
                         cardSource.Owner.DigitamaLibraryCards.Insert(0, cardSource);
-                        if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
+                        // Ruling: OnAddLibraryAnyone should not trigger from cards added to the digi-egg deck.
+                        // Commented out (not removed) so this is easy to restore if that ruling changes.
+                        // if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
                     }
                 }
 
@@ -948,7 +950,9 @@ public class CardObjectController : MonoBehaviour
                     if (!cardSource.Owner.DigitamaLibraryCards.Contains(cardSource))
                     {
                         cardSource.Owner.DigitamaLibraryCards.Add(cardSource);
-                        if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
+                        // Ruling: OnAddLibraryAnyone should not trigger from cards added to the digi-egg deck.
+                        // Commented out (not removed) so this is easy to restore if that ruling changes.
+                        // if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
                     }
                 }
 

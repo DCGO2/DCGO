@@ -332,7 +332,7 @@ namespace DCGO.CardEffects.BT17
                             {
                                 selectedCards = sources.Clone();
                                 selectedCards.Reverse();
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(selectedCards));
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(selectedCards, cardEffect: activateClass));
                             }
                         }
 

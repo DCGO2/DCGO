@@ -2436,7 +2436,7 @@ public class DeckBottomBounceClass
             DeckBouncedPermanents.Add(permanent);
         }
 
-        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(deckBottomCards));
+        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(deckBottomCards, cardEffect: cardEffect));
 
         #endregion
 
@@ -2602,7 +2602,7 @@ public class DeckTopBounceClass
             DeckBouncedPermanents.Add(permanent);
         }
 
-        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(deckTopCards));
+        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(deckTopCards, cardEffect: cardEffect));
 
         #endregion
 
@@ -2833,7 +2833,7 @@ public class HandBounceClaass
             }
             else
             {
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { topCard }));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { topCard }, cardEffect: cardEffect));
             }
         }
 
@@ -3673,7 +3673,7 @@ public class IPutSecurityPermanent
             }
             else
             {
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { topCard }));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { topCard }, cardEffect: cardEffect));
             }
         }
 
@@ -5449,7 +5449,7 @@ public class ReturnToLibraryBottomDigivolutionCardsClass
 
         #endregion
 
-        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(_cardSources));
+        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(_cardSources, cardEffect: CardEffect));
     }
 }
 
