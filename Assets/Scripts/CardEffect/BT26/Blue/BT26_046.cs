@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,35 +104,25 @@ namespace DCGO.CardEffects.BT26
             string SharedEffectDescription(string tag)
                 => $"[{tag}] Suspend 1 of your opponent's Digimon or Tamers. 1 of their Digimon or Tamers can't unsuspend until their turn ends. Then, 1 of your Digimon can't be deleted in battle until their turn ends.";
 
-            bool CanSelectSuspendTargetCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
-                    && (permanent.IsDigimon || permanent.IsTamer)
-                    && !permanent.IsSuspended && permanent.CanSuspend;
-
-            bool CanSelectCantUnsuspendCondition(Permanent permanent)
+            bool CanSelectPermanentCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
                     && (permanent.IsDigimon || permanent.IsTamer);
 
             bool CanSelectProtectTargetCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
-            bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition);
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition))
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendTargetCondition));
-
                     SelectPermanentEffect selectSuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectSuspendEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectSuspendTargetCondition,
+                        canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
@@ -144,20 +133,15 @@ namespace DCGO.CardEffects.BT26
                     selectSuspendEffect.SetUpCustomMessage("Select 1 Digimon or Tamer to suspend.", "The opponent is selecting 1 Digimon or Tamer to suspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectSuspendEffect.Activate());
-                }
-
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectCantUnsuspendCondition))
-                {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectCantUnsuspendCondition));
 
                     SelectPermanentEffect selectCantUnsuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectCantUnsuspendEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCantUnsuspendCondition,
+                        canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -177,8 +161,6 @@ namespace DCGO.CardEffects.BT26
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectProtectTargetCondition))
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectProtectTargetCondition));
-
                     SelectPermanentEffect selectProtectEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectProtectEffect.SetUp(
@@ -186,7 +168,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectProtectTargetCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -221,7 +203,6 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
-                additionalActivateCondition: SharedAdditionalActivateCondition,
                 onPlay: true,
                 whenDigivolving: true);
 
