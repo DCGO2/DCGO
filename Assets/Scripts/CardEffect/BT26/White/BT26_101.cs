@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("If you have [Dan Yuki]/[Kanan Yuki], TS Digimon gain Blocker/+3000 DP, then delete or unsuspend", CanUseCondition, card);
+                activateClass.SetUpICardEffect("If you have [Dan Yuki]/[Kanan Yuki], TS Digimon gain Blocker and +3000 DP, then delete or unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool HasDanOrKananYuki(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
-                        && (permanent.TopCard.HasText("Dan Yuki") || permanent.TopCard.HasText("Kanan Yuki"));
+                        && (permanent.TopCard.ContainsCardName("Dan Yuki") || permanent.TopCard.ContainsCardName("Kanan Yuki"));
 
                 bool OwnTSDigimonCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
@@ -176,8 +176,8 @@ namespace DCGO.CardEffects.BT26
                             List<SelectionElement<int>> selectionElements1 = new List<SelectionElement<int>>()
                             {
                                 new(message: "From hand", value: 1, spriteIndex: 0),
-                                new(message: "From trash", value: 2, spriteIndex: 1),
-                                new(message: "Don't play", value: 3, spriteIndex: 2),
+                                new(message: "From trash", value: 2, spriteIndex: 0),
+                                new(message: "Don't play", value: 3, spriteIndex: 1),
                             };
 
                             GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: "From which area will you play a card?", notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
