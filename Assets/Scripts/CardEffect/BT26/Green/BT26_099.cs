@@ -88,6 +88,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    Permanent triggeringPermanent = CardEffectCommons.GetPermanentFromHashtable(_hashtable);
+
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                         targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
                         activateClass: activateClass,
@@ -96,49 +98,19 @@ namespace DCGO.CardEffects.BT26
 
                     IEnumerator SuccessProcess(List<Permanent> permanents)
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDigivolveTargetCondition))
+                        if (triggeringPermanent != null && CanSelectDigivolveTargetCondition(triggeringPermanent))
                         {
-                            Permanent selectedPermanent = null;
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectDigivolveTargetCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                            {
-                                selectedPermanent = permanent;
-                                yield return null;
-                            }
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that may digivolve.", "The opponent is selecting 1 Digimon that may digivolve.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            if (selectedPermanent != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                    selectedPermanent,
-                                    CanSelectDMCardCondition,
-                                    payCost: false,
-                                    reduceCostTuple: null,
-                                    fixedCostTuple: null,
-                                    ignoreDigivolutionRequirementFixedCost: -1,
-                                    isHand: true,
-                                    activateClass: activateClass,
-                                    successProcess: null
-                                ));
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                triggeringPermanent,
+                                CanSelectDMCardCondition,
+                                payCost: false,
+                                reduceCostTuple: null,
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: -1,
+                                isHand: true,
+                                activateClass: activateClass,
+                                successProcess: null
+                            ));
                         }
                     }
                 }
