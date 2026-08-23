@@ -71,23 +71,7 @@ namespace DCGO.CardEffects.EX12
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                #region Amount of colors in this Digimon's digivolution cards
-                List<CardColor> cardColors = new List<CardColor>();
-
-                foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
-                {
-                    if (source.IsFaceUp)
-                    {
-                        cardColors.AddRange(source.CardColors);
-                    }
-                }
-
-                cardColors = cardColors.Distinct().ToList();
-
-                int DigivolutionCardColors = cardColors.Count;
-                #endregion
-
-                int dpChange = -3000 * DigivolutionCardColors;
+                int dpChange = -3000 * card.PermanentOfThisCard().DigivolutionCardsColors.Count;
 
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDPPlayerEffect(
                     permanentCondition: IsOpponentsDigimon,
@@ -136,23 +120,7 @@ namespace DCGO.CardEffects.EX12
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
-                    #region Amount of colors in this Digimon's digivolution cards
-                    List<CardColor> cardColors = new List<CardColor>();
-
-                    foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
-                    {
-                        if (source.IsFaceUp)
-                        {
-                            cardColors.AddRange(source.CardColors);
-                        }
-                    }
-
-                    cardColors = cardColors.Distinct().ToList();
-
-                    int DigivolutionCardColors = cardColors.Count;
-                    #endregion
-
-                    if (DigivolutionCardColors >= 4)
+                    if (card.PermanentOfThisCard().DigivolutionCardsColors.Count >= 4)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                             player: card.Owner.Enemy,
