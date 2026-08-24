@@ -67,25 +67,22 @@ namespace DCGO.CardEffects.BT26
 
                     if (canSelectDelete || canSelectUnsuspend)
                     {
-                        int choice = 1;
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
 
-                        if (canSelectDelete && canSelectUnsuspend)
-                        {
-                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
-                            {
-                                new(message: "Delete 1 of your opponent's Digimon with as much DP as 1 of your [TS] trait Digimon or less.", value: 1, spriteIndex: 0),
-                                new(message: "1 of your [TS] trait Digimon unsuspends.", value: 2, spriteIndex: 1),
-                            };
+                        if (canSelectDelete)
+                            selectionElements.Add(new(message: "Delete 1 of your opponent's Digimon with as much DP as 1 of your [TS] trait Digimon or less.", value: 1, spriteIndex: 0));
 
-                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Select 1 effect to activate.", notSelectPlayerMessage: "The opponent is selecting 1 effect to activate.");
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                        if (canSelectUnsuspend)
+                            selectionElements.Add(new(message: "1 of your [TS] trait Digimon unsuspends.", value: 2, spriteIndex: 0));
 
-                            choice = GManager.instance.userSelectionManager.SelectedIntValue;
-                        }
-                        else
-                        {
-                            choice = canSelectDelete ? 1 : 2;
-                        }
+                        selectionElements.Add(new(message: "Don't activate either effect.", value: 3, spriteIndex: 1));
+
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Select 1 effect to activate.", notSelectPlayerMessage: "The opponent is selecting 1 effect to activate.");
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        int choice = GManager.instance.userSelectionManager.SelectedIntValue;
+
+                        if (choice == 3) yield break;
 
                         if (choice == 1)
                         {
