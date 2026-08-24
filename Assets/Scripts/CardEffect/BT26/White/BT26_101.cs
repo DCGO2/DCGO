@@ -67,22 +67,19 @@ namespace DCGO.CardEffects.BT26
 
                     if (canSelectDelete || canSelectUnsuspend)
                     {
-                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
-
-                        if (canSelectDelete)
-                            selectionElements.Add(new(message: "Delete 1 of your opponent's Digimon with as much DP as 1 of your [TS] trait Digimon or less.", value: 1, spriteIndex: 0));
-
-                        if (canSelectUnsuspend)
-                            selectionElements.Add(new(message: "1 of your [TS] trait Digimon unsuspends.", value: 2, spriteIndex: 0));
-
-                        selectionElements.Add(new(message: "Don't activate either effect.", value: 3, spriteIndex: 1));
+                        // Both options are always offered, even if one of them currently has no legal target
+                        // (it just does nothing if picked) — the player may prefer to pick the effect that
+                        // would fizzle rather than one that's active but undesirable right now.
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
+                        {
+                            new(message: "Delete 1 of your opponent's Digimon with as much DP as 1 of your [TS] trait Digimon or less.", value: 1, spriteIndex: 0),
+                            new(message: "1 of your [TS] trait Digimon unsuspends.", value: 2, spriteIndex: 0),
+                        };
 
                         GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Select 1 effect to activate.", notSelectPlayerMessage: "The opponent is selecting 1 effect to activate.");
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
                         int choice = GManager.instance.userSelectionManager.SelectedIntValue;
-
-                        if (choice == 3) yield break;
 
                         if (choice == 1)
                         {
@@ -116,24 +113,27 @@ namespace DCGO.CardEffects.BT26
                         }
                         else
                         {
-                            SelectPermanentEffect selectUnsuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectUnsuspendCondition))
+                            {
+                                SelectPermanentEffect selectUnsuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            selectUnsuspendEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectUnsuspendCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.UnTap,
-                                cardEffect: activateClass);
+                                selectUnsuspendEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectUnsuspendCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.UnTap,
+                                    cardEffect: activateClass);
 
-                            selectUnsuspendEffect.SetUpCustomMessage("Select 1 [TS] trait Digimon to unsuspend.", "The opponent is selecting 1 [TS] trait Digimon to unsuspend.");
+                                selectUnsuspendEffect.SetUpCustomMessage("Select 1 [TS] trait Digimon to unsuspend.", "The opponent is selecting 1 [TS] trait Digimon to unsuspend.");
 
-                            yield return ContinuousController.instance.StartCoroutine(selectUnsuspendEffect.Activate());
+                                yield return ContinuousController.instance.StartCoroutine(selectUnsuspendEffect.Activate());
+                            }
                         }
                     }
                 }
