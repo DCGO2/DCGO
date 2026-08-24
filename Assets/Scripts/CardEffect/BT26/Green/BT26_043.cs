@@ -49,7 +49,8 @@ namespace DCGO.CardEffects.BT26
                     && (permanent.IsDigimon || permanent.IsTamer);
 
             bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition);
+                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition)
+                    || (card.Owner.LibraryCards.Count >= 1 && card.PermanentOfThisCard() != null);
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
