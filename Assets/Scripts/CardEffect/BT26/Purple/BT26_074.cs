@@ -36,11 +36,6 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsOwnerTurn(card)
                     && card.Owner.HandCards.Count >= 1;
 
-            bool CanSelectOptionCardCondition(CardSource cardSource, ICardEffect activateClass)
-                => cardSource.IsOption
-                    && cardSource.EqualsTraits("Titan")
-                    && CardEffectCommons.CanPlayOrUse(cardSource, activateClass, root: SelectCardEffect.Root.Trash, fixedCost: cardSource.GetCostItself - 2);
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool isUsed = false;
@@ -87,16 +82,20 @@ namespace DCGO.CardEffects.BT26
 
                         IEnumerator SuccessProcess(CardSource cs)
                         {
-                            bool CanSelectOptionCardConditionBound(CardSource cardSource) => CanSelectOptionCardCondition(cardSource, activateClass);
+                            bool CanSelectOptionCardCondition(CardSource cardSource)
+                                => cardSource.EqualsTraits("Titan")
+                                && cardSource.IsOption
+                                && !cardSource.CanNotPlayThisOption
+                                && cardSource.Owner.MaxMemoryCost >= cardSource.GetCostItself - 2;
 
-                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectOptionCardConditionBound))
+                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectOptionCardCondition))
                             {
                                 CardSource selectedCard = null;
 
                                 SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                                 selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectOptionCardConditionBound,
+                                    canTargetCondition: CanSelectOptionCardCondition,
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
                                     canNoSelect: () => true,
@@ -196,15 +195,12 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -212,7 +208,7 @@ namespace DCGO.CardEffects.BT26
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
