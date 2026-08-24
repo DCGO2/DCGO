@@ -89,8 +89,7 @@ namespace DCGO.CardEffects.BT26
                 bool CanSelectOptionCardCondition(CardSource cardSource, ICardEffect activateClass)
                     => cardSource.IsOption
                         && cardSource.EqualsTraits("Glowing Dawn")
-                        && !cardSource.CanNotPlayThisOption
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 2);
+                        && CardEffectCommons.CanPlayOrUse(cardSource, activateClass, root: SelectCardEffect.Root.Trash, fixedCost: cardSource.GetCostItself - 2);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
