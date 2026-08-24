@@ -62,8 +62,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
                     => (cardSource.EqualsTraits("Vegetation") || cardSource.HasTSTraits)
-                        && ((cardSource.IsOption && !cardSource.CanNotPlayThisOption)
-                            || (cardSource.HasPlayCost && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 5)));
+                        && CardEffectCommons.CanPlayOrUse(cardSource, activateClass, fixedCost: cardSource.GetCostItself - 5);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
