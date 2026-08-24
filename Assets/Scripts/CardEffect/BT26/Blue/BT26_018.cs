@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -34,10 +33,8 @@ namespace DCGO.CardEffects.BT26
             bool CanSelectRevealCardCondition(CardSource cardSource)
                 => cardSource.ContainsTraits("Aqua") || cardSource.ContainsTraits("Sea Animal") || cardSource.EqualsTraits("DS");
 
-            bool CanSelectTrashDigivolutionTargetCondition(Permanent permanent, ICardEffect activateClass)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && permanent.DigivolutionCards.Count >= 1
-                    && !permanent.DigivolutionCards[permanent.DigivolutionCards.Count - 1].CanNotTrashFromDigivolutionCards(activateClass);
+            bool CanSelectTrashDigivolutionTargetCondition(Permanent permanent)
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -56,20 +53,16 @@ namespace DCGO.CardEffects.BT26
                     activateClass: activateClass
                 ));
 
-                bool CanSelectTrashDigivolutionTargetConditionBound(Permanent permanent) => CanSelectTrashDigivolutionTargetCondition(permanent, activateClass);
-
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTrashDigivolutionTargetConditionBound))
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTrashDigivolutionTargetCondition))
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectTrashDigivolutionTargetConditionBound));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectTrashDigivolutionTargetConditionBound,
+                        canTargetCondition: CanSelectTrashDigivolutionTargetCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
