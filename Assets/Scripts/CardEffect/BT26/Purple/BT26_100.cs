@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT26
 
             bool HasPlutomonOrTitamon(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && (permanent.TopCard.HasText("Plutomon") || permanent.TopCard.HasText("Titamon"));
+                    && (permanent.TopCard.ContainsCardName("Plutomon") || permanent.TopCard.ContainsCardName("Titamon"));
 
             #region Blocker
             if (timing == EffectTiming.None)
@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.IsDigimon && cardSource.HasLevel && cardSource.Level <= 4
+                    => cardSource.HasLevel && cardSource.Level <= 4
                         && cardSource.EqualsTraits("Titan")
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
