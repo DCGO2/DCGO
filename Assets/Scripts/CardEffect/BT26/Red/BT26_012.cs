@@ -41,8 +41,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.EqualsTraits("TB")
-                        && ((cardSource.IsOption && !cardSource.CanNotPlayThisOption)
-                            || (cardSource.HasPlayCost && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 2)));
+                        && CardEffectCommons.CanPlayOrUse(cardSource, activateClass, fixedCost: cardSource.GetCostItself - 2);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
