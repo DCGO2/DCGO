@@ -31,33 +31,22 @@ namespace DCGO.CardEffects.BT26
             string SharedEffectDescriptionA(string tag)
                 => $"[{tag}] Suspend 1 of your opponent's Digimon or Tamers. Then, 1 of their Digimon or Tamers can't unsuspend until their turn ends.";
 
-            bool CanSelectSuspendTargetCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
-                    && (permanent.IsDigimon || permanent.IsTamer)
-                    && !permanent.IsSuspended && permanent.CanSuspend;
-
-            bool CanSelectCantUnsuspendCondition(Permanent permanent)
+            bool CanSelectPermanentCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
                     && (permanent.IsDigimon || permanent.IsTamer);
 
-            bool SharedAdditionalActivateConditionA(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition)
-                    || CardEffectCommons.HasMatchConditionPermanent(CanSelectCantUnsuspendCondition);
-
             IEnumerator SharedActivateCoroutineA(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition))
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendTargetCondition));
-
                     SelectPermanentEffect selectSuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectSuspendEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectSuspendTargetCondition,
+                        canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
@@ -68,20 +57,15 @@ namespace DCGO.CardEffects.BT26
                     selectSuspendEffect.SetUpCustomMessage("Select 1 Digimon or Tamer to suspend.", "The opponent is selecting 1 Digimon or Tamer to suspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectSuspendEffect.Activate());
-                }
-
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectCantUnsuspendCondition))
-                {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectCantUnsuspendCondition));
 
                     SelectPermanentEffect selectCantUnsuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectCantUnsuspendEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCantUnsuspendCondition,
+                        canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -108,7 +92,6 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutineA,
                 SharedEffectDescriptionA,
                 optional: false,
-                additionalActivateCondition: SharedAdditionalActivateConditionA,
                 onPlay: true,
                 whenDigivolving: true);
 
@@ -124,13 +107,8 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && (permanent.TopCard.EqualsTraits("Insectoid") || permanent.TopCard.EqualsTraits("Titan"));
 
-            bool SharedAdditionalActivateConditionB(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectGrantTargetCondition);
-
             IEnumerator SharedActivateCoroutineB(Hashtable hashtable, ActivateClass activateClass)
             {
-                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectGrantTargetCondition));
-
                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                 selectPermanentEffect.SetUp(
@@ -138,7 +116,7 @@ namespace DCGO.CardEffects.BT26
                     canTargetCondition: CanSelectGrantTargetCondition,
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
-                    maxCount: maxCount,
+                    maxCount: 1,
                     canNoSelect: false,
                     canEndNotMax: false,
                     selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -167,7 +145,6 @@ namespace DCGO.CardEffects.BT26
                 optional: false,
                 maxCountPerTurn: 1,
                 hashValue: "BT26_042_OP_WA",
-                additionalActivateCondition: SharedAdditionalActivateConditionB,
                 onPlay: true,
                 whenAttacking: true);
 
@@ -189,20 +166,18 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false);
+                        && CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: true);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashSecurityAndProcessAccordingToResult(
-                        player: card.Owner.Enemy,
-                        trashAmount: 1,
-                        activateClass: activateClass,
-                        fromTop: true,
-                        successProcess: null,
-                        failureProcess: null));
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                         player: card.Owner.Enemy,
+                         destroySecurityCount: 1,
+                         cardEffect: activateClass,
+                         fromTop: true).DestroySecurity());
                 }
             }
             #endregion
