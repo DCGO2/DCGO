@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Piximon
 namespace DCGO.CardEffects.BT26
@@ -32,40 +30,28 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName()
                 => "Suspend 1 opponent's Digimon/Tamer, then place deck top card as bottom digivolution card and stack up can't-unsuspend";
 
             string SharedEffectDescription(string tag)
                 => $"[{tag}] Suspend 1 of your opponent's Digimon or Tamers. Then, by placing your deck's top card face down as this Digimon's bottom digivolution card, for each of this Digimon's face-down digivolution cards, 1 of your opponent's Digimon or Tamers can't unsuspend until their turn ends.";
 
-            bool CanSelectSuspendTargetCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
-                    && (permanent.IsDigimon || permanent.IsTamer)
-                    && !permanent.IsSuspended && permanent.CanSuspend;
-
-            bool CanSelectCantUnsuspendCondition(Permanent permanent)
+            bool CanSelectPermanentCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
                     && (permanent.IsDigimon || permanent.IsTamer);
 
-            bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition)
-                    || (card.Owner.LibraryCards.Count >= 1 && card.PermanentOfThisCard() != null);
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition))
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendTargetCondition));
-
                     SelectPermanentEffect selectSuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectSuspendEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectSuspendTargetCondition,
+                        canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
@@ -84,17 +70,13 @@ namespace DCGO.CardEffects.BT26
 
                     yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { topDeckCard }, activateClass, isFacedown: true));
 
-                    int faceDownCount = card.PermanentOfThisCard().DigivolutionCards.Count(cs => cs.IsFaceDown);
-
-                    for (int i = 0; i < faceDownCount; i++)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectCantUnsuspendCondition)) break;
-
                         SelectPermanentEffect selectCantUnsuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectCantUnsuspendEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCantUnsuspendCondition,
+                            canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -116,7 +98,6 @@ namespace DCGO.CardEffects.BT26
                     }
                 }
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -125,7 +106,6 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
-                additionalActivateCondition: SharedAdditionalActivateCondition,
                 onPlay: true,
                 whenDigivolving: true);
 
@@ -145,39 +125,38 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
                 bool CanSelectSuspendTargetConditionInherit(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && !permanent.IsSuspended && permanent.CanSuspend;
+                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedDigimonCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetConditionInherit);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendTargetConditionInherit));
+                    if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetConditionInherit))
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectSuspendTargetConditionInherit,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Tap,
+                            cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectSuspendTargetConditionInherit,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Tap,
-                        cardEffect: activateClass);
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
                 }
             }
             #endregion
