@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 // Cross Arts
 namespace DCGO.CardEffects.BT26
@@ -39,9 +40,6 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.HasTSTraits;
 
-                bool CanSelectUnsuspendCondition(Permanent permanent)
-                    => OwnTSDigimonCondition(permanent) && CardEffectCommons.CanUnsuspend(permanent);
-
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
 
@@ -61,33 +59,52 @@ namespace DCGO.CardEffects.BT26
                             activateClass: activateClass));
                     }
 
-                    bool canSelectDelete = CardEffectCommons.HasMatchConditionPermanent(OwnTSDigimonCondition)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, p => p.IsDigimon);
-                    bool canSelectUnsuspend = CardEffectCommons.HasMatchConditionPermanent(CanSelectUnsuspendCondition);
-
-                    if (canSelectDelete || canSelectUnsuspend)
+                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                     {
-                        // Both options are always offered, even if one of them currently has no legal target
-                        // (it just does nothing if picked) — the player may prefer to pick the effect that
-                        // would fizzle rather than one that's active but undesirable right now.
-                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
+                        new(message: "Delete 1 of your opponent's Digimon with as much DP as 1 of your [TS] trait Digimon or less.", value: 1, spriteIndex: 0),
+                        new(message: "1 of your [TS] trait Digimon unsuspends.", value: 2, spriteIndex: 0),
+                    };
+
+                    GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Select 1 effect to activate.", notSelectPlayerMessage: "The opponent is selecting 1 effect to activate.");
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    int choice = GManager.instance.userSelectionManager.SelectedIntValue;
+
+                    int maxOwnTSDP = card.Owner.GetBattleAreaDigimons().Filter(OwnTSDigimonCondition).Map(p => p.DP).Max();
+
+                    bool CanSelectDeleteTargetCondition(Permanent permanent)
+                        => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                            && permanent.DP <= maxOwnTSDP;
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(OwnTSDigimonCondition))
+                    {
+                        if (choice == 1
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetCondition))
                         {
-                            new(message: "Delete 1 of your opponent's Digimon with as much DP as 1 of your [TS] trait Digimon or less.", value: 1, spriteIndex: 0),
-                            new(message: "1 of your [TS] trait Digimon unsuspends.", value: 2, spriteIndex: 0),
-                        };
+                            SelectPermanentEffect selectCompareEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Select 1 effect to activate.", notSelectPlayerMessage: "The opponent is selecting 1 effect to activate.");
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                            selectCompareEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: OwnTSDigimonCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
 
-                        int choice = GManager.instance.userSelectionManager.SelectedIntValue;
+                            selectCompareEffect.SetUpCustomMessage("Select 1 [TS] Digimon to compare DP.", "The opponent is selecting 1 [TS] Digimon to compare DP.");
 
-                        if (choice == 1)
-                        {
-                            int maxOwnTSDP = card.Owner.GetBattleAreaDigimons().Filter(OwnTSDigimonCondition).Map(p => p.DP).Max();
+                            yield return ContinuousController.instance.StartCoroutine(selectCompareEffect.Activate());
 
-                            bool CanSelectDeleteTargetCondition(Permanent permanent)
-                                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                                    && permanent.DP <= maxOwnTSDP;
+                            IEnumerator SelectPermanentCoroutine(Permanent selectedPermanent)
+                            {
+                                maxOwnTSDP = selectedPermanent.DP;
+                                yield return null;
+                            }
 
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetCondition))
                             {
@@ -111,29 +128,26 @@ namespace DCGO.CardEffects.BT26
                                 yield return ContinuousController.instance.StartCoroutine(selectDeleteEffect.Activate());
                             }
                         }
-                        else
+                        else if (choice == 2)
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectUnsuspendCondition))
-                            {
-                                SelectPermanentEffect selectUnsuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            SelectPermanentEffect selectUnsuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                                selectUnsuspendEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectUnsuspendCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: 1,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: null,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.UnTap,
-                                    cardEffect: activateClass);
+                            selectUnsuspendEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: OwnTSDigimonCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.UnTap,
+                                cardEffect: activateClass);
 
-                                selectUnsuspendEffect.SetUpCustomMessage("Select 1 [TS] trait Digimon to unsuspend.", "The opponent is selecting 1 [TS] trait Digimon to unsuspend.");
+                            selectUnsuspendEffect.SetUpCustomMessage("Select 1 [TS] trait Digimon to unsuspend.", "The opponent is selecting 1 [TS] trait Digimon to unsuspend.");
 
-                                yield return ContinuousController.instance.StartCoroutine(selectUnsuspendEffect.Activate());
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(selectUnsuspendEffect.Activate());
                         }
                     }
                 }
@@ -154,7 +168,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanPlayCondition(CardSource cardSource)
                     => cardSource.HasPlayCost && cardSource.GetCostItself <= 4 && cardSource.HasTSTraits
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, isPlayOption: true);
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
