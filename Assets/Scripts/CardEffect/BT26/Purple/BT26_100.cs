@@ -93,8 +93,8 @@ namespace DCGO.CardEffects.BT26
                             List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                             {
                                 new(message: "From hand", value: 1, spriteIndex: 0),
-                                new(message: "From trash", value: 2, spriteIndex: 1),
-                                new(message: "Don't play", value: 3, spriteIndex: 2),
+                                new(message: "From trash", value: 2, spriteIndex: 0),
+                                new(message: "Don't play", value: 3, spriteIndex: 1),
                             };
 
                             GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "From which area will you play a card?", notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
@@ -153,8 +153,8 @@ namespace DCGO.CardEffects.BT26
                             List<SelectionElement<int>> selectionElements1 = new List<SelectionElement<int>>()
                             {
                                 new(message: "From hand", value: 1, spriteIndex: 0),
-                                new(message: "From trash", value: 2, spriteIndex: 1),
-                                new(message: "Don't play", value: 3, spriteIndex: 2),
+                                new(message: "From trash", value: 2, spriteIndex: 0),
+                                new(message: "Don't play", value: 3, spriteIndex: 1),
                             };
 
                             GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: "From which area will you play a card?", notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
