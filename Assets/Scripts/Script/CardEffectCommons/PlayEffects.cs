@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using UnityEngine;
 
 public partial class CardEffectCommons
 {
+    #region Play By effect
     public static IEnumerator PlayByEffect(Func<CardSource, bool> canTargetCondition,
         SelectCardEffect.Root root,
         ICardEffect cardEffect,
@@ -280,6 +280,19 @@ public partial class CardEffectCommons
         if (getFixedCostEffect != null) owner.UntilCalculateFixedCostEffect.Remove(getFixedCostEffect);
         #endregion
     }
+    #endregion
+
+    #region CanPlayOrUse
+    public static bool CanPlayOrUse(CardSource cardSource, ICardEffect activateClass, SelectCardEffect.Root root = SelectCardEffect.Root.Hand, int fixedCost = -1)
+    {
+        return cardSource != null
+            && (cardSource.IsOption
+                && !cardSource.CanNotPlayThisOption
+                && cardSource.Owner.MaxMemoryCost >= fixedCost)
+            || (cardSource.HasPlayCost
+                && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: fixedCost > 0, cardEffect: activateClass, root: root, fixedCost: fixedCost));
+    }
+    #endregion
 
     #region CanPlayOrUse
     public static bool CanPlayOrUse(CardSource cardSource, ICardEffect activateClass, SelectCardEffect.Root root = SelectCardEffect.Root.Hand, int fixedCost = -1)

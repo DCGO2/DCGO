@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.BT11
                     {
                         if (card.Owner.LibraryCards.Count >= 1)
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.TopCard.CardColors.Contains(CardColor.Red) && permanent.IsTamer))
+                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsRedTamer))
                             {
                                 return true;
                             }
@@ -43,9 +43,14 @@ namespace DCGO.CardEffects.BT11
                     return false;
                 }
 
+                bool IsRedTamer(Permanent permanent) => permanent.IsTamer && permanent.TopCard.CardColors.Contains(CardColor.Red);
+
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsRedTamer))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                    }
                 }
             }
 
