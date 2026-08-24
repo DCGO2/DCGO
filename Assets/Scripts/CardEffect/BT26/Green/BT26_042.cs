@@ -41,7 +41,8 @@ namespace DCGO.CardEffects.BT26
                     && (permanent.IsDigimon || permanent.IsTamer);
 
             bool SharedAdditionalActivateConditionA(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition);
+                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition)
+                    || CardEffectCommons.HasMatchConditionPermanent(CanSelectCantUnsuspendCondition);
 
             IEnumerator SharedActivateCoroutineA(Hashtable hashtable, ActivateClass activateClass)
             {
