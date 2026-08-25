@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Cougarmon
 namespace DCGO.CardEffects.BT26
@@ -53,7 +52,8 @@ namespace DCGO.CardEffects.BT26
                 bool CanSelectOptionCardCondition(CardSource cardSource)
                     => cardSource.IsOption
                         && cardSource.EqualsTraits("Glowing Dawn")
-                        && !cardSource.CanNotPlayThisOption;
+                        && !cardSource.CanNotPlayThisOption
+                        && cardSource.Owner.MaxMemoryCost >= cardSource.GetCostItself - 2;
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
