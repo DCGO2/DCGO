@@ -41,6 +41,8 @@ namespace DCGO.CardEffects.BT26
             #region End of Your Turn
             if (timing == EffectTiming.OnEndTurn)
             {
+                int reduceCost = 0;
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By suspending this Tamer, use 1 [TS] Option card from hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
@@ -50,10 +52,14 @@ namespace DCGO.CardEffects.BT26
                     => "[End of Your Turn] By suspending this Tamer, you may use 1 Option card with the [TS] trait from your hand. For each memory your opponent has, reduce this effect's paid cost by 1.";
 
                 bool CanSelectOptionCardCondition(CardSource cardSource, ICardEffect effect)
-                    => cardSource.IsOption
+                {
+                    reduceCost = card.Owner.Enemy.MemoryForPlayer;
+
+                    return cardSource.IsOption
                         && cardSource.HasTSTraits
                         && !cardSource.CanNotPlayThisOption
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, effect, fixedCost: cardSource.GetCostItself - card.Owner.Enemy.MemoryForPlayer);
+                        && cardSource.Owner.MaxMemoryCost >= cardSource.GetCostItself - reduceCost;
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
@@ -77,8 +83,6 @@ namespace DCGO.CardEffects.BT26
 
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectOptionCardConditionBound))
                         {
-                            int reduceCost = card.Owner.Enemy.MemoryForPlayer;
-
                             CardSource selectedCard = null;
 
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
