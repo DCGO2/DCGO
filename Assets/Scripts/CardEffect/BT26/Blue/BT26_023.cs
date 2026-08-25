@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -50,68 +49,62 @@ namespace DCGO.CardEffects.BT26
                     && permanent.TopCard.HasLevel && permanent.TopCard.Level <= 4;
 
             bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => card.Owner.HandCards.Count >= 1
-                    && CardEffectCommons.HasMatchConditionPermanent(CanSelectDeckBottomTargetCondition);
+                => card.Owner.HandCards.Count >= 1;
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (card.Owner.HandCards.Count >= 1 && card.PermanentOfThisCard() != null)
+                CardSource selectedCardToPlace = null;
+
+                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                selectHandEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: _ => true,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: 1,
+                    canNoSelect: true,
+                    canEndNotMax: false,
+                    isShowOpponent: true,
+                    selectCardCoroutine: SelectCardCoroutine,
+                    afterSelectCardCoroutine: null,
+                    mode: SelectHandEffect.Mode.Custom,
+                    cardEffect: activateClass);
+
+                IEnumerator SelectCardCoroutine(CardSource cardSource)
                 {
-                    CardSource selectedCardToPlace = null;
+                    selectedCardToPlace = cardSource;
+                    yield return null;
+                }
 
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                selectHandEffect.SetUpCustomMessage("Select 1 card to place face down as this Digimon's bottom digivolution card.", "The opponent is selecting 1 card to place face down as this Digimon's bottom digivolution card.");
 
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: _ => true,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
-                        cardEffect: activateClass);
+                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                if (selectedCardToPlace != null)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCardToPlace }, activateClass, isFacedown: true));
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeckBottomTargetCondition))
                     {
-                        selectedCardToPlace = cardSource;
-                        yield return null;
-                    }
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to place face down as this Digimon's bottom digivolution card.", "The opponent is selecting 1 card to place face down as this Digimon's bottom digivolution card.");
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectDeckBottomTargetCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                            cardEffect: activateClass);
 
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 level 4 or lower Digimon to return to the bottom of the deck.", "The opponent is selecting 1 level 4 or lower Digimon to return to the bottom of the deck.");
 
-                    if (selectedCardToPlace != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCardToPlace }, activateClass, isFacedown: true));
-
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeckBottomTargetCondition))
-                        {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDeckBottomTargetCondition));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectDeckBottomTargetCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.PutLibraryBottom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 level 4 or lower Digimon to return to the bottom of the deck.", "The opponent is selecting 1 level 4 or lower Digimon to return to the bottom of the deck.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
                 }
             }
@@ -145,12 +138,14 @@ namespace DCGO.CardEffects.BT26
                         && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && card.Owner.HandCards.Count <= 7;
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                    if (card.Owner.HandCards.Count <= 7)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                    }
                 }
             }
             #endregion
