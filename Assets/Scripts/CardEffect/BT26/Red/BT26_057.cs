@@ -203,79 +203,75 @@ namespace DCGO.CardEffects.BT26
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        if (selectedPermanent != null && CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent)
-                            && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        Permanent selectedTauntPermanent = null;
+
+                        SelectPermanentEffect selectTauntEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectTauntEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectTauntPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        IEnumerator SelectTauntPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent selectedTauntPermanent = null;
+                            selectedTauntPermanent = permanent;
+                            yield return null;
+                        }
 
-                            SelectPermanentEffect selectTauntEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        selectTauntEffect.SetUpCustomMessage("Select 1 Digimon to give \"[Start of Your Main Phase] This Digimon attacks.\"", "The opponent is selecting 1 Digimon to give \"[Start of Your Main Phase] This Digimon attacks.\"");
 
-                            selectTauntEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectTauntPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
+                        yield return ContinuousController.instance.StartCoroutine(selectTauntEffect.Activate());
 
-                            IEnumerator SelectTauntPermanentCoroutine(Permanent permanent)
+                        if (selectedTauntPermanent != null)
+                        {
+                            ActivateClass activateClass1 = new ActivateClass();
+                            activateClass1.SetUpICardEffect("[Start of Your Main Phase] This Digimon attacks.", CanUseCondition1, selectedTauntPermanent.TopCard);
+                            activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDescription1());
+                            activateClass1.SetEffectSourcePermanent(selectedTauntPermanent);
+                            selectedTauntPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+
+                            if (!selectedTauntPermanent.TopCard.CanNotBeAffected(activateClass))
                             {
-                                selectedTauntPermanent = permanent;
-                                yield return null;
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedTauntPermanent));
                             }
 
-                            selectTauntEffect.SetUpCustomMessage("Select 1 Digimon to give \"[Start of Your Main Phase] This Digimon attacks.\"", "The opponent is selecting 1 Digimon to give \"[Start of Your Main Phase] This Digimon attacks.\"");
+                            string EffectDescription1() => "[Start of Your Main Phase] This Digimon attacks.";
 
-                            yield return ContinuousController.instance.StartCoroutine(selectTauntEffect.Activate());
+                            bool CanUseCondition1(Hashtable hashtable1)
+                                => CardEffectCommons.IsPermanentExistsOnBattleArea(selectedTauntPermanent)
+                                    && GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedTauntPermanent.TopCard.Owner;
 
-                            if (selectedTauntPermanent != null)
+                            bool CanActivateCondition1(Hashtable hashtable1)
+                                => CardEffectCommons.IsPermanentExistsOnBattleArea(selectedTauntPermanent)
+                                    && !selectedTauntPermanent.TopCard.CanNotBeAffected(activateClass)
+                                    && selectedTauntPermanent.CanAttack(activateClass1);
+
+                            ICardEffect GetCardEffect(EffectTiming _timing)
+                                => _timing == EffectTiming.OnStartMainPhase ? activateClass1 : null;
+
+                            IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                             {
-                                ActivateClass activateClass1 = new ActivateClass();
-                                activateClass1.SetUpICardEffect("[Start of Your Main Phase] This Digimon attacks.", CanUseCondition1, selectedTauntPermanent.TopCard);
-                                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDescription1());
-                                activateClass1.SetEffectSourcePermanent(selectedTauntPermanent);
-                                selectedTauntPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
-
-                                if (!selectedTauntPermanent.TopCard.CanNotBeAffected(activateClass))
+                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedTauntPermanent) && selectedTauntPermanent.CanAttack(activateClass1))
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedTauntPermanent));
-                                }
+                                    SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                                string EffectDescription1() => "[Start of Your Main Phase] This Digimon attacks.";
+                                    selectAttackEffect.SetUp(
+                                        attacker: selectedTauntPermanent,
+                                        canAttackPlayerCondition: () => true,
+                                        defenderCondition: (permanent) => true,
+                                        cardEffect: activateClass1);
 
-                                bool CanUseCondition1(Hashtable hashtable1)
-                                    => CardEffectCommons.IsPermanentExistsOnBattleArea(selectedTauntPermanent)
-                                        && GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedTauntPermanent.TopCard.Owner;
+                                    selectAttackEffect.SetCanNotSelectNotAttack();
 
-                                bool CanActivateCondition1(Hashtable hashtable1)
-                                    => CardEffectCommons.IsPermanentExistsOnBattleArea(selectedTauntPermanent)
-                                        && !selectedTauntPermanent.TopCard.CanNotBeAffected(activateClass)
-                                        && selectedTauntPermanent.CanAttack(activateClass1);
-
-                                ICardEffect GetCardEffect(EffectTiming _timing)
-                                    => _timing == EffectTiming.OnStartMainPhase ? activateClass1 : null;
-
-                                IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
-                                {
-                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedTauntPermanent) && selectedTauntPermanent.CanAttack(activateClass1))
-                                    {
-                                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                                        selectAttackEffect.SetUp(
-                                            attacker: selectedTauntPermanent,
-                                            canAttackPlayerCondition: () => true,
-                                            defenderCondition: (permanent) => true,
-                                            cardEffect: activateClass1);
-
-                                        selectAttackEffect.SetCanNotSelectNotAttack();
-
-                                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                                    }
+                                    yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                                 }
                             }
                         }
