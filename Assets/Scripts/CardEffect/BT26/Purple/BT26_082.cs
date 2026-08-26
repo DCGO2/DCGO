@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,19 @@ namespace DCGO.CardEffects.BT26
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alternate Digivolution Requirement
+            #region Alternate Digivolution Requirement Crowmon
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsCardName("Crowmon");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
+            #region Alternate Digivolution Requirement DATA SQUAD
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
@@ -36,10 +47,11 @@ namespace DCGO.CardEffects.BT26
                     => "[Security] [End of Opponent's Turn] Play this card without paying the cost.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsOpponentTurn(card);
+                    => CardEffectCommons.IsOpponentTurn(card)
+                        && CardEffectCommons.IsExistInSecurityTrigger(card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistInSecurity(card)
+                    => CardEffectCommons.IsExistInSecurityActivate(card, activateClass)
                         && CardEffectCommons.CanPlayAsNewPermanent(card, false, activateClass, SelectCardEffect.Root.Security);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -50,7 +62,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared When Digivolving / End of Attack
-
             string SharedEffectName() => "By deleting this Digimon or trashing 2 Tamer's bottom face-down cards, delete 1 opponent's highest DP Digimon";
 
             string SharedEffectDescription(string tag)
@@ -183,28 +194,30 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass)
-                        && card.Owner.Enemy.HandCards.Count >= 1;
+                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    if (card.Owner.Enemy.HandCards.Count >= 1)
+                    {
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner.Enemy,
-                        canTargetCondition: _ => true,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Discard,
-                        cardEffect: activateClass);
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner.Enemy,
+                            canTargetCondition: _ => true,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Discard,
+                            cardEffect: activateClass);
 
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                    }
 
                     if (card.Owner.Enemy.HandCards.Count <= 7
                         && CardEffectCommons.IsExistOnTrash(card)
