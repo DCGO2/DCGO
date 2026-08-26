@@ -39,7 +39,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared Security / On Deletion
-
             string SharedEffectName() => "By trashing 1 Tamer's bottom face-down card, use 1 [Glowing Dawn] card cost 5 or less from trash";
 
             string SharedEffectDescription(string tag)
@@ -59,53 +58,49 @@ namespace DCGO.CardEffects.BT26
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionPermanent(IsTamerWithFaceDownCard))
+                Permanent selectedTamer = null;
+
+                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                selectPermanentEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: IsTamerWithFaceDownCard,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: 1,
+                    canNoSelect: true,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Custom,
+                    cardEffect: activateClass);
+
+                IEnumerator SelectPermanentCoroutine(Permanent permanent)
                 {
-                    Permanent selectedTamer = null;
+                    selectedTamer = permanent;
+                    yield return null;
+                }
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                selectPermanentEffect.SetUpCustomMessage("Select 1 Tamer to trash the bottom face-down card from.", "The opponent is selecting 1 Tamer to trash the bottom face-down card from.");
 
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: IsTamerWithFaceDownCard,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
+                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                if (selectedTamer != null)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedTamer, trashCount: 1, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
+
+                    bool CanSelectPlayCardConditionBound(CardSource cardSource) => CanSelectPlayCardCondition(cardSource, activateClass);
+
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectPlayCardConditionBound))
                     {
-                        selectedTamer = permanent;
-                        yield return null;
-                    }
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Tamer to trash the bottom face-down card from.", "The opponent is selecting 1 Tamer to trash the bottom face-down card from.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    if (selectedTamer != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedTamer, trashCount: 1, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
-
-                        bool CanSelectPlayCardConditionBound(CardSource cardSource) => CanSelectPlayCardCondition(cardSource, activateClass);
-
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectPlayCardConditionBound))
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
-                                canTargetCondition: CanSelectPlayCardConditionBound,
-                                root: SelectCardEffect.Root.Trash,
-                                cardEffect: activateClass,
-                                payCost: false));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                            canTargetCondition: CanSelectPlayCardConditionBound,
+                            root: SelectCardEffect.Root.Trash,
+                            cardEffect: activateClass,
+                            payCost: false));
                     }
                 }
             }
-
             #endregion
 
             #region Security
@@ -118,7 +113,8 @@ namespace DCGO.CardEffects.BT26
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
+                    => CardEffectCommons.CanTriggerSecurityEffect(hashtable, card)
+                        && CardEffectCommons.HasMatchConditionPermanent(IsTamerWithFaceDownCard);
             }
             #endregion
 
@@ -134,7 +130,8 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass);
+                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionPermanent(IsTamerWithFaceDownCard);
             }
             #endregion
             #endregion
