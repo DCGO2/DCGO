@@ -33,14 +33,15 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By suspending 1 Digimon, attack without suspending", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                     => "[When Digivolving] By suspending 1 Digimon, this Digimon may attack without suspending.";
 
                 bool CanSelectSuspendCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.CanSuspend;
+                    => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
+                        && !permanent.IsSuspended;
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
@@ -68,7 +69,7 @@ namespace DCGO.CardEffects.BT26
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Tap,
+                            mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
@@ -79,9 +80,13 @@ namespace DCGO.CardEffects.BT26
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        if (suspendedPermanent != null
-                            && CardEffectCommons.IsExistOnBattleArea(card)
-                            && card.PermanentOfThisCard().CanAttack(activateClass, withoutTap: true))
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SuspendPeremanentAndProcessAccordingToResult(
+                        new List<Permanent>() { suspendedPermanent },
+                        activateClass,
+                        SuccessProcess,
+                        null));
+
+                        IEnumerator SuccessProcess(List<Permanent> suspendedPermaments)
                         {
                             SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
@@ -122,8 +127,7 @@ namespace DCGO.CardEffects.BT26
                         && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
@@ -178,8 +182,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
 
                 bool CanSelectUnsuspendCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && CardEffectCommons.CanUnsuspend(permanent);
+                    => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
 
                 bool UnsuspendedOpponentDigimonCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
