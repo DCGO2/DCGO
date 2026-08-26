@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -31,7 +30,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName()
                 => "By trashing 1 hand card or placing it under a [Keenan Crier], delete 1 opponent's level 4 or lower Digimon";
 
@@ -54,20 +52,23 @@ namespace DCGO.CardEffects.BT26
                 if (card.Owner.HandCards.Count >= 1)
                 {
                     bool canPlaceUnderKeenanCrier = CardEffectCommons.HasMatchConditionPermanent(CanSelectKeenanCrierCondition);
-
-                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
-                    {
-                        new SelectionElement<int>(message: "Trash 1 card in your hand", value: 1, spriteIndex: 0),
-                    };
-
-                    if (canPlaceUnderKeenanCrier) selectionElements.Add(new SelectionElement<int>(message: "Place 1 card in your hand face down under a [Keenan Crier]", value: 2, spriteIndex: 0));
-                    selectionElements.Add(new SelectionElement<int>(message: "Don't pay the cost", value: 3, spriteIndex: 1));
-
-                    GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Will you pay the cost?", notSelectPlayerMessage: "The opponent is choosing to pay the cost.");
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                    int selected = GManager.instance.userSelectionManager.SelectedIntValue;
-
                     bool hasPaidCost = false;
+                    int selected = 1;
+
+                    if (canPlaceUnderKeenanCrier)
+                    {
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
+                        {
+                            new SelectionElement<int>(message: "Trash 1 card in your hand", value: 1, spriteIndex: 0),
+                            new SelectionElement<int>(message: "Place 1 card in your hand face down under a [Keenan Crier]", value: 2, spriteIndex: 0),
+                            new SelectionElement<int>(message: "Don't pay the cost", value: 3, spriteIndex: 1),
+                        };
+
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Will you pay the cost?", notSelectPlayerMessage: "The opponent is choosing to pay the cost.");
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        selected = GManager.instance.userSelectionManager.SelectedIntValue;
+                    }
 
                     if (selected == 1)
                     {
@@ -81,7 +82,7 @@ namespace DCGO.CardEffects.BT26
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             isShowOpponent: true,
                             selectCardCoroutine: SelectCardCoroutine,
@@ -135,7 +136,7 @@ namespace DCGO.CardEffects.BT26
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        if (selectedTamer != null && card.Owner.HandCards.Count >= 1)
+                        if (selectedTamer != null)
                         {
                             CardSource selectedCardToPlace = null;
 
@@ -147,7 +148,7 @@ namespace DCGO.CardEffects.BT26
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
-                                canNoSelect: false,
+                                canNoSelect: true,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 selectCardCoroutine: SelectCardCoroutine,
@@ -173,8 +174,6 @@ namespace DCGO.CardEffects.BT26
 
                     if (hasPaidCost && CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDeleteTargetCondition));
-
                         SelectPermanentEffect selectDeleteEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectDeleteEffect.SetUp(
@@ -182,7 +181,7 @@ namespace DCGO.CardEffects.BT26
                             canTargetCondition: CanSelectDeleteTargetCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
@@ -196,7 +195,6 @@ namespace DCGO.CardEffects.BT26
                     }
                 }
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -205,6 +203,7 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
+                isSkippable:true,
                 additionalActivateCondition: SharedAdditionalActivateCondition,
                 onPlay: true,
                 whenDigivolving: true);
@@ -225,28 +224,30 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass)
-                        && card.Owner.Enemy.HandCards.Count >= 1;
+                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    if (card.Owner.Enemy.HandCards.Count >= 1)
+                    {
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner.Enemy,
-                        canTargetCondition: _ => true,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Discard,
-                        cardEffect: activateClass);
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner.Enemy,
+                            canTargetCondition: _ => true,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Discard,
+                            cardEffect: activateClass);
 
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                    }
                 }
             }
             #endregion
