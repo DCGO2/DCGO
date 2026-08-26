@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,7 +11,6 @@ namespace DCGO.CardEffects.BT26
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Digimon Effects
-
             #region Alternate Digivolution Requirement - Named
             if (timing == EffectTiming.None)
             {
@@ -64,6 +62,7 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 level 4 or lower [Titan] Digimon from trash free", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -92,11 +91,9 @@ namespace DCGO.CardEffects.BT26
                 }
             }
             #endregion
-
             #endregion
 
             #region Option Effects
-
             #region Use Req.
             if (timing == EffectTiming.None)
             {
@@ -111,7 +108,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 hand card, then De-Digivolve 3 1 opponent's Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1 hand card, then <De-Digivolve 3> 1 opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -119,8 +116,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Main] Trash 1 card in your hand. Then, <De-Digivolve 3> 1 of your opponent's Digimon.";
 
                 bool CanSelectPermanentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && permanent.DigivolutionCards.Count >= 1;
+                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
@@ -157,10 +153,8 @@ namespace DCGO.CardEffects.BT26
 
                         yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        if (selectedCardToTrash != null && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectPermanentEffect.SetUp(
@@ -168,7 +162,7 @@ namespace DCGO.CardEffects.BT26
                                 canTargetCondition: CanSelectPermanentCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                maxCount: maxCount,
+                                maxCount: 1,
                                 canNoSelect: false,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: null,
@@ -193,7 +187,6 @@ namespace DCGO.CardEffects.BT26
                 cardEffects.Add(CardEffectFactory.ArtsDigivolveEffect(card));
             }
             #endregion
-
             #endregion
 
             return cardEffects;
