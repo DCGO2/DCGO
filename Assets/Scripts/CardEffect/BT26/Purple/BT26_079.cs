@@ -11,7 +11,19 @@ namespace DCGO.CardEffects.BT26
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alternate Digivolution Requirement
+            #region Alternate Digivolution Requirement Plutomon
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsCardName("Plutomon");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
+            #region Alternate Digivolution Requirement TS
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
@@ -29,7 +41,6 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play this card from trash with reduced cost", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -84,7 +95,7 @@ namespace DCGO.CardEffects.BT26
                 bool SourceCondition(CardSource cardSource)
                     => cardSource.IsDigimon && cardSource.EqualsCardName("Plutomon");
 
-                string[] decodeStrings = { "(w/[Plutomon] in name)", "Digimon card with [Plutomon] in its name" };
+                string[] decodeStrings = { "(Plutomon)", "Plutomon" };
                 cardEffects.Add(CardEffectFactory.DecodeSelfEffect(card: card, isInheritedEffect: false, decodeStrings: decodeStrings, sourceCondition: SourceCondition, condition: null));
             }
             #endregion
@@ -97,7 +108,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving / When Attacking
-
             string SharedEffectName() => "By trashing 1 hand card, delete 1 opponent's level 6 or lower Digimon";
 
             string SharedEffectDescription(string tag)
@@ -154,8 +164,6 @@ namespace DCGO.CardEffects.BT26
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetCondition))
                             {
-                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDeleteTargetCondition));
-
                                 SelectPermanentEffect selectDeleteEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                                 selectDeleteEffect.SetUp(
@@ -163,7 +171,7 @@ namespace DCGO.CardEffects.BT26
                                     canTargetCondition: CanSelectDeleteTargetCondition,
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
-                                    maxCount: maxCount,
+                                    maxCount: 1,
                                     canNoSelect: false,
                                     canEndNotMax: false,
                                     selectPermanentCoroutine: null,
@@ -179,7 +187,6 @@ namespace DCGO.CardEffects.BT26
                     }
                 }
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -188,6 +195,7 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
+                isSkippable: true,
                 additionalActivateCondition: SharedAdditionalActivateCondition,
                 onPlay: true,
                 whenDigivolving: true,
@@ -214,7 +222,9 @@ namespace DCGO.CardEffects.BT26
                             || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, OpponentDigimonCondition));
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && (card.Owner.HandCards.Count > 4
+                            || card.Owner.Enemy.HandCards.Count > 4);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
