@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By returning this card to bottom of deck, 1 played [Chronomon]/[Titan] Digimon gains Rush and Execute", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return this card to bottom of deck to give 1 played [Chronomon]/[Titan] Digimon <Rush> and <Execute>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -38,31 +38,30 @@ namespace DCGO.CardEffects.BT26
                         && (permanent.TopCard.HasText("Chronomon") || permanent.TopCard.EqualsTraits("Titan"));
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnTrash(card)
+                    => CardEffectCommons.IsExistOnTrashTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
-                        && card.Owner.Enemy.MemoryForPlayer >= 5
                         && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, MatchingPermanentCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnTrash(card)
+                    => CardEffectCommons.IsExistOnTrashActivate(card, activateClass)
                         && card.Owner.Enemy.MemoryForPlayer >= 5;
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     List<Permanent> permanents = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(hashtable: hashtable, rootCondition: null);
 
+                    List<CardSource> cardSources = new List<CardSource>() { card };
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Card", true, true));
+
                     if (permanents != null)
                     {
                         List<Permanent> matchingPermanents = permanents.Filter(MatchingPermanentCondition);
 
-                        if (matchingPermanents.Count >= 1)
+                        Permanent selectedPermanent = null;
+
+                        if (matchingPermanents.Count > 1)
                         {
-                            List<CardSource> cardSources = new List<CardSource>() { card };
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Card", true, true));
-
-                            Permanent selectedPermanent = null;
-
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectPermanentEffect.SetUp(
@@ -85,12 +84,16 @@ namespace DCGO.CardEffects.BT26
                             }
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
+                        else
+                        {
+                            selectedPermanent = matchingPermanents[0];
+                        }
 
-                            if (selectedPermanent != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainExecute(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
-                            }
+                        if (selectedPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainExecute(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                         }
                     }
                 }
@@ -98,7 +101,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName() => "By deleting this Digimon, play 1 play cost 12 or lower [Chronomon]/[Titan] card from trash";
 
             string SharedEffectDescription(string tag)
@@ -132,7 +134,6 @@ namespace DCGO.CardEffects.BT26
                     }
                 }
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -140,7 +141,7 @@ namespace DCGO.CardEffects.BT26
                 SharedEffectName(),
                 SharedActivateCoroutine,
                 SharedEffectDescription,
-                optional: false,
+                optional: true,
                 onPlay: true,
                 whenDigivolving: true);
 
