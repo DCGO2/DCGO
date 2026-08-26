@@ -79,9 +79,14 @@ namespace DCGO.CardEffects.BT26
                 string EffectDescription()
                     => "[Main] [Once Per Turn] By trashing 2 bottom face-down cards from under any of your Tamers, you may use 1 Option card with the [Glowing Dawn] trait from your trash with the cost reduced by 2.";
 
-                bool IsTamerWithEnoughFaceDownCards(Permanent permanent)
+                bool TamerWithOneFaceDownSource(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
-                        && permanent.DigivolutionCards.Count(cs => cs.IsFaceDown) >= 2
+                        && permanent.DigivolutionCards.Any(FaceDownCards)
+                        && !permanent.ImmuneFromStackTrashing(activateClass);
+
+                bool TamerWith2OrMoreFaceDownSources(Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
+                        && permanent.DigivolutionCards.Count(FaceDownCards) >= 2
                         && !permanent.ImmuneFromStackTrashing(activateClass);
 
                 bool FaceDownCards(CardSource cardSource) => cardSource.IsFaceDown;
@@ -96,45 +101,61 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(IsTamerWithEnoughFaceDownCards);
+                        && (CardEffectCommons.HasMatchConditionPermanent(TamerWith2OrMoreFaceDownSources)
+                            || CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource) >= 2);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool isUsed = false;
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(IsTamerWithEnoughFaceDownCards))
+                    if (CardEffectCommons.HasMatchConditionPermanent(TamerWith2OrMoreFaceDownSources)
+                        || CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource) >= 2)
                     {
-                        Permanent selectedTamer = null;
+                        bool trashed = false;
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: IsTamerWithEnoughFaceDownCards,
+                            canTargetCondition: TamerWithOneFaceDownSource,
                             canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
+                            canEndSelectCondition: CanEndSelectCondition,
+                            maxCount: maxCount,
                             canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
+                            canEndNotMax: true,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            selectedTamer = permanent;
-                            yield return null;
-                        }
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Tamer to trash 2 bottom face-down cards from.", "The opponent is selecting 1 Tamer to trash 2 bottom face-down cards from.");
+                        selectPermanentEffect.SetUpCustomMessage("Select all Tamer(s) to trash bottom face-down cards from.", "The opponent is selecting Tamer(s) to trash bottom face-down cards from.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        if (selectedTamer != null)
+                        bool CanEndSelectCondition(List<Permanent> permanents)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedTamer, trashCount: 2, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
+                            return permanents.Count == 2
+                                || (permanents.Count > 0 && permanents[0].DigivolutionCards.Count(FaceDownCards) >= 2);
+                        }
 
+                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                        {
+                            if (permanents.Count == 1)
+                            {
+                                trashed = true;
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 2, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
+                            }
+                            else if (permanents.Count == 2)
+                            {
+                                trashed = true;
+                                foreach (Permanent selectedPermanent in permanents)
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 1, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
+                            }
+                        }
+
+                        if (trashed)
+                        {
                             isUsed = true;
 
                             bool CanSelectOptionCardConditionBound(CardSource cs) => CanSelectOptionCardCondition(cs, activateClass);
