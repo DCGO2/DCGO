@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -31,6 +30,7 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing a Tamer's bottom face-down card, not affected by opponent's effects and +3000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -110,35 +110,8 @@ namespace DCGO.CardEffects.BT26
             }
             #endregion
 
-            #region All Turns - Attack Target Changed
-            if (timing == EffectTiming.OnAttackTargetChanged)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("May unsuspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
-                activateClass.SetHashString("BT26_057_AllTurns");
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                    => "[All Turns] [Once Per Turn] When attack targets change or effects trash cards from under your Tamers, this Digimon may unsuspend.";
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPermanentAttackTargetSwitch(hashtable, permanent => true);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard());
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
-                }
-            }
-            #endregion
-
-            #region All Turns - Trash Under Tamer
-            if (timing == EffectTiming.OnDigivolutionCardDiscarded)
+            #region All Turns
+            if (timing == EffectTiming.OnAttackTargetChanged || timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("May unsuspend", CanUseCondition, card);
@@ -154,7 +127,8 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, OwnersTamerCondition, cardEffect => true, cardSource => true);
+                        && (CardEffectCommons.CanTriggerOnPermanentAttackTargetSwitch(hashtable, permanent => true)
+                            || CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, OwnersTamerCondition, cardEffect => true, cardSource => true));
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
@@ -166,11 +140,9 @@ namespace DCGO.CardEffects.BT26
                 }
             }
             #endregion
-
             #endregion
 
             #region Option Effects
-
             #region Use Req.
             if (timing == EffectTiming.None)
             {
@@ -185,7 +157,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("De-Digivolve 1 1 opponent's Digimon, then it must attack", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 1> 1 opponent's Digimon, then taunt it", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -202,8 +174,6 @@ namespace DCGO.CardEffects.BT26
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
                         Permanent selectedPermanent = null;
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -213,7 +183,7 @@ namespace DCGO.CardEffects.BT26
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -289,7 +259,6 @@ namespace DCGO.CardEffects.BT26
                 cardEffects.Add(CardEffectFactory.ArtsDigivolveEffect(card));
             }
             #endregion
-
             #endregion
 
             return cardEffects;
