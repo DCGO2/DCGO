@@ -52,13 +52,12 @@ namespace DCGO.CardEffects.BT26
                         && (cardSource.EqualsCardName("Junomon")
                             || (cardSource.HasLevel && cardSource.Level <= 5 && cardSource.EqualsTraits("Iliad")));
 
-                string[] decodeStrings = { "(w/[Junomon] in name or Lv.5 or lower w/[Iliad] trait)", "Digimon card with [Junomon] in its name or a level 5 or lower Digimon card with the [Iliad] trait" };
+                string[] decodeStrings = { "(w/[Junomon] or Lv.5 or lower w/[Iliad] trait)", "Junomon or a level 5 or lower Digimon card with the [Iliad] trait" };
                 cardEffects.Add(CardEffectFactory.DecodeSelfEffect(card: card, isInheritedEffect: false, decodeStrings: decodeStrings, sourceCondition: SourceCondition, condition: null));
             }
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName() => "Trash all security, delete that many opponent Digimon, then Recovery +3";
 
             string SharedEffectDescription(string tag)
@@ -106,7 +105,6 @@ namespace DCGO.CardEffects.BT26
 
                 yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 3, activateClass).Recovery());
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -172,13 +170,13 @@ namespace DCGO.CardEffects.BT26
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
                             element: element,
                             CanTargetCondition_ByPreSelecetedList: null,
-                            selectMessage: "w/[Junomon] in name",
+                            selectMessage: "[Junomon]",
                             elementCount: 1,
                             reduceCost: 4);
 
                         return assemblyCondition;
                     }
-
+                    
                     return null;
                 }
             }
