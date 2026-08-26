@@ -11,7 +11,19 @@ namespace DCGO.CardEffects.BT26
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alternate Digivolution Requirement
+            #region Alternate Digivolution Requirement Minervamon
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsCardName("Minervamon");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
+            #region Alternate Digivolution Requirement TS
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
@@ -23,46 +35,7 @@ namespace DCGO.CardEffects.BT26
             }
             #endregion
 
-            #region All Turns - Grant to Iliad Digimon
-
-            bool IsOwnIliadDigimon(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && permanent.TopCard.EqualsTraits("Iliad");
-
-            bool GrantCondition() => CardEffectCommons.IsExistOnBattleArea(card);
-
-            #region Alliance
-            if (timing == EffectTiming.OnAllyAttack)
-            {
-                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(IsOwnIliadDigimon, false, card, GrantCondition));
-            }
-            #endregion
-
-            #region Reboot
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.RebootStaticEffect(IsOwnIliadDigimon, false, card, GrantCondition));
-            }
-            #endregion
-
-            #region Blocker
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.BlockerStaticEffect(IsOwnIliadDigimon, false, card, GrantCondition));
-            }
-            #endregion
-
-            #region DP +2000
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.ChangeBaseDPGlobalEffect(IsOwnIliadDigimon, 2000, false, card, GrantCondition));
-            }
-            #endregion
-
-            #endregion
-
             #region Shared On Play / When Digivolving
-
             string SharedEffectName() => "Play up to 8 cost worth of [Iliad] cards, then -4000 DP per [Iliad]/[TS] Digimon or Tamer";
 
             string SharedEffectDescription(string tag)
@@ -80,7 +53,7 @@ namespace DCGO.CardEffects.BT26
             {
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.EqualsTraits("Iliad")
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, root: root, isPlayOption: true);
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, root: root);
 
                 if (!CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition) && root == SelectCardEffect.Root.Trash) yield break;
                 if (!CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition) && root == SelectCardEffect.Root.Hand) yield break;
@@ -196,7 +169,7 @@ namespace DCGO.CardEffects.BT26
                             yield return null;
                         }
 
-                        selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon to give -{Math.Abs(dpChange)} DP.", "The opponent is selecting 1 Digimon to give DP to.");
+                        selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon to give -{Math.Abs(dpChange)} DP.", $"The opponent is selecting 1 Digimon to give -{Math.Abs(dpChange)} DP to.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -211,7 +184,6 @@ namespace DCGO.CardEffects.BT26
                     }
                 }
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -222,6 +194,42 @@ namespace DCGO.CardEffects.BT26
                 optional: false,
                 onPlay: true,
                 whenDigivolving: true);
+
+            #region All Turns - Grant to Iliad Digimon
+            bool IsOwnIliadDigimon(Permanent permanent)
+                => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    && permanent.TopCard.EqualsTraits("Iliad");
+
+            bool GrantCondition() => CardEffectCommons.IsExistOnBattleArea(card);
+
+            #region Alliance
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(IsOwnIliadDigimon, false, card, GrantCondition));
+            }
+            #endregion
+
+            #region Reboot
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.RebootStaticEffect(IsOwnIliadDigimon, false, card, GrantCondition));
+            }
+            #endregion
+
+            #region Blocker
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.BlockerStaticEffect(IsOwnIliadDigimon, false, card, GrantCondition));
+            }
+            #endregion
+
+            #region DP +2000
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.ChangeBaseDPGlobalEffect(IsOwnIliadDigimon, 2000, false, card, GrantCondition));
+            }
+            #endregion
+            #endregion
 
             #region Assembly
             if (timing == EffectTiming.None)
