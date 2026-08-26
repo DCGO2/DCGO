@@ -166,7 +166,7 @@ namespace DCGO.CardEffects.BT26
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainExecute(permanent, EffectDuration.UntilEachTurnEnd, activateClass));
-                                // Gain Ascension
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainAscension(permanent, EffectDuration.UntilEachTurnEnd, activateClass));
                             }
                         }
                     }
