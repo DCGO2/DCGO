@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,8 +102,6 @@ namespace DCGO.CardEffects.EX13
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDebuffTargetCondition))
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDebuffTargetCondition));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -112,7 +109,7 @@ namespace DCGO.CardEffects.EX13
                         canTargetCondition: CanSelectDebuffTargetCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -162,7 +159,8 @@ namespace DCGO.CardEffects.EX13
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && (permanent.TopCard.ContainsTraits("Free") || permanent.TopCard.ContainsTraits("Royal Knight"));
+                        && (permanent.TopCard.ContainsTraits("Free") || permanent.TopCard.ContainsTraits("Royal Knight"))
+                        && CardEffectCommons.CanUnsuspend(permanent);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
@@ -174,6 +172,8 @@ namespace DCGO.CardEffects.EX13
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool isUsed = false;
+
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -184,7 +184,7 @@ namespace DCGO.CardEffects.EX13
                         maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: null,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.UnTap,
                         cardEffect: activateClass);
@@ -192,6 +192,14 @@ namespace DCGO.CardEffects.EX13
                     selectPermanentEffect.SetUpCustomMessage("Select 1 [Free]/[Royal Knight] Digimon to unsuspend.", "The opponent is selecting 1 [Free]/[Royal Knight] Digimon to unsuspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        isUsed = true;
+                        yield return null;
+                    }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
