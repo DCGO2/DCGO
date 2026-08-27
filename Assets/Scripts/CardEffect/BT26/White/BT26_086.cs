@@ -190,6 +190,11 @@ namespace DCGO.CardEffects.BT26
 
                         List<CardSource> topSecurity = new List<CardSource>() { card.Owner.Enemy.SecurityCards[0] };
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(topSecurity));
+
+                        yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
+                            player: card.Owner.Enemy,
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                            activateClass).ReduceSecurity());
                     }
 
                     if (!isUsed) activateClass.RemoveUse();
