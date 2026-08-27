@@ -40,7 +40,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName() => "Link up to 7 [Appmon] cards with different names from sources, then may attack without suspending";
 
             string SharedEffectDescription(string tag)
@@ -71,7 +70,7 @@ namespace DCGO.CardEffects.BT26
                         canNoSelect: () => true,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
-                        message: $"Select up to {maxCount} [Appmon] trait cards with different names to link to this Digimon.",
+                        message: "Select up to 7 [Appmon] trait cards with different names to link to this Digimon.",
                         maxCount: maxCount,
                         canEndNotMax: true,
                         isShowOpponent: true,
@@ -111,7 +110,6 @@ namespace DCGO.CardEffects.BT26
                     yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                 }
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
