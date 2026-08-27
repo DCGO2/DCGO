@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -49,7 +48,8 @@ namespace DCGO.CardEffects.BT26
                         && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedPermanentCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CardCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
@@ -63,7 +63,8 @@ namespace DCGO.CardEffects.BT26
                         isHand: true,
                         activateClass: activateClass,
                         successProcess: null,
-                        isOptional: true));
+                        isOptional: true
+                    ));
                 }
             }
             #endregion
