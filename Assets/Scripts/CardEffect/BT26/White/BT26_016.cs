@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +38,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving / When Attacking
-
             string SharedEffectName()
                 => "May delete 1 opponent's Digimon with as much DP as this or less, then return 3 trashed cards for Recovery +1";
 
@@ -48,8 +46,11 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectDeleteTargetCondition(Permanent permanent, ICardEffect activateClass)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && card.PermanentOfThisCard() != null
                     && permanent.DP <= card.Owner.MaxDP_DeleteEffect(card.PermanentOfThisCard().DP, activateClass);
+
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+                => CardEffectCommons.HasMatchConditionPermanent(permanent => CanSelectDeleteTargetCondition(permanent, activateClass))
+                    || card.Owner.TrashCards.Count + card.Owner.Enemy.TrashCards.Count >= 3;
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -59,8 +60,6 @@ namespace DCGO.CardEffects.BT26
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetConditionBound))
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDeleteTargetConditionBound));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -68,7 +67,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectDeleteTargetConditionBound,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
@@ -87,7 +86,6 @@ namespace DCGO.CardEffects.BT26
                     }
                 }
 
-                // "Cards in trashes" (plural) is read as either player's trash pile combined.
                 List<CardSource> combinedTrashPool = card.Owner.TrashCards.Clone().Concat(card.Owner.Enemy.TrashCards.Clone()).ToList();
 
                 if (combinedTrashPool.Count >= 3)
@@ -124,7 +122,7 @@ namespace DCGO.CardEffects.BT26
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                    if (selectedCards.Count >= 3)
+                    if (selectedCards.Count == 3)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(selectedCards));
 
@@ -136,7 +134,6 @@ namespace DCGO.CardEffects.BT26
 
                 if (!isUsed) activateClass.RemoveUse();
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -144,7 +141,9 @@ namespace DCGO.CardEffects.BT26
                 SharedEffectName(),
                 SharedActivateCoroutine,
                 SharedEffectDescription,
+                additionalActivateCondition: AdditionalActivateCondition,
                 optional: false,
+                isSkippable: true,
                 maxCountPerTurn: 1,
                 hashValue: "BT26_016_OPT",
                 onPlay: true,
@@ -156,8 +155,7 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return top security card to prevent this Digimon from leaving", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
-                activateClass.SetIsSkippable(true);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("BT26_016_AllTurns");
                 cardEffects.Add(activateClass);
 
@@ -174,53 +172,20 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool isUsed = false;
+                    List<CardSource> topSecurity = new List<CardSource>() { card.Owner.SecurityCards[0] };
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(topSecurity));
 
-                    Permanent thisPermanent = card.PermanentOfThisCard();
-                    CardSource topSecurityCard = card.Owner.SecurityCards[0];
+                    yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
+                        player: card.Owner,
+                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                        activateClass).ReduceSecurity());
 
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                    card.PermanentOfThisCard().willBeRemoveField = false;
 
-                    selectCardEffect.SetUp(
-                        canTargetCondition: _ => true,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        message: "Return your top security card to the bottom of your deck to prevent this Digimon from leaving?",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Security,
-                        customRootCardList: new List<CardSource>() { topSecurityCard },
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                    selectCardEffect.SetUpCustomMessage("Return your top security card to the bottom of your deck to prevent this Digimon from leaving?", "The opponent is deciding whether to return their top security card to the bottom of their deck.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                    {
-                        if (cardSources.Count >= 1)
-                        {
-                            isUsed = true;
-
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
-
-                            thisPermanent.willBeRemoveField = false;
-
-                            thisPermanent.HideHandBounceEffect();
-                            thisPermanent.HideDeckBounceEffect();
-                            thisPermanent.HideWillRemoveFieldEffect();
-                            thisPermanent.HideDeleteEffect();
-                        }
-                    }
-
-                    if (!isUsed) activateClass.RemoveUse();
+                    card.PermanentOfThisCard().HideHandBounceEffect();
+                    card.PermanentOfThisCard().HideDeckBounceEffect();
+                    card.PermanentOfThisCard().HideWillRemoveFieldEffect();
+                    card.PermanentOfThisCard().HideDeleteEffect();
                 }
             }
             #endregion
