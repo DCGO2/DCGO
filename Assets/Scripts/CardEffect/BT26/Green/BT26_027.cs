@@ -107,29 +107,16 @@ namespace DCGO.CardEffects.BT26
 
             #endregion
 
-            #region Start of Opponent's Main Phase
-            if (timing == EffectTiming.OnStartMainPhase)
-            {
-                cardEffects.Add(CardEffectFactory.StartOfYourOpponentsMainPhaseClass(
-                    card,
-                    SharedEffectName(),
-                    (hash, activateClass) => SharedActivateCoroutine(hash, activateClass),
-                    SharedEffectDescription("Start of Opponent's Main Phase"),
-                    additionalActivateCondition: AdditionalActivateCondition,
-                    optional: false,
-                    isSkippable: true
-                ));
-            }
-            #endregion
-
             CardEffectFactory.ActivateClassesForSharedEffects(
                 ref cardEffects, timing, card,
                 SharedEffectName(),
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
+                isSkippable: true,
                 additionalActivateCondition: AdditionalActivateCondition,
-                onPlay: true);
+                onPlay: true,
+                startOfOpponentsMainPhase: true);
 
             #region Inherit - Barrier
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
