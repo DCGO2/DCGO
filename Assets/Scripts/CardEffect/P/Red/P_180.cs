@@ -44,20 +44,25 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 digimon with 7k DP or lower", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                     => "When effects trash this card from digivolution cards, delete 1 of your opponent's 7000 DP or lower Digimon.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card);
+                {
+                    return CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card)
+                        && CardEffectCommons.IsExistOnTrashTrigger(card, activateClass);
+                }
 
                 bool CanActivateCondition(Hashtable hashtable)
-                => CardEffectCommons.IsExistOnTrash(card) &&
-                   CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentsDigimon);
+                {
+                    return CardEffectCommons.IsExistOnTrashActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentsDigimon);
+                }
 
                 bool CanSelectOpponentsDigimon(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
@@ -93,10 +98,10 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash opponent top sec & place this under a 3M digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                     => "[Main] Trash your opponent's top security card. Then, place this card as the bottom digivolution card of 1 of your [Three Musketeers] trait Digimon.";
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -155,11 +160,11 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Delete 1 Digimon with the highest DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                     => "[Security] Delete 1 of your opponent's Digimon with the highest DP.";
 
                 bool CanSelectPermanentCondition(Permanent permanent)
