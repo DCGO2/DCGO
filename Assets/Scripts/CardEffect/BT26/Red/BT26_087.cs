@@ -16,6 +16,7 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By returning 1 [TS] Digimon card from trash to bottom of deck, gain 1 memory. Then, may return 1 [Giant Slayer] from trash to hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -37,71 +38,68 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectReturnCondition))
+                    CardSource selectedCard = null;
+
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                        canTargetCondition: CanSelectReturnCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: () => true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        message: "Select 1 [TS] trait Digimon card to return to the bottom of the deck.",
+                        maxCount: 1,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.Custom,
+                        root: SelectCardEffect.Root.Trash,
+                        customRootCardList: null,
+                        canLookReverseCard: true,
+                        selectPlayer: card.Owner,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        CardSource selectedCard = null;
+                        selectedCard = cardSource;
+                        yield return null;
+                    }
 
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                        selectCardEffect.SetUp(
-                            canTargetCondition: CanSelectReturnCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: "Select 1 [TS] trait Digimon card to return to the bottom of the deck.",
-                            maxCount: 1,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Trash,
-                            customRootCardList: null,
-                            canLookReverseCard: true,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
+                    if (selectedCard != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { selectedCard }));
 
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        if (card.Owner.CanAddMemory(activateClass))
                         {
-                            selectedCard = cardSource;
-                            yield return null;
+                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                        if (selectedCard != null)
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectGiantSlayerCondition))
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { selectedCard }));
+                            SelectCardEffect selectGiantSlayerEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                            if (card.Owner.CanAddMemory(activateClass))
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                            }
+                            selectGiantSlayerEffect.SetUp(
+                                canTargetCondition: CanSelectGiantSlayerCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 [Giant Slayer] to return to your hand.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.AddHand,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
 
-                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectGiantSlayerCondition))
-                            {
-                                SelectCardEffect selectGiantSlayerEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                selectGiantSlayerEffect.SetUp(
-                                    canTargetCondition: CanSelectGiantSlayerCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 [Giant Slayer] to return to your hand.",
-                                    maxCount: 1,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.AddHand,
-                                    root: SelectCardEffect.Root.Trash,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                                yield return ContinuousController.instance.StartCoroutine(selectGiantSlayerEffect.Activate());
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(selectGiantSlayerEffect.Activate());
                         }
                     }
                 }
@@ -132,48 +130,45 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                    CardSource selectedCardToTrash = null;
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        CardSource selectedCardToTrash = null;
+                        selectedCardToTrash = cardSource;
+                        yield return null;
+                    }
 
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
+                    if (selectedCardToTrash != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashHandAndProcessAccordingToResult(
+                            player: card.Owner,
+                            hashtable: hashtable,
+                            cardToTrash: selectedCardToTrash,
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess,
+                            failureProcess: null));
 
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        IEnumerator SuccessProcess(CardSource cs)
                         {
-                            selectedCardToTrash = cardSource;
-                            yield return null;
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                        if (selectedCardToTrash != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashHandAndProcessAccordingToResult(
-                                player: card.Owner,
-                                hashtable: hashtable,
-                                cardToTrash: selectedCardToTrash,
-                                activateClass: activateClass,
-                                successProcess: SuccessProcess,
-                                failureProcess: null));
-
-                            IEnumerator SuccessProcess(CardSource cs)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
                         }
                     }
                 }
