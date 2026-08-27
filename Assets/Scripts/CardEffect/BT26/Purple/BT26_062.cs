@@ -59,51 +59,48 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardCondition))
+                    CardSource selectedCardToTrash = null;
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectHandCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        CardSource selectedCardToTrash = null;
+                        selectedCardToTrash = cardSource;
+                        yield return null;
+                    }
 
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    selectHandEffect.SetUpCustomMessage("Select 1 [Ghost]/[NSo] card to trash.", "The opponent is selecting 1 [Ghost]/[NSo] card to trash.");
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectHandCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    if (selectedCardToTrash != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashHandAndProcessAccordingToResult(
+                            player: card.Owner,
+                            hashtable: hashtable,
+                            cardToTrash: selectedCardToTrash,
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess,
+                            failureProcess: null));
+
+                        IEnumerator SuccessProcess(CardSource cardSource)
                         {
-                            selectedCardToTrash = cardSource;
-                            yield return null;
-                        }
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 [Ghost]/[NSo] card to trash.", "The opponent is selecting 1 [Ghost]/[NSo] card to trash.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                        if (selectedCardToTrash != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashHandAndProcessAccordingToResult(
-                                player: card.Owner,
-                                hashtable: hashtable,
-                                cardToTrash: selectedCardToTrash,
-                                activateClass: activateClass,
-                                successProcess: SuccessProcess,
-                                failureProcess: null));
-
-                            IEnumerator SuccessProcess(CardSource cardSource)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                         }
                     }
                 }
