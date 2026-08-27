@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -35,13 +34,14 @@ namespace DCGO.CardEffects.BT26
                     => "[On Play] Reveal the top 3 cards of your deck. Add 1 card with the [Fallen Angel], [Undead], [Wizard] or [Demon Lord] trait and 1 card with the [TS] trait among them to the hand. Return the rest to the bottom of the deck.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    => CardEffectCommons.CanTriggerOnPlay(hashtable, card)
+                        && CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 bool DarkTraitCondition(CardSource cardSource)
-                    => cardSource.EqualsTraits("Fallen Angel") || cardSource.EqualsTraits("Undead") || cardSource.EqualsTraits("Wizard") || cardSource.ContainsTraits("Demon Lord");
+                    => cardSource.EqualsTraits("Fallen Angel") || cardSource.EqualsTraits("Undead") || cardSource.EqualsTraits("Wizard") || cardSource.EqualsTraits("Demon Lord");
 
                 bool TSCondition(CardSource cardSource) => cardSource.HasTSTraits;
 
