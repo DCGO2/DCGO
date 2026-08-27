@@ -24,7 +24,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName()
                 => "1 of your [TS] Digimon's attack target can't change for the turn";
 
@@ -35,40 +34,32 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && permanent.TopCard.HasTSTraits;
 
-            bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                selectPermanentEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: CanSelectPermanentCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: 1,
+                    canNoSelect: false,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Custom,
+                    cardEffect: activateClass);
+
+                selectPermanentEffect.SetUpCustomMessage("Select 1 [TS] Digimon whose attack target can't change.", "The opponent is selecting 1 [TS] Digimon whose attack target can't change.");
+
+                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                IEnumerator SelectPermanentCoroutine(Permanent permanent)
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                    permanent.UntilEachTurnEndEffects.Add(_timing => PermanentEffectFactory.CanNotSwitchAttackTargetEffect(permanent, activateClass));
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 [TS] Digimon whose attack target can't change.", "The opponent is selecting 1 [TS] Digimon whose attack target can't change.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        permanent.UntilEachTurnEndEffects.Add(_timing => PermanentEffectFactory.CanNotSwitchAttackTargetEffect(permanent, activateClass));
-
-                        yield return null;
-                    }
+                    yield return null;
                 }
             }
 
@@ -80,7 +71,6 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
-                additionalActivateCondition: SharedAdditionalActivateCondition,
                 onPlay: true,
                 whenDigivolving: true);
 
@@ -202,6 +192,7 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 hand card, trash bottom 2 digivolution cards of 1 opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT26_021_Inherit");
                 cardEffects.Add(activateClass);
@@ -212,9 +203,8 @@ namespace DCGO.CardEffects.BT26
                 bool AnyPermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
 
-                bool CanSelectDeleteTargetCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && permanent.DigivolutionCards.Count >= 1;
+                bool CanSelectStripTargetCondition(Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
@@ -222,84 +212,78 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && card.Owner.HandCards.Count >= 1
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetCondition);
+                        && card.Owner.HandCards.Count >= 1;
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool isUsed = false;
 
-                    if (card.Owner.HandCards.Count >= 1)
+                    CardSource selectedCardToTrash = null;
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: _ => true,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        CardSource selectedCardToTrash = null;
+                        selectedCardToTrash = cardSource;
+                        yield return null;
+                    }
 
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to trash.", "The opponent is selecting 1 card to trash.");
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: _ => true,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    if (selectedCardToTrash != null)
+                    {
+                        isUsed = true;
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashHandAndProcessAccordingToResult(
+                            player: card.Owner,
+                            hashtable: hashtable,
+                            cardToTrash: selectedCardToTrash,
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess,
+                            failureProcess: null));
+
+                        IEnumerator SuccessProcess(CardSource cardSource)
                         {
-                            selectedCardToTrash = cardSource;
-                            yield return null;
-                        }
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to trash.", "The opponent is selecting 1 card to trash.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                        if (selectedCardToTrash != null)
-                        {
-                            isUsed = true;
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashHandAndProcessAccordingToResult(
-                                player: card.Owner,
-                                hashtable: hashtable,
-                                cardToTrash: selectedCardToTrash,
-                                activateClass: activateClass,
-                                successProcess: SuccessProcess,
-                                failureProcess: null));
-
-                            IEnumerator SuccessProcess(CardSource cardSource)
+                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectStripTargetCondition))
                             {
-                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetCondition))
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectStripTargetCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash its bottom 2 digivolution cards.", "The opponent is selecting 1 Digimon that will trash its bottom 2 digivolution cards.");
+
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                                IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                 {
-                                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDeleteTargetCondition));
-
-                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                    selectPermanentEffect.SetUp(
-                                        selectPlayer: card.Owner,
-                                        canTargetCondition: CanSelectDeleteTargetCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        maxCount: maxCount,
-                                        canNoSelect: false,
-                                        canEndNotMax: false,
-                                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                                        afterSelectPermanentCoroutine: null,
-                                        mode: SelectPermanentEffect.Mode.Custom,
-                                        cardEffect: activateClass);
-
-                                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash its bottom 2 digivolution cards.", "The opponent is selecting 1 Digimon that will trash its bottom 2 digivolution cards.");
-
-                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                                    {
-                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanent, trashCount: 2, isFromTop: false, activateClass: activateClass));
-                                    }
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanent, trashCount: 2, isFromTop: false, activateClass: activateClass));
                                 }
                             }
                         }
