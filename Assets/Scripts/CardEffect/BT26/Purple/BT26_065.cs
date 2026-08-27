@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -45,7 +44,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool PurpleRavemonCondition(CardSource cardSource)
                     => cardSource.HasCardColor(CardColor.Purple)
-                        && (cardSource.HasText("Ravemon") || cardSource.ContainsTraits("Avian") || cardSource.ContainsTraits("Bird"));
+                        && (cardSource.ContainsCardName("Ravemon") || cardSource.ContainsTraits("Avian") || cardSource.ContainsTraits("Bird"));
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
