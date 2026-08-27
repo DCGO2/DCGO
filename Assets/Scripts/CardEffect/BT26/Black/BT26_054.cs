@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -24,7 +23,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName()
                 => "May play 1 [CS] Tamer from hand free (not sharing a name with your Tamers)";
 
@@ -48,16 +46,12 @@ namespace DCGO.CardEffects.BT26
             {
                 bool CanSelectHandCardConditionBound(CardSource cardSource) => CanSelectHandCardCondition(cardSource, activateClass);
 
-                if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardConditionBound))
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
-                        canTargetCondition: CanSelectHandCardConditionBound,
-                        root: SelectCardEffect.Root.Hand,
-                        cardEffect: activateClass,
-                        payCost: false));
-                }
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                    canTargetCondition: CanSelectHandCardConditionBound,
+                    root: SelectCardEffect.Root.Hand,
+                    cardEffect: activateClass,
+                    payCost: false));
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -66,6 +60,7 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
+                isSkippable: true,
                 additionalActivateCondition: SharedAdditionalActivateCondition,
                 onPlay: true,
                 whenDigivolving: true);
@@ -89,12 +84,17 @@ namespace DCGO.CardEffects.BT26
 
                 bool CardCondition(CardSource cardSource) => cardSource.IsDigimon && cardSource.EqualsTraits("CS");
 
+                bool CanEvoCardCondition(CardSource cardSource)
+                    => CardCondition(cardSource)
+                        && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
+
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, PermanentCondition, null, AddedCardCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanEvoCardCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
@@ -143,11 +143,12 @@ namespace DCGO.CardEffects.BT26
                     => permanent == card.PermanentOfThisCard();
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsOpponentTurn(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.IsOpponentTurn(card)
                         && CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, IsOpponentDigimon);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
@@ -166,7 +167,7 @@ namespace DCGO.CardEffects.BT26
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to attack.", "The opponent is selecting 1 Digimon to attack.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to change the attack to.", "The opponent is selecting 1 Digimon to change the attack to.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
