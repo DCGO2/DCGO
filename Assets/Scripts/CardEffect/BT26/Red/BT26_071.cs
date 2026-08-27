@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -24,7 +23,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName()
                 => "By deleting 1 of your Digimon, delete 1 opponent's level 4 or lower Digimon";
 
@@ -38,73 +36,65 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                     && permanent.TopCard.HasLevel && permanent.TopCard.Level <= 4;
 
-            bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSacrificeCondition);
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSacrificeCondition))
+                Permanent selectedPermanent = null;
+
+                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                selectPermanentEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: CanSelectSacrificeCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: 1,
+                    canNoSelect: true,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Custom,
+                    cardEffect: activateClass);
+
+                IEnumerator SelectPermanentCoroutine(Permanent permanent)
                 {
-                    Permanent selectedPermanent = null;
+                    selectedPermanent = permanent;
+                    yield return null;
+                }
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
 
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectSacrificeCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
+                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                if (selectedPermanent != null)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                        targetPermanents: new List<Permanent>() { selectedPermanent },
+                        activateClass: activateClass,
+                        successProcess: SuccessProcess,
+                        failureProcess: null));
+
+                    IEnumerator SuccessProcess(List<Permanent> permanents)
                     {
-                        selectedPermanent = permanent;
-                        yield return null;
-                    }
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    if (selectedPermanent != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                            targetPermanents: new List<Permanent>() { selectedPermanent },
-                            activateClass: activateClass,
-                            successProcess: SuccessProcess,
-                            failureProcess: null));
-
-                        IEnumerator SuccessProcess(List<Permanent> permanents)
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetCondition))
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetCondition))
-                            {
-                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDeleteTargetCondition));
+                            SelectPermanentEffect selectDeleteEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                                SelectPermanentEffect selectDeleteEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            selectDeleteEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectDeleteTargetCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
 
-                                selectDeleteEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectDeleteTargetCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: null,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Destroy,
-                                    cardEffect: activateClass);
+                            selectDeleteEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
 
-                                selectDeleteEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
-
-                                yield return ContinuousController.instance.StartCoroutine(selectDeleteEffect.Activate());
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(selectDeleteEffect.Activate());
                         }
                     }
                 }
@@ -118,7 +108,7 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
-                additionalActivateCondition: SharedAdditionalActivateCondition,
+                isSkippable: true,
                 onPlay: true,
                 whenDigivolving: true);
 
