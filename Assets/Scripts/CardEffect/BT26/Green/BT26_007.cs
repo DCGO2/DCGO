@@ -16,7 +16,8 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Link 1 [Seven Code] card to this Digimon for -2", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT26_007_Inherit");
                 cardEffects.Add(activateClass);
@@ -43,6 +44,7 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    bool isUsed = false;
                     bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanLinkCardEffectCondition);
                     bool canSelectSource = card.PermanentOfThisCard().DigivolutionCards.Any(CanLinkCardEffectCondition);
 
