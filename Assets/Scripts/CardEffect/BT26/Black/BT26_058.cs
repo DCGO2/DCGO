@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -38,7 +37,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared When Digivolving / When Attacking
-
             string SharedEffectName()
                 => "1 of your [CS] Digimon isn't affected by opponent's Digimon effects";
 
@@ -49,13 +47,8 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && permanent.TopCard.EqualsTraits("CS");
 
-            bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                 selectPermanentEffect.SetUp(
@@ -63,7 +56,7 @@ namespace DCGO.CardEffects.BT26
                     canTargetCondition: CanSelectPermanentCondition,
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
-                    maxCount: maxCount,
+                    maxCount: 1,
                     canNoSelect: false,
                     canEndNotMax: false,
                     selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -95,7 +88,6 @@ namespace DCGO.CardEffects.BT26
                     yield return null;
                 }
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -106,7 +98,6 @@ namespace DCGO.CardEffects.BT26
                 optional: false,
                 maxCountPerTurn: 1,
                 hashValue: "BT26_058_WD_WA",
-                additionalActivateCondition: SharedAdditionalActivateCondition,
                 whenDigivolving: true,
                 whenAttacking: true);
 
@@ -115,8 +106,7 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By placing this Digimon's top stacked card under the leaving Digimon, it doesn't leave", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetIsSkippable(true);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -137,60 +127,17 @@ namespace DCGO.CardEffects.BT26
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     List<Permanent> removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(ProtectedPermanentCondition);
+                    CardSource topCard = card.PermanentOfThisCard().TopCard;
 
-                    bool isUsed = false;
+                    yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { topCard }, activateClass));
 
-                    if (card.PermanentOfThisCard() != null && card.PermanentOfThisCard().DigivolutionCards.Count >= 1)
+                    foreach (Permanent permanent in removedPermanents)
                     {
-                        CardSource topStackedCard = card.PermanentOfThisCard().DigivolutionCards[0];
-
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                            canTargetCondition: _ => true,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                            message: "By placing this Digimon's top stacked card under the leaving Digimon, it doesn't leave.",
-                            maxCount: 1,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.DigivolutionCards,
-                            customRootCardList: new List<CardSource>() { topStackedCard },
-                            canLookReverseCard: true,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
-
-                        selectCardEffect.SetUpCustomMessage("By placing this Digimon's top stacked card under the leaving Digimon, it doesn't leave.", "The opponent is deciding whether to place this Digimon's top stacked card under the leaving Digimon.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                        {
-                            if (cardSources.Count >= 1 && removedPermanents.Count >= 1)
-                            {
-                                Permanent targetPermanent = removedPermanents[0];
-
-                                yield return ContinuousController.instance.StartCoroutine(targetPermanent.AddDigivolutionCardsBottom(cardSources, activateClass));
-
-                                isUsed = true;
-                            }
-                        }
-                    }
-
-                    if (isUsed)
-                    {
-                        foreach (Permanent permanent in removedPermanents)
-                        {
-                            permanent.willBeRemoveField = false;
-                            permanent.HideDeleteEffect();
-                            permanent.HideHandBounceEffect();
-                            permanent.HideDeckBounceEffect();
-                            permanent.HideWillRemoveFieldEffect();
-                        }
+                        permanent.willBeRemoveField = false;
+                        permanent.HideDeleteEffect();
+                        permanent.HideHandBounceEffect();
+                        permanent.HideDeckBounceEffect();
+                        permanent.HideWillRemoveFieldEffect();
                     }
                 }
             }
