@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -41,69 +40,63 @@ namespace DCGO.CardEffects.BT26
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendCondition))
+                Permanent selectedSuspendTarget = null;
+
+                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                selectPermanentEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: CanSelectSuspendCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: 1,
+                    canNoSelect: true,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Tap,
+                    cardEffect: activateClass);
+
+                IEnumerator SelectPermanentCoroutine(Permanent permanent)
                 {
-                    Permanent selectedSuspendTarget = null;
+                    selectedSuspendTarget = permanent;
+                    yield return null;
+                }
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
 
-                    selectPermanentEffect.SetUp(
+                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                if (selectedSuspendTarget != null && CardEffectCommons.HasMatchConditionPermanent(CanSelectDebuffTargetCondition))
+                {
+                    SelectPermanentEffect selectDebuffEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectDebuffEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectSuspendCondition,
+                        canTargetCondition: CanSelectDebuffTargetCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        selectPermanentCoroutine: SelectPermanentCoroutine2,
                         afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Tap,
+                        mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    selectDebuffEffect.SetUpCustomMessage("Select 1 Digimon that will get Security A. -2.", "The opponent is selecting 1 Digimon that will get Security A. -2.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectDebuffEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine2(Permanent permanent)
                     {
-                        selectedSuspendTarget = permanent;
-                        yield return null;
-                    }
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    if (selectedSuspendTarget != null && CardEffectCommons.HasMatchConditionPermanent(CanSelectDebuffTargetCondition))
-                    {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDebuffTargetCondition));
-
-                        SelectPermanentEffect selectDebuffEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectDebuffEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectDebuffTargetCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine2,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectDebuffEffect.SetUpCustomMessage("Select 1 Digimon that will get Security A. -2.", "The opponent is selecting 1 Digimon that will get Security A. -2.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectDebuffEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine2(Permanent permanent)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: permanent, changeValue: -2, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: permanent, changeValue: -2, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                     }
                 }
             }
 
             bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendCondition)
-                    && CardEffectCommons.HasMatchConditionPermanent(CanSelectDebuffTargetCondition);
+                => CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendCondition);
 
             #endregion
 
