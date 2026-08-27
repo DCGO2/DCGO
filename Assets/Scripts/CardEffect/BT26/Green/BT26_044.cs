@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -24,7 +23,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName()
                 => "May suspend 1 opponent's Digimon/Tamer, then 1 can't unsuspend";
 
@@ -44,8 +42,6 @@ namespace DCGO.CardEffects.BT26
             {
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition))
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendTargetCondition));
-
                     SelectPermanentEffect selectSuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectSuspendEffect.SetUp(
@@ -53,7 +49,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectSuspendTargetCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
@@ -68,8 +64,6 @@ namespace DCGO.CardEffects.BT26
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectCantUnsuspendCondition))
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectCantUnsuspendCondition));
-
                     SelectPermanentEffect selectCantUnsuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectCantUnsuspendEffect.SetUp(
@@ -77,7 +71,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectCantUnsuspendCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -95,7 +89,6 @@ namespace DCGO.CardEffects.BT26
                     }
                 }
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -108,12 +101,16 @@ namespace DCGO.CardEffects.BT26
                 whenDigivolving: true);
 
             #region Shared Your Turn: Opponent suspends / trash under your Tamer - Digivolve free
-
             string SharedEffectNameC()
                 => "Digivolve into [Vegetation]/[Fairy]/[DATA SQUAD] card in hand for 1 less";
 
             string SharedEffectDescriptionC()
                 => "[Your Turn] [Once Per Turn] When any of your opponent's Digimon or Tamers suspend, or effects trash cards from under your Tamers, this Digimon may digivolve into a Digimon card with the [Vegetation], [Fairy] or [DATA SQUAD] trait in the hand with the cost reduced by 1.";
+
+            bool SharedCanActivateConditionC(Hashtable hashtable, ActivateClass activateClass)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
+
+            string SharedHashString = "BT26_044_YourTurn";
 
             bool OpponentPermanentCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
@@ -149,7 +146,6 @@ namespace DCGO.CardEffects.BT26
 
                 if (!isUsed) activateClass.RemoveUse();
             }
-
             #endregion
 
             #region Your Turn - Opponent Suspends
@@ -157,18 +153,15 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectNameC(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, (hash) => SharedActivateCoroutineC(hash, activateClass), 1, false, SharedEffectDescriptionC());
+                activateClass.SetUpActivateClass((hash) => SharedCanActivateConditionC(hash, activateClass), (hash) => SharedActivateCoroutineC(hash, activateClass), 1, false, SharedEffectDescriptionC());
                 activateClass.SetIsSkippable(true);
-                activateClass.SetHashString("BT26_044_YourTurn");
+                activateClass.SetHashString(SharedHashString);
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, OpponentPermanentCondition);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
             }
             #endregion
 
@@ -177,18 +170,15 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectNameC(), CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, (hash) => SharedActivateCoroutineC(hash, activateClass), 1, false, SharedEffectDescriptionC());
+                activateClass.SetUpActivateClass((hash) => SharedCanActivateConditionC(hash, activateClass), (hash) => SharedActivateCoroutineC(hash, activateClass), 1, false, SharedEffectDescriptionC());
                 activateClass.SetIsSkippable(true);
-                activateClass.SetHashString("BT26_044_YourTurn");
+                activateClass.SetHashString(SharedHashString);
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, OwnersTamerCondition, cardEffect => true, cardSource => true);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
             }
             #endregion
 
