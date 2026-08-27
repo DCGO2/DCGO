@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,7 +95,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving - May Battle
-
             string SharedEffectNameA()
                 => "This Digimon may battle 1 of your opponent's Digimon";
 
@@ -112,8 +110,6 @@ namespace DCGO.CardEffects.BT26
 
             IEnumerator SharedActivateCoroutineA(Hashtable hashtable, ActivateClass activateClass)
             {
-                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectBattleTargetCondition));
-
                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                 selectPermanentEffect.SetUp(
@@ -121,7 +117,7 @@ namespace DCGO.CardEffects.BT26
                     canTargetCondition: CanSelectBattleTargetCondition,
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
-                    maxCount: maxCount,
+                    maxCount: 1,
                     canNoSelect: true,
                     canEndNotMax: false,
                     selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -138,7 +134,6 @@ namespace DCGO.CardEffects.BT26
                     yield return ContinuousController.instance.StartCoroutine(new IBattle(card.PermanentOfThisCard(), permanent, null, true).Battle());
                 }
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -147,12 +142,12 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutineA,
                 SharedEffectDescriptionA,
                 optional: false,
+                isSkippable: true,
                 additionalActivateCondition: SharedAdditionalActivateConditionA,
                 onPlay: true,
                 whenDigivolving: true);
 
             #region Shared Start of Your Main Phase / On Play / When Digivolving - Suspend to buff
-
             string SharedEffectNameB()
                 => "By suspending 1 Digimon, suspended [Insectoid]/[Titan] Digimon get +3000 DP and immune to opponent's Options";
 
@@ -173,92 +168,65 @@ namespace DCGO.CardEffects.BT26
 
             IEnumerator SharedActivateCoroutineB(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendCondition))
+                SelectPermanentEffect selectSuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                selectSuspendEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: CanSelectSuspendCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: 1,
+                    canNoSelect: false,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: null,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Tap,
+                    cardEffect: activateClass);
+
+                selectSuspendEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
+
+                yield return ContinuousController.instance.StartCoroutine(selectSuspendEffect.Activate());
+
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDPPlayerEffect(
+                    permanentCondition: IsSuspendedInsectoidOrTitan,
+                    changeValue: 3000,
+                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                    activateClass: activateClass));
+
+                AddSkillClass addSkillClass = new AddSkillClass();
+                addSkillClass.SetUpICardEffect("Isn't affected by opponent's Option effects", CanUseSkillCondition, card);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilOpponentTurnEnd, card: card, cardEffect: addSkillClass, timing: EffectTiming.None);
+
+                bool CanUseSkillCondition(Hashtable _hashtable) => true;
+
+                bool CardSourceCondition(CardSource cardSource)
+                    => cardSource.PermanentOfThisCard() != null
+                        && IsSuspendedInsectoidOrTitan(cardSource.PermanentOfThisCard())
+                        && cardSource == cardSource.PermanentOfThisCard().TopCard;
+
+                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> effects, EffectTiming _timing)
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendCondition));
-
-                    SelectPermanentEffect selectSuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectSuspendEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectSuspendCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Tap,
-                        cardEffect: activateClass);
-
-                    selectSuspendEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectSuspendEffect.Activate());
-
-                    // +3000 DP dynamically re-applies to whichever of your [Insectoid]/[Titan] Digimon are
-                    // suspended for the rest of the duration (ChangeDigimonDPPlayerEffect re-checks
-                    // permanentCondition continuously, it's not a one-time snapshot).
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDPPlayerEffect(
-                        permanentCondition: IsSuspendedInsectoidOrTitan,
-                        changeValue: 3000,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass));
-
-                    // No player-wide "isn't affected by opponent's Option effects" helper exists (only
-                    // self-targeted CanNotAffected-based keywords like Progress), so this is built here via
-                    // AddSkillClass mirroring how other player-wide dynamic grants (e.g. Progress) work.
-                    AddSkillClass addSkillClass = new AddSkillClass();
-                    addSkillClass.SetUpICardEffect("Isn't affected by opponent's Option effects", CanUseSkillCondition, card);
-                    addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-                    CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilOpponentTurnEnd, card: card, cardEffect: addSkillClass, timing: EffectTiming.None);
-
-                    bool CanUseSkillCondition(Hashtable _hashtable) => true;
-
-                    bool CardSourceCondition(CardSource cardSource)
-                        => cardSource.PermanentOfThisCard() != null
-                            && IsSuspendedInsectoidOrTitan(cardSource.PermanentOfThisCard())
-                            && cardSource == cardSource.PermanentOfThisCard().TopCard;
-
-                    List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> effects, EffectTiming _timing)
+                    if (_timing == EffectTiming.None)
                     {
-                        if (_timing == EffectTiming.None)
-                        {
-                            CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                            canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Option effects", CanUseInner, cardSource);
-                            canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: SelfCardCondition, SkillCondition: SkillCondition);
-                            effects.Add(canNotAffectedClass);
+                        CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
+                        canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Option effects", CanUseInner, cardSource);
+                        canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: SelfCardCondition, SkillCondition: SkillCondition);
+                        effects.Add(canNotAffectedClass);
 
-                            bool CanUseInner(Hashtable _hashtable) => true;
+                        bool CanUseInner(Hashtable _hashtable) => true;
 
-                            bool SelfCardCondition(CardSource cs) => cs == cardSource;
+                        bool SelfCardCondition(CardSource cs) => cs == cardSource;
 
-                            bool SkillCondition(ICardEffect cardEffect)
-                                => cardEffect != null
-                                    && cardEffect.EffectSourceCard != null
-                                    && cardEffect.EffectSourceCard.Owner == card.Owner.Enemy
-                                    && cardEffect.EffectSourceCard.IsOption;
-                        }
-
-                        return effects;
+                        bool SkillCondition(ICardEffect cardEffect)
+                            => cardEffect != null
+                                && cardEffect.EffectSourceCard != null
+                                && cardEffect.EffectSourceCard.Owner == card.Owner.Enemy
+                                && cardEffect.EffectSourceCard.IsOption;
                     }
+
+                    return effects;
                 }
-            }
-
-            #endregion
-
-            #region Start of Your Main Phase B
-            if (timing == EffectTiming.OnStartMainPhase)
-            {
-                cardEffects.Add(CardEffectFactory.StartOfYourMainPhaseClass(
-                    card,
-                    SharedEffectNameB(),
-                    (hash, activateClass) => SharedActivateCoroutineB(hash, activateClass),
-                    SharedEffectDescriptionB("Start of Your Main Phase"),
-                    additionalActivateCondition: SharedAdditionalActivateConditionB,
-                    optional: false,
-                    isSkippable: true
-                ));
             }
             #endregion
 
@@ -268,7 +236,9 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutineB,
                 SharedEffectDescriptionB,
                 optional: false,
+                isSkippable: true,
                 additionalActivateCondition: SharedAdditionalActivateConditionB,
+                startOfYourMainPhase: true,
                 onPlay: true,
                 whenDigivolving: true);
 
