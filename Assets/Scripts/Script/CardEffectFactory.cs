@@ -849,6 +849,7 @@ public partial class CardEffectFactory
                                                                     bool endOfOpponentTurn = false,
                                                                     bool endOfAllTurns = false,
                                                                     bool startOfYourMainPhase = false,
+                                                                    bool startOfOpponentsMainPhase = false,
                                                                     bool counter = false)
     {
         if (whenMoving && timing == EffectTiming.OnMove)
@@ -894,6 +895,10 @@ public partial class CardEffectFactory
         if(startOfYourMainPhase && timing == EffectTiming.OnStartMainPhase)
         {
             cardEffects.Add(StartOfYourMainPhaseClass(card, effectName, activateCoroutine, effectDescription("Start of Your Main Phase"), optional, isSkippableFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
+        }
+        if (startOfOpponentsMainPhase && timing == EffectTiming.OnStartMainPhase)
+        {
+            cardEffects.Add(StartOfYourOpponentsMainPhaseClass(card, effectName, activateCoroutine, effectDescription("Start of Opponent's Main Phase"), optional, isSkippableFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
         if (counter && timing == EffectTiming.OnCounterTiming)
         {
