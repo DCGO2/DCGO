@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -24,7 +23,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName()
                 => "Add top security to hand and Recovery +1, then may suspend 1 Digimon";
 
@@ -41,35 +39,18 @@ namespace DCGO.CardEffects.BT26
                 {
                     CardSource topCard = card.Owner.SecurityCards[0];
 
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
 
-                    selectCardEffect.SetUp(
-                        canTargetCondition: _ => true,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => false,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: null,
-                        message: "Add your top security card to the hand.",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: false,
-                        mode: SelectCardEffect.Mode.AddHand,
-                        root: SelectCardEffect.Root.Security,
-                        customRootCardList: new List<CardSource>() { topCard },
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                    yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
+                        player: card.Owner,
+                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                        activateClass).ReduceSecurity());
                 }
 
                 yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendCondition))
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendCondition));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -77,7 +58,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectSuspendCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
@@ -90,7 +71,6 @@ namespace DCGO.CardEffects.BT26
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -127,7 +107,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    if (card.Owner.CanAddMemory(activateClass))
+                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
             #endregion
