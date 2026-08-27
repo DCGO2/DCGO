@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -24,7 +23,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared When Moving / On Play
-
             string SharedEffectName()
                 => "Reveal top 3, add 1 [Vegetation]/[Fairy]/[DATA SQUAD] card or 1 green Tamer to hand";
 
@@ -52,7 +50,6 @@ namespace DCGO.CardEffects.BT26
                     activateClass: activateClass
                 ));
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -94,8 +91,6 @@ namespace DCGO.CardEffects.BT26
                 {
                     bool isUsed = false;
 
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -103,7 +98,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
