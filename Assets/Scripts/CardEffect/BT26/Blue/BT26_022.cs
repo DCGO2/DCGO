@@ -24,7 +24,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName()
                 => "Add top security card to hand and Recovery +1";
 
@@ -37,32 +36,16 @@ namespace DCGO.CardEffects.BT26
                 {
                     CardSource topCard = card.Owner.SecurityCards[0];
 
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
 
-                    selectCardEffect.SetUp(
-                        canTargetCondition: _ => true,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => false,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: null,
-                        message: "Add your top security card to the hand.",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: false,
-                        mode: SelectCardEffect.Mode.AddHand,
-                        root: SelectCardEffect.Root.Security,
-                        customRootCardList: new List<CardSource>() { topCard },
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                    yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
+                        player: card.Owner,
+                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                        activateClass).ReduceSecurity());
                 }
 
                 yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -79,8 +62,7 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place self as bottom security to play 1 blue/red [Iliad] Digimon for 4 less", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetIsSkippable(true);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -97,7 +79,8 @@ namespace DCGO.CardEffects.BT26
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 4);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsOwnerTurn(card);
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.IsOwnerTurn(card);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
