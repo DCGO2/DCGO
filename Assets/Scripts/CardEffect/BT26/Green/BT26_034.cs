@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -43,7 +42,8 @@ namespace DCGO.CardEffects.BT26
                     => cardSource.IsDigimon && (cardSource.EqualsTraits("Vegetation") || cardSource.HasTSTraits);
 
                 bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                    => card.Owner.MemoryForPlayer <= 4;
+                    => card.Owner.MemoryForPlayer <= 4
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CardCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
                 {
@@ -67,7 +67,8 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 opponent's Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsOptional(true);
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT26_034_Inherit");
                 cardEffects.Add(activateClass);
@@ -89,7 +90,8 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                    bool isUsed = false;
+                    Permanent selectedPermanent = null;
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -98,10 +100,10 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: null,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.Tap,
                         cardEffect: activateClass);
@@ -109,6 +111,17 @@ namespace DCGO.CardEffects.BT26
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine (Permanent permanent)
+                    {
+                        if (selectedPermanent == null)
+                        {
+                            isUsed = true;
+                        }
+                        yield return null;
+                    }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
