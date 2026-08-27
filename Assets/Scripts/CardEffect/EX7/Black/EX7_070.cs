@@ -45,6 +45,9 @@ namespace DCGO.CardEffects.EX7
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    //In order to work from under the digimon, it needs to be an inherited effect, which then makes it think it is a digimon effect. Override to be an option effect
+                    activateClass.SetIsDigimonEffect(false);
+                    
                     SelectPermanentEffect selectPermanentEffect =
                         GManager.instance.GetComponent<SelectPermanentEffect>();
 
