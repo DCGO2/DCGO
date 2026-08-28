@@ -476,6 +476,7 @@ public class DataBase : MonoBehaviour
         return "[On Deletion] <Save> (You may place this card under one of your Tamers.)";
     }
 
+
     public static string EvadeEffectDiscription()
     {
         return "<Evade> (When this Digimon would be deleted, you may suspend it to prevent that deletion.)";
@@ -539,6 +540,11 @@ public class DataBase : MonoBehaviour
     public static string TrainingEffectDiscription()
     {
         return "<Training> (In the main phase, by suspending this Digimon, place your deck's top card face down as this Digimon's bottom digivolution card. This effect can also activate in the breeding area).";
+    }
+
+    public static string DetachEffectDescription(string condition)
+    {
+        return $"<Detach 《{condition}》> (When this Digimon would leave the battle area other than by your effects, by trashing 1 of its {condition} link cards, it doesn't leave.)";
     }
 
     public static string DecodeEffectDiscription(string[] decodeStrings)

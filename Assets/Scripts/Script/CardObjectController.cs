@@ -591,7 +591,7 @@ public class CardObjectController : MonoBehaviour
         List<CardSource> addedCards = cardSources.Filter(cardSource => !cardSource.IsDigiEgg && !cardSource.IsToken);
 
         if (eggCards.Count <= 0)
-            yield return ContinuousController.instance.StartCoroutine(AddLibraryBottomCards(eggCards));
+            yield return ContinuousController.instance.StartCoroutine(AddLibraryBottomCards(eggCards, cardEffect: cardEffect));
 
         if (addedCards.Count <= 0) yield break;
 
@@ -778,7 +778,7 @@ public class CardObjectController : MonoBehaviour
     #endregion
 
     #region place a card on top of the deck
-    public static IEnumerator AddLibraryTopCards(List<CardSource> cardSources, bool notAddLog = false, ICardEffect cardEffect = null)
+    public static IEnumerator AddLibraryTopCards(List<CardSource> cardSources, ICardEffect cardEffect, bool notAddLog = false)
     {
         if (cardSources.Count <= 0) yield break;
 
@@ -840,7 +840,9 @@ public class CardObjectController : MonoBehaviour
                     if (!cardSource.Owner.DigitamaLibraryCards.Contains(cardSource))
                     {
                         cardSource.Owner.DigitamaLibraryCards.Insert(0, cardSource);
-                        if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
+                        // Ruling: OnAddLibraryAnyone should not trigger from cards added to the digi-egg deck.
+                        // Commented out (not removed) so this is easy to restore if that ruling changes.
+                        // if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
                     }
                 }
 
@@ -874,7 +876,7 @@ public class CardObjectController : MonoBehaviour
     #endregion
 
     #region put a card at the bottom of the deck
-    public static IEnumerator AddLibraryBottomCards(List<CardSource> cardSources, bool notAddLog = false, ICardEffect cardEffect = null)
+    public static IEnumerator AddLibraryBottomCards(List<CardSource> cardSources, ICardEffect cardEffect, bool notAddLog = false)
     {
         if (cardSources.Count <= 0) yield break;
 
@@ -948,7 +950,9 @@ public class CardObjectController : MonoBehaviour
                     if (!cardSource.Owner.DigitamaLibraryCards.Contains(cardSource))
                     {
                         cardSource.Owner.DigitamaLibraryCards.Add(cardSource);
-                        if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
+                        // Ruling: OnAddLibraryAnyone should not trigger from cards added to the digi-egg deck.
+                        // Commented out (not removed) so this is easy to restore if that ruling changes.
+                        // if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
                     }
                 }
 
