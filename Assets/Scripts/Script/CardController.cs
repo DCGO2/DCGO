@@ -5905,6 +5905,51 @@ public class AceOverflowClass
 
 #endregion
 
+#region ReturnStackToLibrary
+
+public class IReturnStackToLibrary
+{
+    /// <summary>
+    /// Return Stack To Library Class
+    /// </summary>
+    /// <param name="permanent">Target Permanent</param>
+    /// <param name="ReturnCount">Amount of stacked cards to return to the top of the library</param>
+    /// <param name="cardEffect">Card Effect</param>
+    public IReturnStackToLibrary(Permanent permanent, int ReturnCount, ICardEffect cardEffect)
+    {
+        _permanent = permanent;
+        _returnCount = ReturnCount;
+        _cardEffect = cardEffect;
+    }
+
+    Permanent _permanent = null;
+    int _returnCount;
+    ICardEffect _cardEffect = null;
+
+    public IEnumerator ReturnStackToLibrary()
+    {
+        if (_cardEffect == null) yield break;
+        if (_cardEffect.EffectSourceCard == null) yield break;
+        if (_permanent == null) yield break;
+        if (_permanent.TopCard == null) yield break;
+        if (_permanent.ImmuneFromStackReturnToLibrary(_cardEffect)) yield break;
+        if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
+
+        int count = Math.Min(_permanent.StackCards.Count, _returnCount);
+
+        if (count >= 1)
+        {
+            List<CardSource> returnedCards = _permanent.StackCards.GetRange(0, count);
+
+            returnedCards.Reverse();
+
+            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(returnedCards, cardEffect: _cardEffect));
+        }
+    }
+}
+
+#endregion
+
 #region TrashStack
 
 public class ITrashStack
