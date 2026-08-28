@@ -24,53 +24,14 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Reduce Play Cost
-            if (timing == EffectTiming.BeforePayCost)
+            if (timing == EffectTiming.None)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reduce play cost by 6", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetHashString("BT26_059_ReducePlayCost");
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                    => "When this card would be played, if your hand has fewer cards than your opponent's, reduce the cost by 6.";
-
-                bool CardCondition(CardSource cardSource) => cardSource == card;
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => card.Owner.HandCards.Count < card.Owner.Enemy.HandCards.Count
-                        && card.Owner.CanReduceCost(null, card);
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                bool Condition()
                 {
-                    ChangeCostClass changeCostClass = new ChangeCostClass();
-                    changeCostClass.SetUpICardEffect("Play Cost -6", CanUseCondition1, card);
-                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardCondition, rootCondition: RootCondition, isUpDown: IsUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-
-                    ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                    card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
-
-                    bool CanUseCondition1(Hashtable hashtable) => true;
-
-                    bool RootCondition(SelectCardEffect.Root root) => true;
-
-                    bool IsUpDown() => true;
-
-                    int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                    {
-                        if (CardCondition(cardSource) && card.Owner.HandCards.Count < card.Owner.Enemy.HandCards.Count)
-                        {
-                            cost -= 6;
-                        }
-
-                        return cost;
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
+                    return card.Owner.HandCards.Count < card.Owner.Enemy.HandCards.Count;
                 }
+
+                cardEffects.Add(CardEffectFactory.MandatorySelfPlayCostReduction(6, card, Condition));
             }
             #endregion
 
