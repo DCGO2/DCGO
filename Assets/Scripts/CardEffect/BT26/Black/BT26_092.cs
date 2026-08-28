@@ -16,6 +16,7 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 [TS] hand card, Draw 1 and gain 1 memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -34,52 +35,49 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                    CardSource selectedCardToTrash = null;
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        CardSource selectedCardToTrash = null;
+                        selectedCardToTrash = cardSource;
+                        yield return null;
+                    }
 
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
+                    if (selectedCardToTrash != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashHandAndProcessAccordingToResult(
+                            player: card.Owner,
+                            hashtable: hashtable,
+                            cardToTrash: selectedCardToTrash,
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess,
+                            failureProcess: null));
 
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        IEnumerator SuccessProcess(CardSource cs)
                         {
-                            selectedCardToTrash = cardSource;
-                            yield return null;
-                        }
+                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
 
-                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                        if (selectedCardToTrash != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashHandAndProcessAccordingToResult(
-                                player: card.Owner,
-                                hashtable: hashtable,
-                                cardToTrash: selectedCardToTrash,
-                                activateClass: activateClass,
-                                successProcess: SuccessProcess,
-                                failureProcess: null));
-
-                            IEnumerator SuccessProcess(CardSource cs)
+                            if (card.Owner.CanAddMemory(activateClass))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-
-                                if (card.Owner.CanAddMemory(activateClass))
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                                }
+                                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                             }
                         }
                     }
@@ -105,7 +103,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
                         && permanent.TopCard.HasTSTraits;
 
-                bool YourDigimonThatCanAttack(Permanent permanent)
+                bool YourDigimon(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.HasTSTraits;
 
@@ -115,64 +113,59 @@ namespace DCGO.CardEffects.BT26
                         && CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, OpponentAttackerCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerCondition)
-                        && CardEffectCommons.HasMatchConditionPermanent(YourDigimonThatCanAttack);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerCondition))
+                    Permanent selectedTamer = null;
+
+                    SelectPermanentEffect selectTamerEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectTamerEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectTamerCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        Permanent selectedTamer = null;
+                        selectedTamer = permanent;
+                        yield return null;
+                    }
 
-                        SelectPermanentEffect selectTamerEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    selectTamerEffect.SetUpCustomMessage("Select 1 [TS] trait Tamer to return to the bottom of the deck.", "The opponent is selecting 1 [TS] trait Tamer to return to the bottom of the deck.");
 
-                        selectTamerEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectTamerCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
+                    yield return ContinuousController.instance.StartCoroutine(selectTamerEffect.Activate());
 
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    if (selectedTamer != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(new List<Permanent>() { selectedTamer }, CardEffectCommons.CardEffectHashtable(activateClass)).DeckBounce());
+
+                        if (CardEffectCommons.HasMatchConditionPermanent(YourDigimon))
                         {
-                            selectedTamer = permanent;
-                            yield return null;
-                        }
+                            SelectPermanentEffect selectDefenderEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        selectTamerEffect.SetUpCustomMessage("Select 1 [TS] trait Tamer to return to the bottom of the deck.", "The opponent is selecting 1 [TS] trait Tamer to return to the bottom of the deck.");
+                            selectDefenderEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: YourDigimon,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Attack,
+                                cardEffect: activateClass);
 
-                        yield return ContinuousController.instance.StartCoroutine(selectTamerEffect.Activate());
-
-                        if (selectedTamer != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(new List<Permanent>() { selectedTamer }, CardEffectCommons.CardEffectHashtable(activateClass)).DeckBounce());
-
-                            if (CardEffectCommons.HasMatchConditionPermanent(YourDigimonThatCanAttack))
-                            {
-                                SelectPermanentEffect selectDefenderEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                selectDefenderEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: YourDigimonThatCanAttack,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: 1,
-                                    canNoSelect: true,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: null,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Attack,
-                                    cardEffect: activateClass);
-
-                                yield return ContinuousController.instance.StartCoroutine(selectDefenderEffect.Activate());
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(selectDefenderEffect.Activate());
                         }
                     }
                 }
