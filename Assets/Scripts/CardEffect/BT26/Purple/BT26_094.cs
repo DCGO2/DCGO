@@ -16,6 +16,7 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By placing 1 [DATA SQUAD] hand card face down under this Tamer, Draw 1 and gain 1 memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -34,44 +35,41 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                    CardSource selectedCard = null;
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        CardSource selectedCard = null;
+                        selectedCard = cardSource;
+                        yield return null;
+                    }
 
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
+                    if (selectedCard != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
 
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+
+                        if (card.Owner.CanAddMemory(activateClass))
                         {
-                            selectedCard = cardSource;
-                            yield return null;
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                        if (selectedCard != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
-
-                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-
-                            if (card.Owner.CanAddMemory(activateClass))
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                         }
                     }
                 }
@@ -105,8 +103,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.CanActivateSuspendCostEffect(card)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                        && CardEffectCommons.CanActivateSuspendCostEffect(card);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
