@@ -46,7 +46,9 @@ namespace DCGO.CardEffects.BT26
 
             bool CanSelectDeleteTargetCondition(Permanent permanent, ICardEffect activateClass)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && permanent.DP <= card.Owner.MaxDP_DeleteEffect(card.PermanentOfThisCard().DP, activateClass);
+                    && permanent.HasDP
+                    && card.PermanentOfThisCard().HasDP
+                    && permanent.DP <= card.PermanentOfThisCard().DP;
 
             bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
                 => CardEffectCommons.HasMatchConditionPermanent(permanent => CanSelectDeleteTargetCondition(permanent, activateClass))
