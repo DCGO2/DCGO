@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool hasPaidCost = false;
 
-                if (selected == 1 && CardEffectCommons.IsExistOnBattleArea(card))
+                if (selected == 1)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                         targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
@@ -118,8 +118,6 @@ namespace DCGO.CardEffects.BT26
                 }
                 else if (selected == 2)
                 {
-                    bool trashed = false;
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                     int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource));
 
@@ -150,20 +148,15 @@ namespace DCGO.CardEffects.BT26
                     {
                         if (permanents.Count == 1)
                         {
-                            trashed = true;
+                            hasPaidCost = true;
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 2, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
                         }
                         else if (permanents.Count == 2)
                         {
-                            trashed = true;
+                            hasPaidCost = true;
                             foreach (Permanent selectedPermanent in permanents)
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 1, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
                         }
-                    }
-
-                    if (trashed)
-                    {
-                        hasPaidCost = true;
                     }
                 }
 
@@ -189,7 +182,6 @@ namespace DCGO.CardEffects.BT26
                     yield return ContinuousController.instance.StartCoroutine(selectDeleteEffect.Activate());
                 }
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -198,6 +190,7 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
+                isSkippable: true,
                 whenDigivolving: true,
                 endOfAttack: true);
 
