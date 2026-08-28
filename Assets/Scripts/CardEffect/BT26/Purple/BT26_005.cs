@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash a Tamer's bottom face-down card to play [Avian]/[DATA SQUAD] from trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
@@ -26,6 +26,9 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
+
+                bool CanActivateCondition(Hashtable hashtable)
+                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass);
 
                 bool TamerWithFaceDownCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
