@@ -23,53 +23,11 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Reduce Play Cost
-            if (timing == EffectTiming.BeforePayCost)
+            if (timing == EffectTiming.None)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reduce play cost by 4", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetHashString("BT26_045_ReducePlayCost");
-                cardEffects.Add(activateClass);
+                bool Condition() => card.Owner.HandCards.Count < card.Owner.Enemy.HandCards.Count;
 
-                string EffectDescription()
-                    => "When this card would be played, if your hand has fewer cards than your opponent's, reduce the cost by 4.";
-
-                bool CardCondition(CardSource cardSource) => cardSource == card;
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => card.Owner.HandCards.Count < card.Owner.Enemy.HandCards.Count
-                        && card.Owner.CanReduceCost(null, card);
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    ChangeCostClass changeCostClass = new ChangeCostClass();
-                    changeCostClass.SetUpICardEffect("Play Cost -4", CanUseCondition1, card);
-                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardCondition, rootCondition: RootCondition, isUpDown: IsUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-
-                    ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                    card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
-
-                    bool CanUseCondition1(Hashtable hashtable) => true;
-
-                    bool RootCondition(SelectCardEffect.Root root) => true;
-
-                    bool IsUpDown() => true;
-
-                    int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                    {
-                        if (CardCondition(cardSource) && card.Owner.HandCards.Count < card.Owner.Enemy.HandCards.Count)
-                        {
-                            cost -= 4;
-                        }
-
-                        return cost;
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
-                }
+                cardEffects.Add(CardEffectFactory.MandatorySelfPlayCostReduction(4, card, Condition));
             }
             #endregion
 
@@ -127,40 +85,44 @@ namespace DCGO.CardEffects.BT26
                 whenDigivolving: true,
                 whenAttacking: true);
 
-            #region Your Turn - Grant Alliance/Piercing/Vortex
+            #region Grant Alliance/Piercing/Vortex
+
+            bool GrantPermanentCondition(Permanent permanent)
+                => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    && (permanent.TopCard.EqualsTraits("Insectoid") || permanent.TopCard.EqualsTraits("Titan"));
+
+            bool GrantCondition() => CardEffectCommons.IsOwnerTurn(card);
+
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(GrantPermanentCondition, false, card, GrantCondition));
+            }
+
+            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
+            {
+                foreach (Permanent permanent in card.Owner.GetBattleAreaDigimons().Filter(GrantPermanentCondition))
+                {
+                    cardEffects.Add(CardEffectFactory.PierceEffect(targetPermanent: permanent, isInheritedEffect: false, condition: GrantCondition, rootCardEffect: null, card: card));
+                }
+            }
+
             if (timing == EffectTiming.None)
             {
                 AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("Your [Insectoid]/[Titan] Digimon gain Alliance, Piercing and Vortex", CanUseCondition, card);
-                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                addSkillClass.SetUpICardEffect("Your [Insectoid]/[Titan] Digimon gain Vortex", CanUseCondition, card);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects, limitTiming: EffectTiming.OnEndTurn);
                 cardEffects.Add(addSkillClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, addSkillClass);
 
-                bool PermanentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && (permanent.TopCard.EqualsTraits("Insectoid") || permanent.TopCard.EqualsTraits("Titan"));
-
                 bool CardSourceCondition(CardSource cardSource)
                     => cardSource.PermanentOfThisCard() != null
-                        && PermanentCondition(cardSource.PermanentOfThisCard())
+                        && GrantPermanentCondition(cardSource.PermanentOfThisCard())
                         && cardSource == cardSource.PermanentOfThisCard().TopCard;
-
-                bool GrantCondition() => CardEffectCommons.IsOwnerTurn(card);
 
                 List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
                 {
-                    if (_timing == EffectTiming.OnAllyAttack)
-                    {
-                        cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: false, card: cardSource, condition: GrantCondition));
-                    }
-
-                    if (_timing == EffectTiming.OnDetermineDoSecurityCheck)
-                    {
-                        cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: cardSource, condition: GrantCondition));
-                    }
-
                     if (_timing == EffectTiming.OnEndTurn)
                     {
                         cardEffects.Add(CardEffectFactory.VortexSelfEffect(isInheritedEffect: false, card: cardSource, condition: GrantCondition));
