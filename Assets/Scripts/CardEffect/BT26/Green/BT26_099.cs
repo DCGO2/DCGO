@@ -62,7 +62,8 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing this card, 1 Digimon may digivolve into a level 6 or lower [DM] card from hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetEffectTargets(TargetPermanents);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -84,11 +85,18 @@ namespace DCGO.CardEffects.BT26
                         && CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, OwnerDigimonCondition, null, FaceDownCardCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CanSelectDigivolveTargetCondition(CardEffectCommons.GetPermanentFromHashtable(hashtable));
+
+                List<Permanent> TargetPermanents(Hashtable hashtable)
+                {
+                    Permanent permanent = CardEffectCommons.GetPermanentFromHashtable(hashtable);
+                    return permanent != null ? new List<Permanent>() { permanent } : new List<Permanent>();
+                }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    List<Permanent> triggeringPermanents = CardEffectCommons.GetSimultaneousPermanentsFromAddDigivolutionCardsHashtable(_hashtable);
+                    Permanent triggeringPermanent = CardEffectCommons.GetPermanentFromHashtable(_hashtable);
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                         targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
@@ -98,12 +106,10 @@ namespace DCGO.CardEffects.BT26
 
                     IEnumerator SuccessProcess(List<Permanent> permanents)
                     {
-                        List<Permanent> eligiblePermanents = triggeringPermanents.Filter(CanSelectDigivolveTargetCondition);
-
-                        if (eligiblePermanents.Count == 1)
+                        if (CanSelectDigivolveTargetCondition(triggeringPermanent))
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                eligiblePermanents[0],
+                                triggeringPermanent,
                                 CanSelectDMCardCondition,
                                 payCost: false,
                                 reduceCostTuple: null,
@@ -113,50 +119,6 @@ namespace DCGO.CardEffects.BT26
                                 activateClass: activateClass,
                                 successProcess: null
                             ));
-                        }
-                        else if (eligiblePermanents.Count >= 2)
-                        {
-                            Permanent selectedPermanent = null;
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: eligiblePermanents.Contains,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                            {
-                                selectedPermanent = permanent;
-                                yield return null;
-                            }
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that may digivolve.", "The opponent is selecting 1 Digimon that may digivolve.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            if (selectedPermanent != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                    selectedPermanent,
-                                    CanSelectDMCardCondition,
-                                    payCost: false,
-                                    reduceCostTuple: null,
-                                    fixedCostTuple: null,
-                                    ignoreDigivolutionRequirementFixedCost: -1,
-                                    isHand: true,
-                                    activateClass: activateClass,
-                                    successProcess: null
-                                ));
-                            }
                         }
                     }
                 }
