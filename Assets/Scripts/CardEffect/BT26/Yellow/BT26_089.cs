@@ -124,7 +124,7 @@ namespace DCGO.CardEffects.BT26
                     {
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { card.Owner.LibraryCards[0] }, activateClass, isFacedown: true));
 
-                        //if (by effect) && opponent has digimon
+                        if (CardEffectCommons.IsByEffect(hashtable, null) && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
