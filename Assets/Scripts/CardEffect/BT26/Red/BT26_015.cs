@@ -1,6 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Butenmon
 namespace DCGO.CardEffects.BT26
@@ -38,15 +38,10 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                     && permanent.DP <= card.Owner.MaxDP_DeleteEffect(5000, activateClass);
 
-            bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectDebuffTargetCondition);
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDebuffTargetCondition))
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDebuffTargetCondition));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -54,7 +49,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectDebuffTargetCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -72,7 +67,7 @@ namespace DCGO.CardEffects.BT26
                     }
                 }
 
-                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, _ => true))
+                if (card.Owner.TrashCards.Any())
                 {
                     CardSource selectedCardToReturn = null;
 
@@ -108,14 +103,12 @@ namespace DCGO.CardEffects.BT26
 
                     if (selectedCardToReturn != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { selectedCardToReturn }));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { selectedCardToReturn }, cardEffect: activateClass));
 
                         bool CanSelectDeleteTargetConditionBound(Permanent permanent) => CanSelectDeleteTargetCondition(permanent, activateClass);
 
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetConditionBound))
                         {
-                            int deleteMaxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDeleteTargetConditionBound));
-
                             SelectPermanentEffect selectDeleteEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectDeleteEffect.SetUp(
@@ -123,7 +116,7 @@ namespace DCGO.CardEffects.BT26
                                 canTargetCondition: CanSelectDeleteTargetConditionBound,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                maxCount: deleteMaxCount,
+                                maxCount: 1,
                                 canNoSelect: false,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: null,
@@ -147,7 +140,6 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
-                additionalActivateCondition: SharedAdditionalActivateCondition,
                 onPlay: true,
                 whenDigivolving: true);
 
@@ -183,8 +175,6 @@ namespace DCGO.CardEffects.BT26
                 {
                     bool isUsed = false;
 
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -192,7 +182,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -219,6 +209,8 @@ namespace DCGO.CardEffects.BT26
                                 canAttackPlayerCondition: () => true,
                                 defenderCondition: (defender) => true,
                                 cardEffect: activateClass);
+
+                            selectAttackEffect.SetCanNotSelectNotAttack();
 
                             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
@@ -251,7 +243,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && card.HasText("Chronomon")
+                        && card.PermanentOfThisCard().TopCard.HasText("Chronomon")
                         && CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard());
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
