@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsExistInSecurity(card, false)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasPlutomonOrTitamon);
 
-                cardEffects.Add(CardEffectFactory.ChangeBaseDPGlobalEffect(IsOwnTitanDigimon, 3000, false, card, CanUseCondition));
+                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(IsOwnTitanDigimon, 3000, false, card, CanUseCondition, effectName: () => "All of your [Titan] trait Digimon get +3000 DP."));
             }
             #endregion
 
@@ -75,6 +75,7 @@ namespace DCGO.CardEffects.BT26
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.HasLevel && cardSource.Level <= 4
                         && cardSource.EqualsTraits("Titan")
+                        && cardSource.HasPlayCost
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -137,6 +138,7 @@ namespace DCGO.CardEffects.BT26
                 bool CanPlayCondition(CardSource cardSource)
                     => cardSource.IsDigimon && cardSource.HasLevel && cardSource.Level <= 4
                         && cardSource.EqualsTraits("Titan")
+                        && cardSource.HasPlayCost
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
