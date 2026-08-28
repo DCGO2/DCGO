@@ -117,7 +117,7 @@ namespace DCGO.CardEffects.BT26
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectTargetPermanentCondition,
+                        canTargetCondition: CanEvolveTargetPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
