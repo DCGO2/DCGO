@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.BT26
 
                     if (selectedCard != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { selectedCard }));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { selectedCard }, cardEffect: activateClass));
 
                         if (card.Owner.CanAddMemory(activateClass))
                         {

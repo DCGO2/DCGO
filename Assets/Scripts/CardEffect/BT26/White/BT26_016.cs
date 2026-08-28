@@ -124,7 +124,7 @@ namespace DCGO.CardEffects.BT26
 
                     if (selectedCards.Count == 3)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(selectedCards));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(selectedCards, cardEffect: activateClass));
 
                         yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
 
@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.BT26
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     List<CardSource> topSecurity = new List<CardSource>() { card.Owner.SecurityCards[0] };
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(topSecurity));
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(topSecurity, cardEffect: activateClass));
 
                     yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                         player: card.Owner,
