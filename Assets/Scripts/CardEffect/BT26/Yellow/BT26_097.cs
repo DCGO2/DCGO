@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.BT26
                         && (permanent.TopCard.ContainsCardName("Dan Yuki") || permanent.TopCard.ContainsCardName("Kanan Yuki"));
 
                 bool CanSelectAegiomonCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
                         && permanent.TopCard.EqualsCardName("Aegiomon");
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -63,7 +63,8 @@ namespace DCGO.CardEffects.BT26
                     => cardSource.ContainsCardName("Aegiochusmon");
 
                 bool CanSelectJupitermonPermanentCondition(Permanent permanent)
-                    => permanent.TopCard.EqualsCardName("Jupitermon");
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                        && permanent.TopCard.EqualsCardName("Jupitermon");
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
@@ -199,6 +200,8 @@ namespace DCGO.CardEffects.BT26
 
                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
+                            if (selectedCard == null) yield break;
+
                             Permanent selectedJupitermon = null;
 
                             SelectPermanentEffect selectJupitermonEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -226,7 +229,7 @@ namespace DCGO.CardEffects.BT26
 
                             yield return ContinuousController.instance.StartCoroutine(selectJupitermonEffect.Activate());
 
-                            if (selectedCard != null)
+                            if (selectedCard != null && selectedJupitermon != null)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(selectedJupitermon.AddDigivolutionCardsTop(new List<CardSource>() { selectedCard }, activateClass));
                             }
