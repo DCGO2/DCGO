@@ -150,6 +150,8 @@ namespace DCGO.CardEffects.BT26
 
                         if (CardEffectCommons.HasMatchConditionPermanent(YourDigimon))
                         {
+                            Permanent selectedDefender = null;
+
                             SelectPermanentEffect selectDefenderEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectDefenderEffect.SetUp(
@@ -160,12 +162,28 @@ namespace DCGO.CardEffects.BT26
                                 maxCount: 1,
                                 canNoSelect: true,
                                 canEndNotMax: false,
-                                selectPermanentCoroutine: null,
+                                selectPermanentCoroutine: SelectDefenderCoroutine,
                                 afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Attack,
+                                mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
+                            selectDefenderEffect.SetUpCustomMessage("Select 1 [TS] trait Digimon to change the attack target to.", "The opponent is selecting 1 [TS] trait Digimon to change the attack target to.");
+
                             yield return ContinuousController.instance.StartCoroutine(selectDefenderEffect.Activate());
+
+                            IEnumerator SelectDefenderCoroutine(Permanent permanent)
+                            {
+                                selectedDefender = permanent;
+                                yield return null;
+                            }
+
+                            if (selectedDefender != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SwitchDefender(
+                                    activateClass,
+                                    false,
+                                    selectedDefender));
+                            }
                         }
                     }
                 }
