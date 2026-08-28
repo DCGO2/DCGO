@@ -28,7 +28,8 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass);
+                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionPermanent(TamerWithFaceDownCondition);
 
                 bool TamerWithFaceDownCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
@@ -62,15 +63,12 @@ namespace DCGO.CardEffects.BT26
                             Permanent selectedPermanent = permanents[0];
                             CardSource bottomFaceDownCard = selectedPermanent.DigivolutionCards.LastOrDefault(cardSource => cardSource.IsFlipped);
 
-                            if (bottomFaceDownCard != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsAndProcessAccordingToResult(
-                                    targetPermanent: selectedPermanent,
-                                    targetDigivolutionCards: new List<CardSource>() { bottomFaceDownCard },
-                                    activateClass: activateClass,
-                                    successProcess: SuccessProcess,
-                                    failureProcess: null));
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsAndProcessAccordingToResult(
+                                targetPermanent: selectedPermanent,
+                                targetDigivolutionCards: new List<CardSource>() { bottomFaceDownCard },
+                                activateClass: activateClass,
+                                successProcess: SuccessProcess,
+                                failureProcess: null));
                         }
                     }
 
