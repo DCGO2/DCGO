@@ -79,8 +79,6 @@ namespace DCGO.CardEffects.BT26
                     }
                     else
                     {
-                        // Only 1 of the 2 locations has a legal target — skip straight to that location's own
-                        // selection (which already offers canNoSelect) instead of an extra location-choice menu.
                         fromHand = canSelectHand;
                     }
 
