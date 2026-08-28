@@ -123,7 +123,7 @@ namespace DCGO.CardEffects.BT26
                         && !card.CanNotEvolve(permanent);
 
                 bool CardCondition(CardSource cardSource)
-                    => cardSource.IsDigimon && (cardSource.EqualsTraits("Insectoid") || cardSource.EqualsTraits("NSp"));
+                    => cardSource.IsDigimon && (cardSource.EqualsTraits("Insectoid") || cardSource.EqualsTraits("Titan"));
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
