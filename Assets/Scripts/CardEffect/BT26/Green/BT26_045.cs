@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -75,7 +74,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving / When Attacking
-
             string SharedEffectName()
                 => "May play 1 level 4 or lower [Insectoid]/[Titan] Digimon from hand free";
 
@@ -97,20 +95,17 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanSelectHandCardConditionBound(CardSource cardSource) => CanSelectHandCardCondition(cardSource, activateClass);
 
-                if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardConditionBound))
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
-                        canTargetCondition: CanSelectHandCardConditionBound,
-                        root: SelectCardEffect.Root.Hand,
-                        cardEffect: activateClass,
-                        payCost: false,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine));
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                    canTargetCondition: CanSelectHandCardConditionBound,
+                    root: SelectCardEffect.Root.Hand,
+                    cardEffect: activateClass,
+                    payCost: false,
+                    afterSelectCardCoroutine: AfterSelectCardCoroutine));
 
-                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                    {
-                        if (cardSources != null && cardSources.Count > 0) isUsed = true;
-                        yield return null;
-                    }
+                IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                {
+                    if (cardSources != null && cardSources.Count > 0) isUsed = true;
+                    yield return null;
                 }
 
                 if (!isUsed) activateClass.RemoveUse();
@@ -124,6 +119,7 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
+                isSkippable: true,
                 maxCountPerTurn: 1,
                 hashValue: "BT26_045_OP_WD_WA",
                 additionalActivateCondition: SharedAdditionalActivateCondition,
