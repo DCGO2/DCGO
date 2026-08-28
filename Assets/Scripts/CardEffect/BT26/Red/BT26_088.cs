@@ -13,27 +13,7 @@ namespace DCGO.CardEffects.BT26
             #region Start of Your Main Phase
             if (timing == EffectTiming.OnStartMainPhase)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                    => "[Start of Your Main Phase] If your opponent has a Digimon, gain 1 memory.";
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.IsOwnerTurn(card);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && card.Owner.CanAddMemory(activateClass)
-                        && card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1;
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                }
+                cardEffects.Add(CardEffectFactory.Gain1MemoryTamerOpponentDigimonEffect(card));
             }
             #endregion
 
@@ -49,7 +29,7 @@ namespace DCGO.CardEffects.BT26
                     => "[Your Turn] When any [Boss] or [TS] trait Digimon cards would be played, by suspending this Tamer, reduce the cost by 1. If you have no Digimon, instead reduce the cost by 2.";
 
                 bool PlayCardCondition(CardSource cardSource)
-                    => CardEffectCommons.IsExistOnHand(cardSource) && cardSource.IsDigimon
+                    => cardSource.IsDigimon
                         && (cardSource.EqualsTraits("Boss") || cardSource.HasTSTraits)
                         && cardSource.Owner == card.Owner;
 
