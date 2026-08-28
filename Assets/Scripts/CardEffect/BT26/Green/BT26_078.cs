@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.BT26
                     List<Permanent> permanents = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(hashtable: hashtable, rootCondition: null);
 
                     List<CardSource> cardSources = new List<CardSource>() { card };
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Card", true, true));
 
                     if (permanents != null)
