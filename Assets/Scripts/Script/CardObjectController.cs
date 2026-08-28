@@ -778,7 +778,7 @@ public class CardObjectController : MonoBehaviour
     #endregion
 
     #region place a card on top of the deck
-    public static IEnumerator AddLibraryTopCards(List<CardSource> cardSources, bool notAddLog = false, ICardEffect cardEffect = null)
+    public static IEnumerator AddLibraryTopCards(List<CardSource> cardSources, ICardEffect cardEffect, bool notAddLog = false)
     {
         if (cardSources.Count <= 0) yield break;
 
@@ -876,7 +876,7 @@ public class CardObjectController : MonoBehaviour
     #endregion
 
     #region put a card at the bottom of the deck
-    public static IEnumerator AddLibraryBottomCards(List<CardSource> cardSources, bool notAddLog = false, ICardEffect cardEffect = null)
+    public static IEnumerator AddLibraryBottomCards(List<CardSource> cardSources, ICardEffect cardEffect, bool notAddLog = false)
     {
         if (cardSources.Count <= 0) yield break;
 
