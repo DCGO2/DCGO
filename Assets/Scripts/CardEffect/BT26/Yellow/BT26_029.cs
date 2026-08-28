@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared OP / WD
-            string SharedEffectName = "By trashing your top security, grant DP-immunity, stack-trash-immunity, return-immunity on 1 Digimon";
+            string SharedEffectName = "By trashing your top security, grant DP-immunity, stack-trash-immunity, and stack-return-immunity on 1 Digimon";
 
             string SharedEffectDescription(string tag)
             {
