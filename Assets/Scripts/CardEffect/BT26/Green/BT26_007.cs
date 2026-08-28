@@ -48,25 +48,41 @@ namespace DCGO.CardEffects.BT26
                     bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanLinkCardEffectCondition);
                     bool canSelectSource = card.PermanentOfThisCard().DigivolutionCards.Any(CanLinkCardEffectCondition);
 
-                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
-                    if (canSelectHand)
-                        selectionElements.Add(new SelectionElement<int>(message: "From hand", value: 1, spriteIndex: 0));
-                    if (canSelectSource)
-                        selectionElements.Add(new SelectionElement<int>(message: "From this Digimon's digivolution cards", value: 2, spriteIndex: 0));
-                    selectionElements.Add(new SelectionElement<int>(message: "Do not link", value: 3, spriteIndex: 1));
+                    bool fromHand;
 
-                    GManager.instance.userSelectionManager.SetIntSelection(
-                        selectionElements: selectionElements,
-                        selectPlayer: card.Owner,
-                        selectPlayerMessage: "From which area will you link a card?",
-                        notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
+                    if (canSelectHand && canSelectSource)
+                    {
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
+                        {
+                            new SelectionElement<int>(message: "From hand", value: 1, spriteIndex: 0),
+                            new SelectionElement<int>(message: "From this Digimon's digivolution cards", value: 2, spriteIndex: 0),
+                            new SelectionElement<int>(message: "Do not link", value: 3, spriteIndex: 1),
+                        };
 
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                        GManager.instance.userSelectionManager.SetIntSelection(
+                            selectionElements: selectionElements,
+                            selectPlayer: card.Owner,
+                            selectPlayerMessage: "From which area will you link a card?",
+                            notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
 
-                    bool doLink = GManager.instance.userSelectionManager.SelectedIntValue != 3;
-                    bool fromHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                    if (!doLink) yield break;
+                        int choice = GManager.instance.userSelectionManager.SelectedIntValue;
+
+                        if (choice == 3)
+                        {
+                            if (!isUsed) activateClass.RemoveUse();
+                            yield break;
+                        }
+
+                        fromHand = choice == 1;
+                    }
+                    else
+                    {
+                        // Only 1 of the 2 locations has a legal target — skip straight to that location's own
+                        // selection (which already offers canNoSelect) instead of an extra location-choice menu.
+                        fromHand = canSelectHand;
+                    }
 
                     ICardEffect GetReduceLinkCostEffect(EffectTiming _timing) => _timing == EffectTiming.None
                         ? CardEffectFactory.GrantedReduceLinkCostClass(card: card, reducedCost: 2, cardSourceCondition: _ => true, permanentCondition: _ => true, rootCondition: _ => true)
@@ -133,11 +149,15 @@ namespace DCGO.CardEffects.BT26
 
                     if (selectedCard != null && card.PermanentOfThisCard() != null)
                     {
+                        isUsed = true;
+
                         yield return ContinuousController.instance.StartCoroutine(
                             new ILinkCard(true, selectedCard, card.PermanentOfThisCard(), activateClass).LinkCard());
                     }
 
                     card.Owner.UntilCalculateFixedCostEffect.Remove(GetReduceLinkCostEffect);
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
