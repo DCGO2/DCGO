@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -27,7 +26,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.None)
             {
                 AddAssemblyConditionClass addAssemblyConditionClass = new AddAssemblyConditionClass();
-                addAssemblyConditionClass.SetUpICardEffect($"Assembly", CanUseCondition, card);
+                addAssemblyConditionClass.SetUpICardEffect("Assembly", CanUseCondition, card);
                 addAssemblyConditionClass.SetUpAddAssemblyConditionClass(getAssemblyCondition: GetAssembly);
                 addAssemblyConditionClass.SetNotShowUI(true);
                 cardEffects.Add(addAssemblyConditionClass);
@@ -69,7 +68,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName()
                 => "Delete 1 opponent's Digimon with 7000 DP or less";
 
@@ -80,17 +78,12 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                     && permanent.DP <= card.Owner.MaxDP_DeleteEffect(7000, activateClass);
 
-            bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(permanent => CanSelectPermanentCondition(permanent, activateClass));
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool CanSelectPermanentConditionBound(Permanent permanent) => CanSelectPermanentCondition(permanent, activateClass);
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentConditionBound))
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentConditionBound));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -98,7 +91,7 @@ namespace DCGO.CardEffects.BT26
                         canTargetCondition: CanSelectPermanentConditionBound,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
@@ -111,7 +104,6 @@ namespace DCGO.CardEffects.BT26
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -120,7 +112,6 @@ namespace DCGO.CardEffects.BT26
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
-                additionalActivateCondition: SharedAdditionalActivateCondition,
                 onPlay: true,
                 whenDigivolving: true);
 
@@ -130,13 +121,14 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return [Shambala] card from trash to hand, then play 1 [TB] Digimon free", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                     => "[On Deletion] You may return 1 card with the [Shambala] trait from your trash to the hand. Then, you may play 1 Digimon card with the [TB] trait and 6000 DP or less from your hand without paying the cost.";
 
                 bool CanSelectTrashCardCondition(CardSource cardSource)
-                    => cardSource.IsDigimon && cardSource.EqualsTraits("Shambala");
+                    => cardSource.EqualsTraits("Shambala");
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
                     => cardSource.IsDigimon
@@ -157,7 +149,6 @@ namespace DCGO.CardEffects.BT26
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectTrashCardCondition))
                     {
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectTrashCardCondition));
 
                         selectCardEffect.SetUp(
                             canTargetCondition: CanSelectTrashCardCondition,
@@ -167,7 +158,7 @@ namespace DCGO.CardEffects.BT26
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: null,
                             message: "Select 1 [Shambala] card to return to hand.",
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canEndNotMax: false,
                             isShowOpponent: true,
                             mode: SelectCardEffect.Mode.AddHand,
@@ -200,6 +191,7 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [TB] Digimon free", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
