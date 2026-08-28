@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Dantemon
 namespace DCGO.CardEffects.BT26
@@ -200,13 +201,16 @@ namespace DCGO.CardEffects.BT26
                     {
                         isUsed = true;
 
-                        List<CardSource> topSecurity = new List<CardSource>() { card.Owner.Enemy.SecurityCards[0] };
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(topSecurity, cardEffect: activateClass));
+                        if (card.Owner.Enemy.SecurityCards.Any())
+                        {
+                            List<CardSource> topSecurity = new List<CardSource>() { card.Owner.Enemy.SecurityCards[0] };
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(topSecurity, cardEffect: activateClass));
 
-                        yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
-                            player: card.Owner.Enemy,
-                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
-                            activateClass).ReduceSecurity());
+                            yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
+                                player: card.Owner.Enemy,
+                                refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                activateClass).ReduceSecurity());
+                        }
                     }
 
                     if (!isUsed) activateClass.RemoveUse();
