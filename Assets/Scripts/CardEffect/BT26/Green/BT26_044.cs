@@ -1,0 +1,272 @@
+using System.Collections;
+using System.Collections.Generic;
+
+// Lilamon
+namespace DCGO.CardEffects.BT26
+{
+    public class BT26_044 : CEntity_Effect
+    {
+        public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+        {
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+            #region Alternate Digivolution Requirement
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("DATA SQUAD");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 4));
+            }
+            #endregion
+
+            #region Shared On Play / When Digivolving
+            string SharedEffectName()
+                => "May suspend 1 opponent's Digimon/Tamer, then 1 can't unsuspend";
+
+            string SharedEffectDescription(string tag)
+                => $"[{tag}] You may suspend 1 of your opponent's Digimon or Tamers. Then, 1 of their Digimon or Tamers can't unsuspend until their turn ends.";
+
+            bool CanSelectSuspendTargetCondition(Permanent permanent)
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                    && (permanent.IsDigimon || permanent.IsTamer)
+                    && !permanent.IsSuspended && permanent.CanSuspend;
+
+            bool CanSelectCantUnsuspendCondition(Permanent permanent)
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                    && (permanent.IsDigimon || permanent.IsTamer);
+
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
+            {
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendTargetCondition))
+                {
+                    SelectPermanentEffect selectSuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectSuspendEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectSuspendTargetCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Tap,
+                        cardEffect: activateClass);
+
+                    selectSuspendEffect.SetUpCustomMessage("Select 1 Digimon or Tamer to suspend.", "The opponent is selecting 1 Digimon or Tamer to suspend.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectSuspendEffect.Activate());
+                }
+
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectCantUnsuspendCondition))
+                {
+                    SelectPermanentEffect selectCantUnsuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectCantUnsuspendEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCantUnsuspendCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectCantUnsuspendEffect.SetUpCustomMessage("Select 1 Digimon or Tamer that can't unsuspend.", "The opponent is selecting 1 Digimon or Tamer that can't unsuspend.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCantUnsuspendEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspend(permanent, EffectDuration.UntilOpponentTurnEnd, activateClass, null, "Can't unsuspend"));
+                    }
+                }
+            }
+            #endregion
+
+            CardEffectFactory.ActivateClassesForSharedEffects(
+                ref cardEffects, timing, card,
+                SharedEffectName(),
+                SharedActivateCoroutine,
+                SharedEffectDescription,
+                optional: false,
+                onPlay: true,
+                whenDigivolving: true);
+
+            #region Shared Your Turn: Opponent suspends / trash under your Tamer - Digivolve free
+            string SharedEffectNameC()
+                => "Digivolve into [Vegetation]/[Fairy]/[DATA SQUAD] card in hand for 1 less";
+
+            string SharedEffectDescriptionC()
+                => "[Your Turn] [Once Per Turn] When any of your opponent's Digimon or Tamers suspend, or effects trash cards from under your Tamers, this Digimon may digivolve into a Digimon card with the [Vegetation], [Fairy] or [DATA SQUAD] trait in the hand with the cost reduced by 1.";
+
+            bool SharedCanActivateConditionC(Hashtable hashtable, ActivateClass activateClass)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
+
+            string SharedHashString = "BT26_044_YourTurn";
+
+            bool OpponentPermanentCondition(Permanent permanent)
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                    && (permanent.IsDigimon || permanent.IsTamer);
+
+            bool OwnersTamerCondition(Permanent permanent)
+                => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card);
+
+            bool CardConditionC(CardSource cardSource)
+                => cardSource.IsDigimon && (cardSource.EqualsTraits("Vegetation") || cardSource.ContainsTraits("Fairy") || cardSource.EqualsTraits("DATA SQUAD"));
+
+            IEnumerator SharedActivateCoroutineC(Hashtable hashtable, ActivateClass activateClass)
+            {
+                bool isUsed = false;
+
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                    targetPermanent: card.PermanentOfThisCard(),
+                    cardCondition: CardConditionC,
+                    payCost: true,
+                    reduceCostTuple: (1, CardConditionC),
+                    fixedCostTuple: null,
+                    ignoreDigivolutionRequirementFixedCost: -1,
+                    isHand: true,
+                    activateClass: activateClass,
+                    successProcess: SuccessProcess(),
+                    isOptional: true));
+
+                IEnumerator SuccessProcess()
+                {
+                    isUsed = true;
+                    yield return null;
+                }
+
+                if (!isUsed) activateClass.RemoveUse();
+            }
+            #endregion
+
+            #region Your Turn - Opponent Suspends
+            if (timing == EffectTiming.OnTappedAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect(SharedEffectNameC(), CanUseCondition, card);
+                activateClass.SetUpActivateClass((hash) => SharedCanActivateConditionC(hash, activateClass), (hash) => SharedActivateCoroutineC(hash, activateClass), 1, false, SharedEffectDescriptionC());
+                activateClass.SetIsSkippable(true);
+                activateClass.SetHashString(SharedHashString);
+                cardEffects.Add(activateClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.IsOwnerTurn(card)
+                        && CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, OpponentPermanentCondition);
+            }
+            #endregion
+
+            #region Your Turn - Trash Under Tamer
+            if (timing == EffectTiming.OnDigivolutionCardDiscarded)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect(SharedEffectNameC(), CanUseCondition, card);
+                activateClass.SetUpActivateClass((hash) => SharedCanActivateConditionC(hash, activateClass), (hash) => SharedActivateCoroutineC(hash, activateClass), 1, false, SharedEffectDescriptionC());
+                activateClass.SetIsSkippable(true);
+                activateClass.SetHashString(SharedHashString);
+                cardEffects.Add(activateClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.IsOwnerTurn(card)
+                        && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, OwnersTamerCondition, cardEffect => true, cardSource => true);
+            }
+            #endregion
+
+            #region Inherit
+            if (timing == EffectTiming.WhenRemoveField)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Trash a Tamer's bottom face-down card to prevent this Digimon from leaving", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
+                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("BT26_044_AllTurns");
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                    => "[All Turns] [Once Per Turn] When this Digimon with [Rosemon] in its name or the [DATA SQUAD] trait would leave the battle area, by trashing the bottom face-down card from under any of your Tamers, it doesn't leave.";
+
+                bool IsTamerWithFaceDownCard(ICardEffect activateClass, Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
+                        && permanent.HasFaceDownDigivolutionCards
+                        && !permanent.ImmuneFromStackTrashing(activateClass);
+
+                bool FaceDownCards(CardSource cardSource) => cardSource.IsFaceDown;
+
+                bool CanUseCondition(Hashtable hashtable)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+
+                bool CanActivateCondition(Hashtable hashtable)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && (card.HasText("Rosemon") || card.EqualsTraits("DATA SQUAD"))
+                        && CardEffectCommons.HasMatchConditionPermanent(permanent => IsTamerWithFaceDownCard(activateClass, permanent));
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    bool isUsed = false;
+
+                    Permanent thisPermanent = card.PermanentOfThisCard();
+
+                    bool IsTamerWithFaceDownCardBound(Permanent permanent) => IsTamerWithFaceDownCard(activateClass, permanent);
+
+                    Permanent selectedTamer = null;
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: IsTamerWithFaceDownCardBound,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        selectedTamer = permanent;
+                        yield return null;
+                    }
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Tamer to trash its bottom face-down card.", "The opponent is selecting 1 Tamer to trash its bottom face-down card.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    if (selectedTamer != null)
+                    {
+                        isUsed = true;
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedTamer, trashCount: 1, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
+
+                        thisPermanent.willBeRemoveField = false;
+
+                        thisPermanent.HideHandBounceEffect();
+                        thisPermanent.HideDeckBounceEffect();
+                        thisPermanent.HideWillRemoveFieldEffect();
+                        thisPermanent.HideDeleteEffect();
+                    }
+
+                    if (!isUsed) activateClass.RemoveUse();
+                }
+            }
+            #endregion
+
+            return cardEffects;
+        }
+    }
+}
