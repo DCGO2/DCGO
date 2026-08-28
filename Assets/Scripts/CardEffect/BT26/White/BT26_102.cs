@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,7 +77,7 @@ namespace DCGO.CardEffects.BT26
                     List<CardSource> materialCards = new List<CardSource>();
 
                     bool CanSelectOtherBattleAreaCondition(Permanent permanent)
-                        => permanent != selectedTarget && CanSelectTargetCondition(permanent);
+                        => permanent != selectedTarget && CanSelectTargetCondition(permanent) && !materialCards.Contains(permanent.TopCard);
 
                     bool CanSelectLinkedOrTrashCondition(CardSource cardSource)
                         => cardSource.IsDigimon && cardSource.EqualsTraits("Seven Code") && !materialCards.Contains(cardSource);
@@ -118,18 +119,20 @@ namespace DCGO.CardEffects.BT26
 
                         if (selectedLocation == 1)
                         {
-                            Permanent selectedSource = null;
+                            List<Permanent> selectedSources = new List<Permanent>();
+
+                            int battleAreaMaxCount = Math.Min(remaining, CardEffectCommons.MatchConditionPermanentCount(CanSelectOtherBattleAreaCondition));
 
                             SelectPermanentEffect selectSourceEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectSourceEffect.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: CanSelectOtherBattleAreaCondition,
-                                canTargetCondition_ByPreSelecetedList: (_, permanent) => !materialCards.Contains(permanent.TopCard),
+                                canTargetCondition_ByPreSelecetedList: (preSelected, permanent) => !preSelected.Contains(permanent),
                                 canEndSelectCondition: null,
-                                maxCount: 1,
+                                maxCount: battleAreaMaxCount,
                                 canNoSelect: false,
-                                canEndNotMax: false,
+                                canEndNotMax: true,
                                 selectPermanentCoroutine: SelectSourceCoroutine,
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Custom,
@@ -137,98 +140,132 @@ namespace DCGO.CardEffects.BT26
 
                             IEnumerator SelectSourceCoroutine(Permanent permanent)
                             {
-                                selectedSource = permanent;
+                                selectedSources.Add(permanent);
                                 yield return null;
                             }
 
-                            selectSourceEffect.SetUpCustomMessage($"Select 1 [Seven Code] trait Digimon from your battle area to place as material ({remaining} remaining).", "The opponent is selecting material.");
+                            selectSourceEffect.SetUpCustomMessage($"Select up to {battleAreaMaxCount} [Seven Code] trait Digimon from your battle area to place as material ({remaining} remaining).", "The opponent is selecting material.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectSourceEffect.Activate());
 
-                            if (selectedSource == null) continue;
+                            if (selectedSources.Count == 0) continue;
 
-                            materialCards.Add(selectedSource.TopCard);
-                            remaining--;
+                            foreach (Permanent selectedSource in selectedSources) materialCards.Add(selectedSource.TopCard);
 
-                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent>() { selectedSource }, CardEffectCommons.CardEffectHashtable(activateClass), notShowCards: true).Destroy());
+                            remaining -= selectedSources.Count;
+
+                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(selectedSources, CardEffectCommons.CardEffectHashtable(activateClass), notShowCards: true).Destroy());
                         }
                         else if (selectedLocation == 2)
                         {
-                            List<CardSource> pool = card.Owner.GetBattleAreaDigimons().SelectMany(permanent => permanent.LinkedCards).Where(CanSelectLinkedOrTrashCondition).ToList();
+                            Permanent selectedLinkSource = null;
 
-                            CardSource selectedCard = null;
+                            SelectPermanentEffect selectLinkSourceEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            selectLinkSourceEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectLinkPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectLinkSourceCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
 
-                            selectCardEffect.SetUp(
+                            IEnumerator SelectLinkSourceCoroutine(Permanent permanent)
+                            {
+                                selectedLinkSource = permanent;
+                                yield return null;
+                            }
+
+                            selectLinkSourceEffect.SetUpCustomMessage("Select 1 Digimon to take linked [Seven Code] cards from.", "The opponent is selecting 1 Digimon to take linked cards from.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectLinkSourceEffect.Activate());
+
+                            if (selectedLinkSource == null) continue;
+
+                            List<CardSource> linkPool = selectedLinkSource.LinkedCards.Filter(CanSelectLinkedOrTrashCondition);
+
+                            List<CardSource> selectedLinkCards = new List<CardSource>();
+
+                            int linkMaxCount = Math.Min(remaining, linkPool.Count);
+
+                            SelectCardEffect selectLinkCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectLinkCardEffect.SetUp(
                                 canTargetCondition: CanSelectLinkedOrTrashCondition,
-                                canTargetCondition_ByPreSelecetedList: (_, cardSource) => !materialCards.Contains(cardSource),
+                                canTargetCondition_ByPreSelecetedList: (preSelected, cardSource) => !preSelected.Contains(cardSource),
                                 canEndSelectCondition: null,
                                 canNoSelect: () => false,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: $"Select 1 [Seven Code] trait Digimon card from your link cards to place as material ({remaining} remaining).",
-                                maxCount: 1,
-                                canEndNotMax: false,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: AfterSelectLinkCardCoroutine,
+                                message: $"Select up to {linkMaxCount} [Seven Code] trait Digimon card(s) from this Digimon's link cards to place as material ({remaining} remaining).",
+                                maxCount: linkMaxCount,
+                                canEndNotMax: true,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.LinkedCards,
-                                customRootCardList: pool,
+                                customRootCardList: linkPool,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
 
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            IEnumerator AfterSelectLinkCardCoroutine(List<CardSource> cardSources)
                             {
-                                selectedCard = cardSource;
+                                selectedLinkCards.AddRange(cardSources);
                                 yield return null;
                             }
 
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectLinkCardEffect.Activate());
 
-                            if (selectedCard == null) continue;
+                            if (selectedLinkCards.Count == 0) continue;
 
-                            materialCards.Add(selectedCard);
-                            remaining--;
+                            materialCards.AddRange(selectedLinkCards);
+                            remaining -= selectedLinkCards.Count;
                         }
                         else
                         {
-                            List<CardSource> pool = card.Owner.TrashCards.Filter(CanSelectLinkedOrTrashCondition);
+                            List<CardSource> trashPool = card.Owner.TrashCards.Filter(CanSelectLinkedOrTrashCondition);
 
-                            CardSource selectedCard = null;
+                            List<CardSource> selectedTrashCards = new List<CardSource>();
 
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            int trashMaxCount = Math.Min(remaining, trashPool.Count);
 
-                            selectCardEffect.SetUp(
+                            SelectCardEffect selectTrashCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectTrashCardEffect.SetUp(
                                 canTargetCondition: CanSelectLinkedOrTrashCondition,
-                                canTargetCondition_ByPreSelecetedList: (_, cardSource) => !materialCards.Contains(cardSource),
+                                canTargetCondition_ByPreSelecetedList: (preSelected, cardSource) => !preSelected.Contains(cardSource),
                                 canEndSelectCondition: null,
                                 canNoSelect: () => false,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: $"Select 1 [Seven Code] trait Digimon card from your trash to place as material ({remaining} remaining).",
-                                maxCount: 1,
-                                canEndNotMax: false,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: AfterSelectTrashCardCoroutine,
+                                message: $"Select up to {trashMaxCount} [Seven Code] trait Digimon card(s) from your trash to place as material ({remaining} remaining).",
+                                maxCount: trashMaxCount,
+                                canEndNotMax: true,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.Trash,
-                                customRootCardList: pool,
+                                customRootCardList: trashPool,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
 
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            IEnumerator AfterSelectTrashCardCoroutine(List<CardSource> cardSources)
                             {
-                                selectedCard = cardSource;
+                                selectedTrashCards.AddRange(cardSources);
                                 yield return null;
                             }
 
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectTrashCardEffect.Activate());
 
-                            if (selectedCard == null) continue;
+                            if (selectedTrashCards.Count == 0) continue;
 
-                            materialCards.Add(selectedCard);
-                            remaining--;
+                            materialCards.AddRange(selectedTrashCards);
+                            remaining -= selectedTrashCards.Count;
                         }
                     }
 
