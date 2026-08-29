@@ -112,6 +112,7 @@ namespace DCGO.CardEffects.BT26
                     foreach (Permanent selectedPermanent in selectedPermanents)
                     {
                         if (selectedPermanent == null) continue;
+                        if (!CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent)) continue;
                         if (selectedPermanent.TopCard == null) continue;
                         if (selectedPermanent.ImmuneFromStackReturnToLibrary(activateClass)) continue;
                         if (selectedPermanent.TopCard.CanNotBeAffected(activateClass)) continue;
