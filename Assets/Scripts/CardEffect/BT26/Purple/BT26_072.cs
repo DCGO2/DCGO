@@ -103,8 +103,14 @@ namespace DCGO.CardEffects.BT26
                             hashtable: hashtable,
                             cardToTrash: selectedCardToTrash,
                             activateClass: activateClass,
-                            successProcess: cs => { hasPaidCost = true; return null; },
+                            successProcess: permanents => SuccessProcess(),
                             failureProcess: null));
+                    }
+
+                    IEnumerator SuccessProcess()
+                    {
+                        hasPaidCost = true;
+                        yield return null;
                     }
                 }
                 else if (selected == 2)
