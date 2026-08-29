@@ -11,6 +11,18 @@ namespace DCGO.CardEffects.BT26
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Digimon Effects
+            #region Alternate Digivolution Requirement
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsCardName("Bacchusmon") && targetPermanent.TopCard.HasPlayCost && targetPermanent.TopCard.GetCostItself == 12;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
             #region Security A. +1
             if (timing == EffectTiming.None)
             {
