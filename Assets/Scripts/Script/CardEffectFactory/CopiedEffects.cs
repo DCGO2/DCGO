@@ -85,6 +85,7 @@ public partial class CardEffectFactory
             foreach (CardSource cardSource in validSources(targetSources(sourceCard.PermanentOfThisCard().DigivolutionCards)))
             {
                 List<ICardEffect> toCopyEffects = cardSource.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(_timing, sourceCard);
+
                 toCopyEffects.ForEach(eff =>
                     {
                         eff.SetOriginalEffectSourceCard(cardSource);
