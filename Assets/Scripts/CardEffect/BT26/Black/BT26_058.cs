@@ -49,6 +49,8 @@ namespace DCGO.CardEffects.BT26
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                Permanent selectedPermanent = null;
+
                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                 selectPermanentEffect.SetUp(
@@ -70,22 +72,16 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                 {
-                    CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                    canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon effects", CanUseCondition1, card);
-                    canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition1, SkillCondition: SkillCondition1);
-                    permanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotAffectedClass);
-
-                    bool CanUseCondition1(Hashtable _hashtable) => CardEffectCommons.IsPermanentExistsOnBattleArea(permanent);
-
-                    bool CardCondition1(CardSource cardSource) => CardEffectCommons.IsPermanentExistsOnBattleArea(permanent) && cardSource == permanent.TopCard;
-
-                    bool SkillCondition1(ICardEffect cardEffect)
-                        => cardEffect != null
-                            && cardEffect.EffectSourceCard != null
-                            && cardEffect.EffectSourceCard.Owner == card.Owner.Enemy
-                            && cardEffect.EffectSourceCard.IsDigimon;
+                    selectedPermanent = permanent;
 
                     yield return null;
+                }
+
+                if (selectedPermanent != null)
+                {
+                    selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => PermanentEffectFactory.DigimonEffectImmunity(selectedPermanent));
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(selectedPermanent));
                 }
             }
             #endregion
