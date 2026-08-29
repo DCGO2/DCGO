@@ -74,7 +74,8 @@ namespace DCGO.CardEffects.BT26
                 => $"[{tag}] Return the top 5 stacked cards of 3 of your opponent's Digimon to the top of the deck.";
 
             bool CanSelectTargetCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                    && !permanent.HasNoDigivolutionCards;
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -117,11 +118,11 @@ namespace DCGO.CardEffects.BT26
                         if (selectedPermanent.ImmuneFromStackReturnToLibrary(activateClass)) continue;
                         if (selectedPermanent.TopCard.CanNotBeAffected(activateClass)) continue;
 
-                        int returnCount = Math.Min(selectedPermanent.StackCards.Count, 5);
+                        int returnCount = Math.Min(selectedPermanent.DigivolutionCards.Count, 5);
 
                         if (returnCount <= 0) continue;
 
-                        List<CardSource> cardsToReturn = selectedPermanent.StackCards.GetRange(0, returnCount);
+                        List<CardSource> cardsToReturn = selectedPermanent.DigivolutionCards.GetRange(0, returnCount);
 
                         if (returnCount == 1)
                         {
