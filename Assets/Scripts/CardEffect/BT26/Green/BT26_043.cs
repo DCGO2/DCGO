@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -40,6 +41,9 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
                     && (permanent.IsDigimon || permanent.IsTamer);
 
+            bool FaceDownCards(CardSource cardSource) => cardSource.IsFaceDown;
+
+
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
@@ -74,12 +78,14 @@ namespace DCGO.CardEffects.BT26
                     {
                         SelectPermanentEffect selectCantUnsuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
+                        int maxCount = Math.Min(1, card.PermanentOfThisCard().DigivolutionCards.Filter(FaceDownCards).Count);
+
                         selectCantUnsuspendEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: 1,
+                            maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -87,7 +93,7 @@ namespace DCGO.CardEffects.BT26
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectCantUnsuspendEffect.SetUpCustomMessage("Select 1 Digimon or Tamer that can't unsuspend.", "The opponent is selecting 1 Digimon or Tamer that can't unsuspend.");
+                        selectCantUnsuspendEffect.SetUpCustomMessage($"Select { maxCount } Digimon or Tamer(s) that can't unsuspend.", $"The opponent is selecting { maxCount } Digimon or Tamer(s) that can't unsuspend.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectCantUnsuspendEffect.Activate());
 
