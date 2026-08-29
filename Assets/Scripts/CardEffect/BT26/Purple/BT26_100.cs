@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.HasLevel && cardSource.Level <= 4
+                    => cardSource.IsDigimon && cardSource.HasLevel && cardSource.Level <= 4
                         && cardSource.EqualsTraits("Titan")
                         && cardSource.HasPlayCost
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
