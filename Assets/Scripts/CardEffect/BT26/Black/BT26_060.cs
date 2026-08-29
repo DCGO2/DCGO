@@ -118,11 +118,13 @@ namespace DCGO.CardEffects.BT26
                         if (selectedPermanent.ImmuneFromStackReturnToLibrary(activateClass)) continue;
                         if (selectedPermanent.TopCard.CanNotBeAffected(activateClass)) continue;
 
-                        int returnCount = Math.Min(selectedPermanent.DigivolutionCards.Count, 5);
+                        // Return from the top of the stack (TopCard included) but always leave at least 1
+                        // card behind -- this ability returns cards, it doesn't remove the whole permanent.
+                        int returnCount = Math.Min(selectedPermanent.StackCards.Count - 1, 5);
 
                         if (returnCount <= 0) continue;
 
-                        List<CardSource> cardsToReturn = selectedPermanent.DigivolutionCards.GetRange(0, returnCount);
+                        List<CardSource> cardsToReturn = selectedPermanent.StackCards.GetRange(0, returnCount);
 
                         if (returnCount == 1)
                         {
