@@ -67,7 +67,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerWhenAddHand(hashtable, OpponentCondition, null);
+                        && CardEffectCommons.CanTriggerWhenAddHand(hashtable, OpponentCondition, cardEffect => cardEffect != null);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
