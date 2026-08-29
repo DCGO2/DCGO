@@ -111,7 +111,58 @@ namespace DCGO.CardEffects.BT26
 
                     foreach (Permanent selectedPermanent in selectedPermanents)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IReturnStackToLibrary(selectedPermanent, 5, activateClass).ReturnStackToLibrary());
+                        if (selectedPermanent == null) continue;
+                        if (selectedPermanent.TopCard == null) continue;
+                        if (selectedPermanent.ImmuneFromStackReturnToLibrary(activateClass)) continue;
+                        if (selectedPermanent.TopCard.CanNotBeAffected(activateClass)) continue;
+
+                        int returnCount = Math.Min(selectedPermanent.StackCards.Count, 5);
+
+                        if (returnCount <= 0) continue;
+
+                        List<CardSource> cardsToReturn = selectedPermanent.StackCards.GetRange(0, returnCount);
+
+                        if (returnCount == 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardsToReturn, cardEffect: activateClass));
+                            continue;
+                        }
+
+                        List<CardSource> drawOrderedCards = new List<CardSource>();
+
+                        SelectCardEffect selectOrderEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectOrderEffect.SetUp(
+                            canTargetCondition: (cardSource) => true,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => false,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectOrderCoroutine,
+                            message: $"Select the order to return these {returnCount} cards to the top of the opponent's deck (card #1 is the one they'll draw first, #2 second, and so on).",
+                            maxCount: returnCount,
+                            canEndNotMax: false,
+                            isShowOpponent: false,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Custom,
+                            customRootCardList: cardsToReturn,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        selectOrderEffect.SetUpCustomMessage_ShowCard("Returned Cards");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectOrderEffect.Activate());
+
+                        IEnumerator AfterSelectOrderCoroutine(List<CardSource> cardSources)
+                        {
+                            drawOrderedCards = cardSources.Clone();
+                            yield return null;
+                        }
+
+                        drawOrderedCards.Reverse();
+
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(drawOrderedCards, cardEffect: activateClass));
                     }
                 }
             }
