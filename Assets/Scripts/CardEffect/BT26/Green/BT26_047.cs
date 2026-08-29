@@ -193,39 +193,46 @@ namespace DCGO.CardEffects.BT26
                     effectDuration: EffectDuration.UntilOpponentTurnEnd,
                     activateClass: activateClass));
 
-                AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("Isn't affected by opponent's Option effects", CanUseSkillCondition, card);
-                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-                CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilOpponentTurnEnd, card: card, cardEffect: addSkillClass, timing: EffectTiming.None);
+                CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
+                canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Options' effects", CanUseConditionImmunity, card);
+                canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
+                card.Owner.UntilOpponentTurnEndEffects.Add(GetCardEffect);
+                card.Owner.UntilOpponentTurnEndEffects.Add(GetDetailEffect);
 
-                bool CanUseSkillCondition(Hashtable _hashtable) => true;
+                bool CanUseConditionImmunity(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnBattleArea(card.PermanentOfThisCard())
+                        && card == card.PermanentOfThisCard().TopCard;
+                }
 
-                bool CardSourceCondition(CardSource cardSource)
-                    => cardSource.PermanentOfThisCard() != null
-                        && IsSuspendedInsectoidOrTitan(cardSource.PermanentOfThisCard())
-                        && cardSource == cardSource.PermanentOfThisCard().TopCard;
+                bool CardCondition(CardSource cardSource)
+                {
+                    return IsSuspendedInsectoidOrTitan(cardSource.PermanentOfThisCard());
+                }
 
-                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> effects, EffectTiming _timing)
+                bool SkillCondition(ICardEffect cardEffect)
+                {
+                    return CardEffectCommons.IsOpponentEffect(cardEffect, card)
+                        && cardEffect.IsOptionEffect;
+                }
+
+                ICardEffect GetCardEffect(EffectTiming _timing)
                 {
                     if (_timing == EffectTiming.None)
                     {
-                        CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                        canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Option effects", CanUseInner, cardSource);
-                        canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: SelfCardCondition, SkillCondition: SkillCondition);
-                        effects.Add(canNotAffectedClass);
-
-                        bool CanUseInner(Hashtable _hashtable) => true;
-
-                        bool SelfCardCondition(CardSource cs) => cs == cardSource;
-
-                        bool SkillCondition(ICardEffect cardEffect)
-                            => cardEffect != null
-                                && cardEffect.EffectSourceCard != null
-                                && cardEffect.EffectSourceCard.Owner == card.Owner.Enemy
-                                && cardEffect.EffectSourceCard.IsOption;
+                        return canNotAffectedClass;
                     }
 
-                    return effects;
+                    return null;
+                }
+
+                ICardEffect GetDetailEffect(EffectTiming timing)
+                {
+                    if (timing == EffectTiming.None)
+                    {
+                        return CardEffectFactory.AddDetailClass(CanUseConditionImmunity, IsSuspendedInsectoidOrTitan, "Isn't affected by opponent's Options' effects", false, card);
+                    }
+                    return null;
                 }
             }
             #endregion
