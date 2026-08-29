@@ -102,7 +102,17 @@ public partial class CardEffectFactory
 
                     if (cardEffect is ActivateClass activateClass)
                     {
-                        getCardEffects.Add(activateClass);
+                        // Build a brand-new ActivateClass rather than mutating/reusing the source
+                        // card's own instance. The source card's copy needs its own independent
+                        // EffectSourceCard/HashString so per-turn-use tracking (ICardEffect.IsSameEffect,
+                        // which short-circuits on reference equality) doesn't treat "the original card
+                        // already used this ability this turn" as also covering "the Digimon that just
+                        // gained this ability via Succession/copy already used it" -- per game rules,
+                        // gaining another card's effects this way grants an independently-tracked copy,
+                        // not a shared use-count with the original (real bug: a [Once Per Turn] When
+                        // Digivolving effect used earlier the same turn on the source card silently
+                        // couldn't trigger again when copied onto the new top card via Succession, even
+                        // though it's a fresh instance from the new card's perspective).
 
                         List<CardSource> ValidCardSources = null;
 
@@ -123,24 +133,36 @@ public partial class CardEffectFactory
                         }
 
                         var originalUseCondition = activateClass.CanUseCondition;
-                        activateClass.SetCanUseCondition(
-                            hashtable => ValidCardSourceAtTrigger() 
-                            && (originalUseCondition is null || originalUseCondition(hashtable))
-                        );
-
                         var originalActivateCondition = activateClass.CanActivateCondition;
-                        activateClass.SetCanActivateCondition(
-                            hashtable => ValidCardSourceAtActivate()
-                            && (originalActivateCondition is null || originalActivateCondition(hashtable))
-                        );
 
-                        activateClass.SetHashString(GenerateHashString(card, activateClass.OriginalEffectSourceCard, activateClass.HashString, isInheritedEffect, isLinkedEffect));
+                        ActivateClass copiedActivateClass = new ActivateClass();
+
+                        copiedActivateClass.SetUpICardEffect(
+                            activateClass.EffectName,
+                            hashtable => ValidCardSourceAtTrigger()
+                                && (originalUseCondition is null || originalUseCondition(hashtable)),
+                            card);
+
+                        copiedActivateClass.SetUpActivateClass(
+                            hashtable => ValidCardSourceAtActivate()
+                                && (originalActivateCondition is null || originalActivateCondition(hashtable)),
+                            hashtable => activateClass.Activate(hashtable),
+                            activateClass.MaxCountPerTurn,
+                            activateClass.IsOptional,
+                            activateClass.EffectDescription);
+
+                        copiedActivateClass.SetOriginalEffectSourceCard(activateClass.OriginalEffectSourceCard);
+                        copiedActivateClass.SetHashString(GenerateHashString(card, activateClass.OriginalEffectSourceCard, activateClass.HashString, isInheritedEffect, isLinkedEffect));
+                        copiedActivateClass.SetIsInheritedEffect(isInheritedEffect);
+                        copiedActivateClass.SetIsLinkedEffect(isLinkedEffect);
+
+                        getCardEffects.Add(copiedActivateClass);
 
                         getCardEffects.Add(PermanentEffectFactory.AddDetailClass(
                             thisPermanent,
-                            activateClass.EffectDescription,
+                            copiedActivateClass.EffectDescription,
                             true,
-                            activateClass));
+                            copiedActivateClass));
                     }
                     else if (!isSuccession || cardEffect.EffectName != "Succession") // Succession can never copy another succession skill
                     {
