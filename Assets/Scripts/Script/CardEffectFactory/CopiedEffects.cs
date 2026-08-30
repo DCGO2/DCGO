@@ -34,19 +34,24 @@ public partial class CardEffectFactory
 
         bool DefaultCardSourceCondition(CardSource cardSource)
         {
-            if (cardSource == null) return false;
+            // This wrapper only ever grants its copy to its own host (card) -- never to
+            // whatever else happens to be the probed candidate. Without this identity check,
+            // a completely unrelated card could satisfy "permanentCondition(permanent) &&
+            // cardSource == permanent.TopCard" purely by being the top card of card's own
+            // permanent, and get treated as if it were the intended recipient.
+            if (cardSource == null || cardSource != card) return false;
 
             Permanent permanent = cardSource.PermanentOfThisCard();
             if (permanent == null) return false;
 
-            if (permanentCondition(permanent))
-            {
-                if (cardSource == permanent.TopCard)
-                {
-                    return true;
-                }
-            }
-            return false;
+            if (!permanentCondition(permanent)) return false;
+
+            // A non-inherited/non-linked copy only applies while card is still the actual
+            // active top card of its permanent. An inherited/linked copy is specifically meant
+            // to keep applying once card is buried/attached -- requiring cardSource ==
+            // permanent.TopCard here would make that impossible, since a buried/linked card is
+            // by definition never the top card.
+            return isInheritedEffect || isLinkedEffect || cardSource == permanent.TopCard;
         }
 
         List<CardSource> validSources(List<CardSource> availableSources) => availableSources.Filter(
