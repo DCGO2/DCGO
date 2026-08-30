@@ -69,17 +69,17 @@ namespace DCGO.CardEffects.BT26
 
                     int choice = GManager.instance.userSelectionManager.SelectedIntValue;
 
-                    int maxOwnTSDP = card.Owner.GetBattleAreaDigimons().Filter(OwnTSDigimonCondition).Map(p => p.DP).Max();
-
-                    bool CanSelectDeleteTargetCondition(Permanent permanent)
-                        => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                            && permanent.DP <= maxOwnTSDP;
-
                     if (CardEffectCommons.HasMatchConditionPermanent(OwnTSDigimonCondition))
                     {
-                        if (choice == 1
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetCondition))
+                        if (choice == 1)
                         {
+                            int? compareDP = null;
+
+                            bool CanSelectDeleteTargetCondition(Permanent permanent)
+                                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                                    && compareDP.HasValue
+                                    && permanent.DP <= compareDP.Value;
+
                             SelectPermanentEffect selectCompareEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectCompareEffect.SetUp(
@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.BT26
 
                             IEnumerator SelectPermanentCoroutine(Permanent selectedPermanent)
                             {
-                                maxOwnTSDP = selectedPermanent.DP;
+                                compareDP = selectedPermanent.DP;
                                 yield return null;
                             }
 
