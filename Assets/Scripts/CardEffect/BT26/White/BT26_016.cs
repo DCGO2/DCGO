@@ -103,7 +103,7 @@ namespace DCGO.CardEffects.BT26
                         canNoSelect: () => true,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
-                        message: "Select 3 cards in either trash to return to the bottom of your deck.",
+                        message: "Select 3 cards in either trash to return to the bottom of the deck.",
                         maxCount: 3,
                         canEndNotMax: false,
                         isShowOpponent: true,
@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.BT26
                         yield return null;
                     }
 
-                    selectCardEffect.SetUpCustomMessage("Select 3 cards in either trash to return to the bottom of your deck.", "The opponent is selecting 3 cards in either trash to return to the bottom of their deck.");
+                    selectCardEffect.SetUpCustomMessage("Select 3 cards in either trash to return to the bottom of the deck.", "The opponent is selecting 3 cards in either trash to return to the bottom of their deck.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
