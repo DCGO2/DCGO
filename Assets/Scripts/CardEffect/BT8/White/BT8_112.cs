@@ -105,7 +105,7 @@ public class BT8_112 : CEntity_Effect
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(
-                            new List<CardSource>() { cardSource }));
+                            new List<CardSource>() { cardSource }, cardEffect: activateClass));
                     }
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)

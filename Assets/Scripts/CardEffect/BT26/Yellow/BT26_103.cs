@@ -104,9 +104,9 @@ namespace DCGO.CardEffects.BT26
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, (player) => player == card.Owner);
+                        && CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner || player == card.Owner.Enemy);
                 }
-                
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
