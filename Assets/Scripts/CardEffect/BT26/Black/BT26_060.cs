@@ -74,8 +74,7 @@ namespace DCGO.CardEffects.BT26
                 => $"[{tag}] Return the top 5 stacked cards of 3 of your opponent's Digimon to the top of the deck.";
 
             bool CanSelectTargetCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && !permanent.HasNoDigivolutionCards;
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
