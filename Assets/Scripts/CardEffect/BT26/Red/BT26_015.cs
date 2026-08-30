@@ -24,7 +24,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName()
                 => "Opponent's Digimon -4000 DP, then return a trash card to deck bottom to delete 1 opponent's Digimon";
 
@@ -131,7 +130,6 @@ namespace DCGO.CardEffects.BT26
                     }
                 }
             }
-
             #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
