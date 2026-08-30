@@ -34,7 +34,8 @@ namespace DCGO.CardEffects.BT26
                     => "[On Play] Reveal the top 3 cards of your deck. Add 1 [Glowing Dawn] trait card and 1 purple [BEATBREAK] trait card among them to the hand. Return the rest to the bottom of the deck.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    => CardEffectCommons.CanTriggerOnPlay(hashtable, card)
+                        && CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
