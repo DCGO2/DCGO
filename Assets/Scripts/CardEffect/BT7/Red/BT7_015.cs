@@ -277,7 +277,7 @@ public class BT7_015 : CEntity_Effect
 
                                         if (libraryBottomCards.Count >= 1)
                                         {
-                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(libraryBottomCards));
+                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(libraryBottomCards, cardEffect: activateClass));
 
                                             if (!player.isYou)
                                             {

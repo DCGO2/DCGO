@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Unity.Burst.Intrinsics;
 
 namespace DCGO.CardEffects.EX7
 {
@@ -34,18 +32,22 @@ namespace DCGO.CardEffects.EX7
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
-                {                   
-                    return CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card);
+                {
+                    return CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card)
+                        && CardEffectCommons.IsExistOnTrashTrigger(card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnTrash(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnTrashActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    //In order to work from under the digimon, it needs to be an inherited effect, which then makes it think it is a digimon effect. Override to be an option effect
+                    activateClass.SetIsDigimonEffect(false);
+                    
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));

@@ -14,52 +14,30 @@ public partial class CardEffectCommons
 
     public static bool CanTriggerOnAddLibrary(Hashtable hashtable, Func<CardSource, bool> cardCondition, Func<ICardEffect, bool> cardEffectCondition)
     {
-        if (hashtable != null)
+        List<CardSource> CardSources = GetCardSourcesFromHashtable(hashtable);
+
+        if (CardSources != null)
         {
-            if (hashtable.ContainsKey("CardSources"))
+            if (cardEffectCondition != null)
             {
-                if (hashtable["CardSources"] is List<CardSource> CardSources)
+                ICardEffect CardEffect = GetCardEffectFromHashtable(hashtable);
+
+                if (CardEffect == null || !cardEffectCondition(CardEffect))
                 {
-                    if (CardSources != null)
-                    {
-                        if (cardEffectCondition != null)
-                        {
-                            ICardEffect CardEffect = GetCardEffectFromHashtable(hashtable);
-
-                            if (CardEffect == null || !cardEffectCondition(CardEffect))
-                            {
-                                return false;
-                            }
-                        }
-
-                        if (CardSources.Some(cardSource => cardCondition == null || cardCondition(cardSource)))
-                        {
-                            return true;
-                        }
-                    }
+                    return false;
                 }
+            }
+
+            if (CardSources.Some(cardSource =>
+                cardSource != null
+                && !cardSource.IsBeingRevealed
+                && (cardCondition == null || cardCondition(cardSource))))
+            {
+                return true;
             }
         }
 
         return false;
-    }
-    #endregion
-
-    #region The CardSources added to the library from an OnAddLibraryAnyone hashtable
-    public static List<CardSource> GetCardSourcesFromAddLibraryHashtable(Hashtable hashtable)
-    {
-        if (hashtable != null)
-        {
-            if (hashtable.ContainsKey("CardSources"))
-            {
-                if (hashtable["CardSources"] is List<CardSource> CardSources)
-                {
-                    return CardSources;
-                }
-            }
-        }
-
-        return null;
     }
     #endregion
 
