@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.Pool;
 
 public partial class CardEffectFactory
 {
@@ -14,12 +11,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition()
         {
-            if (condition == null || condition())
-            {
-                return true;
-            }
-
-            return false;
+            return (condition == null || condition());
         }
 
         return RetaliationEffect(targetPermanent: targetPermanent, isInheritedEffect: isInheritedEffect, condition: CanUseCondition, rootCardEffect: null, card, isLinkedEffect);
@@ -48,15 +40,8 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, (permanent) => permanent.cardSources.Contains(targetPermanent.TopCard), activateClass))
-            {
-                if (condition == null || condition())
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, (permanent) => permanent.cardSources.Contains(targetPermanent.TopCard), activateClass)
+                && (condition == null || condition());
         }
 
         bool CanActivateCondition(Hashtable hashtable)

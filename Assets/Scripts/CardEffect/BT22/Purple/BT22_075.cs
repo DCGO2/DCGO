@@ -409,7 +409,7 @@ namespace DCGO.CardEffects.BT22
             #region Scapegoat - Linked
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
-                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: card, condition: null, effectName: "<Scapegoat>", effectDiscription: null,isLinkedEffect:true));
+                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: card, condition: null, effectName: "<Scapegoat>", isLinkedEffect:true));
             }
             #endregion
 

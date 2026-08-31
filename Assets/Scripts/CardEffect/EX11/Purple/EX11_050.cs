@@ -220,7 +220,7 @@ namespace DCGO.CardEffects.EX11
                                     || cardSource.EqualsTraits("Evil Dragon"));
                         }
 
-                        cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: cardSource, condition: Condition, effectName: "<Scapegoat>", effectDiscription: null));
+                        cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: cardSource, condition: Condition, effectName: "<Scapegoat>"));
                     }
 
                     return cardEffects;
