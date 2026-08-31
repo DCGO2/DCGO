@@ -28,6 +28,7 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return this card to bottom of deck to give 1 played [Chronomon]/[Titan] Digimon <Rush> and <Execute>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetEffectTargets(TargetablePermanents);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -46,27 +47,37 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsExistOnTrashActivate(card, activateClass)
                         && card.Owner.Enemy.MemoryForPlayer >= 5;
 
+                List<Permanent> TargetablePermanents(Hashtable hashtable)
+                {
+                    List<Permanent> playedPermanents = new List<Permanent>();
+
+                    foreach (Hashtable hash in CardEffectCommons.GetHashtablesFromHashtable(hashtable))
+                    {
+                        playedPermanents.Add(CardEffectCommons.GetPermanentFromHashtable(hash));
+                    }
+
+                    return playedPermanents.Filter(MatchingPermanentCondition);
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<Permanent> permanents = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(hashtable: hashtable, rootCondition: null);
-
                     List<CardSource> cardSources = new List<CardSource>() { card };
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Card", true, true));
 
-                    if (permanents != null)
-                    {
-                        List<Permanent> matchingPermanents = permanents.Filter(MatchingPermanentCondition);
+                    List<Permanent> targets = TargetablePermanents(hashtable);
 
+                    if (targets != null)
+                    {
                         Permanent selectedPermanent = null;
 
-                        if (matchingPermanents.Count > 1)
+                        if (targets.Count > 1)
                         {
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectPermanentEffect.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: permanent => matchingPermanents.Contains(permanent),
+                                canTargetCondition: targets.Contains,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
@@ -87,7 +98,7 @@ namespace DCGO.CardEffects.BT26
                         }
                         else
                         {
-                            selectedPermanent = matchingPermanents[0];
+                            selectedPermanent = targets[0];
                         }
 
                         if (selectedPermanent != null)
