@@ -53,7 +53,7 @@ namespace DCGO.CardEffects.BT26
             {
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.EqualsTraits("Iliad")
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, root: root, isPlayOption: true);
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, root: root);
 
                 if (!CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition) && root == SelectCardEffect.Root.Trash) yield break;
                 if (!CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition) && root == SelectCardEffect.Root.Hand) yield break;
@@ -108,28 +108,13 @@ namespace DCGO.CardEffects.BT26
                     foreach (CardSource source in selectedCards) spent += source.GetCostItself;
                     onSpent(spent);
 
-                    List<CardSource> permanentCards = selectedCards.Filter(cardSource => !cardSource.IsOption);
-                    List<CardSource> optionCards = selectedCards.Filter(cardSource => cardSource.IsOption);
-
-                    if (permanentCards.Count >= 1)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: permanentCards,
-                            activateClass: activateClass,
-                            payCost: false,
-                            isTapped: false,
-                            root: root,
-                            activateETB: true));
-                    }
-
-                    if (optionCards.Count >= 1)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
-                            cardSources: optionCards,
-                            activateClass: activateClass,
-                            payCost: false,
-                            root: root));
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                        cardSources: selectedCards,
+                        activateClass: activateClass,
+                        payCost: false,
+                        isTapped: false,
+                        root: root,
+                        activateETB: true));
                 }
             }
 
