@@ -88,10 +88,6 @@ public class GManager : MonoBehaviourPun
 
     [Header("プレイログ")]
     public PlayLog playLog;
-    // === DCGO-CUSTOM:chat begin ===
-    [Header("バトルチャット")]
-    public BattleChatPanel battleChat;
-    // === DCGO-CUSTOM:chat end ===
 
     [Header("メモリー")]
     public MemoryObject memoryObject;
@@ -250,46 +246,6 @@ public class GManager : MonoBehaviourPun
         StartCoroutine(AwakeCoroutine());
     }
 
-    // === DCGO-CUSTOM:chat begin ===
-    void EnsureBattleChat()
-    {
-        bool enableChat = ContinuousController.instance != null
-            && !ContinuousController.instance.isAI
-            && !IsAI
-            && PhotonNetwork.InRoom;
-
-        if (!enableChat)
-        {
-            if (battleChat != null)
-            {
-                battleChat.Clear();
-                battleChat.OffChat(playSe: false);
-                battleChat.gameObject.SetActive(false);
-            }
-            return;
-        }
-
-        if (battleChat == null)
-        {
-            BattleChatPanel prefab = Resources.Load<BattleChatPanel>("BattleChatPanel");
-            if (prefab != null && canvas != null)
-            {
-                battleChat = Instantiate(prefab, canvas.transform);
-            }
-            else if (canvas != null)
-            {
-                GameObject go = new GameObject("BattleChatPanel", typeof(RectTransform));
-                go.layer = 5;
-                go.transform.SetParent(canvas.transform, false);
-                battleChat = go.AddComponent<BattleChatPanel>();
-            }
-        }
-
-        if (battleChat != null)
-            battleChat.Init();
-    }
-    // === DCGO-CUSTOM:chat end ===
-
     IEnumerator AwakeCoroutine()
     {
 #if UNITY_EDITOR
@@ -318,9 +274,6 @@ public class GManager : MonoBehaviourPun
         GetComponent<Effects>().Init();
 
         playLog.Init();
-        // === DCGO-CUSTOM:chat begin ===
-        EnsureBattleChat();
-        // === DCGO-CUSTOM:chat end ===
 
         hideCannotSelectObject.Init();
 

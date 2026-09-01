@@ -84,12 +84,6 @@
     "Assets/Scripts/Script/Tournament/TournamentServices.cs.meta",
     "Assets/Scripts/Script/Tournament/TournamentState.cs",
     "Assets/Scripts/Script/Tournament/TournamentState.cs.meta",
-    "Assets/Scripts/Script/BattleChatPanel.cs",
-    "Assets/Scripts/Script/BattleChatPanel.cs.meta",
-    "Assets/Prefab/UI/Battle Scene/BattleChatPanel.prefab",
-    "Assets/Prefab/UI/Battle Scene/BattleChatPanel.prefab.meta",
-    "Assets/Resources/BattleChatPanel.prefab",
-    "Assets/Resources/BattleChatPanel.prefab.meta",
     "Assets/Scripts/Script/BattleReconnectService.cs",
     "Assets/Scripts/Script/BattleReconnectService.cs.meta"
   ],
@@ -101,7 +95,6 @@
         "android",
         "ranked",
         "tournament",
-        "chat",
         "reconnect"
       ]
     },
@@ -225,7 +218,6 @@
       "modules": [
         "ranked",
         "tournament",
-        "chat",
         "reconnect"
       ]
     },
@@ -248,8 +240,7 @@
       "patch": "patches/files/Assets_Scripts_Script_ResultObject.cs.patch",
       "modules": [
         "ranked",
-        "tournament",
-        "chat"
+        "tournament"
       ]
     },
     {

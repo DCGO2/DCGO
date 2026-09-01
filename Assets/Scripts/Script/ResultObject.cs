@@ -221,12 +221,6 @@ public class ResultObject : MonoBehaviour
 
         if (Winner != null)
         {
-            // === DCGO-CUSTOM:chat begin ===
-            if (GManager.instance.battleChat != null)
-            {
-                GManager.instance.battleChat.OffChat(playSe: false);
-            }
-            // === DCGO-CUSTOM:chat end ===
             log += $"\nWinner:{Winner.PlayerName}";
         }
 

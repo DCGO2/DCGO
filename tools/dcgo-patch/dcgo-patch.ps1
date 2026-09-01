@@ -1,7 +1,7 @@
 #requires -Version 5.1
 <#
 .SYNOPSIS
-  Export and reapply DCGO custom modules (android, ranked, tournament, chat, reconnect)
+  Export and reapply DCGO custom modules (android, ranked, tournament, reconnect)
   onto a new official branch.
 #>
 [CmdletBinding()]

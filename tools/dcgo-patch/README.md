@@ -7,7 +7,6 @@ Modules:
 - **android** — Gradle/plugins, StreamingAssets textures, mobile UI packs, touch/audio helpers
 - **ranked** — PlayFab ladder, ranked queue, MMR UI
 - **tournament** — 4/8/16 player single-elim, Bo3
-- **chat** — in-battle PvP chat
 - **reconnect** — Photon `ReconnectAndRejoin`, PlayerTtl, opponent hold
 - **friends** — Home friend list, PlayFab/local storage, online direct duel Bo1/Bo3
 
@@ -111,7 +110,7 @@ RankedServices.EnsureExists();
 
 `apply` tries `git apply --3way` first. If a hunk fails, it replaces the matching region, or inserts it after the `anchors` listed in `modules/*.json`.
 
-Prefabs and scenes (`Opening.unity`, BattleChat prefabs, ProjectSettings) are **whole-file overlays**, not line patches.
+Prefabs and scenes (`Opening.unity`, ProjectSettings) are **whole-file overlays**, not line patches.
 
 ## Layout
 

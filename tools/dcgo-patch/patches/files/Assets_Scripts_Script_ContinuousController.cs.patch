@@ -623,78 +623,10 @@ index b98b477e9..ebfda4b6f 100644
                  }
              }
          }
-@@ -1332,12 +1723,128 @@ public class ContinuousController : MonoBehaviour
+@@ -1332,12 +1723,61 @@ public class ContinuousController : MonoBehaviour
      //Flag that the sharing of the random number sequence is over.
      public bool DoneSetRandom { get; set; } = false;
      public bool CanSetRandom { get; set; } = false;
-+
-+    // === DCGO-CUSTOM:chat begin ===
-+    public const int BattleChatMaxLength = 120;
-+    const float BattleChatCooldownSeconds = 0.5f;
-+    float _lastBattleChatSendTime = -999f;
-+
-+    /// <summary>Raised on every client when a battle chat message is received (senderName, text, photonActorNumber).</summary>
-+    public static event Action<string, string, int> OnBattleChatReceived;
-+
-+    /// <summary>
-+    /// Send free-text chat to both players in the current PvP room. No-op for AI / offline / empty / rate-limited.
-+    /// </summary>
-+    public void SendBattleChat(string text)
-+    {
-+        if (isAI || !PhotonNetwork.InRoom)
-+            return;
-+
-+        if (string.IsNullOrWhiteSpace(text))
-+            return;
-+
-+        if (Time.unscaledTime - _lastBattleChatSendTime < BattleChatCooldownSeconds)
-+            return;
-+
-+        string sanitized = SanitizeBattleChat(text);
-+        if (string.IsNullOrEmpty(sanitized))
-+            return;
-+
-+        _lastBattleChatSendTime = Time.unscaledTime;
-+
-+        string senderName = PlayerName;
-+        if (string.IsNullOrEmpty(senderName))
-+            senderName = "Player";
-+
-+        PhotonView view = GetComponent<PhotonView>();
-+        if (view == null)
-+            return;
-+
-+        view.RPC(nameof(ReceiveBattleChat), RpcTarget.All, senderName, sanitized);
-+    }
-+
-+    public static string SanitizeBattleChat(string text)
-+    {
-+        if (string.IsNullOrEmpty(text))
-+            return string.Empty;
-+
-+        string sanitized = text.Replace('\r', ' ').Replace('\n', ' ').Trim();
-+        if (sanitized.Length > BattleChatMaxLength)
-+            sanitized = sanitized.Substring(0, BattleChatMaxLength);
-+
-+        return sanitized;
-+    }
-+
-+    [PunRPC]
-+    public void ReceiveBattleChat(string senderName, string text, PhotonMessageInfo info)
-+    {
-+        string safeName = string.IsNullOrEmpty(senderName) ? "Player" : senderName.Trim();
-+        if (safeName.Length > PlayerNameMaxLength && PlayerNameMaxLength > 0)
-+            safeName = safeName.Substring(0, PlayerNameMaxLength);
-+
-+        string sanitized = SanitizeBattleChat(text);
-+        if (string.IsNullOrEmpty(sanitized))
-+            return;
-+
-+        int actorNumber = info.Sender != null ? info.Sender.ActorNumber : -1;
-+        OnBattleChatReceived?.Invoke(safeName, sanitized, actorNumber);
-+    }
-+    // === DCGO-CUSTOM:chat end ===
-+
      [PunRPC]
      public void SetRandom(long random)
      {

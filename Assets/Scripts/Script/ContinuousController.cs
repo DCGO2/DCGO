@@ -699,35 +699,56 @@ public class ContinuousController : MonoBehaviour
 
     public void SaveDeckData(DeckData data)
     {
-        string savePath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
+        if (data == null)
+            return;
 
-        File.WriteAllText($"{savePath}/{data.DeckName}_{data.DeckID}.txt", DeckCodeUtility.GetDeckBuilderFile(data));
+        try
+        {
+            File.WriteAllText(StreamingAssetsUtility.GetDeckFilePath(data.DeckName, data.DeckID), DeckCodeUtility.GetDeckBuilderFile(data));
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
     }
 
     public void RenameDeck(DeckData data, string newName)
     {
-        string savePath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
-        if (File.Exists($"{savePath}/{data.DeckName}_{data.DeckID}.txt"))
+        if (data == null)
+            return;
+
+        try
         {
-            File.Move($"{savePath}/{data.DeckName}_{data.DeckID}.txt", $"{savePath}/{newName}_{data.DeckID}.txt");
+            string oldPath = StreamingAssetsUtility.GetDeckFilePath(data.DeckName, data.DeckID);
             data.DeckName = newName;
+            string newPath = StreamingAssetsUtility.GetDeckFilePath(data.DeckName, data.DeckID);
+            if (File.Exists(oldPath) && !string.Equals(oldPath, newPath, StringComparison.OrdinalIgnoreCase))
+                File.Delete(oldPath);
+
             SaveDeckData(data);
         }
-        else
+        catch (Exception e)
+        {
+            Debug.LogException(e);
             data.DeckName = newName;
+        }
     }
 
     public void DeleteDeck(DeckData data)
     {
-        string filePath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
-
-        if (!Directory.Exists(filePath))
+        if (data == null)
             return;
 
-        if (!File.Exists($"{filePath}/{data.DeckName}_{data.DeckID}.txt"))
-            return;
-
-        File.Delete($"{filePath}/{data.DeckName}_{data.DeckID}.txt");
+        try
+        {
+            string filePath = StreamingAssetsUtility.GetDeckFilePath(data.DeckName, data.DeckID);
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
     }
 
     public void DeleteAllDecks()
@@ -740,7 +761,7 @@ public class ContinuousController : MonoBehaviour
 
     public void LoadDeckLists()
     {
-        string loadPath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
+        string loadPath = StreamingAssetsUtility.GetDeckSaveDirectory();
 
         if (!Directory.Exists(loadPath))
             return;
@@ -1577,69 +1598,6 @@ public class ContinuousController : MonoBehaviour
     //Flag that the sharing of the random number sequence is over.
     public bool DoneSetRandom { get; set; } = false;
     public bool CanSetRandom { get; set; } = false;
-
-    // === DCGO-CUSTOM:chat begin ===
-    public const int BattleChatMaxLength = 120;
-    const float BattleChatCooldownSeconds = 0.5f;
-    float _lastBattleChatSendTime = -999f;
-
-    public static event Action<string, string, int> OnBattleChatReceived;
-
-    public void SendBattleChat(string text)
-    {
-        if (isAI || !PhotonNetwork.InRoom)
-            return;
-
-        if (string.IsNullOrWhiteSpace(text))
-            return;
-
-        if (Time.unscaledTime - _lastBattleChatSendTime < BattleChatCooldownSeconds)
-            return;
-
-        string sanitized = SanitizeBattleChat(text);
-        if (string.IsNullOrEmpty(sanitized))
-            return;
-
-        _lastBattleChatSendTime = Time.unscaledTime;
-
-        string senderName = PlayerName;
-        if (string.IsNullOrEmpty(senderName))
-            senderName = "Player";
-
-        PhotonView view = GetComponent<PhotonView>();
-        if (view == null)
-            return;
-
-        view.RPC(nameof(ReceiveBattleChat), RpcTarget.All, senderName, sanitized);
-    }
-
-    public static string SanitizeBattleChat(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-            return string.Empty;
-
-        string sanitized = text.Replace('\r', ' ').Replace('\n', ' ').Trim();
-        if (sanitized.Length > BattleChatMaxLength)
-            sanitized = sanitized.Substring(0, BattleChatMaxLength);
-
-        return sanitized;
-    }
-
-    [PunRPC]
-    public void ReceiveBattleChat(string senderName, string text, PhotonMessageInfo info)
-    {
-        string safeName = string.IsNullOrEmpty(senderName) ? "Player" : senderName.Trim();
-        if (safeName.Length > PlayerNameMaxLength && PlayerNameMaxLength > 0)
-            safeName = safeName.Substring(0, PlayerNameMaxLength);
-
-        string sanitized = SanitizeBattleChat(text);
-        if (string.IsNullOrEmpty(sanitized))
-            return;
-
-        int actorNumber = info.Sender != null ? info.Sender.ActorNumber : -1;
-        OnBattleChatReceived?.Invoke(safeName, sanitized, actorNumber);
-    }
-    // === DCGO-CUSTOM:chat end ===
 
     [PunRPC]
     public void SetRandom(long random)

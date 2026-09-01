@@ -12,19 +12,11 @@ index b92ec005e..9fd8683f4 100644
  using System;
  
  public class ResultObject : MonoBehaviour
-@@ -21,9 +19,15 @@ public class ResultObject : MonoBehaviour
+@@ -21,9 +19,8 @@ public class ResultObject : MonoBehaviour
      {
          this.gameObject.SetActive(true);
  
 -        string log = "";
-+        if (GManager.instance != null && GManager.instance.battleChat != null)
-+        {
-+            // === DCGO-CUSTOM:chat begin ===
-+            GManager.instance.battleChat.OffChat(playSe: false);
-+            // === DCGO-CUSTOM:chat end ===
-+            GManager.instance.battleChat.Clear();
-+        }
- 
 -        log += "\nEnd Game";
 +        string log = "\nEnd Game";
  
