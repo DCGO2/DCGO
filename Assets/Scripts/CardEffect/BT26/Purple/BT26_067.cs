@@ -71,8 +71,7 @@ namespace DCGO.CardEffects.BT26
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By returning this Digimon to deck bottom, play 1 red/blue [Iliad] Digimon from trash for 4 less", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetIsSkippable(true);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
