@@ -28,7 +28,8 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card);
+                    return CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card)
+                        && CardEffectCommons.IsExistOnTrashTrigger(card, activateClass);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -38,12 +39,15 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnTrash(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnTrashActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    //In order to work from under the digimon, it needs to be an inherited effect, which then makes it think it is a digimon effect. Override to be an option effect
+                    activateClass.SetIsDigimonEffect(false);
+                    
                     SelectPermanentEffect selectPermanentEffect =
                         GManager.instance.GetComponent<SelectPermanentEffect>();
 

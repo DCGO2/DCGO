@@ -1040,7 +1040,8 @@ public enum EffectTiming
     OnRemovedField,
     OnLinkCardDiscarded,
     OnFaceUpSecurityIncreased,
-    OnLeaveFieldAnyone
+    OnLeaveFieldAnyone,
+    OnAddLibraryAnyone
 }
 
 #endregion

@@ -28,29 +28,21 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card))
-                    {
-                        return true;
-                    }
-                    
-                    return false;
+                    return CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card)
+                        && CardEffectCommons.IsExistOnTrashTrigger(card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnTrash(card))
-                    {
-                        if (card.Owner.CanAddMemory(activateClass))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnTrashActivate(card, activateClass)
+                        && card.Owner.CanAddMemory(activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    //In order to work from under the digimon, it needs to be an inherited effect, which then makes it think it is a digimon effect. Override to be an option effect
+                    activateClass.SetIsDigimonEffect(false);
+
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }

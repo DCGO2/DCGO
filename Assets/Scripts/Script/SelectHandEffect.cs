@@ -724,12 +724,12 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
 
                     case Mode.PutLibraryTop:
 
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(_targetCards));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(_targetCards, cardEffect: _cardEffect));
                         break;
 
                     case Mode.PutLibraryBottom:
 
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(_targetCards));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(_targetCards, cardEffect: _cardEffect));
                         break;
 
                     case Mode.PutSecurityBottom:

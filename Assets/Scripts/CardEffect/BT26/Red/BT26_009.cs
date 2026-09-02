@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.BT26
                         {
                             if (cardSources.Count >= 1)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
                             }
                         }
 

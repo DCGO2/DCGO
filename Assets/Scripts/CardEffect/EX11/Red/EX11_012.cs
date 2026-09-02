@@ -91,7 +91,7 @@ namespace DCGO.CardEffects.EX11
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { cardSource }));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { cardSource }, cardEffect: activateClass));
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPetrificationToken(activateClass));
                     }

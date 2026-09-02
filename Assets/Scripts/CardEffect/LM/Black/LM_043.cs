@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.LM
 
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
-                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: card, condition: null, effectName: "<Scapegoat>", effectDiscription: null));
+                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: card, condition: null, effectName: "<Scapegoat>"));
             }
 
             #endregion

@@ -11,6 +11,7 @@ public class ResultObject : MonoBehaviour
     [SerializeField] Image WinImage;
     [SerializeField] Image LoseImage;
     [SerializeField] Text ResultText;
+    public Button ReturnToResultButton;
 
     public void Init()
     {
@@ -438,4 +439,20 @@ public class ResultObject : MonoBehaviour
         }
     }
     // === DCGO-CUSTOM:friends end ===
+
+    #region Temporarily display/hide Result Screen
+    public void OnClickReturnToResultsdButton()
+    {
+        this.gameObject.SetActive(true);
+        ReturnToResultButton.gameObject.SetActive(false);
+    }
+
+    public void OnClickCheckFieldResultsButton()
+    {
+        this.gameObject.SetActive(false);
+        ReturnToResultButton.gameObject.SetActive(true);
+        ReturnToResultButton.onClick.RemoveAllListeners();
+        ReturnToResultButton.onClick.AddListener(() => OnClickReturnToResultsdButton());
+    }
+    #endregion
 }

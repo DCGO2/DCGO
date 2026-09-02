@@ -54,9 +54,15 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && (permanent.TopCard.EqualsTraits("Social") || permanent.TopCard.EqualsTraits("Tool") || permanent.TopCard.EqualsTraits("Open") || permanent.TopCard.EqualsTraits("Seven Code"));
 
+                bool PermanentCondition(Permanent permanent)
+                    => permanent == card.PermanentOfThisCard();
+
+                bool CardCondition(CardSource source)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
+
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.CanTriggerWhenLinked(hashtable, permanent => permanent == card.PermanentOfThisCard(), null);
+                        && CardEffectCommons.CanTriggerWhenLinked(hashtable, PermanentCondition, CardCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
@@ -116,7 +122,7 @@ namespace DCGO.CardEffects.BT26
             if (timing == EffectTiming.WhenLinked)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("De-Digivolve 2 1 opponent's Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 2> 1 opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
@@ -128,10 +134,11 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
+                    => CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card)
+                        && CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {

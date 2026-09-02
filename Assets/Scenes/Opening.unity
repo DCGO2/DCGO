@@ -16342,15 +16342,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 394521229}
   fullScreenToggle: {fileID: 508987006}
-  switchWindowSizeButtons:
-  - {fileID: 1618244884}
-  - {fileID: 669627359}
-  - {fileID: 1895437510}
-  - {fileID: 447188845}
-  - {fileID: 1444800359}
-  - {fileID: 1729937057}
-  - {fileID: 1238695760}
-  - {fileID: 853904096}
+  switchWindowSizeButtons: []
 --- !u!224 &394521228
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18674,7 +18666,6 @@ GameObject:
   - component: {fileID: 447188844}
   - component: {fileID: 447188843}
   - component: {fileID: 447188845}
-  - component: {fileID: 447188842}
   m_Layer: 8
   m_Name: 1920*1080
   m_TagString: Untagged
@@ -18703,35 +18694,6 @@ RectTransform:
   m_AnchoredPosition: {x: 352.11, y: 28.255013}
   m_SizeDelta: {x: 497.1, y: 139.71}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &447188842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 447188840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7827412352956199573}
-          m_TargetAssemblyTypeName: Opening, Assembly-CSharp
-          m_MethodName: CreateOnClickEffect
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &447188843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27652,7 +27614,6 @@ GameObject:
   - component: {fileID: 669627358}
   - component: {fileID: 669627357}
   - component: {fileID: 669627359}
-  - component: {fileID: 669627356}
   m_Layer: 8
   m_Name: 1280*720
   m_TagString: Untagged
@@ -27681,35 +27642,6 @@ RectTransform:
   m_AnchoredPosition: {x: 352.11, y: 184.76501}
   m_SizeDelta: {x: 497.1, y: 139.71}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &669627356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 669627354}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7827412352956199573}
-          m_TargetAssemblyTypeName: Opening, Assembly-CSharp
-          m_MethodName: CreateOnClickEffect
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &669627357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34302,7 +34234,6 @@ GameObject:
   - component: {fileID: 853904099}
   - component: {fileID: 853904097}
   - component: {fileID: 853904096}
-  - component: {fileID: 853904098}
   m_Layer: 8
   m_Name: 5160x2160
   m_TagString: Untagged
@@ -34396,35 +34327,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &853904098
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 853904095}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7827412352956199573}
-          m_TargetAssemblyTypeName: Opening, Assembly-CSharp
-          m_MethodName: CreateOnClickEffect
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!222 &853904099
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -51309,7 +51211,6 @@ GameObject:
   - component: {fileID: 1238695759}
   - component: {fileID: 1238695758}
   - component: {fileID: 1238695760}
-  - component: {fileID: 1238695757}
   m_Layer: 8
   m_Name: 3840*2160
   m_TagString: Untagged
@@ -51338,35 +51239,6 @@ RectTransform:
   m_AnchoredPosition: {x: -252.11005, y: -284.76498}
   m_SizeDelta: {x: 497.1, y: 139.71}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1238695757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1238695755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7827412352956199573}
-          m_TargetAssemblyTypeName: Opening, Assembly-CSharp
-          m_MethodName: CreateOnClickEffect
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &1238695758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59853,7 +59725,6 @@ GameObject:
   - component: {fileID: 1444800358}
   - component: {fileID: 1444800357}
   - component: {fileID: 1444800359}
-  - component: {fileID: 1444800356}
   m_Layer: 8
   m_Name: 2560*1440
   m_TagString: Untagged
@@ -59882,35 +59753,6 @@ RectTransform:
   m_AnchoredPosition: {x: -252.11005, y: -128.25499}
   m_SizeDelta: {x: 497.1, y: 139.71}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1444800356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1444800354}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7827412352956199573}
-          m_TargetAssemblyTypeName: Opening, Assembly-CSharp
-          m_MethodName: CreateOnClickEffect
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &1444800357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65902,7 +65744,6 @@ GameObject:
   - component: {fileID: 1618244883}
   - component: {fileID: 1618244882}
   - component: {fileID: 1618244884}
-  - component: {fileID: 1618244881}
   m_Layer: 8
   m_Name: 1024*576
   m_TagString: Untagged
@@ -65931,35 +65772,6 @@ RectTransform:
   m_AnchoredPosition: {x: -252.11005, y: 184.76501}
   m_SizeDelta: {x: 497.1, y: 139.71}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1618244881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1618244879}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7827412352956199573}
-          m_TargetAssemblyTypeName: Opening, Assembly-CSharp
-          m_MethodName: CreateOnClickEffect
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &1618244882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71320,7 +71132,6 @@ GameObject:
   - component: {fileID: 1729937056}
   - component: {fileID: 1729937055}
   - component: {fileID: 1729937057}
-  - component: {fileID: 1729937054}
   m_Layer: 8
   m_Name: 3440*1440
   m_TagString: Untagged
@@ -71349,35 +71160,6 @@ RectTransform:
   m_AnchoredPosition: {x: 352.11, y: -128.25499}
   m_SizeDelta: {x: 497.1, y: 139.71}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1729937054
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1729937052}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7827412352956199573}
-          m_TargetAssemblyTypeName: Opening, Assembly-CSharp
-          m_MethodName: CreateOnClickEffect
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &1729937055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76967,7 +76749,6 @@ GameObject:
   - component: {fileID: 1895437509}
   - component: {fileID: 1895437508}
   - component: {fileID: 1895437510}
-  - component: {fileID: 1895437507}
   m_Layer: 8
   m_Name: 1600*900
   m_TagString: Untagged
@@ -76996,35 +76777,6 @@ RectTransform:
   m_AnchoredPosition: {x: -252.11005, y: 28.255013}
   m_SizeDelta: {x: 497.1, y: 139.71}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1895437507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1895437505}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7827412352956199573}
-          m_TargetAssemblyTypeName: Opening, Assembly-CSharp
-          m_MethodName: CreateOnClickEffect
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &1895437508
 MonoBehaviour:
   m_ObjectHideFlags: 0
