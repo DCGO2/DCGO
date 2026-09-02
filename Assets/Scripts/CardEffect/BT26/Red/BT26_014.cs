@@ -46,7 +46,6 @@ namespace DCGO.CardEffects.BT26
                         {
                             return cardSource != null
                                 && cardSource.Owner == card.Owner
-                                && cardSource.IsDigimon
                                 && cardSource.HasLevel
                                 && cardSource.Level <= 4
                                 && cardSource.EqualsTraits("TB");
