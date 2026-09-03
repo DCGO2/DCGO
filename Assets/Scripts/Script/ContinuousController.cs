@@ -524,9 +524,8 @@ public class ContinuousController : MonoBehaviour
     public async void Init()
     {
         Application.targetFrameRate = 60;
-        long random = RandomUtility.GetSecureRandom();
-        GameRandom.Seed(random);
-        Debug.Log($"Game Initialize - random number sequence initialization, GameRandom.Seed:{random}");
+        GameRandom.Seed(RandomUtility.GetSecureRandom(), RandomUtility.GetSecureRandom(), RandomUtility.GetSecureRandom(), RandomUtility.GetSecureRandom());
+        Debug.Log($"Game Initialize - random number sequence initialization, GameRandom.Seed:{GameRandom.GetCurrentSeed()}");
 
         Sprite reverseCardSprite = await StreamingAssetsUtility.GetSprite("card_back_main");
 
@@ -1179,9 +1178,8 @@ public class ContinuousController : MonoBehaviour
 
         isAI = false;
 
-        long random = RandomUtility.GetSecureRandom();
-        GameRandom.Seed(random);
-        Debug.Log($"random number sequence initialization, GameRandom.Seed:{random}");
+        GameRandom.Seed(RandomUtility.GetSecureRandom(), RandomUtility.GetSecureRandom(), RandomUtility.GetSecureRandom(), RandomUtility.GetSecureRandom());
+        Debug.Log($"random number sequence initialization, GameRandom.Seed:{GameRandom.GetCurrentSeed()}");
 
         var unload = SceneManager.UnloadSceneAsync("BattleScene");
         yield return unload;
@@ -1333,19 +1331,19 @@ public class ContinuousController : MonoBehaviour
     public bool DoneSetRandom { get; set; } = false;
     public bool CanSetRandom { get; set; } = false;
     [PunRPC]
-    public void SetRandom(long random)
+    public void SetRandom(long random1, long random2, long random3, long random4)
     {
-        StartCoroutine(SetRandomCoroutine(random));
+        StartCoroutine(SetRandomCoroutine(random1, random2, random3, random4));
     }
 
-    IEnumerator SetRandomCoroutine(long random)
+    IEnumerator SetRandomCoroutine(long random1, long random2, long random3, long random4)
     {
         yield return new WaitWhile(() => !CanSetRandom);
 
-        GameRandom.Seed(random);
+        GameRandom.Seed(random1, random2, random3, random4);
         DoneSetRandom = true;
 
-        Debug.Log($"random number sequence initialization, GameRandom.Seed:{random}");
+        Debug.Log($"random number sequence initialization, GameRandom.Seed:{GameRandom.GetCurrentSeed()}");
     }
 
 #if UNITY_EDITOR
