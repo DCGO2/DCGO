@@ -965,7 +965,7 @@ public class PlayCardClass
                 }
                 else
                 {
-                    
+
                 }
             }
 
@@ -1391,7 +1391,13 @@ public class PlayPermanentClass
 
                             PlayLog.OnAddLog?.Invoke($"\nEvolution:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
-                            card.cEntity_EffectController.UseEffectsThisTurn.AddRange(_targetPermanent.TopCard.cEntity_EffectController.UseEffectsThisTurn);
+                            foreach (ICardEffect effect in _targetPermanent.TopCard.cEntity_EffectController.UseEffectsThisTurn)
+                            {
+                                if (effect.OriginalEffectSourceCard is not null)
+                                {
+                                    card.cEntity_EffectController.UseEffectsThisTurn.Add(effect);
+                                }
+                            }
 
                             permanent = _targetPermanent;
                             evoRoots.Add(_targetPermanent.TopCard);
