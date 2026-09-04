@@ -91,7 +91,9 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && (permanent.TopCard.EqualsTraits("Insectoid") || permanent.TopCard.EqualsTraits("Titan"));
 
-            bool GrantCondition() => CardEffectCommons.IsOwnerTurn(card);
+            bool GrantCondition()
+                => CardEffectCommons.IsOwnerTurn(card)
+                    && CardEffectCommons.IsExistOnBattleArea(card);
 
             if (timing == EffectTiming.OnAllyAttack)
             {
