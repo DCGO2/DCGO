@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.BT26
                 cardEffects.Add(addSkillClass);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, addSkillClass);
+                    => CardEffectCommons.IsExistOnBattleArea(card);
 
                 bool CardSourceCondition(CardSource cardSource)
                     => cardSource.PermanentOfThisCard() != null
