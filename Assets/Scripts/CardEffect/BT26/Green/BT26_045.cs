@@ -91,32 +91,18 @@ namespace DCGO.CardEffects.BT26
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && (permanent.TopCard.EqualsTraits("Insectoid") || permanent.TopCard.EqualsTraits("Titan"));
 
-            bool GrantCondition()
-                => CardEffectCommons.IsOwnerTurn(card)
-                    && CardEffectCommons.IsExistOnBattleArea(card);
-
-            if (timing == EffectTiming.OnAllyAttack)
-            {
-                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(GrantPermanentCondition, false, card, GrantCondition));
-            }
-
-            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
-            {
-                foreach (Permanent permanent in card.Owner.GetBattleAreaDigimons().Filter(GrantPermanentCondition))
-                {
-                    cardEffects.Add(CardEffectFactory.PierceEffect(targetPermanent: permanent, isInheritedEffect: false, condition: GrantCondition, rootCardEffect: null, card: card));
-                }
-            }
+            bool GrantCondition() 
+                => CardEffectCommons.IsExistOnBattleArea(card)
+                    && CardEffectCommons.IsOwnerTurn(card);
 
             if (timing == EffectTiming.None)
             {
                 AddSkillClass addSkillClass = new AddSkillClass();
                 addSkillClass.SetUpICardEffect("Your [Insectoid]/[Titan] Digimon gain Vortex", CanUseCondition, card);
-                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects, limitTiming: EffectTiming.OnEndTurn);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
                 cardEffects.Add(addSkillClass);
 
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card);
+                bool CanUseCondition(Hashtable hashtable) => GrantCondition();
 
                 bool CardSourceCondition(CardSource cardSource)
                     => cardSource.PermanentOfThisCard() != null
@@ -125,6 +111,16 @@ namespace DCGO.CardEffects.BT26
 
                 List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
                 {
+                    if (timing == EffectTiming.OnAllyAttack)
+                    {
+                        cardEffects.Add(CardEffectFactory.AllianceSelfEffect(false, cardSource, GrantCondition));
+                    }
+
+                    if (timing == EffectTiming.OnDetermineDoSecurityCheck)
+                    {
+                        cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, condition: GrantCondition, card: cardSource));
+                    }
+                    
                     if (_timing == EffectTiming.OnEndTurn)
                     {
                         cardEffects.Add(CardEffectFactory.VortexSelfEffect(isInheritedEffect: false, card: cardSource, condition: GrantCondition));
