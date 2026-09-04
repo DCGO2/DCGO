@@ -226,7 +226,7 @@ namespace DCGO.CardEffects.BT26
             #region DP +2000
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.ChangeBaseDPGlobalEffect(IsOwnIliadDigimon, 2000, false, card, GrantCondition));
+                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(IsOwnIliadDigimon, 2000, false, card, GrantCondition, effectName: () => "All of your [Iliad] trait Digimon get +2000 DP."));
             }
             #endregion
             #endregion
