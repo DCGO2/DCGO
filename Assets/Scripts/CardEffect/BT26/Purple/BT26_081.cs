@@ -254,7 +254,7 @@ namespace DCGO.CardEffects.BT26
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
                             element: element,
                             CanTargetCondition_ByPreSelecetedList: null,
-                            selectMessage: "w/[Minervamon] in name",
+                            selectMessage: "[Minervamon]",
                             elementCount: 1,
                             reduceCost: 5);
 
