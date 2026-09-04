@@ -332,11 +332,6 @@ namespace DCGO.CardEffects.EX6
             #region Inherit
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
-                string EffectDiscription()
-                {
-                    return "<Scapegoat> (When this Digimon would be deleted other than by your own effects, by deleting 1 of your other Digimon, prevent that deletion.)";
-                }
-
                 bool Condition()
                 {
                     if(card.PermanentOfThisCard().TopCard.CardTraits.Contains("Angel") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("Seven Great Demon Lords") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("SevenGreatDemonLords"))
@@ -346,7 +341,7 @@ namespace DCGO.CardEffects.EX6
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: true, card: card, condition: Condition, effectName: "<Scapegoat>", effectDiscription: EffectDiscription()));
+                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: true, card: card, condition: Condition, effectName: "<Scapegoat>"));
             }
             #endregion
 

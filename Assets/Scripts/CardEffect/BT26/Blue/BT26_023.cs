@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Training
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDeclaration)
             {
                 cardEffects.Add(CardEffectFactory.TrainingEffect(card));
             }

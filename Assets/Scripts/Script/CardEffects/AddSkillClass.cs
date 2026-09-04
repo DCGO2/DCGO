@@ -24,12 +24,17 @@ public class AddSkillClass : ICardEffect, IAddSkillEffect
     }
     public List<ICardEffect> GetCardEffect(CardSource card, List<ICardEffect> getCardEffect, EffectTiming timing)
     {
+        // Callers probe this wrapper against every card being evaluated on the field (e.g. "would
+        // this granted-effect apply to card X?"), not just the card it actually applies to. Only
+        // adopt `card` as our own identity when we actually matched it -- otherwise a probe against
+        // an unrelated card (that fails _cardSourceCondition) would permanently overwrite this
+        // wrapper's real EffectSourceCard with that unrelated card, and since later probes read
+        // EffectSourceCard back to decide what to pass in next, the corruption never self-heals.
         if (_cardSourceCondition(card))
         {
             getCardEffect = _getEffects(card, getCardEffect, timing);
+            SetEffectSourceCard(card);
         }
-
-        SetEffectSourceCard(card);
 
         return getCardEffect;
     }

@@ -24,61 +24,14 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Reduce Play Cost
-            if (timing == EffectTiming.BeforePayCost)
+            if (timing == EffectTiming.None)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reduce play cost by 4", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetHashString("BT26_046_ReducePlayCost");
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                    => "When this card would be played, if there are 2 or more suspended Digimon, reduce the cost by 4.";
-
-                bool CardCondition(CardSource cardSource) => cardSource == card;
-
-                int SuspendedDigimonCount()
+                bool Condition()
                 {
-                    int count = 0;
-                    count += card.Owner.GetBattleAreaDigimons().Count(permanent => permanent.IsSuspended);
-                    count += card.Owner.Enemy.GetBattleAreaDigimons().Count(permanent => permanent.IsSuspended);
-                    return count;
+                    return card.Owner.GetBattleAreaDigimons().Count(permanent => permanent.IsSuspended) + card.Owner.Enemy.GetBattleAreaDigimons().Count(permanent => permanent.IsSuspended) >= 2;
                 }
 
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => SuspendedDigimonCount() >= 2
-                        && card.Owner.CanReduceCost(null, card);
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    ChangeCostClass changeCostClass = new ChangeCostClass();
-                    changeCostClass.SetUpICardEffect("Play Cost -4", CanUseCondition1, card);
-                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardCondition, rootCondition: RootCondition, isUpDown: IsUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-
-                    ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                    card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
-
-                    bool CanUseCondition1(Hashtable hashtable) => true;
-
-                    bool RootCondition(SelectCardEffect.Root root) => true;
-
-                    bool IsUpDown() => true;
-
-                    int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                    {
-                        if (CardCondition(cardSource) && SuspendedDigimonCount() >= 2)
-                        {
-                            cost -= 4;
-                        }
-
-                        return cost;
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
-                }
+                cardEffects.Add(CardEffectFactory.MandatorySelfPlayCostReduction(4, card, Condition));
             }
             #endregion
 

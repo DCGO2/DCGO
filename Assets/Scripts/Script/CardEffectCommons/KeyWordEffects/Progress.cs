@@ -18,25 +18,14 @@ public partial class CardEffectCommons
 
         bool CanUseCondition()
         {
-            if (IsPermanentExistsOnBattleArea(targetPermanent))
-            {
-                if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return IsPermanentExistsOnBattleArea(targetPermanent) && CanActivateProgress(targetPermanent.TopCard);
         }
 
-        CanNotAffectedClass progress = CardEffectFactory.ProgressStaticEffect(isInheritedEffect: false, card: card, condition: CanUseCondition);
+        CanNotAffectedClass progress = CardEffectFactory.ProgressStaticEffect(isInheritedEffect: false, card: targetPermanent.TopCard, condition: CanUseCondition);
 
         AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: progress, timing: EffectTiming.None);
 
-        if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
-        {
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(targetPermanent));
-        }
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(targetPermanent));
     }
     #endregion
 

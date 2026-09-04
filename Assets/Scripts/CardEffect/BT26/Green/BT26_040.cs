@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.BT26
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Training
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDeclaration)
             {
                 cardEffects.Add(CardEffectFactory.TrainingEffect(card));
             }

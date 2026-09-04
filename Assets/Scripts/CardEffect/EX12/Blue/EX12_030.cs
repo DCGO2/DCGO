@@ -217,7 +217,7 @@ namespace DCGO.CardEffects.EX12
 
                             cardSources.Reverse();
 
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
 
                             string selectPlayerMessage = "Will you unsuspend this card?";
                             string notSelectPlayerMessage = "The opponent is choosing if they will unsuspend.";
