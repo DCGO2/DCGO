@@ -28,8 +28,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card)
-                        && CardEffectCommons.IsExistOnTrashTrigger(card, activateClass);
+                    return CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -39,7 +38,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnTrashActivate(card, activateClass)
+                    return CardEffectCommons.IsExistOnTrash(card)
                         && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 

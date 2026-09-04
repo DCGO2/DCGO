@@ -54,13 +54,12 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card)
-                        && CardEffectCommons.IsExistOnTrashTrigger(card, activateClass);
+                    return CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnTrashActivate(card, activateClass)
+                    return CardEffectCommons.IsExistOnTrash(card)
                         && CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentsDigimon);
                 }
 
