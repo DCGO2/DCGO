@@ -88,19 +88,28 @@ public abstract class ICardEffect
     // via a wrapping copiedActivateClass that just delegates to the original's Activate(), the
     // closure still targets the ORIGINAL instance -- so RemoveUse()/AddUse() would touch the
     // source card's own OPT tracking instead of the copy's, even though the copy's own
-    // EffectSourceCard/tracking is otherwise correctly independent. This field lets a caller
+    // EffectSourceCard/tracking is otherwise correctly independent. This lets a caller
     // (CopyDigivolutionCardEffects) temporarily redirect RemoveUse()/AddUse() calls made on
     // this instance to affect a different ICardEffect (the copy) instead, for the duration of
-    // one Activate() call.
-    ICardEffect _useTrackingRedirectTarget = null;
+    // one Activate() call. A stack (not a single field) because the source ability could in
+    // principle be mid-activation for one copy (e.g. awaiting player input) when a second,
+    // unrelated activation for a different copy starts -- pushing/popping keeps each
+    // invocation's redirect correctly scoped instead of the second overwriting the first's.
+    readonly Stack<ICardEffect> _useTrackingRedirectStack = new Stack<ICardEffect>();
     public ICardEffect UseTrackingRedirectTarget
     {
-        get { return _useTrackingRedirectTarget; }
-        private set { _useTrackingRedirectTarget = value; }
+        get { return _useTrackingRedirectStack.Count > 0 ? _useTrackingRedirectStack.Peek() : null; }
     }
-    public void SetUseTrackingRedirectTarget(ICardEffect useTrackingRedirectTarget)
+    public void PushUseTrackingRedirectTarget(ICardEffect useTrackingRedirectTarget)
     {
-        UseTrackingRedirectTarget = useTrackingRedirectTarget;
+        _useTrackingRedirectStack.Push(useTrackingRedirectTarget);
+    }
+    public void PopUseTrackingRedirectTarget()
+    {
+        if (_useTrackingRedirectStack.Count > 0)
+        {
+            _useTrackingRedirectStack.Pop();
+        }
     }
 
     #endregion

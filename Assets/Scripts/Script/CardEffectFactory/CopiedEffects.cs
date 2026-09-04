@@ -155,12 +155,22 @@ public partial class CardEffectFactory
                         // that closure still targets activateClass (the source), redirect
                         // RemoveUse()/AddUse() to affect copiedActivateClass instead for the
                         // duration of this one call, so the source card's own OPT tracking isn't
-                        // touched by a copy's activation.
+                        // touched by a copy's activation. Push/pop (not set/clear) and a finally
+                        // block: activateClass may already be mid-activation for a different copy
+                        // (e.g. awaiting player input) when this one starts, and the underlying
+                        // coroutine could throw or be stopped externally -- both must not leave a
+                        // stale redirect in place for the source's own later activations.
                         IEnumerator ActivateWithRedirectedUseTracking(Hashtable hashtable)
                         {
-                            activateClass.SetUseTrackingRedirectTarget(copiedActivateClass);
-                            yield return ContinuousController.instance.StartCoroutine(activateClass.Activate(hashtable));
-                            activateClass.SetUseTrackingRedirectTarget(null);
+                            activateClass.PushUseTrackingRedirectTarget(copiedActivateClass);
+                            try
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(activateClass.Activate(hashtable));
+                            }
+                            finally
+                            {
+                                activateClass.PopUseTrackingRedirectTarget();
+                            }
                         }
 
                         copiedActivateClass.SetUpActivateClass(
