@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,6 +39,14 @@ public class HomeMode : MonoBehaviour
         {
             UpdateButtonParent.SetActive(false);
         }
+
+        // === DCGO-CUSTOM:friends begin ===
+        FriendListPanel.HideIfOpen();
+        FriendServices.Instance?.Duel?.SetInviteListening(false);
+        // === DCGO-CUSTOM:recovery begin ===
+        AccountRecoveryPanel.HideIfOpen();
+        // === DCGO-CUSTOM:recovery end ===
+        // === DCGO-CUSTOM:friends end ===
     }
 
     public void SetUpHome()
@@ -71,7 +79,63 @@ public class HomeMode : MonoBehaviour
         }
 
         Opening.instance.optionPanel.CloseOptionPanel();
+        // === DCGO-CUSTOM:onlinecount begin ===
+        if (Opening.instance != null)
+        {
+            Opening.instance.EnsureOnlinePlayerCountUi();
+        }
+        OnlinePlayerCountService.EnsureExists().SetMenuPresenceEnabled(true);
+        // === DCGO-CUSTOM:onlinecount end ===
+        // === DCGO-CUSTOM:friends begin ===
+        Opening.instance?.EnsureFriendsButton();
+        ContinuousController.instance?.StartCoroutine(BootstrapFriendsHomeCoroutine());
+        // === DCGO-CUSTOM:recovery begin ===
+        Opening.instance?.EnsureAccountButton();
+        // === DCGO-CUSTOM:recovery end ===
+        // === DCGO-CUSTOM:friends end ===
     }
+
+    // === DCGO-CUSTOM:friends begin ===
+    IEnumerator BootstrapFriendsHomeCoroutine()
+    {
+        var friends = FriendServices.EnsureExists();
+        yield return friends.List.EnsureLoggedIn();
+
+        var ranked = RankedServices.EnsureExists();
+        string expectedId = ranked.Auth.PlayFabId;
+        ranked.Auth.ApplyPhotonAuthValues();
+
+        if (Photon.Pun.PhotonNetwork.IsConnectedAndReady &&
+            !string.IsNullOrEmpty(expectedId) &&
+            Photon.Pun.PhotonNetwork.LocalPlayer != null &&
+            Photon.Pun.PhotonNetwork.LocalPlayer.UserId != expectedId)
+        {
+            OnlinePlayerCountService.EnsureExists().SetMenuPresenceEnabled(false);
+            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.DisconnectCoroutine());
+            OnlinePlayerCountService.EnsureExists().SetMenuPresenceEnabled(true);
+            float wait = 0f;
+            while ((!Photon.Pun.PhotonNetwork.IsConnectedAndReady || !Photon.Pun.PhotonNetwork.InLobby) && wait < 20f)
+            {
+                wait += Time.unscaledDeltaTime;
+                yield return null;
+            }
+        }
+
+        if (Photon.Pun.PhotonNetwork.IsConnectedAndReady)
+        {
+            yield return ContinuousController.instance.StartCoroutine(
+                PhotonUtility.SetRankedPlayerProperties());
+        }
+
+        if (PhotonNetwork.InRoom ||
+            (ContinuousController.instance != null && ContinuousController.instance.isFriendDuel))
+        {
+            yield break;
+        }
+
+        friends.Duel.SetInviteListening(true);
+    }
+    // === DCGO-CUSTOM:friends end ===
 
     public void SetUpHomeMode_Disconnect()
     {

@@ -1,0 +1,40 @@
+{
+  "id": "ranked",
+  "description": "PlayFab ranked ladder, Photon ranked queue, MMR UI.",
+  "dependsOn": [],
+  "overlay": [
+    "Assets/Scripts/Script/Ranked",
+    "Assets/PlayFabCloudScript",
+    "Assets/Resources/Ranked"
+  ],
+  "overlayFiles": [
+    "Assets/Scenes/Opening.unity",
+    "Assets/Photon/PhotonUnityNetworking/Resources/PhotonServerSettings.asset"
+  ],
+  "patchFiles": [
+    "Assets/Scripts/Script/BattleMode.cs",
+    "Assets/Scripts/Script/ContinuousController.cs",
+    "Assets/Scripts/Script/GManager.cs",
+    "Assets/Scripts/Script/Player.cs",
+    "Assets/Scripts/Script/PlayerInfo.cs",
+    "Assets/Scripts/Script/ResultObject.cs",
+    "Assets/Scripts/Script/SelectBattleDeck.cs",
+    "Assets/Scripts/Script/SelectBattleMode.cs",
+    "Assets/Scripts/Script/TurnStateMachine.cs",
+    "Assets/Scripts/Script/LobbyManager_RandomMatch.cs"
+  ],
+  "anchors": [
+    {
+      "file": "Assets/Scripts/Script/BattleMode.cs",
+      "afterContains": "public LobbyManager_RandomMatch lobbyManager_RandomMatch;"
+    },
+    {
+      "file": "Assets/Scripts/Script/ContinuousController.cs",
+      "afterContains": "public bool isRandomMatch { get; set; }"
+    },
+    {
+      "file": "Assets/Scripts/Script/Player.cs",
+      "afterContains": "public TextMeshProUGUI PlayerNameText;"
+    }
+  ]
+}

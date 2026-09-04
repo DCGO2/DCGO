@@ -538,12 +538,12 @@ public class HandCard : MonoBehaviour
 
         #region 長押しの取得
 #if !UNITY_EDITOR && UNITY_ANDROID
-        if (pressing)
+        if (_pressing)
         {
-            if(requiredTime < Time.time)
+            if(_requiredTime < Time.time)
             {
                 OnRightClicked();
-                pressing = false;
+                _pressing = false;
             }
         }
 #endif
@@ -677,18 +677,17 @@ public class HandCard : MonoBehaviour
 
     public void PointerUp(BaseEventData eventData)
     {
-        if (_pressing)
-        {
-            _pressing = false;
-        }
+        CancelLongPress();
     }
 
     public void PointerExit(BaseEventData eventData)
     {
-        if (_pressing)
-        {
-            _pressing = false;
-        }
+        CancelLongPress();
+    }
+
+    public void CancelLongPress()
+    {
+        _pressing = false;
     }
 
     public async void SetUpHandCardImage()

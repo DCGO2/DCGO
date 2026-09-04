@@ -676,12 +676,12 @@ public class FieldPermanentCard : MonoBehaviour
 
         #region Get long press
 #if !UNITY_EDITOR && UNITY_ANDROID
-        if (pressing)
+        if (_pressing)
         {
-            if(requiredTime < Time.time)
+            if(_requiredTime < Time.time)
             {
                 OnRightClicked();
-                pressing = false;
+                _pressing = false;
             }
         }
 #endif

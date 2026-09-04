@@ -1,4 +1,4 @@
-﻿using Photon.Pun;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +49,16 @@ public class Opening : MonoBehaviour
     public static Opening instance = null;
 
     public Text VerText;
+    // === DCGO-CUSTOM:onlinecount begin ===
+    Text OnlineCountText;
+    Text RankedCountText;
+    // === DCGO-CUSTOM:onlinecount end ===
+    // === DCGO-CUSTOM:friends begin ===
+    Button FriendsButton;
+    // === DCGO-CUSTOM:recovery begin ===
+    Button AccountButton;
+    // === DCGO-CUSTOM:recovery end ===
+    // === DCGO-CUSTOM:friends end ===
 
     public OptionPanel optionPanel;
     public PatchNotes patchNotesPanel;
@@ -97,6 +107,300 @@ public class Opening : MonoBehaviour
             MainCamera = openingCameras[0];
         }
     }
+
+    // === DCGO-CUSTOM:onlinecount begin ===
+    void OnDestroy()
+    {
+        var service = OnlinePlayerCountService.Instance;
+        if (service != null)
+        {
+            service.Changed -= RefreshOnlinePlayerCountText;
+            service.SetMenuPresenceEnabled(false);
+        }
+    }
+
+    public void EnsureOnlinePlayerCountUi()
+    {
+        if (VerText == null)
+        {
+            return;
+        }
+
+        Transform parent = VerText.transform.parent != null ? VerText.transform.parent : VerText.transform;
+        var verRt = VerText.GetComponent<RectTransform>();
+
+        if (OnlineCountText == null)
+        {
+            OnlineCountText = CreateVerSiblingText("OnlineCountText", parent, verRt, yOffset: 70f);
+        }
+
+        if (RankedCountText == null)
+        {
+            // Above the online counter
+            RankedCountText = CreateVerSiblingText("RankedCountText", parent, verRt, yOffset: 140f);
+        }
+
+        var svc = OnlinePlayerCountService.EnsureExists();
+        svc.Changed -= RefreshOnlinePlayerCountText;
+        svc.Changed += RefreshOnlinePlayerCountText;
+        svc.SetMenuPresenceEnabled(true);
+        RefreshOnlinePlayerCountText();
+    }
+
+    // === DCGO-CUSTOM:friends begin ===
+    public void EnsureFriendsButton()
+    {
+        // Place next to Online/Ranked counters (bottom-right), not under ModeButtons —
+        // ModeButtons is the left Battle/Deck strip and clipped the old button.
+        if (VerText == null && canvasRect == null)
+        {
+            return;
+        }
+
+        if (FriendsButton != null)
+        {
+            // Recreate if a previous Play Mode left it under ModeButtons (clipped).
+            Transform expectedParent = VerText != null && VerText.transform.parent != null
+                ? VerText.transform.parent
+                : (canvasRect != null ? canvasRect.transform : null);
+            if (FriendsButton.transform.parent == expectedParent)
+            {
+                FriendsButton.gameObject.SetActive(true);
+                return;
+            }
+
+            Destroy(FriendsButton.gameObject);
+            FriendsButton = null;
+        }
+
+        Transform parent = VerText != null && VerText.transform.parent != null
+            ? VerText.transform.parent
+            : (canvasRect != null ? canvasRect.transform : null);
+        if (parent == null)
+        {
+            return;
+        }
+
+        Font font = VerText != null && VerText.font != null
+            ? VerText.font
+            : Resources.GetBuiltinResource<Font>("Arial.ttf");
+
+        var go = new GameObject("FriendsButton", typeof(RectTransform), typeof(Image), typeof(Button));
+        go.layer = VerText != null ? VerText.gameObject.layer : parent.gameObject.layer;
+        go.transform.SetParent(parent, false);
+
+        var rt = go.GetComponent<RectTransform>();
+        if (VerText != null)
+        {
+            var verRt = VerText.GetComponent<RectTransform>();
+            rt.localRotation = verRt.localRotation;
+            rt.localScale = Vector3.one;
+            // Same corner as Ver / Online counters, above Ranked count
+            rt.anchorMin = verRt.anchorMin;
+            rt.anchorMax = verRt.anchorMax;
+            rt.pivot = verRt.pivot;
+            rt.anchoredPosition = verRt.anchoredPosition + new Vector2(-20f, 210f);
+        }
+        else
+        {
+            rt.anchorMin = new Vector2(1f, 0f);
+            rt.anchorMax = new Vector2(1f, 0f);
+            rt.pivot = new Vector2(1f, 0f);
+            rt.anchoredPosition = new Vector2(-40f, 220f);
+        }
+
+        rt.sizeDelta = new Vector2(200f, 56f);
+        go.GetComponent<Image>().color = new Color(0.18f, 0.42f, 0.85f, 0.95f);
+
+        FriendsButton = go.GetComponent<Button>();
+        FriendsButton.onClick.AddListener(() =>
+        {
+            PlayDecisionSE();
+            FriendListPanel.ShowFromHome();
+        });
+
+        var labelGo = new GameObject("Label", typeof(RectTransform));
+        labelGo.transform.SetParent(go.transform, false);
+        var text = labelGo.AddComponent<Text>();
+        text.font = font;
+        text.fontSize = 24;
+        text.fontStyle = FontStyle.Bold;
+        text.alignment = TextAnchor.MiddleCenter;
+        text.color = Color.white;
+        text.text = LocalizeUtility.GetLocalizedString(EngMessage: "Friends", JpnMessage: "フレンド");
+        text.raycastTarget = false;
+        if (VerText != null && VerText.material != null)
+        {
+            text.material = VerText.material;
+        }
+
+        var lrt = text.GetComponent<RectTransform>();
+        lrt.anchorMin = Vector2.zero;
+        lrt.anchorMax = Vector2.one;
+        lrt.offsetMin = Vector2.zero;
+        lrt.offsetMax = Vector2.zero;
+    }
+    // === DCGO-CUSTOM:friends end ===
+
+    // === DCGO-CUSTOM:recovery begin ===
+    public void EnsureAccountButton()
+    {
+        // Same bottom-right stack as Friends, one row above it.
+        if (VerText == null && canvasRect == null)
+        {
+            return;
+        }
+
+        if (AccountButton != null)
+        {
+            Transform expectedParent = VerText != null && VerText.transform.parent != null
+                ? VerText.transform.parent
+                : (canvasRect != null ? canvasRect.transform : null);
+            if (AccountButton.transform.parent == expectedParent)
+            {
+                AccountButton.gameObject.SetActive(true);
+                return;
+            }
+
+            Destroy(AccountButton.gameObject);
+            AccountButton = null;
+        }
+
+        Transform parent = VerText != null && VerText.transform.parent != null
+            ? VerText.transform.parent
+            : (canvasRect != null ? canvasRect.transform : null);
+        if (parent == null)
+        {
+            return;
+        }
+
+        Font font = VerText != null && VerText.font != null
+            ? VerText.font
+            : Resources.GetBuiltinResource<Font>("Arial.ttf");
+
+        var go = new GameObject("AccountButton", typeof(RectTransform), typeof(Image), typeof(Button));
+        go.layer = VerText != null ? VerText.gameObject.layer : parent.gameObject.layer;
+        go.transform.SetParent(parent, false);
+
+        var rt = go.GetComponent<RectTransform>();
+        if (VerText != null)
+        {
+            var verRt = VerText.GetComponent<RectTransform>();
+            rt.localRotation = verRt.localRotation;
+            rt.localScale = Vector3.one;
+            rt.anchorMin = verRt.anchorMin;
+            rt.anchorMax = verRt.anchorMax;
+            rt.pivot = verRt.pivot;
+            // Friends is at +210; button height 56 + 12 gap → +278
+            rt.anchoredPosition = verRt.anchoredPosition + new Vector2(-20f, 278f);
+        }
+        else
+        {
+            rt.anchorMin = new Vector2(1f, 0f);
+            rt.anchorMax = new Vector2(1f, 0f);
+            rt.pivot = new Vector2(1f, 0f);
+            rt.anchoredPosition = new Vector2(-40f, 288f);
+        }
+
+        rt.sizeDelta = new Vector2(200f, 56f);
+        go.GetComponent<Image>().color = new Color(0.18f, 0.42f, 0.85f, 0.95f);
+
+        AccountButton = go.GetComponent<Button>();
+        AccountButton.onClick.AddListener(() =>
+        {
+            PlayDecisionSE();
+            AccountRecoveryPanel.ShowFromHome();
+        });
+
+        var labelGo = new GameObject("Label", typeof(RectTransform));
+        labelGo.transform.SetParent(go.transform, false);
+        var text = labelGo.AddComponent<Text>();
+        text.font = font;
+        text.fontSize = 24;
+        text.fontStyle = FontStyle.Bold;
+        text.alignment = TextAnchor.MiddleCenter;
+        text.color = Color.white;
+        text.text = LocalizeUtility.GetLocalizedString(EngMessage: "Account", JpnMessage: "アカウント");
+        text.raycastTarget = false;
+        if (VerText != null && VerText.material != null)
+        {
+            text.material = VerText.material;
+        }
+
+        var lrt = text.GetComponent<RectTransform>();
+        lrt.anchorMin = Vector2.zero;
+        lrt.anchorMax = Vector2.one;
+        lrt.offsetMin = Vector2.zero;
+        lrt.offsetMax = Vector2.zero;
+    }
+    // === DCGO-CUSTOM:recovery end ===
+
+    Text CreateVerSiblingText(string name, Transform parent, RectTransform verRt, float yOffset)
+    {
+        var go = new GameObject(name, typeof(RectTransform));
+        go.layer = VerText.gameObject.layer;
+        go.transform.SetParent(parent, false);
+
+        var text = go.AddComponent<Text>();
+        text.raycastTarget = false;
+        ApplyOnlineCountTextStyle(text);
+
+        var rt = text.GetComponent<RectTransform>();
+        if (rt != null && verRt != null)
+        {
+            rt.localRotation = verRt.localRotation;
+            rt.localScale = verRt.localScale;
+            rt.anchorMin = verRt.anchorMin;
+            rt.anchorMax = verRt.anchorMax;
+            rt.pivot = verRt.pivot;
+            rt.anchoredPosition = verRt.anchoredPosition + new Vector2(0f, yOffset);
+            rt.sizeDelta = new Vector2(Mathf.Max(verRt.sizeDelta.x, 320f), verRt.sizeDelta.y);
+        }
+
+        return text;
+    }
+
+    void ApplyOnlineCountTextStyle(Text text)
+    {
+        if (text == null || VerText == null)
+        {
+            return;
+        }
+
+        if (VerText.font != null)
+        {
+            text.font = VerText.font;
+            text.material = VerText.material;
+        }
+
+        text.fontSize = VerText.fontSize;
+        text.fontStyle = VerText.fontStyle;
+        text.alignment = TextAnchor.UpperRight;
+        text.horizontalOverflow = HorizontalWrapMode.Overflow;
+        text.verticalOverflow = VerticalWrapMode.Overflow;
+        text.color = VerText.color;
+        text.resizeTextForBestFit = false;
+    }
+
+    void RefreshOnlinePlayerCountText()
+    {
+        var svc = OnlinePlayerCountService.Instance;
+
+        if (OnlineCountText != null)
+        {
+            OnlineCountText.text = svc != null
+                ? svc.FormatDisplayString()
+                : LocalizeUtility.GetLocalizedString("Online: —", "オンライン: —");
+        }
+
+        if (RankedCountText != null)
+        {
+            RankedCountText.text = svc != null
+                ? svc.FormatRankedDisplayString()
+                : LocalizeUtility.GetLocalizedString("Ranked: —", "ランク: —");
+        }
+    }
+    // === DCGO-CUSTOM:onlinecount end ===
 
     int count = 0;
     int UpdateFrame = 5;
@@ -392,11 +696,29 @@ public class Opening : MonoBehaviour
     public void OffModeButtons()
     {
         ModeButtons.SetActive(false);
+        // === DCGO-CUSTOM:friends begin ===
+        if (FriendsButton != null)
+        {
+            FriendsButton.gameObject.SetActive(false);
+        }
+        // === DCGO-CUSTOM:friends end ===
+        // === DCGO-CUSTOM:recovery begin ===
+        if (AccountButton != null)
+        {
+            AccountButton.gameObject.SetActive(false);
+        }
+        // === DCGO-CUSTOM:recovery end ===
     }
 
     public void OnModeButtons()
     {
         ModeButtons.SetActive(true);
+        // === DCGO-CUSTOM:friends begin ===
+        EnsureFriendsButton();
+        // === DCGO-CUSTOM:recovery begin ===
+        EnsureAccountButton();
+        // === DCGO-CUSTOM:recovery end ===
+        // === DCGO-CUSTOM:friends end ===
     }
 
     public void CreateOnClickEffect()
@@ -471,7 +793,9 @@ public class Opening : MonoBehaviour
 
         if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.Disconnect();
+            // === DCGO-CUSTOM:reconnect begin ===
+            PhotonUtility.DisconnectImmediate();
+            // === DCGO-CUSTOM:reconnect end ===
 
             while (PhotonNetwork.IsConnected)
             {
@@ -487,6 +811,10 @@ public class Opening : MonoBehaviour
 
         deck.OffDeck();
         title.SetUpTitle();
+        // === DCGO-CUSTOM:onlinecount begin ===
+        EnsureOnlinePlayerCountUi();
+        OnlinePlayerCountService.EnsureExists().SetMenuPresenceEnabled(true);
+        // === DCGO-CUSTOM:onlinecount end ===
 
         LoadCardImages();
 

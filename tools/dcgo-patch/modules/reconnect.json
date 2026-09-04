@@ -1,0 +1,29 @@
+{
+  "id": "reconnect",
+  "description": "Photon ReconnectAndRejoin, PlayerTtl, pause hold for opponent disconnect.",
+  "dependsOn": [],
+  "overlay": [
+    "Assets/Scripts/Script/BattleReconnectService.cs",
+    "Assets/Scripts/Script/BattleReconnectService.cs.meta"
+  ],
+  "overlayFiles": [],
+  "patchFiles": [
+    "Assets/Scripts/Script/ContinuousController.cs",
+    "Assets/Scripts/Script/GManager.cs",
+    "Assets/Scripts/Script/LoadingObject.cs",
+    "Assets/Scripts/Script/LobbyManager_FriendMatch.cs",
+    "Assets/Scripts/Script/LobbyManager_RandomMatch.cs",
+    "Assets/Scripts/Script/Opening.cs",
+    "Assets/Scripts/Script/RoomManager.cs"
+  ],
+  "anchors": [
+    {
+      "file": "Assets/Scripts/Script/LobbyManager_FriendMatch.cs",
+      "afterContains": "\"RoomCreator\","
+    },
+    {
+      "file": "Assets/Scripts/Script/ContinuousController.cs",
+      "afterContains": "EnsureSEPool();"
+    }
+  ]
+}

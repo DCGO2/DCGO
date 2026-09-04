@@ -1,4 +1,4 @@
-﻿using Photon.Pun;
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -345,46 +345,81 @@ public class GManager : MonoBehaviourPun
 
         yield return new WaitWhile(() => turnStateMachine == null);
 
-        yield return _waitForSeconds5;
+        yield return new WaitForSecondsRealtime(2f);
 
         while (true)
         {
-            if (!PhotonNetwork.IsConnected)
+            // === DCGO-CUSTOM:reconnect begin ===
+            var reconnect = BattleReconnectService.Instance;
+            bool reconnecting = reconnect != null && reconnect.IsReconnecting;
+
+            if (!PhotonNetwork.IsConnected || !PhotonNetwork.InRoom)
             {
+                if (reconnecting)
+                {
+                    yield return null;
+                    continue;
+                }
+
                 break;
             }
 
-            else
+            if (reconnect != null && (reconnect.IsHoldingForOpponent || reconnect.HasHoldExpired()))
             {
-                if (!PhotonNetwork.InRoom)
+                if (reconnect.HasHoldExpired())
                 {
+                    reconnect.ReleaseBattleHold();
                     break;
                 }
 
-                else
-                {
-                    if (PhotonNetwork.CurrentRoom != null)
-                    {
-                        if (PhotonNetwork.PlayerList.Length < 2)
-                        {
-                            break;
-                        }
-                    }
-                }
+                reconnect.EnsureHoldForOpponent();
+                yield return null;
+                continue;
             }
+
+            if (PhotonNetwork.CurrentRoom != null && BattleReconnectService.CountActivePlayers() < 2)
+            {
+                if (BattleReconnectService.HasInactiveOpponent())
+                {
+                    reconnect?.EnsureHoldForOpponent();
+                    yield return null;
+                    continue;
+                }
+
+                if (reconnecting)
+                {
+                    yield return null;
+                    continue;
+                }
+
+                break;
+            }
+            // === DCGO-CUSTOM:reconnect end ===
 
             yield return null;
         }
 
-        if (!turnStateMachine.endGame)
+        if (turnStateMachine != null && !turnStateMachine.endGame)
         {
-            turnStateMachine.EndGame(null, false);
+            // === DCGO-CUSTOM:reconnect begin ===
+            BattleReconnectService.Instance?.ReleaseBattleHold();
+            bool weDisconnected = !PhotonNetwork.IsConnected || !PhotonNetwork.InRoom;
+            turnStateMachine.EndGame(weDisconnected ? null : You, false);
+            // === DCGO-CUSTOM:reconnect end ===
         }
     }
 
     public IEnumerator Init()
     {
         yield return StartCoroutine(LoadingObject.StartLoading("Now Loading"));
+
+        // === DCGO-CUSTOM:friends begin ===
+        if (FriendKeys.IsInFriendDuelRoom() && ContinuousController.instance != null)
+        {
+            ContinuousController.instance.isFriendDuel = true;
+            FriendServices.EnsureExists().Director.BeginSeriesFromRoom();
+        }
+        // === DCGO-CUSTOM:friends end ===
 
         selectCommandPanel.Off();
 
@@ -540,7 +575,18 @@ public class GManager : MonoBehaviourPun
     #region Cheats
     public bool AllowCheats()
     {
-        return !ContinuousController.instance.isRandomMatch || ContinuousController.instance.isAI;
+        return ContinuousController.instance.isAI ||
+               (!ContinuousController.instance.isRandomMatch
+                // === DCGO-CUSTOM:ranked begin ===
+                && !ContinuousController.instance.isRanked
+                // === DCGO-CUSTOM:tournament begin ===
+                && !ContinuousController.instance.isTournament
+                // === DCGO-CUSTOM:tournament end ===
+                // === DCGO-CUSTOM:ranked end ===
+                // === DCGO-CUSTOM:friends begin ===
+                && !ContinuousController.instance.isFriendDuel
+                // === DCGO-CUSTOM:friends end ===
+               );
     }
 
     void AllowAlphaInputs()

@@ -1,4 +1,4 @@
-﻿using Photon.Pun;
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -64,6 +64,69 @@ public class ContinuousController : MonoBehaviour
     public bool NeedUpdate { get; set; }
 
     public bool isRandomMatch { get; set; }
+    public bool isRanked { get; set; }
+    public bool isTournament { get; set; }
+    public bool isTournamentStarted { get; set; }
+    public TournamentState TournamentState { get; set; }
+    public string TournamentPlayerId { get; set; }
+    public int TournamentPlayerCount { get; set; } = TournamentKeys.DefaultPlayerCount;
+
+    public void ClearTournament()
+    {
+        isTournament = false;
+        isTournamentStarted = false;
+        TournamentState = null;
+        TournamentPlayerId = null;
+        TournamentPlayerCount = TournamentKeys.DefaultPlayerCount;
+        TournamentServices.Instance?.Match?.ResetDirector();
+    }
+
+    public static string RankedMmrKey => RankedKeys.MmrProperty;
+    public static string RankedPlayFabIdKey => RankedKeys.PlayFabIdProperty;
+
+    public const string BattleSceneName = "BattleScene";
+
+    public static bool IsBattleSceneLoaded()
+    {
+        var scene = SceneManager.GetSceneByName(BattleSceneName);
+        return scene.IsValid() && scene.isLoaded;
+    }
+
+    // === DCGO-CUSTOM:tournament begin ===
+    public static void CleanStalePhotonViews()
+    {
+        var stale = new List<PhotonView>();
+        foreach (PhotonView view in PhotonNetwork.PhotonViewCollection)
+        {
+            if ((object)view == null)
+            {
+                continue;
+            }
+
+            if (view == null || view.gameObject == null || !view.gameObject.scene.isLoaded)
+            {
+                stale.Add(view);
+            }
+        }
+
+        for (int i = 0; i < stale.Count; i++)
+        {
+            PhotonNetwork.LocalCleanPhotonView(stale[i]);
+        }
+    }
+    // === DCGO-CUSTOM:tournament end ===
+
+    // === DCGO-CUSTOM:friends begin ===
+    public bool isFriendDuel { get; set; }
+    public int FriendWinsToTake { get; set; } = 1;
+
+    public void ClearFriendDuel()
+    {
+        isFriendDuel = false;
+        FriendWinsToTake = 1;
+        FriendServices.Instance?.Director?.ResetDirector();
+    }
+    // === DCGO-CUSTOM:friends end ===
     [HideInInspector] public List<SkillInfo> nullSkillInfos = null;
     public String GameVerString => Application.version;//GameVer.ToString(CultureInfo.InvariantCulture);
     #region Key for property to save deck data for battle
@@ -524,9 +587,15 @@ public class ContinuousController : MonoBehaviour
     public async void Init()
     {
         Application.targetFrameRate = 60;
+#if !UNITY_EDITOR && UNITY_ANDROID
+        if (EventSystem.current != null)
+            EventSystem.current.pixelDragThreshold = Mathf.Max(EventSystem.current.pixelDragThreshold, 25);
+#endif
         long random = RandomUtility.GetSecureRandom();
         GameRandom.Seed(random);
         Debug.Log($"Game Initialize - random number sequence initialization, GameRandom.Seed:{random}");
+
+        await StreamingAssetsUtility.EnsureBundledTexturesSeeded();
 
         Sprite reverseCardSprite = await StreamingAssetsUtility.GetSprite("card_back_main");
 
@@ -552,6 +621,12 @@ public class ContinuousController : MonoBehaviour
         // player data
         LoadPlayerName();
         LoadWinCount();
+
+        // === DCGO-CUSTOM:friends begin ===
+        RankedServices.EnsureExists();
+        FriendServices.EnsureExists();
+        OnlinePlayerCountService.EnsureExists();
+        // === DCGO-CUSTOM:friends end ===
 
         // game play
         LoadAutoEffectOrder();
@@ -624,35 +699,56 @@ public class ContinuousController : MonoBehaviour
 
     public void SaveDeckData(DeckData data)
     {
-        string savePath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
+        if (data == null)
+            return;
 
-        File.WriteAllText($"{savePath}/{data.DeckName}_{data.DeckID}.txt", DeckCodeUtility.GetDeckBuilderFile(data));
+        try
+        {
+            File.WriteAllText(StreamingAssetsUtility.GetDeckFilePath(data.DeckName, data.DeckID), DeckCodeUtility.GetDeckBuilderFile(data));
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
     }
 
     public void RenameDeck(DeckData data, string newName)
     {
-        string savePath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
-        if (File.Exists($"{savePath}/{data.DeckName}_{data.DeckID}.txt"))
+        if (data == null)
+            return;
+
+        try
         {
-            File.Move($"{savePath}/{data.DeckName}_{data.DeckID}.txt", $"{savePath}/{newName}_{data.DeckID}.txt");
+            string oldPath = StreamingAssetsUtility.GetDeckFilePath(data.DeckName, data.DeckID);
             data.DeckName = newName;
+            string newPath = StreamingAssetsUtility.GetDeckFilePath(data.DeckName, data.DeckID);
+            if (File.Exists(oldPath) && !string.Equals(oldPath, newPath, StringComparison.OrdinalIgnoreCase))
+                File.Delete(oldPath);
+
             SaveDeckData(data);
         }
-        else
+        catch (Exception e)
+        {
+            Debug.LogException(e);
             data.DeckName = newName;
+        }
     }
 
     public void DeleteDeck(DeckData data)
     {
-        string filePath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
-
-        if (!Directory.Exists(filePath))
+        if (data == null)
             return;
 
-        if (!File.Exists($"{filePath}/{data.DeckName}_{data.DeckID}.txt"))
-            return;
-
-        File.Delete($"{filePath}/{data.DeckName}_{data.DeckID}.txt");
+        try
+        {
+            string filePath = StreamingAssetsUtility.GetDeckFilePath(data.DeckName, data.DeckID);
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
     }
 
     public void DeleteAllDecks()
@@ -665,7 +761,7 @@ public class ContinuousController : MonoBehaviour
 
     public void LoadDeckLists()
     {
-        string loadPath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
+        string loadPath = StreamingAssetsUtility.GetDeckSaveDirectory();
 
         if (!Directory.Exists(loadPath))
             return;
@@ -1015,11 +1111,21 @@ public class ContinuousController : MonoBehaviour
 
     public void ChangeBGMVolume(AudioSource audioSource)
     {
+        if (audioSource == null)
+        {
+            return;
+        }
+
         audioSource.volume = BGMVolume * 0.25f * 0.8f;
     }
 
     public void ChangeSEVolume(AudioSource audioSource)
     {
+        if (audioSource == null)
+        {
+            return;
+        }
+
         audioSource.volume = SEVolume * 0.5f * 0.8f;
     }
 
@@ -1154,6 +1260,12 @@ public class ContinuousController : MonoBehaviour
 
     public void EndBattle()
     {
+        // === DCGO-CUSTOM:tournament begin ===
+        TournamentServices.Instance?.Match?.CancelAutoAdvanceFromResult();
+        // === DCGO-CUSTOM:tournament end ===
+        // === DCGO-CUSTOM:friends begin ===
+        FriendServices.Instance?.Director?.CancelAutoAdvanceFromResult();
+        // === DCGO-CUSTOM:friends end ===
         if (!_endBattle)
         {
             _endBattle = true;
@@ -1167,46 +1279,197 @@ public class ContinuousController : MonoBehaviour
             yield break;
         }
 
-        Opening.instance.openingObject.SetActive(true);
-
-        //yield return StartCoroutine(Opening.instance.LoadingObject_Unload.StartLoading("Now Loading"));
-
-        //Camera camera1 = Camera.main;
-
-        //Destroy(camera1.gameObject);
-
-        //yield return null;
-
         isAI = false;
+        // === DCGO-CUSTOM:ranked begin ===
+        bool wasRanked = isRanked;
+        // === DCGO-CUSTOM:ranked end ===
+        bool wasRandom = isRandomMatch;
+        // === DCGO-CUSTOM:tournament begin ===
+        bool wasTournament = isTournament;
+        var tournamentMatch = wasTournament ? TournamentServices.EnsureExists().Match : null;
+        bool tournamentNextGame = wasTournament && tournamentMatch != null && tournamentMatch.ShouldReloadNextGame;
+        // === DCGO-CUSTOM:tournament end ===
+        // === DCGO-CUSTOM:friends begin ===
+        bool wasFriendDuel = isFriendDuel || FriendKeys.IsInFriendDuelRoom();
+        if (wasFriendDuel)
+        {
+            isFriendDuel = true;
+            Opening.instance.battle?.roomManager?.Off();
+        }
+
+        var friendDirector = wasFriendDuel ? FriendServices.EnsureExists().Director : null;
+        bool friendNextGame = wasFriendDuel && friendDirector != null && friendDirector.ShouldReloadNextGame;
+        // === DCGO-CUSTOM:friends end ===
+
+        bool rematchNextGame = tournamentNextGame || friendNextGame;
+        if (rematchNextGame)
+        {
+            Opening.instance.openingObject.SetActive(false);
+            if (Opening.instance.LoadingObject_Unload != null)
+            {
+                yield return StartCoroutine(Opening.instance.LoadingObject_Unload.StartLoading("Now Loading"));
+            }
+        }
+        else
+        {
+            Opening.instance.openingObject.SetActive(true);
+        }
 
         long random = RandomUtility.GetSecureRandom();
         GameRandom.Seed(random);
         Debug.Log($"random number sequence initialization, GameRandom.Seed:{random}");
 
-        var unload = SceneManager.UnloadSceneAsync("BattleScene");
-        yield return unload;
-
-        yield return Resources.UnloadUnusedAssets();
-
-        yield return StartCoroutine(Opening.instance.LoadingObject_Unload.StartLoading("Now Loading"));
-
-        //Opening.instance.MainCamera.gameObject.SetActive(true);
-
-        foreach (Camera camera in Opening.instance.openingCameras)
+        for (int guard = 0; guard < 4 && IsBattleSceneLoaded(); guard++)
         {
-            camera.gameObject.SetActive(true);
+            var unload = SceneManager.UnloadSceneAsync(BattleSceneName);
+            if (unload == null)
+            {
+                break;
+            }
+
+            yield return unload;
         }
 
-        Opening.instance.LoadingObject_light.gameObject.SetActive(false);
-        yield return ContinuousController.instance.StartCoroutine(PhotonUtility.SetPlayerName());
+        yield return null;
+        yield return null;
+        CleanStalePhotonViews();
+        PhotonNetwork.IsMessageQueueRunning = true;
 
-        if (isRandomMatch)
+        float waitGone = 0f;
+        while ((IsBattleSceneLoaded() || GManager.instance != null) && waitGone < 3f)
+        {
+            waitGone += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        if (!rematchNextGame)
+        {
+            yield return Resources.UnloadUnusedAssets();
+        }
+
+        if (!tournamentNextGame && !friendNextGame && !wasFriendDuel)
+        {
+            yield return StartCoroutine(Opening.instance.LoadingObject_Unload.StartLoading("Now Loading"));
+
+            Opening.instance.LoadingObject_light.gameObject.SetActive(false);
+
+            foreach (Camera camera in Opening.instance.openingCameras)
+            {
+                camera.gameObject.SetActive(true);
+            }
+
+            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.SetPlayerName());
+        }
+        else
+        {
+            Opening.instance.LoadingObject_light.gameObject.SetActive(false);
+        }
+
+        if (wasRanked)
+        {
+            // === DCGO-CUSTOM:ranked begin ===
+            Debug.Log("Unload from Ranked Match");
+            if (Opening.instance.battle.lobbyManager_RankedMatch != null)
+            {
+                yield return StartCoroutine(Opening.instance.battle.lobbyManager_RankedMatch.CloseLobbyCoroutine());
+            }
+            else if (Opening.instance.battle.lobbyManager_RandomMatch != null)
+            {
+                yield return StartCoroutine(Opening.instance.battle.lobbyManager_RandomMatch.CloseLobbyCoroutine());
+            }
+
+            isRanked = false;
+            isRandomMatch = false;
+
+            Opening.instance.battle.lobbyManager_RandomMatch?.OffLobby();
+            Opening.instance.battle.lobbyManager_RankedMatch?.OffLobby();
+
+            yield return StartCoroutine(Opening.instance.battle.selectBattleMode.SetUpSelectBattleModeCoroutine());
+            // === DCGO-CUSTOM:ranked end ===
+        }
+        else if (wasRandom)
         {
             Debug.Log("Unload from Random Match");
             yield return StartCoroutine(Opening.instance.battle.lobbyManager_RandomMatch.CloseLobbyCoroutine());
+            isRandomMatch = false;
             yield return StartCoroutine(Opening.instance.battle.selectBattleMode.SetUpSelectBattleModeCoroutine());
         }
+        else if (wasTournament)
+        {
+            // === DCGO-CUSTOM:tournament begin ===
+            Debug.Log(tournamentNextGame
+                ? "Unload from Tournament (next game)"
+                : "Unload from Tournament (series/hub)");
+            if (tournamentNextGame)
+            {
+                _endBattle = false;
+                yield return tournamentMatch.StartNextGameCoroutine();
+                yield break;
+            }
 
+            if (PhotonNetwork.InRoom)
+            {
+                Hashtable endSeriesProp = PhotonNetwork.LocalPlayer.CustomProperties ?? new Hashtable();
+                endSeriesProp["isBattle"] = false;
+                PhotonNetwork.LocalPlayer.SetCustomProperties(endSeriesProp);
+            }
+
+            Scene openingScene = SceneManager.GetSceneByName("Opening");
+            if (openingScene.IsValid())
+            {
+                SceneManager.SetActiveScene(openingScene);
+            }
+
+            _endBattle = false;
+            yield return tournamentMatch.RouteAfterSeriesCoroutine();
+
+            Opening.instance.LoadingObject.gameObject.SetActive(false);
+            yield return StartCoroutine(Opening.instance.LoadingObject_Unload.EndLoading());
+            tournamentMatch.EndRoutingAfterSeries();
+            yield break;
+            // === DCGO-CUSTOM:tournament end ===
+        }
+        else if (wasFriendDuel || FriendKeys.IsInFriendDuelRoom())
+        {
+            // === DCGO-CUSTOM:friends begin ===
+            wasFriendDuel = true;
+            isFriendDuel = true;
+            if (friendDirector == null)
+            {
+                friendDirector = FriendServices.EnsureExists().Director;
+            }
+
+            friendNextGame = friendDirector != null && friendDirector.ShouldReloadNextGame;
+            Debug.Log(friendNextGame
+                ? "Unload from Friend Duel (next game)"
+                : "Unload from Friend Duel (series end)");
+            if (friendNextGame)
+            {
+                _endBattle = false;
+                yield return friendDirector.StartNextGameCoroutine();
+                yield break;
+            }
+
+            if (PhotonNetwork.InRoom)
+            {
+                Hashtable endSeriesProp = PhotonNetwork.LocalPlayer.CustomProperties ?? new Hashtable();
+                endSeriesProp["isBattle"] = false;
+                PhotonNetwork.LocalPlayer.SetCustomProperties(endSeriesProp);
+            }
+
+            Scene openingScene = SceneManager.GetSceneByName("Opening");
+            if (openingScene.IsValid())
+            {
+                SceneManager.SetActiveScene(openingScene);
+            }
+
+            _endBattle = false;
+            yield return friendDirector.EndSeriesToHomeCoroutine();
+            Opening.instance.LoadingObject.gameObject.SetActive(false);
+            yield return StartCoroutine(Opening.instance.LoadingObject_Unload.EndLoading());
+            yield break;
+            // === DCGO-CUSTOM:friends end ===
+        }
         else
         {
             Debug.Log("Unload from Room Match");
@@ -1220,7 +1483,7 @@ public class ContinuousController : MonoBehaviour
         yield return StartCoroutine(Opening.instance.LoadingObject_Unload.EndLoading());
         _endBattle = false;
 
-        if (!isRandomMatch)
+        if (!wasRandom && !wasRanked)
         {
             Hashtable PlayerProp = PhotonNetwork.LocalPlayer.CustomProperties;
 
@@ -1240,11 +1503,14 @@ public class ContinuousController : MonoBehaviour
         Scene newScene = SceneManager.GetSceneByName("Opening");
         SceneManager.SetActiveScene(newScene);
 
-        for (int i = 0; i < 3; i++)
+        if (!wasTournament)
         {
-            yield return _waitForSeconds0_1;
+            for (int i = 0; i < 3; i++)
+            {
+                yield return _waitForSeconds0_1;
 
-            EventSystem.current.SetSelectedGameObject(Opening.instance.battle.selectBattleMode.transform.GetChild(0).gameObject);
+                EventSystem.current.SetSelectedGameObject(Opening.instance.battle.selectBattleMode.transform.GetChild(0).gameObject);
+            }
         }
 
         //GUI.UnfocusWindow();
@@ -1332,11 +1598,55 @@ public class ContinuousController : MonoBehaviour
     //Flag that the sharing of the random number sequence is over.
     public bool DoneSetRandom { get; set; } = false;
     public bool CanSetRandom { get; set; } = false;
+
     [PunRPC]
     public void SetRandom(long random)
     {
         StartCoroutine(SetRandomCoroutine(random));
     }
+
+    // === DCGO-CUSTOM:ranked begin ===
+    [PunRPC]
+    public void RankedGoToBattleScene(string matchId)
+    {
+        if (!isRanked)
+        {
+            Debug.LogWarning("[Ranked] RankedGoToBattleScene received but isRanked is false.");
+            isRanked = true;
+            isRandomMatch = false;
+        }
+
+        var rankedLobby = Opening.instance != null ? Opening.instance.battle?.lobbyManager_RankedMatch : null;
+        if (rankedLobby == null)
+        {
+            rankedLobby = FindObjectOfType<LobbyManager_RankedMatch>();
+        }
+
+        if (rankedLobby != null)
+        {
+            rankedLobby.BeginBattleTransition(matchId);
+            return;
+        }
+
+        Debug.LogWarning("[Ranked] No LobbyManager_RankedMatch — loading BattleScene directly.");
+        StartCoroutine(RankedDirectLoadBattleCoroutine());
+    }
+
+    IEnumerator RankedDirectLoadBattleCoroutine()
+    {
+        if (Opening.instance != null)
+        {
+            ContinuousController.instance.StartCoroutine(Opening.instance.OpeningBGM.FadeOut(0.2f));
+            foreach (Camera camera in Opening.instance.openingCameras)
+            {
+                camera.gameObject.SetActive(false);
+            }
+        }
+
+        yield return new WaitForSeconds(0.1f);
+        SceneManager.LoadSceneAsync(BattleSceneName, LoadSceneMode.Additive);
+    }
+    // === DCGO-CUSTOM:ranked end ===
 
     IEnumerator SetRandomCoroutine(long random)
     {
@@ -1596,8 +1906,29 @@ public class PhotonUtility
     public static string RetryStatus { get; set; } = null;
 
     #region Disconnected from Photon
+    public static void LeaveRoomImmediate()
+    {
+        BattleReconnectService.EnsureExists().NotifyLeftRoomIntentionally();
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LeaveRoom(false);
+        }
+    }
+
+    public static void DisconnectImmediate()
+    {
+        BattleReconnectService.EnsureExists().MarkIntentionalDisconnect();
+        OnlinePlayerCountService.EnsureExists().SetMatchmakingOwnsConnection(false);
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.Disconnect();
+        }
+    }
+
     public static IEnumerator DisconnectCoroutine()
     {
+        BattleReconnectService.EnsureExists().MarkIntentionalDisconnect();
+        OnlinePlayerCountService.EnsureExists().SetMatchmakingOwnsConnection(false);
         #region Exit Room
         if (PhotonNetwork.InRoom)
         {
@@ -1628,7 +1959,7 @@ public class PhotonUtility
     #endregion
 
     #region Connect to Photon server
-    public static IEnumerator ConnectToMasterServerCoroutine()
+    public static IEnumerator ConnectToMasterServerCoroutine(bool matchmakingOwnsConnection = true)
     {
         int maxRetries = 5;
         float retryDelay = 3f;
@@ -1644,11 +1975,27 @@ public class PhotonUtility
                     yield return new WaitWhile(() => PhotonNetwork.IsConnected);
                 }
 
+                // === DCGO-CUSTOM:onlinecount begin ===
+                if (matchmakingOwnsConnection)
+                {
+                    OnlinePlayerCountService.EnsureExists().SetMatchmakingOwnsConnection(true);
+                }
+                // === DCGO-CUSTOM:onlinecount end ===
+
                 PhotonNetwork.NetworkingClient.AppId = PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime;
                 PhotonNetwork.ConnectToRegion(ContinuousController.instance.serverRegion);
                 PhotonNetwork.NickName = ContinuousController.instance.PlayerName;
                 PhotonNetwork.GameVersion = ContinuousController.instance.GameVerString;
                 ContinuousController.instance.LastConnectServerRegion = ContinuousController.instance.serverRegion;
+            }
+            else
+            {
+                // === DCGO-CUSTOM:onlinecount begin ===
+                if (matchmakingOwnsConnection)
+                {
+                    OnlinePlayerCountService.EnsureExists().SetMatchmakingOwnsConnection(true);
+                }
+                // === DCGO-CUSTOM:onlinecount end ===
             }
 
             yield return new WaitUntil(() =>
@@ -1834,6 +2181,57 @@ public class PhotonUtility
         }
     }
     #endregion
+
+    // === DCGO-CUSTOM:ranked begin ===
+    #region Ranked player properties (PlayFabId + MMR)
+    public static IEnumerator SetRankedPlayerProperties()
+    {
+        var ranked = RankedServices.EnsureExists();
+        if (ranked.Auth == null || !ranked.Auth.IsLoggedIn)
+        {
+            yield break;
+        }
+
+        int mmr = ranked.Profile.Cached?.mmr ?? RankedRating.DefaultMmr;
+        string playFabId = ranked.Auth.PlayFabId;
+
+        Hashtable hash = PhotonNetwork.LocalPlayer.CustomProperties;
+
+        if (hash.ContainsKey(RankedKeys.MmrProperty))
+        {
+            hash[RankedKeys.MmrProperty] = mmr;
+        }
+        else
+        {
+            hash.Add(RankedKeys.MmrProperty, mmr);
+        }
+
+        if (hash.ContainsKey(RankedKeys.PlayFabIdProperty))
+        {
+            hash[RankedKeys.PlayFabIdProperty] = playFabId;
+        }
+        else
+        {
+            hash.Add(RankedKeys.PlayFabIdProperty, playFabId);
+        }
+
+        PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+
+        while (true)
+        {
+            Hashtable _hash = PhotonNetwork.LocalPlayer.CustomProperties;
+            bool mmrOk = _hash.TryGetValue(RankedKeys.MmrProperty, out object mmrVal) && Convert.ToInt32(mmrVal) == mmr;
+            bool idOk = _hash.TryGetValue(RankedKeys.PlayFabIdProperty, out object idVal) && (string)idVal == playFabId;
+            if (mmrOk && idOk)
+            {
+                break;
+            }
+
+            yield return null;
+        }
+    }
+    #endregion
+    // === DCGO-CUSTOM:ranked end ===
 }
 #endregion
 

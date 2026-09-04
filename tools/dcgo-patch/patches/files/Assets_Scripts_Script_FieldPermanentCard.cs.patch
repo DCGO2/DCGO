@@ -1,0 +1,54 @@
+diff --git a/Assets/Scripts/Script/FieldPermanentCard.cs b/Assets/Scripts/Script/FieldPermanentCard.cs
+index 0a42b1122..9b7c0ff56 100644
+--- a/Assets/Scripts/Script/FieldPermanentCard.cs
++++ b/Assets/Scripts/Script/FieldPermanentCard.cs
+@@ -676,12 +676,12 @@ public class FieldPermanentCard : MonoBehaviour
+ 
+         #region Get long press
+ #if !UNITY_EDITOR && UNITY_ANDROID
+-        if (pressing)
++        if (_pressing)
+         {
+-            if(requiredTime < Time.time)
++            if (_requiredTime < Time.time)
+             {
+                 OnRightClicked();
+-                pressing = false;
++                _pressing = false;
+             }
+         }
+ #endif
+@@ -721,18 +721,17 @@ public class FieldPermanentCard : MonoBehaviour
+ 
+     public void PointerUp(BaseEventData eventData)
+     {
+-        if (_pressing)
+-        {
+-            _pressing = false;
+-        }
++        CancelLongPress();
+     }
+ 
+     public void PointerExit(BaseEventData eventData)
+     {
+-        if (_pressing)
+-        {
+-            _pressing = false;
+-        }
++        CancelLongPress();
++    }
++
++    public void CancelLongPress()
++    {
++        _pressing = false;
+     }
+ 
+     #region ÒüôÒü«Òé¬ÒâûÒé©ÒéºÒé»ÒâêÒéÆÕëèÚÖñ
+@@ -869,6 +868,7 @@ public class FieldPermanentCard : MonoBehaviour
+ 
+     public void OnBeginDrag()
+     {
++        CancelLongPress();
+         OnBeginDragAction?.Invoke(this);
+     }
+ 

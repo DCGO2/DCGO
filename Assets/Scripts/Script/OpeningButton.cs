@@ -1,10 +1,14 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class OpeningButton : MonoBehaviour
 {
+    // === DCGO-CUSTOM:android begin ===
+    const float TitleButtonSECooldown = 0.08f;
+    static float _lastTitleButtonSETime = float.NegativeInfinity;
+    // === DCGO-CUSTOM:android end ===
     [Header("Button Animator")]
     public Animator ButtonAnimator;
 
@@ -16,7 +20,19 @@ public class OpeningButton : MonoBehaviour
         {
             selectedObject.SetActive(true);
 
-            ContinuousController.instance.PlaySE(Opening.instance.TitleButtonSE);
+            if (ContinuousController.instance == null || Opening.instance == null)
+            {
+                return;
+            }
+
+            // === DCGO-CUSTOM:android begin ===
+            float now = Time.unscaledTime;
+            if (now - _lastTitleButtonSETime >= TitleButtonSECooldown)
+            {
+                _lastTitleButtonSETime = now;
+                ContinuousController.instance.PlaySE(Opening.instance.TitleButtonSE);
+            }
+            // === DCGO-CUSTOM:android end ===
         }
     }
 

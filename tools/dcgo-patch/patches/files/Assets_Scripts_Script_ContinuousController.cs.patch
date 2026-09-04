@@ -1,0 +1,810 @@
+diff --git a/Assets/Scripts/Script/ContinuousController.cs b/Assets/Scripts/Script/ContinuousController.cs
+index b98b477e9..ebfda4b6f 100644
+--- a/Assets/Scripts/Script/ContinuousController.cs
++++ b/Assets/Scripts/Script/ContinuousController.cs
+@@ -64,6 +64,31 @@ public class ContinuousController : MonoBehaviour
+     public bool NeedUpdate { get; set; }
+ 
+     public bool isRandomMatch { get; set; }
++    // === DCGO-CUSTOM:ranked begin ===
++    public bool isRanked { get; set; }
++    // === DCGO-CUSTOM:ranked end ===
++    // === DCGO-CUSTOM:tournament begin ===
++    public bool isTournament { get; set; }
++    public bool isTournamentStarted { get; set; }
++    public TournamentState TournamentState { get; set; }
++    public string TournamentPlayerId { get; set; }
++    public int TournamentPlayerCount { get; set; } = TournamentKeys.DefaultPlayerCount;
++
++    public void ClearTournament()
++    {
++        isTournament = false;
++        isTournamentStarted = false;
++        TournamentState = null;
++        TournamentPlayerId = null;
++        TournamentPlayerCount = TournamentKeys.DefaultPlayerCount;
++        TournamentServices.Instance?.Match?.ResetDirector();
++    }
++    // === DCGO-CUSTOM:tournament end ===
++
++    // === DCGO-CUSTOM:ranked begin ===
++    public static string RankedMmrKey => RankedKeys.MmrProperty;
++    public static string RankedPlayFabIdKey => RankedKeys.PlayFabIdProperty;
++    // === DCGO-CUSTOM:ranked end ===
+     [HideInInspector] public List<SkillInfo> nullSkillInfos = null;
+     public String GameVerString => Application.version;//GameVer.ToString(CultureInfo.InvariantCulture);
+     #region Key for property to save deck data for battle
+@@ -95,6 +120,11 @@ public class ContinuousController : MonoBehaviour
+ 
+             instance.Init();
+         }
++        else
++        {
++            // ContinuousController may survive a Single scene load while the scene AudioListener does not.
++            instance.EnsurePersistentAudioListener();
++        }
+     }
+     #endregion
+ 
+@@ -133,7 +163,8 @@ public class ContinuousController : MonoBehaviour
+     async Task LoadBanListOnline()
+     {
+         string url = "https://www.dcgo.online/Banlist.json";
+-        UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url);
++        using UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url);
++        jsonWebRequest.timeout = 8;
+ 
+         UnityWebRequestAsyncOperation operation = jsonWebRequest.SendWebRequest();
+ 
+@@ -516,18 +547,99 @@ public class ContinuousController : MonoBehaviour
+ 
+     public static ContinuousController instance = null;
+ 
++    AudioListener _persistentAudioListener;
++
++    const int SEPoolSize = 8;
++    const int SEAudioPriority = 200;
++    AudioSource[] _sePool;
++    float[] _sePoolStartTimes;
++
+     private void Awake()
+     {
+         instance = this;
++
++        // Survive Single scene loads (ReturnToTitle, etc.) even if Init() is still awaiting network.
++        DontDestroyOnLoad(gameObject);
++
++        // Volumes default to 0 until LoadVolume ÔÇö apply immediately so SE/BGM are not silent
++        // while later awaits (banlist / textures / tokens) are still running.
++        LoadVolume();
++        EnsurePersistentAudioListener();
++        EnsureSEPool();
++        // === DCGO-CUSTOM:reconnect begin ===
++        BattleReconnectService.EnsureExists();
++        // === DCGO-CUSTOM:reconnect end ===
++    }
++
++    /// <summary>
++    /// Opening disables its camera AudioListener; the real one lives in ContinuousControllerScene.
++    /// Keep exactly one listener alive across scene unloads.
++    /// </summary>
++    public void EnsurePersistentAudioListener()
++    {
++        if (_persistentAudioListener != null)
++        {
++            _persistentAudioListener.enabled = true;
++            return;
++        }
++
++        AudioListener chosen = null;
++        AudioListener[] listeners = FindObjectsOfType<AudioListener>();
++
++        for (int i = 0; i < listeners.Length; i++)
++        {
++            if (listeners[i] != null && listeners[i].enabled)
++            {
++                chosen = listeners[i];
++                break;
++            }
++        }
++
++        if (chosen == null && listeners.Length > 0)
++        {
++            chosen = listeners[0];
++        }
++
++        if (chosen == null)
++        {
++            var go = new GameObject("AudioListener");
++            chosen = go.AddComponent<AudioListener>();
++        }
++
++        for (int i = 0; i < listeners.Length; i++)
++        {
++            if (listeners[i] != null && listeners[i] != chosen)
++            {
++                listeners[i].enabled = false;
++            }
++        }
++
++        chosen.enabled = true;
++        DontDestroyOnLoad(chosen.gameObject);
++        _persistentAudioListener = chosen;
+     }
+ 
+     public async void Init()
+     {
+         Application.targetFrameRate = 60;
++        // === DCGO-CUSTOM:android begin ===
++#if !UNITY_EDITOR && UNITY_ANDROID
++        // Easier scroll-vs-drag distinction on touchscreens (default is often too low).
++        if (EventSystem.current != null)
++            EventSystem.current.pixelDragThreshold = Mathf.Max(EventSystem.current.pixelDragThreshold, 25);
++#endif
++        // === DCGO-CUSTOM:android end ===
+         long random = RandomUtility.GetSecureRandom();
+         GameRandom.Seed(random);
+         Debug.Log($"Game Initialize - random number sequence initialization, GameRandom.Seed:{random}");
+ 
++        EnsurePersistentAudioListener();
++
++        // === DCGO-CUSTOM:android begin ===
++        // Android APK has no Assets/Textures next to the binary (PC layout). Seed UI mats/backs from StreamingAssets.
++        await StreamingAssetsUtility.EnsureBundledTexturesSeeded();
++        // === DCGO-CUSTOM:android end ===
++
+         Sprite reverseCardSprite = await StreamingAssetsUtility.GetSprite("card_back_main");
+ 
+         if (reverseCardSprite != null)
+@@ -553,6 +665,14 @@ public class ContinuousController : MonoBehaviour
+         LoadPlayerName();
+         LoadWinCount();
+ 
++        // === DCGO-CUSTOM:ranked begin ===
++        // Ranked / PlayFab services (DontDestroyOnLoad host)
++        RankedServices.EnsureExists();
++        // === DCGO-CUSTOM:ranked end ===
++        // === DCGO-CUSTOM:reconnect begin ===
++        BattleReconnectService.EnsureExists();
++        // === DCGO-CUSTOM:reconnect end ===
++
+         // game play
+         LoadAutoEffectOrder();
+         LoadAutoDeckBottomOrder();
+@@ -569,9 +689,16 @@ public class ContinuousController : MonoBehaviour
+ 
+         //Graphics
+         LoadShowBackgroundParticle();
++        ApplyAndroidVisualDefaultsOnce();
++#if !UNITY_EDITOR && UNITY_ANDROID
++        // Medium quality (index 1) keeps URP particles / FX closer to PC without using High.
++        if (QualitySettings.names != null && QualitySettings.names.Length > 1)
++            QualitySettings.SetQualityLevel(1, true);
++#endif
+ 
+-        // Sound
++        // Re-apply in case PlayerPrefs were written elsewhere during init
+         LoadVolume();
++        EnsurePersistentAudioListener();
+ 
+         // ServerRegion
+         LoadServerRegion();
+@@ -580,8 +707,6 @@ public class ContinuousController : MonoBehaviour
+         LoadLanguage();
+ 
+         await CreateTokenData();
+-
+-        DontDestroyOnLoad(gameObject);
+     }
+ 
+     [Obsolete("This is obsolete, switching to save files")]
+@@ -625,6 +750,7 @@ public class ContinuousController : MonoBehaviour
+     public void SaveDeckData(DeckData data)
+     {
+         string savePath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
++        StreamingAssetsUtility.EnsureDirectoryExists(savePath);
+ 
+         File.WriteAllText($"{savePath}/{data.DeckName}_{data.DeckID}.txt", DeckCodeUtility.GetDeckBuilderFile(data));
+     }
+@@ -904,7 +1030,7 @@ public class ContinuousController : MonoBehaviour
+     #endregion
+ 
+     #region Show CutIn Animation
+-    public bool showCutInAnimation = false;
++    public bool showCutInAnimation = true;
+     string _showCutInAnimationKey = "ShowCutInAnimation";
+ 
+     public void SaveShowCutInAnimation()
+@@ -914,7 +1040,8 @@ public class ContinuousController : MonoBehaviour
+     }
+     public void LoadShowCutInAnimation()
+     {
+-        showCutInAnimation = PlayerPrefsUtil.GetBool(_showCutInAnimationKey, false);
++        // Default ON so digivolve / jogress / burst cut-ins match the PC look.
++        showCutInAnimation = PlayerPrefsUtil.GetBool(_showCutInAnimationKey, true);
+     }
+     #endregion
+ 
+@@ -979,7 +1106,7 @@ public class ContinuousController : MonoBehaviour
+     #endregion
+ 
+     #region Show background particle
+-    [HideInInspector] public bool showBackgroundParticle = false;
++    [HideInInspector] public bool showBackgroundParticle = true;
+     string _showBackgroundParticleKey = "ShowBackgroundParticle";
+ 
+     public void SaveShowBackgroundParticle()
+@@ -989,8 +1116,29 @@ public class ContinuousController : MonoBehaviour
+     }
+     public void LoadShowBackgroundParticle()
+     {
++        // Default ON (PC + Android). Players can disable in Graphics options if needed.
+         showBackgroundParticle = PlayerPrefsUtil.GetBool(_showBackgroundParticleKey, true);
+     }
++
++    /// <summary>
++    /// One-time migration: older Android builds defaulted cut-ins/particles off.
++    /// Flip them on once so existing installs match the PC visual baseline.
++    /// </summary>
++    void ApplyAndroidVisualDefaultsOnce()
++    {
++#if !UNITY_EDITOR && UNITY_ANDROID
++        const string migrationKey = "AndroidVisualDefaults_v1";
++        if (PlayerPrefs.GetInt(migrationKey, 0) == 1)
++            return;
++
++        showCutInAnimation = true;
++        showBackgroundParticle = true;
++        SaveShowCutInAnimation();
++        SaveShowBackgroundParticle();
++        PlayerPrefs.SetInt(migrationKey, 1);
++        PlayerPrefs.Save();
++#endif
++    }
+     #endregion
+ 
+     #region Sound volume
+@@ -1072,13 +1220,84 @@ public class ContinuousController : MonoBehaviour
+     #endregion
+ 
+     #region PlaySE(AudioClip clip)
++    void EnsureSEPool()
++    {
++        if (_sePool != null && _sePool.Length == SEPoolSize)
++        {
++            return;
++        }
++
++        _sePool = new AudioSource[SEPoolSize];
++        _sePoolStartTimes = new float[SEPoolSize];
++
++        var poolRoot = new GameObject("SEPool");
++        poolRoot.transform.SetParent(transform, false);
++
++        for (int i = 0; i < SEPoolSize; i++)
++        {
++            var go = new GameObject($"SE_{i}");
++            go.transform.SetParent(poolRoot.transform, false);
++            var source = go.AddComponent<AudioSource>();
++            source.playOnAwake = false;
++            source.loop = false;
++            source.spatialBlend = 0f;
++            source.priority = SEAudioPriority;
++            _sePool[i] = source;
++            _sePoolStartTimes[i] = float.NegativeInfinity;
++        }
++    }
++
++    /// <summary>
++    /// Plays a one-shot SE via a fixed AudioSource pool (no per-call Instantiate).
++    /// Returns null; SoundObject return type kept for call-site compatibility.
++    /// </summary>
+     public SoundObject PlaySE(AudioClip clip)
+     {
+-        SoundObject _soundObject = Instantiate(soundObject);
++        if (clip == null)
++        {
++            return null;
++        }
++
++        EnsureSEPool();
+ 
+-        _soundObject.PlaySE(clip);
++        int index = 0;
++        float oldestStart = float.PositiveInfinity;
+ 
+-        return _soundObject;
++        for (int i = 0; i < SEPoolSize; i++)
++        {
++            AudioSource candidate = _sePool[i];
++            if (candidate == null)
++            {
++                continue;
++            }
++
++            if (!candidate.isPlaying)
++            {
++                index = i;
++                break;
++            }
++
++            if (_sePoolStartTimes[i] < oldestStart)
++            {
++                oldestStart = _sePoolStartTimes[i];
++                index = i;
++            }
++        }
++
++        AudioSource source = _sePool[index];
++        if (source == null)
++        {
++            return null;
++        }
++
++        source.Stop();
++        source.clip = clip;
++        source.priority = SEAudioPriority;
++        ChangeSEVolume(source);
++        source.Play();
++        _sePoolStartTimes[index] = Time.unscaledTime;
++
++        return null;
+     }
+     #endregion
+ 
+@@ -1152,8 +1371,59 @@ public class ContinuousController : MonoBehaviour
+ 
+     bool _endBattle = false;
+ 
++    public const string BattleSceneName = "BattleScene";
++
++    /// <summary>
++    /// True while any BattleScene instance is loaded. Additive battle loads must never stack:
++    /// a second copy re-registers the same scene PhotonView IDs and breaks every RPC.
++    /// </summary>
++    public static bool IsBattleSceneLoaded()
++    {
++        for (int i = 0; i < SceneManager.sceneCount; i++)
++        {
++            Scene scene = SceneManager.GetSceneAt(i);
++            if (scene.isLoaded && scene.name == BattleSceneName)
++            {
++                return true;
++            }
++        }
++
++        return false;
++    }
++
++    /// <summary>
++    /// Drop PhotonViews whose scene was additively unloaded. PUN only purges them on the
++    /// next sceneLoaded, which is too late ÔÇö new BattleScene Awakes already collided.
++    /// </summary>
++    // === DCGO-CUSTOM:tournament begin ===
++    public static void CleanStalePhotonViews()
++    {
++        var stale = new List<PhotonView>();
++        foreach (PhotonView view in PhotonNetwork.PhotonViewCollection)
++        {
++            if ((object)view == null)
++            {
++                continue;
++            }
++
++            if (view == null || view.gameObject == null || !view.gameObject.scene.isLoaded)
++            {
++                stale.Add(view);
++            }
++        }
++
++        for (int i = 0; i < stale.Count; i++)
++        {
++            PhotonNetwork.LocalCleanPhotonView(stale[i]);
++        }
++    }
++    // === DCGO-CUSTOM:tournament end ===
++
+     public void EndBattle()
+     {
++        // === DCGO-CUSTOM:tournament begin ===
++        TournamentServices.Instance?.Match?.CancelAutoAdvanceFromResult();
++        // === DCGO-CUSTOM:tournament end ===
+         if (!_endBattle)
+         {
+             _endBattle = true;
+@@ -1178,35 +1448,139 @@ public class ContinuousController : MonoBehaviour
+         //yield return null;
+ 
+         isAI = false;
++        // === DCGO-CUSTOM:ranked begin ===
++        bool wasRanked = isRanked;
++        // === DCGO-CUSTOM:ranked end ===
++        bool wasRandom = isRandomMatch;
++        // === DCGO-CUSTOM:tournament begin ===
++        bool wasTournament = isTournament;
++        var tournamentMatch = wasTournament ? TournamentServices.EnsureExists().Match : null;
++        bool tournamentNextGame = wasTournament && tournamentMatch != null && tournamentMatch.ShouldReloadNextGame;
++        // === DCGO-CUSTOM:tournament end ===
+ 
+         long random = RandomUtility.GetSecureRandom();
+         GameRandom.Seed(random);
+         Debug.Log($"random number sequence initialization, GameRandom.Seed:{random}");
+ 
+-        var unload = SceneManager.UnloadSceneAsync("BattleScene");
+-        yield return unload;
++        // Unload every copy: a stacked BattleScene would otherwise survive into the next game.
++        for (int guard = 0; guard < 4 && IsBattleSceneLoaded(); guard++)
++        {
++            var unload = SceneManager.UnloadSceneAsync(BattleSceneName);
++            if (unload == null)
++            {
++                break;
++            }
++
++            yield return unload;
++        }
++
++        // UnloadSceneAsync can report done a frame before PhotonViews OnDestroy.
++        yield return null;
++        yield return null;
++        CleanStalePhotonViews();
++        PhotonNetwork.IsMessageQueueRunning = true;
++
++        float waitGone = 0f;
++        while ((IsBattleSceneLoaded() || GManager.instance != null) && waitGone < 3f)
++        {
++            waitGone += Time.unscaledDeltaTime;
++            yield return null;
++        }
+ 
+         yield return Resources.UnloadUnusedAssets();
+ 
+-        yield return StartCoroutine(Opening.instance.LoadingObject_Unload.StartLoading("Now Loading"));
++        // Rematch path owns its own loading + battle reload; avoid nested LoadingObject_Unload
++        // Start/End which can hang on WaitWhile(activeSelf).
++        if (!tournamentNextGame)
++        {
++            yield return StartCoroutine(Opening.instance.LoadingObject_Unload.StartLoading("Now Loading"));
++
++            Opening.instance.LoadingObject_light.gameObject.SetActive(false);
+ 
+-        //Opening.instance.MainCamera.gameObject.SetActive(true);
++            foreach (Camera camera in Opening.instance.openingCameras)
++            {
++                camera.gameObject.SetActive(true);
++            }
+ 
+-        foreach (Camera camera in Opening.instance.openingCameras)
++            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.SetPlayerName());
++        }
++        else
+         {
+-            camera.gameObject.SetActive(true);
++            Opening.instance.LoadingObject_light.gameObject.SetActive(false);
+         }
+ 
+-        Opening.instance.LoadingObject_light.gameObject.SetActive(false);
+-        yield return ContinuousController.instance.StartCoroutine(PhotonUtility.SetPlayerName());
++        if (wasRanked)
++        {
++            // === DCGO-CUSTOM:ranked begin ===
++            Debug.Log("Unload from Ranked Match");
++            // Fully tear down ranked + shared random-match UI so queue cannot keep running
++            if (Opening.instance.battle.lobbyManager_RankedMatch != null)
++            {
++                yield return StartCoroutine(Opening.instance.battle.lobbyManager_RankedMatch.CloseLobbyCoroutine());
++            }
++            else if (Opening.instance.battle.lobbyManager_RandomMatch != null)
++            {
++                yield return StartCoroutine(Opening.instance.battle.lobbyManager_RandomMatch.CloseLobbyCoroutine());
++            }
++
++            isRanked = false;
++            isRandomMatch = false;
+ 
+-        if (isRandomMatch)
++            // Ensure both lobby panels are hidden before mode select
++            Opening.instance.battle.lobbyManager_RandomMatch?.OffLobby();
++            Opening.instance.battle.lobbyManager_RankedMatch?.OffLobby();
++
++            yield return StartCoroutine(Opening.instance.battle.selectBattleMode.SetUpSelectBattleModeCoroutine());
++            // === DCGO-CUSTOM:ranked end ===
++        }
++        else if (wasRandom)
+         {
+             Debug.Log("Unload from Random Match");
+             yield return StartCoroutine(Opening.instance.battle.lobbyManager_RandomMatch.CloseLobbyCoroutine());
++            isRandomMatch = false;
+             yield return StartCoroutine(Opening.instance.battle.selectBattleMode.SetUpSelectBattleModeCoroutine());
+         }
++        else if (wasTournament)
++        {
++            // === DCGO-CUSTOM:tournament begin ===
++            Debug.Log(tournamentNextGame
++                ? "Unload from Tournament (next game)"
++                : "Unload from Tournament (series/hub)");
++            if (tournamentNextGame)
++            {
++                // Release the EndBattle lock before rematch loading. If EndLoading hangs,
++                // the next result screen (e.g. 1-1) must still be able to call EndBattle.
++                _endBattle = false;
++                yield return tournamentMatch.StartNextGameCoroutine();
++                yield break;
++            }
++
++            // Clear the previous game's battle flag before hub routing so a leftover
++            // isBattle=true cannot collide with the final. The next StartBattle sets it again.
++            if (PhotonNetwork.InRoom)
++            {
++                Hashtable endSeriesProp = PhotonNetwork.LocalPlayer.CustomProperties ?? new Hashtable();
++                endSeriesProp["isBattle"] = false;
++                PhotonNetwork.LocalPlayer.SetCustomProperties(endSeriesProp);
++            }
++
++            Scene openingScene = SceneManager.GetSceneByName("Opening");
++            if (openingScene.IsValid())
++            {
++                SceneManager.SetActiveScene(openingScene);
++            }
++
++            // Release before hub routing. Dispatching the final inside WaitWhile(GManager)
++            // soft-locks the quarterfinal winner on the loading screen.
++            _endBattle = false;
++            yield return tournamentMatch.RouteAfterSeriesCoroutine();
+ 
++            Opening.instance.LoadingObject.gameObject.SetActive(false);
++            yield return StartCoroutine(Opening.instance.LoadingObject_Unload.EndLoading());
++            tournamentMatch.EndRoutingAfterSeries();
++            yield break;
++            // === DCGO-CUSTOM:tournament end ===
++        }
+         else
+         {
+             Debug.Log("Unload from Room Match");
+@@ -1220,7 +1594,7 @@ public class ContinuousController : MonoBehaviour
+         yield return StartCoroutine(Opening.instance.LoadingObject_Unload.EndLoading());
+         _endBattle = false;
+ 
+-        if (!isRandomMatch)
++        if (!wasRandom && !wasRanked)
+         {
+             Hashtable PlayerProp = PhotonNetwork.LocalPlayer.CustomProperties;
+ 
+@@ -1240,11 +1614,14 @@ public class ContinuousController : MonoBehaviour
+         Scene newScene = SceneManager.GetSceneByName("Opening");
+         SceneManager.SetActiveScene(newScene);
+ 
+-        for (int i = 0; i < 3; i++)
++        if (!wasTournament)
+         {
+-            yield return _waitForSeconds0_1;
++            for (int i = 0; i < 3; i++)
++            {
++                yield return _waitForSeconds0_1;
+ 
+-            EventSystem.current.SetSelectedGameObject(Opening.instance.battle.selectBattleMode.transform.GetChild(0).gameObject);
++                EventSystem.current.SetSelectedGameObject(Opening.instance.battle.selectBattleMode.transform.GetChild(0).gameObject);
++            }
+         }
+ 
+         //GUI.UnfocusWindow();
+@@ -1298,6 +1675,18 @@ public class ContinuousController : MonoBehaviour
+         {
+             if (!isAI)
+             {
++                // === DCGO-CUSTOM:tournament begin ===
++                // Tournament lobby / wait hub are 8-player rooms. Only apply the 1v1
++                // disconnect lock while a battle is actually running.
++                // Tournament rooms (lobby / wait hub / match) must stay joinable.
++                // Shrinking MaxPlayers to 1 while a bye player is alone in battle
++                // locked the finalist out of the room ÔÇö surrender then never reached them.
++                if (isTournament)
++                {
++                    return;
++                }
++                // === DCGO-CUSTOM:tournament end ===
++
+                 bool notEnterOther = false;
+ 
+                 if (PhotonNetwork.PlayerList.Length == 1)
+@@ -1316,12 +1705,14 @@ public class ContinuousController : MonoBehaviour
+                     }
+                 }
+ 
+-                else
++                else if (!isTournament)
+                 {
++                    // === DCGO-CUSTOM:tournament begin ===
+                     if (PhotonNetwork.CurrentRoom.MaxPlayers != 2)
+                     {
+                         PhotonNetwork.CurrentRoom.MaxPlayers = 2;
+                     }
++                    // === DCGO-CUSTOM:tournament end ===
+                 }
+             }
+         }
+@@ -1332,12 +1723,61 @@ public class ContinuousController : MonoBehaviour
+     //Flag that the sharing of the random number sequence is over.
+     public bool DoneSetRandom { get; set; } = false;
+     public bool CanSetRandom { get; set; } = false;
+     [PunRPC]
+     public void SetRandom(long random)
+     {
+         StartCoroutine(SetRandomCoroutine(random));
+     }
+ 
++    // === DCGO-CUSTOM:ranked begin ===
++    /// <summary>
++    /// Ranked matchmaking complete ÔÇö both clients enter battle (master invokes via RpcTarget.All).
++    /// </summary>
++    [PunRPC]
++    public void RankedGoToBattleScene(string matchId)
++    {
++        if (!isRanked)
++        {
++            Debug.LogWarning("[Ranked] RankedGoToBattleScene received but isRanked is false.");
++            // Still try to recover ÔÇö force ranked flag for this session start
++            isRanked = true;
++            isRandomMatch = false;
++        }
++
++        var rankedLobby = Opening.instance != null ? Opening.instance.battle?.lobbyManager_RankedMatch : null;
++        if (rankedLobby == null)
++        {
++            rankedLobby = FindObjectOfType<LobbyManager_RankedMatch>();
++        }
++
++        if (rankedLobby != null)
++        {
++            rankedLobby.BeginBattleTransition(matchId);
++            return;
++        }
++
++        // Absolute fallback if lobby was destroyed: load battle directly
++        Debug.LogWarning("[Ranked] No LobbyManager_RankedMatch ÔÇö loading BattleScene directly.");
++        StartCoroutine(RankedDirectLoadBattleCoroutine());
++    }
++
++    IEnumerator RankedDirectLoadBattleCoroutine()
++    {
++        if (Opening.instance != null)
++        {
++            ContinuousController.instance.StartCoroutine(Opening.instance.OpeningBGM.FadeOut(0.2f));
++            foreach (Camera camera in Opening.instance.openingCameras)
++            {
++                camera.gameObject.SetActive(false);
++            }
++        }
++
++        yield return new WaitForSeconds(0.1f);
++        SceneManager.LoadSceneAsync("BattleScene", LoadSceneMode.Additive);
++    }
++    // === DCGO-CUSTOM:ranked end ===
++
+     IEnumerator SetRandomCoroutine(long random)
+     {
+         yield return new WaitWhile(() => !CanSetRandom);
+@@ -1596,12 +2103,38 @@ public class PhotonUtility
+     public static string RetryStatus { get; set; } = null;
+ 
+     #region Disconnected from Photon
++    public static void LeaveRoomImmediate()
++    {
++        // === DCGO-CUSTOM:reconnect begin ===
++        BattleReconnectService.EnsureExists().NotifyLeftRoomIntentionally();
++        // === DCGO-CUSTOM:reconnect end ===
++        if (PhotonNetwork.InRoom)
++        {
++            PhotonNetwork.LeaveRoom(false);
++        }
++    }
++
++    public static void DisconnectImmediate()
++    {
++        // === DCGO-CUSTOM:reconnect begin ===
++        BattleReconnectService.EnsureExists().MarkIntentionalDisconnect();
++        // === DCGO-CUSTOM:reconnect end ===
++        if (PhotonNetwork.IsConnected)
++        {
++            PhotonNetwork.Disconnect();
++        }
++    }
++
+     public static IEnumerator DisconnectCoroutine()
+     {
++        // === DCGO-CUSTOM:reconnect begin ===
++        BattleReconnectService.EnsureExists().MarkIntentionalDisconnect();
++        // === DCGO-CUSTOM:reconnect end ===
++
+         #region Exit Room
+         if (PhotonNetwork.InRoom)
+         {
+-            PhotonNetwork.LeaveRoom();
++            PhotonNetwork.LeaveRoom(false);
+         }
+ 
+         yield return new WaitWhile(() => PhotonNetwork.InRoom);
+@@ -1624,6 +2157,10 @@ public class PhotonUtility
+ 
+         yield return new WaitWhile(() => PhotonNetwork.IsConnected);
+         #endregion
++
++        // === DCGO-CUSTOM:reconnect begin ===
++        BattleReconnectService.EnsureExists().ClearIntentionalDisconnect();
++        // === DCGO-CUSTOM:reconnect end ===
+     }
+     #endregion
+ 
+@@ -1644,6 +2181,14 @@ public class PhotonUtility
+                     yield return new WaitWhile(() => PhotonNetwork.IsConnected);
+                 }
+ 
++                // Ranked: apply PlayFab Photon custom auth when available
++                // === DCGO-CUSTOM:ranked begin ===
++                if (ContinuousController.instance.isRanked && RankedServices.Instance != null)
++                {
++                    RankedServices.Instance.Auth.ApplyPhotonAuthValues();
++                }
++                // === DCGO-CUSTOM:ranked end ===
++
+                 PhotonNetwork.NetworkingClient.AppId = PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime;
+                 PhotonNetwork.ConnectToRegion(ContinuousController.instance.serverRegion);
+                 PhotonNetwork.NickName = ContinuousController.instance.PlayerName;
+@@ -1834,6 +2379,57 @@ public class PhotonUtility
+         }
+     }
+     #endregion
++
++    // === DCGO-CUSTOM:ranked begin ===
++    #region Ranked player properties (PlayFabId + MMR)
++    public static IEnumerator SetRankedPlayerProperties()
++    {
++        var ranked = RankedServices.EnsureExists();
++        if (ranked.Auth == null || !ranked.Auth.IsLoggedIn)
++        {
++            yield break;
++        }
++
++        int mmr = ranked.Profile.Cached?.mmr ?? RankedRating.DefaultMmr;
++        string playFabId = ranked.Auth.PlayFabId;
++
++        Hashtable hash = PhotonNetwork.LocalPlayer.CustomProperties;
++
++        if (hash.ContainsKey(RankedKeys.MmrProperty))
++        {
++            hash[RankedKeys.MmrProperty] = mmr;
++        }
++        else
++        {
++            hash.Add(RankedKeys.MmrProperty, mmr);
++        }
++
++        if (hash.ContainsKey(RankedKeys.PlayFabIdProperty))
++        {
++            hash[RankedKeys.PlayFabIdProperty] = playFabId;
++        }
++        else
++        {
++            hash.Add(RankedKeys.PlayFabIdProperty, playFabId);
++        }
++
++        PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
++
++        while (true)
++        {
++            Hashtable _hash = PhotonNetwork.LocalPlayer.CustomProperties;
++            bool mmrOk = _hash.TryGetValue(RankedKeys.MmrProperty, out object mmrVal) && Convert.ToInt32(mmrVal) == mmr;
++            bool idOk = _hash.TryGetValue(RankedKeys.PlayFabIdProperty, out object idVal) && (string)idVal == playFabId;
++            if (mmrOk && idOk)
++            {
++                break;
++            }
++
++            yield return null;
++        }
++    }
++    #endregion
++    // === DCGO-CUSTOM:ranked end ===
+ }
+ #endregion
+ 

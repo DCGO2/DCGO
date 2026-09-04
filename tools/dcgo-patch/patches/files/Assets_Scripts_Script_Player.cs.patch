@@ -1,0 +1,16 @@
+diff --git a/Assets/Scripts/Script/Player.cs b/Assets/Scripts/Script/Player.cs
+index 1ccd7f4df..f8c498c2a 100644
+--- a/Assets/Scripts/Script/Player.cs
++++ b/Assets/Scripts/Script/Player.cs
+@@ -722,6 +722,11 @@ public class Player : MonoBehaviour
+     }
+     [Header("ÒâùÒâ¼ÒéñÒâñÒâ╝ÕÉì")]
+     public TextMeshProUGUI PlayerNameText;
++
++    // === DCGO-CUSTOM:ranked begin ===
++    /// <summary>MMR shown on the battle name plate (ranked only).</summary>
++    public int BattleDisplayedMmr { get; set; } = RankedRating.DefaultMmr;
++    // === DCGO-CUSTOM:ranked end ===
+     #endregion
+ 
+     #region ÕïØÕê®µò░

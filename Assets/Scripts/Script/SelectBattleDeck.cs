@@ -76,9 +76,46 @@ public class SelectBattleDeck : MonoBehaviour
         ContinuousController.instance.StartCoroutine(SetOnce());
 
         ContinuousController.instance.BattleDeckData = deckInfoPanel.ShowingDeckData;
+        // === DCGO-CUSTOM:ranked begin ===
+        ContinuousController.instance.isRanked = false;
+        // === DCGO-CUSTOM:ranked end ===
+        ContinuousController.instance.isRandomMatch = true;
 
         Opening.instance.battle.lobbyManager_RandomMatch.SetUpLobby();
     }
+
+    // === DCGO-CUSTOM:ranked begin ===
+    public void OnClickSelectButton_RankedMatch()
+    {
+        if (_once || deckInfoPanel.ShowingDeckData == null)
+        {
+            return;
+        }
+
+        ContinuousController.instance.StartCoroutine(SetOnce());
+
+        ContinuousController.instance.BattleDeckData = deckInfoPanel.ShowingDeckData;
+        ContinuousController.instance.isRanked = true;
+        ContinuousController.instance.isRandomMatch = false;
+        ContinuousController.instance.isAI = false;
+        ContinuousController.instance.useBanlist = true;
+
+        var rankedLobby = Opening.instance.battle.lobbyManager_RankedMatch;
+        if (rankedLobby == null)
+        {
+            // Auto-create ranked lobby component if not wired in the scene yet
+            rankedLobby = Opening.instance.battle.gameObject.GetComponent<LobbyManager_RankedMatch>();
+            if (rankedLobby == null)
+            {
+                rankedLobby = Opening.instance.battle.gameObject.AddComponent<LobbyManager_RankedMatch>();
+            }
+
+            Opening.instance.battle.lobbyManager_RankedMatch = rankedLobby;
+        }
+
+        rankedLobby.SetUpLobby();
+    }
+    // === DCGO-CUSTOM:ranked end ===
 
     public void OnClickSelectButton_BotMatch()
     {
@@ -90,6 +127,9 @@ public class SelectBattleDeck : MonoBehaviour
         ContinuousController.instance.StartCoroutine(SetOnce());
 
         ContinuousController.instance.BattleDeckData = deckInfoPanel.ShowingDeckData;
+        // === DCGO-CUSTOM:ranked begin ===
+        ContinuousController.instance.isRanked = false;
+        // === DCGO-CUSTOM:ranked end ===
     }
 
     public IEnumerator OnClickSelectButton_RoomMatchCoroutine()
@@ -134,6 +174,13 @@ public class SelectBattleDeck : MonoBehaviour
 
     public async void SetUpSelectBattleDeck(UnityAction OnClickSelectButtonAction, int _)
     {
+        // === DCGO-CUSTOM:tournament begin ===
+        if (ContinuousController.instance != null && ContinuousController.instance.isTournamentStarted)
+        {
+            return;
+        }
+        // === DCGO-CUSTOM:tournament end ===
+
         if (SelectDeckObject.activeSelf)
         {
             return;
@@ -187,7 +234,25 @@ public class SelectBattleDeck : MonoBehaviour
                 JpnMessage: "使用デッキ選択 - Bot戦"
                 );
         }
+        // === DCGO-CUSTOM:ranked begin ===
+        else if (ContinuousController.instance.isRanked)
+        {
+            message = LocalizeUtility.GetLocalizedString(
+                EngMessage: "Select Your Deck - Ranked Match",
+                JpnMessage: "使用デッキ選択 - ランクマッチ"
+                );
 
+            var profile = RankedServices.Instance != null ? RankedServices.Instance.Profile?.Cached : null;
+            if (profile != null)
+            {
+                message = $"{message}\n{profile.FormatStatusLine()}";
+            }
+            else
+            {
+                ContinuousController.instance.StartCoroutine(AppendRankToDeckTitleWhenReady(message));
+            }
+        }
+        // === DCGO-CUSTOM:ranked end ===
         else if (ContinuousController.instance.isRandomMatch)
         {
             message = LocalizeUtility.GetLocalizedString(
@@ -195,7 +260,15 @@ public class SelectBattleDeck : MonoBehaviour
                 JpnMessage: "使用デッキ選択 - ランダムマッチ"
                 );
         }
-
+        // === DCGO-CUSTOM:tournament begin ===
+        else if (ContinuousController.instance.isTournament)
+        {
+            message = LocalizeUtility.GetLocalizedString(
+                EngMessage: "Select Your Deck - Tournament (locked after start)",
+                JpnMessage: "使用デッキ選択 - トーナメント（開始後は変更不可）"
+                );
+        }
+        // === DCGO-CUSTOM:tournament end ===
         else
         {
             message = LocalizeUtility.GetLocalizedString(
@@ -213,6 +286,19 @@ public class SelectBattleDeck : MonoBehaviour
             InvalidDeckObject.SetActive(!deckInfoPanel.ShowingDeckData.IsValidDeckData());
         }
     }
+
+    // === DCGO-CUSTOM:ranked begin ===
+    IEnumerator AppendRankToDeckTitleWhenReady(string baseMessage)
+    {
+        yield return RankedServices.EnsureExists().BootstrapForRanked();
+        var profile = RankedServices.Instance != null ? RankedServices.Instance.Profile?.Cached : null;
+        if (TitleText != null && profile != null && ContinuousController.instance != null &&
+            ContinuousController.instance.isRanked)
+        {
+            TitleText.text = $"{baseMessage}\n{profile.FormatStatusLine()}";
+        }
+    }
+    // === DCGO-CUSTOM:ranked end ===
 
     public void Close()
     {
@@ -239,10 +325,7 @@ public class SelectBattleDeck : MonoBehaviour
     {
         for (int i = 0; i < deckInfoPrefabParentScroll.content.childCount; i++)
         {
-            if (i > 0)
-            {
-                Destroy(deckInfoPrefabParentScroll.content.GetChild(i).gameObject);
-            }
+            Destroy(deckInfoPrefabParentScroll.content.GetChild(i).gameObject);
         }
 
         for (int i = 0; i < ContinuousController.instance.DeckDatas.Count; i++)
@@ -283,27 +366,11 @@ public class SelectBattleDeck : MonoBehaviour
 
         if (ContinuousController.instance.DeckDatas.Count == 0)
         {
-            for (int i = 0; i < deckInfoPrefabParentScroll.content.childCount; i++)
-            {
-                if (deckInfoPrefabParentScroll.content.GetChild(i).GetComponent<SelectRandomDeckButton>() != null)
-                {
-                    deckInfoPrefabParentScroll.content.GetChild(i).GetComponent<SelectRandomDeckButton>().Outline.SetActive(true);
-                    break;
-                }
-            }
+
         }
 
         else
         {
-            for (int i = 0; i < deckInfoPrefabParentScroll.content.childCount; i++)
-            {
-                if (deckInfoPrefabParentScroll.content.GetChild(i).GetComponent<SelectRandomDeckButton>() != null)
-                {
-                    deckInfoPrefabParentScroll.content.GetChild(i).GetComponent<SelectRandomDeckButton>().Outline.SetActive(false);
-                    break;
-                }
-            }
-
             for (int i = 0; i < deckInfoPrefabParentScroll.content.childCount; i++)
             {
                 if (deckInfoPrefabParentScroll.content.GetChild(i).GetComponent<DeckInfoPrefab>() != null)

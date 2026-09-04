@@ -1,0 +1,52 @@
+{
+  "officialRemote": "origin",
+  "officialBranch": "develop",
+  "baselineCommit": "6faae89a7",
+  "baselineLabel": "Public 1.17.3",
+  "customBranch": "dev/androidApp-1.17.3",
+  "localAssetsRoot": "CustomAssets",
+  "optionalAssets": [
+    "Assets/Sound",
+    "Assets/SCI-FI UI Components",
+    "Assets/Effect/DigitalEnvironmentEffects"
+  ],
+  "modules": [
+    "android",
+    "ranked",
+    "tournament",
+    "reconnect",
+    "friends"
+  ],
+  "regionBegin": "// === DCGO-CUSTOM:{module} begin ===",
+  "regionEnd": "// === DCGO-CUSTOM:{module} end ===",
+  "textExtensions": [
+    ".cs",
+    ".js",
+    ".json",
+    ".md",
+    ".txt",
+    ".bat",
+    ".ps1",
+    ".properties",
+    ".xml",
+    ".gradle",
+    ".shader",
+    ".hlsl",
+    ".compute"
+  ],
+  "overlayAlways": [
+    ".unity",
+    ".prefab",
+    ".asset",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".tga",
+    ".psd",
+    ".wav",
+    ".mp3",
+    ".ogg",
+    ".ttf",
+    ".otf"
+  ]
+}

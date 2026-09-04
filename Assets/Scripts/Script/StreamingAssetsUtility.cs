@@ -1,4 +1,3 @@
-
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -8,6 +7,8 @@ using WebP;
 
 public class StreamingAssetsUtility
 {
+    static bool _seededBundledTextures;
+
     public static async Task<byte[]> ReadFile(string path)
     {
         using (FileStream fileStream = new FileStream(
@@ -19,7 +20,45 @@ public class StreamingAssetsUtility
         }
     }
 
-    #region ‰æ‘œ‚ÌŽæ“¾
+    /// <summary>
+    /// Reads bytes from a normal filesystem path, or from StreamingAssets on Android (APK / jar).
+    /// </summary>
+    public static async Task<byte[]> ReadBytesFlexible(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+            return null;
+
+        if (File.Exists(path))
+            return await ReadFile(path);
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+        // APK StreamingAssets are not normal files â€” must use UnityWebRequest.
+        if (path.Contains(Application.streamingAssetsPath.Replace("\\", "/")) ||
+            path.StartsWith("jar:", StringComparison.OrdinalIgnoreCase))
+        {
+            return await ReadStreamingAssetsBytes(path);
+        }
+#endif
+        return null;
+    }
+
+    static async Task<byte[]> ReadStreamingAssetsBytes(string urlOrPath)
+    {
+        string url = urlOrPath.Replace("\\", "/");
+        using (UnityWebRequest req = UnityWebRequest.Get(url))
+        {
+            var op = req.SendWebRequest();
+            while (!op.isDone)
+                await Task.Yield();
+
+            if (req.result != UnityWebRequest.Result.Success)
+                return null;
+
+            return req.downloadHandler.data;
+        }
+    }
+
+    #region image load
     public static Texture2D BinaryToTexture(byte[] bytes)
     {
         Texture2D texture = new Texture2D(1, 1);
@@ -29,7 +68,7 @@ public class StreamingAssetsUtility
 
     public static async Task<Sprite> GetSprite(string fileName, bool isCard = false, bool isLauncher = false)
     {
-        string path = "";
+        await EnsureBundledTexturesSeeded();
 
         if (isCard)
         {
@@ -39,7 +78,7 @@ public class StreamingAssetsUtility
             }
             else
             {
-                path = Path.Combine(GetStreamingAssetPath("Textures", isLauncher), $"Card/{fileName}.webp").Replace("\\", "/");
+                string path = Path.Combine(GetStreamingAssetPath("Textures", isLauncher), $"Card/{fileName}.webp").Replace("\\", "/");
 
                 if (!File.Exists(path))
                 {
@@ -59,36 +98,44 @@ public class StreamingAssetsUtility
 
     public static async Task<Sprite> GetSpriteImage(string fileName, bool isLauncher = false)
     {
-        string path = Path.Combine(GetStreamingAssetPath("Textures", isLauncher), $"{fileName}.jpg").Replace("\\", "/");
+        await EnsureBundledTexturesSeeded();
 
+        // Prefer writable cache (persistent on Android / Assets layout on PC).
+        string path = Path.Combine(GetStreamingAssetPath("Textures", isLauncher), $"{fileName}.jpg").Replace("\\", "/");
         if (!File.Exists(path))
             path = Path.Combine(GetStreamingAssetPath("Textures", isLauncher), $"{fileName}.png").Replace("\\", "/");
 
+        byte[] imageBuff = null;
         if (File.Exists(path))
+            imageBuff = await ReadFile(path);
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+        // Fall back to APK StreamingAssets if not yet on disk.
+        if (imageBuff == null)
         {
-            byte[] imageBuff = await ReadFile(path);
-            Texture2D tex = BinaryToTexture(imageBuff);
-
-            Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
-
-            return sprite;
+            string saJpg = Path.Combine(Application.streamingAssetsPath, "Textures", $"{fileName}.jpg").Replace("\\", "/");
+            string saPng = Path.Combine(Application.streamingAssetsPath, "Textures", $"{fileName}.png").Replace("\\", "/");
+            imageBuff = await ReadStreamingAssetsBytes(saJpg);
+            if (imageBuff == null)
+                imageBuff = await ReadStreamingAssetsBytes(saPng);
         }
+#endif
 
-        return null;
+        if (imageBuff == null)
+            return null;
+
+        Texture2D tex = BinaryToTexture(imageBuff);
+        return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
     }
 
     public static async Task<Sprite> GetTokenImageData(string path)
     {
-        if (File.Exists(path))
-        {
-            byte[] imageBuff = await ReadFile(path);
-            Texture2D tex = BinaryToTexture(imageBuff);
+        byte[] imageBuff = await ReadBytesFlexible(path);
+        if (imageBuff == null)
+            return null;
 
-            Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
-            return sprite;
-        }
-
-        return null;
+        Texture2D tex = BinaryToTexture(imageBuff);
+        return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
     }
 
     public static async Task<Sprite> GetCardImageDataLocal(string path)
@@ -158,7 +205,10 @@ public class StreamingAssetsUtility
         {
             Debug.Log($"WebRequest Successful: Checking local file - {File.Exists(filePath)}");
             if (!File.Exists(filePath))
+            {
+                EnsureParentDirectory(filePath);
                 File.WriteAllBytes(filePath, webReq_CardImage.downloadHandler.data);
+            }
 
             Texture2D texture = Texture2DExt.CreateTexture2DFromWebP(webReq_CardImage.downloadHandler.data, lMipmaps: true, lLinear: false, lError: out WebP.Error lError);
 
@@ -184,7 +234,7 @@ public class StreamingAssetsUtility
         return File.Exists(path);
     }
 
-    #region ƒeƒLƒXƒgƒtƒ@ƒCƒ‹‚ÌŽæ“¾
+    #region text
     public static string GetText(string fileName)
     {
         string path = Path.Combine(GetStreamingAssetPath("", false), $"{fileName}.txt").Replace("\\", "/");
@@ -198,8 +248,23 @@ public class StreamingAssetsUtility
     }
     #endregion
 
+    /// <summary>
+    /// Returns a writable root for decks/textures.
+    /// Editor and standalone use the historic Assets-relative layout; Android/iOS use persistentDataPath.
+    /// </summary>
     public static string GetStreamingAssetPath(string subPath, bool isLauncher)
     {
+        if (UsePersistentDataRoot())
+        {
+            string path = Application.persistentDataPath;
+            if (!string.IsNullOrEmpty(subPath))
+                path = Path.Combine(path, subPath);
+
+            path = path.Replace("\\", "/");
+            EnsureDirectoryExists(path);
+            return path;
+        }
+
         if (isLauncher)
         {
             string path = Application.streamingAssetsPath;
@@ -223,6 +288,102 @@ public class StreamingAssetsUtility
 
             return path;
         }
+    }
+
+    static bool UsePersistentDataRoot()
+    {
+#if UNITY_EDITOR
+        return false;
+#elif UNITY_ANDROID || UNITY_IOS
+        return true;
+#else
+        return false;
+#endif
+    }
+
+    /// <summary>
+    /// Copy bundled StreamingAssets/Textures (UI, mats, card backs) into persistentDataPath once
+    /// so File.Exists-based loaders work on Android.
+    /// </summary>
+    public static async Task EnsureBundledTexturesSeeded()
+    {
+#if !UNITY_ANDROID || UNITY_EDITOR
+        await Task.Yield();
+        return;
+#else
+        if (_seededBundledTextures)
+            return;
+
+        _seededBundledTextures = true;
+
+        string marker = Path.Combine(Application.persistentDataPath, "Textures", ".seeded_ui_v1");
+        if (File.Exists(marker))
+            return;
+
+        string[] relativeFiles = new[]
+        {
+            "Textures/Background_home.png",
+            "Textures/Background_battle.png",
+            "Textures/card_back_main.png",
+            "Textures/card_back_sub.png",
+            "Textures/PlayMat_You.png",
+            "Textures/PlayMat_Opponent.png",
+            "Textures/SecurityIcon_You.png",
+            "Textures/SecurityIcon_Opponent.png",
+            "Textures/CurrentPhaseBar_You.png",
+            "Textures/CurrentPhaseBar_Opponent.png",
+        };
+
+        foreach (string relative in relativeFiles)
+        {
+            string dest = Path.Combine(Application.persistentDataPath, relative).Replace("\\", "/");
+            if (File.Exists(dest))
+                continue;
+
+            string src = Path.Combine(Application.streamingAssetsPath, relative).Replace("\\", "/");
+            byte[] data = await ReadStreamingAssetsBytes(src);
+            if (data == null || data.Length == 0)
+                continue;
+
+            EnsureParentDirectory(dest);
+            File.WriteAllBytes(dest, data);
+            Debug.Log($"[StreamingAssetsUtility] Seeded {relative}");
+        }
+
+        // Seed UI/ and Backgrounds/ folders if present in the APK.
+        await SeedDirectoryListingFallback();
+
+        EnsureParentDirectory(marker);
+        File.WriteAllText(marker, DateTime.UtcNow.ToString("o"));
+#endif
+    }
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+    static async Task SeedDirectoryListingFallback()
+    {
+        // StreamingAssets on Android has no directory listing API.
+        // Known Backgrounds / UI names can be added here if needed later.
+        await Task.Yield();
+    }
+#endif
+
+    public static void EnsureDirectoryExists(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+            return;
+
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+    }
+
+    static void EnsureParentDirectory(string filePath)
+    {
+        if (string.IsNullOrEmpty(filePath))
+            return;
+
+        string directory = Path.GetDirectoryName(filePath);
+        if (!string.IsNullOrEmpty(directory))
+            EnsureDirectoryExists(directory);
     }
 
     static string GetOneUpperDirectoryPath(string path)

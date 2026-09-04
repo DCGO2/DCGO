@@ -1,0 +1,15 @@
+diff --git a/Assets/Scripts/Script/Opening.cs b/Assets/Scripts/Script/Opening.cs
+index 3934217e0..b3c30473c 100644
+--- a/Assets/Scripts/Script/Opening.cs
++++ b/Assets/Scripts/Script/Opening.cs
+@@ -471,7 +471,9 @@ public class Opening : MonoBehaviour
+ 
+         if (PhotonNetwork.IsConnected)
+         {
+-            PhotonNetwork.Disconnect();
++            // === DCGO-CUSTOM:reconnect begin ===
++            PhotonUtility.DisconnectImmediate();
++            // === DCGO-CUSTOM:reconnect end ===
+ 
+             while (PhotonNetwork.IsConnected)
+             {

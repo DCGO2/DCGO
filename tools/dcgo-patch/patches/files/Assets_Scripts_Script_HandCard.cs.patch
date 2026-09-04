@@ -1,0 +1,83 @@
+diff --git a/Assets/Scripts/Script/HandCard.cs b/Assets/Scripts/Script/HandCard.cs
+index 545c650ca..878732abd 100644
+--- a/Assets/Scripts/Script/HandCard.cs
++++ b/Assets/Scripts/Script/HandCard.cs
+@@ -333,10 +333,16 @@ public class HandCard : MonoBehaviour
+         {
+             if (cardEffect != null)
+             {
+-                if (!string.IsNullOrEmpty(cardEffect.EffectName))
++                string displayName = cardEffect.EffectName;
++                if (string.IsNullOrEmpty(displayName))
++                {
++                    displayName = cardEffect.EffectDiscription;
++                }
++
++                if (!string.IsNullOrEmpty(displayName))
+                 {
+                     SkillNameText.transform.parent.gameObject.SetActive(true);
+-                    SkillNameText.text = cardEffect.EffectName;
++                    SkillNameText.text = displayName;
+                 }
+             }
+         }
+@@ -480,6 +486,8 @@ public class HandCard : MonoBehaviour
+     }
+ 
+     public bool ShowOpponent { get; set; } = false;
++    // Select-panel inspect without marking as hand card (avoids SkillName being cleared).
++    public bool AllowFaceDownInspect { get; set; } = false;
+     bool onYourHand()
+     {
+         if (GManager.instance != null)
+@@ -538,12 +546,12 @@ public class HandCard : MonoBehaviour
+ 
+         #region ÚòÀµè╝ÒüùÒü«ÕÅûÕ¥ù
+ #if !UNITY_EDITOR && UNITY_ANDROID
+-        if (pressing)
++        if (_pressing)
+         {
+-            if(requiredTime < Time.time)
++            if (_requiredTime < Time.time)
+             {
+                 OnRightClicked();
+-                pressing = false;
++                _pressing = false;
+             }
+         }
+ #endif
+@@ -677,18 +685,17 @@ public class HandCard : MonoBehaviour
+ 
+     public void PointerUp(BaseEventData eventData)
+     {
+-        if (_pressing)
+-        {
+-            _pressing = false;
+-        }
++        CancelLongPress();
+     }
+ 
+     public void PointerExit(BaseEventData eventData)
+     {
+-        if (_pressing)
+-        {
+-            _pressing = false;
+-        }
++        CancelLongPress();
++    }
++
++    public void CancelLongPress()
++    {
++        _pressing = false;
+     }
+ 
+     public async void SetUpHandCardImage()
+@@ -984,7 +991,7 @@ public class HandCard : MonoBehaviour
+                 }
+             }
+ 
+-            if (ShowOpponent)
++            if (ShowOpponent || AllowFaceDownInspect)
+             {
+                 CanLook = true;
+             }

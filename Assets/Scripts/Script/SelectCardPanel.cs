@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -166,7 +166,16 @@ public class SelectCardPanel : MonoBehaviour
 
         CheckSelection();
 
-        yield return new WaitWhile(() => !_isEndSelection);
+        yield return new WaitWhile(() =>
+        {
+            if (_isEndSelection)
+            {
+                return false;
+            }
+
+            var tsm = GManager.instance != null ? GManager.instance.turnStateMachine : null;
+            return tsm != null && !tsm.endGame;
+        });
         SetIsEndSelection(false);
     }
 
@@ -607,6 +616,16 @@ public class SelectCardPanel : MonoBehaviour
         this.gameObject.SetActive(false);
 
         ReturnToSelectCardButton.gameObject.SetActive(false);
+    }
+
+    public void ForceCloseForEndGame()
+    {
+        SetIsEndSelection(true);
+        StopAllCoroutines();
+        DOTween.Kill(transform);
+        CloseSelectCardPanel();
+        transform.localScale = Vector3.one;
+        transform.localPosition = Vector3.zero;
     }
     #endregion
 

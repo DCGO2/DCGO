@@ -1,0 +1,38 @@
+diff --git a/Assets/Scripts/Script/SelectDeck.cs b/Assets/Scripts/Script/SelectDeck.cs
+index 63f453286..1e4151846 100644
+--- a/Assets/Scripts/Script/SelectDeck.cs
++++ b/Assets/Scripts/Script/SelectDeck.cs
+@@ -25,6 +25,33 @@ public class SelectDeck : OffAnimation
+ 
+     public bool isOpen { get; set; } = false;
+ 
++    void Awake()
++    {
++        EnsureOffRelayOnAnimator();
++    }
++
++    void EnsureOffRelayOnAnimator()
++    {
++        if (anim == null)
++        {
++            return;
++        }
++
++        // IsClose fires Off on the Animator GO ("Parent"); SelectDeck lives on an ancestor.
++        if (anim.gameObject == gameObject)
++        {
++            return;
++        }
++
++        var relay = anim.GetComponent<AnimationOffRelay>();
++        if (relay == null)
++        {
++            relay = anim.gameObject.AddComponent<AnimationOffRelay>();
++        }
++
++        relay.Bind(this);
++    }
++
+     public void OffSelectDeck()
+     {
+         anim.enabled = true;

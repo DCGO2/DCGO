@@ -1,4 +1,4 @@
-﻿using DG.Tweening;
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -722,6 +722,10 @@ public class Player : MonoBehaviour
     }
     [Header("プレイヤー名")]
     public TextMeshProUGUI PlayerNameText;
+    // === DCGO-CUSTOM:ranked begin ===
+    /// <summary>MMR shown on the battle name plate (ranked only).</summary>
+    public int BattleDisplayedMmr { get; set; } = RankedRating.DefaultMmr;
+    // === DCGO-CUSTOM:ranked end ===
     #endregion
 
     #region 勝利数
