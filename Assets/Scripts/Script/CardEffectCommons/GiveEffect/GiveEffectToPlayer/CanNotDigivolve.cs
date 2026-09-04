@@ -1,5 +1,5 @@
 using System.Collections;
-
+using System;
 public partial class CardEffectCommons
 {
     #region Permanent gains effect to can't digivolve

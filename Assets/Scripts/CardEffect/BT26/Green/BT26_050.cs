@@ -293,16 +293,26 @@ namespace DCGO.CardEffects
                     }
                     #endregion
 
-                    #region Stun Opponent's Digimon or Tamers
-                    bool CanNotUnSuspendCondition(Permanent permanent)
+                    bool CanNotUnSuspendOrDigivolveCondition(Permanent permanent)
                     {
                         return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
                             && (permanent.IsDigimon || permanent.IsTamer)
                             && permanent.IsSuspended;
                     }
 
+                    #region Digivolve prevention
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotDigivolvePlayerEffect(
+                        permanentCondition: CanNotUnSuspendOrDigivolveCondition,
+                        cardCondition: null,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        isOnlyActivePhase: false,
+                        effectName: "Cannot Digivolve"));
+                    #endregion
+
+                    #region Stun Opponent's Digimon or Tamers
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(
-                        permanentCondition: CanNotUnSuspendCondition,
+                        permanentCondition: CanNotUnSuspendOrDigivolveCondition,
                         effectDuration: EffectDuration.UntilOpponentTurnEnd,
                         activateClass: activateClass,
                         isOnlyActivePhase: false,
