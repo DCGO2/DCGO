@@ -45,6 +45,29 @@ namespace DCGO.CardEffects.BT26
                 {
                     if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectTargetCondition)) yield break;
 
+                    List<CardSource> materialCards = new List<CardSource>();
+
+                    bool CanSelectOtherBattleAreaCondition(Permanent permanent)
+                        =>  CanSelectTargetCondition(permanent) && !materialCards.Contains(permanent.TopCard);
+
+                    bool CanSelectLinkedOrTrashCondition(CardSource cardSource)
+                        => cardSource.IsDigimon && cardSource.EqualsTraits("Seven Code") && !materialCards.Contains(cardSource);
+
+                    bool CanSelectLinkPermanentCondition(Permanent permanent)
+                        => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                            && permanent.LinkedCards.Filter(CanSelectLinkedOrTrashCondition).Count > 0;
+
+                    int availableBattleArea = CardEffectCommons.MatchConditionPermanentCount(CanSelectOtherBattleAreaCondition);
+                    int availableLinked = 0;
+                    int availableTrash = card.Owner.TrashCards.Filter(CanSelectLinkedOrTrashCondition).Count;
+
+                    foreach (Permanent permanent in card.Owner.GetBattleAreaDigimons().Where((permanent) => permanent.LinkedCards.Any(CanSelectLinkedOrTrashCondition)))
+                    {
+                        availableLinked += permanent.LinkedCards.Count(CanSelectLinkedOrTrashCondition);
+                    }
+
+                    if (availableBattleArea - 1 + availableLinked + availableTrash < 6) yield break;
+
                     Permanent selectedTarget = null;
 
                     SelectPermanentEffect selectTargetEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -73,29 +96,6 @@ namespace DCGO.CardEffects.BT26
                     yield return ContinuousController.instance.StartCoroutine(selectTargetEffect.Activate());
 
                     if (selectedTarget == null) yield break;
-
-                    List<CardSource> materialCards = new List<CardSource>();
-
-                    bool CanSelectOtherBattleAreaCondition(Permanent permanent)
-                        => permanent != selectedTarget && CanSelectTargetCondition(permanent) && !materialCards.Contains(permanent.TopCard);
-
-                    bool CanSelectLinkedOrTrashCondition(CardSource cardSource)
-                        => cardSource.IsDigimon && cardSource.EqualsTraits("Seven Code") && !materialCards.Contains(cardSource);
-
-                    bool CanSelectLinkPermanentCondition(Permanent permanent)
-                        => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                            && permanent.LinkedCards.Filter(CanSelectLinkedOrTrashCondition).Count > 0;
-
-                    int availableBattleArea = CardEffectCommons.MatchConditionPermanentCount(CanSelectOtherBattleAreaCondition);
-                    int availableLinked = 0;
-                    int availableTrash = card.Owner.TrashCards.Filter(CanSelectLinkedOrTrashCondition).Count;
-
-                    foreach (Permanent permanent in card.Owner.GetBattleAreaDigimons().Where((permanent) => permanent.LinkedCards.Any(CanSelectLinkedOrTrashCondition)))
-                    {
-                        availableLinked += permanent.LinkedCards.Count(CanSelectLinkedOrTrashCondition);
-                    }
-
-                    if (availableBattleArea + availableLinked + availableTrash < 6) yield break;
 
                     int remaining = 6;
 
@@ -272,7 +272,7 @@ namespace DCGO.CardEffects.BT26
                     if (materialCards.Count == 6)
                     {
                         yield return ContinuousController.instance.StartCoroutine(selectedTarget.AddDigivolutionCardsBottom(materialCards, activateClass));
-                    
+
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                             selectedTarget,
                             CanSelectDantemonCondition,
