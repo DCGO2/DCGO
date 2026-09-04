@@ -79,6 +79,32 @@ public abstract class ICardEffect
 
     #endregion
 
+    #region Redirect target for RemoveUse()/AddUse() self-calls (Succession/copied-effect support)
+
+    // A card's own ActivateCoroutine body sometimes self-references its own ActivateClass
+    // instance to adjust its own OPT usage mid-effect (e.g. "if (!isUsed) activateClass.
+    // RemoveUse();" for an ability that may end up doing nothing). When that coroutine is
+    // reused verbatim by CardEffectFactory.CopyDigivolutionCardEffects (Succession and similar)
+    // via a wrapping copiedActivateClass that just delegates to the original's Activate(), the
+    // closure still targets the ORIGINAL instance -- so RemoveUse()/AddUse() would touch the
+    // source card's own OPT tracking instead of the copy's, even though the copy's own
+    // EffectSourceCard/tracking is otherwise correctly independent. This field lets a caller
+    // (CopyDigivolutionCardEffects) temporarily redirect RemoveUse()/AddUse() calls made on
+    // this instance to affect a different ICardEffect (the copy) instead, for the duration of
+    // one Activate() call.
+    ICardEffect _useTrackingRedirectTarget = null;
+    public ICardEffect UseTrackingRedirectTarget
+    {
+        get { return _useTrackingRedirectTarget; }
+        private set { _useTrackingRedirectTarget = value; }
+    }
+    public void SetUseTrackingRedirectTarget(ICardEffect useTrackingRedirectTarget)
+    {
+        UseTrackingRedirectTarget = useTrackingRedirectTarget;
+    }
+
+    #endregion
+
     #region The source permanent of this effect
 
     private Permanent _effectSourcePermanent = null;
@@ -1254,14 +1280,18 @@ public static class ActivateICardEffectExtensionClass
     #region remove a usage of an X Per Turn
     public static void RemoveUse(this ActivateICardEffect activateICardEffect)
     {
-        ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RemoveUseEffectThisTurn((ICardEffect)activateICardEffect);
+        ICardEffect effect = (ICardEffect)activateICardEffect;
+        ICardEffect trackedEffect = effect.UseTrackingRedirectTarget ?? effect;
+        trackedEffect.EffectSourceCard.cEntity_EffectController.RemoveUseEffectThisTurn(trackedEffect);
     }
     #endregion
 
     #region add a usage of an X Per Turn
     public static void AddUse(this ActivateICardEffect activateICardEffect)
     {
-        ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn((ICardEffect)activateICardEffect);
+        ICardEffect effect = (ICardEffect)activateICardEffect;
+        ICardEffect trackedEffect = effect.UseTrackingRedirectTarget ?? effect;
+        trackedEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(trackedEffect);
     }
     #endregion
 

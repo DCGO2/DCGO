@@ -149,10 +149,24 @@ public partial class CardEffectFactory
                                 && (originalUseCondition is null || originalUseCondition(hashtable)),
                             card);
 
+                        // activateClass's own coroutine body may self-reference activateClass to
+                        // adjust its own OPT usage mid-effect (e.g. "if (!isUsed) activateClass.
+                        // RemoveUse();" -- real precedent: BT26_016 Chronomon: Holy Mode). Since
+                        // that closure still targets activateClass (the source), redirect
+                        // RemoveUse()/AddUse() to affect copiedActivateClass instead for the
+                        // duration of this one call, so the source card's own OPT tracking isn't
+                        // touched by a copy's activation.
+                        IEnumerator ActivateWithRedirectedUseTracking(Hashtable hashtable)
+                        {
+                            activateClass.SetUseTrackingRedirectTarget(copiedActivateClass);
+                            yield return ContinuousController.instance.StartCoroutine(activateClass.Activate(hashtable));
+                            activateClass.SetUseTrackingRedirectTarget(null);
+                        }
+
                         copiedActivateClass.SetUpActivateClass(
                             hashtable => ValidCardSourceAtActivate()
                                 && (originalActivateCondition is null || originalActivateCondition(hashtable)),
-                            hashtable => activateClass.Activate(hashtable),
+                            ActivateWithRedirectedUseTracking,
                             activateClass.MaxCountPerTurn,
                             activateClass.IsOptional,
                             activateClass.EffectDescription);
