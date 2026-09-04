@@ -15,7 +15,7 @@ public partial class CardEffectFactory
                 isInheritedEffect,
                 isLinkedEffect,
                 canUseCondition: CanUseCondition,
-                cardSourceCondition: cardCondition,
+                cardCondition: cardCondition,
                 isSuccession: true);
     }
     #endregion
