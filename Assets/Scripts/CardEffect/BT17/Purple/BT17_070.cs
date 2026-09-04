@@ -420,7 +420,7 @@ namespace DCGO.CardEffects.BT17
                             if (cardSources.Count == 7)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(
-                                    CardObjectController.AddLibraryBottomCards(cardSources));
+                                    CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
 
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>()
                                     .ShowCardEffect(cardSources, "Deck Bottom Card", true, true));

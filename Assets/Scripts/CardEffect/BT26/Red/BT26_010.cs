@@ -29,6 +29,13 @@ namespace DCGO.CardEffects.BT26
             }
             #endregion
 
+            #region Link
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
+            }
+            #endregion
+
             #region Detach (Seven Code)
             if (timing == EffectTiming.WhenRemoveField)
             {

@@ -145,7 +145,7 @@ namespace DCGO.CardEffects.EX9
 
                         if (willReturn)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(negamonCards));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(negamonCards, cardEffect: activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(negamonCards, "Digi-Egg deck Bottom Cards", true, true));
 

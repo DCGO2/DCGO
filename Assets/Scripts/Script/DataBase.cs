@@ -577,6 +577,11 @@ public class DataBase : MonoBehaviour
         return "<Engage> (At the end of your turn, this Digimon may attack.)";
     }
 
+    public static string ScapegoatEffectDescription()
+    {
+        return "<Scapegoat> (When this Digimon would be deleted other than by your effects, by deleting 1 of your other Digimon, it isn't deleted.)";
+    }
+
     public static string ReplaceToASCII(string text)
     {
         if (string.IsNullOrEmpty(text))
@@ -854,17 +859,14 @@ public class ColorSpriteDic : TableBase<CardColor, Sprite, SamplePair>
 public class TableBase<TKey, TValue, Type> where Type : KeyAndValue<TKey, TValue>
 {
     [SerializeField]
-    private List<Type> list;
+    private List<Type> _list;
 
-    private Dictionary<TKey, TValue> table;
+    private Dictionary<TKey, TValue> _table;
 
     public Dictionary<TKey, TValue> GetTable()
     {
-        if (table == null)
-        {
-            table = ConvertListToDictionary(list);
-        }
-        return table;
+        _table ??= ConvertListToDictionary(_list);
+        return _table;
     }
 
     /// <summary>
@@ -872,7 +874,7 @@ public class TableBase<TKey, TValue, Type> where Type : KeyAndValue<TKey, TValue
     /// </summary>
     public List<Type> GetList()
     {
-        return list;
+        return _list;
     }
 
     static Dictionary<TKey, TValue> ConvertListToDictionary(List<Type> list)

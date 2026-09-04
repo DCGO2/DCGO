@@ -3988,6 +3988,18 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card has "God" Appmon Grade trait
+
+    public bool HasGodAppTraits
+    {
+        get
+        {
+            return EqualsTraits("God");
+        }
+    }
+
+    #endregion
+
     #region whether this card has "Holy Beast" trait
 
     public bool HasHolyBeastTraits
@@ -4223,6 +4235,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("VB");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has DATA SQUAD trait
+
+    public bool HasDataSquadTraits
+    {
+        get
+        {
+            return EqualsTraits("DATA SQUAD");
         }
     }
 

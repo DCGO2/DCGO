@@ -220,6 +220,13 @@ public interface IImmuneFromStackTrashingEffect
 }
 #endregion
 
+#region "Target permanent cannot have its stack cards returned to the library" effect
+public interface IImmuneFromStackReturnToLibraryEffect
+{
+    bool ImmuneStackReturnToLibrary(Permanent permanent, ICardEffect effect);
+}
+#endregion
+
 #region "Target permanent does not have DP" effect
 public interface IDontHaveDPEffect
 {
