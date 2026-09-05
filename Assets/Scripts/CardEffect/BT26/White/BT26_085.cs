@@ -125,6 +125,8 @@ namespace DCGO.CardEffects.BT26
 
                     bool doSelect = GManager.instance.userSelectionManager.SelectedIntValue != 3;
 
+                    bool isHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+
                     if (doSelect)
                     {
                         Permanent thisPermanent = card.PermanentOfThisCard();
@@ -136,7 +138,7 @@ namespace DCGO.CardEffects.BT26
                             reduceCostTuple: null,
                             fixedCostTuple: null,
                             ignoreDigivolutionRequirementFixedCost: -1,
-                            isHand: canSelectHand,
+                            isHand: isHand,
                             activateClass: activateClass,
                             successProcess: SuccessProcess()
                         ));
