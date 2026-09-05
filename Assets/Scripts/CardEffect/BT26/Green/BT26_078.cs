@@ -67,7 +67,7 @@ namespace DCGO.CardEffects.BT26
 
                     List<Permanent> targets = TargetablePermanents(hashtable);
 
-                    if (targets != null)
+                    if (targets.Count > 0)
                     {
                         Permanent selectedPermanent = null;
 

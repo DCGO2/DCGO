@@ -61,7 +61,6 @@ namespace DCGO.CardEffects.BT26
                         {
                             return cardSource != null
                                 && cardSource.Owner == card.Owner
-                                && cardSource.IsDigimon
                                 && cardSource.HasLevel
                                 && cardSource.Level <= 5
                                 && cardSource.EqualsTraits("Shambala");

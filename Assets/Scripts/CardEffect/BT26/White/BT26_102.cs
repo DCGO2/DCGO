@@ -45,10 +45,12 @@ namespace DCGO.CardEffects.BT26
                 {
                     if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectTargetCondition)) yield break;
 
+                    Permanent selectedTarget = null;
+
                     List<CardSource> materialCards = new List<CardSource>();
 
                     bool CanSelectOtherBattleAreaCondition(Permanent permanent)
-                        =>  CanSelectTargetCondition(permanent) && !materialCards.Contains(permanent.TopCard);
+                        =>  CanSelectTargetCondition(permanent) && !materialCards.Contains(permanent.TopCard) && permanent != selectedTarget;
 
                     bool CanSelectLinkedOrTrashCondition(CardSource cardSource)
                         => cardSource.IsDigimon && cardSource.EqualsTraits("Seven Code") && !materialCards.Contains(cardSource);
@@ -67,8 +69,6 @@ namespace DCGO.CardEffects.BT26
                     }
 
                     if (availableBattleArea - 1 + availableLinked + availableTrash < 6) yield break;
-
-                    Permanent selectedTarget = null;
 
                     SelectPermanentEffect selectTargetEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.BT26
                                 canTargetCondition_ByPreSelecetedList: (preSelected, permanent) => !preSelected.Contains(permanent),
                                 canEndSelectCondition: null,
                                 maxCount: battleAreaMaxCount,
-                                canNoSelect: false,
+                                canNoSelect: true,
                                 canEndNotMax: true,
                                 selectPermanentCoroutine: SelectSourceCoroutine,
                                 afterSelectPermanentCoroutine: null,
@@ -153,8 +153,6 @@ namespace DCGO.CardEffects.BT26
                             foreach (Permanent selectedSource in selectedSources) materialCards.Add(selectedSource.TopCard);
 
                             remaining -= selectedSources.Count;
-
-                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(selectedSources, CardEffectCommons.CardEffectHashtable(activateClass), notShowCards: true).Destroy());
                         }
                         else if (selectedLocation == 2)
                         {
@@ -168,7 +166,7 @@ namespace DCGO.CardEffects.BT26
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
-                                canNoSelect: false,
+                                canNoSelect: true,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: SelectLinkSourceCoroutine,
                                 afterSelectPermanentCoroutine: null,
@@ -199,7 +197,7 @@ namespace DCGO.CardEffects.BT26
                                 canTargetCondition: CanSelectLinkedOrTrashCondition,
                                 canTargetCondition_ByPreSelecetedList: (preSelected, cardSource) => !preSelected.Contains(cardSource),
                                 canEndSelectCondition: null,
-                                canNoSelect: () => false,
+                                canNoSelect: () => true,
                                 selectCardCoroutine: null,
                                 afterSelectCardCoroutine: AfterSelectLinkCardCoroutine,
                                 message: $"Select up to {linkMaxCount} [Seven Code] trait Digimon card(s) from this Digimon's link cards to place as material ({remaining} remaining).",
@@ -240,7 +238,7 @@ namespace DCGO.CardEffects.BT26
                                 canTargetCondition: CanSelectLinkedOrTrashCondition,
                                 canTargetCondition_ByPreSelecetedList: (preSelected, cardSource) => !preSelected.Contains(cardSource),
                                 canEndSelectCondition: null,
-                                canNoSelect: () => false,
+                                canNoSelect: () => true,
                                 selectCardCoroutine: null,
                                 afterSelectCardCoroutine: AfterSelectTrashCardCoroutine,
                                 message: $"Select up to {trashMaxCount} [Seven Code] trait Digimon card(s) from your trash to place as material ({remaining} remaining).",
@@ -279,7 +277,7 @@ namespace DCGO.CardEffects.BT26
                             payCost: false,
                             reduceCostTuple: null,
                             fixedCostTuple: null,
-                            ignoreDigivolutionRequirementFixedCost: -1,
+                            ignoreDigivolutionRequirementFixedCost: 0,
                             isHand: true,
                             activateClass: activateClass,
                             successProcess: null,
