@@ -1025,7 +1025,7 @@ public enum EffectTiming
     WhenDigisorption,
     WhenRemoveField,
     WhenPermanentWouldBeDeleted,
-    WhenReturntoLibraryAnyone,
+    WhenReturntoLibraryAnywhere,
     WhenReturntoHandAnyone,
     WhenUntapAnyone,
     OnEndAttackPhase,

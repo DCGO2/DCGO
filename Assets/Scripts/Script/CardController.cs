@@ -2347,7 +2347,7 @@ public class DeckBottomBounceClass
                 cardEffect,
                 null
             ),
-            EffectTiming.WhenReturntoLibraryAnyone));
+            EffectTiming.WhenReturntoLibraryAnywhere));
 
         // "When permanents would remove field" effect
 
@@ -2513,7 +2513,7 @@ public class DeckTopBounceClass
                 cardEffect,
                 null
             ),
-            EffectTiming.WhenReturntoLibraryAnyone));
+            EffectTiming.WhenReturntoLibraryAnywhere));
 
         // "When permanents would remove field" effect
 

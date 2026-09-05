@@ -222,7 +222,7 @@ namespace DCGO.CardEffects.BT20
             #endregion
 
             #region All Turns
-            if(timing == EffectTiming.WhenReturntoLibraryAnyone || timing == EffectTiming.WhenReturntoHandAnyone ){
+            if(timing == EffectTiming.WhenReturntoLibraryAnywhere || timing == EffectTiming.WhenReturntoHandAnyone ){
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("If returned, DNA Digivolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine, -1, true, EffectDiscription());
