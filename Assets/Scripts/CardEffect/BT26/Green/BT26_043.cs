@@ -78,7 +78,7 @@ namespace DCGO.CardEffects.BT26
                     {
                         SelectPermanentEffect selectCantUnsuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        int maxCount = Math.Min(1, card.PermanentOfThisCard().DigivolutionCards.Filter(FaceDownCards).Count);
+                        int maxCount = Math.Min(CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition), card.PermanentOfThisCard().DigivolutionCards.Filter(FaceDownCards).Count);
 
                         selectCantUnsuspendEffect.SetUp(
                             selectPlayer: card.Owner,
