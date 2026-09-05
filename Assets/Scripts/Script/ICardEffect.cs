@@ -917,7 +917,9 @@ public abstract class ICardEffect
             {
                 if (this.EffectSourceCard != null)
                 {
-                    if (cardEffect.EffectSourceCard == this.EffectSourceCard)
+                    bool CopiedEffectsAggregatedThroughDigivolutions = cardEffect.OriginalEffectSourceCard is not null && this.OriginalEffectSourceCard is not null && cardEffect.OriginalEffectSourceCard == this.OriginalEffectSourceCard;
+                    if (cardEffect.EffectSourceCard == this.EffectSourceCard ||
+                        CopiedEffectsAggregatedThroughDigivolutions)
                     {
                         if (HasSameHashString() && HasSameRootCardEffect())
                         {
