@@ -100,11 +100,8 @@ namespace DCGO.CardEffects.BT26
                         bool CanSelectCardCondition(CardSource cardSource)
                         {
                             return (cardSource.EqualsTraits("Iliad")
-                                || cardSource.EqualsTraits("TS"))
-                                && ((cardSource.IsOption
-                                        && !cardSource.CanNotPlayThisOption)
-                                    || (cardSource.HasPlayCost
-                                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass, fixedCost: cardSource.GetCostItself - 5)));
+                                    || cardSource.EqualsTraits("TS"))
+                                && CardEffectCommons.CanPlayOrUse(cardSource, activateClass, fixedCost: cardSource.GetCostItself - 5);
                         }
 
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
