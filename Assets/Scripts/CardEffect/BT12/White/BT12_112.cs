@@ -327,7 +327,7 @@ namespace DCGO.CardEffects.BT12
 
                                     if (libraryCards.Count >= 1)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(libraryCards));
+                                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(libraryCards, cardEffect: activateClass));
 
                                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(libraryCards, "Deck Bottom Cards", true, true));
                                     }

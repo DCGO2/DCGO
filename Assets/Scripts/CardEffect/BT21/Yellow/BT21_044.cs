@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.BT21
 
             IEnumerator SharedActivateCoroutine1(ActivateClass activateClass)
             {
-                bool Used = false;
+                bool isUsed = false;
 
                 if (card.Owner.CanAddSecurity(activateClass)
                 && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SharedCanSelectCardCondition1))
@@ -176,14 +176,13 @@ namespace DCGO.CardEffects.BT21
 
                     if (selectedCards.Count >= 1)
                     {
-                        foreach (CardSource selectedCard in selectedCards)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard));
-                        }
+                        isUsed = true;
+
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCards[0]));
                     }
                 }
 
-                if (!Used) activateClass.RemoveUse();
+                if (!isUsed) activateClass.RemoveUse();
             }
             #endregion
 

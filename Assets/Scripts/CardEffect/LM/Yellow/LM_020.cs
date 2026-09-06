@@ -140,7 +140,7 @@ namespace DCGO.CardEffects.LM
 
                             if (selectedCard != null)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(new List<CardSource>() { selectedCard }));
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(new List<CardSource>() { selectedCard }, cardEffect: activateClass));
                             }
 
                             ContinuousController.instance.PlaySE(GManager.instance.ShuffleSE);

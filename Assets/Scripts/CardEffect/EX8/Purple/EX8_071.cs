@@ -87,7 +87,7 @@ namespace DCGO.CardEffects.EX8
                                    cardSource.EqualsTraits("NSo");
                         }
 
-                        cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: cardSource, condition: Condition, effectName: "<Scapegoat>", effectDiscription: null));
+                        cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: cardSource, condition: Condition, effectName: "<Scapegoat>"));
                     }
 
                     return cardEffects;

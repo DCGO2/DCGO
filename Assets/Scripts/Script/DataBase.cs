@@ -476,6 +476,7 @@ public class DataBase : MonoBehaviour
         return "[On Deletion] <Save> (You may place this card under one of your Tamers.)";
     }
 
+
     public static string EvadeEffectDiscription()
     {
         return "<Evade> (When this Digimon would be deleted, you may suspend it to prevent that deletion.)";
@@ -541,6 +542,11 @@ public class DataBase : MonoBehaviour
         return "<Training> (In the main phase, by suspending this Digimon, place your deck's top card face down as this Digimon's bottom digivolution card. This effect can also activate in the breeding area).";
     }
 
+    public static string DetachEffectDescription(string condition)
+    {
+        return $"<Detach 《{condition}》> (When this Digimon would leave the battle area other than by your effects, by trashing 1 of its {condition} link cards, it doesn't leave.)";
+    }
+
     public static string DecodeEffectDiscription(string[] decodeStrings)
     {
         return $"<Decode {decodeStrings[0]}> (When this Digimon would leave the battle area other than in battle, you may play 1 {decodeStrings[1]} Digimon card from its digivolution cards without paying the cost.)";
@@ -569,6 +575,11 @@ public class DataBase : MonoBehaviour
     public static string EngageEffectDescription()
     {
         return "<Engage> (At the end of your turn, this Digimon may attack.)";
+    }
+
+    public static string ScapegoatEffectDescription()
+    {
+        return "<Scapegoat> (When this Digimon would be deleted other than by your effects, by deleting 1 of your other Digimon, it isn't deleted.)";
     }
 
     public static string ReplaceToASCII(string text)
@@ -848,17 +859,14 @@ public class ColorSpriteDic : TableBase<CardColor, Sprite, SamplePair>
 public class TableBase<TKey, TValue, Type> where Type : KeyAndValue<TKey, TValue>
 {
     [SerializeField]
-    private List<Type> list;
+    private List<Type> _list;
 
-    private Dictionary<TKey, TValue> table;
+    private Dictionary<TKey, TValue> _table;
 
     public Dictionary<TKey, TValue> GetTable()
     {
-        if (table == null)
-        {
-            table = ConvertListToDictionary(list);
-        }
-        return table;
+        _table ??= ConvertListToDictionary(_list);
+        return _table;
     }
 
     /// <summary>
@@ -866,7 +874,7 @@ public class TableBase<TKey, TValue, Type> where Type : KeyAndValue<TKey, TValue
     /// </summary>
     public List<Type> GetList()
     {
-        return list;
+        return _list;
     }
 
     static Dictionary<TKey, TValue> ConvertListToDictionary(List<Type> list)

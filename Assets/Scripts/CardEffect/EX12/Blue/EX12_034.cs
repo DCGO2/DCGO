@@ -153,6 +153,8 @@ namespace DCGO.CardEffects.EX12
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool isUsed = false;
+
                     bool validHandCard = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                     bool validDigivolutionCard = card.PermanentOfThisCard().DigivolutionCards.Some(CanSelectCardCondition);
 
@@ -188,10 +190,23 @@ namespace DCGO.CardEffects.EX12
                                 root,
                                 activateClass,
                                 payCost: false,
-                                targetPermanent: card.PermanentOfThisCard()
+                                targetPermanent: card.PermanentOfThisCard(),
+                                afterSelectCardCoroutine: AfterSelectCardCoroutine
                             ));
                             #endregion
                         }
+
+                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                        {
+                            if (cardSources.Count >= 1)
+                            {
+                                isUsed = true;
+                            }
+
+                            yield return null;
+                        }
+
+                        if (!isUsed) activateClass.RemoveUse();
                     }
                 }
             }

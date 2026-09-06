@@ -189,7 +189,7 @@ namespace DCGO.CardEffects.LM
                             {
                                 if (cardSources.Count == 1)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources));
+                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources, cardEffect: activateClass));
                                 }
                             }
                         }

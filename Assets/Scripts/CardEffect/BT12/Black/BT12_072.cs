@@ -137,7 +137,7 @@ namespace DCGO.CardEffects.BT12
             {
                 bool CopyCardCondition(CardSource cardSource) => cardSource.EqualsCardName("Machinedramon") || cardSource.EqualsCardName("Chaosdramon");
 
-                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, cardCondition: CopyCardCondition));
+                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(card, cardCondition: CopyCardCondition));
             }
             #endregion
 

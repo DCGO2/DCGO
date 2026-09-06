@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.BT25
                             return true;
                         }
 
-                        cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(false, cardSource, Condition, "Scapegoat", "<Scapegoat>", addSkillClass));
+                        cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(false, cardSource, Condition, "Scapegoat", addSkillClass));
                     }
 
                     return cardEffects;

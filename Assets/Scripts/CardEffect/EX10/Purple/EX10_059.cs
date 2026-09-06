@@ -553,8 +553,6 @@ namespace DCGO.CardEffects.EX10
                 }
 
                 cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(
-                    ref cardEffects,
-                    timing,
                     card,
                     cardCondition: CopyCardCondition,
                     effectCondition: CopyEffectCondition));
