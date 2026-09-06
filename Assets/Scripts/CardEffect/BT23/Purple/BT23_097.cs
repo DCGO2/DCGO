@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.BT23
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     List<CardSource> cardSources = new List<CardSource>() { card };
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Card", true, true));
 
                     if (card.Owner.LibraryCards.Contains(card))

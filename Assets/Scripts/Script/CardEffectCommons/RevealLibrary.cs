@@ -477,7 +477,7 @@ public partial class CardEffectCommons
 
         if (remainingCards.Count == 1)
         {
-            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(remainingCards));
+            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(remainingCards, cardEffect: activateClass));
 
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(remainingCards, "Deck Bottom Card", true, true));
         }
@@ -511,9 +511,9 @@ public partial class CardEffectCommons
 
             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-            static IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+            IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
             {
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources,
                 "Deck Bottom Cards", true, true));
@@ -534,7 +534,7 @@ public partial class CardEffectCommons
 
         if (remainingCards.Count == 1)
         {
-            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(remainingCards));
+            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(remainingCards, cardEffect: activateClass));
 
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(remainingCards, "Deck Top Card", true, true));
         }
@@ -568,13 +568,13 @@ public partial class CardEffectCommons
 
             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-            static IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+            IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
             {
                 List<CardSource> topCards = cardSources.Clone();
 
                 topCards.Reverse();
 
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(topCards));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(topCards, cardEffect: activateClass));
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Top Cards", true, true));
             }

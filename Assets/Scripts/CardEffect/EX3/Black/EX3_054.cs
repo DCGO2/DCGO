@@ -104,7 +104,7 @@ namespace DCGO.CardEffects.EX3
                             {
                                 cardSources.Reverse();
 
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources));
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources, cardEffect: activateClass));
 
                                 int minusCount = cardSources.Count;
 

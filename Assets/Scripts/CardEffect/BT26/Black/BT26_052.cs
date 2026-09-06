@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 // Pristimon
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT26
 {
     public class BT26_052 : CEntity_Effect
     {
@@ -37,13 +37,13 @@ namespace DCGO.CardEffects
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 bool CanSelectGlowingDawnTraitCardCondition(CardSource cardSource)

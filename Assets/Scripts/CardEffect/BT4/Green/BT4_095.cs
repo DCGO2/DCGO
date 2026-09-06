@@ -83,7 +83,7 @@ public class BT4_095 : CEntity_Effect
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(
-                            new List<CardSource>() { cardSource }));
+                            new List<CardSource>() { cardSource }, cardEffect: activateClass));
                     }
                 }
             }

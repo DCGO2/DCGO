@@ -86,8 +86,7 @@ namespace DCGO.CardEffects.EX12
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon
-                        && cardSource.EqualsTraits("Shambala")
+                    return cardSource.EqualsTraits("Shambala")
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 3);
                 }
 

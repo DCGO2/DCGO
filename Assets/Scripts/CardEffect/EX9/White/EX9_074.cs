@@ -296,26 +296,10 @@ namespace DCGO.CardEffects.EX9
                 bool Condition()
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && DigivolutionCardColors() >= 1;
+                        && card.PermanentOfThisCard().DigivolutionCardsColors.Count >= 1;
                 }
 
-                #region Amount of colors in this Digimon's digivolution cards
-                int DigivolutionCardColors()
-                {
-                    List<CardColor> cardColors = new List<CardColor>();
-
-                    foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
-                    {
-                        cardColors.AddRange(source.CardColors);
-                    }
-
-                    cardColors = cardColors.Distinct().ToList();
-
-                    return cardColors.Count;
-                }
-                #endregion
-
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect<Func<int>>(changeValue: () => 1000 * DigivolutionCardColors(), isInheritedEffect: false, card: card, condition: Condition));
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect<Func<int>>(changeValue: () => 1000 * card.PermanentOfThisCard().DigivolutionCardsColors.Count, isInheritedEffect: false, card: card, condition: Condition));
             }
             #endregion
 

@@ -591,7 +591,7 @@ public class CardObjectController : MonoBehaviour
         List<CardSource> addedCards = cardSources.Filter(cardSource => !cardSource.IsDigiEgg && !cardSource.IsToken);
 
         if (eggCards.Count <= 0)
-            yield return ContinuousController.instance.StartCoroutine(AddLibraryBottomCards(eggCards));
+            yield return ContinuousController.instance.StartCoroutine(AddLibraryBottomCards(eggCards, cardEffect: cardEffect));
 
         if (addedCards.Count <= 0) yield break;
 
@@ -778,9 +778,17 @@ public class CardObjectController : MonoBehaviour
     #endregion
 
     #region place a card on top of the deck
-    public static IEnumerator AddLibraryTopCards(List<CardSource> cardSources, bool notAddLog = false)
+    public static IEnumerator AddLibraryTopCards(List<CardSource> cardSources, ICardEffect cardEffect, bool notAddLog = false)
     {
         if (cardSources.Count <= 0) yield break;
+
+        // Cards revealed from the library (eg. "reveal the top X cards" effects) and then returned
+        // there were never truly added from outside — track them here so they can be excluded from
+        // the OnAddLibraryAnyone trigger below.
+        bool WasAlreadyInLibrary(CardSource cardSource)
+            => cardSource.Owner.LibraryCards.Contains(cardSource) || cardSource.Owner.DigitamaLibraryCards.Contains(cardSource);
+
+        HashSet<CardSource> alreadyInLibraryCardSources = new HashSet<CardSource>(cardSources.Filter(WasAlreadyInLibrary));
 
         bool isFromTrash = cardSources.Some(cardSource => CardEffectCommons.IsExistOnTrash(cardSource));
 
@@ -800,6 +808,8 @@ public class CardObjectController : MonoBehaviour
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnReturnCardsToLibraryFromTrash));
             #endregion
         }
+
+        List<CardSource> addedCardSources = new List<CardSource>();
 
         foreach (CardSource cardSource in cardSources)
         {
@@ -821,6 +831,7 @@ public class CardObjectController : MonoBehaviour
                     if (!cardSource.Owner.LibraryCards.Contains(cardSource))
                     {
                         cardSource.Owner.LibraryCards.Insert(0, cardSource);
+                        if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
                     }
                 }
 
@@ -829,6 +840,9 @@ public class CardObjectController : MonoBehaviour
                     if (!cardSource.Owner.DigitamaLibraryCards.Contains(cardSource))
                     {
                         cardSource.Owner.DigitamaLibraryCards.Insert(0, cardSource);
+                        // Ruling: OnAddLibraryAnyone should not trigger from cards added to the digi-egg deck.
+                        // Commented out (not removed) so this is easy to restore if that ruling changes.
+                        // if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
                     }
                 }
 
@@ -856,13 +870,23 @@ public class CardObjectController : MonoBehaviour
             }
         }
         #endregion
+
+        yield return ContinuousController.instance.StartCoroutine(FireOnAddLibraryAnyone(addedCardSources, isTop: true, cardEffect: cardEffect));
     }
     #endregion
 
     #region put a card at the bottom of the deck
-    public static IEnumerator AddLibraryBottomCards(List<CardSource> cardSources, bool notAddLog = false)
+    public static IEnumerator AddLibraryBottomCards(List<CardSource> cardSources, ICardEffect cardEffect, bool notAddLog = false)
     {
         if (cardSources.Count <= 0) yield break;
+
+        // Cards revealed from the library (eg. "reveal the top X cards" effects) and then returned
+        // there were never truly added from outside — track them here so they can be excluded from
+        // the OnAddLibraryAnyone trigger below.
+        bool WasAlreadyInLibrary(CardSource cardSource)
+            => cardSource.Owner.LibraryCards.Contains(cardSource) || cardSource.Owner.DigitamaLibraryCards.Contains(cardSource);
+
+        HashSet<CardSource> alreadyInLibraryCardSources = new HashSet<CardSource>(cardSources.Filter(WasAlreadyInLibrary));
 
         bool isFromTrash = cardSources.Some(cardSource => CardEffectCommons.IsExistOnTrash(cardSource));
 
@@ -895,6 +919,8 @@ public class CardObjectController : MonoBehaviour
             }
         }
 
+        List<CardSource> addedCardSources = new List<CardSource>();
+
         foreach (CardSource cardSource in cardSources.Clone())
         {
             bool isFromHand = CardEffectCommons.IsExistOnHand(cardSource);
@@ -915,6 +941,7 @@ public class CardObjectController : MonoBehaviour
                     if (!cardSource.Owner.LibraryCards.Contains(cardSource))
                     {
                         cardSource.Owner.LibraryCards.Add(cardSource);
+                        if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
                     }
                 }
 
@@ -923,6 +950,9 @@ public class CardObjectController : MonoBehaviour
                     if (!cardSource.Owner.DigitamaLibraryCards.Contains(cardSource))
                     {
                         cardSource.Owner.DigitamaLibraryCards.Add(cardSource);
+                        // Ruling: OnAddLibraryAnyone should not trigger from cards added to the digi-egg deck.
+                        // Commented out (not removed) so this is easy to restore if that ruling changes.
+                        // if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
                     }
                 }
 
@@ -950,6 +980,24 @@ public class CardObjectController : MonoBehaviour
             }
         }
         #endregion
+
+        yield return ContinuousController.instance.StartCoroutine(FireOnAddLibraryAnyone(addedCardSources, isTop: false, cardEffect: cardEffect));
+    }
+    #endregion
+
+    #region "When cards are added to the library" effect, regardless of origin (hand/security/field/digivolution source/trash)
+    static IEnumerator FireOnAddLibraryAnyone(List<CardSource> addedCardSources, bool isTop, ICardEffect cardEffect = null)
+    {
+        if (addedCardSources.Count <= 0) yield break;
+
+        System.Collections.Hashtable hashtable = new System.Collections.Hashtable()
+        {
+            {"CardSources", addedCardSources},
+            {"IsTop", isTop},
+            {"CardEffect", cardEffect}
+        };
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnAddLibraryAnyone));
     }
     #endregion
 
@@ -984,6 +1032,8 @@ public class CardObjectController : MonoBehaviour
             if (cardSource.IsDigiEgg)
             {
                 cardSource.Owner.DigitamaLibraryCards.Add(cardSource);
+
+                yield return ContinuousController.instance.StartCoroutine(FireOnAddLibraryAnyone(new List<CardSource>() { cardSource }, isTop: false));
             }
             else if (!cardSource.IsToken)
             {

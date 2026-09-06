@@ -64,45 +64,29 @@ public partial class CardEffectFactory
     {
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
-        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
 
-        string EffectDiscription()
+        string EffectDescription()
         {
             return "[Start of Your Main Phase] If your opponent has a Digimon, gain 1 memory.";
         }
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
-            {
-                if (CardEffectCommons.IsOwnerTurn(card))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                && CardEffectCommons.IsOwnerTurn(card);
         }
 
         bool CanActivateCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass))
-            {
-                if (card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1)
-                {
-                    if (card.Owner.CanAddMemory(activateClass))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                && card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1;
         }
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)
         {
-            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+            if (card.Owner.CanAddMemory(activateClass))
+                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
         }
 
         return activateClass;
@@ -849,6 +833,7 @@ public partial class CardEffectFactory
                                                                     bool endOfOpponentTurn = false,
                                                                     bool endOfAllTurns = false,
                                                                     bool startOfYourMainPhase = false,
+                                                                    bool startOfOpponentsMainPhase = false,
                                                                     bool counter = false)
     {
         if (whenMoving && timing == EffectTiming.OnMove)
@@ -894,6 +879,10 @@ public partial class CardEffectFactory
         if(startOfYourMainPhase && timing == EffectTiming.OnStartMainPhase)
         {
             cardEffects.Add(StartOfYourMainPhaseClass(card, effectName, activateCoroutine, effectDescription("Start of Your Main Phase"), optional, isSkippableFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
+        }
+        if (startOfOpponentsMainPhase && timing == EffectTiming.OnStartMainPhase)
+        {
+            cardEffects.Add(StartOfYourOpponentsMainPhaseClass(card, effectName, activateCoroutine, effectDescription("Start of Opponent's Main Phase"), optional, isSkippableFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
         }
         if (counter && timing == EffectTiming.OnCounterTiming)
         {

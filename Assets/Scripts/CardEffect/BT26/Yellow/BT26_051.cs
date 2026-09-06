@@ -54,9 +54,15 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && (permanent.TopCard.EqualsTraits("Social") || permanent.TopCard.EqualsTraits("Tool") || permanent.TopCard.EqualsTraits("Open") || permanent.TopCard.EqualsTraits("Seven Code"));
 
+                bool PermanentCondition(Permanent permanent)
+                    => permanent == card.PermanentOfThisCard();
+
+                bool CardCondition(CardSource source)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
+
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.CanTriggerWhenLinked(hashtable, permanent => permanent == card.PermanentOfThisCard(), null);
+                        && CardEffectCommons.CanTriggerWhenLinked(hashtable, PermanentCondition, CardCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);

@@ -218,7 +218,7 @@ namespace DCGO.CardEffects.BT18
                         {
                             sources.Reverse();
 
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(sources));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(sources, cardEffect: activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1 * sources.Count, activateClass));
                         }
@@ -338,7 +338,7 @@ namespace DCGO.CardEffects.BT18
                     {
                         if (cardSources.Count == 2)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
 

@@ -164,7 +164,7 @@ public class BT8_065 : CEntity_Effect
                     {
                         if (libraryCards.Count == 1)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(libraryCards));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(libraryCards, cardEffect: activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(
                                 libraryCards,
@@ -204,7 +204,7 @@ public class BT8_065 : CEntity_Effect
                             {
                                 cardSources.Reverse();
 
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources));
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources, cardEffect: activateClass));
                             }
                         }
                     }

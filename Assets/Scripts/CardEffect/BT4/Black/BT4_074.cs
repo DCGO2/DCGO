@@ -120,7 +120,7 @@ public class BT4_074 : CEntity_Effect
                     {
                         selectedCards.Reverse();
 
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(selectedCards));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(selectedCards, cardEffect: activateClass));
 
                         yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2 * selectedCards.Count, activateClass));
                     }
