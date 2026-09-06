@@ -189,7 +189,8 @@ namespace DCGO.CardEffects.BT25
                 bool hasUsed = false;
                 bool CanSelect3MOptionCard(CardSource cardSource) => cardSource.IsOption
                     && cardSource.HasThreeMusketeersTraits
-                    && cardSource.PayingCost(SelectCardEffect.Root.Trash, null, checkAvailability: false) <= cardSource.Owner.MaxMemoryCost;
+                    && cardSource.GetCostItself - 3 <= cardSource.Owner.MaxMemoryCost
+                    && !cardSource.CanNotPlayThisOption;
 
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition))
                 {
