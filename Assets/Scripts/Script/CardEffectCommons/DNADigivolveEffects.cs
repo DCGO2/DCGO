@@ -156,21 +156,23 @@ public partial class CardEffectCommons
     /// <param name="permanentCondition">Condition to filter which permaments may be used for this effect</param>
     /// <param name="cardCondition">Condition to filter which cards may be used for this effect</param>
     /// <returns></returns>
-    private static bool PermanentFulfillsRequirement(Player owner, Permanent permanent, CardSource jogressTarget, Permanent firstCondition, bool isWithHandCard, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> cardCondition = null)
+    private static bool PermanentFulfillsRequirement(Player owner, Permanent permanent, CardSource jogressTarget, Permanent firstCondition, bool isWithHandCard, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> cardCondition = null, bool isBlast = false)
     {
-        if (jogressTarget.jogressCondition.Count <= 0 || jogressTarget.CanNotEvolve(permanent))
-            return false;
-        if(permanentCondition == null || permanentCondition(permanent))
+        var fulfilled = !(jogressTarget.jogressCondition.Count <= 0 || jogressTarget.CanNotEvolve(permanent));
+        if (fulfilled is not true) return false;
+        else fulfilled = false;
+        if (permanentCondition == null || permanentCondition(permanent))
         {
             if (firstCondition == null)
             {
+                if (isBlast) return false;
                 foreach (JogressCondition DNACondition in jogressTarget.jogressCondition)
                 {
                     if (DNACondition.elements[0].EvoRootCondition(permanent))
                     {
                         List<CardSource> sources = isWithHandCard ? owner.HandCards : owner.TrashCards;
 
-                        foreach(CardSource cardSource in sources.Filter(cardSource => cardCondition == null || cardCondition(cardSource)))
+                        foreach (CardSource cardSource in sources.Filter(cardSource => cardCondition == null || cardCondition(cardSource)))
                         {
                             Permanent tempPermanent = PlayTempPermanent(cardSource);
                             if (tempPermanent == null)
@@ -178,7 +180,7 @@ public partial class CardEffectCommons
                             bool isValid = DNACondition.elements[1].EvoRootCondition(tempPermanent);
                             owner.FieldPermanents[tempPermanent.PermanentFrame.FrameID] = null;
 
-                            if(isValid)
+                            if (isValid)
                                 return true;
 
                         }
@@ -193,15 +195,47 @@ public partial class CardEffectCommons
                 }
                 foreach (JogressCondition DNACondition in jogressTarget.jogressCondition)
                 {
-                    if (DNACondition.elements[0].EvoRootCondition(firstCondition) && DNACondition.elements[1].EvoRootCondition(permanent))
+                    var ownerHand = owner.HandCards;
+                    bool testedCardOnHand = ownerHand.Contains(permanent.TopCard),
+                    firstOnHand = ownerHand.Contains(firstCondition.TopCard);
+                    Permanent truePermanentTest = permanent,
+                    trueFirstCondition = firstCondition;
+                    if (isBlast)
                     {
-                        return true;
+                        if (firstOnHand && testedCardOnHand) return false;
+                        if (testedCardOnHand)
+                        {
+                            truePermanentTest = PlayTempPermanent(permanent.TopCard);
+                            if (truePermanentTest == null)
+                                continue;
+                        }
+                        else if (firstOnHand)
+                        {
+                            trueFirstCondition = PlayTempPermanent(firstCondition.TopCard);
+                            if (trueFirstCondition == null)
+                                continue;
+                        }
                     }
+                    fulfilled = DNACondition.elements[0].EvoRootCondition(trueFirstCondition) &&
+                        DNACondition.elements[1].EvoRootCondition(truePermanentTest);
+                    {
+                        if (testedCardOnHand)
+                            owner.FieldPermanents[truePermanentTest.PermanentFrame.FrameID] = null;
+                        else if (firstOnHand)
+                            owner.FieldPermanents[trueFirstCondition.PermanentFrame.FrameID] = null;
+                    }
+                    if (fulfilled) break;
+
                 }
             }
         }
 
-        return false;
+        return fulfilled;
+    }
+
+    public static bool BlastDNAFulfillsRequirement(Player owner, Permanent permanent, CardSource jogressTarget, Permanent firstCondition, bool isWithHandCard, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> cardCondition = null)
+    {
+        return PermanentFulfillsRequirement(owner, permanent, jogressTarget, firstCondition, isWithHandCard, permanentCondition, cardCondition, true);
     }
 
     private static IEnumerator SelectPermanent(Player owner, CardSource jogressTarget, Permanent firstCondition, bool isOptional, ICardEffect activateClass, bool isWithHand, Func<Permanent, IEnumerator> SelectPermanentCoroutine, Func<Permanent, bool> permanentCondition = null, Func<CardSource, bool> digivolutionCardCondition = null)
