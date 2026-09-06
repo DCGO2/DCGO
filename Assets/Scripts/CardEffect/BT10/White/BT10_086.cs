@@ -308,7 +308,7 @@ namespace DCGO.CardEffects.BT10
                             returnedToLibrary = true;
 
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(
-                                new List<CardSource>() { cardSource }));
+                                new List<CardSource>() { cardSource }, cardEffect: activateClass));
                         }
                     }
 
@@ -488,7 +488,7 @@ namespace DCGO.CardEffects.BT10
                         {
                             returnedToLibrary = true;
 
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { cardSource }));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { cardSource }, cardEffect: activateClass));
                         }
                     }
 

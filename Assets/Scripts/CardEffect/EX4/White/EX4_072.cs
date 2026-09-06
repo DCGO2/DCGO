@@ -25,14 +25,20 @@ namespace DCGO.CardEffects.EX4
                     return true;
                 }
 
-                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
+                List<string> changeCardNames(CardSource cardSource, List<string> cardNames)
                 {
                     if (cardSource == card)
                     {
-                        CardNames.Add("Plug-In_EX4_072");
+                        for (int i = 0; i < cardNames.Count; i++)
+                        {
+                            if (!cardNames[i].Contains("Plug-In"))
+                            {
+                                cardNames[i] = $"Plug-In {cardNames[i]}";
+                            }
+                        }
                     }
 
-                    return CardNames;
+                    return cardNames;
                 }
             }
             #endregion

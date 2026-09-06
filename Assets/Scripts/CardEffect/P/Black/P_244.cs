@@ -68,53 +68,15 @@ namespace DCGO.CardEffects.P
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                             #endregion
 
-                            bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+                            SelectCardEffect.Root root = GManager.instance.userSelectionManager.SelectedBoolValue ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
 
                             #region Hand/Trash Card Selection & Play
-                            if (fromHand)
-                            {
-                                SelectHandEffect selectHandEffect2 = GManager.instance.GetComponent<SelectHandEffect>();
-
-                                selectHandEffect2.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: 1,
-                                    canNoSelect: true,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: null,
-                                    mode: SelectHandEffect.Mode.PlayForFree,
-                                    cardEffect: activateClass);
-
-                                yield return StartCoroutine(selectHandEffect2.Activate());
-                            }
-                            else
-                            {
-                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 card to play.",
-                                    maxCount: 1,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.PlayForFree,
-                                    root: SelectCardEffect.Root.Trash,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                                yield return StartCoroutine(selectCardEffect.Activate());
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                                canTargetCondition: CanSelectCardCondition,
+                                root,
+                                activateClass,
+                                payCost: false
+                            ));
                             #endregion
                         }
                     }
@@ -125,7 +87,7 @@ namespace DCGO.CardEffects.P
             #endregion
 
             #region Your turn - Delay
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAddDigivolutionCards)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into a Digimon w/[Vemmon] in text for 3 less.", CanUseCondition, card);
@@ -139,13 +101,13 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanDeclareOptionDelayEffect(card)
+                    return CardEffectCommons.CanDeclareOptionDelayEffect(card)
+                        && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanTriggerOnAddDigivolutionCard(
                             hashtable: hashtable,
                             permanentCondition: TriggerPermanentCondition,
-                            cardEffectCondition: _ => true,
-                            cardCondition: TriggerCardCondition);
+                            cardEffectCondition: cardEffect => cardEffect.EffectSourceCard != null,
+                            cardCondition: cardSource => cardSource.EqualsCardName("Vemmon"));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -156,11 +118,6 @@ namespace DCGO.CardEffects.P
                 bool TriggerPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-                }
-
-                bool TriggerCardCondition(CardSource cardSource)
-                {
-                    return cardSource.EqualsCardName("Vemmon");
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

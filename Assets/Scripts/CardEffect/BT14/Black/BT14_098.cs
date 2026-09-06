@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.BT14
                             {
                                 cardSources.Reverse();
 
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources));
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources, cardEffect: activateClass));
                                 returned = true;
                             }
                         }

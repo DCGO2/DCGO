@@ -372,7 +372,7 @@ namespace DCGO.CardEffects.EX6
 
                             IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
 
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Cards", true, true));
 
@@ -453,7 +453,7 @@ namespace DCGO.CardEffects.EX6
 
                             IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
 
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Cards", true, true));
 

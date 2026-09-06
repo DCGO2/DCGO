@@ -29,6 +29,7 @@ public partial class CardEffectFactory
         activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, DataBase.GuardEffectDescription());
         activateClass.SetIsInheritedEffect(isInheritedEffect);
         activateClass.SetIsLinkedEffect(isLinkedEffect);
+        activateClass.SetIsSkippable(true);
 
         if (rootCardEffect != null)
         {
@@ -52,9 +53,9 @@ public partial class CardEffectFactory
             return CanActivateGuard(targetPermanent, activateClass);
         }
 
-        IEnumerator ActivateCoroutine(Hashtable _hashtable)
+        IEnumerator ActivateCoroutine(Hashtable hashtable)
         {
-            return CardEffectFactory.GuardProcess(_hashtable, activateClass, targetPermanent);
+            yield return ContinuousController.instance.StartCoroutine(GuardProcess(hashtable, activateClass, targetPermanent));
         }
 
         return activateClass;
@@ -70,14 +71,20 @@ public partial class CardEffectFactory
     #endregion
 
     #region Effect process of [Guard]
-    public static IEnumerator GuardProcess(Hashtable hashtable, ICardEffect activateClass, Permanent permanent)
+    public static IEnumerator GuardProcess(Hashtable hashtable, ICardEffect activateClass, Permanent guardPermanent)
     {
-        if (permanent == null) yield break;
-        if (permanent.TopCard == null) yield break;
+        if (guardPermanent == null) yield break;
+        if (guardPermanent.TopCard == null) yield break;
 
-        bool PermanentCondition(Permanent otherPermanent) => permanent != otherPermanent && CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(otherPermanent, permanent.TopCard);
+        CardSource topCard = guardPermanent.TopCard;
 
-        Player owner = permanent.TopCard.Owner;
+        bool PermanentCondition(Permanent otherPermanent)
+        {
+            return otherPermanent != guardPermanent
+                && CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(otherPermanent, topCard);
+        }
+
+        Player owner = topCard.Owner;
 
         string selectPlayerMessage = "Will you delete this digimon to prevent the removal?";
         string notSelectPlayerMessage = "The opponent is choosing if they will use Guard.";
@@ -94,20 +101,21 @@ public partial class CardEffectFactory
 
         if (GManager.instance.userSelectionManager.SelectedBoolValue)
         {
-            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { guardPermanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
 
             IEnumerator SuccessProcess()
             {
-                List<Permanent> GuardedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(PermanentCondition);
+                List<Permanent> removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(PermanentCondition);
 
-                foreach (Permanent guardPermanent in GuardedPermanents)
+                foreach (Permanent removed in removedPermanents)
                 {
-                    guardPermanent.willBeRemoveField = false;
-                    guardPermanent.HideDeleteEffect();
-                    guardPermanent.HideHandBounceEffect();
-                    guardPermanent.HideDeckBounceEffect();
-                    guardPermanent.HideWillRemoveFieldEffect();
+                    removed.willBeRemoveField = false;
+                    removed.HideDeleteEffect();
+                    removed.HideHandBounceEffect();
+                    removed.HideDeckBounceEffect();
+                    removed.HideWillRemoveFieldEffect();
                 }
+
                 yield return null;
             }
         }

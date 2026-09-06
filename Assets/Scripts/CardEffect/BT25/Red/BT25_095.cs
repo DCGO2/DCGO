@@ -123,28 +123,16 @@ namespace DCGO.CardEffects.BT25
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectFactory.ReplaceBottomSecurityWithFaceUpOptionEffect(card, activateClass));
 
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                    int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
-
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.PlayForCost,
-                        cardEffect: activateClass);
-
-                    selectHandEffect.SetReducedCostTuple((3, null));
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                            canTargetCondition: CanSelectCardCondition,
+                            SelectCardEffect.Root.Hand,
+                            activateClass,
+                            payCost: true,
+                            reduceCostTuple: (3, null)
+                        ));
+                    }
                 }
             }
 
@@ -202,57 +190,20 @@ namespace DCGO.CardEffects.BT25
                             GManager.instance.userSelectionManager.SetInt(canSelectHand ? 1 : 2);
                         }
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                        bool fromHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
-                        bool fromTrash = GManager.instance.userSelectionManager.SelectedIntValue == 2;
+                        
+                        bool doPlay = GManager.instance.userSelectionManager.SelectedIntValue != 3;
+                        SelectCardEffect.Root root = GManager.instance.userSelectionManager.SelectedIntValue == 1 ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
 
-                        if (fromHand)
+                        if (doPlay)
                         {
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
+                            #region Hand/Trash Card Selection & Play
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                                 canTargetCondition: CanPlayCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: null,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.PlayForFree,
-                                cardEffect: activateClass);
-
-                            selectHandEffect.SetUpCustomMessage("Select 1 digimon to play", "The opponent is selecting 1 digimon to play");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-                        }
-                        if (fromTrash)
-                        {
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanPlayCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: null,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 digimon to play",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.PlayForFree,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 digimon to play", "The opponent is selecting 1 digimon to play");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Selected Digimon");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                                root,
+                                activateClass,
+                                payCost: false
+                            ));
+                            #endregion
                         }
                     }
                 }

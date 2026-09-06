@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
+// Gypt Particle Cannon
 namespace DCGO.CardEffects.BT12
 {
     public class BT12_106 : CEntity_Effect
@@ -10,6 +10,7 @@ namespace DCGO.CardEffects.BT12
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Ignore Color Requirement
             if (timing == EffectTiming.None)
             {
                 IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
@@ -20,50 +21,37 @@ namespace DCGO.CardEffects.BT12
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer && permanent.TopCard.CardTraits.Contains("Hunter")))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent)
+                        => permanent.IsTamer
+                        && permanent.TopCard.CardTraits.Contains("Hunter"));
                 }
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    if (cardSource == card)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return cardSource == card;
                 }
             }
+            #endregion
+
+            #region Main
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Main] Suspend all of your opponent's Digimon and Tamers. Your opponent's cards don't unsuspend during their next unsuspend phase.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
-                    {
-                        if (permanent.IsDigimon || permanent.IsTamer)
-                        {
-                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                        && (permanent.IsDigimon
+                            || permanent.IsTamer)
+                            && !permanent.TopCard.CanNotBeAffected(activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -73,61 +61,42 @@ namespace DCGO.CardEffects.BT12
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        List<Permanent> suspendTargetPermanents = card.Owner.Enemy.GetBattleAreaPermanents().Filter(PermanentCondition);
+                        List<Permanent> suspendTargetPermanents = card.Owner.Enemy.GetBattleAreaPermanents().Filter(CanSelectPermanentCondition);
                         yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(suspendTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
                     }
 
-                    bool PermanentCondition(Permanent permanent)
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
-                        {
-                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    }
-
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(
-                        permanentCondition: PermanentCondition,
-                        effectDuration: EffectDuration.UntilOwnerActivePhase,
+                        permanentCondition: CanSelectPermanentCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
                         activateClass: activateClass,
                         isOnlyActivePhase: true,
                         effectName: "Your card can't unsuspend"));
                 }
             }
+            #endregion
 
+            #region Security Effect
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Suspend opponent's all Digimon and Tamers", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Security] Suspend all of your opponent's Digimon and Tamers.";
                 }
 
-                bool PermanentCondition(Permanent permanent)
+                bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
-                    {
-                        if (permanent.IsDigimon || permanent.IsTamer)
-                        {
-                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                        && (permanent.IsDigimon
+                            || permanent.IsTamer)
+                        && !permanent.TopCard.CanNotBeAffected(activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -137,10 +106,14 @@ namespace DCGO.CardEffects.BT12
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    List<Permanent> suspendTargetPermanents = card.Owner.Enemy.GetBattleAreaPermanents().Filter(PermanentCondition);
-                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(suspendTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    {
+                        List<Permanent> suspendTargetPermanents = card.Owner.Enemy.GetBattleAreaPermanents().Filter(CanSelectPermanentCondition);
+                        yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(suspendTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+                    }
                 }
             }
+            #endregion
 
             return cardEffects;
         }

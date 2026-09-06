@@ -110,7 +110,7 @@ public class BT9_083 : CEntity_Effect
                         {
                             List<CardSource> libraryCards = card.Owner.Enemy.TrashCards.Clone();
 
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(libraryCards));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(libraryCards, cardEffect: activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(libraryCards, "Deck Bottom Cards", true, true));
                         }
@@ -146,7 +146,7 @@ public class BT9_083 : CEntity_Effect
 
                             IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
 
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Cards", true, true));
                             }

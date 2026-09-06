@@ -124,7 +124,7 @@ namespace DCGO.CardEffects.P
                         if (selectedCards.Count == 3)
                         {
                             selectedCards.Reverse();
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(selectedCards));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(selectedCards, cardEffect: activateClass));
                         }
                     }
 

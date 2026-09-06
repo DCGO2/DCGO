@@ -7,7 +7,7 @@ using UnityEngine;
 public partial class CardEffectFactory
 {
     #region Static effect of [Progress] on oneself
-    public static CanNotAffectedClass ProgressSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition)
+    public static CanNotAffectedClass ProgressSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, bool isLinkedEffect = false)
     {
         bool CanUseCondition()
         {
@@ -15,7 +15,7 @@ public partial class CardEffectFactory
                    (condition == null || condition());
         }
 
-        return ProgressStaticEffect(isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition);
+        return ProgressStaticEffect(isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition, isLinkedEffect: isLinkedEffect);
     }
     #endregion
 
@@ -23,12 +23,14 @@ public partial class CardEffectFactory
     public static CanNotAffectedClass ProgressStaticEffect(
         bool isInheritedEffect,
         CardSource card,
-        Func<bool> condition)
+        Func<bool> condition,
+        bool isLinkedEffect = false)
     {
         CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
         canNotAffectedClass.SetUpICardEffect("Progress", CanUseCondition, card);
         canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
         canNotAffectedClass.SetIsInheritedEffect(isInheritedEffect);
+        canNotAffectedClass.SetIsLinkedEffect(isLinkedEffect);
         canNotAffectedClass.SetIsBackgroundProcess(true);
 
         bool CanUseCondition(Hashtable hashtable)

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -15,7 +15,7 @@ public class Permanent
     {
         List<CardSource> newCardSources = cardSources.Clone();
 
-        //TODO: Attempted fix for random face up secuirty/flipped sources
+        //TODO: Attempted fix for random face up security/flipped sources
         //newCardSources.Reverse();
 
         foreach (CardSource cardSource in newCardSources)
@@ -466,7 +466,7 @@ public class Permanent
                     }
                 }
             }
-            
+
             DP += LinkedDP;
 
             foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown.OrderBy(cardEffect => cardEffect.ActivatedTime))
@@ -635,7 +635,7 @@ public class Permanent
                         }
                     }
                 }
-                
+
                 DP += LinkedDP;
 
                 foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown)
@@ -651,7 +651,7 @@ public class Permanent
                 #endregion
 
                 #region DP Boosts
-                foreach(DPBoost boost in Boosts)
+                foreach (DPBoost boost in Boosts)
                 {
                     DP += boost.DP;
                 }
@@ -676,7 +676,7 @@ public class Permanent
         if (Boosts.Any(x => x.ID == boost.ID))
             Boosts.First(x => x.ID == boost.ID).DP = boost.DP;
         else
-            Boosts.Add(boost);            
+            Boosts.Add(boost);
     }
 
     public void RemoveBoost(string ID)
@@ -706,19 +706,10 @@ public class Permanent
         {
             foreach (Permanent permanent in player.GetFieldPermanents())
             {
-                foreach (ICardEffect cardEffect1 in permanent.EffectList(EffectTiming.None))
-                {
-                    if (cardEffect1 is IImmuneFromDPMinusEffect)
-                    {
-                        if (cardEffect1.CanUse(null))
-                        {
-                            if (((IImmuneFromDPMinusEffect)cardEffect1).ImmuneFromDPMinus(this, cardEffect))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
+                var immunityConfirmed = permanent.EffectList(EffectTiming.None)
+                .GetFlatEffects<IImmuneFromDPMinusEffect>()
+                .Any(e => ((ICardEffect)e).CanUse(null) && e.ImmuneFromDPMinus(this, cardEffect));
+                if (immunityConfirmed) return true;
             }
 
             foreach (ICardEffect cardEffect1 in player.EffectList(EffectTiming.None))
@@ -778,6 +769,15 @@ public class Permanent
         }
 
         return false;
+    }
+    #endregion
+
+    #region Color of the permanent
+    public bool HasPermanentColor(CardColor color)
+    {
+        if (TopCard == null) return false;
+
+        return TopCard.CardColors.Contains(color);
     }
     #endregion
 
@@ -854,6 +854,20 @@ public class Permanent
     {
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
         {
+            foreach (ICardEffect cardEffect1 in player.EffectList(EffectTiming.None))
+            {
+                if (cardEffect1 is IImmuneFromStackTrashingEffect)
+                {
+                    if (cardEffect1.CanUse(null))
+                    {
+                        if (((IImmuneFromStackTrashingEffect)cardEffect1).ImmuneStackTrashing(this, effect))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
             foreach (Permanent permanent in player.GetFieldPermanents())
             {
                 foreach (ICardEffect cardEffect1 in permanent.EffectList(EffectTiming.None))
@@ -863,6 +877,47 @@ public class Permanent
                         if (cardEffect1.CanUse(null))
                         {
                             if (((IImmuneFromStackTrashingEffect)cardEffect1).ImmuneStackTrashing(this, effect))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+    #endregion
+
+    #region Immune From Stack Being Returned To Library
+    public bool ImmuneFromStackReturnToLibrary(ICardEffect effect)
+    {
+        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
+        {
+            foreach (ICardEffect cardEffect1 in player.EffectList(EffectTiming.None))
+            {
+                if (cardEffect1 is IImmuneFromStackReturnToLibraryEffect)
+                {
+                    if (cardEffect1.CanUse(null))
+                    {
+                        if (((IImmuneFromStackReturnToLibraryEffect)cardEffect1).ImmuneStackReturnToLibrary(this, effect))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            foreach (Permanent permanent in player.GetFieldPermanents())
+            {
+                foreach (ICardEffect cardEffect1 in permanent.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect1 is IImmuneFromStackReturnToLibraryEffect)
+                    {
+                        if (cardEffect1.CanUse(null))
+                        {
+                            if (((IImmuneFromStackReturnToLibraryEffect)cardEffect1).ImmuneStackReturnToLibrary(this, effect))
                             {
                                 return true;
                             }
@@ -928,29 +983,29 @@ public class Permanent
                 }
 
                 #region Effects of face up security
-                    foreach (CardSource cardSource in player.SecurityCards)
-                    {
-                        if (cardSource.IsFlipped)
-                            continue;
+                foreach (CardSource cardSource in player.SecurityCards)
+                {
+                    if (cardSource.IsFlipped)
+                        continue;
 
-                        foreach (ICardEffect cardEffect in cardSource.EffectList(EffectTiming.None))
+                    foreach (ICardEffect cardEffect in cardSource.EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is IChangeLinkMaxEffect)
                         {
-                            if (cardEffect is IChangeLinkMaxEffect)
+                            if (((IChangeLinkMaxEffect)cardEffect).PermanentCondition(this))
                             {
-                                if (((IChangeLinkMaxEffect)cardEffect).PermanentCondition(this))
+                                if (cardEffect.CanUse(null))
                                 {
-                                    if (cardEffect.CanUse(null))
+                                    if (!TopCard.CanNotBeAffected(cardEffect))
                                     {
-                                        if (!TopCard.CanNotBeAffected(cardEffect))
-                                        {
-                                            cardEffects_ChangeLinkedMax.Add(cardEffect);
-                                        }
+                                        cardEffects_ChangeLinkedMax.Add(cardEffect);
                                     }
                                 }
                             }
                         }
                     }
-                    #endregion
+                }
+                #endregion
 
                 #region player effect
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
@@ -1250,8 +1305,8 @@ public class Permanent
 
         if (LinkedCards.Count >= LinkedMax)
         {
-            if(LinkedMax > 1)
-                yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(null,((LinkedCards.Count + 1) - LinkedMax)));
+            if (LinkedMax > 1)
+                yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(null, ((LinkedCards.Count + 1) - LinkedMax)));
             else
                 yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(LinkedCards[0]));
         }
@@ -1315,10 +1370,10 @@ public class Permanent
             if (trashCard)
             {
                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
-            }        
+            }
         }
 
-        if(removeCount > 0)
+        if (removeCount > 0)
         {
             int maxCount = Mathf.Min(removeCount, LinkedCards.Count);
             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -1502,13 +1557,13 @@ public class Permanent
         {
             foreach (CardSource cardSource in cardSources)
             {
-                
+
                 if (cardSource != null)
                 {
                     if (!cardSource.IsFlipped)
                     {
                         bool isTopCard = cardSource == TopCard;
-                        
+
                         if (!isTopCard)
                         {
                             if (!IsDigimon)
@@ -1535,11 +1590,11 @@ public class Permanent
                                     continue;
                                 }
 
-                                if(isTopCard && !cardEffect.IsInheritedEffect && !cardEffect.IsLinkedEffect)
+                                if (isTopCard && !cardEffect.IsInheritedEffect && !cardEffect.IsLinkedEffect)
                                 {
                                     _EffectList.Add(cardEffect);
                                 }
-                                
+
                                 #endregion
                             }
                         }
@@ -1725,7 +1780,7 @@ public class Permanent
                 Invert = ((IInvertSAttackEffect)cardEffect).InversionValue(this, Invert);
             }
 
-            return Mathf.Clamp(Invert,-1,1);
+            return Mathf.Clamp(Invert, -1, 1);
         }
     }
     public List<int> SecurityAttackChanges
@@ -1742,19 +1797,19 @@ public class Permanent
             {
                 foreach (Permanent permanent in player.GetFieldPermanents())
                 {
+                    var sAttackEffects = permanent.EffectList(EffectTiming.None)
+                        .GetFlatEffects<IChangeSAttackEffect>();
+
                     #region 場のパーマネントの効果
-                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                    foreach (ICardEffect cardEffect in sAttackEffects.Cast<ICardEffect>())
                     {
-                        if (cardEffect is IChangeSAttackEffect)
+                        if (cardEffect.CanUse(null))
                         {
-                            if (cardEffect.CanUse(null))
+                            if (!TopCard.CanNotBeAffected(cardEffect))
                             {
-                                if (!TopCard.CanNotBeAffected(cardEffect))
+                                if (((IChangeSAttackEffect)cardEffect).isUpDown() == CalculateOrder.UpDownValue)
                                 {
-                                    if (((IChangeSAttackEffect)cardEffect).isUpDown() == CalculateOrder.UpDownValue)
-                                    {
-                                        cardEffects_ChangeDirectStrike.Add(cardEffect);
-                                    }
+                                    cardEffects_ChangeDirectStrike.Add(cardEffect);
                                 }
                             }
                         }
@@ -1829,20 +1884,18 @@ public class Permanent
             {
                 foreach (Permanent permanent in player.GetFieldPermanents())
                 {
+                    var sAttackEffects = permanent.EffectList(EffectTiming.None)
+                        .GetFlatEffects<IChangeSAttackEffect>()
+                        .Where(e => e.PermanentCondition(this));
+
                     #region Effects of permanents in play
-                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                    foreach (ICardEffect cardEffect in sAttackEffects.Cast<ICardEffect>())
                     {
-                        if (cardEffect is IChangeSAttackEffect)
+                        if (cardEffect.CanUse(null))
                         {
-                            if (((IChangeSAttackEffect)cardEffect).PermanentCondition(this))
+                            if (!TopCard.CanNotBeAffected(cardEffect))
                             {
-                                if (cardEffect.CanUse(null))
-                                {
-                                    if (!TopCard.CanNotBeAffected(cardEffect))
-                                    {
-                                        cardEffects_ChangeDirectStrike.Add(cardEffect);
-                                    }
-                                }
+                                cardEffects_ChangeDirectStrike.Add(cardEffect);
                             }
                         }
                     }
@@ -2409,9 +2462,9 @@ public class Permanent
                     && attackingPermanent.HasCollision)
                 {
                     ActivateClass fakeCollisionClass = new();
-                    fakeCollisionClass.SetIsDigimonEffect(true);
                     fakeCollisionClass.SetUpICardEffect("Collision", _ => true, attackingPermanent.TopCard);
-                    
+                    fakeCollisionClass.SetIsDigimonEffect(true);
+
                     if (!TopCard.CanNotBeAffected(fakeCollisionClass))//Check can be affected by opponent's Digimon effects
                         return true;
                 }
@@ -2715,19 +2768,10 @@ public class Permanent
                 foreach (Permanent permanent in player.GetFieldPermanents())
                 {
                     #region 場のパーマネントの効果
-                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
-                    {
-                        if (cardEffect is IRushEffect)
-                        {
-                            if (cardEffect.CanTrigger(null))
-                            {
-                                if (((IRushEffect)cardEffect).HasRush(this))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
+                    var rushConfirmed = permanent.EffectList(EffectTiming.None)
+                        .GetFlatEffects<IRushEffect>()
+                        .Any(e => ((ICardEffect)e).CanTrigger(null) && e.HasRush(this));
+                    if (rushConfirmed) return true;
                     #endregion
                 }
 
@@ -2828,6 +2872,51 @@ public class Permanent
                     if (cardEffect.EffectName == "Ascension")
                     {
                         if (cardEffect.CanTrigger(CardEffectCommons.OnDeletionCheckHashtableOfPermanent(this)))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
+    #region Has Guard
+    public bool HasGuard
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in EffectList(EffectTiming.WhenRemoveField))
+            {
+                if (cardEffect is ActivateICardEffect)
+                {
+                    if (cardEffect.EffectName == "Guard")
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
+    #region Has Engage
+    public bool HasEngage
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in EffectList(EffectTiming.OnEndTurn))
+            {
+                if (cardEffect is ActivateICardEffect)
+                {
+                    if (cardEffect.EffectName == "Engage")
+                    {
+                        if (cardEffect.CanTrigger(null))
                         {
                             return true;
                         }
@@ -2956,9 +3045,11 @@ public class Permanent
             {
                 if (cardEffect is ActivateICardEffect)
                 {
-                    Hashtable hashtable = new Hashtable();
-                    hashtable.Add("Permanents", new List<Permanent>() { this });
-                    hashtable.Add("battle", new IBattle(null, null, null));
+                    Hashtable hashtable = new Hashtable
+                    {
+                        { "Permanents", new List<Permanent>() { this } },
+                        { "battle", new IBattle(null, null, null) }
+                    };
 
                     if (cardEffect.CanTrigger(hashtable))
                     {
@@ -2983,7 +3074,7 @@ public class Permanent
             Hashtable hashtable = new Hashtable(){
                 {"AttackingPermanent", this}
             };
-            
+
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
             {
                 foreach (Permanent permanent in player.GetFieldPermanents())
@@ -3532,7 +3623,7 @@ public class Permanent
         }
     }
     #endregion
-    
+
     #region Is an Option card
     public bool IsOption
     {
@@ -3615,7 +3706,7 @@ public class Permanent
 
         if (cardSource != null)
         {
-            foreach(string name in cardSource.CardNames)
+            foreach (string name in cardSource.CardNames)
                 names.Add(name);
 
             #region Effect of "adding names handled by DNA evolution"
@@ -3968,22 +4059,9 @@ public class Permanent
 
             foreach (CardSource cardSource in DigivolutionCards)
             {
-                if (cardSource.IsFlipped)
-                    continue;
-
-                foreach (CardColor cardColor in cardSource.CardColors)
+                if (cardSource.IsFaceUp)
                 {
-                    if (!cardColors.Contains(cardColor))
-                    {
-                        cardColors.Add(cardColor);
-                    }
-                }
-                foreach (CardColor cardColor in cardSource.DualCardColors)
-                {
-                    if (!cardColors.Contains(cardColor))
-                    {
-                        cardColors.Add(cardColor);
-                    }
+                    cardColors.AddRange(cardSource.CardColors);
                 }
             }
 

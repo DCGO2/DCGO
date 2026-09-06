@@ -272,7 +272,7 @@ public partial class CardEffectCommons
                         };
 
                 string selectPlayerMessage = "Will you select cards?";
-                string notSelectPlayerMessage = "The opponent is wheter to select cards.";
+                string notSelectPlayerMessage = "The opponent is whether to select cards.";
 
                 GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: selectPlayer, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
@@ -477,7 +477,7 @@ public partial class CardEffectCommons
 
         if (remainingCards.Count == 1)
         {
-            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(remainingCards));
+            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(remainingCards, cardEffect: activateClass));
 
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(remainingCards, "Deck Bottom Card", true, true));
         }
@@ -511,9 +511,9 @@ public partial class CardEffectCommons
 
             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-            static IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+            IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
             {
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources,
                 "Deck Bottom Cards", true, true));
@@ -534,7 +534,7 @@ public partial class CardEffectCommons
 
         if (remainingCards.Count == 1)
         {
-            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(remainingCards));
+            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(remainingCards, cardEffect: activateClass));
 
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(remainingCards, "Deck Top Card", true, true));
         }
@@ -568,13 +568,13 @@ public partial class CardEffectCommons
 
             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-            static IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+            IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
             {
                 List<CardSource> topCards = cardSources.Clone();
 
                 topCards.Reverse();
 
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(topCards));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(topCards, cardEffect: activateClass));
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Top Cards", true, true));
             }
@@ -736,6 +736,8 @@ public enum RemainingCardsPlace
 #region Reveal deck cards
 public class RevealLibraryClass
 {
+    private static WaitForSeconds _waitForSeconds0_5 = new WaitForSeconds(0.5f);
+
     public RevealLibraryClass(Player player, int revealCount)
     {
         _player = player;
@@ -784,7 +786,7 @@ public class RevealLibraryClass
         }
         #endregion
 
-        yield return new WaitForSeconds(0.5f);
+        yield return _waitForSeconds0_5;
 
         _revealedCards.ForEach(cardSource => cardSource.IsBeingRevealed = true);
     }

@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using UnityEngine;
 
+// Leviamon
 namespace DCGO.CardEffects.EX6
 {
     public class EX6_061 : CEntity_Effect
@@ -17,11 +17,11 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 card in hand, return sources, then delete 1 digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("AllTurns_EX6_061");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] [Once Per Turn] When an opponent's Digimon or one of your Digimon with the [Seven Great Demon Lords] trait is played, by trashing 1 card in your hand, return the bottom 3 digivolution cards of 1 of your opponent's Digimon to the bottom of the deck. Then, if your opponent has as many or less total Digimon and Tamers as you, delete 1 of your opponent's Digimon with no digivolution cards.";
                 }
@@ -144,20 +144,23 @@ namespace DCGO.CardEffects.EX6
                     {
                         List<CardSource> targetCards = new List<CardSource>();
 
-                        for (int i = 0; i < 3; i++)
+                        if (!permanent.ImmuneFromStackReturnToLibrary(activateClass))
                         {
-                            if (permanent.DigivolutionCards.Count >= i + 1)
+                            for (int i = 0; i < 3; i++)
                             {
-                                int index = false ? i : permanent.DigivolutionCards.Count - 1 - i;
-                                CardSource trashTargetCard = permanent.DigivolutionCards[index];
+                                if (permanent.DigivolutionCards.Count >= i + 1)
+                                {
+                                    int index = false ? i : permanent.DigivolutionCards.Count - 1 - i;
+                                    CardSource trashTargetCard = permanent.DigivolutionCards[index];
 
-                                targetCards.Add(trashTargetCard);
+                                    targetCards.Add(trashTargetCard);
+                                }
                             }
-                        }
 
-                        yield return ContinuousController.instance.StartCoroutine(new ReturnToLibraryBottomDigivolutionCardsClass(
-                                permanent,
-                                targetCards, CardEffectCommons.CardEffectHashtable(activateClass)).ReturnToLibraryBottomDigivolutionCards());
+                            yield return ContinuousController.instance.StartCoroutine(new ReturnToLibraryBottomDigivolutionCardsClass(
+                                    permanent,
+                                    targetCards, CardEffectCommons.CardEffectHashtable(activateClass)).ReturnToLibraryBottomDigivolutionCards());
+                        }
                     }
 
                     if (card.Owner.GetBattleAreaPermanents().Count(PermanentCondition) >= card.Owner.Enemy.GetBattleAreaPermanents().Count(PermanentCondition))
@@ -190,10 +193,10 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 7GDL from trash to bottom of [Gate of Deadly Sins]", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] When this Digimon would leave the battle area other than in battle, place 1 card with the [Seven Great Demon Lord] trait from your trash as the bottom digivolution cards of one of your [Gate of Deadly Sins] in your breeding area.";
                 }

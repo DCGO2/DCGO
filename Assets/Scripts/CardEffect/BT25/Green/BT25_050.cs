@@ -100,7 +100,7 @@ namespace DCGO.CardEffects.BT25
                         yield return null;
                     }
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain cannot suspend.", "The opponent is selecting 1 Digimon to gain cannot suspend.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain cannot unsuspend.", "The opponent is selecting 1 Digimon to gain cannot unsuspend.");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                     if (selectedPermanent != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspend(

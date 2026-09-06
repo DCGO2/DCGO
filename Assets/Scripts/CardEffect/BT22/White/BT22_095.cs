@@ -132,7 +132,6 @@ namespace DCGO.CardEffects.BT22
             #endregion
 
             #region ESS
-
             bool ESSCondition()
             {
                 return CardEffectCommons.IsExistOnField(card)
@@ -158,14 +157,11 @@ namespace DCGO.CardEffects.BT22
             #endregion
 
             #region Scapegoat
-
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
-                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: true, card: card, condition: ESSCondition, effectName: "<Scapegoat>", effectDiscription: null));
+                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: true, card: card, condition: ESSCondition, effectName: "<Scapegoat>"));
             }
-
             #endregion
-
             #endregion
 
             return cardEffects;

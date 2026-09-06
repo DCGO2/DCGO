@@ -36,12 +36,7 @@ namespace DCGO.CardEffects.BT23
             #region Scapegoat
             if(timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
-                string EffectDiscription()
-                {
-                    return "<Scapegoat> (When this Digimon would be deleted other than by your own effects, by deleting 1 of your other Digimon, prevent that deletion.)";
-                }
-
-                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: card, condition: null, effectName: "<Scapegoat>", effectDiscription: EffectDiscription()));
+                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: card, condition: null, effectName: "<Scapegoat>"));
             }
             #endregion
 

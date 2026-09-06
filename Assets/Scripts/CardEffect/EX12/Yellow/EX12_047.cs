@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region Shared OP/WD
-            string SharedEffectName = "Delete enemy lowest DP, by returning 2 of their trash cards to bottom of deck, this gets 6K DP and they get -5K DP";
+            string SharedEffectName = "Delete enemy lowest DP, then by returning 2 of their trash cards to bottom of deck, this gets 6K DP and they get -5K DP per color";
 
             CardEffectFactory.ActivateClassesForSharedEffects
             (ref cardEffects, timing, card,
@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.EX12
 
                     if (selectedCards.Count == 2)
                     {
-                        int DPMinus = Combinations.GetUniqueColorCardCount(selectedCards) * -5000;
+                        int DPMinus = Combinations.GetDifferenetColorCardCount(selectedCards) * -5000;
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ReturnRevealedCardsToLibraryBottom(
                             remainingCards: selectedCards,
@@ -231,7 +231,7 @@ namespace DCGO.CardEffects.EX12
                             canNoSelect: () => true,
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: null,
-                            message: "Select 1 [TS] trait Option card to return to hand",
+                            message: "Select 1 [TB] card to return to hand",
                             maxCount: 1,
                             canEndNotMax: false,
                             isShowOpponent: true,
@@ -247,23 +247,12 @@ namespace DCGO.CardEffects.EX12
 
                     if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectPlayCardCondition))
                     {
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                             canTargetCondition: CanSelectPlayCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.PlayForFree,
-                            cardEffect: activateClass);
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
+                            SelectCardEffect.Root.Hand,
+                            activateClass,
+                            payCost: false
+                        ));
                     }
                 }
             }

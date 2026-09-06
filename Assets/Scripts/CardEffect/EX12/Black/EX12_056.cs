@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -24,7 +23,7 @@ namespace DCGO.CardEffects.EX12
             #endregion
 
             #region Guard
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.WhenRemoveField)
             {
                 cardEffects.Add(CardEffectFactory.GuardSelfEffect(isInheritedEffect: false, card: card, condition: null));
             }

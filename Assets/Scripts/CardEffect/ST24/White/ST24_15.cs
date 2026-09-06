@@ -78,56 +78,18 @@ namespace DCGO.CardEffects.ST24
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                         #endregion
 
-                        bool doPlay = GManager.instance.userSelectionManager.SelectedIntValue != 3;
-                        bool fromHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+                        SelectCardEffect.Root root = GManager.instance.userSelectionManager.SelectedIntValue == 1 ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
+                        bool doSelect = GManager.instance.userSelectionManager.SelectedIntValue != 3;
 
-                        if (doPlay)
+                        if (doSelect)
                         {
                             #region Hand/Trash Card Selection & Play
-                            if (fromHand)
-                            {
-                                SelectHandEffect selectHandEffect2 = GManager.instance.GetComponent<SelectHandEffect>();
-
-                                selectHandEffect2.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectPlayCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: 1,
-                                    canNoSelect: true,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: null,
-                                    mode: SelectHandEffect.Mode.PlayForFree,
-                                    cardEffect: activateClass);
-
-                                yield return StartCoroutine(selectHandEffect2.Activate());
-                            }
-                            else
-                            {
-                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectPlayCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 card to play.",
-                                    maxCount: 1,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.PlayForFree,
-                                    root: SelectCardEffect.Root.Trash,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                                yield return StartCoroutine(selectCardEffect.Activate());
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                                canTargetCondition: CanSelectPlayCondition,
+                                root,
+                                activateClass,
+                                payCost: false
+                            ));
                             #endregion
                         }
                     }

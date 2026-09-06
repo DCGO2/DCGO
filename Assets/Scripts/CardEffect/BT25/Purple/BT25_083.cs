@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using static SelectCardEffect;
 
 // LadyDevimon
 namespace DCGO.CardEffects.BT25
@@ -190,7 +189,8 @@ namespace DCGO.CardEffects.BT25
                 bool hasUsed = false;
                 bool CanSelect3MOptionCard(CardSource cardSource) => cardSource.IsOption
                     && cardSource.HasThreeMusketeersTraits
-                    && cardSource.PayingCost(Root.Trash, null, checkAvailability: false) <= cardSource.Owner.MaxMemoryCost;
+                    && cardSource.PayingCost(SelectCardEffect.Root.Trash, null, checkAvailability: false) <= cardSource.Owner.MaxMemoryCost;
+
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimonCondition))
                 {
                     #region Select digimon to trash option card from digivolution source
@@ -259,6 +259,9 @@ namespace DCGO.CardEffects.BT25
                         if (selectedCard != null)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(selectedPermanent, new List<CardSource>() { selectedCard }, activateClass).TrashDigivolutionCards());
+
+                            hasUsed = true;
+
                             if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelect3MOptionCard))
                             {
                                 #region Select 3M option card in trash to use with reduced cost
@@ -296,8 +299,6 @@ namespace DCGO.CardEffects.BT25
 
                                 if (selectedOption != null)
                                 {
-                                    hasUsed = true;
-
                                     #region reduce play cost
                                     ChangeCostClass changeCostClass = new ChangeCostClass();
                                     changeCostClass.SetUpICardEffect($"Play/Use Cost -3", CanUseCondition1, card);
@@ -423,30 +424,12 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                    selectCardEffect.SetUp(
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                         canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 1 level 4 or lower [Three Musketeers] digimon to play.",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.PlayForFree,
-                        root: SelectCardEffect.Root.Trash,
-                        customRootCardList: null,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                    selectCardEffect.SetUpCustomMessage("Select 1 level 4 or lower [Three Musketeers] digimon to play.", "The opponent is selecting 1 level 4 or lower [Three Musketeers] digimon to play.");
-                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        SelectCardEffect.Root.Trash,
+                        activateClass,
+                        payCost: false
+                    ));
                 }
             }
             #endregion

@@ -258,7 +258,7 @@ namespace DCGO.CardEffects.BT13
 
                                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(
                                         cardSources,
-                                        notAddLog: card.Owner.isYou));
+                                        notAddLog: card.Owner.isYou, cardEffect: activateClass));
 
                                     foreach (CardSource cardSource in cardSources)
                                     {

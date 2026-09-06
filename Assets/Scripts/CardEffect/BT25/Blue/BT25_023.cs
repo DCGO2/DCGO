@@ -60,23 +60,13 @@ namespace DCGO.CardEffects.BT25
                 List<CardSource> selectedCards = new List<CardSource>();
                 int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, HasTamerInHand));
 
-                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                selectHandEffect.SetUp(
-                    selectPlayer: card.Owner,
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                     canTargetCondition: HasTamerInHand,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: maxCount,
-                    canNoSelect: true,
-                    canEndNotMax: false,
-                    isShowOpponent: true,
-                    selectCardCoroutine: null,
-                    afterSelectCardCoroutine: null,
-                    mode: SelectHandEffect.Mode.PlayForFree,
-                    cardEffect: activateClass);
-
-                yield return StartCoroutine(selectHandEffect.Activate());
+                    SelectCardEffect.Root.Hand,
+                    activateClass,
+                    payCost: false,
+                    maxCount: maxCount
+                ));
             }
             #endregion
 

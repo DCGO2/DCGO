@@ -28,26 +28,15 @@ namespace DCGO.CardEffects.EX12
                 bool PermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.EqualsTraits("Me");
+                        && permanent.TopCard.EqualsTraits("ME");
                 }
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
-                    {
-                        if (cardSource.Owner == card.Owner)
-                        {
-                            if (cardSource == cardSource.PermanentOfThisCard().TopCard)
-                            {
-                                if (PermanentCondition(cardSource.PermanentOfThisCard()))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource)
+                        && cardSource.Owner == card.Owner
+                        && cardSource == cardSource.PermanentOfThisCard().TopCard
+                        && PermanentCondition(cardSource.PermanentOfThisCard());
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -74,7 +63,6 @@ namespace DCGO.CardEffects.EX12
                 addSkillClass.SetUpICardEffect("Your Digimon gain Guard", CanUseCondition, card);
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects, limitTiming: EffectTiming.WhenRemoveField);
                 cardEffects.Add(addSkillClass);
-
             }
             #endregion
 
@@ -131,23 +119,12 @@ namespace DCGO.CardEffects.EX12
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectHandEffect selectHandEffect2 = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect2.SetUp(
-                        selectPlayer: card.Owner,
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                         canTargetCondition: CanPlayCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.PlayForFree,
-                        cardEffect: activateClass);
-
-                    yield return StartCoroutine(selectHandEffect2.Activate());
+                        SelectCardEffect.Root.Hand,
+                        activateClass,
+                        payCost: false
+                    ));
                 }
             }
             #endregion

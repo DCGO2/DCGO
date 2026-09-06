@@ -50,4 +50,42 @@ public partial class CardEffectCommons
         }
     }
     #endregion
+
+    #region Target 1 Digimon gains [Ascension]
+    public static IEnumerator GainAscension(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass)
+    {
+        if (targetPermanent == null) yield break;
+        if (!IsPermanentExistsOnBattleArea(targetPermanent)) yield break;
+        if (activateClass == null) yield break;
+        if (activateClass.EffectSourceCard == null) yield break;
+
+        CardSource card = activateClass.EffectSourceCard;
+
+        bool CanUseCondition()
+        {
+            return IsPermanentExistsOnBattleArea(targetPermanent) &&
+                   !targetPermanent.TopCard.CanNotBeAffected(activateClass);
+        }
+
+        ActivateClass ascension = CardEffectFactory.AscensionEffect(
+            targetPermanent: targetPermanent,
+            isInheritedEffect: false,
+            condition: CanUseCondition,
+            rootCardEffect: activateClass,
+            targetPermanent.TopCard);
+
+        AddEffectToPermanent(
+            targetPermanent: targetPermanent,
+            effectDuration: effectDuration,
+            card: card,
+            cardEffect: ascension,
+            timing: EffectTiming.OnDestroyedAnyone);
+
+        if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>()
+                .CreateBuffEffect(targetPermanent));
+        }
+    }
+    #endregion
 }

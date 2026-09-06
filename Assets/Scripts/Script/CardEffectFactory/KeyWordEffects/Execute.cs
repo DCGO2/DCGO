@@ -46,7 +46,8 @@ public partial class CardEffectFactory
         bool CanUseCondition(Hashtable hashtable)
         {
             return CardEffectCommons.IsExistOnBattleArea(card) &&
-                   CardEffectCommons.IsOwnerTurn(card);
+                   CardEffectCommons.IsOwnerTurn(card) &&
+                   (condition == null || condition());
         }
 
         bool CanActivateCondition(Hashtable hashtable)

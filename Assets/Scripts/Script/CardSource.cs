@@ -2549,8 +2549,17 @@ public class CardSource : MonoBehaviour
             {
                 if (!string.IsNullOrEmpty(_cEntity_Base.EffectDiscription_JPN))
                 {
-                    bool result = Regex.IsMatch(_cEntity_Base.EffectDiscription_JPN, DataBase.DigiburstRegex);
+                    bool result = Regex.IsMatch(_cEntity_Base.EffectDiscription_JPN, DataBase.DigiBurstJpnRegex);
 
+                    if (result)
+                    {
+                        return true;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(_cEntity_Base.EffectDiscription_ENG))
+                {
+                    bool result = Regex.IsMatch(_cEntity_Base.EffectDiscription_ENG, DataBase.DigiBurstEngRegex);
                     if (result)
                     {
                         return true;
@@ -3572,6 +3581,23 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card has "Hybrid" trait
+
+    public bool HasHybridTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Hybrid"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
     #region whether this card has "SEEKERS" trait
 
     public bool HasSeekersTraits
@@ -3753,6 +3779,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Iliad");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Shambala" trait
+
+    public bool HasShambalaTraits
+    {
+        get
+        {
+            return EqualsTraits("Shambala");
         }
     }
 
@@ -3945,6 +3983,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Ult.");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "God" Appmon Grade trait
+
+    public bool HasGodAppTraits
+    {
+        get
+        {
+            return EqualsTraits("God");
         }
     }
 
@@ -4173,6 +4223,30 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Shaman");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has VB trait
+
+    public bool HasVBTraits
+    {
+        get
+        {
+            return EqualsTraits("VB");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has DATA SQUAD trait
+
+    public bool HasDataSquadTraits
+    {
+        get
+        {
+            return EqualsTraits("DATA SQUAD");
         }
     }
 

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Angemon
 namespace DCGO.CardEffects.EX9
@@ -172,38 +171,28 @@ namespace DCGO.CardEffects.EX9
             #endregion
 
             #region ESS
-
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Recovery +1 (Deck)", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[On Deletion] If you have 3 or fewer security cards, <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack).";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (card.Owner.CanAddSecurity(activateClass))
-                    {
-                        if (card.Owner.LibraryCards.Count >= 1)
-                        {
-                            if (card.Owner.SecurityCards.Count <= 3)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass);
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass)
+                        && card.Owner.SecurityCards.Count <= 3;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -211,7 +200,6 @@ namespace DCGO.CardEffects.EX9
                     yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                 }
             }
-
             #endregion
 
             return cardEffects;

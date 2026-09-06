@@ -66,7 +66,7 @@ namespace DCGO.CardEffects.EX12
                 {
                     bool isUsed = false;
 
-                    List<CardSource> selectedCards = new List<CardSource>();
+                    CardSource selectedCard = null;
 
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -89,19 +89,21 @@ namespace DCGO.CardEffects.EX12
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        selectedCards.Add(cardSource);
+                        selectedCard = cardSource;
                         yield return null;
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                    if (selectedCards != null)
+                    if (selectedCard != null)
                     {
+                        isUsed = true;
+
                         #region reduce cost
-                        int reducecost = -2;
+                        int reducecost = 2;
 
                         ChangeCostClass changeCostClass = new ChangeCostClass();
-                        changeCostClass.SetUpICardEffect($"Play/Use Cost {reducecost}", CanUseCondition1, card);
+                        changeCostClass.SetUpICardEffect($"Play/Use Cost -{reducecost}", CanUseCondition1, card);
                         changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: PlayOrUseCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
                         Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
                         card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
@@ -155,10 +157,10 @@ namespace DCGO.CardEffects.EX12
                         }
                         #endregion
 
-                        if (selectedCards[0].IsOption)
+                        if (selectedCard.IsOption)
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
-                                cardSources: selectedCards,
+                                cardSources: new List<CardSource> { selectedCard },
                                 activateClass: activateClass,
                                 payCost: true,
                                 root: SelectCardEffect.Root.Hand));
@@ -166,7 +168,7 @@ namespace DCGO.CardEffects.EX12
                         else
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                cardSources: selectedCards,
+                                cardSources: new List<CardSource> { selectedCard },
                                 activateClass: activateClass,
                                 payCost: true,
                                 isTapped: false,

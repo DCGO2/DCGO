@@ -1,11 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
+//Reina Oumi
 namespace DCGO.CardEffects.EX11
 {
-    //Reina Oumi
     public class EX11_059 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
@@ -20,23 +18,28 @@ namespace DCGO.CardEffects.EX11
             #endregion
 
             #region Shared SOYMP / OP
-
             string SharedEffectName = "Trash 1 [NSo] card from hand to Draw 1 and gain Memory +1";
+
+            CardEffectFactory.ActivateClassesForSharedEffects
+            (ref cardEffects, timing, card,
+                SharedEffectName,
+                SharedActivateCoroutine,
+                SharedEffectDescription,
+                additionalActivateCondition: AdditionalActivateCoroutine,
+                optional: false,
+                isSkippable: true,
+                onPlay: true,
+                startOfYourMainPhase: true);
 
             string SharedEffectDescription(string tag)=> $"[{tag}] By trashing 1 [NSo] trait card from your hand, <Draw 1> and gain 1 memory.";
 
-            bool SharedCanActivateCondition(Hashtable hashtable)
+            bool AdditionalActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card) 
-                    && card.Owner.HandCards.Count(IsNSo) >= 1;
+                return CardEffectCommons.HasMatchConditionOwnersHand(card, IsNSo);
             }
 
-            IEnumerator SharedActivateCoroutine(Hashtable _hashtable, ActivateClass activateClass)
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                bool discarded = false;
-
-                int discardCount = 1;
-
                 SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                 selectHandEffect.SetUp(
@@ -44,7 +47,7 @@ namespace DCGO.CardEffects.EX11
                     canTargetCondition: IsNSo,
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
-                    maxCount: discardCount,
+                    maxCount: 1,
                     canNoSelect: true,
                     canEndNotMax: false,
                     isShowOpponent: true,
@@ -59,49 +62,9 @@ namespace DCGO.CardEffects.EX11
                 {
                     if (cardSources.Count >= 1)
                     {
-                        discarded = true;
-
-                        yield return null;
+                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                     }
-                }
-
-                if (discarded)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                    
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                }
-            }
-            #endregion
-
-            #region Start of Your Main Phase
-            if (timing == EffectTiming.OnStartMainPhase)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("Start of Your Turn"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card) 
-                        && CardEffectCommons.IsOwnerTurn(card);
-                }
-            }
-            #endregion
-
-            #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDescription("On Play"));
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card) 
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
             }
             #endregion
@@ -125,35 +88,22 @@ namespace DCGO.CardEffects.EX11
                         && IsNSo(permanent.TopCard);
                 }
 
-                bool IsNSoDigimonCard(CardSource source)
+                bool IsNSoDigimonCard(CardSource cardSource)
                 {
-                    return source.IsDigimon 
-                        && IsNSo(source);
-                }
-
-                bool HasNSoJogress(CardSource source)
-                {
-                    return CardEffectCommons.CanJogressWithHandOrTrash(
-                        source: source, 
-                        owner: card.Owner,
-                        isWithHandCard: false, 
-                        isIntoHandCard: true, 
-                        targetCardCondition: IsNSoDigimonCard, 
-                        permanentCondition: IsNSoPermanent,
-                        digivolutionCardCondition: IsNSoDigimonCard
-                        );
+                    return cardSource.IsDigimon 
+                        && IsNSo(cardSource);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsNSoPermanent, activateClass);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsNSoPermanent, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) 
-                        && CardEffectCommons.CanActivateSuspendCostEffect(card)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, HasNSoJogress);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass) 
+                        && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

@@ -965,7 +965,7 @@ public class PlayCardClass
                 }
                 else
                 {
-                    
+
                 }
             }
 
@@ -1391,6 +1391,14 @@ public class PlayPermanentClass
 
                             PlayLog.OnAddLog?.Invoke($"\nEvolution:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
+                            foreach (ICardEffect effect in _targetPermanent.TopCard.cEntity_EffectController.UseEffectsThisTurn)
+                            {
+                                if (effect.OriginalEffectSourceCard is not null)
+                                {
+                                    card.cEntity_EffectController.UseEffectsThisTurn.Add(effect);
+                                }
+                            }
+
                             permanent = _targetPermanent;
                             evoRoots.Add(_targetPermanent.TopCard);
                             evoRootTops.Add(_targetPermanent.TopCard);
@@ -1550,6 +1558,8 @@ public class PlayPermanentClass
                 {
                     card.Owner.DigivolveCount_ThisTurn++;
                     yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, null).Draw());
+
+                    yield return new WaitForEndOfFrame();
 
                     if (_burstDigivolved)
                     {
@@ -2434,7 +2444,7 @@ public class DeckBottomBounceClass
             DeckBouncedPermanents.Add(permanent);
         }
 
-        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(deckBottomCards));
+        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(deckBottomCards, cardEffect: cardEffect));
 
         #endregion
 
@@ -2600,7 +2610,7 @@ public class DeckTopBounceClass
             DeckBouncedPermanents.Add(permanent);
         }
 
-        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(deckTopCards));
+        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(deckTopCards, cardEffect: cardEffect));
 
         #endregion
 
@@ -2831,7 +2841,7 @@ public class HandBounceClaass
             }
             else
             {
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { topCard }));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { topCard }, cardEffect: cardEffect));
             }
         }
 
@@ -3084,6 +3094,19 @@ public class IPlacePermanentToDigivolutionCards
                 {
                     if (DigivolutionPermanent.TopCard != null && getDigivolutionPermanent.TopCard != null && !getDigivolutionPermanent.IsToken && DigivolutionPermanent.willBeRemoveField)
                     {
+                        #region "When permanents leave the battle area" effect
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+                            CardEffectCommons.OnDeletionHashtable(
+                                new List<Permanent> { DigivolutionPermanent },
+                                _cardEffect,
+                                null,
+                                false
+                            ),
+                            EffectTiming.OnLeaveFieldAnyone));
+
+                        #endregion
+
                         yield return ContinuousController.instance.StartCoroutine(DigivolutionPermanent.DiscardEvoRoots());
 
                         CardSource cardSource = DigivolutionPermanent.TopCard;
@@ -3658,7 +3681,7 @@ public class IPutSecurityPermanent
             }
             else
             {
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { topCard }));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { topCard }, cardEffect: cardEffect));
             }
         }
 
@@ -5434,7 +5457,7 @@ public class ReturnToLibraryBottomDigivolutionCardsClass
 
         #endregion
 
-        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(_cardSources));
+        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(_cardSources, cardEffect: CardEffect));
     }
 }
 
@@ -5884,6 +5907,51 @@ public class AceOverflowClass
             string log = $"\nOverflow -{cardSource.OverflowMemory}:\n{cardSource.BaseENGCardNameFromEntity}({cardSource.CardID})\n";
 
             PlayLog.OnAddLog?.Invoke(log);
+        }
+    }
+}
+
+#endregion
+
+#region ReturnStackToLibrary
+
+public class IReturnStackToLibrary
+{
+    /// <summary>
+    /// Return Stack To Library Class
+    /// </summary>
+    /// <param name="permanent">Target Permanent</param>
+    /// <param name="ReturnCount">Amount of stacked cards to return to the top of the library</param>
+    /// <param name="cardEffect">Card Effect</param>
+    public IReturnStackToLibrary(Permanent permanent, int ReturnCount, ICardEffect cardEffect)
+    {
+        _permanent = permanent;
+        _returnCount = ReturnCount;
+        _cardEffect = cardEffect;
+    }
+
+    Permanent _permanent = null;
+    int _returnCount;
+    ICardEffect _cardEffect = null;
+
+    public IEnumerator ReturnStackToLibrary()
+    {
+        if (_cardEffect == null) yield break;
+        if (_cardEffect.EffectSourceCard == null) yield break;
+        if (_permanent == null) yield break;
+        if (_permanent.TopCard == null) yield break;
+        if (_permanent.ImmuneFromStackReturnToLibrary(_cardEffect)) yield break;
+        if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
+
+        int count = Math.Min(_permanent.StackCards.Count, _returnCount);
+
+        if (count >= 1)
+        {
+            List<CardSource> returnedCards = _permanent.StackCards.GetRange(0, count);
+
+            returnedCards.Reverse();
+
+            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(returnedCards, cardEffect: _cardEffect));
         }
     }
 }

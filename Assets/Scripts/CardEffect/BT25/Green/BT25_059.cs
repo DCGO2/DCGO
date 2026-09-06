@@ -122,7 +122,7 @@ namespace DCGO.CardEffects.BT25
 
                 string EffectDescription1()
                 {
-                    return "[All Turns] [Once Per Turn] When any Digimon suspend, to 1 of your opponent's Digimon, give -3000 DP until their ends for each suspended Digimon.";
+                    return "[All Turns] [Once Per Turn] When any Digimon suspend, to 1 of your opponent's Digimon, give -3000 DP until their turn ends for each suspended Digimon.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

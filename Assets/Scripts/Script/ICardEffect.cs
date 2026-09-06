@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,8 +44,13 @@ public abstract class ICardEffect
 
     #region The source card of this effect
 
+    CardSource _originalEffectSourceCard = null;
+    public CardSource OriginalEffectSourceCard
+    {
+        get { return _originalEffectSourceCard; }
+        private set { _originalEffectSourceCard = value; }
+    }
     CardSource _effectSourceCard = null;
-
     public CardSource EffectSourceCard
     {
         get
@@ -63,10 +68,48 @@ public abstract class ICardEffect
 
         private set { _effectSourceCard = value; }
     }
-
+    public void SetOriginalEffectSourceCard(CardSource originalEffectSourceCard)
+    {
+        OriginalEffectSourceCard = originalEffectSourceCard;
+    }
     public void SetEffectSourceCard(CardSource effectSourceCard)
     {
         EffectSourceCard = effectSourceCard;
+    }
+
+    #endregion
+
+    #region Redirect target for RemoveUse()/AddUse() self-calls (Succession/copied-effect support)
+
+    // A card's own ActivateCoroutine body sometimes self-references its own ActivateClass
+    // instance to adjust its own OPT usage mid-effect (e.g. "if (!isUsed) activateClass.
+    // RemoveUse();" for an ability that may end up doing nothing). When that coroutine is
+    // reused verbatim by CardEffectFactory.CopyDigivolutionCardEffects (Succession and similar)
+    // via a wrapping copiedActivateClass that just delegates to the original's Activate(), the
+    // closure still targets the ORIGINAL instance -- so RemoveUse()/AddUse() would touch the
+    // source card's own OPT tracking instead of the copy's, even though the copy's own
+    // EffectSourceCard/tracking is otherwise correctly independent. This lets a caller
+    // (CopyDigivolutionCardEffects) temporarily redirect RemoveUse()/AddUse() calls made on
+    // this instance to affect a different ICardEffect (the copy) instead, for the duration of
+    // one Activate() call. A stack (not a single field) because the source ability could in
+    // principle be mid-activation for one copy (e.g. awaiting player input) when a second,
+    // unrelated activation for a different copy starts -- pushing/popping keeps each
+    // invocation's redirect correctly scoped instead of the second overwriting the first's.
+    readonly Stack<ICardEffect> _useTrackingRedirectStack = new Stack<ICardEffect>();
+    public ICardEffect UseTrackingRedirectTarget
+    {
+        get { return _useTrackingRedirectStack.Count > 0 ? _useTrackingRedirectStack.Peek() : null; }
+    }
+    public void PushUseTrackingRedirectTarget(ICardEffect useTrackingRedirectTarget)
+    {
+        _useTrackingRedirectStack.Push(useTrackingRedirectTarget);
+    }
+    public void PopUseTrackingRedirectTarget()
+    {
+        if (_useTrackingRedirectStack.Count > 0)
+        {
+            _useTrackingRedirectStack.Pop();
+        }
     }
 
     #endregion
@@ -162,6 +205,22 @@ public abstract class ICardEffect
 
     string _effectDiscription = "";
 
+    public string EffectDescription
+    {
+        get { return _effectDiscription; }
+        private set
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                _effectDiscription = "";
+            }
+            else
+            {
+                _effectDiscription = value;
+            }
+        }
+    }
+    
     public string EffectDiscription
     {
         get { return _effectDiscription; }
@@ -391,7 +450,8 @@ public abstract class ICardEffect
                 {
                     if (IsInheritedEffect || IsLinkedEffect)
                     {
-                        if (EffectSourceCard == EffectSourceCard.PermanentOfThisCard().TopCard)
+                        bool CardBelowBecameTopMostCard = EffectSourceCard == EffectSourceCard.PermanentOfThisCard().TopCard;
+                        if (CardBelowBecameTopMostCard)
                             return false;
 
                         if (EffectSourceCard.IsFlipped)
@@ -402,6 +462,28 @@ public abstract class ICardEffect
 
                         if (IsLinkedEffect && !EffectSourceCard.PermanentOfThisCard().LinkedCards.Contains(EffectSourceCard))
                             return false;
+
+                        #region Determination whether the permanent is same as when triggered
+                        
+                        bool CardBelowMovedFromUnderPermanentToAnother;
+                        if (((ActivateICardEffect)this).PermanentWhenTriggered != null)
+                        {
+                            if (EffectSourceCard != null)
+                            {
+                                Permanent currentPermanent = EffectSourceCard.PermanentOfThisCard();
+
+                                if (currentPermanent != null)
+                                {
+                                    CardBelowMovedFromUnderPermanentToAnother = currentPermanent != ((ActivateICardEffect)this).PermanentWhenTriggered;
+                                    if (CardBelowMovedFromUnderPermanentToAnother)
+                                    {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+
+                        #endregion
                     }
                     else
                     {
@@ -421,34 +503,6 @@ public abstract class ICardEffect
         if (IsDisabled)
         {
             return false;
-        }
-
-        #endregion
-        //TODO: Look into this for the on deletion General issue
-        #region Determination whether the permanent is same as when triggered
-
-        if (IsInheritedEffect || IsLinkedEffect)
-        {
-            if (this is ActivateICardEffect)
-            {
-                Permanent PermanentWhenTriggered = ((ActivateICardEffect)this).PermanentWhenTriggered;
-
-                if (PermanentWhenTriggered != null)
-                {
-                    if (EffectSourceCard != null)
-                    {
-                        Permanent currentPermanent = EffectSourceCard.PermanentOfThisCard();
-
-                        if (currentPermanent != null)
-                        {
-                            if (currentPermanent != PermanentWhenTriggered)
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         #endregion
@@ -807,14 +861,7 @@ public abstract class ICardEffect
                 {
                     if (EffectDiscription.StartsWith("[On Deletion]"))
                     {
-                        Permanent effectPermanent = EffectSourceCard.PermanentOfThisCard() ?? new Permanent(new List<CardSource>() { EffectSourceCard });
-
-                        Hashtable hashtable = CardEffectCommons.OnDeletionHashtable(new List<Permanent>() { effectPermanent }, null, null, false);
-
-                        if (CanTrigger(hashtable))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
@@ -870,7 +917,9 @@ public abstract class ICardEffect
             {
                 if (this.EffectSourceCard != null)
                 {
-                    if (cardEffect.EffectSourceCard == this.EffectSourceCard)
+                    bool CopiedEffectsAggregatedThroughDigivolutions = cardEffect.OriginalEffectSourceCard is not null && this.OriginalEffectSourceCard is not null && cardEffect.OriginalEffectSourceCard == this.OriginalEffectSourceCard;
+                    if (cardEffect.EffectSourceCard == this.EffectSourceCard ||
+                        CopiedEffectsAggregatedThroughDigivolutions)
                     {
                         if (HasSameHashString() && HasSameRootCardEffect())
                         {
@@ -1028,7 +1077,8 @@ public enum EffectTiming
     OnRemovedField,
     OnLinkCardDiscarded,
     OnFaceUpSecurityIncreased,
-    OnLeaveFieldAnyone
+    OnLeaveFieldAnyone,
+    OnAddLibraryAnyone
 }
 
 #endregion
@@ -1241,14 +1291,18 @@ public static class ActivateICardEffectExtensionClass
     #region remove a usage of an X Per Turn
     public static void RemoveUse(this ActivateICardEffect activateICardEffect)
     {
-        ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RemoveUseEffectThisTurn((ICardEffect)activateICardEffect);
+        ICardEffect effect = (ICardEffect)activateICardEffect;
+        ICardEffect trackedEffect = effect.UseTrackingRedirectTarget ?? effect;
+        trackedEffect.EffectSourceCard.cEntity_EffectController.RemoveUseEffectThisTurn(trackedEffect);
     }
     #endregion
 
     #region add a usage of an X Per Turn
     public static void AddUse(this ActivateICardEffect activateICardEffect)
     {
-        ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn((ICardEffect)activateICardEffect);
+        ICardEffect effect = (ICardEffect)activateICardEffect;
+        ICardEffect trackedEffect = effect.UseTrackingRedirectTarget ?? effect;
+        trackedEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(trackedEffect);
     }
     #endregion
 
@@ -1288,4 +1342,77 @@ public static class ActivateICardEffectExtensionClass
     #endregion
 }
 
+public static class CopyICardEffectExtensionClass
+{
+    /// <summary>
+    /// Evaluates a list of card effects and expands any dynamic skill wrappers (IAddSkillEffect) 
+    /// into their underlying ICardEffects for a specific CardSource and Timing.
+    /// </summary>
+    public static IEnumerable<ICardEffect> FlattenEffects(
+        this IEnumerable<ICardEffect> rawEffects, 
+        EffectTiming timing  = EffectTiming.None,
+        EffectTiming timingLimit = EffectTiming.None)
+    {
+        if (rawEffects == null) yield break;
+
+        foreach (var effect in rawEffects)
+        {
+            if (effect == null) continue;
+
+            yield return effect;
+
+            if (effect is IAddSkillEffect skillWrapper && skillWrapper.ShouldAddEffect(timingLimit))
+            {
+                var grantedEffects = new List<ICardEffect>();
+                grantedEffects = skillWrapper.GetCardEffect(effect.EffectSourceCard, grantedEffects, timing);
+
+                if (grantedEffects != null)
+                {
+                    foreach (var innerEffect in grantedEffects)
+                    {
+                        yield return innerEffect;
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets all active effects of type T (including dynamically granted skills) for a given card/permanent.
+    /// </summary>
+    public static IEnumerable<T> GetFlatEffects<T>(
+        this IEnumerable<ICardEffect> rawEffects, 
+        EffectTiming timing  = EffectTiming.None,
+        EffectTiming timingLimit = EffectTiming.None) where T : class
+    {
+        foreach (var effect in rawEffects.FlattenEffects(timing, timingLimit))
+        {
+            if (effect is T matchedEffect)
+            {
+                yield return matchedEffect;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Checks if any active effect (including added skills) matches type T and satisfies a condition.
+    /// </summary>
+    public static bool HasEffect<T>(
+        this IEnumerable<ICardEffect> rawEffects, 
+        CardSource cardSource, 
+        System.Predicate<T> condition = null, 
+        EffectTiming timing = EffectTiming.None,
+        EffectTiming timingLimit = EffectTiming.None) where T : class
+    {
+        foreach (var effect in rawEffects.GetFlatEffects<T>(timing, timingLimit))
+        {
+            if (condition == null || condition(effect))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
 #endregion

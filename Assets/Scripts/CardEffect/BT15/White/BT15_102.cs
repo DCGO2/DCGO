@@ -82,8 +82,6 @@ namespace DCGO.CardEffects.BT15
                     int validPermanentCount = CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanSelectPermanentCondition);
                     int validTrashCardCount = card.Owner.TrashCards.Count(CanSelectCardCondition);
 
-                    int toPlace = Math.Min(3, validPermanentCount + validTrashCardCount);
-
                     bool noSelect() => CanNoSelect(card, digivolutionCards.Count);
 
                     bool ValidPermanentCombination(List<Permanent> permanents, Permanent permanent)
@@ -111,32 +109,32 @@ namespace DCGO.CardEffects.BT15
                     }
                     #endregion
 
-                    while (toPlace > 0)
+                    while (digivolutionCards.Count < 3
+                    && validPermanentCount + validTrashCardCount != 0)
                     {
-                        if (validPermanentCount > 0 && validTrashCardCount > 0)
-                        {
-                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
-                            {
-                                new(message: "from Battle Area", value: 1, spriteIndex: 0),
-                                new(message: "from Trash", value: 2, spriteIndex: 0)
-                            };
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
 
-                            if (noSelect())
-                            {
-                                string message = digivolutionCards.Count > 0 ? "Finish Placing" : "Do not place";
-                                selectionElements.Add(new(message: message, value: 3, spriteIndex: 1));
-                            }
-
-                            GManager.instance.userSelectionManager.SetIntSelection(
-                                selectionElements: selectionElements,
-                                selectPlayer: card.Owner,
-                                selectPlayerMessage: "From which area will you select a card?",
-                                notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
-                        }
-                        else
+                        if (validPermanentCount > 0)
                         {
-                            GManager.instance.userSelectionManager.SetInt(validPermanentCount > 0 ? 1 : 2);
+                            selectionElements.Add(new(message: "from Battle Area", value: 1, spriteIndex: 0));
                         }
+
+                        if (validTrashCardCount > 0)
+                        {
+                            selectionElements.Add(new(message: "from Trash", value: 2, spriteIndex: 0));
+                        }
+
+                        if (noSelect())
+                        {
+                            string message = digivolutionCards.Count > 0 ? "Finish Placing" : "Do not place";
+                            selectionElements.Add(new(message: message, value: 3, spriteIndex: 1));
+                        }
+
+                        GManager.instance.userSelectionManager.SetIntSelection(
+                            selectionElements: selectionElements,
+                            selectPlayer: card.Owner,
+                            selectPlayerMessage: "From which area will you select a card?",
+                            notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
@@ -144,6 +142,7 @@ namespace DCGO.CardEffects.BT15
                         {
                             break;
                         }
+
                         if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
                         {
                             bool canNoSelect = noSelect() && validTrashCardCount > 0;
@@ -427,25 +426,67 @@ namespace DCGO.CardEffects.BT15
 
                     if (selectedCard != null)
                     {
-                        List<ICardEffect> candidateEffects = selectedCard.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
-                            .Clone()
+                        Permanent thisPermanent = card.PermanentOfThisCard();
+
+                        #region Add other card's effects to this card for "as effect of this card"
+                        AddSkillClass addSkillClass = new AddSkillClass();
+                        addSkillClass.SetUpICardEffect("Copy Digivolution Card Effects", _ => true, card);
+
+                        ICardEffect GetAddSkillEffect(EffectTiming _timing) => addSkillClass;
+
+                        card.Owner.UntilCalculateFixedCostEffect.Add(GetAddSkillEffect);
+
+                        List<ICardEffect> candidateEffects = selectedCard.EffectList(EffectTiming.OnEnterFieldAnyone)
                             .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnPlay);
 
-                        if (candidateEffects.Count >= 1)
+                        List<ICardEffect> GetEffects(CardSource sourceCard, List<ICardEffect> getCardEffects, EffectTiming _timing)
+                        {
+                            getCardEffects ??= new List<ICardEffect>();
+
+                            if (sourceCard == null || _timing is not EffectTiming.OnEnterFieldAnyone)
+                                return getCardEffects;
+
+                            foreach (ICardEffect cardEffect in candidateEffects)
+                            {
+                                if (cardEffect.IsInheritedEffect || cardEffect.IsLinkedEffect)
+                                {
+                                    continue;
+                                }
+
+                                cardEffect.SetOriginalEffectSourceCard(selectedCard);
+
+                                getCardEffects.Add(cardEffect);
+                            }
+
+                            return getCardEffects;
+                        }
+
+                        addSkillClass.SetUpAddSkillClass(
+                            cardSourceCondition: cardSource => cardSource == card,
+                            getEffects: GetEffects,
+                            limitTiming: EffectTiming.OnEnterFieldAnyone
+                        );
+                        #endregion
+
+                        #region Activate one of the added effects
+                        List<ICardEffect> activatableEffects = thisPermanent.EffectList(EffectTiming.OnEnterFieldAnyone)
+                            .Filter(cardEffect => cardEffect != null && cardEffect.OriginalEffectSourceCard == selectedCard && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnPlay);
+
+                        if (activatableEffects.Count >= 1)
                         {
                             ICardEffect selectedEffect = null;
 
-                            if (candidateEffects.Count == 1)
+                            if (activatableEffects.Count == 1)
                             {
-                                selectedEffect = candidateEffects[0];
+                                selectedEffect = activatableEffects[0];
                             }
                             else
                             {
-                                List<SkillInfo> skillInfos = candidateEffects
+                                List<SkillInfo> skillInfos = activatableEffects
                                     .Map(cardEffect => new SkillInfo(cardEffect, null, EffectTiming.None));
 
-                                List<CardSource> cardSources = candidateEffects
-                                    .Map(cardEffect => cardEffect.EffectSourceCard);
+                                List<CardSource> cardSources = activatableEffects
+                                    .Map(cardEffect => cardEffect.OriginalEffectSourceCard);
 
                                 SelectCardEffect selectSourceCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -494,11 +535,16 @@ namespace DCGO.CardEffects.BT15
                                 }
                             }
                         }
+                        #endregion
+
+                        #region Remove effects
+                        card.Owner.UntilCalculateFixedCostEffect.Remove(GetAddSkillEffect);
+                        #endregion
+
+                        int trashCount = 2 * card.PermanentOfThisCard().DigivolutionCards.Count(cardSource => cardSource.IsFaceUp && cardSource.IsLevel6);
+
+                        yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(trashCount, card.Owner.Enemy, activateClass).AddTrashCardsFromLibraryTop());
                     }
-
-                    int trashCount = 2 * card.PermanentOfThisCard().cardSources.Filter(cardSource => cardSource != card && cardSource.HasLevel && cardSource.Level == 6).Count;
-
-                    yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(trashCount, card.Owner.Enemy, activateClass).AddTrashCardsFromLibraryTop());
                 }
             }
             #endregion

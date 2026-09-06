@@ -82,7 +82,7 @@ namespace DCGO.CardEffects.EX12
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                             targetPermanent: permanent,
-                            changeValue: -3000,
+                            changeValue: -4000,
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass));
                     }

@@ -1,36 +1,25 @@
 using System.Collections;
-using System.Collections.Generic;
 using System;
-using System.Linq;
-using UnityEngine;
-using System.Runtime.InteropServices.WindowsRuntime;
 
 public partial class CardEffectFactory
 {
     #region Trigger effect of [Scapegoat] on oneself
-    public static ActivateClass ScapegoatSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, string effectName, string effectDiscription, ICardEffect rootCardEffect = null, bool isLinkedEffect = false)
+    public static ActivateClass ScapegoatSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, string effectName, ICardEffect rootCardEffect = null, bool isLinkedEffect = false)
     {
         Permanent targetPermanent = card.PermanentOfThisCard();
 
         bool CanUseCondition()
         {
-            if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-            {
-                if (condition == null || condition())
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                && (condition == null || condition());
         }
 
-        return ScapegoatEffect(targetPermanent: targetPermanent, isInheritedEffect: isInheritedEffect, condition: CanUseCondition, rootCardEffect: rootCardEffect, effectName: effectName, effectDiscription: effectDiscription, card, isLinkedEffect: isLinkedEffect);
+        return ScapegoatEffect(targetPermanent: targetPermanent, isInheritedEffect: isInheritedEffect, condition: CanUseCondition, rootCardEffect: rootCardEffect, effectName: effectName, card, isLinkedEffect: isLinkedEffect);
     }
     #endregion
 
     #region Trigger effect of [Scapegoat]
-    public static ActivateClass ScapegoatEffect(Permanent targetPermanent, bool isInheritedEffect, Func<bool> condition, ICardEffect rootCardEffect, string effectName, string effectDiscription, CardSource card, bool isLinkedEffect = false)
+    public static ActivateClass ScapegoatEffect(Permanent targetPermanent, bool isInheritedEffect, Func<bool> condition, ICardEffect rootCardEffect, string effectName, CardSource card, bool isLinkedEffect = false)
     {
         if (targetPermanent == null) return null;
         if (targetPermanent.TopCard == null) return null;
@@ -38,7 +27,7 @@ public partial class CardEffectFactory
 
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect(effectName, CanUseCondition, card);
-        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, effectDiscription);
+        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, DataBase.ScapegoatEffectDescription());
         activateClass.SetHashString($"Scapegoat_{card.CardID}" + (isInheritedEffect ? "_inherited" : ""));
         activateClass.SetIsInheritedEffect(isInheritedEffect);
         activateClass.SetIsLinkedEffect(isLinkedEffect);
@@ -54,45 +43,23 @@ public partial class CardEffectFactory
 
         bool PermanentCondition(Permanent permanent)
         {
-            if(permanent == targetPermanent)
-            {
-                return true;
-            }
-            return false;
+            return permanent == targetPermanent;
         }
 
         bool CanUseCondition(Hashtable hashtable)
         {
             bool CardEffectCondition(ICardEffect cardEffect) => CardEffectCommons.IsOwnerEffect(cardEffect,card);
 
-            if (CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent))
-            {
-                if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition))
-                {
-                    if (CardEffectCommons.IsByEffect(hashtable, CardEffectCondition))
-                        return false;
-
-                    if (condition == null || condition())
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent)
+                && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition)
+                && !CardEffectCommons.IsByEffect(hashtable, CardEffectCondition)
+                && (condition == null || condition());
         }
 
         bool CanActivateCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.CanActivateScapegoat(targetPermanent, CanSelectPermanentCondition))
-            {
-                if (condition == null || condition())
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return CardEffectCommons.CanActivateScapegoat(targetPermanent, CanSelectPermanentCondition)
+                && (condition == null || condition());
         }
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -125,15 +92,8 @@ public partial class CardEffectFactory
 
         bool PermanentCondition(Permanent permanent)
         {
-            if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
-            {
-                if (permanentCondition == null || permanentCondition(permanent))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)
+                && (permanentCondition == null || permanentCondition(permanent));
         }
 
         return scapegoateClass;

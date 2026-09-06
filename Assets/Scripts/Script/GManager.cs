@@ -441,7 +441,7 @@ public class GManager : MonoBehaviourPun
         rt.sizeDelta = new Vector2(0f, 30f);
 
         TextMeshProUGUI text = warningObj.AddComponent<TextMeshProUGUI>();
-        text.text = "WARNING: THE BOT IS NOT ACTIVELY MAINTAINED AND MAKES ILLEGAL PLAYS";
+        text.text = "WARNING: THE BOT IS DEPRECATED AND WILL MAKE ILLEGAL PLAYS/SOFTLOCK THE GAME";
         text.alignment = TextAlignmentOptions.Center;
         text.color = new Color(1f, 0.3f, 0.3f, 1f);
         text.fontSize = 20f;

@@ -244,50 +244,52 @@ namespace DCGO.CardEffects.BT25
             if (timing == EffectTiming.WhenLinked)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Linked digimon may Attack", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Linked Digimon may Attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 activateClass.SetEffectTargets(TargetablePermanents);
+
                 cardEffects.Add(activateClass);
 
-                string EffectDescription()
-                {
-                    return "[Your Turn] When your Digimon get linked, one of them may attack.";
-                }
+                string EffectDescription() => "[Your Turn] When your Digimon get linked, one of them may attack.";
 
-                bool PermanentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                bool CanSelectPermanentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.CanTriggerWhenLinked(hashtable, PermanentCondition, null);
-                }
+                bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass) && 
+                        CardEffectCommons.IsOwnerTurn(card) && 
+                        CardEffectCommons.CanTriggerWhenLinked(hashtable, CanSelectPermanentCondition, null);
 
-                Permanent GetAttacker(Hashtable hashtable) => CardEffectCommons.GetPermanentFromHashtable(hashtable);
+                List<Permanent> TargetablePermanents(Hashtable hashtable) => CardEffectCommons.GetPermanentsFromHashtable(hashtable).Where(permanent => permanent.CanAttack(activateClass)).ToList();
 
-                List<Permanent> TargetablePermanents(Hashtable hashtable) => new List<Permanent>() { GetAttacker(hashtable) };
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    activateClass.SetEffectName($"{GetAttacker(hashtable).TopCard.BaseENGCardNameFromEntity} may attack");
-                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
-                }
+                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Permanent attacker = GetAttacker(hashtable);
-                    if (attacker != null && attacker.TopCard != null && attacker.CanAttack(activateClass))
+                    
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                        selectAttackEffect.SetUp(
-                            attacker: attacker,
-                            canAttackPlayerCondition: () => true,
-                            defenderCondition: (permanent) => true,
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Attack,
                             cardEffect: activateClass);
+                    
+                        
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 linked Digimon to attack.");
 
-                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
                 }
             }

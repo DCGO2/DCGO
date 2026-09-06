@@ -17,7 +17,8 @@ public class BurstEffectObject : EvolutionEffectObject
     {
         if (ContinuousController.instance != null)
         {
-            if (!ContinuousController.instance.showCutInAnimation)
+            if (!ContinuousController.instance.showCutInAnimation
+            || cardSource.EqualsTraits("Appmon"))
             {
                 yield break;
             }
