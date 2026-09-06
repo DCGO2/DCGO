@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Jupitermon // Wide Plasment
 namespace DCGO.CardEffects.BT26
@@ -100,11 +99,8 @@ namespace DCGO.CardEffects.BT26
                         bool CanSelectCardCondition(CardSource cardSource)
                         {
                             return (cardSource.EqualsTraits("Iliad")
-                                || cardSource.EqualsTraits("TS"))
-                                && ((cardSource.IsOption
-                                        && !cardSource.CanNotPlayThisOption)
-                                    || (cardSource.HasPlayCost
-                                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass, fixedCost: cardSource.GetCostItself - 5)));
+                                    || cardSource.EqualsTraits("TS"))
+                                && CardEffectCommons.CanPlayOrUse(cardSource, activateClass, fixedCost: cardSource.GetCostItself - 5);
                         }
 
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
@@ -275,32 +271,49 @@ namespace DCGO.CardEffects.BT26
             }
             #endregion
 
-            #region Option Use Cost
+            #region Use Cost +1 per security card
             if (timing == EffectTiming.None)
             {
+                int count()
+                {
+                    int count = card.Owner.SecurityCards.Count;
+
+                    return count;
+                }
+
                 ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Option use cost increased by number of security cards", CanUseCondition, card);
-                changeCostClass.SetUpChangeCostClass(
-                    changeCostFunc: ChangeCost,
-                    cardSourceCondition: CardSourceCondition,
-                    rootCondition: RootCondition,
-                    isUpDown: () => false,
-                    isCheckAvailability: () => false,
-                    isChangePayingCost: () => true);
+                changeCostClass.SetUpICardEffect($"Use Cost +{count()}", CanUseCondition, card);
+                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => false);
+
                 cardEffects.Add(changeCostClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (count() >= 1)
+                    {
+                        changeCostClass.SetEffectName($"Use Cost +{count()}");
+
+                        return true;
+                    }
+
+                    return false;
                 }
 
-                int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                 {
-                    if (CardSourceCondition(cardSource) && RootCondition(root) && PermanentsCondition(targetPermanents))
+                    if (CardSourceCondition(cardSource)
+                    && RootCondition(root)
+                    && PermanentsCondition(targetPermanents))
                     {
-                        cost += card.Owner.SecurityCards.Count;
+                        Cost += count();
                     }
-                    return cost;
+
+                    return Cost;
+                }
+
+                bool PermanentsCondition(List<Permanent> targetPermanents)
+                {
+                    return true;
                 }
 
                 bool CardSourceCondition(CardSource cardSource)
@@ -313,9 +326,9 @@ namespace DCGO.CardEffects.BT26
                     return true;
                 }
 
-                bool PermanentsCondition(List<Permanent> targetPermanents)
+                bool isUpDown()
                 {
-                    return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
+                    return true;
                 }
             }
             #endregion

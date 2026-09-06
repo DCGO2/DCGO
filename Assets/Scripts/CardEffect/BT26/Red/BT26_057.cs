@@ -88,21 +88,10 @@ namespace DCGO.CardEffects.BT26
 
                         if (thisPermanent != null)
                         {
-                            CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                            canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon effects", CanUseCondition1, card);
-                            canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition1, SkillCondition: SkillCondition1);
-                            thisPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotAffectedClass);
+                            thisPermanent.UntilOpponentTurnEndEffects.Add((_timing) => PermanentEffectFactory.DigimonEffectImmunity(thisPermanent));
 
-                            bool CanUseCondition1(Hashtable _hashtable) => CardEffectCommons.IsPermanentExistsOnBattleArea(thisPermanent);
-
-                            bool CardCondition1(CardSource cardSource) => CardEffectCommons.IsPermanentExistsOnBattleArea(thisPermanent) && cardSource == thisPermanent.TopCard;
-
-                            bool SkillCondition1(ICardEffect cardEffect)
-                                => cardEffect != null
-                                    && cardEffect.EffectSourceCard != null
-                                    && cardEffect.EffectSourceCard.Owner == card.Owner.Enemy
-                                    && cardEffect.EffectSourceCard.IsDigimon;
-
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(thisPermanent));
+                          
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: thisPermanent, changeValue: 3000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                         }
                     }

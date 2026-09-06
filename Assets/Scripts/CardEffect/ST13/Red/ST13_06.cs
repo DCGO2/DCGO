@@ -95,42 +95,39 @@ namespace DCGO.CardEffects.ST13
                 {
                     if (CardEffectCommons.CanActivateBlitz(card, activateClass))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BlitzProcess(card, activateClass, BeforeOnAttackCoroutine));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BlitzProcess(card, activateClass));                     
+                    }
 
-                        IEnumerator BeforeOnAttackCoroutine()
-                        {
-                            int count = card.PermanentOfThisCard().DigivolutionCards.Count / 4;
+                    int count = card.PermanentOfThisCard().DigivolutionCards.Count / 4;
 
-                            if (CardEffectCommons.IsJogress(_hashtable)
-                            && count > 0)
-                            {
-                                int maxCount = Math.Min(count, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                    if (CardEffectCommons.IsJogress(_hashtable)
+                    && count > 0)
+                    {
+                        int maxCount = Math.Min(count, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectPermanentCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: null,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Destroy,
-                                    cardEffect: activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
 
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                                yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                                    player: card.Owner.Enemy,
-                                    destroySecurityCount: count,
-                                    cardEffect: activateClass,
-                                    fromTop: true).DestroySecurity());
-                            }
-                        }
-                    }            
+                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                            player: card.Owner.Enemy,
+                            destroySecurityCount: count,
+                            cardEffect: activateClass,
+                            fromTop: true).DestroySecurity());
+                    }
                 }
             }
             #endregion
