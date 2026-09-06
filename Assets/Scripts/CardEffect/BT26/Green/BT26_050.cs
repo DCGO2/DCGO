@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 // Rosemon: Burst Mode/Aguichant Lèvres
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT26
 {
     public class BT26_050 : CEntity_Effect
     {
@@ -79,11 +79,11 @@ namespace DCGO.CardEffects
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 2 opponent's Digimon or Tamers, then 2 opponent Digimon or Tamers can't unsuspend until their turn ends", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription() => "You may suspend 2 Digimon or Tamers. Then, 2 of your opponent's Digimon or Tamers can't unsuspend until their turn ends.";
+                string EffectDescription() => "You may suspend 2 Digimon or Tamers. Then, 2 of your opponent's Digimon or Tamers can't unsuspend until their turn ends.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -254,10 +254,10 @@ namespace DCGO.CardEffects
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 2 opponent's Digimon or Tamers, then opponent suspended Digimon or Tamers can't unsuspend until their turn ends", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                     => "[Main] Suspend 2 of your opponent's Digimon or Tamers. Then, until their turn ends, none of their suspended Digimon or Tamers can digivolve or unsuspend.";
 
                 bool CanUseCondition(Hashtable hashtable)

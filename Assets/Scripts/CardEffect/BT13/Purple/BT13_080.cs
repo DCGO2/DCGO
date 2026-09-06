@@ -1,8 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// ProtoGizmon
 namespace DCGO.CardEffects.BT13
 {
     public class BT13_080 : CEntity_Effect
@@ -11,183 +11,134 @@ namespace DCGO.CardEffects.BT13
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Play Reduction Shown
             if (timing == EffectTiming.BeforePayCost)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete your 1 Digimon in breeding area to get Play Cost -2", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetHashString("PlayCost-2_BT13_080");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "When you would play this card, by deleting 1 of your level 2 Digimon in the breeding area, reduce the play cost by 2.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card))
-                    {
-                        if (permanent.IsDigimon)
-                        {
-                            if (permanent.Level == 2)
-                            {
-                                if (permanent.TopCard.HasLevel)
-                                {
-                                    if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                                    {
-                                        if (permanent.CanBeDestroyedBySkill(activateClass))
-                                        {
-                                            return true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card)
+                        && permanent.TopCard.IsLevel2
+                        && !permanent.TopCard.CanNotBeAffected(activateClass)
+                        && permanent.CanBeDestroyedBySkill(activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, cardSource => cardSource == card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, cardSource => cardSource == card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (card.Owner.GetBreedingAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return card.Owner.GetBreedingAreaPermanents().Count(CanSelectPermanentCondition) >= 1;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (card.Owner.GetBreedingAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
+                    bool CanNoSelect =
+                    CardEffectCommons.GetPlayCardClassFromHashtable(_hashtable) != null &&
+                        card.PayingCost(
+                            CardEffectCommons.GetPlayCardClassFromHashtable(_hashtable).Root,
+                            null,
+                            checkAvailability: false)
+                        <= card.Owner.MaxMemoryCost;
+
+                    int maxCount = 1;
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: CanNoSelect,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        bool CanNoSelect =
-                        CardEffectCommons.GetPlayCardClassFromHashtable(_hashtable) != null &&
-                            card.PayingCost(
-                                CardEffectCommons.GetPlayCardClassFromHashtable(_hashtable).Root,
-                                null,
-                                checkAvailability: false)
-                            <= card.Owner.MaxMemoryCost;
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
 
-                        int maxCount = 1;
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: CanNoSelect,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        IEnumerator SuccessProcess()
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
-
-                            IEnumerator SuccessProcess()
+                            if (card.Owner.CanReduceCost(null, card))
                             {
-                                if (card.Owner.CanReduceCost(null, card))
-                                {
-                                    ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                                }
-
-                                ChangeCostClass changeCostClass = new ChangeCostClass();
-                                changeCostClass.SetUpICardEffect("Play Cost -2", CanUseCondition1, card);
-                                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                                card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
-
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
-
-                                bool CanUseCondition1(Hashtable hashtable)
-                                {
-                                    return true;
-                                }
-
-                                int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                                {
-                                    if (CardSourceCondition(cardSource))
-                                    {
-                                        if (RootCondition(root))
-                                        {
-                                            if (PermanentsCondition(targetPermanents))
-                                            {
-                                                Cost -= 2;
-                                            }
-                                        }
-                                    }
-
-                                    return Cost;
-                                }
-
-                                bool PermanentsCondition(List<Permanent> targetPermanents)
-                                {
-                                    if (targetPermanents == null)
-                                    {
-                                        return true;
-                                    }
-                                    else
-                                    {
-                                        if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
-                                }
-
-                                bool CardSourceCondition(CardSource cardSource)
-                                {
-                                    if (cardSource != null)
-                                    {
-                                        if (cardSource == card)
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
-                                }
-
-                                bool RootCondition(SelectCardEffect.Root root)
-                                {
-                                    return true;
-                                }
-
-                                bool isUpDown()
-                                {
-                                    return true;
-                                }
-
-                                yield return null;
+                                ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
                             }
+
+                            ChangeCostClass changeCostClass = new ChangeCostClass();
+                            changeCostClass.SetUpICardEffect("Play Cost -2", CanUseCondition1, card);
+                            changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                            card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
+
+                            bool CanUseCondition1(Hashtable hashtable)
+                            {
+                                return true;
+                            }
+
+                            int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                            {
+                                if (CardSourceCondition(cardSource)
+                                && RootCondition(root)
+                                && PermanentsCondition(targetPermanents))
+                                {
+                                    Cost -= 2;
+                                }
+                                 
+                                return Cost;
+                            }
+
+                            bool PermanentsCondition(List<Permanent> targetPermanents)
+                            {
+                                return targetPermanents == null
+                                        || targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
+                            }
+
+                            bool CardSourceCondition(CardSource cardSource)
+                            {
+                                return cardSource != null
+                                    && cardSource == card;
+                            }
+
+                            bool RootCondition(SelectCardEffect.Root root)
+                            {
+                                return true;
+                            }
+
+                            bool isUpDown()
+                            {
+                                return true;
+                            }
+
+                            yield return null;
                         }
                     }
                 }
             }
+            #endregion
 
+            #region Play Reduction Not Shown
             if (timing == EffectTiming.None)
             {
                 ChangeCostClass changeCostClass = new ChangeCostClass();
@@ -198,27 +149,10 @@ namespace DCGO.CardEffects.BT13
 
                 bool CanSelectPermanentCondition(Permanent permanent, ICardEffect activateClass)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card))
-                    {
-                        if (permanent.IsDigimon)
-                        {
-                            if (permanent.Level == 2)
-                            {
-                                if (permanent.TopCard.HasLevel)
-                                {
-                                    if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                                    {
-                                        if (permanent.CanBeDestroyedBySkill(activateClass))
-                                        {
-                                            return true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card)
+                        && permanent.TopCard.IsLevel2
+                        && !permanent.TopCard.CanNotBeAffected(activateClass)
+                        && permanent.CanBeDestroyedBySkill(activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -227,13 +161,8 @@ namespace DCGO.CardEffects.BT13
                     {
                         ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Delete your 1 Digimon in breeding area to get Play Cost -2");
 
-                        if (activateClass != null)
-                        {
-                            if (card.Owner.GetBreedingAreaPermanents().Count((permanent) => CanSelectPermanentCondition(permanent, activateClass)) >= 1)
-                            {
-                                return true;
-                            }
-                        }
+                        return activateClass != null
+                            && card.Owner.GetBreedingAreaPermanents().Count((permanent) => CanSelectPermanentCondition(permanent, activateClass)) >= 1;
                     }
 
                     return false;
@@ -241,15 +170,11 @@ namespace DCGO.CardEffects.BT13
 
                 int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                 {
-                    if (CardSourceCondition(cardSource))
+                    if (CardSourceCondition(cardSource)
+                    && RootCondition(root)
+                    && PermanentsCondition(targetPermanents))
                     {
-                        if (RootCondition(root))
-                        {
-                            if (PermanentsCondition(targetPermanents))
-                            {
-                                Cost -= 2;
-                            }
-                        }
+                        Cost -= 2;
                     }
 
                     return Cost;
@@ -257,32 +182,14 @@ namespace DCGO.CardEffects.BT13
 
                 bool PermanentsCondition(List<Permanent> targetPermanents)
                 {
-                    if (targetPermanents == null)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return targetPermanents == null
+                            || targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
                 }
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
-                    if (cardSource != null)
-                    {
-                        if (cardSource == card)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource != null
+                        && cardSource == card;
                 }
 
                 bool RootCondition(SelectCardEffect.Root root)
@@ -295,40 +202,32 @@ namespace DCGO.CardEffects.BT13
                     return true;
                 }
             }
+            #endregion
 
+            #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Draw 1 and trash 1 card from hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("<Draw 1> and trash 1 card from hand", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[On Play] <Draw 1>. Then, trash 1 card in your hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card)
+                        && CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.LibraryCards.Count >= 1)
-                        {
-                            return true;
-                        }
-
-                        if (card.Owner.HandCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && (card.Owner.LibraryCards.Count >= 1
+                            || card.Owner.HandCards.Count >= 1);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -337,8 +236,6 @@ namespace DCGO.CardEffects.BT13
 
                     if (card.Owner.HandCards.Count >= 1)
                     {
-                        int discardCount = 1;
-
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                         selectHandEffect.SetUp(
@@ -346,7 +243,7 @@ namespace DCGO.CardEffects.BT13
                             canTargetCondition: (cardSource) => true,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: discardCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             isShowOpponent: true,
@@ -359,17 +256,14 @@ namespace DCGO.CardEffects.BT13
                     }
                 }
             }
+            #endregion
 
+            #region All Turns
             if (timing == EffectTiming.None)
             {
                 bool Condition()
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 cardEffects.Add(CardEffectFactory.CanNotDigivolveStaticSelfEffect(
@@ -380,15 +274,18 @@ namespace DCGO.CardEffects.BT13
                 effectName: "Can't digivolve")
                 );
             }
+            #endregion
 
+            #region On Deletion
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Gizmon: AT] from trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[On Deletion] By returning 2 cards with [Gizmon] in their names from your trash to the bottom of the deck in any order, you may play 1 [Gizmon: AT] from your trash without paying the cost.";
                 }
@@ -400,20 +297,8 @@ namespace DCGO.CardEffects.BT13
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, root: SelectCardEffect.Root.Trash))
-                    {
-                        if (cardSource.CardNames.Contains("Gizmon: AT"))
-                        {
-                            return true;
-                        }
-
-                        if (cardSource.CardNames.Contains("Gizmon:AT"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, root: SelectCardEffect.Root.Trash)
+                        && cardSource.EqualsCardName("Gizmon: AT");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -423,15 +308,8 @@ namespace DCGO.CardEffects.BT13
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnTrash(card))
-                    {
-                        if (card.Owner.TrashCards.Count(CanSelectCardCondition) >= 2)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanActivateOnDeletion(card, activateClass)
+                        && card.Owner.TrashCards.Count(CanSelectCardCondition) >= 2;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -440,19 +318,17 @@ namespace DCGO.CardEffects.BT13
 
                     if (card.Owner.TrashCards.Count(CanSelectCardCondition) >= 2)
                     {
-                        int maxCount = 2;
-
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
                         canTargetCondition: (cardSource) => CanSelectCardCondition(cardSource),
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        canNoSelect: () => false,
+                        canNoSelect: () => true,
                         selectCardCoroutine: null,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         message: "Select cards to place at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
-                        maxCount: maxCount,
+                        maxCount: 2,
                         canEndNotMax: false,
                         isShowOpponent: false,
                         mode: SelectCardEffect.Mode.Custom,
@@ -480,51 +356,18 @@ namespace DCGO.CardEffects.BT13
                         }
                     }
 
-                    if (returned)
+                    if (returned && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition1(cardSource)))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition1(cardSource)))
-                        {
-                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardCondition1(cardSource)));
-
-                            List<CardSource> selectedCards = new List<CardSource>();
-
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                        canTargetCondition: CanSelectCardCondition1,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        canNoSelect: () => true,
-                                        selectCardCoroutine: SelectCardCoroutine,
-                                        afterSelectCardCoroutine: null,
-                                        message: "Select 1 card to play.",
-                                        maxCount: maxCount,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Trash,
-                                        customRootCardList: null,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                            yield return StartCoroutine(selectCardEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-
-                                yield return null;
-                            }
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                            canTargetCondition: CanSelectCardCondition1,
+                            root: SelectCardEffect.Root.Trash,
+                            activateClass,
+                            payCost: false
+                        ));
                     }
                 }
             }
+            #endregion
 
             return cardEffects;
         }

@@ -59,7 +59,8 @@ namespace DCGO.CardEffects.BT26
                 => $"[{tag}] You may link up to 7 [Appmon] trait cards with different names from this Digimon's digivolution cards to this Digimon without paying the costs. Then, this Digimon may attack without suspending.";
 
             bool CanSelectSourceCondition(CardSource cardSource)
-                => cardSource.EqualsTraits("Appmon");
+                => cardSource.EqualsTraits("Appmon")
+                    && cardSource.CanLinkToTargetPermanent(card.PermanentOfThisCard(), false);
 
             bool CanTargetCondition_ByPreSelecetedList(List<CardSource> selectedCards, CardSource cardSource)
                 => !selectedCards.Exists(selected => cardSource.EqualsCardName(selected.CardNames[0]));

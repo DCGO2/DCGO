@@ -13,24 +13,62 @@ namespace DCGO.CardEffects.BT26
             #region Use Cost +1 per security card
             if (timing == EffectTiming.None)
             {
+                int count()
+                {
+                    int count = card.Owner.SecurityCards.Count;
+
+                    return count;
+                }
+
                 ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Use Cost +1 per security card", CanUseCondition, card);
-                changeCostClass.SetUpChangeCostClass(
-                    changeCostFunc: ChangeCost,
-                    cardSourceCondition: CardSourceCondition,
-                    rootCondition: _ => true,
-                    isUpDown: () => true,
-                    isCheckAvailability: () => false,
-                    isChangePayingCost: () => true);
+                changeCostClass.SetUpICardEffect($"Use Cost +{count()}", CanUseCondition, card);
+                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => false);
 
                 cardEffects.Add(changeCostClass);
 
-                bool CanUseCondition(Hashtable hashtable) => true;
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (count() >= 1)
+                    {
+                        changeCostClass.SetEffectName($"Use Cost +{count()}");
 
-                bool CardSourceCondition(CardSource cardSource) => cardSource == card;
+                        return true;
+                    }
 
-                int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                    => CardSourceCondition(cardSource) ? cost + cardSource.Owner.SecurityCards.Count : cost;
+                    return false;
+                }
+
+                int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                {
+                    if (CardSourceCondition(cardSource)
+                    && RootCondition(root)
+                    && PermanentsCondition(targetPermanents))
+                    {
+                        Cost += count();
+                    }
+
+                    return Cost;
+                }
+
+                bool PermanentsCondition(List<Permanent> targetPermanents)
+                {
+                    return true;
+                }
+
+                bool CardSourceCondition(CardSource cardSource)
+                {
+                    return cardSource == card;
+                }
+
+                bool RootCondition(SelectCardEffect.Root root)
+                {
+                    return true;
+                }
+
+                bool isUpDown()
+                {
+                    return true;
+                }
             }
             #endregion
 

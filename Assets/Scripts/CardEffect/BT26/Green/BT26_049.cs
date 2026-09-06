@@ -116,7 +116,7 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    maxCost = 3 + card.Owner.Enemy.GetFieldPermanents().Filter(IsSuspendedPermanent).Count;
+                    maxCost = 3 + CardEffectCommons.MatchConditionPermanentCount(IsSuspendedPermanent);
 
                     return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);

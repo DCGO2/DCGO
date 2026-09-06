@@ -80,6 +80,7 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By digivolving into [Chronomon: Destroy Mode] from hand or trash, it doesn't leave", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -124,6 +125,8 @@ namespace DCGO.CardEffects.BT26
 
                     bool doSelect = GManager.instance.userSelectionManager.SelectedIntValue != 3;
 
+                    bool isHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+
                     if (doSelect)
                     {
                         Permanent thisPermanent = card.PermanentOfThisCard();
@@ -135,7 +138,7 @@ namespace DCGO.CardEffects.BT26
                             reduceCostTuple: null,
                             fixedCostTuple: null,
                             ignoreDigivolutionRequirementFixedCost: -1,
-                            isHand: canSelectHand,
+                            isHand: isHand,
                             activateClass: activateClass,
                             successProcess: SuccessProcess()
                         ));

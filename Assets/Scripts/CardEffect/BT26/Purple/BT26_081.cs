@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -49,23 +48,17 @@ namespace DCGO.CardEffects.BT26
                     && (permanent.IsDigimon || permanent.IsTamer)
                     && (permanent.TopCard.EqualsTraits("Iliad") || permanent.TopCard.HasTSTraits);
 
-            IEnumerator PlayUpToBudgetCoroutine(int totalCost, SelectCardEffect.Root root, ActivateClass activateClass, Action<int> onSpent)
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                int totalCost = 8;
+
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.EqualsTraits("Iliad")
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, root: root);
-
-                if (!CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition) && root == SelectCardEffect.Root.Trash) yield break;
-                if (!CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition) && root == SelectCardEffect.Root.Hand) yield break;
+                        && cardSource.HasPlayCost
+                        && cardSource.GetCostItself <= totalCost
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
 
                 List<CardSource> selectedCards = new List<CardSource>();
-
-                bool CanEndSelectCardCondition(List<CardSource> cards)
-                {
-                    int sumCost = 0;
-                    foreach (CardSource source in cards) sumCost += source.GetCostItself;
-                    return sumCost <= totalCost;
-                }
 
                 bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
                 {
@@ -74,75 +67,116 @@ namespace DCGO.CardEffects.BT26
                     return sumCost <= totalCost;
                 }
 
-                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                selectCardEffect.SetUp(
-                    canTargetCondition: CanSelectCardCondition,
-                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
-                    canEndSelectCondition: CanEndSelectCardCondition,
-                    canNoSelect: () => true,
-                    selectCardCoroutine: SelectCardCoroutine,
-                    afterSelectCardCoroutine: null,
-                    message: $"Select up to {totalCost} play cost worth of [Iliad] trait cards to play from {(root == SelectCardEffect.Root.Hand ? "your hand" : "your trash")}.",
-                    maxCount: -1,
-                    canEndNotMax: true,
-                    isShowOpponent: true,
-                    mode: SelectCardEffect.Mode.Custom,
-                    root: root,
-                    customRootCardList: null,
-                    canLookReverseCard: true,
-                    selectPlayer: card.Owner,
-                    cardEffect: activateClass);
+                bool CanEndSelectCardCondition(List<CardSource> cards)
+                {
+                    int sumCost = 0;
+                    foreach (CardSource source in cards) sumCost += source.GetCostItself;
+                    return sumCost <= totalCost;
+                }
 
                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                 {
                     selectedCards.Add(cardSource);
+
+                    totalCost -= cardSource.GetCostItself;
+
                     yield return null;
                 }
 
-                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
+                bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
+
+                while (canSelectHand|| canSelectTrash)
+                {
+                    if (canSelectHand && canSelectTrash)
+                    {
+                        List<SelectionElement<int>> selectionElements1 = new List<SelectionElement<int>>()
+                    {
+                        new (message: $"From hand", value : 1, spriteIndex: 0),
+                        new (message: $"From trash", value : 2, spriteIndex: 0),
+                        new (message: $"Don't select", value: 3, spriteIndex: 1)
+                    };
+
+                        string selectPlayerMessage1 = "From which area will you select a card?";
+                        string notSelectPlayerMessage1 = "The opponent is choosing from which area to select a card.";
+
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
+                    }
+                    else
+                    {
+                        GManager.instance.userSelectionManager.SetInt(canSelectHand ? 1 : 2);
+                    }
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    SelectCardEffect.Root root = GManager.instance.userSelectionManager.SelectedIntValue == 1 ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
+                    bool doSelect = GManager.instance.userSelectionManager.SelectedIntValue != 3;
+
+                    if (doSelect)
+                    {
+                        if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
+                        {
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                                canEndSelectCondition: CanEndSelectCardCondition,
+                                maxCount: -1,
+                                canNoSelect: true,
+                                canEndNotMax: true,
+                                isShowOpponent: true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectHandEffect.SetUpCustomMessage($"Select up to {totalCost} play cost worth of [Iliad] trait cards to play from your hand.", $"The opponent is selecting up to {totalCost} play cost worth of [Iliad] trait cards to play from their hand.");
+                            selectHandEffect.SetUpCustomMessage_ShowCard("Selected cards");
+                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                        }
+                        else
+                        {
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                                canEndSelectCondition: CanEndSelectCardCondition,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: $"Select up to {totalCost} play cost worth of [Iliad] trait cards to play from your trash.",
+                                maxCount: -1,
+                                canEndNotMax: true,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage($"Select up to {totalCost} play cost worth of [Iliad] trait cards to play from your trash.", $"The opponent is selecting up to {totalCost} play cost worth of [Iliad] trait cards to play from their trash.");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Selected cards");
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        }
+                    }
+                }
 
                 if (selectedCards.Count >= 1)
                 {
-                    int spent = 0;
-                    foreach (CardSource source in selectedCards) spent += source.GetCostItself;
-                    onSpent(spent);
-
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                         cardSources: selectedCards,
                         activateClass: activateClass,
                         payCost: false,
                         isTapped: false,
-                        root: root,
+                        root: SelectCardEffect.Root.Hand,
                         activateETB: true));
-                }
-            }
-
-            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
-            {
-                bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.EqualsTraits("Iliad");
-
-                if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition)
-                    || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                {
-                    int totalBudget = 8;
-                    int spentFromHand = 0;
-
-                    yield return ContinuousController.instance.StartCoroutine(PlayUpToBudgetCoroutine(totalBudget, SelectCardEffect.Root.Hand, activateClass, spent => spentFromHand = spent));
-
-                    int remainingBudget = totalBudget - spentFromHand;
-
-                    if (remainingBudget > 0)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(PlayUpToBudgetCoroutine(remainingBudget, SelectCardEffect.Root.Trash, activateClass, _ => { }));
-                    }
                 }
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDPTargetCondition))
                 {
                     int countIliadOrTS = card.Owner.GetFieldPermanents().Filter(IliadOrTSPermanentCondition).Count;
-                    int dpChange = -4000 * countIliadOrTS;
+                    int dpChange = 4000 * countIliadOrTS;
 
                     if (dpChange != 0)
                     {
@@ -169,7 +203,7 @@ namespace DCGO.CardEffects.BT26
                             yield return null;
                         }
 
-                        selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon to give -{Math.Abs(dpChange)} DP.", $"The opponent is selecting 1 Digimon to give -{Math.Abs(dpChange)} DP to.");
+                        selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon to give -{dpChange} DP.", $"The opponent is selecting 1 Digimon to give -{dpChange} DP to.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -177,7 +211,7 @@ namespace DCGO.CardEffects.BT26
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                 targetPermanent: selectedPermanent,
-                                changeValue: dpChange,
+                                changeValue: -dpChange,
                                 effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass));
                         }
@@ -196,40 +230,64 @@ namespace DCGO.CardEffects.BT26
                 whenDigivolving: true);
 
             #region All Turns - Grant to Iliad Digimon
-            bool IsOwnIliadDigimon(Permanent permanent)
+            if (timing == EffectTiming.None)
+            {
+                AddSkillClass addSkillClass = new AddSkillClass();
+                addSkillClass.SetUpICardEffect("All of your [Iliad] trait Digimon gain <Alliance>, <Reboot>, <Blocker> and +2K DP", CanUseCondition, card);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                cardEffects.Add(addSkillClass);
+
+                bool GrantCondition() => CardEffectCommons.IsExistOnBattleArea(card);
+
+                bool GrantPermanentCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && permanent.TopCard.EqualsTraits("Iliad");
 
-            bool GrantCondition() => CardEffectCommons.IsExistOnBattleArea(card);
+                bool CanUseCondition(Hashtable hashtable) => GrantCondition();
+              
+                bool CardSourceCondition(CardSource cardSource)
+                    => cardSource.PermanentOfThisCard() != null
+                        && GrantPermanentCondition(cardSource.PermanentOfThisCard())
+                        && cardSource == cardSource.PermanentOfThisCard().TopCard;
 
-            #region Alliance
-            if (timing == EffectTiming.OnAllyAttack)
-            {
-                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(IsOwnIliadDigimon, false, card, GrantCondition));
-            }
-            #endregion
+                bool IsOwnIliadDigimon(Permanent permanent)
+                => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    && permanent.TopCard.EqualsTraits("Iliad");
 
-            #region Reboot
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.RebootStaticEffect(IsOwnIliadDigimon, false, card, GrantCondition));
-            }
-            #endregion
+                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                {
+                    #region Alliance
+                    if (timing == EffectTiming.OnAllyAttack)
+                    {
+                        cardEffects.Add(CardEffectFactory.AllianceStaticEffect(IsOwnIliadDigimon, false, card, GrantCondition));
+                    }
+                    #endregion
 
-            #region Blocker
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.BlockerStaticEffect(IsOwnIliadDigimon, false, card, GrantCondition));
-            }
-            #endregion
+                    #region Reboot
+                    if (timing == EffectTiming.None)
+                    {
+                        cardEffects.Add(CardEffectFactory.RebootStaticEffect(IsOwnIliadDigimon, false, card, GrantCondition));
+                    }
+                    #endregion
 
-            #region DP +2000
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.ChangeBaseDPGlobalEffect(IsOwnIliadDigimon, 2000, false, card, GrantCondition));
+                    #region Blocker
+                    if (timing == EffectTiming.None)
+                    {
+                        cardEffects.Add(CardEffectFactory.BlockerStaticEffect(IsOwnIliadDigimon, false, card, GrantCondition));
+                    }
+                    #endregion
+
+                    #region DP +2000
+                    if (timing == EffectTiming.None)
+                    {
+                        cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(IsOwnIliadDigimon, 2000, false, card, GrantCondition, effectName: () => "All of your [Iliad] trait Digimon get +2000 DP."));
+                    }
+                    #endregion
+
+                    return cardEffects;
+                }
             }
-            #endregion
-            #endregion
+            #endregion          
 
             #region Assembly
             if (timing == EffectTiming.None)
@@ -254,7 +312,7 @@ namespace DCGO.CardEffects.BT26
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
                             element: element,
                             CanTargetCondition_ByPreSelecetedList: null,
-                            selectMessage: "w/[Minervamon] in name",
+                            selectMessage: "[Minervamon]",
                             elementCount: 1,
                             reduceCost: 5);
 
