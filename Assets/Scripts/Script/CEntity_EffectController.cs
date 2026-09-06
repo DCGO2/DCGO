@@ -5,7 +5,18 @@ using UnityEngine;
 public class CEntity_EffectController : MonoBehaviour
 {
     //Number of skills used this turn (referenced by use limit)
-    List<ICardEffect> UseEffectsThisTurn = new List<ICardEffect>();
+    private List<ICardEffect> _useEffectsThisTurn = new List<ICardEffect>();
+    public List<ICardEffect> UseEffectsThisTurn
+    {
+        get
+        {
+            return _useEffectsThisTurn;
+        }
+        private set
+        {
+            _useEffectsThisTurn = value;
+        }
+    }
 
     #region CEntity_Effect
     public CEntity_Effect cEntity_Effect { get; set; }
@@ -150,11 +161,6 @@ public class CEntity_EffectController : MonoBehaviour
                                     if (cardEffect.IsInheritedEffect == (cardSource == thisPermanent.TopCard) || cardSource.IsFlipped)
                                     {
                                         continue;
-                                    }
-
-                                    if (cardEffect.CanUse(null))
-                                    {
-                                        //GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
                                     }
                                 }
                             }
