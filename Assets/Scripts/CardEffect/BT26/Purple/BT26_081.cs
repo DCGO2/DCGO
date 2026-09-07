@@ -75,12 +75,15 @@ namespace DCGO.CardEffects.BT26
                     return sumCost <= totalCost;
                 }
 
+                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                {
+                    selectedCards.Add(cardSource);
+                    totalCost -= cardSource.GetCostItself;
+                    yield return null;
+                }
+
                 IEnumerator afterSelectCardCoroutine(List<CardSource> selectedCards)
                 {
-                    selectedCards.AddRange(selectedCards);
-
-                    totalCost -= selectedCards[0].GetCostItself;
-
                     if (selectedCards.Count == 0) stop = true;
                     yield return null;
                 }
@@ -133,7 +136,7 @@ namespace DCGO.CardEffects.BT26
                             canNoSelect: true,
                             canEndNotMax: true,
                             isShowOpponent: true,
-                            selectCardCoroutine: null,
+                            selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: afterSelectCardCoroutine,
                             mode: SelectHandEffect.Mode.Custom,
                             cardEffect: activateClass);
@@ -152,7 +155,7 @@ namespace DCGO.CardEffects.BT26
                             canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                             canEndSelectCondition: CanEndSelectCardCondition,
                             canNoSelect: () => true,
-                            selectCardCoroutine: null,
+                            selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: afterSelectCardCoroutine,
                             message: $"Select up to {totalCost} play cost worth of [Iliad] trait cards to play from your trash.",
                             maxCount: maxCount,
