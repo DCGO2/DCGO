@@ -106,12 +106,13 @@ namespace DCGO.CardEffects.BT26
                         string notSelectPlayerMessage1 = "The opponent is choosing from which area to select a card.";
 
                         GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                     }
                     else
                     {
                         GManager.instance.userSelectionManager.SetInt(canSelectHand ? 1 : 2);
                     }
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
                     SelectCardEffect.Root root = GManager.instance.userSelectionManager.SelectedIntValue == 1 ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
                     bool dontSelect = GManager.instance.userSelectionManager.SelectedIntValue == 3;
