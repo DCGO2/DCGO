@@ -75,15 +75,10 @@ namespace DCGO.CardEffects.BT26
                     return sumCost <= totalCost;
                 }
 
-                IEnumerator SelectCardCoroutine(CardSource cardSource)
-                {
-                    selectedCards.Add(cardSource);
-                    totalCost -= cardSource.GetCostItself;
-                    yield return null;
-                }
-
                 IEnumerator afterSelectCardCoroutine(List<CardSource> selectedCards)
                 {
+                    selectedCards.AddRange(selectedCards);
+                    foreach (CardSource cardSource in selectedCards) totalCost -= cardSource.GetCostItself;
                     if (selectedCards.Count == 0) stop = true;
                     yield return null;
                 }
@@ -137,7 +132,7 @@ namespace DCGO.CardEffects.BT26
                             canNoSelect: true,
                             canEndNotMax: true,
                             isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
+                            selectCardCoroutine: null,
                             afterSelectCardCoroutine: afterSelectCardCoroutine,
                             mode: SelectHandEffect.Mode.Custom,
                             cardEffect: activateClass);
@@ -156,7 +151,7 @@ namespace DCGO.CardEffects.BT26
                             canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                             canEndSelectCondition: CanEndSelectCardCondition,
                             canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
+                            selectCardCoroutine: null,
                             afterSelectCardCoroutine: afterSelectCardCoroutine,
                             message: $"Select up to {totalCost} play cost worth of [Iliad] trait cards to play from your trash.",
                             maxCount: maxCount,
@@ -250,13 +245,11 @@ namespace DCGO.CardEffects.BT26
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
                 cardEffects.Add(addSkillClass);
 
-                bool CanUseCondition(Hashtable hashtable) => Condition();
-
-                bool Condition() => CardEffectCommons.IsExistOnBattleArea(card);
+                bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleArea(card);
 
                 bool CardSourceCondition(CardSource cardSource)
-                    => cardSource == cardSource.PermanentOfThisCard().TopCard
-                        && IsOwnIliadDigimon(cardSource.PermanentOfThisCard());
+                    => IsOwnIliadDigimon(cardSource.PermanentOfThisCard())
+                        && cardSource == cardSource.PermanentOfThisCard().TopCard;
 
                 bool IsOwnIliadDigimon(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
@@ -264,6 +257,8 @@ namespace DCGO.CardEffects.BT26
 
                 List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
                 {
+                    bool Condition() => CardSourceCondition(cardSource);
+
                     #region Alliance
                     if (_timing == EffectTiming.OnAllyAttack)
                     {
