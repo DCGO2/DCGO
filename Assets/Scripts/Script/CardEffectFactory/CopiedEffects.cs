@@ -186,6 +186,8 @@ public partial class CardEffectFactory
                         copiedActivateClass.SetIsInheritedEffect(isInheritedEffect);
                         copiedActivateClass.SetIsLinkedEffect(isLinkedEffect);
 
+                        copiedActivateClass.SetIsDigimonEffect(true);//Copied effects are currently not inheriting this. All current card with copy effects are digimon. If this changes, check the type of card
+
                         getCardEffects.Add(copiedActivateClass);
 
                         getCardEffects.Add(PermanentEffectFactory.AddDetailClass(
