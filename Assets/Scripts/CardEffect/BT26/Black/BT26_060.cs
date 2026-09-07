@@ -153,6 +153,7 @@ namespace DCGO.CardEffects.BT26
                             selectPlayer: card.Owner,
                             cardEffect: activateClass);
 
+                        selectOrderEffect.SetUseFaceDown();
                         selectOrderEffect.SetUpCustomMessage_ShowCard("Returned Cards");
 
                         yield return ContinuousController.instance.StartCoroutine(selectOrderEffect.Activate());
