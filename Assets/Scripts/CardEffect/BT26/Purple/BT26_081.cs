@@ -52,14 +52,14 @@ namespace DCGO.CardEffects.BT26
             {
                 int totalCost = 8;
                 bool stop = false;
-                List<CardSource> selectedCards = new List<CardSource>();
+                List<CardSource> allselectedcards = new List<CardSource>();
 
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.EqualsTraits("Iliad")
                         && cardSource.HasPlayCost
                         && cardSource.GetCostItself <= totalCost
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass)
-                        && !selectedCards.Contains(cardSource);
+                        && !allselectedcards.Contains(cardSource);
 
                 bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
                 {
@@ -75,11 +75,26 @@ namespace DCGO.CardEffects.BT26
                     return sumCost <= totalCost;
                 }
 
+                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                {
+                    allselectedcards.Add(cardSource);
+                    List<CardSource> cardSources = new List<CardSource>{ cardSource };
+
+                    foreach (CardSource cardSource1 in cardSources)
+                    {
+                        totalCost -= cardSource1.GetCostItself;
+                    }
+
+                    yield return null;
+                }
+
                 IEnumerator afterSelectCardCoroutine(List<CardSource> selectedCards)
                 {
-                    selectedCards.AddRange(selectedCards);
-                    foreach (CardSource cardSource in selectedCards) totalCost -= cardSource.GetCostItself;
-                    if (selectedCards.Count == 0) stop = true;
+                    if (selectedCards.Count == 0)
+                    { 
+                        stop = true; 
+                    }
+
                     yield return null;
                 }
 
@@ -132,7 +147,7 @@ namespace DCGO.CardEffects.BT26
                             canNoSelect: true,
                             canEndNotMax: true,
                             isShowOpponent: true,
-                            selectCardCoroutine: null,
+                            selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: afterSelectCardCoroutine,
                             mode: SelectHandEffect.Mode.Custom,
                             cardEffect: activateClass);
@@ -151,7 +166,7 @@ namespace DCGO.CardEffects.BT26
                             canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                             canEndSelectCondition: CanEndSelectCardCondition,
                             canNoSelect: () => true,
-                            selectCardCoroutine: null,
+                            selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: afterSelectCardCoroutine,
                             message: $"Select up to {totalCost} play cost worth of [Iliad] trait cards to play from your trash.",
                             maxCount: maxCount,
@@ -170,10 +185,10 @@ namespace DCGO.CardEffects.BT26
                     }
                 }
 
-                if (selectedCards.Count >= 1)
+                if (allselectedcards.Count >= 1)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                        cardSources: selectedCards,
+                        cardSources: allselectedcards,
                         activateClass: activateClass,
                         payCost: false,
                         isTapped: false,
