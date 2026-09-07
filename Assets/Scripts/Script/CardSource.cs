@@ -2135,6 +2135,22 @@ public class CardSource : MonoBehaviour
             DataBase.ReplaceToASCII(_cEntity_Base.OptionEffect),
         };
 
+        if (HasAssembly)
+        {
+            foreach(AssemblyConditionElement element in assemblyCondition.elements)
+            {
+                checkStrings.Add(DataBase.ReplaceToASCII(element.selectMessage));
+            }
+        }
+
+        if (HasDigiXros)
+        {
+            foreach(DigiXrosConditionElement element in digiXrosCondition.elements)
+            {
+                checkStrings.Add(DataBase.ReplaceToASCII(element.selectMessage));
+            }
+        }
+
         foreach (string attribute in _cEntity_Base.Attribute_ENG)
             checkStrings.Add(DataBase.ReplaceToASCII(attribute));
 
