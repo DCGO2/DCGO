@@ -4731,11 +4731,16 @@ public class IBattle
                 List<Permanent> _WinnerPermanents = new List<Permanent>();
                 List<Permanent> _LoserPermanents = new List<Permanent>();
 
+                // Permanent's constructor rebuilds cardSources via AddCardSource, which inserts
+                // each source at index 0 - replaying an already top-first ordered list through it
+                // reverses the stack, so TopCard ends up wrong. Reverse here first to cancel that out.
                 foreach (Permanent permanent in WinnerPermanents)
                 {
                     if (permanent.TopCard != null)
                     {
-                        _WinnerPermanents.Add(new Permanent(permanent.cardSources));
+                        List<CardSource> reversedCardSources = permanent.cardSources.Clone();
+                        reversedCardSources.Reverse();
+                        _WinnerPermanents.Add(new Permanent(reversedCardSources));
                     }
                 }
 
@@ -4743,7 +4748,9 @@ public class IBattle
                 {
                     if (permanent.TopCard != null)
                     {
-                        _LoserPermanents.Add(new Permanent(permanent.cardSources));
+                        List<CardSource> reversedCardSources = permanent.cardSources.Clone();
+                        reversedCardSources.Reverse();
+                        _LoserPermanents.Add(new Permanent(reversedCardSources));
                     }
                 }
 
