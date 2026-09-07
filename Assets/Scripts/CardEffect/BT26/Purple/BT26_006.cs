@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +56,7 @@ namespace DCGO.CardEffects.BT26
                         {
                             bool CanSelectCardCondition(CardSource cardSource)
                                 => cardSource.EqualsTraits("Bagra Army")
-                                    && CardEffectCommons.CanPlayOrUse(cardSource, activateClass, fixedCost: cardSource.GetCostItself - 2);
+                                    && CardEffectCommons.CanPlayOrUse(cardSource, activateClass, fixedCost: Math.Max(0, cardSource.GetCostItself - 2));
 
                             if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                             {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -100,7 +101,7 @@ namespace DCGO.CardEffects.BT26
                         {
                             return (cardSource.EqualsTraits("Iliad")
                                     || cardSource.EqualsTraits("TS"))
-                                && CardEffectCommons.CanPlayOrUse(cardSource, activateClass, fixedCost: cardSource.GetCostItself - 5);
+                                && CardEffectCommons.CanPlayOrUse(cardSource, activateClass, fixedCost: Math.Max(0, cardSource.GetCostItself - 5));
                         }
 
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
