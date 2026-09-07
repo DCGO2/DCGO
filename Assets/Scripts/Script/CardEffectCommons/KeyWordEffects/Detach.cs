@@ -8,30 +8,17 @@ public partial class CardEffectCommons
     #region Can trigger [Detach]
     public static bool CanTriggerDetach(Hashtable hashtable, Permanent targetPermanent)
     {
-        if (IsPermanentExistsOnBattleArea(targetPermanent))
-        {
-            if (CanTriggerWhenPermanentRemoveField(hashtable, permanent => permanent == targetPermanent))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return IsPermanentExistsOnBattleArea(targetPermanent)
+            && CanTriggerWhenPermanentRemoveField(hashtable, permanent => permanent == targetPermanent)
+            && !IsByEffect(hashtable, cardEffect => IsOwnerEffect(cardEffect, targetPermanent.TopCard));
     }
     #endregion
 
     #region Can activate [Detach]
     public static bool CanActivateDetach(Permanent targetPermanent, Func<CardSource, bool> cardCondition)
     {
-        if (IsPermanentExistsOnBattleArea(targetPermanent))
-        {
-            if (targetPermanent.LinkedCards.Any(cardCondition))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return IsPermanentExistsOnBattleArea(targetPermanent)
+            && targetPermanent.LinkedCards.Any(cardCondition);
     }
     #endregion
 
