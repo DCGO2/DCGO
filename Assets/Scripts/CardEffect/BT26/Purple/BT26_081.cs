@@ -252,11 +252,11 @@ namespace DCGO.CardEffects.BT26
                 bool CanUseCondition(Hashtable hashtable) => Condition();
 
                 bool Condition() => CardEffectCommons.IsExistOnBattleArea(card);
-              
+
                 bool CardSourceCondition(CardSource cardSource)
                     => CardEffectCommons.IsExistOnBattleArea(cardSource)
-                        && IsOwnIliadDigimon(cardSource.PermanentOfThisCard())
-                        && cardSource == cardSource.PermanentOfThisCard().TopCard;
+                        && cardSource == cardSource.PermanentOfThisCard().TopCard
+                        && IsOwnIliadDigimon(cardSource.PermanentOfThisCard());
 
                 bool IsOwnIliadDigimon(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
