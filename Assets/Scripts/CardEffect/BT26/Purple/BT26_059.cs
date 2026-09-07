@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT26
                 => cardSource.IsDigimon
                     && cardSource.EqualsTraits("Titan")
                     && !cardSource.EqualsCardName("Plutomon")
-                    && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 7);
+                    && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: Math.Max(0, cardSource.GetCostItself - 7));
 
             bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
                 => card.Owner.HandCards.Count >= 1;
