@@ -98,11 +98,14 @@ namespace DCGO.CardEffects.BT26
                     yield return null;
                 }
 
-                bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
-                bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
-
-                while ((canSelectHand|| canSelectTrash) && !stop)
+                while (!stop)
                 {
+                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
+
+                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
+
+                    if (!canSelectHand && !canSelectTrash) break;
+
                     if (canSelectHand && canSelectTrash)
                     {
                         List<SelectionElement<int>> selectionElements1 = new List<SelectionElement<int>>()
