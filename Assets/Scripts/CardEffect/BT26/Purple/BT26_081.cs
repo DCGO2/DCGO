@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.BT26
                 bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                 bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
 
-                while (canSelectHand|| canSelectTrash)
+                while ((canSelectHand|| canSelectTrash) && GManager.instance.userSelectionManager.SelectedIntValue != 3)
                 {
                     if (canSelectHand && canSelectTrash)
                     {
@@ -113,15 +113,18 @@ namespace DCGO.CardEffects.BT26
 
                     if (doSelect)
                     {
+
                         if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
                         {
+                            int maxCount = CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardCondition);
+
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
                             selectHandEffect.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: CanSelectCardCondition,
                                 canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                                 canEndSelectCondition: CanEndSelectCardCondition,
-                                maxCount: -1,
+                                maxCount: maxCount,
                                 canNoSelect: true,
                                 canEndNotMax: true,
                                 isShowOpponent: true,
@@ -136,6 +139,8 @@ namespace DCGO.CardEffects.BT26
                         }
                         else
                         {
+                            int maxCount = CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition);
+
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
                             selectCardEffect.SetUp(
                                 canTargetCondition: CanSelectCardCondition,
@@ -145,7 +150,7 @@ namespace DCGO.CardEffects.BT26
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
                                 message: $"Select up to {totalCost} play cost worth of [Iliad] trait cards to play from your trash.",
-                                maxCount: -1,
+                                maxCount: maxCount,
                                 canEndNotMax: true,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
@@ -218,7 +223,6 @@ namespace DCGO.CardEffects.BT26
                     }
                 }
             }
-            #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
                 ref cardEffects, timing, card,
@@ -228,6 +232,7 @@ namespace DCGO.CardEffects.BT26
                 optional: false,
                 onPlay: true,
                 whenDigivolving: true);
+            #endregion
 
             #region All Turns - Grant to Iliad Digimon
             if (timing == EffectTiming.None)
