@@ -255,39 +255,38 @@ namespace DCGO.CardEffects.BT26
                 bool Condition() => CardEffectCommons.IsExistOnBattleArea(card);
 
                 bool CardSourceCondition(CardSource cardSource)
-                    => CardEffectCommons.IsExistOnBattleArea(cardSource)
-                        && cardSource == cardSource.PermanentOfThisCard().TopCard
+                    => cardSource == cardSource.PermanentOfThisCard().TopCard
                         && IsOwnIliadDigimon(cardSource.PermanentOfThisCard());
 
                 bool IsOwnIliadDigimon(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && permanent.TopCard.EqualsTraits("Iliad");
 
-                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming timing)
+                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
                 {
                     #region Alliance
-                    if (timing == EffectTiming.OnAllyAttack)
+                    if (_timing == EffectTiming.OnAllyAttack)
                     {
                         cardEffects.Add(CardEffectFactory.AllianceStaticEffect(IsOwnIliadDigimon, false, card, Condition));
                     }
                     #endregion
 
                     #region Reboot
-                    if (timing == EffectTiming.None)
+                    if (_timing == EffectTiming.None)
                     {
                         cardEffects.Add(CardEffectFactory.RebootStaticEffect(IsOwnIliadDigimon, false, card, Condition));
                     }
                     #endregion
 
                     #region Blocker
-                    if (timing == EffectTiming.None)
+                    if (_timing == EffectTiming.None)
                     {
                         cardEffects.Add(CardEffectFactory.BlockerStaticEffect(IsOwnIliadDigimon, false, card, Condition));
                     }
                     #endregion
 
                     #region DP +2000
-                    if (timing == EffectTiming.None)
+                    if (_timing == EffectTiming.None)
                     {
                         cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(IsOwnIliadDigimon, 2000, false, card, Condition, effectName: () => "All of your [Iliad] trait Digimon get +2000 DP."));
                     }
