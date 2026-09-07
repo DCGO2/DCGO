@@ -834,7 +834,8 @@ public partial class CardEffectFactory
                                                                     bool endOfAllTurns = false,
                                                                     bool startOfYourMainPhase = false,
                                                                     bool startOfOpponentsMainPhase = false,
-                                                                    bool counter = false)
+                                                                    bool counter = false,
+                                                                    bool security = false)
     {
         if (whenMoving && timing == EffectTiming.OnMove)
         {
@@ -886,7 +887,11 @@ public partial class CardEffectFactory
         }
         if (counter && timing == EffectTiming.OnCounterTiming)
         {
-            cardEffects.Add(CounterClass(card, effectName, activateCoroutine, effectDescription("Counter"), optional, isSkippableFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
+            cardEffects.Add(CounterClass(card, effectName, activateCoroutine, effectDescription("Counter"), isSkippableFunction, additionalUseCondition, additionalActivateCondition, maxCountPerTurn, hashValue, isSkippable: isSkippable));
+        }
+        if (security && timing == EffectTiming.SecuritySkill)
+        {
+            cardEffects.Add(SecurityClass(card, effectName, activateCoroutine, effectDescription("Security"), optional, isSkippableFunction, additionalUseCondition, additionalActivateCondition, isSkippable));
         }
 
         return cardEffects;
@@ -1196,7 +1201,6 @@ public partial class CardEffectFactory
                                                 string effectName,
                                                 Func<Hashtable, ActivateClass, IEnumerator> activateCoroutine,
                                                 string effectDescription,
-                                                bool optional,
                                                 Func<Hashtable, bool> isSkippableFunction = null,
                                                 Func<Hashtable, ActivateClass, bool> additionalUseCondition = null,
                                                 Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
@@ -1206,7 +1210,7 @@ public partial class CardEffectFactory
                                                 bool isLinked = false,
                                                 bool isSkippable = false)
     {
-        ActivateClass activateClass = ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isSkippableFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
+        ActivateClass activateClass = ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, true, isSkippableFunction, maxCountPerTurn, hashValue, isInherited, isLinked, isSkippable: isSkippable);
         activateClass.SetIsCounterEffect(true);
         return activateClass;
 
