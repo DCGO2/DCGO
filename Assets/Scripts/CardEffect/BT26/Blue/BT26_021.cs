@@ -94,7 +94,7 @@ namespace DCGO.CardEffects.BT26
                     => cardSource.IsTamer
                         && cardSource.HasTSTraits
                         && cardSource.HasPlayCost
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself - 2);
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: Math.Max(0, cardSource.GetCostItself - 2));
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
