@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Inherit - Evade
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
                 cardEffects.Add(CardEffectFactory.EvadeSelfEffect(isInheritedEffect: true, card: card, condition: null));
             }
