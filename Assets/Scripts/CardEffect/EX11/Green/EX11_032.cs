@@ -184,7 +184,7 @@ namespace DCGO.CardEffects.EX11
 
                 bool CanPlayBirdCondition(CardSource cardSource, int maxDP)
                 {
-                    return cardSource.IsDigimon
+                    return cardSource.HasDigimonColor(CardColor.Green)
                         && cardSource.HasBirdTraits
                         && cardSource.HasDP
                         && cardSource.CardDP <= maxDP;
