@@ -67,7 +67,8 @@ namespace DCGO.CardEffects.EX13
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("This Digimon and 1 other Digimon may DNA digivolve", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -83,28 +84,25 @@ namespace DCGO.CardEffects.EX13
                         && cardSource.CanJogressFromTargetPermanent(card.PermanentOfThisCard(), true);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
-                        && card.Owner.HandCards.Count >= 1
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectDNACardCondition)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanent => permanent.IsDigimon && permanent != card.PermanentOfThisCard());
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
-                                CanSelectDNACardCondition,
-                                payCost: true,
-                                isHand: true,
-                                activateClass,
-                                permanentConditions: new Func<Permanent, bool>[] { permanent => permanent == card.PermanentOfThisCard() }
-                            ));
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
+                            CanSelectDNACardCondition,
+                            payCost: true,
+                            isHand: true,
+                            activateClass,
+                            permanentConditions: new Func<Permanent, bool>[] { permanent => permanent == card.PermanentOfThisCard() }
+                        ));
                 }
             }
             #endregion
