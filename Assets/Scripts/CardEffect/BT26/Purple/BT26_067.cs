@@ -97,78 +97,88 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).DeckBounce());
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.DeckBouncePeremanentAndProcessAccordingToResult(
+                            targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess(),
+                            failureProcess: null));
 
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectTrashCardCondition))
+                    IEnumerator SuccessProcess()
                     {
-                        CardSource selectedCard = null;
-
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                            canTargetCondition: CanSelectTrashCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: "Select 1 red/blue [Iliad] Digimon card to play.",
-                            maxCount: 1,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Trash,
-                            customRootCardList: null,
-                            canLookReverseCard: true,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectTrashCardCondition))
                         {
-                            selectedCard = cardSource;
-                            yield return null;
-                        }
+                            CardSource selectedCard = null;
 
-                        selectCardEffect.SetUpCustomMessage("Select 1 red/blue [Iliad] Digimon card to play.", "The opponent is selecting 1 red/blue [Iliad] Digimon card to play.");
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectTrashCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 red/blue [Iliad] Digimon card to play.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
 
-                        if (selectedCard != null)
-                        {
-                            int reduceCost = 4;
-
-                            ChangeCostClass changeCostClass = new ChangeCostClass();
-                            changeCostClass.SetUpICardEffect($"Play Cost -{reduceCost}", _ => true, card);
-                            changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: PlayCondition, rootCondition: _ => true, isUpDown: () => true, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                            Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
-                            card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
-
-                            ICardEffect GetCardEffect(EffectTiming _timing)
-                                => _timing == EffectTiming.None ? changeCostClass : null;
-
-                            bool PlayCondition(CardSource cs) => cs == selectedCard;
-
-                            int ChangeCost(CardSource cs, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {
-                                if (PlayCondition(cs))
-                                {
-                                    cost -= reduceCost;
-                                }
-
-                                return cost;
+                                selectedCard = cardSource;
+                                yield return null;
                             }
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                cardSources: new List<CardSource> { selectedCard },
-                                activateClass: activateClass,
-                                payCost: true,
-                                isTapped: false,
-                                root: SelectCardEffect.Root.Trash,
-                                activateETB: true));
+                            selectCardEffect.SetUpCustomMessage("Select 1 red/blue [Iliad] Digimon card to play.", "The opponent is selecting 1 red/blue [Iliad] Digimon card to play.");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
 
-                            card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                            if (selectedCard != null)
+                            {
+                                int reduceCost = 4;
+
+                                ChangeCostClass changeCostClass = new ChangeCostClass();
+                                changeCostClass.SetUpICardEffect($"Play Cost -{reduceCost}", _ => true, card);
+                                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: PlayCondition, rootCondition: _ => true, isUpDown: () => true, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                                Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
+                                card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
+
+                                ICardEffect GetCardEffect(EffectTiming _timing)
+                                    => _timing == EffectTiming.None ? changeCostClass : null;
+
+                                bool PlayCondition(CardSource cs) => cs == selectedCard;
+
+                                int ChangeCost(CardSource cs, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                                {
+                                    if (PlayCondition(cs))
+                                    {
+                                        cost -= reduceCost;
+                                    }
+
+                                    return cost;
+                                }
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                    cardSources: new List<CardSource> { selectedCard },
+                                    activateClass: activateClass,
+                                    payCost: true,
+                                    isTapped: false,
+                                    root: SelectCardEffect.Root.Trash,
+                                    activateETB: true));
+
+                                card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
+                            }
                         }
+
+                        yield return null;
                     }
                 }
             }
