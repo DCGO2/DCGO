@@ -94,35 +94,70 @@ namespace DCGO.CardEffects.BT26
                 {
                     List<CardSource> selectedCards = new List<CardSource>();
 
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                    selectCardEffect.SetUp(
-                        canTargetCondition: _ => true,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 3 cards in either trash to return to the bottom of the deck.",
-                        maxCount: 3,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Custom,
-                        customRootCardList: combinedTrashPool,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    while (selectedCards.Count < 3)
                     {
-                        selectedCards.Add(cardSource);
-                        yield return null;
+                        bool CanSelectYourTrash(CardSource card) => CardEffectCommons.IsExistOnTrash(card) && !selectedCards.Contains(card);
+                        bool CanSelectEnemyTrash(CardSource card) => CardEffectCommons.IsExistInAnyTrash(card) && card.Owner != card.Owner && !selectedCards.Contains(card);
+
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+                        if (CanSelectYourTrash(card))
+                        {
+                            selectionElements.Add(new(message: "from your trash", value: 1, spriteIndex: 0));
+                        }
+                        if (CanSelectEnemyTrash(card))
+                        {
+                            selectionElements.Add(new(message: "from enemy's trash", value: 2, spriteIndex: 0));
+                        }
+                        selectionElements.Add(new(message: "Cancel", value: 3, spriteIndex: 1));
+
+                        GManager.instance.userSelectionManager.SetIntSelection(
+                            selectionElements: selectionElements,
+                            selectPlayer: card.Owner,
+                            selectPlayerMessage: "From which area will you select a card?",
+                            notSelectPlayerMessage: "The opponent is choosing from which area to select card.");
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        if (GManager.instance.userSelectionManager.SelectedIntValue == 3)
+                        {
+                            break;
+                        }
+
+                        int maxCount = 3 - selectedCards.Count;
+                        SelectCardEffect.Root root = GManager.instance.userSelectionManager.SelectedIntValue == 1 ? SelectCardEffect.Root.Trash : SelectCardEffect.Root.Custom;
+                        List<CardSource> CustomRootCardList = GManager.instance.userSelectionManager.SelectedIntValue == 1 ? null : card.Owner.Enemy.TrashCards;
+                        string TrashOwner = GManager.instance.userSelectionManager.SelectedIntValue == 1 ? "your" : "opponent's";
+
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: _ => true,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: $"Select {maxCount} card(s) in {TrashOwner} trash to return to the bottom of the deck. /n (if less then {maxCount}, you will be able to choose location again)",
+                            maxCount: maxCount,
+                            canEndNotMax: true,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: root,
+                            customRootCardList: CustomRootCardList,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        selectCardEffect.SetUpCustomMessage("Select 3 cards in either trash to return to the bottom of the deck.", "The opponent is selecting 3 cards in either trash to return to the bottom of their deck.");
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCards.Add(cardSource);
+                            yield return null;
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                     }
-
-                    selectCardEffect.SetUpCustomMessage("Select 3 cards in either trash to return to the bottom of the deck.", "The opponent is selecting 3 cards in either trash to return to the bottom of their deck.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
                     if (selectedCards.Count == 3)
                     {
