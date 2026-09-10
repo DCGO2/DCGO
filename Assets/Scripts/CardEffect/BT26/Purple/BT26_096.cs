@@ -37,43 +37,53 @@ namespace DCGO.CardEffects.BT26
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).DeckBounce());
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.DeckBouncePeremanentAndProcessAccordingToResult(
+                            targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess(),
+                            failureProcess: null));
 
-                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanPlayCondition);
-                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlayCondition);
-
-                    if (canSelectHand || canSelectTrash)
+                    IEnumerator SuccessProcess()
                     {
-                        SelectCardEffect.Root root;
+                        bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanPlayCondition);
+                        bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlayCondition);
 
-                        if (canSelectHand && canSelectTrash)
+                        if (canSelectHand || canSelectTrash)
                         {
-                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
+                            SelectCardEffect.Root root;
+
+                            if (canSelectHand && canSelectTrash)
+                            {
+                                List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                             {
                                 new(message: "From hand", value: 1, spriteIndex: 0),
                                 new(message: "From trash", value: 2, spriteIndex: 0),
                                 new(message: "Don't play", value: 3, spriteIndex: 1),
                             };
 
-                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "From which area will you play a card?", notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                                GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "From which area will you play a card?", notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                            if (GManager.instance.userSelectionManager.SelectedIntValue == 3) yield break;
+                                if (GManager.instance.userSelectionManager.SelectedIntValue == 3) yield break;
 
-                            root = GManager.instance.userSelectionManager.SelectedIntValue == 1 ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
+                                root = GManager.instance.userSelectionManager.SelectedIntValue == 1 ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
+                            }
+                            else
+                            {
+                                root = canSelectHand ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                                canTargetCondition: CanPlayCondition,
+                                root: root,
+                                cardEffect: activateClass,
+                                payCost: true,
+                                reduceCostTuple: (2, null)));
                         }
-                        else
-                        {
-                            root = canSelectHand ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
-                            canTargetCondition: CanPlayCondition,
-                            root: root,
-                            cardEffect: activateClass,
-                            payCost: true,
-                            reduceCostTuple: (2, null)));
                     }
+
+                    yield return null;
                 }
             }
             #endregion
