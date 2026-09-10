@@ -1,39 +1,30 @@
 using System.Collections;
-using System.Collections.Generic;
 using System;
-using System.Linq;
-using UnityEngine;
 
 public partial class CardEffectFactory
 {
     #region Trigger effect of [Alliance] on oneself
-    public static ICardEffect AllianceSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition)
+    public static ICardEffect AllianceSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, bool isLinkedEffect = false)
     {
         Permanent targetPermanent = card.PermanentOfThisCard();
 
         bool CanUseCondition()
         {
-            if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-            {
-                if (condition == null || condition())
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                && (condition == null || condition());
         }
 
         return AllianceEffect(
             targetPermanent: targetPermanent,
             isInheritedEffect: isInheritedEffect,
             condition: CanUseCondition,
-            rootCardEffect: null, card);
+            rootCardEffect: null, card,
+            isLinkedEffect: isLinkedEffect);
     }
     #endregion
 
     #region Trigger effect of [Alliance]
-    public static ActivateClass AllianceEffect(Permanent targetPermanent, bool isInheritedEffect, Func<bool> condition, ICardEffect rootCardEffect, CardSource card)
+    public static ActivateClass AllianceEffect(Permanent targetPermanent, bool isInheritedEffect, Func<bool> condition, ICardEffect rootCardEffect, CardSource card, bool isLinkedEffect = false)
     {
         if (targetPermanent == null) return null;
         if (targetPermanent.TopCard == null) return null;
@@ -43,25 +34,20 @@ public partial class CardEffectFactory
         activateClass.SetUpICardEffect("Alliance", CanUseCondition, card);
         activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, DataBase.AllianceEffectDiscription());
         activateClass.SetIsInheritedEffect(isInheritedEffect);
+        activateClass.SetIsLinkedEffect(isLinkedEffect);
 
         if (rootCardEffect != null)
         {
             activateClass.SetIsInheritedEffect(false);
+            activateClass.SetIsLinkedEffect(false);
             activateClass.SetEffectSourcePermanent(targetPermanent);
             activateClass.SetRootCardEffect(rootCardEffect);
         }
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, (permanent) => permanent.cardSources.Contains(targetPermanent.TopCard)))
-            {
-                if (condition == null || condition())
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, (permanent) => permanent.cardSources.Contains(targetPermanent.TopCard))
+                && (condition == null || condition());
         }
 
         bool CanActivateCondition(Hashtable hashtable)
@@ -88,15 +74,8 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, permanentCondition))
-            {
-                if (condition == null || condition())
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, permanentCondition)
+                && (condition == null || condition());
         }
 
         bool CanActivateCondition(Hashtable hashtable)
