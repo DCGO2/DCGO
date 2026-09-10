@@ -249,6 +249,13 @@ public class PermanentDetail : MonoBehaviour
         }
         #endregion
 
+        #region Vortex
+        if (permanent.HasVortex)
+        {
+            effectString += $"- Vortex\n";
+        }
+        #endregion
+
         #region Security Attack Changes
         if (permanent.HasSecurityAttackChanges)
         {
