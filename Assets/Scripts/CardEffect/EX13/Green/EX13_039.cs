@@ -14,10 +14,10 @@ namespace DCGO.CardEffects.EX13
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.IsLevel3 && targetPermanent.TopCard.ContainsCardName("Dracomon");
+                    => targetPermanent.TopCard.ContainsCardName("Dracomon");
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                    permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 3));
             }
             #endregion
 
@@ -81,7 +81,8 @@ namespace DCGO.CardEffects.EX13
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into [Examon] text Digimon for reduced cost", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -98,12 +99,12 @@ namespace DCGO.CardEffects.EX13
                         && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedPermanentCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, DigivolveCardCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
