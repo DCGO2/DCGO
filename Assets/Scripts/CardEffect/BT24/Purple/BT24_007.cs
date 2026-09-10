@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT24
                     return cardSource.IsDigimon
                         && cardSource.HasLevel && cardSource.Level >= 4
                         && (cardSource.EqualsTraits("Demon") || cardSource.EqualsTraits("Titan"))
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, fixedCost: cardSource.GetCostItself-2);
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass, root: SelectCardEffect.Root.Trash, fixedCost: cardSource.GetCostItself-2);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
