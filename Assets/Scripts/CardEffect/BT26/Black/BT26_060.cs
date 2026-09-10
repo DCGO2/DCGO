@@ -67,7 +67,6 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName() => "Return the top 5 stacked cards of 3 opponent's Digimon to the top of their deck";
 
             string SharedEffectDescription(string tag)
@@ -109,6 +108,8 @@ namespace DCGO.CardEffects.BT26
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
+                    List<CardSource> cardsToReturn = new List<CardSource>();
+
                     foreach (Permanent selectedPermanent in selectedPermanents)
                     {
                         if (selectedPermanent == null) continue;
@@ -123,14 +124,15 @@ namespace DCGO.CardEffects.BT26
 
                         if (returnCount <= 0) continue;
 
-                        List<CardSource> cardsToReturn = selectedPermanent.StackCards.GetRange(0, returnCount);
+                        cardsToReturn.AddRange(selectedPermanent.StackCards.GetRange(0, returnCount));
+                    }
 
-                        if (returnCount == 1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardsToReturn, cardEffect: activateClass));
-                            continue;
-                        }
-
+                    if (cardsToReturn.Count == 1)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardsToReturn, cardEffect: activateClass));
+                    }
+                    else
+                    {
                         List<CardSource> drawOrderedCards = new List<CardSource>();
 
                         SelectCardEffect selectOrderEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -142,14 +144,14 @@ namespace DCGO.CardEffects.BT26
                             canNoSelect: () => false,
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: AfterSelectOrderCoroutine,
-                            message: $"Select the order to return these {returnCount} cards to the top of the opponent's deck (card #1 is the one they'll draw first, #2 second, and so on).",
-                            maxCount: returnCount,
+                            message: $"Select the order to return these {cardsToReturn.Count} cards to the top of the opponent's deck (card #1 is the one they'll draw first, #2 second, and so on).",
+                            maxCount: cardsToReturn.Count,
                             canEndNotMax: false,
                             isShowOpponent: false,
                             mode: SelectCardEffect.Mode.Custom,
                             root: SelectCardEffect.Root.Custom,
                             customRootCardList: cardsToReturn,
-                            canLookReverseCard: true,
+                            canLookReverseCard: false,
                             selectPlayer: card.Owner,
                             cardEffect: activateClass);
 
@@ -170,7 +172,6 @@ namespace DCGO.CardEffects.BT26
                     }
                 }
             }
-
             #endregion
 
             #region On Play / When Digivolving
