@@ -256,59 +256,24 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region All Turns - Grant to Iliad Digimon
-            if (timing == EffectTiming.None)
-            {
-                AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("All of your [Iliad] trait Digimon gain <Alliance>, <Reboot>, <Blocker> and +2K DP", CanUseCondition, card);
-                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-                cardEffects.Add(addSkillClass);
-
-                bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleArea(card);
-
-                bool CardSourceCondition(CardSource cardSource)
-                    => IsOwnIliadDigimon(cardSource.PermanentOfThisCard())
-                        && cardSource == cardSource.PermanentOfThisCard().TopCard;
-
-                bool IsOwnIliadDigimon(Permanent permanent)
+            bool IsOwnIliadDigimon(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && permanent.TopCard.EqualsTraits("Iliad");
 
-                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
-                {
-                    bool Condition() => CardSourceCondition(cardSource);
+            bool CanGrantIliadKeywords() => CardEffectCommons.IsExistOnBattleArea(card);
 
-                    #region Alliance
-                    if (_timing == EffectTiming.OnAllyAttack)
-                    {
-                        cardEffects.Add(CardEffectFactory.AllianceStaticEffect(IsOwnIliadDigimon, false, card, Condition));
-                    }
-                    #endregion
-
-                    #region Reboot
-                    if (_timing == EffectTiming.None)
-                    {
-                        cardEffects.Add(CardEffectFactory.RebootStaticEffect(IsOwnIliadDigimon, false, card, Condition));
-                    }
-                    #endregion
-
-                    #region Blocker
-                    if (_timing == EffectTiming.None)
-                    {
-                        cardEffects.Add(CardEffectFactory.BlockerStaticEffect(IsOwnIliadDigimon, false, card, Condition));
-                    }
-                    #endregion
-
-                    #region DP +2000
-                    if (_timing == EffectTiming.None)
-                    {
-                        cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(IsOwnIliadDigimon, 2000, false, card, Condition, effectName: () => "All of your [Iliad] trait Digimon get +2000 DP."));
-                    }
-                    #endregion
-
-                    return cardEffects;
-                }
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.RebootStaticEffect(IsOwnIliadDigimon, false, card, CanGrantIliadKeywords));
+                cardEffects.Add(CardEffectFactory.BlockerStaticEffect(IsOwnIliadDigimon, false, card, CanGrantIliadKeywords));
+                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(IsOwnIliadDigimon, 2000, false, card, CanGrantIliadKeywords, effectName: () => "All of your [Iliad] trait Digimon get +2000 DP."));
             }
-            #endregion          
+
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(IsOwnIliadDigimon, false, card, CanGrantIliadKeywords));
+            }
+            #endregion
 
             #region Assembly
             if (timing == EffectTiming.None)
