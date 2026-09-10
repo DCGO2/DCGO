@@ -4482,18 +4482,20 @@ public class IDestroySecurity
 
 public class IBattle
 {
-    public IBattle(Permanent AttackingPermanent, Permanent DefendingPermanent, CardSource DefendingCard, bool IsWithoutAttack = false)
+    public IBattle(Permanent AttackingPermanent, Permanent DefendingPermanent, CardSource DefendingCard, bool IsWithoutAttack = false, bool CompareDigivolutionCards = false)
     {
         this.AttackingPermanent = AttackingPermanent;
         this.DefendingPermanent = DefendingPermanent;
         this.DefendingCard = DefendingCard;
         this.IsWithoutAttack = IsWithoutAttack;
+        this.CompareDigivolutionCards = CompareDigivolutionCards;
     }
 
     public Permanent AttackingPermanent { get; private set; } = null;
     public Permanent DefendingPermanent { get; private set; } = null;
     CardSource DefendingCard { get; set; } = null;
     bool IsWithoutAttack { get; set; } = false;
+    bool CompareDigivolutionCards { get; set; } = false; //Iceclad existed first, this is specifically for battle by effect comparing digiviolution cards without having Iceclad
     public Hashtable hashtable { get; set; } = new Hashtable();
 
     public Permanent enemyPermanent(Permanent permanent)
@@ -4517,7 +4519,7 @@ public class IBattle
     {
         int statCheck;
 
-        if (AttackingPermanent.HasIceclad || DefendingPermanent.HasIceclad)
+        if (AttackingPermanent.HasIceclad || DefendingPermanent.HasIceclad || CompareDigivolutionCards)
             statCheck = AttackingPermanent.DigivolutionCards.Count - DefendingPermanent.DigivolutionCards.Count;
         else
             statCheck = AttackingPermanent.DP - DefendingPermanent.DP;
