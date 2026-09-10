@@ -3243,6 +3243,27 @@ public class Permanent
     }
     #endregion
 
+    #region Has Vortex
+    public bool HasVortex
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in EffectList(EffectTiming.OnEndTurn))
+            {
+                if (cardEffect is ActivateICardEffect
+                && cardEffect.EffectName == "Vortex"
+                && cardEffect.CanTrigger(null))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
+
     #region 消滅時効化を持つか
     public bool HasOnDeletionEffect
     {
