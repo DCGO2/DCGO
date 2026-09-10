@@ -111,16 +111,16 @@ namespace DCGO.CardEffects.BT26
 
                 List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
                 {
-                    if (timing == EffectTiming.OnAllyAttack)
+                    if (_timing == EffectTiming.OnAllyAttack)
                     {
                         cardEffects.Add(CardEffectFactory.AllianceSelfEffect(false, cardSource, GrantCondition));
                     }
 
-                    if (timing == EffectTiming.OnDetermineDoSecurityCheck)
+                    if (_timing == EffectTiming.OnDetermineDoSecurityCheck)
                     {
                         cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, condition: GrantCondition, card: cardSource));
                     }
-                    
+
                     if (_timing == EffectTiming.OnEndTurn)
                     {
                         cardEffects.Add(CardEffectFactory.VortexSelfEffect(isInheritedEffect: false, card: cardSource, condition: GrantCondition));
