@@ -106,6 +106,8 @@ namespace DCGO.CardEffects.BT26
 
                     if (GManager.instance.userSelectionManager.SelectedBoolValue)
                     {
+                        isUsed = true;
+
                         List<Permanent> targetPermanents = new List<Permanent>();
 
                         if (hasOwnVer3)
@@ -118,7 +120,7 @@ namespace DCGO.CardEffects.BT26
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
-                                canNoSelect: true,
+                                canNoSelect: false,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: SelectPermanentCoroutine,
                                 afterSelectPermanentCoroutine: null,
@@ -134,14 +136,17 @@ namespace DCGO.CardEffects.BT26
                                 if (permanent != null)
                                 {
                                     targetPermanents.Add(permanent);
-                                    targetPermanents.AddRange(card.Owner.Enemy.GetBattleAreaDigimons().Filter(IsOpponentDigimon));
-
-                                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(targetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
-                                    isUsed = true;
                                 }
 
                                 yield return null;
                             }
+                        }
+
+                        targetPermanents.AddRange(card.Owner.Enemy.GetBattleAreaDigimons().Filter(IsOpponentDigimon));
+
+                        if (targetPermanents.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(targetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                         }
 
                         if (!isUsed) activateClass.RemoveUse();
