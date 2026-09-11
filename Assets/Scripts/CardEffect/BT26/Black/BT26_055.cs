@@ -106,8 +106,6 @@ namespace DCGO.CardEffects.BT26
 
                     if (GManager.instance.userSelectionManager.SelectedBoolValue)
                     {
-                        isUsed = true;
-
                         List<Permanent> targetPermanents = new List<Permanent>();
 
                         if (hasOwnVer3)
@@ -146,12 +144,14 @@ namespace DCGO.CardEffects.BT26
 
                         if (targetPermanents.Count >= 1)
                         {
+                            isUsed = true;
+
                             yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(targetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                         }
-
-                        if (!isUsed) activateClass.RemoveUse();
                     }
                 }
+
+                if (!isUsed) activateClass.RemoveUse();
             }
             #endregion
 
