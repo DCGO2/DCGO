@@ -96,6 +96,10 @@ namespace DCGO.CardEffects.BT26
                     => CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)
                     && (permanent.IsDigimon || permanent.IsTamer);
 
+                bool CanSelectOpponentPermanentCondition(Permanent permanent)
+                    => CanSelectPermanentCondition(permanent)
+                    && permanent.TopCard.Owner == card.Owner.Enemy;
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -118,13 +122,13 @@ namespace DCGO.CardEffects.BT26
                     selectPermanentEffect.SetUpCustomMessage($"Select {maxCount} Digimon or Tamer(s) to suspend.", $"The opponent is selecting {maxCount} Digimon or Tamer(s) to suspend.");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    int maxCount2 = Math.Min(2, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectPermanentCondition));
+                    int maxCount2 = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
 
                     SelectPermanentEffect selectPermanentEffect2 = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect2.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition: CanSelectOpponentPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount2,

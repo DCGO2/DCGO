@@ -118,11 +118,11 @@ namespace DCGO.CardEffects.BT26
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
-                                canNoSelect: true,
+                                canNoSelect: false,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: SelectPermanentCoroutine,
                                 afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
+                                mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
                             selectVer3Effect.SetUpCustomMessage("Select 1 [Ver.3] trait Digimon to delete.", "The opponent is selecting 1 [Ver.3] trait Digimon to delete.");
@@ -134,8 +134,6 @@ namespace DCGO.CardEffects.BT26
                                 if (permanent != null)
                                 {
                                     targetPermanents.Add(permanent);
-
-                                    isUsed = true;
                                 }
 
                                 yield return null;
@@ -146,12 +144,14 @@ namespace DCGO.CardEffects.BT26
 
                         if (targetPermanents.Count >= 1)
                         {
+                            isUsed = true;
+
                             yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(targetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                         }
-
-                        if (!isUsed) activateClass.RemoveUse();
                     }
                 }
+
+                if (!isUsed) activateClass.RemoveUse();
             }
             #endregion
 
