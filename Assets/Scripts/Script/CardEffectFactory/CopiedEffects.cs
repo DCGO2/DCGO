@@ -185,8 +185,11 @@ public partial class CardEffectFactory
 
                         copiedActivateClass.SetOriginalEffectSourceCard(activateClass.OriginalEffectSourceCard);
                         copiedActivateClass.SetHashString(GenerateHashString(card, activateClass.OriginalEffectSourceCard, activateClass.HashString, isInheritedEffect, isLinkedEffect));
-                        copiedActivateClass.SetIsInheritedEffect(isInheritedEffect);
-                        copiedActivateClass.SetIsLinkedEffect(isLinkedEffect);
+                        // Only the wrapper is inherited/linked; the copied effect itself belongs to the
+                        // top card (card). Flagging it inherited/linked makes Permanent.EffectList_ForCard
+                        // drop it (top card effects must be non-inherited) and ICardEffect.CanActivate
+                        // reject it (an inherited effect whose source is the top card), so inherited
+                        // copies never triggered. The hash string above still keeps them tracked apart.
 
 
                         getCardEffects.Add(copiedActivateClass);

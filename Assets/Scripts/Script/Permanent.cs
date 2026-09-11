@@ -2216,7 +2216,7 @@ public class Permanent
         {
             foreach (Permanent permanent in player.GetFieldPermanents())
             {
-                foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None).FlattenEffects())
                 {
                     if (cardEffect is ICannotBlockEffect)
                     {
@@ -2373,7 +2373,7 @@ public class Permanent
                             {
                                 foreach (Permanent permanent in player.GetFieldPermanents())
                                 {
-                                    foreach (ICardEffect cardEffect1 in permanent.EffectList(EffectTiming.None))
+                                    foreach (ICardEffect cardEffect1 in permanent.EffectList(EffectTiming.None).FlattenEffects())
                                     {
                                         if (cardEffect1 is ICanAttackTargetDefendingPermanentEffect)
                                         {
@@ -2476,7 +2476,7 @@ public class Permanent
                 #region Effects of permanents in play
                 foreach (Permanent permanent in player.GetFieldPermanents())
                 {
-                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None).FlattenEffects())
                     {
                         if (cardEffect is IBlockerEffect)
                         {
