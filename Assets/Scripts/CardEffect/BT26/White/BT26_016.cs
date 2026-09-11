@@ -96,15 +96,16 @@ namespace DCGO.CardEffects.BT26
 
                     while (selectedCards.Count < 3)
                     {
-                        bool CanSelectYourTrash(CardSource card) => CardEffectCommons.IsExistOnTrash(card) && !selectedCards.Contains(card);
-                        bool CanSelectEnemyTrash(CardSource card) => CardEffectCommons.IsExistInAnyTrash(card) && card.Owner != card.Owner && !selectedCards.Contains(card);
-
+                        bool CanSelectCardCondition(CardSource cardSource) => !selectedCards.Contains(cardSource);
+                        bool canSelectYourTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
+                        bool canSelectEnemyTrash = CardEffectCommons.HasMatchConditionOpponentsCardInTrash(card, CanSelectCardCondition);
                         List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
-                        if (CanSelectYourTrash(card))
+
+                        if (canSelectYourTrash)
                         {
                             selectionElements.Add(new(message: "from your trash", value: 1, spriteIndex: 0));
                         }
-                        if (CanSelectEnemyTrash(card))
+                        if (canSelectEnemyTrash)
                         {
                             selectionElements.Add(new(message: "from enemy's trash", value: 2, spriteIndex: 0));
                         }
@@ -131,13 +132,13 @@ namespace DCGO.CardEffects.BT26
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
-                            canTargetCondition: _ => true,
+                            canTargetCondition: CanSelectCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             canNoSelect: () => true,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
-                            message: $"Select {maxCount} card(s) in {TrashOwner} trash to return to the bottom of the deck. /n (if less then {maxCount}, you will be able to choose location again)",
+                            message: $"Select {maxCount} card(s) in {TrashOwner} trash to return to the bottom of the deck. /n (1st choice goes highest at bottom of deck, if less then {maxCount}, you will be able to choose location again)",
                             maxCount: maxCount,
                             canEndNotMax: true,
                             isShowOpponent: true,
