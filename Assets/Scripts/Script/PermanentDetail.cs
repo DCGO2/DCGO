@@ -321,6 +321,11 @@ public class PermanentDetail : MonoBehaviour
                 continue;
             }
 
+            if (cardEffect is CannotBlockClass && cardEffect.EffectName == "Unblockable")
+            {
+                continue;
+            }
+
             if (cardEffect is IChangeLinkMaxEffect)
             {
                 continue;

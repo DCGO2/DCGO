@@ -2430,11 +2430,11 @@ public class Permanent
     {
         get
         {
-            foreach (ICardEffect cardEffect in this.EffectList(EffectTiming.None))
+            foreach (ICardEffect cardEffect in this.EffectList(EffectTiming.None).FlattenEffects())
             {
                 if (cardEffect is CannotBlockClass)
                 {
-                    if (cardEffect.EffectName == "Unblockable")
+                    if (cardEffect.EffectName == "Unblockable" && cardEffect.CanUse(null))
                     {
                         return true;
                     }
