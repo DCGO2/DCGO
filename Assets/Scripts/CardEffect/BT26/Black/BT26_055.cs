@@ -134,19 +134,14 @@ namespace DCGO.CardEffects.BT26
                                 if (permanent != null)
                                 {
                                     targetPermanents.Add(permanent);
+                                    targetPermanents.AddRange(card.Owner.Enemy.GetBattleAreaDigimons().Filter(IsOpponentDigimon));
 
+                                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(targetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                                     isUsed = true;
                                 }
 
                                 yield return null;
                             }
-                        }
-
-                        if (targetPermanents.Count >= 1)
-                        {
-                            targetPermanents.AddRange(card.Owner.Enemy.GetBattleAreaDigimons().Filter(IsOpponentDigimon));
-
-                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(targetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                         }
 
                         if (!isUsed) activateClass.RemoveUse();
