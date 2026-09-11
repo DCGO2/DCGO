@@ -484,41 +484,41 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
                     {
                         _noSelect = true;
 
-                        for (int maxCount = 0; maxCount < _maxCount; maxCount++)
+                        // Queue exactly one selection (the largest valid count). Queuing one per count
+                        // left stale selections in the player's queue that later selections dequeued,
+                        // e.g. a "select until 3" loop always received an empty pick and never ended.
+                        List<int> CardIDs = null;
+
+                        for (int maxCount = 0; maxCount <= _maxCount && maxCount <= ValidCards.Count; maxCount++)
                         {
                             IList<int> indexList = Enumerable.Range(0, ValidCards.Count).ToList();
 
-                            List<int> CardIDs = null;
-
-                            if (ValidCards.Count >= maxCount)
+                            for (int i = 0; i < 1000; i++)
                             {
-                                for (int i = 0; i < 1000; i++)
+                                List<int> GetIndexes = indexList.GetRandom(maxCount).ToList();
+
+                                List<CardSource> GetCards = new List<CardSource>();
+
+                                foreach (int index in GetIndexes)
                                 {
-                                    List<int> GetIndexes = indexList.GetRandom(maxCount).ToList();
+                                    GetCards.Add(ValidCards[index]);
+                                }
 
-                                    List<CardSource> GetCards = new List<CardSource>();
+                                if (CanEndSelect(GetCards))
+                                {
+                                    CardIDs = new List<int>();
 
-                                    foreach (int index in GetIndexes)
+                                    foreach (CardSource cardSource in GetCards)
                                     {
-                                        GetCards.Add(ValidCards[index]);
+                                        CardIDs.Add(cardSource.CardIndex);
                                     }
 
-                                    if (CanEndSelect(GetCards))
-                                    {
-                                        CardIDs = new List<int>();
-
-                                        foreach (CardSource cardSource in GetCards)
-                                        {
-                                            CardIDs.Add(cardSource.CardIndex);
-                                        }
-
-                                        break;
-                                    }
+                                    break;
                                 }
                             }
+                        }
 
-                            SetTargetHandCards(_selectPlayer.PlayerID, CardIDs != null ? CardIDs.ToArray() : null);
-                        }  
+                        SetTargetHandCards(_selectPlayer.PlayerID, CardIDs != null ? CardIDs.ToArray() : null);
                     }
 
                     else

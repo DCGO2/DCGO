@@ -117,6 +117,12 @@ namespace DCGO.CardEffects.AD1
                         selectionElements.Add(new(message: $"from Trash", value: 2, spriteIndex: 0));
                     }
 
+                    // Not enough cards left to finish the cost (e.g. they left hand/trash before resolving)
+                    if (validHandCardCount + validTrashCardCount < 3 - selectedCards.Count)
+                    {
+                        yield break;
+                    }
+
                     string selectPlayerMessage = "From which area will you select a card to place under as digivolution cards?";
                     string notSelectPlayerMessage = "The opponent is choosing from which area to select a card to place under as digivolution cards.";
 
