@@ -162,6 +162,8 @@ public partial class CardEffectFactory
                         // stale redirect in place for the source's own later activations.
                         IEnumerator ActivateWithRedirectedUseTracking(Hashtable hashtable)
                         {
+                            activateClass.SetIsDigimonEffect(true);//Copy effects were for some reason refusing to act as Digimon effects. Explicitly setting here to bypass this being unset
+
                             activateClass.PushUseTrackingRedirectTarget(copiedActivateClass);
                             try
                             {
@@ -186,7 +188,6 @@ public partial class CardEffectFactory
                         copiedActivateClass.SetIsInheritedEffect(isInheritedEffect);
                         copiedActivateClass.SetIsLinkedEffect(isLinkedEffect);
 
-                        copiedActivateClass.SetIsDigimonEffect(true);//Copied effects are currently not inheriting this. All current card with copy effects are digimon. If this changes, check the type of card
 
                         getCardEffects.Add(copiedActivateClass);
 
