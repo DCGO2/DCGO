@@ -237,7 +237,6 @@ namespace DCGO.CardEffects.EX13
 
                         IEnumerator FailureProcess()
                         {
-                            activateClass.RemoveUse();
                             yield return null;
                         }
                     }
