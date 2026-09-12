@@ -39,29 +39,29 @@ namespace DCGO.CardEffects.EX13
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
                     && (permanent.IsDigimon || permanent.IsTamer);
 
-            bool SharedAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition);
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                selectPermanentEffect.SetUp(
-                    selectPlayer: card.Owner,
-                    canTargetCondition: CanSelectOpponentPermanentCondition,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: 1,
-                    canNoSelect: false,
-                    canEndNotMax: false,
-                    selectPermanentCoroutine: null,
-                    afterSelectPermanentCoroutine: null,
-                    mode: SelectPermanentEffect.Mode.Tap,
-                    cardEffect: activateClass);
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
+                {
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectOpponentPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Tap,
+                        cardEffect: activateClass);
 
-                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or Tamer to suspend.", "The opponent is selecting 1 Digimon or Tamer to suspend.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or Tamer to suspend.", "The opponent is selecting 1 Digimon or Tamer to suspend.");
 
-                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                }
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
                 {
@@ -113,7 +113,6 @@ namespace DCGO.CardEffects.EX13
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
-                additionalActivateCondition: SharedAdditionalActivateCondition,
                 onPlay: true,
                 whenDigivolving: true);
 
@@ -138,7 +137,7 @@ namespace DCGO.CardEffects.EX13
                         && cardSource != null
                         && cardSource.Owner == card.Owner
                         && cardSource.Owner.HandCards.Contains(cardSource)
-                        && cardSource.CardNames.Contains("Examon"))
+                        && cardSource.EqualsCardName("Examon"))
                     {
                         levels.Add(6);
                     }
@@ -200,16 +199,18 @@ namespace DCGO.CardEffects.EX13
                             winnerRealCondition: WinnerRealCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && card.Owner.Enemy.SecurityCards.Count >= 1;
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner.Enemy,
-                        destroySecurityCount: 1,
-                        cardEffect: activateClass,
-                        fromTop: true).DestroySecurity());
+                    if (card.Owner.Enemy.SecurityCards.Count >= 1)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                            player: card.Owner.Enemy,
+                            destroySecurityCount: 1,
+                            cardEffect: activateClass,
+                            fromTop: true).DestroySecurity());
+                    }
                 }
             }
             #endregion
