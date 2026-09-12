@@ -104,33 +104,35 @@ namespace DCGO.CardEffects.EX13
                         && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.IsJogress(hashtable);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent thisPermanent = card.PermanentOfThisCard();
 
-                    if (thisPermanent != null && thisPermanent.CanAttack(activateClass))
+                    if (CardEffectCommons.IsJogress(hashtable))
                     {
-                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                        if (thisPermanent != null && thisPermanent.CanAttack(activateClass))
+                        {
+                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                        selectAttackEffect.SetUp(
-                            attacker: thisPermanent,
-                            canAttackPlayerCondition: () => true,
-                            defenderCondition: _ => true,
-                            cardEffect: activateClass);
+                            selectAttackEffect.SetUp(
+                                attacker: thisPermanent,
+                                canAttackPlayerCondition: () => true,
+                                defenderCondition: _ => true,
+                                cardEffect: activateClass);
 
-                        selectAttackEffect.SetCanNotSelectNotAttack();
+                            selectAttackEffect.SetCanNotSelectNotAttack();
 
-                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDPPlayerEffect(
+                            permanentCondition: IsOwnerDigimon,
+                            changeValue: 10000,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass));
                     }
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDPPlayerEffect(
-                        permanentCondition: IsOwnerDigimon,
-                        changeValue: 10000,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass));
 
                     thisPermanent = card.PermanentOfThisCard();
 
@@ -192,8 +194,7 @@ namespace DCGO.CardEffects.EX13
                 bool CanSelectCardCondition(CardSource cardSource)
                     => (cardSource.HasText("Dracomon") || cardSource.HasText("Examon"))
                         && cardSource.GetCostItself <= 12
-                        && ((cardSource.IsOption && !cardSource.CanNotPlayThisOption)
-                            || (cardSource.HasPlayCost && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass)));
+                        && CardEffectCommons.CanPlayOrUse(cardSource, activateClass);
 
                 bool HasSelectableSourceCard()
                     => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
@@ -217,13 +218,14 @@ namespace DCGO.CardEffects.EX13
 
                     if (canSelectHand && canSelectSources)
                     {
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
-                            new SelectionElement<bool>(message: "From hand", value: true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: "From digivolution cards", value: false, spriteIndex: 1),
+                            new SelectionElement<int>(message: "From hand", value: 1, spriteIndex: 0),
+                            new SelectionElement<int>(message: "From digivolution cards", value: 2, spriteIndex: 0),
+                            new SelectionElement<int>(message: "Don't play or use", value: 3, spriteIndex: 1),
                         };
 
-                        GManager.instance.userSelectionManager.SetBoolSelection(
+                        GManager.instance.userSelectionManager.SetIntSelection(
                             selectionElements: selectionElements,
                             selectPlayer: card.Owner,
                             selectPlayerMessage: "From which area do you play or use a card?",
@@ -231,7 +233,13 @@ namespace DCGO.CardEffects.EX13
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+                        if (GManager.instance.userSelectionManager.SelectedIntValue == 3)
+                        {
+                            activateClass.RemoveUse();
+                            yield break;
+                        }
+
+                        fromHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
                     }
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
