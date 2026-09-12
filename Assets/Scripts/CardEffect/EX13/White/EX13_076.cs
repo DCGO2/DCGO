@@ -271,16 +271,9 @@ namespace DCGO.CardEffects.EX13
                             => cardSource.EqualsTraits("Free") 
                             || cardSource.EqualsTraits("Royal Knight");
 
-                        bool CanTargetCondition_ByPreSelecetedList(List<CardSource> selectedCards, CardSource cardSource)
-                        {
-                            List<CardSource> AllCards = selectedCards.Clone();
-                            AllCards.Add(cardSource);
-                            return Combinations.GetUniqueNameCardCount(AllCards) == AllCards.Count;
-                        }
-
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
                             element: element,
-                            CanTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                            CanTargetCondition_ByPreSelecetedList: Combinations.WithDifferentNames,
                             selectMessage: "6 [Free]/[Royal Knight] trait Digimon cards w/ different names",
                             elementCount: 6,
                             reduceCost: 8);
