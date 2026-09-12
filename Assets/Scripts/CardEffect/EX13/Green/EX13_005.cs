@@ -34,7 +34,8 @@ namespace DCGO.CardEffects.EX13
                         && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
