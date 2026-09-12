@@ -73,10 +73,10 @@ namespace DCGO.CardEffects
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Memory -2", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Attacking] Lose 2 memory.";
                 }
