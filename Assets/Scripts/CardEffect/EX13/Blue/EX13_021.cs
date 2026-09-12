@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.EX13
                         && cardSource != null
                         && cardSource.Owner == card.Owner
                         && cardSource.Owner.HandCards.Contains(cardSource)
-                        && cardSource.CardNames.Contains("Examon"))
+                        && cardSource.EqualsCardName("Examon"))
                     {
                         levels.Add(6);
                     }
