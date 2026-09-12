@@ -213,7 +213,7 @@ namespace DCGO.CardEffects.EX13
                                 new List<Permanent>() { suspendPermanent },
                                 activateClass,
                                 SuccessProcess,
-                                FailureProcess));
+                                null));
                         }
                         else
                         {
@@ -232,11 +232,6 @@ namespace DCGO.CardEffects.EX13
                                 removedPermanent.HideWillRemoveFieldEffect();
                             }
 
-                            yield return null;
-                        }
-
-                        IEnumerator FailureProcess()
-                        {
                             yield return null;
                         }
                     }
