@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Bebydomon
 namespace DCGO.CardEffects.EX13
@@ -70,57 +69,20 @@ namespace DCGO.CardEffects.EX13
 
                     if (selectedCard != null)
                     {
-                        IEnumerator ReduceCost(string type)
-                        {
-                            if (card.Owner.CanReduceCost(null, card))
-                            {
-                                ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                            }
+                        ChangeCostClass changeCostClass = new ChangeCostClass();
+                        changeCostClass.SetUpICardEffect("Play/Use Cost -1", _ => true, card);
+                        changeCostClass.SetUpChangeCostClass(
+                            changeCostFunc: ChangeCost, cardSourceCondition: _ => true, rootCondition: _ => true,
+                            isUpDown: () => true, isCheckAvailability: () => false, isChangePayingCost: () => true);
 
-                            Hashtable costHashtable = new Hashtable
-                            {
-                                { "CardEffect", activateClass }
-                            };
+                        ICardEffect GetCardEffect(EffectTiming _timing) => _timing == EffectTiming.None ? changeCostClass : null;
+                        card.Owner.UntilCalculateFixedCostEffect.Add(GetCardEffect);
 
-                            ChangeCostClass changeCostClass = new ChangeCostClass();
-                            changeCostClass.SetUpICardEffect($"{type} cost: -1", CanUseCostCondition, card);
-                            changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CostCardSourceCondition, rootCondition: CostRootCondition, isUpDown: IsUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                            card.Owner.UntilCalculateFixedCostEffect.Add(_ => changeCostClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(costHashtable));
-
-                            bool CanUseCostCondition(Hashtable effectHashtable)
-                                => true;
-
-                            int ChangeCost(CardSource costCard, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                            {
-                                if (CostCardSourceCondition(costCard)
-                                    && CostRootCondition(root)
-                                    && CostPermanentsCondition(targetPermanents))
-                                {
-                                    cost -= 1;
-                                }
-
-                                return cost;
-                            }
-
-                            bool CostPermanentsCondition(List<Permanent> targetPermanents)
-                                => targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
-
-                            bool CostCardSourceCondition(CardSource costCard)
-                                => costCard != null
-                                    && costCard.Owner == card.Owner;
-
-                            bool CostRootCondition(SelectCardEffect.Root root)
-                                => true;
-
-                            bool IsUpDown()
-                                => true;
-                        }
+                        int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                            => cost - 1;
 
                         if (selectedCard.IsOption)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(ReduceCost("Use"));
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
                                 cardSources: new List<CardSource>() { selectedCard },
                                 activateClass: activateClass,
@@ -129,7 +91,6 @@ namespace DCGO.CardEffects.EX13
                         }
                         else
                         {
-                            yield return ContinuousController.instance.StartCoroutine(ReduceCost("Play"));
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                 cardSources: new List<CardSource>() { selectedCard },
                                 activateClass: activateClass,
@@ -138,6 +99,8 @@ namespace DCGO.CardEffects.EX13
                                 root: SelectCardEffect.Root.Hand,
                                 activateETB: true));
                         }
+
+                        card.Owner.UntilCalculateFixedCostEffect.Remove(GetCardEffect);
                     }
 
                     if (selectedCard == null) activateClass.RemoveUse();
