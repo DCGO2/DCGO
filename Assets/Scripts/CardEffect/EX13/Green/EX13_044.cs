@@ -88,12 +88,14 @@ namespace DCGO.CardEffects.EX13
             {
                 SelectPermanentEffect suspendSelectEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
+                int suspendCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendPermanentCondition));
+
                 suspendSelectEffect.SetUp(
                     selectPlayer: card.Owner,
                     canTargetCondition: CanSelectSuspendPermanentCondition,
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
-                    maxCount: 2,
+                    maxCount: suspendCount,
                     canNoSelect: true,
                     canEndNotMax: true,
                     selectPermanentCoroutine: null,
