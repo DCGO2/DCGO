@@ -235,7 +235,7 @@ namespace DCGO.CardEffects.BT26
                             DisableEffectClass invalidationClass = new DisableEffectClass();
                             invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", CanUseConditionDebuff, card);
                             invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
-                            selectedPermanent.UntilOpponentTurnEndEffects.Add(_ => invalidationClass);
+                            selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => invalidationClass);
 
                             bool CanUseConditionDebuff(Hashtable hashtableDebuff)
                                 => selectedPermanent.TopCard != null;
