@@ -86,64 +86,56 @@ namespace DCGO.CardEffects.EX13
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendPermanentCondition))
+                SelectPermanentEffect suspendSelectEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                suspendSelectEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: CanSelectSuspendPermanentCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: 2,
+                    canNoSelect: true,
+                    canEndNotMax: true,
+                    selectPermanentCoroutine: null,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Tap,
+                    cardEffect: activateClass);
+
+                suspendSelectEffect.SetUpCustomMessage("Select up to 2 Digimon or Tamers to suspend.", "The opponent is selecting up to 2 Digimon or Tamers to suspend.");
+
+                yield return ContinuousController.instance.StartCoroutine(suspendSelectEffect.Activate());
+
+                int canNotUnsuspendCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
+
+                SelectPermanentEffect canNotUnsuspendSelectEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                canNotUnsuspendSelectEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: CanSelectOpponentPermanentCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: canNotUnsuspendCount,
+                    canNoSelect: false,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: SelectCanNotUnsuspendCoroutine,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Custom,
+                    cardEffect: activateClass);
+
+                canNotUnsuspendSelectEffect.SetUpCustomMessage(
+                    "Select 2 Digimon or Tamers that can't unsuspend until their turn ends.",
+                    "The opponent is selecting 2 Digimon or Tamers that can't unsuspend until your turn ends.");
+
+                yield return ContinuousController.instance.StartCoroutine(canNotUnsuspendSelectEffect.Activate());
+
+                IEnumerator SelectCanNotUnsuspendCoroutine(Permanent permanent)
                 {
-                    int suspendCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectSuspendPermanentCondition));
-
-                    SelectPermanentEffect suspendSelectEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    suspendSelectEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectSuspendPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: suspendCount,
-                        canNoSelect: true,
-                        canEndNotMax: true,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Tap,
-                        cardEffect: activateClass);
-
-                    suspendSelectEffect.SetUpCustomMessage("Select up to 2 Digimon or Tamers to suspend.", "The opponent is selecting up to 2 Digimon or Tamers to suspend.");
-
-                    yield return ContinuousController.instance.StartCoroutine(suspendSelectEffect.Activate());
-                }
-
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
-                {
-                    int canNotUnsuspendCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
-
-                    SelectPermanentEffect canNotUnsuspendSelectEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    canNotUnsuspendSelectEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectOpponentPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: canNotUnsuspendCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectCanNotUnsuspendCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    canNotUnsuspendSelectEffect.SetUpCustomMessage(
-                        "Select 2 Digimon or Tamers that can't unsuspend until their turn ends.",
-                        "The opponent is selecting 2 Digimon or Tamers that can't unsuspend until your turn ends.");
-
-                    yield return ContinuousController.instance.StartCoroutine(canNotUnsuspendSelectEffect.Activate());
-
-                    IEnumerator SelectCanNotUnsuspendCoroutine(Permanent permanent)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspend(
-                            targetPermanent: permanent,
-                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                            activateClass: activateClass,
-                            condition: null,
-                            effectName: "Can't unsuspend"));
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspend(
+                        targetPermanent: permanent,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        condition: null,
+                        effectName: "Can't unsuspend"));
                 }
             }
 
