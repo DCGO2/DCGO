@@ -9,20 +9,14 @@ public static class AISelectionUtility
     public const int MaxRandomAttempts = 200;
     public const int MaxExhaustiveCombinations = 60000;
 
-    // totalCount:   number of eligible candidates (indexes 0 .. totalCount-1)
-    // canEndSelect: validates a complete selection against the effect's own end condition
-    // canAdd:       incremental validation when building the selection (may be null)
-    // maxCount:     the effect's maximum selectable count
-    // canNoSelect:  whether the effect allows declining to choose nothing
-    // canEndNotMax: whether the effect allows ending with fewer than maxCount
     // Returns the chosen indexes, or null when the AI should decline (no selection).
     public static List<int> Choose(
-        int totalCount,
-        Func<List<int>, bool> canEndSelect,
-        Func<List<int>, int, bool> canAdd,
-        int maxCount,
-        bool canNoSelect,
-        bool canEndNotMax)
+        int totalCount,                         // number of eligible candidates (indexes 0..totalCount-1)
+        Func<List<int>, bool> canEndSelect,     // validates a complete selection (e.g. total-cost cap)
+        Func<List<int>, int, bool> canAdd,      // incremental validation as the selection grows (nullable)
+        int maxCount,                           // maximum selectable targets
+        bool canNoSelect,                       // declining (returning null) is allowed
+        bool canEndNotMax)                      // ending with fewer than maxCount is allowed
     {
         if (totalCount <= 0)
         {
