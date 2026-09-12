@@ -58,8 +58,18 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         _allowFaceDown = false;
 
         _skillInfos = new List<SkillInfo>();
+        _highlightCards = new Dictionary<CardSource, string>();
 
         _afterSelectIndexCoroutine = null;
+    }
+
+    // Tags a specific candidate card instance with a custom label (e.g. "Trashed Card") independent of the
+    // reactive-effect-waiting detection below - useful when a card's own coroutine already knows exactly which
+    // instance it just moved (e.g. trashed) and wants to distinguish it from other copies of the same card.
+    public void SetHighlightCard(CardSource card, string label)
+    {
+        if (card == null) return;
+        _highlightCards[card] = label;
     }
 
     public void SetIsLocal()
@@ -217,6 +227,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     List<SkillInfo> _skillInfos = new List<SkillInfo>();
     List<int> _slectedInexesInList = new List<int>();
     Func<List<int>, IEnumerator> _afterSelectIndexCoroutine = null;
+    Dictionary<CardSource, string> _highlightCards = new Dictionary<CardSource, string>();
 
     public void SetUpAfterSelectIndexCoroutine(Func<List<int>, IEnumerator> AfterSelectIndexCoroutine)
     {
@@ -491,7 +502,14 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                                             }
                                             else
                                             {
-                                                if (GManager.instance.autoProcessing.executingMultipleSkills != null)
+                                                bool isCandidateActiveOnField(CardSource candidate)
+                                                {
+                                                    Permanent permanent = candidate.PermanentOfThisCard();
+                                                    return permanent != null && permanent.TopCard == candidate;
+                                                }
+
+                                                if (GManager.instance.autoProcessing.executingMultipleSkills != null
+                                                    && (CardEffectCommons.IsExistOnTrash(RootCards[i]) || isCandidateActiveOnField(RootCards[i])))
                                                 {
                                                     bool isEffectWaiting(SkillInfo skillInfo)
                                                     {
@@ -526,6 +544,29 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
                                     _skillInfos = skillInfoArray.ToList();
                                 }
+                            }
+                        }
+                    }
+
+                    #endregion
+
+                    #region Caller-specified card highlight (e.g. "Trashed Card")
+
+                    if (_highlightCards != null && _highlightCards.Count > 0)
+                    {
+                        if (_skillInfos.Count != RootCards.Count)
+                        {
+                            _skillInfos = new List<SkillInfo>(new SkillInfo[RootCards.Count]);
+                        }
+
+                        for (int i = 0; i < RootCards.Count; i++)
+                        {
+                            if (_highlightCards.TryGetValue(RootCards[i], out string highlightLabel))
+                            {
+                                ICardEffect highlightCardEffect = new ChangeBaseDPClass();
+                                highlightCardEffect.SetUpICardEffect(highlightLabel, null, RootCards[i]);
+
+                                _skillInfos[i] = new SkillInfo(highlightCardEffect, null, EffectTiming.None);
                             }
                         }
                     }
