@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Slayerdramon
 namespace DCGO.CardEffects.EX13
@@ -75,7 +76,7 @@ namespace DCGO.CardEffects.EX13
                 => $"[{tag}] For each of this Digimon's digivolution cards, trash any 1 digivolution card from your opponent's Digimon. Then, you may return all of their Digimon with the fewest digivolution cards to the bottom of the deck.";
 
             bool IsOpponentDigimon(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.DigivolutionCards.Any();
 
             bool IsFewestSourcesOpponentDigimon(Permanent permanent)
                 => IsOpponentDigimon(permanent)
@@ -95,13 +96,7 @@ namespace DCGO.CardEffects.EX13
                         canNoTrash: false,
                         isFromOnly1Permanent: false,
                         activateClass: activateClass,
-                        canEndNotMax: false,
-                        afterSelectionCoroutine: AfterTrashSelectionCoroutine));
-
-                    IEnumerator AfterTrashSelectionCoroutine(Permanent permanent, List<CardSource> cardSources)
-                    {
-                        yield return null;
-                    }
+                        canEndNotMax: false));
                 }
 
                 List<Permanent> bounceTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(IsFewestSourcesOpponentDigimon);
@@ -214,12 +209,18 @@ namespace DCGO.CardEffects.EX13
 
                         if (suspendPermanent != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SuspendPeremanentAndProcessAccordingToResult(
                                 new List<Permanent>() { suspendPermanent },
-                                CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+                                activateClass,
+                                SuccessProcess,
+                                FailureProcess));
+                        }
+                        else
+                        {
+                            activateClass.RemoveUse();
                         }
 
-                        if (suspendPermanent != null && suspendPermanent.IsSuspended)
+                        IEnumerator SuccessProcess(List<Permanent> suspendedPermanents)
                         {
                             foreach (Permanent removedPermanent in removedPermanents)
                             {
@@ -230,10 +231,14 @@ namespace DCGO.CardEffects.EX13
                                 removedPermanent.HideDeleteEffect();
                                 removedPermanent.HideWillRemoveFieldEffect();
                             }
+
+                            yield return null;
                         }
-                        else
+
+                        IEnumerator FailureProcess()
                         {
                             activateClass.RemoveUse();
+                            yield return null;
                         }
                     }
                 }
