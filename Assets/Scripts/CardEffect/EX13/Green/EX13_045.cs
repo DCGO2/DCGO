@@ -235,7 +235,6 @@ namespace DCGO.CardEffects.EX13
 
                         if (GManager.instance.userSelectionManager.SelectedIntValue == 3)
                         {
-                            activateClass.RemoveUse();
                             yield break;
                         }
 
