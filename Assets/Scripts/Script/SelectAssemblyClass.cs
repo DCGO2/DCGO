@@ -110,7 +110,7 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     #endregion
 
     #region CanFulfillConditions
-    bool CanFulfillConditions(CardSource card)
+    public bool CanFulfillConditions(CardSource card)
     {
         if (card != null)
         {
