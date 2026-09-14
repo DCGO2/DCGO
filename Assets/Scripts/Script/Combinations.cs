@@ -117,7 +117,7 @@ public static class Combinations
 
         int maxColorCount = 0;
 
-        //Ô`”’‚É‘Î‰‚·‚éƒJ[ƒh1–‡‚ğŠeF–ˆ‚ÉŠi”[‚·‚é”z—ñ
+        //ï¿½Ô`ï¿½ï¿½ï¿½É‘Î‰ï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½[ï¿½h1ï¿½ï¿½ï¿½ï¿½ï¿½eï¿½Fï¿½ï¿½ï¿½ÉŠiï¿½[ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½
         CardSource[] cardsCorrespondingToColor = new CardSource[System.Enum.GetValues(typeof(CardColor)).Length - 1];
 
         for (int i = 0; i < cardsCorrespondingToColor.Length; i++)
@@ -141,7 +141,7 @@ public static class Combinations
                         {
                             if (cardsCorrespondingToColor[j] != null)
                             {
-                                //Šù‚É“¯‚¶‘g‚İ‡‚í‚¹‚ÌF‚ÌƒJ[ƒh‚ª”z—ñ‚ÉŠi”[‚³‚ê‚Ä‚¢‚éê‡
+                                //ï¿½ï¿½ï¿½É“ï¿½ï¿½ï¿½ï¿½gï¿½İï¿½ï¿½í‚¹ï¿½ÌFï¿½ÌƒJï¿½[ï¿½hï¿½ï¿½ï¿½zï¿½ï¿½ÉŠiï¿½[ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡
                                 if (Enumerable.SequenceEqual(cardSource.CardColors.OrderBy(e => e), cardsCorrespondingToColor[j].CardColors.OrderBy(e => e)))
                                 {
                                     UnityEngine.Debug.Log($"SKIPPING: {cardSource.BaseENGCardNameFromEntity}");
@@ -181,4 +181,21 @@ public static class Combinations
 
         return maxColorCount;
     }
+
+    #region CanTargetCondition_ByPreSelecetedList methods for common "different X"
+    public static bool WithDifferentNames(List<CardSource> cardSources, CardSource newCardSource)
+    {
+        List<CardSource> sampleSet = cardSources.Clone();
+        sampleSet.Add(newCardSource);
+        return GetUniqueNameCardCount(sampleSet) == sampleSet.Count;
+    }
+
+    public static bool WithDifferentColors(List<CardSource> cardSources, CardSource newCardSource)
+    {
+        List<CardSource> sampleSet = cardSources.Clone();
+        sampleSet.Add(newCardSource);
+        return GetUniqueColorCardCount(sampleSet) == sampleSet.Count;
+    }
+
+    #endregion
 }
