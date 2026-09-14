@@ -943,14 +943,6 @@ public class PlayCardClass
 
                 if (playFailed)
                 {
-                    foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
-                    {
-                        foreach (Permanent permanent in player.GetFieldPermanents())
-                        {
-                            permanent.IsSuspended = permanent.oldIsTapped_playCard;
-                        }
-                    }
-
                     foreach (CardSource cardSource in oldTrashCards)
                     {
                         if (!CardEffectCommons.IsExistOnTrash(cardSource))
