@@ -295,6 +295,7 @@ namespace DCGO.CardEffects.BT25
 
                                 selectCardEffect1.SetUpCustomMessage("Select 1 [Three Musketeers] option to use.", "The opponent is selecting 1 [Three Musketeers] option to use.");
                                 selectCardEffect1.SetUpCustomMessage_ShowCard("Selected Card");
+                                selectCardEffect1.SetHighlightCard(selectedCard, "Trashed Card");
 
                                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect1.Activate());
 
