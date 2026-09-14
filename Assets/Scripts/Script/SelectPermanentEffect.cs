@@ -641,44 +641,45 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                         }
                     }
 
-                    IList<int> indexList = Enumerable.Range(0, ValidCharas.Count).ToList();
-
-                    if (ValidCharas.Count >= _maxCount)
-                    {
-                        for (int i = 0; i < 200; i++)
+                    List<int> selectedIndexes = AISelectionUtility.Choose(
+                        ValidCharas.Count,
+                        canEndSelect: (List<int> indexes) =>
                         {
-                            List<int> GetIndexes = indexList.GetRandom(_maxCount).ToList();
-
-                            List<Permanent> GetCharas = new List<Permanent>();
-
-                            foreach (int index in GetIndexes)
+                            return CanEndSelect(indexes.Select((index) => ValidCharas[index]).ToList());
+                        },
+                        canAdd: _canTargetCondition_ByPreSelecetedList == null
+                            ? (Func<List<int>, int, bool>)null
+                            : (List<int> prefixIndexes, int index) =>
                             {
-                                GetCharas.Add(ValidCharas[index]);
-                            }
+                                return _canTargetCondition_ByPreSelecetedList(prefixIndexes.Select((prefixIndex) => ValidCharas[prefixIndex]).ToList(), ValidCharas[index]);
+                            },
+                        maxCount: _maxCount,
+                        canNoSelect: _canNoSelect,
+                        canEndNotMax: _canEndNotMax);
 
-                            if (_canEndSelectCondition != null)
+                    if (selectedIndexes != null)
+                    {
+                        List<bool> isTurnPlayer = new List<bool>();
+                        List<int> UnitIDs = new List<int>();
+
+                        foreach (int index in selectedIndexes)
+                        {
+                            Permanent chara = ValidCharas[index];
+
+                            if (chara.TopCard != null)
                             {
-                                if (!_canEndSelectCondition(GetCharas))
-                                {
-                                    continue;
-                                }
+                                isTurnPlayer.Add(chara.TopCard.Owner == GManager.instance.turnStateMachine.gameContext.TurnPlayer);
+                                UnitIDs.Add(chara.TopCard.Owner.GetFieldPermanents().IndexOf(chara));
                             }
-
-                            List<bool> isTurnPlayer = new List<bool>();
-                            List<int> UnitIDs = new List<int>();
-
-                            foreach (Permanent chara in GetCharas)
-                            {
-                                if (chara.TopCard != null)
-                                {
-                                    isTurnPlayer.Add(chara.TopCard.Owner == GManager.instance.turnStateMachine.gameContext.TurnPlayer);
-                                    UnitIDs.Add(chara.TopCard.Owner.GetFieldPermanents().IndexOf(chara));
-                                }
-                            }
-
-                            SetTargetFrames(_selectPlayer.PlayerID, isTurnPlayer.ToArray(), UnitIDs.ToArray());
-                            break;
                         }
+
+                        SetTargetFrames(_selectPlayer.PlayerID, isTurnPlayer.ToArray(), UnitIDs.ToArray());
+                    }
+
+                    else if (_canNoSelect)
+                    {
+                        // Decline when choosing nothing is allowed.
+                        SetTargetFrames(_selectPlayer.PlayerID, null, null);
                     }
                 }
                 #endregion

@@ -34,6 +34,8 @@
 ExportedObj/
 .consulo/
 *.csproj
+# Test projects are committed, not Unity-generated.
+!tests/**/*.csproj
 *.unityproj
 *.sln
 *.suo
@@ -101,3 +103,7 @@ crashlytics-build.properties
 /Assets/Effect/KTK_Effect_Samples.meta
 /Assets/SCI-FI UI Components.meta
 /Assets/Sound.meta
+
+# .NET test project build output
+tests/**/[Bb]in/
+tests/**/[Oo]bj/
