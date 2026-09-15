@@ -146,14 +146,11 @@ public class BT8_081 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsOwnerTurn(card))
                 {
-                    if (CardEffectCommons.IsOwnerTurn(card))
+                    if (CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, CardEffectCondition, card, activateClass))
                     {
-                        if (CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, CardEffectCondition, card))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
 
@@ -162,7 +159,7 @@ public class BT8_081 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnTrash(card))
+                if (CardEffectCommons.IsExistOnTrashActivate(card, activateClass))
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {

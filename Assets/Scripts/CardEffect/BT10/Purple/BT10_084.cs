@@ -127,7 +127,7 @@ namespace DCGO.CardEffects.BT10
                 {
                     return CardEffectCommons.IsOpponentTurn(card)
                         && CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => true, cardSource => true);
+                        && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => true, cardSource => true, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

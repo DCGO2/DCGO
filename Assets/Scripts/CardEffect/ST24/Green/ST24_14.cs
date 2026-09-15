@@ -95,13 +95,13 @@ namespace DCGO.CardEffects.ST24
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, permanent => permanent == card.PermanentOfThisCard(), effect => effect != null, cardSource => true);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, permanent => permanent == card.PermanentOfThisCard(), effect => effect != null, cardSource => true, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 

@@ -72,9 +72,9 @@ public class BT8_029 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
                 {
-                    if (CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => true, cardSource => true))
+                    if (CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => true, cardSource => true, activateClass))
                     {
                         return true;
                     }
@@ -85,7 +85,7 @@ public class BT8_029 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass))
                 {
                     return true;
                 }

@@ -7,7 +7,7 @@ using UnityEngine;
 public partial class CardEffectCommons
 {
     #region Can trigger "When this digivolution card is trashed due to activating this Digimon's <Digi-Burst>" effect
-    public static bool CanTriggerOnTrashBySelfDigiBurst(Hashtable hashtable, CardSource card)
+    public static bool CanTriggerOnTrashBySelfDigiBurst(Hashtable hashtable, CardSource card, ActivateClass activateClass)
     {
         bool CardEffectCondition(ICardEffect cardEffect)
         {
@@ -34,7 +34,7 @@ public partial class CardEffectCommons
             return false;
         }
 
-        return CanTriggerOnTrashSelfDigivolutionCard(hashtable, CardEffectCondition, card);
+        return CanTriggerOnTrashSelfDigivolutionCard(hashtable, CardEffectCondition, card, activateClass);
 
     }
     #endregion

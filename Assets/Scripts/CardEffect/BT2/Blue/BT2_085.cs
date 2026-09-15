@@ -31,11 +31,11 @@ public class BT2_085 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => true, cardSource => true))
+                        if (CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => true, cardSource => true, activateClass))
                         {
                             return true;
                         }
@@ -47,12 +47,8 @@ public class BT2_085 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.CanActivateSuspendCostEffect(card))
-                {
-                    return true;
-                }
-
-                return false;
+                return CardEffectCommons.CanActivateSuspendCostEffect(card)
+                    && CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)

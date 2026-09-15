@@ -189,11 +189,11 @@ namespace DCGO.CardEffects.BT11
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
                     {
                         if (CardEffectCommons.IsOpponentTurn(card))
                         {
-                            if (CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card))
+                            if (CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card, activateClass))
                             {
                                 return true;
                             }
@@ -205,7 +205,7 @@ namespace DCGO.CardEffects.BT11
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnTrash(card))
+                    if (CardEffectCommons.IsExistOnTrashActivate(card, activateClass))
                     {
                         if (card.Owner.CanAddMemory(activateClass))
                         {

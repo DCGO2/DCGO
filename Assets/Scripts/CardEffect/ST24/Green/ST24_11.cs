@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.ST24
 
             string SharedEffectDescription1() => "[All Turns] [Once Per Turn] When any of your opponent's Digimon or Tamers suspend, or effects trash cards from under your Tamers, trash your opponent's top security card.";
 
-            bool SharedCanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleArea(card);
+            bool SharedCanActivateCondition(Hashtable hashtable, ActivateClass activateClass) => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
             IEnumerator SharedActivateCoroutine1(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -169,13 +169,13 @@ namespace DCGO.CardEffects.ST24
             {
                 ActivateClass activateClass = new();
                 activateClass.SetUpICardEffect(SharedEffectName1, CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), 1, false, SharedEffectDescription1());
+                activateClass.SetUpActivateClass(hash => SharedCanActivateCondition(hash, activateClass), hash => SharedActivateCoroutine1(hash, activateClass), 1, false, SharedEffectDescription1());
                 activateClass.SetHashString(SharedHashString);
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, PermanentCondition);
                 }
 
@@ -193,14 +193,14 @@ namespace DCGO.CardEffects.ST24
             {
                 ActivateClass activateClass = new();
                 activateClass.SetUpICardEffect(SharedEffectName1, CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), 1, false, SharedEffectDescription1());
+                activateClass.SetUpActivateClass(hash => SharedCanActivateCondition(hash, activateClass), hash => SharedActivateCoroutine1(hash, activateClass), 1, false, SharedEffectDescription1());
                 activateClass.SetHashString(SharedHashString);
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => cardEffect != null, cardSource => true);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => cardEffect != null, cardSource => true, activateClass);
                 }
 
                 bool PermanentCondition(Permanent permanent)
