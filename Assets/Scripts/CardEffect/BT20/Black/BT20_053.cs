@@ -177,8 +177,9 @@ namespace DCGO.CardEffects.BT20
 
                             bool SkillCondition(ICardEffect cardEffect)
                             {
-                                return CardEffectCommons.IsOpponentEffect(cardEffect, card) &&
-                                       cardEffect.IsDigimonEffect;
+                                return CardEffectCommons.IsOpponentEffect(cardEffect, card)
+                                    && ((!cardEffect.EffectSourceCard.IsDualCard && cardEffect.EffectSourceCard.IsDigimon)
+                                        || (cardEffect.EffectSourceCard.IsDualCard && !cardEffect.IsOptionEffect));
                             }
 
                             ICardEffect GetCardEffect(EffectTiming timingImmunity)
@@ -346,8 +347,9 @@ namespace DCGO.CardEffects.BT20
 
                             bool SkillCondition(ICardEffect cardEffect)
                             {
-                                return CardEffectCommons.IsOpponentEffect(cardEffect, card) &&
-                                       cardEffect.IsDigimonEffect;
+                                return CardEffectCommons.IsOpponentEffect(cardEffect, card)
+                                    && ((!cardEffect.EffectSourceCard.IsDualCard && cardEffect.EffectSourceCard.IsDigimon)
+                                        || (cardEffect.EffectSourceCard.IsDualCard && !cardEffect.IsOptionEffect));
                             }
 
                             ICardEffect GetCardEffect(EffectTiming timingImmunity)

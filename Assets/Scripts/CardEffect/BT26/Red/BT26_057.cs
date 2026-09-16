@@ -30,6 +30,7 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing a Tamer's bottom face-down card, not affected by opponent's effects and +3000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 

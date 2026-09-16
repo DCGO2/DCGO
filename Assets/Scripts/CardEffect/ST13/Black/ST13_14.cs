@@ -201,21 +201,9 @@ public class ST13_14 : CEntity_Effect
 
             bool SkillCondition(ICardEffect cardEffect)
             {
-                if (cardEffect != null)
-                {
-                    if (cardEffect.EffectSourceCard != null)
-                    {
-                        if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
-                        {
-                            if (cardEffect.IsDigimonEffect)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsOpponentEffect(cardEffect, card)
+                    && ((!cardEffect.EffectSourceCard.IsDualCard && cardEffect.EffectSourceCard.IsDigimon)
+                        || (cardEffect.EffectSourceCard.IsDualCard && !cardEffect.IsOptionEffect));
             }
         }
 

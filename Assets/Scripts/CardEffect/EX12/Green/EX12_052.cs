@@ -228,6 +228,7 @@ namespace DCGO.CardEffects.EX12
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("May unsuspend 1 of your Digimon, then suspend 2 enemy Digimon, then 2 enemy Digimon/Tamer can't unsuspend until their turn ends", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

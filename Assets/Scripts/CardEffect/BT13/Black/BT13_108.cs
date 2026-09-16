@@ -210,21 +210,9 @@ namespace DCGO.CardEffects.BT13
 
                                 bool SkillCondition(ICardEffect cardEffect)
                                 {
-                                    if (cardEffect != null)
-                                    {
-                                        if (cardEffect.EffectSourceCard != null)
-                                        {
-                                            if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
-                                            {
-                                                if (cardEffect.EffectSourceCard.IsOption)
-                                                {
-                                                    return true;
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    return false;
+                                    return CardEffectCommons.IsOpponentEffect(cardEffect, card)
+                                        && ((!cardEffect.EffectSourceCard.IsDualCard && cardEffect.EffectSourceCard.IsOption)
+                                            || (cardEffect.EffectSourceCard.IsDualCard && cardEffect.IsOptionEffect));
                                 }
                             }
                         }

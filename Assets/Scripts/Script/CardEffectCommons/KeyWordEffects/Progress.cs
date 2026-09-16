@@ -81,18 +81,9 @@ public partial class CardEffectCommons
 
             bool SkillCondition(ICardEffect cardEffect)
             {
-                if (cardEffect != null)
-                {
-                    if (cardEffect.EffectSourceCard != null)
-                    {
-                        if (IsOpponentEffect(cardEffect,cardSource))
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsOpponentEffect(cardEffect, cardSource)
+                    && ((!cardEffect.EffectSourceCard.IsDualCard && cardEffect.EffectSourceCard.IsDigimon)
+                        || (cardEffect.EffectSourceCard.IsDualCard && !cardEffect.IsOptionEffect));
             }
         }
     }

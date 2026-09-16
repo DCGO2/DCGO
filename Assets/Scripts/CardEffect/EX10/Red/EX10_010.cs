@@ -152,15 +152,9 @@ namespace DCGO.CardEffects.EX10
 
                 bool SkillCondition(ICardEffect cardEffect)
                 {
-                    if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
-                    {
-                        if (cardEffect.IsDigimonEffect)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsOpponentEffect(cardEffect, card)
+                        && ((!cardEffect.EffectSourceCard.IsDualCard && cardEffect.EffectSourceCard.IsDigimon)
+                            || (cardEffect.EffectSourceCard.IsDualCard && !cardEffect.IsOptionEffect));
                 }
 
                 bool OpponentsPermanent(Permanent permanent)

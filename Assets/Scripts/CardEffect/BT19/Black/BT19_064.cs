@@ -90,17 +90,11 @@ namespace DCGO.CardEffects.BT19
 
                     bool SkillCondition(ICardEffect cardEffect)
                     {
-                        if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
-                        {
-                            if (cardEffect.IsDigimonEffect)
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
+                        return CardEffectCommons.IsOpponentEffect(cardEffect, card)
+                            && ((!cardEffect.EffectSourceCard.IsDualCard && cardEffect.EffectSourceCard.IsDigimon)
+                                || (cardEffect.EffectSourceCard.IsDualCard && !cardEffect.IsOptionEffect));
                     }
-                    
+
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
                         targetPermanent: card.PermanentOfThisCard(),
                         effectDuration: EffectDuration.UntilOpponentTurnEnd,
@@ -164,17 +158,11 @@ namespace DCGO.CardEffects.BT19
 
                     bool SkillCondition(ICardEffect cardEffect)
                     {
-                        if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
-                        {
-                            if (cardEffect.IsDigimonEffect)
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
+                        return CardEffectCommons.IsOpponentEffect(cardEffect, card)
+                            && ((!cardEffect.EffectSourceCard.IsDualCard && cardEffect.EffectSourceCard.IsDigimon)
+                                || (cardEffect.EffectSourceCard.IsDualCard && !cardEffect.IsOptionEffect));
                     }
-                    
+
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
                         targetPermanent: card.PermanentOfThisCard(),
                         effectDuration: EffectDuration.UntilOpponentTurnEnd,

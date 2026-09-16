@@ -354,20 +354,9 @@ public class EX5_074 : CEntity_Effect
 
             bool SkillCondition(ICardEffect cardEffect)
             {
-                if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
-                {
-                    if (cardEffect.IsDigimonEffect)
-                    {
-                        return true;
-                    }
-
-                    if (cardEffect.IsDigimonEffect && cardEffect.IsSecurityEffect)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsOpponentEffect(cardEffect, card)
+                    && ((!cardEffect.EffectSourceCard.IsDualCard && cardEffect.EffectSourceCard.IsDigimon)
+                        || (cardEffect.EffectSourceCard.IsDualCard && !cardEffect.IsOptionEffect));
             }
         }
 
