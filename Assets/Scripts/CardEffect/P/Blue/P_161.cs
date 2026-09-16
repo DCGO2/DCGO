@@ -149,6 +149,7 @@ namespace DCGO.CardEffects.P
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your opponent's digimon or tamers can't suspend, then place in battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

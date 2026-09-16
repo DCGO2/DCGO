@@ -18,6 +18,7 @@ namespace DCGO.CardEffects.BT24
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Elizamon]/[Owen Dreadnought] from hand or trash, then place in battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

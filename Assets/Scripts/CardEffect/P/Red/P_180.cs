@@ -102,6 +102,7 @@ namespace DCGO.CardEffects.P
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash opponent top sec & place this under a 3M digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

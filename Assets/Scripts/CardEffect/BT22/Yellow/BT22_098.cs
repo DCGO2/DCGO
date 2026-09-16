@@ -18,6 +18,7 @@ namespace DCGO.CardEffects.BT22
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Shoemon]/[Arisa Kinosaki] from hand or trash, then place in battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

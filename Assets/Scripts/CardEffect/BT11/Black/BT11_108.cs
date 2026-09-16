@@ -71,6 +71,7 @@ namespace DCGO.CardEffects.BT11
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

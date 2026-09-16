@@ -18,6 +18,7 @@ namespace DCGO.CardEffects.P
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal 3, add 1 [Royal Base] in text and 1 [Liberator] trait, bot deck the rest, place in battle area.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

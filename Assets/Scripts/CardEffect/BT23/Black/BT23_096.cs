@@ -102,6 +102,7 @@ namespace DCGO.CardEffects.BT23
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("<De-Digivolve 4> 1 digimon, then place in battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

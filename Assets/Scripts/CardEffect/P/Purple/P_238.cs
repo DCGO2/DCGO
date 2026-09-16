@@ -69,6 +69,7 @@ namespace DCGO.CardEffects.P
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, SharedEffectDescription("Main"));
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)

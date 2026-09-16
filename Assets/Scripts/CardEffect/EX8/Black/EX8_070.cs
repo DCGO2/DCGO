@@ -18,6 +18,7 @@ namespace DCGO.CardEffects.EX8
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 source, gain collision, piercing, reboot, +3000 DP, and can't be returned to hand or deck by opponent", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

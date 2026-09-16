@@ -70,6 +70,7 @@ namespace DCGO.CardEffects.BT25
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("De-Digi(2) 1 opponent digimon, then may link to 1 of your digimon on the field", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

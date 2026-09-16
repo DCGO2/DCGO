@@ -16,6 +16,7 @@ namespace DCGO.CardEffects.BT14
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -72,6 +73,7 @@ namespace DCGO.CardEffects.BT14
                                 ActivateClass activateClass1 = new ActivateClass();
                                 activateClass1.SetUpICardEffect("Memory -2", CanUseCondition2, selectedPermanent.TopCard);
                                 activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
+                                activateClass1.SetIsOptionEffect(true);
                                 activateClass1.SetEffectSourcePermanent(selectedPermanent);
 
                                 CardEffectCommons.AddEffectToPermanent(

@@ -17,6 +17,7 @@ public class BT1_109 : CEntity_Effect
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetIsOptionEffect(true);
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
@@ -44,6 +45,7 @@ public class BT1_109 : CEntity_Effect
                 Func<EffectTiming, ICardEffect> getCardEffect1 = GetCardEffect1;
                 activateClass1.SetUpICardEffect("Remove Effect", CanUseCondition1, card);
                 activateClass1.SetUpActivateClass(null, ActivateCoroutine1, -1, false, "");
+                activateClass1.SetIsOptionEffect(true);
                 activateClass1.SetIsBackgroundProcess(true);
                 CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: null, timing: EffectTiming.None, getCardEffect: getCardEffect1);
 

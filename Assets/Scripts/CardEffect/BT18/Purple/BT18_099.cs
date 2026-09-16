@@ -42,6 +42,7 @@ namespace DCGO.CardEffects.BT18
                 activateClass.SetUpICardEffect("1 opponent's Digimon will attack during their next main phase",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -99,6 +100,7 @@ namespace DCGO.CardEffects.BT18
                                 selectedPermanent.TopCard);
                             activateClassDebuff.SetUpActivateClass(CanActivateConditionDebuff, ActivateCoroutineDebuff, -1, false,
                                 EffectDescriptionDebuff());
+                            activateClassDebuff.SetIsOptionEffect(true);
                             activateClassDebuff.SetEffectSourcePermanent(selectedPermanent);
                             selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 

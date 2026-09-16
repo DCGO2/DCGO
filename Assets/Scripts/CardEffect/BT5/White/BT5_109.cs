@@ -20,6 +20,7 @@ namespace DCGO.CardEffects.BT5
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -41,12 +42,14 @@ namespace DCGO.CardEffects.BT5
                     Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
                     activateClass1.SetUpICardEffect("Digivolution Cost -6 and add self bounce", CanUseCondition1, card);
                     activateClass1.SetUpActivateClass(CanActivateCondition, ActivateCoroutine1, -1, false, EffectDescription1());
+                    activateClass1.SetIsOptionEffect(true);
                     CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: null, timing: EffectTiming.None, getCardEffect: getCardEffect);
 
                     ActivateClass activateClass2 = new ActivateClass();
                     Func<EffectTiming, ICardEffect> getCardEffect1 = GetCardEffect1;
                     activateClass2.SetUpICardEffect("Remove Effect", CanUseCondition1, card);
                     activateClass2.SetUpActivateClass(null, ActivateCoroutine2, -1, false, "");
+                    activateClass2.SetIsOptionEffect(true);
                     activateClass2.SetIsBackgroundProcess(true);
                     CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: null, timing: EffectTiming.None, getCardEffect: getCardEffect1);
 
@@ -147,6 +150,7 @@ namespace DCGO.CardEffects.BT5
                         ActivateClass activateClass3 = new ActivateClass();
                         activateClass3.SetUpICardEffect("Bottom deck the Digimon", CanUseCondition2, playedPermanent.TopCard);
                         activateClass3.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine3, -1, false, EffectDiscription2());
+                        activateClass3.SetIsOptionEffect(true);
                         activateClass3.SetEffectSourcePermanent(playedPermanent);
                         playedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect2);
 

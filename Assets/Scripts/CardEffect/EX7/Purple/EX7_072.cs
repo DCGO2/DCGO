@@ -66,6 +66,7 @@ namespace DCGO.CardEffects.EX7
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("All Opponents Digimon gain \"Delete 1 of your Digimon\"", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -109,6 +110,7 @@ namespace DCGO.CardEffects.EX7
                             ActivateClass activateClass1 = new ActivateClass();
                             activateClass1.SetUpICardEffect("Delete 1 of your Digimon", CanUseCondition1, cardSource);
                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDescription1());
+                            activateClass1.SetIsOptionEffect(true);
                             cardEffects.Add(activateClass1);
 
                             string EffectDescription1()

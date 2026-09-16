@@ -164,6 +164,7 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By placing 1 [Sunflowmon] and 1 [Lilamon] from trash as 1 [Lalamon]'s bottom sources, may digivolve into [Rosemon] without cost or requirements", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

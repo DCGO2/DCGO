@@ -149,6 +149,7 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("<De-Digivolve 1> 1 opponent's Digimon, then taunt 1 of their Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -225,6 +226,7 @@ namespace DCGO.CardEffects.BT26
                             ActivateClass activateClass1 = new ActivateClass();
                             activateClass1.SetUpICardEffect("[Start of Your Main Phase] This Digimon attacks.", CanUseCondition1, selectedTauntPermanent.TopCard);
                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDescription1());
+                            activateClass1.SetIsOptionEffect(true);
                             activateClass1.SetEffectSourcePermanent(selectedTauntPermanent);
                             selectedTauntPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 

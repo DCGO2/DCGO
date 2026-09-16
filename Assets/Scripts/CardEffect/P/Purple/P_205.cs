@@ -53,6 +53,7 @@ namespace DCGO.CardEffects.P
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 2, Trash 2.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, hash => SharedActivateCoroutine(hash, activateClass), -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

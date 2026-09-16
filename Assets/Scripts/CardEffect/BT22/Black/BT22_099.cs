@@ -36,6 +36,7 @@ namespace DCGO.CardEffects.BT22
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal top 3, add 1 [CS] card to hand, bottom deck the rest", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

@@ -18,6 +18,7 @@ public class BT3_103 : CEntity_Effect
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetIsOptionEffect(true);
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
@@ -39,12 +40,14 @@ public class BT3_103 : CEntity_Effect
                 Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
                 activateClass1.SetUpICardEffect("Digivolution Cost -5", CanUseCondition1, card);
                 activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, true, EffectDiscription1());
+                activateClass1.SetIsOptionEffect(true);
                 CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: null, timing: EffectTiming.None, getCardEffect: getCardEffect);
 
                 ActivateClass activateClass2 = new ActivateClass();
                 Func<EffectTiming, ICardEffect> getCardEffect1 = GetCardEffect1;
                 activateClass2.SetUpICardEffect("Remove Effect", CanUseCondition1, card);
                 activateClass2.SetUpActivateClass(null, ActivateCoroutine2, -1, false, "");
+                activateClass2.SetIsOptionEffect(true);
                 activateClass2.SetIsBackgroundProcess(true);
                 CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: null, timing: EffectTiming.None, getCardEffect: getCardEffect1);
 

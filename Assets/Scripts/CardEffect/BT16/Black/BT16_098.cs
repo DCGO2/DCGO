@@ -16,6 +16,7 @@ namespace DCGO.CardEffects.BT16
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete all opponent's digimon with lowest play cost", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

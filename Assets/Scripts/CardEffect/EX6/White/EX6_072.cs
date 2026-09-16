@@ -50,6 +50,7 @@ namespace DCGO.CardEffects.EX6
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("DNA Digivolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription() => "[Main] 1 of your level 6 Digimon and 1 card in the hand may DNA digivolve into a level 7 Digimon card in the hand.";

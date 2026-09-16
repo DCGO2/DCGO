@@ -37,6 +37,7 @@ namespace DCGO.CardEffects.BT21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place all sources from 1 [Xros Heart] under a tamer", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
