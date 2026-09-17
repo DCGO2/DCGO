@@ -14,10 +14,10 @@ namespace DCGO.CardEffects.EX13
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.IsLevel4 && targetPermanent.TopCard.HasCSTraits;
+                    => targetPermanent.TopCard.HasCSTraits;
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                    permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 4));
             }
             #endregion
 
@@ -87,7 +87,8 @@ namespace DCGO.CardEffects.EX13
                 SharedEffectName,
                 SharedActivateCoroutine,
                 SharedEffectDescription,
-                optional: true,
+                optional: false,
+                isSkippable: true,
                 additionalActivateCondition: SharedAdditionalActivateCondition,
                 maxCountPerTurn: 1,
                 hashValue: "EX13_022_OP_WD_WA",
