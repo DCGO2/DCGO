@@ -13,10 +13,13 @@ namespace DCGO.CardEffects.EX13
             #region Start of Your Main Phase
             if (timing == EffectTiming.OnStartMainPhase)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
+                cardEffects.Add(CardEffectFactory.StartOfYourMainPhaseClass(
+                    card,
+                    "Memory +1",
+                    ActivateCoroutine,
+                    EffectDescription(),
+                    additionalActivateCondition: AdditionalActivateCondition,
+                    optional: false));
 
                 string EffectDescription()
                     => "[Start of Your Main Phase] If you have a Digimon with [Veemon] or [Veedramon] in its name, gain 1 memory.";
@@ -25,16 +28,11 @@ namespace DCGO.CardEffects.EX13
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && (permanent.TopCard.ContainsCardName("Veemon") || permanent.TopCard.ContainsCardName("Veedramon"));
 
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.IsOwnerTurn(card);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && card.Owner.CanAddMemory(activateClass)
+                bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+                    => card.Owner.CanAddMemory(activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsVeemonOrVeedramonDigimon);
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
                 {
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
@@ -104,14 +102,14 @@ namespace DCGO.CardEffects.EX13
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                permanent,
-                                IsVeedramonNameDigimonCard,
+                                targetPermanent: permanent,
+                                cardCondition: IsVeedramonNameDigimonCard,
                                 payCost: true,
                                 reduceCostTuple: (2, null),
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,
                                 isHand: true,
-                                activateClass,
+                                activateClass: activateClass,
                                 successProcess: null));
                         }
                     }
