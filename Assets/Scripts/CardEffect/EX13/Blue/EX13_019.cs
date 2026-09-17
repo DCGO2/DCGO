@@ -15,10 +15,10 @@ namespace DCGO.CardEffects.EX13
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.IsLevel3 && targetPermanent.TopCard.HasCSTraits;
+                    => targetPermanent.TopCard.HasCSTraits;
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                    permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 3));
             }
             #endregion
 
