@@ -710,19 +710,25 @@ public class CardSource : MonoBehaviour
             {
                 if (Owner.CanReduceCost(null, this))
                 {
-                    //AI
-                    if (!(!Owner.isYou && GManager.instance.IsAI))
+                    SelectAssemblyClass selectAssemblyClass = GManager.instance.GetComponent<SelectAssemblyClass>();
+
+                    if (checkAvailability)
                     {
-                        if (checkAvailability)
+                        //AI
+                        if (!(!Owner.isYou && GManager.instance.IsAI))
                         {
-                            return 0;
+                            // Assembly's discount stacks additively with whatever cost was already computed
+                            // (e.g. a foreign ability's own reduced/fixed cost) - it doesn't replace it. Only
+                            // apply it here when the player genuinely has valid material available right now;
+                            // otherwise leave Cost untouched so the real (possibly foreign-reduced) cost is used.
+                            if (selectAssemblyClass != null && selectAssemblyClass.CanFulfillConditions(this))
+                            {
+                                Cost -= assemblyCondition.reduceCost;
+                            }
                         }
                     }
-
-                    if (!checkAvailability)
+                    else
                     {
-                        SelectAssemblyClass selectAssemblyClass = GManager.instance.GetComponent<SelectAssemblyClass>();
-
                         if (selectAssemblyClass != null)
                         {
                             if (selectAssemblyClass.playCard == this)
