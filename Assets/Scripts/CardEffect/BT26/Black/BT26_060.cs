@@ -57,13 +57,10 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Succession
-            if (timing == EffectTiming.None)
-            {
-                bool CardCondition(CardSource cardSource)
-                    => cardSource.HasLevel && cardSource.Level == 6 && cardSource.ContainsCardName("Chronomon");
+            bool SuccessionCondition(CardSource cardSource)
+                    => cardSource.IsLevel6 && cardSource.ContainsCardName("Chronomon");
 
-                cardEffects.Add(CardEffectFactory.SuccessionSelfEffect(isInheritedEffect: false, card: card, condition: null, cardCondition: CardCondition));
-            }
+            CardEffectFactory.SuccessionSelfEffect(ref cardEffects, timing, card: card, condition: null, cardCondition: SuccessionCondition);
             #endregion
 
             #region Shared On Play / When Digivolving

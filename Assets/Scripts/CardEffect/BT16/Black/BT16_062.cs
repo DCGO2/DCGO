@@ -253,13 +253,10 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region All Turns
-            if (timing == EffectTiming.None)
-            {
-                bool CopyCardCondition(CardSource cardSource) => cardSource.ContainsCardName("Gammamon");
+            bool CopyCardCondition(CardSource cardSource) => cardSource.ContainsCardName("Gammamon");
 
-                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(card, cardCondition: CopyCardCondition));
-                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(card, isInheritedEffect: true, cardCondition: CopyCardCondition));
-            }
+            CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, cardCondition: CopyCardCondition);
+            CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, isInheritedEffect: true, cardCondition: CopyCardCondition);
             #endregion
 
             return cardEffects;

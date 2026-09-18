@@ -510,53 +510,52 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region Copy [All Turns] effects of level 6 [Bagra Army] in digivolution cards
-            if (timing == EffectTiming.None)
+            bool CopyCardCondition(CardSource cardSource) =>
+                !cardSource.IsFlipped &&
+                cardSource.HasBagraArmyTraits &&
+                cardSource.HasLevel &&
+                cardSource.IsLevel6;
+
+            bool CopyEffectCondition(ICardEffect cardEffect)
             {
-                bool CopyCardCondition(CardSource cardSource) =>
-                    !cardSource.IsFlipped &&
-                    cardSource.HasBagraArmyTraits &&
-                    cardSource.HasLevel &&
-                    cardSource.IsLevel6;
-
-                bool CopyEffectCondition(ICardEffect cardEffect)
+                if (cardEffect == null)
                 {
-                    if (cardEffect == null)
-                    {
-                        return false;
-                    }
-
-                    string effectName = cardEffect.EffectName ?? "Unknown Effect";
-
-                    var permanent = card.PermanentOfThisCard();
-                    if (permanent == null)
-                    {
-                        return false;
-                    }
-
-                    if (permanent.cardSources == null || !permanent.cardSources.Contains(cardEffect.OriginalEffectSourceCard))
-                    {
-                        return false;
-                    }
-
-                    if (cardEffect.IsSecurityEffect)
-                    {
-                        return false;
-                    }
-
-                    string description = cardEffect.EffectDiscription ?? "";
-                    if (!description.StartsWith("[All Turns]"))
-                    {
-                        return false;
-                    }
-
-                    return true;
+                    return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(
-                    card,
-                    cardCondition: CopyCardCondition,
-                    effectCondition: CopyEffectCondition));
+                string effectName = cardEffect.EffectName ?? "Unknown Effect";
+
+                var permanent = card.PermanentOfThisCard();
+                if (permanent == null)
+                {
+                    return false;
+                }
+
+                if (permanent.cardSources == null || !permanent.cardSources.Contains(cardEffect.OriginalEffectSourceCard))
+                {
+                    return false;
+                }
+
+                if (cardEffect.IsSecurityEffect)
+                {
+                    return false;
+                }
+
+                string description = cardEffect.EffectDiscription ?? "";
+                if (!description.StartsWith("[All Turns]"))
+                {
+                    return false;
+                }
+
+                return true;
             }
+
+            CardEffectFactory.CopyDigivolutionCardEffects(
+                ref cardEffects,
+                timing,
+                card,
+                cardCondition: CopyCardCondition,
+                effectCondition: CopyEffectCondition);
             #endregion
 
             return cardEffects;
