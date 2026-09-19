@@ -1,22 +1,24 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public partial class CardEffectFactory
 {    
-    #region Trigger effect of [Succession] on oneself
-    public static ICardEffect SuccessionSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, Func<CardSource, bool> cardCondition, bool isLinkedEffect = false)
+    public static void SuccessionSelfEffect(ref List<ICardEffect> cardEffects, EffectTiming timing, CardSource card, Func<bool> condition, Func<CardSource, bool> cardCondition, bool isInheritedEffect = false, bool isLinkedEffect = false)
     {
         bool CanUseCondition(Hashtable hashtable)
         {
             return condition == null || condition();
         }
 
-        return CopyDigivolutionCardEffects(card,
+        CopyDigivolutionCardEffects(
+                ref cardEffects, 
+                timing, 
+                card,
                 isInheritedEffect,
                 isLinkedEffect,
                 canUseCondition: CanUseCondition,
                 cardCondition: cardCondition,
                 isSuccession: true);
     }
-    #endregion
 }

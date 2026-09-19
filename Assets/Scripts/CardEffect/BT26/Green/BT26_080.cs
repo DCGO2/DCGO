@@ -31,12 +31,9 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Succession
-            if (timing == EffectTiming.None)
-            {
-                bool CardCondition(CardSource cardSource) => cardSource.EqualsCardName("Bacchusmon");
+            bool SuccessionCondition(CardSource cardSource) => cardSource.EqualsCardName("Bacchusmon");
 
-                cardEffects.Add(CardEffectFactory.SuccessionSelfEffect(isInheritedEffect: false, card: card, condition: null, cardCondition: CardCondition));
-            }
+            CardEffectFactory.SuccessionSelfEffect(ref cardEffects, timing, card: card, condition: null, cardCondition: SuccessionCondition);
             #endregion
 
             #region When Digivolving

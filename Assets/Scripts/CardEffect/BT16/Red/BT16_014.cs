@@ -34,12 +34,9 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region All Turns Copy effects of Goldramon in digivolution cards
-            if (timing == EffectTiming.None)
-            {
-                bool CopyCardCondition(CardSource cardSource) => cardSource.EqualsCardName("Goldramon");
+            bool CopyCardCondition(CardSource cardSource) => cardSource.EqualsCardName("Goldramon");
 
-                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(card, cardCondition: CopyCardCondition));
-            }
+            CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, cardCondition: CopyCardCondition);
             #endregion
 
             #region When Digivolving || When Attacking
