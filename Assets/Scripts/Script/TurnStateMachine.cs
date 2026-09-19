@@ -1,4 +1,4 @@
-﻿using Photon.Pun;
+using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using Photon.Realtime;
 using System;
@@ -55,19 +55,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         {
             ContinuousController.instance.isRandomMatch = true;
 
-            if (!PhotonNetwork.IsConnected)
+            if (!PhotonNetwork.OfflineMode)
             {
-                yield return ContinuousController.instance.StartCoroutine(PhotonUtility.ConnectToMasterServerCoroutine());
+                if (PhotonNetwork.IsConnected)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(PhotonUtility.DisconnectCoroutine());
+                }
+
+                PhotonNetwork.OfflineMode = true;
             }
-
-            yield return new WaitWhile(() => !PhotonNetwork.IsConnectedAndReady);
-
-            if (!PhotonNetwork.InLobby)
-            {
-                PhotonNetwork.JoinLobby();
-            }
-
-            yield return new WaitWhile(() => !PhotonNetwork.InLobby);
 
             if (!PhotonNetwork.InRoom)
             {
@@ -3260,8 +3256,16 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         {
             localPlayerID = 1;
         }
-
-        photonView.RPC("Surrender", RpcTarget.All, localPlayerID);
+        try
+        {
+            
+            photonView.RPC("Surrender", RpcTarget.All, localPlayerID);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error sending surrender RPC: {e.Message}");
+            Surrender(localPlayerID);
+        }
     }
 
     [PunRPC]
