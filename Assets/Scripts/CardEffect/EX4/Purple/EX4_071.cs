@@ -18,6 +18,7 @@ namespace DCGO.CardEffects.EX4
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -123,6 +124,7 @@ namespace DCGO.CardEffects.EX4
                                     ActivateClass activateClass1 = new ActivateClass();
                                     activateClass1.SetUpICardEffect("Play 1 [Ravemon] from trash", CanUseCondition1, card);
                                     activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, 1, false, "");
+                                    activateClass1.SetIsOptionEffect(true);
                                     activateClass1.SetHashString("EX4_071_EoOT");
                                     CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilOpponentTurnEnd, card: card, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
 

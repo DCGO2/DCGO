@@ -83,6 +83,7 @@ namespace DCGO.CardEffects.BT18
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash your 1 security and DP -6000", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

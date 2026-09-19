@@ -13,6 +13,7 @@ public class EX5_069 : CEntity_Effect
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("By Trashing 1 card, delete level 6 or lower", CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetIsOptionEffect(true);
             cardEffects.Add(activateClass);
 
             string EffectDiscription()

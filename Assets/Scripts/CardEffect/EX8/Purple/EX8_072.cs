@@ -91,6 +91,7 @@ namespace DCGO.CardEffects.EX8
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Opponent trashes 1 card, then delete 1 Digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

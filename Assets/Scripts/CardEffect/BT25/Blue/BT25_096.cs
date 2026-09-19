@@ -164,6 +164,7 @@ namespace DCGO.CardEffects.BT25
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By placing 1 [Gaogamon] and 1 [MachGaogamon] from trash as 1 [Gaomon]'s bottom sources, may digivolve into [MirageGaogamon] without cost or requirements", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

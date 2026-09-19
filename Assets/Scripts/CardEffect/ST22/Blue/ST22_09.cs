@@ -138,6 +138,7 @@ namespace DCGO.CardEffects.ST22
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may link this to 1 digimon. Then, 1 opponent digimon or tamers cant suspend until their turn ends", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

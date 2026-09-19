@@ -52,6 +52,7 @@ namespace DCGO.CardEffects.EX9
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 1, then place in battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

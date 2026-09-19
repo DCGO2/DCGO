@@ -72,6 +72,7 @@ namespace DCGO.CardEffects.EX12
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Replace your bottom sec with this face-up card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

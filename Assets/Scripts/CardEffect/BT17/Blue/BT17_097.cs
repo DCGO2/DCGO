@@ -19,6 +19,7 @@ namespace DCGO.CardEffects.BT17
                 activateClass.SetUpICardEffect("Digivolve into level 5 or higher [Free] trait Digimon",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

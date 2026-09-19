@@ -17,6 +17,7 @@ public class BT1_090 : CEntity_Effect
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetIsOptionEffect(true);
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
@@ -35,6 +36,7 @@ public class BT1_090 : CEntity_Effect
                 ActivateClass activateClass1 = new ActivateClass();
                 activateClass1.SetUpICardEffect("Memory -2", CanUseCondition1, card);
                 activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
+                activateClass1.SetIsOptionEffect(true);
                 CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
 
                 string EffectDiscription1()

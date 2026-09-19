@@ -20,6 +20,7 @@ namespace DCGO.CardEffects.BT17
                 activateClass.SetUpICardEffect($"Play 1 [Agumon] or [Gabumon] from your hand or trash",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

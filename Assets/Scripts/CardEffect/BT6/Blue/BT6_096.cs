@@ -16,6 +16,7 @@ public class BT6_096 : CEntity_Effect
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetIsOptionEffect(true);
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
@@ -69,6 +70,7 @@ public class BT6_096 : CEntity_Effect
                             ActivateClass activateClass1 = new ActivateClass();
                             activateClass1.SetUpICardEffect("Return 1 level 3 Digimon to hand", CanUseCondition1, selectedPermanent.TopCard);
                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
+                            activateClass1.SetIsOptionEffect(true);
                             activateClass1.SetEffectSourcePermanent(selectedPermanent);
                             selectedPermanent.UntilEachTurnEndEffects.Add(GetCardEffect);
 

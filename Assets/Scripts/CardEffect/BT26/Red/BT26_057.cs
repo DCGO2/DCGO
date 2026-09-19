@@ -225,6 +225,7 @@ namespace DCGO.CardEffects.BT26
                             ActivateClass activateClass1 = new ActivateClass();
                             activateClass1.SetUpICardEffect("[Start of Your Main Phase] This Digimon attacks.", CanUseCondition1, selectedTauntPermanent.TopCard);
                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDescription1());
+                            activateClass1.SetIsOptionEffect(true);
                             activateClass1.SetEffectSourcePermanent(selectedTauntPermanent);
                             selectedTauntPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 

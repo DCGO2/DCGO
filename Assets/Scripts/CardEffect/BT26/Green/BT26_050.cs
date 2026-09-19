@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.BT26
                 activateClass.SetUpICardEffect("May suspend 2 Digimon or Tamers, then 2 opponent Digimon or Tamers can't unsuspend until their turn ends", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
-
+                
                 string EffectDescription() => "You may suspend 2 Digimon or Tamers. Then, 2 of your opponent's Digimon or Tamers can't unsuspend until their turn ends.";
 
                 bool CanUseCondition(Hashtable hashtable)

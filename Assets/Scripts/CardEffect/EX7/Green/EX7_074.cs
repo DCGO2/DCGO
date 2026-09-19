@@ -46,6 +46,7 @@ namespace DCGO.CardEffects.EX7
                 activateClass.SetUpICardEffect("Reveal top 3, Add 1 with [LIBERATOR] trait. Then digivolve 1 of your Digimon",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

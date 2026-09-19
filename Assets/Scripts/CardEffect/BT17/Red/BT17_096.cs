@@ -19,6 +19,7 @@ namespace DCGO.CardEffects.BT17
                 activateClass.SetUpICardEffect($"Play 1 [Guilmon] or [Takato Matsuki] from your hand or trash",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
