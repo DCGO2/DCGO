@@ -1,0 +1,165 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+// Gryphonmon
+namespace DCGO.CardEffects.BT26
+{
+    public class BT26_046 : CEntity_Effect
+    {
+        public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+        {
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+            #region Alternate Digivolution Requirement
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasTSTraits;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 5));
+            }
+            #endregion
+
+            #region Reduce Play Cost
+            if (timing == EffectTiming.None)
+            {
+                bool Condition()
+                {
+                    return card.Owner.GetBattleAreaDigimons().Count(permanent => permanent.IsSuspended) + card.Owner.Enemy.GetBattleAreaDigimons().Count(permanent => permanent.IsSuspended) >= 2;
+                }
+
+                cardEffects.Add(CardEffectFactory.MandatorySelfPlayCostReduction(4, card, Condition));
+            }
+            #endregion
+
+            #region Piercing
+            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
+            {
+                cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
+            #region Vortex
+            if (timing == EffectTiming.OnEndTurn)
+            {
+                cardEffects.Add(CardEffectFactory.VortexSelfEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
+            #region Shared On Play / When Digivolving
+
+            string SharedEffectName()
+                => "Suspend 1 opponent's Digimon/Tamer, can't unsuspend, then 1 of your Digimon can't be deleted in battle";
+
+            string SharedEffectDescription(string tag)
+                => $"[{tag}] Suspend 1 of your opponent's Digimon or Tamers. 1 of their Digimon or Tamers can't unsuspend until their turn ends. Then, 1 of your Digimon can't be deleted in battle until their turn ends.";
+
+            bool CanSelectPermanentCondition(Permanent permanent)
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                    && (permanent.IsDigimon || permanent.IsTamer);
+
+            bool CanSelectProtectTargetCondition(Permanent permanent)
+                => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
+            {
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                {
+                    SelectPermanentEffect selectSuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectSuspendEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Tap,
+                        cardEffect: activateClass);
+
+                    selectSuspendEffect.SetUpCustomMessage("Select 1 Digimon or Tamer to suspend.", "The opponent is selecting 1 Digimon or Tamer to suspend.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectSuspendEffect.Activate());
+
+                    SelectPermanentEffect selectCantUnsuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectCantUnsuspendEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectCantUnsuspendEffect.SetUpCustomMessage("Select 1 Digimon or Tamer that can't unsuspend.", "The opponent is selecting 1 Digimon or Tamer that can't unsuspend.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCantUnsuspendEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspend(permanent, EffectDuration.UntilOpponentTurnEnd, activateClass, null, "Can't unsuspend"));
+                    }
+                }
+
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectProtectTargetCondition))
+                {
+                    SelectPermanentEffect selectProtectEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectProtectEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectProtectTargetCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectProtectEffect.SetUpCustomMessage("Select 1 Digimon that can't be deleted in battle.", "The opponent is selecting 1 Digimon that can't be deleted in battle.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectProtectEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        bool CanNotBeDestroyedByBattleCondition(Permanent permanent1, Permanent attackingPermanent, Permanent defendingPermanent, CardSource defendingCard)
+                            => permanent1 == attackingPermanent || permanent1 == defendingPermanent;
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotBeDeletedByBattle(
+                            targetPermanent: permanent,
+                            canNotBeDestroyedByBattleCondition: CanNotBeDestroyedByBattleCondition,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass,
+                            effectName: "Can't be deleted in battle"));
+                    }
+                }
+            }
+
+            #endregion
+
+            CardEffectFactory.ActivateClassesForSharedEffects(
+                ref cardEffects, timing, card,
+                SharedEffectName(),
+                SharedActivateCoroutine,
+                SharedEffectDescription,
+                optional: false,
+                onPlay: true,
+                whenDigivolving: true);
+
+            return cardEffects;
+        }
+    }
+}

@@ -10,7 +10,7 @@ namespace DCGO.Tools.Repair{
         static void FixDigiEggPlayCost()
         {
             List<CEntity_Base> List = GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/");
-            List = List.Filter(x => x.cardKind == CardKind.DigiEgg).Filter(x => x.PlayCost == 0);
+            List = List.Filter(x => x.cardKind.Contains(CardKind.DigiEgg)).Filter(x => x.PlayCost == 0);
 
             foreach (CEntity_Base card in List)
             {

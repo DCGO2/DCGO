@@ -1,0 +1,628 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Photon.Pun;
+using System;
+using System.Linq;
+using UnityEngine.UI;
+
+public class AttackProcess : MonoBehaviourPunCallbacks
+{
+    public Permanent AttackingPermanent { get; private set; } = null;
+    public Permanent DefendingPermanent { get; private set; } = null;
+    public int AttackCount { get; set; } = 0;
+    public bool IsAttacking { get; set; } = false;
+    public bool HasDefender { get; set; } = false;
+    public bool IsBlocking { get; set; } = false;
+    public CardSource SecurityDigimon { get; set; } = null;
+    public bool DoSecurityCheck { get; set; } = false;
+    public bool IsEndAttack { get; set; } = false;
+
+    public Hashtable EffectHashtable { get; set; } = null;
+
+    public Hashtable CounterEffectHashtable { get; set; } = null;
+    public AttackState State { get; set; } = AttackState.None;
+    public enum AttackState
+    {
+        None,
+        Counter,
+        Block,
+        Battle,
+        End,
+        CleanUp
+    }
+
+    public bool ActiveAttack()
+    {
+        return State != AttackState.None;
+    }
+
+    public IEnumerator ProcessNextState()
+    {
+        switch (State)
+        {
+            case AttackState.Counter:
+                yield return ContinuousController.instance.StartCoroutine(CounterTiming());
+                break;
+            case AttackState.Block:
+                yield return ContinuousController.instance.StartCoroutine(BlockTiming());
+                break;
+            case AttackState.Battle:
+                yield return ContinuousController.instance.StartCoroutine(DetermineAttackOutcome());
+                break;
+            case AttackState.End:
+                yield return ContinuousController.instance.StartCoroutine(EndAttack());
+                break;
+            case AttackState.CleanUp:
+                yield return ContinuousController.instance.StartCoroutine(Cleanup());
+                break;
+            default:
+                yield break;
+        }
+    }
+
+    void SetAttackerDefender(Permanent attackingPermanent, Permanent defendingPermanent)
+    {
+        AttackingPermanent = attackingPermanent;
+        DefendingPermanent = defendingPermanent;
+
+        if (defendingPermanent != null)
+            HasDefender = true;
+    }
+
+    public IEnumerator Attack(Permanent attackingPermanent, Permanent defendingPermanent, ICardEffect attackEffect, bool withoutTap = false, Func<IEnumerator> beforeOnAttackCoroutine = null)
+    {
+        if (IsAttacking)
+        {
+            if (beforeOnAttackCoroutine != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(beforeOnAttackCoroutine());
+            }
+
+            yield break;
+        }
+
+        AttackingPermanent = null;
+        DefendingPermanent = null;
+
+        DoSecurityCheck = false;
+        IsBlocking = false;
+        SecurityDigimon = null;
+        IsAttacking = false;
+        HasDefender = false;
+        IsEndAttack = false;
+        CounterEffectHashtable = null;
+
+        SetAttackerDefender(attackingPermanent, defendingPermanent);
+
+        EffectHashtable = CardEffectCommons.OnAttackCheckHashtableOfPermanent(AttackingPermanent, attackEffect);
+        CounterEffectHashtable = CardEffectCommons.OnAttackCheckHashtableOfPermanent(new Permanent(AttackingPermanent.cardSources), attackEffect);
+
+        IsAttacking = true;
+
+        GManager.instance.turnStateMachine.IsSelecting = true;
+
+        // force to end attack
+        if (IsEndAttack)
+        {
+            State = AttackState.End;
+
+            yield break;
+        }
+
+        #region Attack Process
+        if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(AttackingPermanent))
+        {
+            AttackCount++;
+
+            GManager.instance.turnStateMachine.IsSelecting = true;
+
+            if (DefendingPermanent != null)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
+                {
+                    DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
+                    DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+                    GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.securityObject.securityBreakGlass.gameObject.SetActive(false);
+                }
+            }
+
+            else
+            {
+                if (GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.SecurityCards.Count >= 1)
+                {
+                    GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.securityObject.securityBreakGlass.ShowBlueMatarial();
+                }
+            }
+
+            AttackingPermanent.ShowingPermanentCard.SetOrangeOutline();
+            AttackingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+
+            // add log
+            string log = $"\nAttack:\n{AttackingPermanent.TopCard.BaseENGCardNameFromEntity}({AttackingPermanent.TopCard.CardID})";
+
+            if (DefendingPermanent != null)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
+                    log += $"\n«\n{DefendingPermanent.TopCard.BaseENGCardNameFromEntity}({DefendingPermanent.TopCard.CardID})\n";
+            }
+
+            else
+            {
+                log += $"\n«\nSecurity\n";
+            }
+
+            PlayLog.OnAddLog?.Invoke(log);
+
+            // suspend
+            if (!withoutTap)
+            {
+                Hashtable attackerTapHashtable = new Hashtable()
+                {
+                    {"IsAttack", true}
+                };
+                yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(
+                    new List<Permanent>() { AttackingPermanent },
+                    attackerTapHashtable).Tap());
+            }
+
+            // target arrow
+            if (DefendingPermanent == null)
+            {
+                yield return GManager.instance.OnTargetArrow(
+                        AttackingPermanent.PermanentFrame.GetLocalCanvasPosition() + AttackingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
+                        GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.SecurityAttackLocalCanvasPosition + GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.playerUIObjectParent.localPosition,
+                        null,
+                        null);
+            }
+            else
+            {
+                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
+                {
+                    yield return GManager.instance.OnTargetArrow(
+                        AttackingPermanent.PermanentFrame.GetLocalCanvasPosition() + AttackingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
+                        DefendingPermanent.PermanentFrame.GetLocalCanvasPosition() + DefendingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
+                        null,
+                        null);
+                }
+            }
+
+            // callback that is processed before [On Attack]
+            if (beforeOnAttackCoroutine != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(beforeOnAttackCoroutine());
+            }
+
+            // trigger [On Attack] effect
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+                EffectHashtable,
+                EffectTiming.OnAllyAttack));
+
+            GManager.instance.turnStateMachine.IsSelecting = true;
+
+            if (AttackingPermanent.TopCard != null)
+            {
+                AttackingPermanent.ShowingPermanentCard.SetOrangeOutline();
+                AttackingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+            }
+
+            if (DefendingPermanent != null)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
+                {
+                    DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
+                    DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+                }
+            }
+
+            GManager.instance.turnStateMachine.IsSelecting = true;
+
+            // force to end attack
+            if (IsEndAttack)
+            {
+                State = AttackState.End;
+
+                yield break;
+            }
+
+            if (AttackingPermanent.TopCard != null)
+            {
+                AttackingPermanent.ShowingPermanentCard.SetOrangeOutline();
+                AttackingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+            }
+
+            if (DefendingPermanent != null)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
+                {
+                    DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
+                    DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+                }
+            }
+            State = AttackState.Counter;
+        }    
+        else
+        {
+            if (beforeOnAttackCoroutine != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(beforeOnAttackCoroutine());
+            }
+            State = AttackState.End;
+        }
+        #endregion
+    }
+
+    IEnumerator CounterTiming()
+    {
+        // force to end attack
+        if (IsEndAttack)
+        {
+            State = AttackState.End;
+
+            yield break;
+        }
+        
+        // trigger effects when counter timing (except [Counter] effects)
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
+            CounterEffectHashtable,
+            EffectTiming.OnCounterTiming,
+            cardEffect => !cardEffect.IsCounterEffect));
+
+        // activate cutin effects
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(true, null));
+
+        GManager.instance.turnStateMachine.IsSelecting = true;
+
+        // force to end attack
+        if (IsEndAttack)
+        {
+            State = AttackState.End;
+
+            yield break;
+        }
+
+        // trigger effects when counter timing ([Counter] effects)
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
+            CounterEffectHashtable,
+            EffectTiming.OnCounterTiming,
+            cardEffect => cardEffect.IsCounterEffect));
+
+        static bool HasCounterEffect(List<SkillInfo> skillInfos, SkillInfo skillInfo)
+        {
+            return skillInfos.Count((skillInfo1) => skillInfo1.CardEffect.IsCounterEffect) >= 1;
+        }
+
+        // activate cutin effects
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(true, HasCounterEffect));
+
+        GManager.instance.turnStateMachine.IsSelecting = true;
+
+        // force to end attack
+        if (IsEndAttack || AttackingPermanent.TopCard == null || !AttackingPermanent.IsDigimon)
+        {
+            State = AttackState.End;
+
+            yield break;
+        }
+
+        AttackingPermanent.ShowingPermanentCard.SetOrangeOutline();
+        AttackingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+
+        if (DefendingPermanent != null)
+        {
+            if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
+            {
+                DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
+                DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+            }
+        }
+        State = AttackState.Block;
+    }
+
+    IEnumerator BlockTiming()
+    {
+        // force to end attack
+        if (IsEndAttack || AttackingPermanent.TopCard == null || !AttackingPermanent.IsDigimon)
+        {
+            State = AttackState.End;
+
+            yield break;
+        }
+        
+        #region select blocker
+        bool CanSelectBlockerCondition(Permanent permanent)
+        {
+            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, AttackingPermanent.TopCard)
+                && permanent != DefendingPermanent
+                && permanent.HasBlocker 
+                && permanent.CanBlock(AttackingPermanent);
+        }
+
+        if (AttackingPermanent.TopCard.Owner.Enemy.GetBattleAreaDigimons().Count(CanSelectBlockerCondition) >= 1)
+        {
+            int maxCount = 1;
+
+            Permanent selectedPermanent = null;
+
+            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+            selectPermanentEffect.SetUp(
+                selectPlayer: AttackingPermanent.TopCard.Owner.Enemy,
+                canTargetCondition: CanSelectBlockerCondition,
+                canTargetCondition_ByPreSelecetedList: null,
+                canEndSelectCondition: null,
+                maxCount: maxCount,
+                canNoSelect: !AttackingPermanent.HasCollision,
+                canEndNotMax: false,
+                selectPermanentCoroutine: SelectPermanentCoroutine,
+                afterSelectPermanentCoroutine: null,
+                mode: SelectPermanentEffect.Mode.Custom,
+                cardEffect: null);
+
+            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will block.", "The opponent is selecting 1 Digimon that will block.");
+            
+            if(!IsBlocking)
+                selectPermanentEffect.SetUpCustomBackButtonMessage("Not Block");
+
+            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+            {
+                selectedPermanent = permanent;
+
+                yield return null;
+            }
+
+            if (selectedPermanent != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(SwitchDefender(null, true, selectedPermanent));
+            }
+        }
+        #endregion
+
+        GManager.instance.turnStateMachine.IsSelecting = true;
+
+        //end attack
+        if (IsEndAttack || AttackingPermanent.TopCard == null || !AttackingPermanent.IsDigimon)
+        {
+            State = AttackState.End;
+
+            yield break;
+        }
+
+        AttackingPermanent.ShowingPermanentCard.SetOrangeOutline();
+        AttackingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+
+        if (DefendingPermanent != null)
+        {
+            if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
+            {
+                DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
+                DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+            }
+        }
+        State = AttackState.Battle;
+    }
+
+    IEnumerator DetermineAttackOutcome()
+    {
+        //end attack
+        if (IsEndAttack || AttackingPermanent.TopCard == null || !AttackingPermanent.IsDigimon)
+        {
+            State = AttackState.End;
+
+            yield break;
+        }
+
+        #region there is no Defending Permanent
+        if (DefendingPermanent == null)
+        {
+            if (AttackingPermanent.Strike >= 1)
+            {
+                //if there is no security, end the game
+                if (AttackingPermanent.TopCard.Owner.Enemy.SecurityCards.Count == 0)
+                {
+                    GManager.instance.turnStateMachine.EndGame(AttackingPermanent.TopCard.Owner, false);
+                    yield break;
+                }
+            }
+
+            DoSecurityCheck = true;
+        }
+        #endregion
+
+        #region there is Defending Permanent
+        else if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent) && CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(AttackingPermanent))
+        {
+            DefendingPermanent.TopCard.Owner.securityObject.securityBreakGlass.gameObject.SetActive(false);
+
+            DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
+            DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+
+            // battle
+            IBattle battle = new IBattle(AttackingPermanent: AttackingPermanent, DefendingPermanent: DefendingPermanent, null);
+            yield return ContinuousController.instance.StartCoroutine(battle.Battle());
+            
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.TriggeredSkillProcess(true, null));
+            GManager.instance.turnStateMachine.IsSelecting = true;
+        }
+        #endregion
+
+        if (AttackingPermanent.TopCard == null)
+        {
+            State = AttackState.End;
+
+            yield break;
+        }
+
+        #region do security check
+        if (DoSecurityCheck && AttackingPermanent.TopCard.Owner.Enemy.SecurityCards.Count >= 1)
+        {
+            //security check process
+            yield return ContinuousController.instance.StartCoroutine(new ISecurityCheck(
+                AttackingPermanent: AttackingPermanent,
+                player: GManager.instance.turnStateMachine.gameContext.NonTurnPlayer).SecurityCheck());
+        }
+        #endregion
+        State = AttackState.End;
+    }
+
+
+
+    #region End Attack
+    public IEnumerator EndAttack()
+    {
+        IsEndAttack = true;
+
+        // [On End Attack] effect
+        if (AttackingPermanent != null && AttackingPermanent.TopCard != null)
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(EffectHashtable, EffectTiming.OnEndAttack));
+        }
+
+        State = AttackState.CleanUp;
+    }
+
+    IEnumerator Cleanup()
+    {
+        #region reset effects which continues until the end of attack
+        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+        {
+            foreach (Permanent permanent in player.GetFieldPermanents())
+            {
+                permanent.UntilEndAttackEffects = new List<Func<EffectTiming, ICardEffect>>();
+            }
+        }
+        #endregion
+
+        GManager.instance.turnStateMachine.IsSelecting = true;
+        #endregion
+
+        GManager.instance.OffTargetArrow();
+
+        DoSecurityCheck = false;
+        IsBlocking = false;
+        SecurityDigimon = null;
+        IsAttacking = false;
+        IsEndAttack = false;
+        CounterEffectHashtable = null;
+        State = AttackState.None;
+
+        yield return null;
+    }
+
+    public IEnumerator SwitchDefender(ICardEffect cardEffect, bool isBlock, Permanent newDefendingPermanent)
+    {
+        if (AttackingPermanent == null) yield break;
+        if (AttackingPermanent.TopCard == null) yield break;
+        if (newDefendingPermanent != null && newDefendingPermanent.TopCard == null) yield break;
+        if (!AttackingPermanent.CanSwitchAttackTarget) yield break;
+
+        Permanent oldDefendingPermanent = DefendingPermanent;
+
+        DefendingPermanent = newDefendingPermanent;
+
+        IsBlocking = isBlock;
+
+        if (DefendingPermanent != null)
+        {
+            if (DefendingPermanent.ShowingPermanentCard != null)
+            {
+                DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
+                DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+            }
+        }
+
+        Hashtable hashtable = new Hashtable(){
+                {"AttackingPermanent", AttackingPermanent},
+                {"DefendingPermanent", DefendingPermanent},
+                {"CardEffect", cardEffect}
+                };
+
+        if (isBlock)
+        {
+            hashtable.Add("IsBlock", isBlock);
+        }
+
+        if (isBlock)
+        {
+            if (DefendingPermanent != null)
+            {
+                // add log
+                string log1 = $"\nBlock:\n{DefendingPermanent.TopCard.BaseENGCardNameFromEntity}({DefendingPermanent.TopCard.CardID})\n";
+
+                PlayLog.OnAddLog?.Invoke(log1);
+
+                // suspend
+                yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { DefendingPermanent }, hashtable).Tap());
+
+                // the effects when blocking
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+                    hashtable,
+                    EffectTiming.OnBlockAnyone));
+            }
+        }
+
+        if (AttackingPermanent != null)
+        {
+            if (AttackingPermanent.TopCard == null)
+            {
+                IsBlocking = false;
+                yield break;
+            }
+        }
+
+        if (DefendingPermanent != null)
+        {
+            if (DefendingPermanent.TopCard == null)
+            {
+                IsBlocking = false;
+                yield break;
+            }
+        }
+
+        if (AttackingPermanent != null)
+        {
+            // target arrow
+            for (int i = 0; i < 3; i++)
+            {
+                GManager.instance.OffTargetArrow();
+
+                yield return null;
+            }
+
+            if (DefendingPermanent != null)
+            {
+                DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
+                DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+
+                yield return GManager.instance.OnTargetArrow(
+                    AttackingPermanent.PermanentFrame.GetLocalCanvasPosition() + AttackingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
+                    DefendingPermanent.PermanentFrame.GetLocalCanvasPosition() + DefendingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
+                    null,
+                    null);
+            }
+
+            else
+            {
+                yield return GManager.instance.OnTargetArrow(
+                                    AttackingPermanent.PermanentFrame.GetLocalCanvasPosition() + AttackingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
+                                    GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.SecurityAttackLocalCanvasPosition + GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.playerUIObjectParent.localPosition,
+                                    null,
+                                    null);
+            }
+
+            AttackingPermanent.ShowingPermanentCard.SetOrangeOutline();
+            AttackingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+        }
+
+        if (newDefendingPermanent != oldDefendingPermanent)
+        {
+            // the effects when attack target switched
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+                hashtable,
+                EffectTiming.OnAttackTargetChanged));
+        }
+    }
+}
+

@@ -142,7 +142,7 @@ public class CsvLoader_CardEntity : Editor
 
                 OfficialCardListUtility.AttachCardData(cardEntity, CardDatas_JPN, CardDatas_ENG, ref evoCosts_level, ref evoCosts_memory);
 
-                if (cardEntity.cardKind == CardKind.Digimon)
+                if (cardEntity.cardKind.Contains(CardKind.Digimon))
                 {
                     if (evoCosts_level.Count >= 1)
                     {
@@ -326,7 +326,7 @@ public class CsvLoader_CardEntity : Editor
                 string folderName_SetID = $"{cardEntity.SetID}";
                 string folderName_CardColor = $"{DataBase.CardColorNameDictionary[cardEntity.cardColors[0]]}";
                 folderName_CardColor = char.ToUpper(folderName_CardColor[0]) + folderName_CardColor.Substring(1);
-                string folderName_CardKind = $"{DataBase.CardKindENNameDictionary[cardEntity.cardKind]}";
+                string folderName_CardKind = $"{DataBase.CardKindENNameDictionary[cardEntity.cardKind[0]]}";
 
                 string folderPath = $"Assets/CardBaseEntity/{folderName_SetID}/{folderName_CardColor}/{folderName_CardKind}";
 

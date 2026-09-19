@@ -13,11 +13,11 @@ public class ConvertDigiEggCardKind : MonoBehaviour
 
         foreach (CEntity_Base cEntity_Base in List)
         {
-            if (cEntity_Base.cardKind == CardKind.Digimon)
+            if (cEntity_Base.cardKind.Contains(CardKind.Digimon))
             {
                 if (cEntity_Base.Level == 2)
                 {
-                    cEntity_Base.cardKind = CardKind.DigiEgg;
+                    cEntity_Base.cardKind = new List<CardKind> { CardKind.DigiEgg };
                     EditorUtility.SetDirty(cEntity_Base);
                     AssetDatabase.SaveAssetIfDirty(cEntity_Base);
                 }

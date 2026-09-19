@@ -1908,7 +1908,7 @@ namespace Photon.Realtime
         ///
         /// 1) On server, room property ABC is set to value FOO, which triggers notifications to all the clients telling them that the property changed.
         /// 2) While that notification is in flight, a client sets the ABC property to value BAR.
-        /// 3) Client receives notification from the server and changes it�s local copy of ABC to FOO.
+        /// 3) Client receives notification from the server and changes it's local copy of ABC to FOO.
         /// 4) Server receives the set operation and changes the official value of ABC to BAR, but never notifies the client that sent the set operation that the value is now BAR.
         ///
         /// Without this option, the client that set the value to BAR never hears from the server that the official copy has been updated to BAR, and thus gets stuck with a value of FOO.

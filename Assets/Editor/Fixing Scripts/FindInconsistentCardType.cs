@@ -30,12 +30,12 @@ namespace DCGO.Tools.Repair{
             {
                 if(card.Level == 2)
                 {
-                    if(card.cardKind != CardKind.DigiEgg)
+                    if(!card.cardKind.Contains(CardKind.DigiEgg))
                         Debug.Log($"Mismatched Type (Egg): {card.CardSprite} - {card.cardColors[0]}");
                 }
                 else if (card.Level > 2)
                 {
-                    if (card.cardKind != CardKind.Digimon)
+                    if (!card.cardKind.Contains(CardKind.Digimon))
                         Debug.Log($"Mismatched Type (Digimon): {card.CardSprite} - {card.cardColors[0]}");
                 }
             }
