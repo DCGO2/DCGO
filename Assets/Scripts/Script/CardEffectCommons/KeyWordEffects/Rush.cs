@@ -14,7 +14,7 @@ public partial class CardEffectCommons
         if (activateClass == null) yield break;
         if (activateClass.EffectSourceCard == null) yield break;
 
-        CardSource card = activateClass.EffectSourceCard;
+        CardSource card = targetPermanent.TopCard;
 
         bool PermanentCondition(Permanent permanent) => permanent == targetPermanent;
 
