@@ -26,7 +26,7 @@ public partial class CardEffectCommons
         else
         {
             var costs = permanent.TopCard.Owner.GetBattleAreaPermanents()
-                 .Filter(x => (x.IsDigimon || x.IsTamer) && x.TopCard.HasPlayCost)
+                 .Filter(x => (x.IsDigimon || x.IsTamer) && x.TopCard.HasPlayCost && (condition == null || condition(permanent)))
                  .Select(x => x.TopCard.GetCostItself).ToList();
             return costs.Count >= 1 && permanent.TopCard.GetCostItself == costs.Min();
         }
