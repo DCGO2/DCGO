@@ -52,35 +52,30 @@ namespace DCGO.CardEffects.EX13
 
             IEnumerator UseOptionActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool isUsed = false;
                 bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, IsUsableHuckmonOption);
                 bool canSelectDigivolutionCards = HasUsableDigivolutionCard();
+                bool fromHand = canSelectHand;
 
-                List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
-                if (canSelectHand)
-                    selectionElements.Add(new SelectionElement<int>(message: "From hand", value: 1, spriteIndex: 0));
-                if (canSelectDigivolutionCards)
-                    selectionElements.Add(new SelectionElement<int>(message: "From digivolution cards", value: 2, spriteIndex: 0));
-                selectionElements.Add(new SelectionElement<int>(message: "Don't use an Option", value: 3, spriteIndex: 1));
-
-                GManager.instance.userSelectionManager.SetIntSelection(
-                    selectionElements: selectionElements,
-                    selectPlayer: card.Owner,
-                    selectPlayerMessage: "From which area will you use an Option?",
-                    notSelectPlayerMessage: "The opponent is choosing from which area to use an Option.");
-
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                int selectedValue = GManager.instance.userSelectionManager.SelectedIntValue;
-
-                CardSource selectedCard = null;
-
-                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                // Only ask for a location when both have a usable Option; otherwise go straight to the selection.
+                if (canSelectHand && canSelectDigivolutionCards)
                 {
-                    selectedCard = cardSource;
-                    yield return null;
+                    GManager.instance.userSelectionManager.SetBoolSelection(
+                        selectionElements: new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: "From hand", value: true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: "From digivolution cards", value: false, spriteIndex: 1),
+                        },
+                        selectPlayer: card.Owner,
+                        selectPlayerMessage: "From which area will you use an Option?",
+                        notSelectPlayerMessage: "The opponent is choosing from which area to use an Option.");
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
                 }
 
-                if (selectedValue == 1)
+                if (fromHand)
                 {
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -93,8 +88,8 @@ namespace DCGO.CardEffects.EX13
                         canNoSelect: true,
                         canEndNotMax: false,
                         isShowOpponent: true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         mode: SelectHandEffect.Mode.Custom,
                         cardEffect: activateClass);
 
@@ -102,7 +97,7 @@ namespace DCGO.CardEffects.EX13
 
                     yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                 }
-                else if (selectedValue == 2)
+                else
                 {
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -111,8 +106,8 @@ namespace DCGO.CardEffects.EX13
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         canNoSelect: () => true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         message: "Select 1 Option card to use.",
                         maxCount: 1,
                         canEndNotMax: false,
@@ -129,17 +124,20 @@ namespace DCGO.CardEffects.EX13
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                 }
 
-                if (selectedCard == null)
-                {
-                    activateClass.RemoveUse();
-                    yield break;
-                }
+                if (!isUsed) activateClass.RemoveUse();
 
-                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
-                    cardSources: new List<CardSource> { selectedCard },
-                    activateClass: activateClass,
-                    payCost: false,
-                    root: selectedValue == 1 ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.DigivolutionCards));
+                IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                {
+                    if (cardSources.Count == 0) yield break;
+
+                    isUsed = true;
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
+                        cardSources: cardSources,
+                        activateClass: activateClass,
+                        payCost: false,
+                        root: fromHand ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.DigivolutionCards));
+                }
             }
 
             CardEffectFactory.ActivateClassesForSharedEffects(
