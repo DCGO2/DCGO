@@ -54,7 +54,11 @@ namespace DCGO.CardEffects.EX13
                         || targetPermanent.TopCard.EqualsCardName("Sistermon Ciel");
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 1,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null));
             }
             #endregion
 
@@ -65,7 +69,12 @@ namespace DCGO.CardEffects.EX13
                     => targetPermanent.TopCard.HasText("Huckmon");
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 3));
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 3,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null,
+                    level: 3));
             }
             #endregion
 
@@ -77,7 +86,12 @@ namespace DCGO.CardEffects.EX13
                         || source.EqualsCardName("Sistermon Ciel");
 
                 string[] decodeStrings = { "([Sistermon Noir]/[Sistermon Ciel])", "[Sistermon Noir] or [Sistermon Ciel]" };
-                cardEffects.Add(CardEffectFactory.DecodeSelfEffect(card: card, isInheritedEffect: false, decodeStrings: decodeStrings, sourceCondition: SourceCondition, condition: null));
+                cardEffects.Add(CardEffectFactory.DecodeSelfEffect(
+                    card: card,
+                    isInheritedEffect: false,
+                    decodeStrings: decodeStrings,
+                    sourceCondition: SourceCondition,
+                    condition: null));
             }
             #endregion
 
@@ -150,7 +164,11 @@ namespace DCGO.CardEffects.EX13
                     => cardSource.HasPlayCost
                         && cardSource.GetCostItself <= 4
                         && cardSource.ContainsCardName("Sistermon")
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, root: root);
+                        && CardEffectCommons.CanPlayAsNewPermanent(
+                            cardSource: cardSource,
+                            payCost: false,
+                            cardEffect: activateClass,
+                            root: root);
 
                 bool IsOpponentDigimon(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -158,8 +176,12 @@ namespace DCGO.CardEffects.EX13
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     #region May play [Sistermon]
-                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, cardSource => CanPlaySistermon(cardSource, SelectCardEffect.Root.Hand));
-                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, cardSource => CanPlaySistermon(cardSource, SelectCardEffect.Root.Trash));
+                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(
+                        card,
+                        cardSource => CanPlaySistermon(cardSource, SelectCardEffect.Root.Hand));
+                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(
+                        card,
+                        cardSource => CanPlaySistermon(cardSource, SelectCardEffect.Root.Trash));
 
                     if (canSelectHand || canSelectTrash)
                     {
