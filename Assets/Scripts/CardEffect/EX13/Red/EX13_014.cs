@@ -17,7 +17,12 @@ namespace DCGO.CardEffects.EX13
                     => targetPermanent.TopCard.HasText("Huckmon");
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 5));
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 3,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null,
+                    level: 5));
             }
             #endregion
 
@@ -51,8 +56,10 @@ namespace DCGO.CardEffects.EX13
                 bool canSelectDigivolutionCards = HasUsableDigivolutionCard();
 
                 List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
-                if (canSelectHand) selectionElements.Add(new SelectionElement<int>(message: "From hand", value: 1, spriteIndex: 0));
-                if (canSelectDigivolutionCards) selectionElements.Add(new SelectionElement<int>(message: "From digivolution cards", value: 2, spriteIndex: 0));
+                if (canSelectHand)
+                    selectionElements.Add(new SelectionElement<int>(message: "From hand", value: 1, spriteIndex: 0));
+                if (canSelectDigivolutionCards)
+                    selectionElements.Add(new SelectionElement<int>(message: "From digivolution cards", value: 2, spriteIndex: 0));
                 selectionElements.Add(new SelectionElement<int>(message: "Don't use an Option", value: 3, spriteIndex: 1));
 
                 GManager.instance.userSelectionManager.SetIntSelection(
@@ -265,9 +272,18 @@ namespace DCGO.CardEffects.EX13
                 {
                     if (cardSource != card) return null;
 
-                    AssemblyConditionElement level5Element = new AssemblyConditionElement(assemblyCard => HasHuckmonText(assemblyCard) && assemblyCard.Level_Assembly.Contains(5), selectMessage: "1 level 5 card with [Huckmon] in its text", elementCount: 1);
-                    AssemblyConditionElement level4Element = new AssemblyConditionElement(assemblyCard => HasHuckmonText(assemblyCard) && assemblyCard.Level_Assembly.Contains(4), selectMessage: "1 level 4 card with [Huckmon] in its text", elementCount: 1);
-                    AssemblyConditionElement level3Element = new AssemblyConditionElement(assemblyCard => HasHuckmonText(assemblyCard) && assemblyCard.Level_Assembly.Contains(3), selectMessage: "1 level 3 card with [Huckmon] in its text", elementCount: 1);
+                    AssemblyConditionElement level5Element = new AssemblyConditionElement(
+                        assemblyCard => HasHuckmonText(assemblyCard) && assemblyCard.Level_Assembly.Contains(5),
+                        selectMessage: "1 level 5 card with [Huckmon] in its text",
+                        elementCount: 1);
+                    AssemblyConditionElement level4Element = new AssemblyConditionElement(
+                        assemblyCard => HasHuckmonText(assemblyCard) && assemblyCard.Level_Assembly.Contains(4),
+                        selectMessage: "1 level 4 card with [Huckmon] in its text",
+                        elementCount: 1);
+                    AssemblyConditionElement level3Element = new AssemblyConditionElement(
+                        assemblyCard => HasHuckmonText(assemblyCard) && assemblyCard.Level_Assembly.Contains(3),
+                        selectMessage: "1 level 3 card with [Huckmon] in its text",
+                        elementCount: 1);
 
                     return new AssemblyCondition(
                         elements: new List<AssemblyConditionElement>() { level5Element, level4Element, level3Element },
