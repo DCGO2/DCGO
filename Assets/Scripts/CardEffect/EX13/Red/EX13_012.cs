@@ -18,7 +18,12 @@ namespace DCGO.CardEffects.EX13
                     => targetPermanent.TopCard.HasText("Huckmon");
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 4));
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 3,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null,
+                    level: 4));
             }
             #endregion
 
@@ -41,10 +46,15 @@ namespace DCGO.CardEffects.EX13
             bool CanSelectCardCondition(CardSource cardSource, ActivateClass activateClass)
                 => cardSource.HasCardColor(CardColor.White)
                     && cardSource.HasText("Huckmon")
-                    && CardEffectCommons.CanPlayOrUse(cardSource, activateClass, fixedCost: Math.Max(0, cardSource.GetCostItself - ReduceCost));
+                    && CardEffectCommons.CanPlayOrUse(
+                        cardSource,
+                        activateClass,
+                        fixedCost: Math.Max(0, cardSource.GetCostItself - ReduceCost));
 
             bool PlayOrUseAdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionOwnersHand(card, cardSource => CanSelectCardCondition(cardSource, activateClass));
+                => CardEffectCommons.HasMatchConditionOwnersHand(
+                    card,
+                    cardSource => CanSelectCardCondition(cardSource, activateClass));
 
             IEnumerator PlayOrUseActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -86,7 +96,13 @@ namespace DCGO.CardEffects.EX13
                 #region reduce cost
                 ChangeCostClass changeCostClass = new ChangeCostClass();
                 changeCostClass.SetUpICardEffect($"Play/Use Cost -{ReduceCost}", _ => true, card);
-                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: IsSelectedCard, rootCondition: _ => true, isUpDown: () => true, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                changeCostClass.SetUpChangeCostClass(
+                    changeCostFunc: ChangeCost,
+                    cardSourceCondition: IsSelectedCard,
+                    rootCondition: _ => true,
+                    isUpDown: () => true,
+                    isCheckAvailability: () => false,
+                    isChangePayingCost: () => true);
                 Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
                 card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
 
