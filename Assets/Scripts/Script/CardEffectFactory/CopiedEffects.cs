@@ -26,10 +26,6 @@ public partial class CardEffectFactory
         bool isSuccession = false
         )
     {
-        if (CopyEffectLock) return; //No Copying if checked as a result of another copy effect
-        
-        CopyEffectLock = true; //lock further copy effects
-
         Permanent thisPermanent = card.PermanentOfThisCard();
 
         if (thisPermanent == null) return;
@@ -44,6 +40,10 @@ public partial class CardEffectFactory
                 return;
             targetSources = cardSources => cardSources;
         }
+
+        if (CopyEffectLock) return; //No Copying if checked as a result of another copy effect
+        
+        CopyEffectLock = true; //lock further copy effects
 
         List<CardSource> validSources(List<CardSource> availableSources) => availableSources.Filter(
             cardSource => cardCondition == null || cardCondition(cardSource)
