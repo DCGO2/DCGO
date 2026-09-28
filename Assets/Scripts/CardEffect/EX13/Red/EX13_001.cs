@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// Gigimon
 namespace DCGO.CardEffects
 {
     public class EX13_001 : CEntity_Effect
