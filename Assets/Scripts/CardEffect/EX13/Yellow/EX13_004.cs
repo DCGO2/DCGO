@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 // DemiMeramon
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX13
 {
     public class EX13_004 : CEntity_Effect
     {

@@ -1,8 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+// Growlmon
+namespace DCGO.CardEffects.EX13
 {
     public class EX13_010 : CEntity_Effect
     {
