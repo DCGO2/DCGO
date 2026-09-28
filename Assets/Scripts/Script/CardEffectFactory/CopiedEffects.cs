@@ -4,6 +4,10 @@ using System.Collections.Generic;
 
 public partial class CardEffectFactory
 {
+    #region Lock for Copy Effects to prevent stack overflows
+    public static bool CopyEffectLock { get; set; } = false;
+    #endregion
+
     /// <summary>
     /// Copies every effect from the digivolution cards to the effects returned for the card with the copy effect
     /// </summary>
@@ -36,6 +40,10 @@ public partial class CardEffectFactory
                 return;
             targetSources = cardSources => cardSources;
         }
+
+        if (CopyEffectLock) return; //No Copying if checked as a result of another copy effect
+        
+        CopyEffectLock = true; //lock further copy effects
 
         List<CardSource> validSources(List<CardSource> availableSources) => availableSources.Filter(
             cardSource => cardCondition == null || cardCondition(cardSource)
@@ -150,15 +158,14 @@ public partial class CardEffectFactory
                         true,
                         copiedActivateClass));
                 }
-                else if (!isSuccession || cardEffect.EffectName != "Succession") // Succession can never copy another succession skill
+                else
                 {
                     cardEffects.Add(cardEffect);
                 }
             }
-            // If succession, break loop after first valid card to only copy topmost.
-            // break instead of return in case we ever need to perform more actions before returning
-            if (isSuccession) break; 
         }
+
+        CopyEffectLock = false; //release lock
     }
 
     private static string GenerateHashString(CardSource card, CardSource cardSource, string source, bool isInherited, bool isLinked)
