@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System;
 
 // Ceresmon
@@ -46,7 +45,6 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region Shared OP / WD
-
             string SharedEffectName = "You may suspend 2 digimon. Your suspended [Vegetation]/[TS] Digimon are immune to opponent's Digimon Effects until end of opponents turn";
 
             string SharedEffectDescription(string tag)
