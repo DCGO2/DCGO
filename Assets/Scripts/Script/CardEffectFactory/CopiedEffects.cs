@@ -30,7 +30,9 @@ public partial class CardEffectFactory
 
         if (thisPermanent == null) return;
 
-        bool isTopCard = card == thisPermanent.TopCard;
+        CardSource topCard = thisPermanent.TopCard;
+
+        bool isTopCard = card == topCard;
 
         if (isTopCard == (isInheritedEffect || isLinkedEffect)) return;//If it is an inherited or Link effect, should not apply if it is the top card or vice versa
 
@@ -158,8 +160,18 @@ public partial class CardEffectFactory
                         true,
                         copiedActivateClass));
                 }
+                else if (cardEffect is AddDigivolutionRequirementClass)//Copy effect to exist for topCard
+                {
+                    AddDigivolutionRequirementClass source = (AddDigivolutionRequirementClass)cardEffect;
+                    AddDigivolutionRequirementClass copiedDigivolutionClass = new AddDigivolutionRequirementClass();
+
+                    copiedDigivolutionClass.SetUpICardEffect(source.EffectName, source.CanUseCondition, topCard);
+                    copiedDigivolutionClass.SetUpAddDigivolutionRequirementClass(source.GetEvoCost);
+                }
                 else
                 {
+                    cardEffect.SetIsInheritedEffect(isInheritedEffect);
+                    cardEffect.SetIsLinkedEffect(isLinkedEffect);
                     cardEffects.Add(cardEffect);
                 }
             }
