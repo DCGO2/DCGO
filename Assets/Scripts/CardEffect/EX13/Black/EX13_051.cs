@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+// Guardromon
+namespace DCGO.CardEffects.EX13
 {
     public class EX13_051 : CEntity_Effect
     {
