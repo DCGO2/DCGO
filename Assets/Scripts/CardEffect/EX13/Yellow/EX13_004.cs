@@ -1,35 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 
-// Gigimon
+// DemiMeramon
 namespace DCGO.CardEffects
 {
-    public class EX13_001 : CEntity_Effect
+    public class EX13_004 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Inherited
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digivolve with cost reduced by 2", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digivolve into [Witchelny] with cost reduced by 1, then if so trash top sec", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
-                activateClass.SetHashString("EX13_001_Inherited");
+                activateClass.SetHashString("EX13_004_Inherited");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return "[Your Turn] [Once Per Turn] When any of your red Tamers are played, this Digimon may digivolve into a Digimon card with [Growlmon] or [Gallantmon] in its name in the hand with the cost reduced by 2.";
+                    return "[When Attacking] [Once Per Turn] This Digimon may digivolve into a Digimon card with [Witchelny] in its text in the hand with the cost reduced by 1. If this effect digivolved, trash your top security card.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedPermanentCondition);
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -38,16 +37,9 @@ namespace DCGO.CardEffects
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                 }
 
-                bool PlayedPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
-                        && permanent.TopCard.HasCardColor(CardColor.Red);
-                }
-
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.ContainsCardName("Growlmon")
-                        || cardSource.ContainsCardName("Gallantmon");
+                    return cardSource.HasText("Witchelny");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -56,12 +48,21 @@ namespace DCGO.CardEffects
                         targetPermanent: card.PermanentOfThisCard(),
                         cardCondition: CanSelectCardCondition,
                         payCost: true,
-                        reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
+                        reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
                         fixedCostTuple: null,
                         ignoreDigivolutionRequirementFixedCost: -1,
                         isHand: true,
                         activateClass: activateClass,
-                        successProcess: null));
+                        successProcess: SuccessProcess()));
+
+                    IEnumerator SuccessProcess()
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                            player: card.Owner,
+                            destroySecurityCount: 1,
+                            cardEffect: activateClass,
+                            fromTop: true).DestroySecurity());
+                    }
                 }
             }
             #endregion
