@@ -133,9 +133,12 @@ namespace DCGO.CardEffects.BT12
             }
 
             #region Copy effects of Machinedramon and Chaosdramon in digivolution cards
-            bool CopyCardCondition(CardSource cardSource) => cardSource.EqualsCardName("Machinedramon") || cardSource.EqualsCardName("Chaosdramon");
+            if (timing == EffectTiming.None)
+            {
+                bool CopyCardCondition(CardSource cardSource) => cardSource.EqualsCardName("Machinedramon") || cardSource.EqualsCardName("Chaosdramon");
 
-            CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, cardCondition: CopyCardCondition);
+                cardEffects.Add(CardEffectFactory.CopyDigivolutionCardEffects(card, cardCondition: CopyCardCondition));
+            }
             #endregion
 
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
