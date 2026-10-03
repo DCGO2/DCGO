@@ -45,9 +45,12 @@ namespace DCGO.CardEffects.BT26
             #endregion
 
             #region Succession
-            bool SuccessionCondition(CardSource cardSource) => cardSource.EqualsCardName("Jupitermon");
+            if (timing == EffectTiming.None)
+            {
+                bool CardCondition(CardSource cardSource) => cardSource.EqualsCardName("Jupitermon");
 
-            CardEffectFactory.SuccessionSelfEffect(ref cardEffects, timing, card: card, condition: null, cardCondition: SuccessionCondition);
+                cardEffects.Add(CardEffectFactory.SuccessionSelfEffect(isInheritedEffect: false, card: card, condition: null, cardCondition: CardCondition));
+            }
             #endregion
             #endregion
 
