@@ -216,7 +216,7 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] [Once Per Turn] When any of your Digimon with the [Unidentified] trait are deleted, you may play 1 [Diaboromon] Token without paying the cost. (Digimon/Cost 14/Lv.6/White/Mega/Unknown/Unidentified/3000 DP)";
+                    return "[All Turns] [Once Per Turn] When any of your Digimon with the [Unidentified] trait are deleted, you may play 1 [Diaboromon] Token without paying the cost. (Digimon / Cost 14 / Lv.6 / White / Mega / Unknown / Unidentified / 3000 DP)";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
