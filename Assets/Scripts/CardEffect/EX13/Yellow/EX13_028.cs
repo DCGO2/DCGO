@@ -160,6 +160,9 @@ namespace DCGO.CardEffects.EX13
                                 thisCardPermanent.willBeRemoveField = false;
 
                                 thisCardPermanent.HideDeleteEffect();
+                                thisCardPermanent.HideHandBounceEffect();
+                                thisCardPermanent.HideDeckBounceEffect();
+                                thisCardPermanent.HideWillRemoveFieldEffect();
                             }
 
                             yield return null;
