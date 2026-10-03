@@ -1803,7 +1803,6 @@ public class UseOptionClass
                 {
                     if (cardEffect.CanUse(hashtable))
                     {
-                        cardEffect.SetIsOptionEffect(true);
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.ActivateEffectProcess(
                                                     cardEffect,
                                                     hashtable));
