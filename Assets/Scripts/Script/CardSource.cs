@@ -134,22 +134,6 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
-    #region Boolean declaring that this card has an inherited copy effect and is not itself safe to copy effects from
-
-    bool _hasInheritedCopy = false;
-
-    public bool HasInheritedCopy
-    {
-        get { return _hasInheritedCopy; }
-        private set { _hasInheritedCopy = value; }
-    }
-
-    public void SetHasInheritedCopy()
-    {
-        HasInheritedCopy = true;
-    }
-    #endregion
-
     #region whether this card can be played
 
     public bool CanPlayFromHandDuringMainPhase

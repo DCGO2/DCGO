@@ -38,7 +38,7 @@ public partial class CardEffectFactory
         }
 
         List<CardSource> validSources(List<CardSource> availableSources) => availableSources.Filter(
-            cardSource => !card.HasInheritedCopy && (cardCondition == null || cardCondition(cardSource))
+            cardSource => cardSource != card && (cardCondition == null || cardCondition(cardSource))
         );
 
         foreach (CardSource cardSource in validSources(targetSources(thisPermanent.DigivolutionCards)))
