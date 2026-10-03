@@ -62,6 +62,7 @@ namespace DCGO.CardEffects.EX13
                     SharedEffectName,
                     SharedActivateCoroutine,
                     SharedEffectDescription,
+                    additionalActivateCondition: (hashtable, activateClass) => card.Owner.SecurityCards.Count >= 1,
                     optional: true,
                     maxCountPerTurn: 1,
                     hashValue: "EX13_029_WD_WA",
