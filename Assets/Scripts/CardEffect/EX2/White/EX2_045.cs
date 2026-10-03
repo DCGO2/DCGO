@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.EX2
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] This Digimon can't attack.[Your Turn] When one of your Digimon digivolves, you may suspend this Digimon to gain 1 memory, <Draw 1> (Draw 1 card from your deck), and have 1 of your Digimon get +3000 DP for the turn.";
+                    return "[Your Turn] When one of your Digimon digivolves, you may suspend this Digimon to gain 1 memory, <Draw 1> (Draw 1 card from your deck), and have 1 of your Digimon get +3000 DP for the turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
