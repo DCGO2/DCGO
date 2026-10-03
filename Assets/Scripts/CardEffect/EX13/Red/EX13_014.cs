@@ -124,8 +124,6 @@ namespace DCGO.CardEffects.EX13
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                 }
 
-                if (!isUsed) activateClass.RemoveUse();
-
                 IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                 {
                     if (cardSources.Count == 0) yield break;
@@ -138,6 +136,8 @@ namespace DCGO.CardEffects.EX13
                         payCost: false,
                         root: fromHand ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.DigivolutionCards));
                 }
+
+                if (!isUsed) activateClass.RemoveUse();
             }
 
             CardEffectFactory.ActivateClassesForSharedEffects(
