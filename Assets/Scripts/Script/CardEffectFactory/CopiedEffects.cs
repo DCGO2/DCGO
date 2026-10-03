@@ -24,8 +24,6 @@ public partial class CardEffectFactory
     {
         Permanent thisPermanent = card.PermanentOfThisCard();
 
-        if (thisPermanent == null) return;
-
         bool isTopCard = card == thisPermanent.TopCard;
 
         if (isTopCard == (isInheritedEffect || isLinkedEffect)) return;//If it is an inherited or Link effect, should not apply if it is the top card or vice versa
