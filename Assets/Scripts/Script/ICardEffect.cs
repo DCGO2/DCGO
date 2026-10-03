@@ -1336,7 +1336,9 @@ public static class ActivateICardEffectExtensionClass
 
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(null, EffectTiming.AfterEffectsActivate));
 
-        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
+        if (!activateICardEffect.IsOptionEffect) { //Option effects should not perform RuleProcess until after the end of using the option, which includes trashing/arts digivolve
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
+        }
     }
 
     #endregion
