@@ -159,6 +159,7 @@ public class RB1_015 : CEntity_Effect
         bool CopyCardCondition(CardSource cardSource) => cardSource.ContainsCardName("Gammamon");
 
         CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, cardCondition: CopyCardCondition);
+        card.SetHasInheritedCopy();
         CardEffectFactory.CopyDigivolutionCardEffects(ref cardEffects, timing, card, isInheritedEffect: true, cardCondition: CopyCardCondition);
         #endregion
 
