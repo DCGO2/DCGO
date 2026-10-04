@@ -65,13 +65,13 @@ namespace DCGO.CardEffects.EX13
                     {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 card with [DATA SQUAD] trait to add to hand.",
+                            message: "Select 1 card with [Holy Beast]/[Royal Knight]/[DATA SQUAD] trait to add to hand.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 card with [DATA SQUAD] trait to place under a [DATA SQUAD] tamer.",
+                            message: "Select 1 card with [Holy Beast]/[Royal Knight]/[DATA SQUAD] trait to place under a [DATA SQUAD] tamer.",
                             mode: SelectCardEffect.Mode.Custom,
                             maxCount: 1,
                             selectCardCoroutine: PlaceUnderTamer),
