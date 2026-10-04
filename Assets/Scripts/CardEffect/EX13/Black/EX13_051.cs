@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.EX13
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent != card.PermanentOfThisCard() 
-                        && permanent.TopCard.HasBlocker;
+                        && permanent.HasBlocker;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
