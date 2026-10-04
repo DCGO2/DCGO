@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.EX13
             #endregion
 
             #region Inherited
-            if (timing == EffectTiming.OnLeaveFieldAnyone)
+            if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 other [Sukamon] in name to prevent leaving", CanUseCondition, card);
