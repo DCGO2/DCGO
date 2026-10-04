@@ -28,13 +28,13 @@ namespace DCGO.CardEffects.EX13
                     return cardSource.EqualsTraits("Witchelny");
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
                 }
 
-                bool CanUseCondition(Hashtable hashtable)
+                bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
