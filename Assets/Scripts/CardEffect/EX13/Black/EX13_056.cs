@@ -11,9 +11,9 @@ namespace DCGO.CardEffects.EX13
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Collision
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnCounterTiming)
             {
-                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, card, null));
             }
             #endregion
 
