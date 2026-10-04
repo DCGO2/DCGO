@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.EX13
             #endregion
 
             #region On Deletion
-            if (timing == EffectTiming.OnDestroyedAnyone)
+            if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal 3 from deck, may play 1 3 cost or lower Digimon [Chuumon]/[Sukamon] in name for free, trash rest", CanUseCondition, card);
