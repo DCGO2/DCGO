@@ -134,8 +134,6 @@ namespace DCGO.CardEffects.EX13
                             activateClass: activateClass));
                     }
 
-                    thisPermanent = card.PermanentOfThisCard();
-
                     if (thisPermanent != null && CardEffectCommons.HasMatchConditionPermanent(IsOpponentDigimon))
                     {
                         Permanent selectedDefender = null;

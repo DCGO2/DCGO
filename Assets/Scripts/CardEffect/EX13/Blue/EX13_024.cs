@@ -78,10 +78,6 @@ namespace DCGO.CardEffects.EX13
             bool IsOpponentDigimon(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.DigivolutionCards.Any();
 
-            bool IsFewestSourcesOpponentDigimon(Permanent permanent)
-                => IsOpponentDigimon(permanent)
-                    && CardEffectCommons.IsMinDigivolutionCards(permanent, card.Owner.Enemy);
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 Permanent thisPermanent = card.PermanentOfThisCard();
@@ -99,28 +95,35 @@ namespace DCGO.CardEffects.EX13
                         canEndNotMax: false));
                 }
 
-                List<Permanent> bounceTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(IsFewestSourcesOpponentDigimon);
-
-                if (bounceTargetPermanents.Count > 0)
+                if (card.Owner.Enemy.GetBattleAreaDigimons().Any())
                 {
-                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                    var lowestSourcesPermanents = card.Owner.Enemy.GetBattleAreaDigimons()
+                        .GroupBy(x => x.DigivolutionCards.Count)
+                        .OrderBy(g => g.Key)
+                        .First()
+                        .ToList();
+
+                    if (lowestSourcesPermanents.Count > 0)
                     {
-                        new SelectionElement<bool>(message: "Yes", value: true, spriteIndex: 0),
-                        new SelectionElement<bool>(message: "No", value: false, spriteIndex: 1),
-                    };
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: "Yes", value: true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: "No", value: false, spriteIndex: 1),
+                        };
 
-                    GManager.instance.userSelectionManager.SetBoolSelection(
-                        selectionElements: selectionElements,
-                        selectPlayer: card.Owner,
-                        selectPlayerMessage: "Return all of your opponent's Digimon with the fewest digivolution cards to the bottom of the deck?",
-                        notSelectPlayerMessage: "The opponent is choosing whether to return Digimon to the bottom of the deck.");
+                        GManager.instance.userSelectionManager.SetBoolSelection(
+                            selectionElements: selectionElements,
+                            selectPlayer: card.Owner,
+                            selectPlayerMessage: "Return all of your opponent's Digimon with the fewest digivolution cards to the bottom of the deck?",
+                            notSelectPlayerMessage: "The opponent is choosing whether to return Digimon to the bottom of the deck.");
 
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                    if (GManager.instance.userSelectionManager.SelectedBoolValue)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            new DeckBottomBounceClass(bounceTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).DeckBounce());
+                        if (GManager.instance.userSelectionManager.SelectedBoolValue)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(
+                                new DeckBottomBounceClass(lowestSourcesPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).DeckBounce());
+                        }
                     }
                 }
             }
