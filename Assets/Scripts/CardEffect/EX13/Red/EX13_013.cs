@@ -110,6 +110,7 @@ namespace DCGO.CardEffects.EX13
                     SharedEffectDescription2,
                     additionalActivateCondition: AdditionalActivateCondition,
                     optional: false,
+                    isSkippable: true,
                     endOfAttack: true,
                     onDeletion: true);
 
@@ -117,8 +118,8 @@ namespace DCGO.CardEffects.EX13
 
             bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
             {
-                return CardEffectCommons.HasMatchConditionOwnersHand(card, card => CanSelectCardCondition2(card, activateClass: activateClass))
-                        || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, card => CanSelectCardCondition2(card, activateClass: activateClass));
+                return CardEffectCommons.HasMatchConditionOwnersHand(card, cardSource => CanSelectCardCondition2(cardSource, activateClass))
+                        || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, cardSource => CanSelectCardCondition2(cardSource, activateClass));
             }
 
             bool CanSelectCardCondition2(CardSource cardSource, ActivateClass activateClass)
@@ -130,8 +131,8 @@ namespace DCGO.CardEffects.EX13
 
             IEnumerator SharedActivateCoroutine2(Hashtable hashtable, ActivateClass activateClass)
             {
-                bool canPlayFromHand = CardEffectCommons.HasMatchConditionOwnersHand(card, card => CanSelectCardCondition2(card, activateClass));
-                bool canPlayFromTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, card => CanSelectCardCondition2(card, activateClass));
+                bool canPlayFromHand = CardEffectCommons.HasMatchConditionOwnersHand(card, cardSource => CanSelectCardCondition2(cardSource, activateClass));
+                bool canPlayFromTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, cardSource => CanSelectCardCondition2(cardSource, activateClass));
 
                 bool shouldPlay = canPlayFromHand || canPlayFromTrash;
                 SelectCardEffect.Root root = canPlayFromTrash && !canPlayFromHand ? SelectCardEffect.Root.Trash : SelectCardEffect.Root.Hand;
@@ -157,7 +158,7 @@ namespace DCGO.CardEffects.EX13
                 if (shouldPlay)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
-                        canTargetCondition: card => CanSelectCardCondition2(card, activateClass),
+                        canTargetCondition: cardSource => CanSelectCardCondition2(cardSource, activateClass),
                         root: root,
                         cardEffect: activateClass,
                         payCost: false));
@@ -193,8 +194,8 @@ namespace DCGO.CardEffects.EX13
 
                 bool IsOpponentDigimon(Permanent permanent)
                 {
-                    return permanent.TopCard.Owner != card.Owner
-                        && permanent.IsDigimon;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
