@@ -484,7 +484,7 @@ public partial class CardEffectCommons
 
         if (owner.GetBattleAreaDigimons().Count < DnaPermanentCount)
         {
-            if (failedProcess != null)
+            if (!isOptional && failedProcess != null)
             {
                 yield return ContinuousController.instance.StartCoroutine(failedProcess());
             }
