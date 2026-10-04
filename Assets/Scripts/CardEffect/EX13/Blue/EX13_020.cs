@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.EX13
             #endregion
 
             #region Armor Purge
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
                 cardEffects.Add(CardEffectFactory.ArmorPurgeEffect(card: card));
             }
