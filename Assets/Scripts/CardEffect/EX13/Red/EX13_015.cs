@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.EX13
             #endregion
 
             #region Shared OP/WD/WA/C
-            string SharedEffectName = "Your opponent's effects don't affect this Digimon until their turn ends";
+            string SharedEffectName = "Delete 1 enemy 12K DP or higher Digimon, if none deleted trash their top sec";
 
             CardEffectFactory.ActivateClassesForSharedEffects
                 (ref cardEffects, timing, card,
@@ -48,17 +48,16 @@ namespace DCGO.CardEffects.EX13
                     counter: true);
 
             string SharedEffectDescription(string tag) => $"[{tag}] [Once Per Turn] Delete 1 of your opponent's 12000 DP or higher Digimon. If this effect didn't delete, trash their top security card.";
-
+                    
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 List<Permanent> deleteTargetPermanents = new List<Permanent>();
-
                 bool failedToDelete = true;
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                            && permanent.DP <= card.Owner.MaxDP_DeleteEffect(12000, activateClass);
+                            && permanent.DP >= 13000;
                 }
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
