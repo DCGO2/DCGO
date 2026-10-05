@@ -137,7 +137,7 @@ namespace DCGO.CardEffects.BT18
                         targetPermanent: card.PermanentOfThisCard(),
                         cardCondition: CanSelectCardCondition,
                         payCost: true,
-                        reduceCostTuple: (reduceCost: 0, reduceCostCardCondition: null),
+                        reduceCostTuple: null,
                         fixedCostTuple: null,
                         ignoreDigivolutionRequirementFixedCost: -1,
                         isHand: true,
