@@ -42,7 +42,6 @@ namespace DCGO.CardEffects.BT11
                    optional: false,
                    onPlay: true,
                    whenDigivolving: true,
-                   whenAttacking: true,
                    isSkippable: true,
                    additionalUseCondition: AdditionalCanUseCondition);
 
