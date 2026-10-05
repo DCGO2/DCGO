@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.EX13
             bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
             {
                 return CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectTrashCardCondition)
-                    || CardEffectCommons.HasMatchConditionPermanentDigivolutionCards(card, CanSelectTrashCardCondition);
+                    || CardEffectCommons.HasMatchConditionPermanent(CanSelectTrashPermanentCondition);
             }
 
             bool CanSelectTrashCardCondition(CardSource cardSource)
@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.EX13
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectTrashCardCondition);
-                bool canSelectSource = CardEffectCommons.HasMatchConditionPermanentDigivolutionCards(card, CanSelectTrashCardCondition);
+                bool canSelectSource = CardEffectCommons.HasMatchConditionPermanent(CanSelectTrashPermanentCondition);
 
                 if (canSelectHand || canSelectSource)
                 {
@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.EX13
                             permanentCondition: CanSelectTrashPermanentCondition,
                             cardCondition: CanSelectTrashCardCondition,
                             maxCount: 1,
-                            canNoTrash: false,
+                            canNoTrash: true,
                             isFromOnly1Permanent: false,
                             activateClass: activateClass,
                             afterSelectionCoroutine: AfterTrashedCards
