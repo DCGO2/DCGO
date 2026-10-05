@@ -140,7 +140,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (IsDigimon && Owner.GetBattleAreaDigimons().Some(permanent => CanPlayCardTargetFrame(permanent.PermanentFrame, true, null)))
+            if (IsDigimon && Owner.GetFieldPermanents().Some(permanent => CanPlayCardTargetFrame(permanent.PermanentFrame, true, null)))
             {
                 return true;
             }
