@@ -17,142 +17,118 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place up to 2 [Vemmon] from trash to digivolution cards.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Digivolving] You may place up to 2 [Vemmon] from your trash under this Digimon as its bottom digivolution cards.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("Vemmon"))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return cardSource.EqualsCardName("Vemmon");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    int maxCount = Math.Min(2, card.Owner.TrashCards.Count(CanSelectCardCondition));
+
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: () => true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        message: "Select [Vemmon] to place on bottom of digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
+                        maxCount: maxCount,
+                        canEndNotMax: true,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.Custom,
+                        root: SelectCardEffect.Root.Trash,
+                        customRootCardList: null,
+                        canLookReverseCard: true,
+                        selectPlayer: card.Owner,
+                        cardEffect: activateClass);
+
+                    selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+                    selectCardEffect.SetUpCustomMessage("Select [Vemmon] to place on bottom of digivolution cards.", "The opponent is selecting [Vemmon] to place on bottom of digivolution cards.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            List<CardSource> selectedCards = new List<CardSource>();
+                        selectedCards.Add(cardSource);
 
-                            int maxCount = Math.Min(2, card.Owner.TrashCards.Count(CanSelectCardCondition));
+                        yield return null;
+                    }
 
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: CanEndSelectCondition,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select [Vemmon] to place on bottom of digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
-                                maxCount: maxCount,
-                                canEndNotMax: true,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
-                            selectCardEffect.SetUpCustomMessage("Select [Vemmon] to place on bottom of digivolution cards.", "The opponent is selecting [Vemmon] to place on bottom of digivolution cards.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                            bool CanEndSelectCondition(List<CardSource> cardSources)
-                            {
-                                if (CardEffectCommons.HasNoElement(cardSources))
-                                {
-                                    return false;
-                                }
-
-                                return true;
-                            }
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-
-                                yield return null;
-                            }
-
-                            if (selectedCards.Count >= 1)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
-                            }
-                        }
+                    if (selectedCards.Count >= 1)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
                     }
                 }
             }
             #endregion
 
-            #region End of Turn
+            #region End of Your Turn
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digivolve into a Digimon with Vemmon in text.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Digivolve into a Digimon with [Vemmon] in text.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[End of Your Turn] If this Digimon has 4 or more digivolution cards, this Digimon may Digivolve into a Digimon card with [Vemmon] in its text in your hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count >= 4)
-                        {
-                            return true;
-                        }
-                    }
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && card.PermanentOfThisCard().DigivolutionCards.Count >= 4
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanTriggerCardCondition);
+                }
 
-                    return false;
+                bool CanTriggerCardCondition(CardSource cardSource)
+                {
+                    return cardSource.HasText("Vemmon")
+                        && cardSource.CanPlayCardTargetFrame(
+                            frame: card.PermanentOfThisCard().PermanentFrame,
+                            PayCost: true,
+                            cardEffect: activateClass,
+                            root: SelectCardEffect.Root.Hand);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return (cardSource.IsDigimon && cardSource.HasText("Vemmon"));
+                    return cardSource.HasText("Vemmon");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -175,22 +151,15 @@ namespace DCGO.CardEffects.BT18
             if (timing == EffectTiming.None)
             {
                 AddMaxTrashCountDigiXrosClass addMaxTrashCountDigiXrosClass = new AddMaxTrashCountDigiXrosClass();
-                addMaxTrashCountDigiXrosClass.SetUpICardEffect($"Trash cards can be selected for DigiXros", CanUseCondition, card);
+                addMaxTrashCountDigiXrosClass.SetUpICardEffect("Trash cards can be selected for DigiXros", CanUseCondition, card);
                 addMaxTrashCountDigiXrosClass.SetUpAddMaxTrashCountDigiXrosClass(getMaxTrashCount: GetCount);
                 addMaxTrashCountDigiXrosClass.SetNotShowUI(true);
                 cardEffects.Add(addMaxTrashCountDigiXrosClass);
 
                 bool CanSelectPermanentCondition1(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (!permanent.TopCard.EqualsCardName("Vemmon"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && !permanent.TopCard.EqualsCardName("Vemmon");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -214,7 +183,7 @@ namespace DCGO.CardEffects.BT18
             if (timing == EffectTiming.None)
             {
                 AddDigiXrosConditionClass addDigiXrosConditionClass = new AddDigiXrosConditionClass();
-                addDigiXrosConditionClass.SetUpICardEffect($"DigiXros", CanUseCondition, card);
+                addDigiXrosConditionClass.SetUpICardEffect("DigiXros", CanUseCondition, card);
                 addDigiXrosConditionClass.SetUpAddDigiXrosConditionClass(getDigiXrosCondition: GetDigiXros);
                 addDigiXrosConditionClass.SetNotShowUI(true);
                 cardEffects.Add(addDigiXrosConditionClass);
@@ -259,37 +228,31 @@ namespace DCGO.CardEffects.BT18
             if (timing == EffectTiming.OnDigivolutionCardReturnToDeckBottom)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Unsuspend this Digimon and it gain Blocker", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Unsuspend this Digimon and it gain <Blocker>", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("Unsuspend_BT11_065");
+                activateClass.SetHashString("BT18_065_Inherited");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
-                    return "[All Turns][Once Per Turn] When [Vemmon] is returned from this Digimon's digivolution cards at the bottom of its owner's deck, unsuspend this Digimon, and it gains <Blocker> until the end of your opponent's turn.";
+                    return "[All Turns] [Once Per Turn] When any [Vemmon] return to the bottom of the deck from this Digimon's digivolution cards, this Digimon unsuspends, and gains <Blocker> until the end of your opponent's turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnReturnToLibraryBottomDigivolutionCard(hashtable, cardSource => cardSource.CardNames.Contains("Vemmon"), card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnReturnToLibraryBottomDigivolutionCard(hashtable, cardSource => cardSource.EqualsCardName("Vemmon"), card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    Permanent selectedPermanent = card.PermanentOfThisCard();
-
-                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
+                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(targetPermanent: card.PermanentOfThisCard(), effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                 }
