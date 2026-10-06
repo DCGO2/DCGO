@@ -337,10 +337,7 @@ namespace DCGO.CardEffects.EX13
 
                 if (selectedPermanents.Count > 0)
                 {
-                    foreach (Permanent targetPermanent in selectedPermanents)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(targetPermanent, CardEffectCommons.CardEffectHashtable(activateClass), true, true).PutSecurity());
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(new IPutMultipleSecurityPermanent(selectedPermanents, CardEffectCommons.CardEffectHashtable(activateClass), true, true).PutSecurity());
                 }
 
                 if (!isUsed) activateClass.RemoveUse();
