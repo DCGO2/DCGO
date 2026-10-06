@@ -91,12 +91,12 @@ namespace DCGO.CardEffects.EX13
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("May trash 1 opponent's security. Then, this may unsuspend.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By trashing 1 security from player with most security, activate [Security] effect of this Digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
-                    => "[When Digivolving] You may trash any 1 of your opponent's security cards. Then, this Digimon may unsuspend.";
+                    => "[When Digivolving] By trashing the top security card of 1 player with the most security cards, you may activate 1 of this Digimon's [Security] effects.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -184,7 +184,7 @@ namespace DCGO.CardEffects.EX13
                                             List<SkillInfo> skillInfos = candidateEffects
                                                 .Map(cardEffect => new SkillInfo(cardEffect, null, EffectTiming.None));
 
-                                            List<CardSource> cardSources = candidateEffects
+                                            List<CardSource> effectCards = candidateEffects
                                                 .Map(cardEffect => cardEffect.EffectSourceCard);
 
                                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -193,7 +193,7 @@ namespace DCGO.CardEffects.EX13
                                                 canTargetCondition: (cardSource) => true,
                                                 canTargetCondition_ByPreSelecetedList: null,
                                                 canEndSelectCondition: null,
-                                                canNoSelect: () => false,
+                                                canNoSelect: () => true,
                                                 selectCardCoroutine: null,
                                                 afterSelectCardCoroutine: null,
                                                 message: "Select 1 effect to activate.",
@@ -202,7 +202,7 @@ namespace DCGO.CardEffects.EX13
                                                 isShowOpponent: false,
                                                 mode: SelectCardEffect.Mode.Custom,
                                                 root: SelectCardEffect.Root.Custom,
-                                                customRootCardList: cardSources,
+                                                customRootCardList: effectCards,
                                                 canLookReverseCard: true,
                                                 selectPlayer: card.Owner,
                                                 cardEffect: activateClass);
@@ -261,8 +261,9 @@ namespace DCGO.CardEffects.EX13
             string SharedEffectDescription2(string tag) => $"[{tag}] [Once Per Turn] You may place 1 of each player's Digimon as the top security cards.";
 
             bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnerPermanentCondition)
-                    || CardEffectCommons.HasMatchConditionPermanent(CanSelectEnemyPermanentCondition);
+                => (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnerPermanentCondition)
+                    || CardEffectCommons.HasMatchConditionPermanent(CanSelectEnemyPermanentCondition))
+                && card.Owner.CanAddSecurity(activateClass);
 
             bool CanSelectOwnerPermanentCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card);
@@ -328,9 +329,6 @@ namespace DCGO.CardEffects.EX13
                     {
                         selectedPermanents.Add(permanents[0]);
                         isUsed = true;
-                    }
-                    else
-                    {
                         canNoSelect = false;
                     }
 
@@ -339,7 +337,10 @@ namespace DCGO.CardEffects.EX13
 
                 if (selectedPermanents.Count > 0)
                 {
-                    // Code for sending multiple entities to security simultaneously
+                    foreach (Permanent targetPermanent in selectedPermanents)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(targetPermanent, CardEffectCommons.CardEffectHashtable(activateClass), true, true).PutSecurity());
+                    }
                 }
 
                 if (!isUsed) activateClass.RemoveUse();
