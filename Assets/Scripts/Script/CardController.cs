@@ -3686,6 +3686,162 @@ public class IPutSecurityPermanent
 
 #endregion
 
+#region Place multiple permanents simultaneously to security
+
+public class IPutMultipleSecurityPermanent
+{
+    public IPutMultipleSecurityPermanent(List<Permanent> permanents, Hashtable hashtable, bool toTop, bool isFaceup = false)
+    {
+        _permanents = permanents;
+        _hashtable = hashtable;
+        _toTop = toTop;
+        _isFaceup = isFaceup;
+    }
+
+    List<Permanent> _permanents = null;
+    Hashtable _hashtable = new Hashtable();
+    bool _toTop = false;
+    bool _isFaceup = false;
+    public List<Permanent> PlacedPermanents { get; private set; } = new List<Permanent>();
+    public bool IsPlacedSecurity(Permanent permanent)
+    {
+        return PlacedPermanents.Contains(permanent);
+    }
+
+    public IEnumerator PutSecurity()
+    {
+        if (_permanents == null) yield break;
+        ICardEffect cardEffect = CardEffectCommons.GetCardEffectFromHashtable(_hashtable);
+
+        _permanents = _permanents.Filter(permanent =>
+            permanent != null
+            && permanent.TopCard != null
+            && (cardEffect == null ||
+            (!permanent.TopCard.CanNotBeAffected(cardEffect)
+            && permanent.CanBeRemoved())));
+
+        if (_permanents.Count == 0) yield break;
+
+        _permanents.ForEach(permanent => permanent.willBeRemoveField = true);
+
+        #region "When permanents would remove field" effect
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
+            CardEffectCommons.WhenPermanentWouldRemoveFieldCheckHashtable(
+                _permanents,
+                cardEffect,
+                null
+            ),
+            EffectTiming.WhenRemoveField));
+
+        if (GManager.instance.autoProcessing_CutIn.HasAwaitingActivateEffects())
+        {
+            _permanents.ForEach(permanent => permanent.ShowWillRemoveFieldEffect());
+
+            //effect
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.ShrinkSecurityDigimonDisplay());
+
+            // cut in effect process
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, null));
+
+            _permanents.ForEach(permanent => permanent.HideWillRemoveFieldEffect());
+        }
+
+        #endregion
+
+        //fix remove target permanents
+        List<Permanent> targetPermanents_Fixed = _permanents.Filter(permanent =>
+            permanent != null
+            && permanent.TopCard != null
+            && permanent.willBeRemoveField);
+
+        #region add log
+
+        string log = "";
+        string fromString = _toTop ? "top" : "bottom";
+
+        log += $"\nPut cards on {fromString} of security:";
+
+        foreach (Permanent permanent in targetPermanents_Fixed)
+        {
+            log += $"\n{permanent.TopCard.BaseENGCardNameFromEntity}({permanent.TopCard.CardID})";
+        }
+
+        log += "\n";
+
+        PlayLog.OnAddLog?.Invoke(log);
+
+        #endregion
+
+        List<CardSource> placedCards = targetPermanents_Fixed.Map(permanent => permanent.TopCard);
+
+        #region show cards
+
+       if (_toTop)
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(placedCards, "Security Top Cards", true, true));
+        }
+        else
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(placedCards, "Security Bottom Cards", true, true));
+        }
+
+        #endregion
+
+        #region "When permanents leave the battle area" effect
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(
+            CardEffectCommons.OnDeletionHashtable(
+                targetPermanents_Fixed,
+                cardEffect,
+                null,
+                false
+            ),
+            EffectTiming.OnLeaveFieldAnyone));
+
+        #endregion
+
+        #region place permanent to security
+        foreach(Permanent _permanent in targetPermanents_Fixed)
+        {
+            CardSource topCard = _permanent.TopCard;
+            
+            yield return ContinuousController.instance.StartCoroutine(_permanent.DiscardEvoRoots());
+            yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(_permanent));
+
+            if (!topCard.IsToken)
+            {
+                if (!topCard.IsDigiEgg)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(topCard, faceUp: _isFaceup));
+
+                    if (!_isFaceup)
+                        topCard.SetReverse();
+                    else
+                        topCard.SetFace();
+
+                    if (!_toTop)
+                    {
+                        topCard.Owner.SecurityCards.Remove(topCard);
+                        topCard.Owner.SecurityCards.Add(topCard);
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(topCard.Owner));
+                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(topCard).AddSecurity());
+                }
+                else
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { topCard }, cardEffect: cardEffect));
+                }
+            }
+        }
+
+        #endregion
+    }
+}
+
+#endregion
+
 #region Delete permanents
 
 public class DestroyPermanentsClass
