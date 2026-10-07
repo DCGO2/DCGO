@@ -103,7 +103,7 @@ namespace DCGO.CardEffects.EX13
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your Digimon may attack, then may activate 1 [When Digivolving] effect", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("EX13_060_YT");
                 cardEffects.Add(activateClass);
 
@@ -282,6 +282,7 @@ namespace DCGO.CardEffects.EX13
                 activateClass.SetUpICardEffect("May play 1 [Chronicle] trait card from hand for 6 less, it gains <Rush>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("EX13_060_EOT");
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
