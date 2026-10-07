@@ -19,7 +19,7 @@ public class StreamingAssetsUtility
         }
     }
 
-    #region ‰æ‘œ‚Ìæ“¾
+    #region ç”»åƒã®å–å¾—
     public static Texture2D BinaryToTexture(byte[] bytes)
     {
         Texture2D texture = new Texture2D(1, 1);
@@ -137,7 +137,7 @@ public class StreamingAssetsUtility
 
     public static async Task<Sprite> HandleCardImage(string fileName, string filePath, bool isSample = false)
     {
-        string urlPath = $"https://raw.githubusercontent.com/TakaOtaku/Digimon-Card-App/main/src/assets/images/cards/{fileName}";
+        string urlPath = $"https://web-garage.takaotaku.de/{fileName}";
         if (isSample) urlPath += $"-Sample.webp";
         else urlPath += $".webp";
 
@@ -184,7 +184,7 @@ public class StreamingAssetsUtility
         return File.Exists(path);
     }
 
-    #region ƒeƒLƒXƒgƒtƒ@ƒCƒ‹‚Ìæ“¾
+    #region ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®å–å¾—
     public static string GetText(string fileName)
     {
         string path = Path.Combine(GetStreamingAssetPath("", false), $"{fileName}.txt").Replace("\\", "/");
