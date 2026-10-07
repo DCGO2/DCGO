@@ -266,10 +266,10 @@ namespace DCGO.CardEffects.EX13
                 && card.Owner.CanAddSecurity(activateClass);
 
             bool CanSelectOwnerPermanentCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card);
+                => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
             bool CanSelectEnemyPermanentCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card);
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
             IEnumerator SharedActivateCoroutine2(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -337,13 +337,12 @@ namespace DCGO.CardEffects.EX13
 
                 if (selectedPermanents.Count > 0)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new IPutMultipleSecurityPermanent(selectedPermanents, CardEffectCommons.CardEffectHashtable(activateClass), true, true).PutSecurity());
+                    yield return ContinuousController.instance.StartCoroutine(new IPutMultipleSecurityPermanent(selectedPermanents, CardEffectCommons.CardEffectHashtable(activateClass), true).PutSecurity());
                 }
 
                 if (!isUsed) activateClass.RemoveUse();
             }
             #endregion
-
 
             #region Assembly
             if (timing == EffectTiming.None)
