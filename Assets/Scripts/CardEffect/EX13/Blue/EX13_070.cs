@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.EX13
                         && cardSource.CanPlayJogress(true);
 
                 bool CanDigivolve()
-                    => CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsOwnerDigimon)
+                    => CardEffectCommons.HasMatchConditionPermanent(IsOwnerDigimon)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, IsImperialdramonOrFreeDigimonCard);
 
                 bool CanDNADigivolve()
@@ -72,28 +72,31 @@ namespace DCGO.CardEffects.EX13
 
                         if (!canDigivolve && !canDNADigivolve) yield break;
 
-                        if (canDigivolve && canDNADigivolve)
-                        {
-                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
-                            {
-                                new(message: "1 of your Digimon may digivolve into a Digimon card with [Imperialdramon] in its name or the [Free] trait in the hand. Reduce this effect's paid cost by 1 for each of your opponent's Digimon.", value: 1, spriteIndex: 0),
-                                new(message: "2 of your Digimon may DNA digivolve into a [Free] trait Digimon card in the hand.", value: 2, spriteIndex: 0),
-                            };
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
 
-                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Select 1 effect to activate.", notSelectPlayerMessage: "The opponent is selecting 1 effect to activate.");
-                        }
-                        else
+                        if (canDigivolve)
                         {
-                            GManager.instance.userSelectionManager.SetInt(canDigivolve ? 1 : 2);
+                            selectionElements.Add(new(message: "1 of your Digimon may digivolve into a Digimon card with [Imperialdramon] in its name or the [Free] trait in the hand. Reduce this effect's paid cost by 1 for each of your opponent's Digimon.", value: 1, spriteIndex: 0));
                         }
+
+                        if (canDNADigivolve)
+                        {
+                            selectionElements.Add(new(message: "2 of your Digimon may DNA digivolve into a [Free] trait Digimon card in the hand.", value: 2, spriteIndex: 0));
+                        }
+
+                        selectionElements.Add(new(message: "Do not Digivolve", value: 3, spriteIndex: 1));
+
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: "Select 1 effect to activate.", notSelectPlayerMessage: "The opponent is selecting 1 effect to activate.");
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
+                        int selectedValue = GManager.instance.userSelectionManager.SelectedIntValue;
+
+                        if (selectedValue == 1)
                         {
                             yield return ContinuousController.instance.StartCoroutine(DigivolveCoroutine());
                         }
-                        else
+                        else if (selectedValue == 2)
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DNADigivolvePermanentsIntoHandOrTrashCard(
                                 CanSelectDNACardCondition,
