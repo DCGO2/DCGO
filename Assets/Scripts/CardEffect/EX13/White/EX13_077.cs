@@ -68,8 +68,7 @@ namespace DCGO.CardEffects.EX13
                 => $"[{tag}] 1 of your Digimon may attack without suspending. Then, for every 2 of your Digimon and Tamers' colors, activate 1 effect below:\r\n・This Digimon may battle 1 of your opponent's Digimon.\r\n・By returning 5 cards from your opponent's trash to the bottom of the deck, <Recovery +1>";
 
             bool CanSelectBattleTargetCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && permanent.HasDP;
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
             bool IsOpponentTrashCard(CardSource cardSource)
                 => cardSource != null && cardSource.Owner == card.Owner.Enemy;
@@ -111,7 +110,7 @@ namespace DCGO.CardEffects.EX13
                         yield return null;
                     }
 
-                    if (selectedAttacker != null && selectedAttacker.CanAttack(activateClass, true))
+                    if (selectedAttacker != null)
                     {
                         SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
