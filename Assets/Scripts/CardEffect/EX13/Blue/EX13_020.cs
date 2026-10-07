@@ -129,7 +129,6 @@ namespace DCGO.CardEffects.EX13
                     }
                 }
             }
-            #endregion
 
             CardEffectFactory.ActivateClassesForSharedEffects(
                 ref cardEffects, timing, card,
@@ -142,65 +141,83 @@ namespace DCGO.CardEffects.EX13
                 onPlay: true,
                 whenDigivolving: true,
                 whenAttacking: true);
+            #endregion
 
-            #region End of Your Turn / Inherit
-            if (timing == EffectTiming.OnEndTurn)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("1 of your [Free]/[Royal Knight] Digimon may unsuspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
-                activateClass.SetIsSkippable(true);
-                activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("EX13_020_EndOfTurn");
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                    => "[End of Your Turn] [Once Per Turn] 1 of your Digimon with the [Free] or [Royal Knight] trait may unsuspend.";
-
-                bool CanSelectPermanentCondition(Permanent permanent)
+            #region Shared EoYT/Inherit
+            bool CanSelectPermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && (permanent.TopCard.ContainsTraits("Free") || permanent.TopCard.ContainsTraits("Royal Knight"))
                         && CardEffectCommons.CanUnsuspend(permanent);
 
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.IsOwnerTurn(card);
+            bool SharedCanUseCondition(Hashtable hashtable, ActivateClass activateClass)
+                => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                    && CardEffectCommons.IsOwnerTurn(card);
 
-                bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+            bool SharedCanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+                => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                    && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
 
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
+            IEnumerator SharedActivateCoroutine2(Hashtable hashtable, ActivateClass activateClass)
+            {
+                bool isUsed = false;
+
+                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                selectPermanentEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: CanSelectPermanentCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: 1,
+                    canNoSelect: true,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.UnTap,
+                    cardEffect: activateClass);
+
+                selectPermanentEffect.SetUpCustomMessage("Select 1 [Free]/[Royal Knight] Digimon to unsuspend.", "The opponent is selecting 1 [Free]/[Royal Knight] Digimon to unsuspend.");
+
+                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                IEnumerator SelectPermanentCoroutine(Permanent permanent)
                 {
-                    bool isUsed = false;
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.UnTap,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 [Free]/[Royal Knight] Digimon to unsuspend.", "The opponent is selecting 1 [Free]/[Royal Knight] Digimon to unsuspend.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        isUsed = true;
-                        yield return null;
-                    }
-
-                    if (!isUsed) activateClass.RemoveUse();
+                    isUsed = true;
+                    yield return null;
                 }
+
+                if (!isUsed) activateClass.RemoveUse();
+            }
+            #endregion
+
+            #region End of Your Turn
+            if (timing == EffectTiming.OnEndTurn)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("1 of your [Free]/[Royal Knight] Digimon may unsuspend", (hashtable) => SharedCanUseCondition(hashtable, activateClass), card);
+                activateClass.SetUpActivateClass((hashtable) => SharedCanActivateCondition(hashtable, activateClass), (hashtable) => SharedActivateCoroutine2(hashtable, activateClass), 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
+                activateClass.SetHashString("EX13_020_EndOfTurn");
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                    => "[End of Your Turn] [Once Per Turn] 1 of your [Free] or [Royal Knight] trait Digimon may unsuspend.\r\n[Assembly -2] [Veemon]";
+            }
+            #endregion
+
+            #region Inherit
+            if (timing == EffectTiming.OnEndTurn)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("1 of your [Free]/[Royal Knight] Digimon may unsuspend", (hashtable) => SharedCanUseCondition(hashtable, activateClass), card);
+                activateClass.SetUpActivateClass((hashtable) => SharedCanActivateCondition(hashtable, activateClass), (hashtable) => SharedActivateCoroutine2(hashtable, activateClass), 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
+                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("EX13_020_Inherit");
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                    => "[End of Your Turn] [Once Per Turn] 1 of your Digimon with the [Free] or [Royal Knight] trait may unsuspend.";
             }
             #endregion
 
