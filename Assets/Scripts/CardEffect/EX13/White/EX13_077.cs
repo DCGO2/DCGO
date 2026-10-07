@@ -28,6 +28,38 @@ namespace DCGO.CardEffects.EX13
             }
             #endregion
 
+            #region Assembly
+            if (timing == EffectTiming.None)
+            {
+                AddAssemblyConditionClass addAssemblyConditionClass = new AddAssemblyConditionClass();
+                addAssemblyConditionClass.SetUpICardEffect("Assembly", CanUseCondition, card);
+                addAssemblyConditionClass.SetUpAddAssemblyConditionClass(getAssemblyCondition: GetAssembly);
+                addAssemblyConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addAssemblyConditionClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                    => true;
+
+                bool IsAssemblyCard(CardSource assemblyCard)
+                    => assemblyCard != null
+                        && assemblyCard.Owner == card.Owner
+                        && assemblyCard.IsDigimon
+                        && assemblyCard.HasAdventureTraits;
+
+                AssemblyCondition GetAssembly(CardSource cardSource)
+                {
+                    if (cardSource != card) return null;
+
+                    return new AssemblyCondition(
+                        element: new AssemblyConditionElement(IsAssemblyCard),
+                        CanTargetCondition_ByPreSelecetedList: Combinations.WithDifferentColors,
+                        selectMessage: "6 [ADVENTURE] trait Digimon cards w/different colors",
+                        elementCount: 6,
+                        reduceCost: 8);
+                }
+            }
+            #endregion
+
             #region Shared On Play / When Digivolving
 
             string SharedEffectName = "1 Digimon may attack without suspending, then per 2 colors, may battle or return 5 from opponent's trash to <Recovery +1>";
