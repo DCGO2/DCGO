@@ -172,6 +172,7 @@ namespace DCGO.CardEffects.EX13
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash enemy's top sec", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("EX13_013_Inherited");
                 cardEffects.Add(activateClass);
 
