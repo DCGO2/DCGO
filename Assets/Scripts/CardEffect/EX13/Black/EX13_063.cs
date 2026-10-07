@@ -124,8 +124,7 @@ namespace DCGO.CardEffects.EX13
                     => "[On Deletion] Delete 1 of your opponent's highest play cost Digimon.";
 
                 bool CanSelectDeleteTargetCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && CardEffectCommons.IsMaxCost(permanent, card.Owner.Enemy, true);
+                    => CardEffectCommons.IsMaxCost(permanent, card.Owner.Enemy, true);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
