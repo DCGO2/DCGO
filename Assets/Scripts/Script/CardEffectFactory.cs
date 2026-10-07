@@ -1147,13 +1147,18 @@ public partial class CardEffectFactory
                                                 Func<Hashtable, ActivateClass, bool> additionalActivateCondition = null,
                                                 bool isSkippable = false)
     {
-        ActivateClass activateClass = ActivateClass(card, effectName, CanUseCondition, additionalActivateCondition, activateCoroutine, effectDescription, optional, isSkippableFunction, -1, null, false, false, true, isSkippable);
+        ActivateClass activateClass = ActivateClass(card, effectName, CanUseCondition, CanActivateCondition, activateCoroutine, effectDescription, optional, isSkippableFunction, -1, null, false, false, true, isSkippable);
         return activateClass;
 
         bool CanUseCondition(Hashtable hashtable, ActivateClass activateClass)
         {
             return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card) &&
                 (additionalUseCondition == null || additionalUseCondition(hashtable, activateClass));
+        }
+
+        bool CanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+        {
+            return additionalActivateCondition == null || additionalActivateCondition(hashtable, activateClass);
         }
     }
 
