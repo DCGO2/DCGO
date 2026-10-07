@@ -211,11 +211,12 @@ namespace DCGO.CardEffects.EX13
                     // Only ask for a location when both have a usable Option; otherwise go straight to the selection.
                     if (canSelectHand && canSelectDigivolutionCards)
                     {
-                        GManager.instance.userSelectionManager.SetBoolSelection(
-                            selectionElements: new List<SelectionElement<bool>>()
+                        GManager.instance.userSelectionManager.SetIntSelection(
+                            selectionElements: new List<SelectionElement<int>>()
                             {
-                                new SelectionElement<bool>(message: "From hand", value: true, spriteIndex: 0),
-                                new SelectionElement<bool>(message: "From digivolution cards", value: false, spriteIndex: 1),
+                                new SelectionElement<int>(message: "From hand", value: 1, spriteIndex: 0),
+                                new SelectionElement<int>(message: "From digivolution cards", value: 2, spriteIndex: 0),
+                                new SelectionElement<int>(message: "Don't use", value: 3, spriteIndex: 1),
                             },
                             selectPlayer: card.Owner,
                             selectPlayerMessage: "From which area will you use an Option?",
@@ -223,7 +224,13 @@ namespace DCGO.CardEffects.EX13
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+                        if (GManager.instance.userSelectionManager.SelectedIntValue == 3)
+                        {
+                            activateClass.RemoveUse();
+                            yield break;
+                        }
+
+                        fromHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
                     }
 
                     if (fromHand)
