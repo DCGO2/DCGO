@@ -141,12 +141,12 @@ namespace DCGO.CardEffects.EX13
                     isSkippable: true,
                     onPlay: true,
                     whenDigivolving: true,
-                    whenAttacking: true);
+                    counter: true);
 
             string SharedEffectDescription2(string tag) => $"[{tag}] [Once Per Turn] You may delete 1 of your opponent's Digimon with as many digivolution cards as this Digimon or fewer.";
 
             bool CanSelectPermanentCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                 && permanent.DigivolutionCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Count;
 
             IEnumerator SharedActivateCoroutine2(Hashtable hashtable, ActivateClass activateClass)
