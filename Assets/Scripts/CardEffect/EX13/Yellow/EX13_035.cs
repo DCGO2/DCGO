@@ -32,10 +32,9 @@ namespace DCGO.CardEffects.EX13
                 => $"[{tag}] You may play up to 2 Digimon cards with [Chuumon], [Sukamon] or [Etemon] in their names and up to 6 total play cost from your hand or trash without paying the costs. By returning 10 such cards from your trash to the bottom of the deck, add 6 to the play cost maximum.";
 
             bool IsChuumonSukamonEtemonCard(CardSource cardSource)
-                => cardSource.IsDigimon
-                    && (cardSource.ContainsCardName("Chuumon")
-                        || cardSource.ContainsCardName("Sukamon")
-                        || cardSource.ContainsCardName("Etemon"));
+                => cardSource.ContainsCardName("Chuumon")
+                    || cardSource.ContainsCardName("Sukamon")
+                    || cardSource.ContainsCardName("Etemon");
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -107,7 +106,8 @@ namespace DCGO.CardEffects.EX13
 
                 #region May play up to 2 Digimon cards from hand or trash
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => IsChuumonSukamonEtemonCard(cardSource)
+                    => cardSource.IsDigimon
+                        && IsChuumonSukamonEtemonCard(cardSource)
                         && cardSource.HasPlayCost
                         && cardSource.GetCostItself <= totalCost
                         && allSelectedCards.Count < 2
