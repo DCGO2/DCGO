@@ -26,6 +26,47 @@ namespace DCGO.CardEffects.EX13
             }
             #endregion
 
+            #region Assembly
+            if (timing == EffectTiming.None)
+            {
+                AddAssemblyConditionClass addAssemblyConditionClass = new AddAssemblyConditionClass();
+                addAssemblyConditionClass.SetUpICardEffect("Assembly", CanUseCondition, card);
+                addAssemblyConditionClass.SetUpAddAssemblyConditionClass(getAssemblyCondition: GetAssembly);
+                addAssemblyConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addAssemblyConditionClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                    => true;
+
+                bool IsAssemblyCard(CardSource assemblyCard)
+                    => assemblyCard != null
+                        && assemblyCard.Owner == card.Owner
+                        && assemblyCard.IsDigimon
+                        && assemblyCard.HasText("Huckmon");
+
+                bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
+                {
+                    List<CardSource> allCards = cardSources.Clone();
+
+                    allCards.Add(cardSource);
+
+                    return allCards.Count == Combinations.GetUniqueNameCardCount(allCards);
+                }
+
+                AssemblyCondition GetAssembly(CardSource cardSource)
+                {
+                    if (cardSource != card) return null;
+
+                    return new AssemblyCondition(
+                        element: new AssemblyConditionElement(IsAssemblyCard),
+                        CanTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                        selectMessage: "3 [Huckmon] text Digimon cards w/different names",
+                        elementCount: 3,
+                        reduceCost: 5);
+                }
+            }
+            #endregion
+
             #region Reboot
             if (timing == EffectTiming.None)
             {
