@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.EX13
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (!CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition)) yield break;
+                if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition)) yield break;
 
                 Permanent selectedPermanent = null;
 
@@ -66,8 +66,8 @@ namespace DCGO.CardEffects.EX13
                     cardEffect: activateClass);
 
                 selectPermanentEffect.SetUpCustomMessage(
-                    "Select 1 Digimon that will gain <Reboot> and <Blocker>.",
-                    "The opponent is selecting 1 Digimon that will gain <Reboot> and <Blocker>.");
+                    "Select 1 Digimon that will gain <Reboot> and <Blocker>. If during an attack, Digimon effect immunity and +5K DP.",
+                    "The opponent is selecting 1 Digimon that will gain <Reboot> and <Blocker>. If during an attack, Digimon effect immunity and +5K DP.");
 
                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -90,8 +90,7 @@ namespace DCGO.CardEffects.EX13
                     effectDuration: EffectDuration.UntilOpponentTurnEnd,
                     activateClass: activateClass));
 
-                if (GManager.instance.attackProcess.IsAttacking
-                    && CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                if (GManager.instance.attackProcess.IsAttacking)
                 {
                     #region Give Digimon Effect Immunity
                     selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => PermanentEffectFactory.DigimonEffectImmunity(selectedPermanent));
@@ -112,7 +111,6 @@ namespace DCGO.CardEffects.EX13
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
-                hashValue: "EX13_057_OP_WD",
                 onPlay: true,
                 whenDigivolving: true);
 
@@ -123,8 +121,7 @@ namespace DCGO.CardEffects.EX13
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into a [Chronicle] trait Digimon card from hand or trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
-                activateClass.SetIsSkippable(true);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("EX13_057_EOA");
                 cardEffects.Add(activateClass);
 
@@ -154,8 +151,6 @@ namespace DCGO.CardEffects.EX13
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    bool digivolved = false;
-
                     bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanDigivolveFromHandCondition);
                     bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanDigivolveFromTrashCondition);
 
@@ -196,18 +191,9 @@ namespace DCGO.CardEffects.EX13
                                 ignoreDigivolutionRequirementFixedCost: -1,
                                 isHand: isHand,
                                 activateClass: activateClass,
-                                successProcess: SuccessProcess()));
-
-                            IEnumerator SuccessProcess()
-                            {
-                                digivolved = true;
-
-                                yield return null;
-                            }
+                                successProcess: null));
                         }
                     }
-
-                    if (!digivolved) activateClass.RemoveUse();
                 }
             }
             #endregion
