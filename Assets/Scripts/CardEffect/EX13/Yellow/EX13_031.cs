@@ -269,6 +269,7 @@ namespace DCGO.CardEffects.EX13
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal top 3, play 1 3 cost or lower [Chuumon]/[Sukamon] in name Digimon for free, trash rest", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetHashString("EX13_031_Inherited");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
