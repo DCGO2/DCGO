@@ -918,13 +918,23 @@ public partial class CardEffectFactory
                                                 )
     {
         ActivateClass activateClass = new ActivateClass();
-        activateClass.SetUpICardEffect(effectName, hashtable => canUseCondition(hashtable, activateClass), card);
-        activateClass.SetUpActivateClass(hashtable => canActivateCondition(hashtable, activateClass), hashtable => activateCoroutine(hashtable, activateClass), maxCountPerTurn, optional, effectDescription);
+        activateClass.SetUpICardEffect(effectName, CanUseCondition, card);
+        activateClass.SetUpActivateClass(CanActivateCondition, hashtable => activateCoroutine(hashtable, activateClass), maxCountPerTurn, optional, effectDescription);
         activateClass.SetHashString(hashValue);
         activateClass.SetIsSecurityEffect(isSecurityEffect);
         activateClass.SetIsSkippableFunction(isSkippableFunction);
         activateClass.SetIsSkippable(isSkippable);
         return activateClass;
+
+        bool CanUseCondition(Hashtable hashtable)
+        {
+            return canUseCondition == null || canUseCondition(hashtable, activateClass);
+        }
+
+        bool CanActivateCondition(Hashtable hashtable)
+        {
+            return canActivateCondition == null || canActivateCondition(hashtable, activateClass);
+        }
     }
 
     #endregion
