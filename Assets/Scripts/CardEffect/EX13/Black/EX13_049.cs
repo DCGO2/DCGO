@@ -25,7 +25,8 @@ namespace DCGO.CardEffects.EX13
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.HasXAntibodyTraits;
+                    => targetPermanent.TopCard.HasXAntibodyTraits
+                    && targetPermanent.TopCard.CardColors.Contains(CardColor.Black);
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null,
