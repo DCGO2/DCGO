@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.EX13
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("If 3 or more sec, trash top/bot sec, <Draw 1>, gain 1 memory. If 2 or less sec, place [Witchelny] from hand to bot sec.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("If 3 or more sec, trash top/bot sec, <Draw 1>, gain 1 memory. If 2 or less sec, place [Witchelny] text from hand to bot sec.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.EX13
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.EqualsTraits("Witchelny");
+                    return cardSource.HasText("Witchelny");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.EX13
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card, toTop: false));        
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource, toTop: false));        
                         }
                     }
                 }
