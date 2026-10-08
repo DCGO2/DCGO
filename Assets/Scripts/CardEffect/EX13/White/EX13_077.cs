@@ -246,6 +246,7 @@ namespace DCGO.CardEffects.EX13
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
+                isSkippable: true,
                 onPlay: true,
                 whenDigivolving: true);
 
