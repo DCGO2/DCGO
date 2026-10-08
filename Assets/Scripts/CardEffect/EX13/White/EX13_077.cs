@@ -293,11 +293,15 @@ namespace DCGO.CardEffects.EX13
             {
                 Func<int> changeValue = () => 1000 * OwnerColorCount();
 
+                bool ExistsOnBattleAreaAndTopCardCondition()
+                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && card.PermanentOfThisCard().TopCard == card;
+
                 cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(
                     changeValue: changeValue,
                     isInheritedEffect: false,
                     card: card,
-                    condition: null));
+                    condition: ExistsOnBattleAreaAndTopCardCondition));
             }
             #endregion
 
