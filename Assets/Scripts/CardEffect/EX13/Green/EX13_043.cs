@@ -123,7 +123,7 @@ namespace DCGO.CardEffects.EX13
                 SuspendActivateCoroutine,
                 SuspendEffectDescription,
                 optional: false,
-                hashValue: "EX13_043_OP_WD",
+                isSkippable: true,
                 onPlay: true,
                 whenDigivolving: true);
 
@@ -191,7 +191,8 @@ namespace DCGO.CardEffects.EX13
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By unsuspending 1 of your Digimon, your suspended Digimon don't leave", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("EX13_043_AT");
                 cardEffects.Add(activateClass);
 
