@@ -160,7 +160,21 @@ namespace DCGO.CardEffects.EX13
 
                     bool CanEndSelectCondition(List<Permanent> permanents)
                     {
-                        return permanents.Count == 3 || (permanents.Count > 0 && permanents[0].DigivolutionCards.Count(CanSelectTrashSourceCardCondition) >= 3);
+                        if (permanents.Count > 0)
+                        {
+                            int faceDownCount = 0;
+
+                            foreach(Permanent permanent in permanents)
+                            {
+                                faceDownCount += permanent.DigivolutionCards.Count(CanSelectTrashSourceCardCondition);
+                            }
+
+                            if (faceDownCount >= 3)
+                            {
+                                return true;
+                            }
+                        }
+                        return false;
                     }
 
                     IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
@@ -357,7 +371,6 @@ namespace DCGO.CardEffects.EX13
                 }
             }
             #endregion
-
 
             #region Security Effect
             if (timing == EffectTiming.SecuritySkill)

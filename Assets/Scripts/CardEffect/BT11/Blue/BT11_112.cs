@@ -113,6 +113,22 @@ namespace DCGO.CardEffects.BT11
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
+                bool CanBeEffectCandidate(ICardEffect cardEffect)
+                {
+
+                    if (cardEffect != null
+                    && cardEffect is ActivateICardEffect
+                    && !cardEffect.IsSecurityEffect
+                    && cardEffect.IsWhenDigivolving)
+                    {
+                        Hashtable digivolvingHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(cardEffect.EffectSourceCard);
+
+                        return cardEffect.CanUse(digivolvingHashtable);
+                    }
+
+                    return false;
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
@@ -123,7 +139,7 @@ namespace DCGO.CardEffects.BT11
                             .Map(permanent => permanent.EffectList(EffectTiming.OnEnterFieldAnyone))
                             .Flat()
                             .Clone()
-                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving);
+                            .Filter(CanBeEffectCandidate);
 
                         if (candidateEffects.Count >= 1)
                         {

@@ -44,8 +44,7 @@ namespace DCGO.CardEffects.BT26
                     && permanent.TopCard.EqualsTraits("Ver.3");
 
             bool IsOpponentDigimon(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true);
+                => CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true);
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {

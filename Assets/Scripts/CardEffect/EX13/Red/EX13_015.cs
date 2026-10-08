@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.EX13
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                            && permanent.DP >= 13000;
+                            && permanent.DP >= 12000;
                 }
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
