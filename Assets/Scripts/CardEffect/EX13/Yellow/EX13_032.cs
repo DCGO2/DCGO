@@ -208,16 +208,18 @@ namespace DCGO.CardEffects.EX13
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    Permanent protectedPermanent = card.PermanentOfThisCard();
+
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(card, card.PermanentOfThisCard()));
 
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card, toTop: true, faceUp: false));
 
-                    card.PermanentOfThisCard().willBeRemoveField = false;
+                    protectedPermanent.willBeRemoveField = false;
 
-                    card.PermanentOfThisCard().HideDeleteEffect();
-                    card.PermanentOfThisCard().HideHandBounceEffect();
-                    card.PermanentOfThisCard().HideDeckBounceEffect();
-                    card.PermanentOfThisCard().HideWillRemoveFieldEffect();
+                    protectedPermanent.HideDeleteEffect();
+                    protectedPermanent.HideHandBounceEffect();
+                    protectedPermanent.HideDeckBounceEffect();
+                    protectedPermanent.HideWillRemoveFieldEffect();
 
                     yield return null;
                 }
