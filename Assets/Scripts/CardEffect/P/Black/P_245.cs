@@ -17,6 +17,7 @@ namespace DCGO.CardEffects.P
                 activateClass.SetUpICardEffect("Suspend 1 black <Blocker> to <Draw 1> if 7 or less in hand.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("P_245_Inherited");
                 cardEffects.Add(activateClass);
 
