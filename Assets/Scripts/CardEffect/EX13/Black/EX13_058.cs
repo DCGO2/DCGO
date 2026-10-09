@@ -100,7 +100,6 @@ namespace DCGO.CardEffects.EX13
                 optional: false,
                 isSkippable: true,
                 additionalActivateCondition: SharedCanActivateCondition,
-                hashValue: "EX13_058_WA_OD",
                 whenAttacking: true,
                 onDeletion: true);
 
