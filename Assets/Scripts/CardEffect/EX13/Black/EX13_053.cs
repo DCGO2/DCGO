@@ -100,7 +100,6 @@ namespace DCGO.CardEffects.EX13
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
-                hashValue: "EX13_053_OP_OD",
                 onPlay: true,
                 onDeletion: true);
 
@@ -113,7 +112,6 @@ namespace DCGO.CardEffects.EX13
                 activateClass.SetUpICardEffect("<De-Digivolve 1> 1 of your opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("EX13_053_ESS_OD");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
