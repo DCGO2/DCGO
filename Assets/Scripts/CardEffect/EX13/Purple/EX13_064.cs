@@ -43,7 +43,6 @@ namespace DCGO.CardEffects.EX13
                 activateClass.SetUpICardEffect("May play or use 1 cost 8 or lower [Knightmon] text card from hand or trash for free", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
-                activateClass.SetHashString("EX13_064_WD");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
