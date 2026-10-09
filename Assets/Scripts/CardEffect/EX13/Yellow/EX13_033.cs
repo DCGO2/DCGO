@@ -38,7 +38,6 @@ namespace DCGO.CardEffects.EX13
                     SharedActivateCoroutine,
                     SharedEffectDescription,
                     optional: false,
-                    hashValue: "EX13_033_OP_WD",
                     onPlay: true,
                     whenDigivolving: true);
 
