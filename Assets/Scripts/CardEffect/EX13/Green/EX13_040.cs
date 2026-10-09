@@ -80,27 +80,22 @@ namespace DCGO.CardEffects.EX13
                 string EffectDescription()
                     => "[All Turns] When this Digimon suspends, suspend 1 of your opponent's Digimon or Tamers.";
 
-                bool CanSelectSuspendCondition(Permanent permanent)
-                    => IsOpponentDigimonOrTamer(permanent)
-                        && !permanent.IsSuspended;
-
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenSelfPermanentSuspends(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendCondition);
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentDigimonOrTamer))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectSuspendCondition,
+                            canTargetCondition: IsOpponentDigimonOrTamer,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
