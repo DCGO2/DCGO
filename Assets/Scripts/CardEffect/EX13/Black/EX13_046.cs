@@ -16,7 +16,6 @@ namespace DCGO.CardEffects.EX13
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetHashString("EX13_046_OP");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -70,7 +69,6 @@ namespace DCGO.CardEffects.EX13
                 activateClass.SetUpICardEffect("<De-Digivolve 1> 1 enemy Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("EX13_046_ESS_OD");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
