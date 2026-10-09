@@ -16,7 +16,6 @@ namespace DCGO.CardEffects.EX13
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetHashString("EX13_048_OP");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
