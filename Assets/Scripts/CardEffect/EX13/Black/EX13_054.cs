@@ -72,7 +72,6 @@ namespace DCGO.CardEffects.EX13
                 SharedEffectDescription,
                 optional: false,
                 additionalActivateCondition: SharedCanActivateCondition,
-                hashValue: "EX13_054_OP_OD",
                 onPlay: true,
                 onDeletion: true);
 
