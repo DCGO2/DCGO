@@ -119,14 +119,20 @@ namespace DCGO.CardEffects.EX13
                     return true;
                 }
 
-                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
+                List<string> changeCardNames(CardSource cardSource, List<string> cardNames)
                 {
                     if (cardSource == card)
                     {
-                        CardNames.Add("Mamemon_EX13_053");
+                        for (int i = 0; i < cardNames.Count; i++)
+                        {
+                            if (!cardNames[i].Contains("Mamemon"))
+                            {
+                                cardNames[i] = $"Mamemon {cardNames[i]}";
+                            }
+                        }
                     }
 
-                    return CardNames;
+                    return cardNames;
                 }
             }
             #endregion
