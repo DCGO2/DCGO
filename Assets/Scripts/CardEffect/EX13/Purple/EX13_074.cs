@@ -155,7 +155,7 @@ namespace DCGO.CardEffects.EX13
                     yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
                         new List<CardSource>() { selectedCard }, activateClass));
 
-                    if (CardEffectCommons.IsExistOnBattleArea(card) && card.PermanentOfThisCard().DigivolutionCards.Contains(selectedCard))
+                    if (card.PermanentOfThisCard().DigivolutionCards.Contains(selectedCard))
                     {
                         yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                     }
