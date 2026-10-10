@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.EX13
             if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By placing 1 [Knightmon] text Digimon card from hand or trash under this Tamer, <Draw 1>", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By placing 1 [Knightmon] text card from hand or trash under this Tamer, <Draw 1>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("EX13_074_AT");
@@ -40,8 +40,7 @@ namespace DCGO.CardEffects.EX13
                         && permanent.TopCard.HasText("Knightmon");
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.IsDigimon
-                        && cardSource.HasText("Knightmon");
+                    => cardSource.HasText("Knightmon");
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -96,7 +95,7 @@ namespace DCGO.CardEffects.EX13
                         yield return null;
                     }
 
-                    if (fromHand && canSelectHand)
+                    if (fromHand)
                     {
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -119,7 +118,7 @@ namespace DCGO.CardEffects.EX13
 
                         yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                     }
-                    else if (!fromHand && canSelectTrash)
+                    else
                     {
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -147,7 +146,7 @@ namespace DCGO.CardEffects.EX13
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                     }
 
-                    if (selectedCard == null || !CardEffectCommons.IsExistOnBattleArea(card))
+                    if (selectedCard == null)
                     {
                         activateClass.RemoveUse();
                         yield break;
@@ -181,18 +180,17 @@ namespace DCGO.CardEffects.EX13
                         && cardSource.HasText("Knightmon");
 
                 bool IsLordKnightmon(CardSource cardSource)
-                    => cardSource.IsDigimon
-                        && cardSource.EqualsCardName("LordKnightmon");
+                    => cardSource.EqualsCardName("LordKnightmon");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.IsOwnerTurn(card);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.IsOwnerTurn(card)
                         && card.PermanentOfThisCard().DigivolutionCards.Filter(IsKnightmonTextCardUnderTamer).Count >= 3
                         && (CardEffectCommons.HasMatchConditionOwnersHand(card, IsLordKnightmon)
                             || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsLordKnightmon));
+
+                bool CanActivateCondition(Hashtable hashtable)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
