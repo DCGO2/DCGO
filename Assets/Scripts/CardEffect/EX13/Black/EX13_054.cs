@@ -27,41 +27,41 @@ namespace DCGO.CardEffects.EX13
             bool CanSelectPermanentCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
-            bool SharedCanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                selectPermanentEffect.SetUp(
-                    selectPlayer: card.Owner,
-                    canTargetCondition: CanSelectPermanentCondition,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: 1,
-                    canNoSelect: false,
-                    canEndNotMax: false,
-                    selectPermanentCoroutine: SelectPermanentCoroutine,
-                    afterSelectPermanentCoroutine: null,
-                    mode: SelectPermanentEffect.Mode.Custom,
-                    cardEffect: activateClass);
-
-                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that can't attack players.", "The opponent is selecting 1 Digimon that can't attack players.");
-
-                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
-                    bool DefenderCondition(Permanent defender)
-                        => defender == null;
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
-                        targetPermanent: permanent,
-                        defenderCondition: DefenderCondition,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass,
-                        effectName: "Can't Attack to player"));
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that can't attack players.", "The opponent is selecting 1 Digimon that can't attack players.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        bool DefenderCondition(Permanent defender)
+                            => defender == null;
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
+                            targetPermanent: permanent,
+                            defenderCondition: DefenderCondition,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass,
+                            effectName: "Can't Attack to player"));
+                    }
                 }
             }
 
@@ -71,7 +71,6 @@ namespace DCGO.CardEffects.EX13
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
-                additionalActivateCondition: SharedCanActivateCondition,
                 onPlay: true,
                 onDeletion: true);
 
