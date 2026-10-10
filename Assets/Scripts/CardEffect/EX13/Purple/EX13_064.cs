@@ -104,7 +104,7 @@ namespace DCGO.CardEffects.EX13
                         yield return null;
                     }
 
-                    if (fromHand && canSelectHand)
+                    if (fromHand)
                     {
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -126,7 +126,7 @@ namespace DCGO.CardEffects.EX13
 
                         yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                     }
-                    else if (!fromHand && canSelectTrash)
+                    else
                     {
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
