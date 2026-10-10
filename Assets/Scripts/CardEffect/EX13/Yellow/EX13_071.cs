@@ -61,7 +61,6 @@ namespace DCGO.CardEffects.EX13
             #endregion
 
             #region Main
-
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -148,7 +147,7 @@ namespace DCGO.CardEffects.EX13
                         canEndSelectCondition: CanEndSelectCondition,
                         maxCount: maxCount1,
                         canNoSelect: true,
-                        canEndNotMax: false,
+                        canEndNotMax: true,
                         selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                         mode: SelectPermanentEffect.Mode.Custom,
@@ -323,7 +322,7 @@ namespace DCGO.CardEffects.EX13
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 [Guilmon].", "The opponent is selecting 1 [Guilmon].");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 [Kudamon] to place Digivolution cards under.", "The opponent is selecting 1 [Kudamon] to place Digivolution cards under.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
