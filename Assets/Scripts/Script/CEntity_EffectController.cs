@@ -158,7 +158,7 @@ public class CEntity_EffectController : MonoBehaviour
                             {
                                 if (cardEffect is IAddSkillEffect)
                                 {
-                                    if (cardEffect.IsInheritedEffect == (cardSource == thisPermanent.TopCard) || cardSource.IsFlipped)
+                                    if ((cardEffect.IsInheritedEffect || cardEffect.IsLinkedEffect) == (cardSource == thisPermanent.TopCard) || cardSource.IsFlipped)
                                     {
                                         continue;
                                     }
