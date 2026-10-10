@@ -191,7 +191,7 @@ namespace DCGO.CardEffects.EX13
 
                             selectPermanentEffect2.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: permanent => permanents.Contains(permanent),
+                                canTargetCondition: permanent => permanents.Contains(permanent) && permanent.DigivolutionCards.Count(CanSelectTrashSourceCardCondition) >= 2,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: CanEndSelectCondition,
                                 maxCount: 1,
