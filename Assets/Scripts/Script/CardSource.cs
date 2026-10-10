@@ -2159,6 +2159,11 @@ public class CardSource : MonoBehaviour
             DataBase.ReplaceToASCII(_cEntity_Base.OptionEffect),
         };
 
+        foreach (string name in CardNames)
+        {
+            checkStrings.Add(DataBase.ReplaceToASCII(name));
+        }
+
         if (HasAssembly)
         {
             foreach(AssemblyConditionElement element in assemblyCondition.elements)
