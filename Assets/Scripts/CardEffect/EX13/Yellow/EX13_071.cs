@@ -231,7 +231,7 @@ namespace DCGO.CardEffects.EX13
 
                     if (trashed)
                     {
-                        List<CardSource> selectedSourceCards = new List<CardSource>() { card };
+                        List<CardSource> selectedSourceCards = new List<CardSource>();
                         List<CardSource> digivolutionCardsOrder = new List<CardSource>();
                         Permanent selectedKudamonPermanent = null;
 
