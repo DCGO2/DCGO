@@ -135,9 +135,9 @@ public class StreamingAssetsUtility
 
     }
 
-    public static async Task<Sprite> HandleCardImage(string fileName, string filePath, bool isSample = false)
+    public static async Task<Sprite> HandleCardImage(string fileName, string filePath, bool isSample = false, bool isBackup = false)
     {
-        string urlPath = $"https://web-garage.takaotaku.de/{fileName}";
+        string urlPath = isBackup ? $"https://web-garage.takaotaku.de/{fileName}" : $"https://github.com/Facundo-Villafane/dcg-cards/tree/main/cards/{fileName}";
         if (isSample) urlPath += $"-Sample.webp";
         else urlPath += $".webp";
 
@@ -151,9 +151,9 @@ public class StreamingAssetsUtility
 
         Debug.Log($"WebRequest isDone: {fileName}");
         if (webReq_CardImage.result == UnityWebRequest.Result.ConnectionError)
-            return null;
+            return isBackup ? null : await HandleCardImage(fileName, filePath, isSample, true);
         else if (webReq_CardImage.result == UnityWebRequest.Result.ProtocolError)
-            return null;
+            return isBackup ? null : await HandleCardImage(fileName, filePath, isSample, true);
         else
         {
             Debug.Log($"WebRequest Successful: Checking local file - {File.Exists(filePath)}");
@@ -168,7 +168,7 @@ public class StreamingAssetsUtility
                 return sprite;
             }
             else Debug.Log($"Failed to convert: {lError.ToString()}");
-            return null;
+            return isBackup ? null : await HandleCardImage(fileName, filePath, isSample, true);
         }
     }
 
