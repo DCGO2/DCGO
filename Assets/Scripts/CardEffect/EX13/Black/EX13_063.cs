@@ -29,22 +29,13 @@ namespace DCGO.CardEffects.EX13
                         && assemblyCard.Level <= 5
                         && assemblyCard.HasText("Mamemon");
 
-                bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
-                {
-                    List<CardSource> allCards = cardSources.Clone();
-
-                    allCards.Add(cardSource);
-
-                    return allCards.Count == Combinations.GetUniqueNameCardCount(allCards);
-                }
-
                 AssemblyCondition GetAssembly(CardSource cardSource)
                 {
                     if (cardSource != card) return null;
 
                     return new AssemblyCondition(
                         element: new AssemblyConditionElement(IsAssemblyCard),
-                        CanTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                        CanTargetCondition_ByPreSelecetedList: Combinations.WithDifferentNames,
                         selectMessage: "3 Lv.5 or lower [Mamemon] text cards w/different names",
                         elementCount: 3,
                         reduceCost: 4);
