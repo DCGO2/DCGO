@@ -1,4 +1,3 @@
-
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -10,16 +9,28 @@ public class StreamingAssetsUtility
 {
     public static async Task<byte[]> ReadFile(string path)
     {
-        using (FileStream fileStream = new FileStream(
-            path, FileMode.Open, FileAccess.Read))
-        {
-            var resultBytes = new byte[fileStream.Length];
-            await fileStream.ReadAsync(resultBytes, 0, (int)fileStream.Length);
-            return resultBytes;
-        }
-    }
+        using FileStream fileStream = new FileStream(
+            path, FileMode.Open, FileAccess.Read, FileShare.Read);
 
-    #region 画像の取得
+        if (fileStream.Length > int.MaxValue)
+            throw new IOException($"File is too large to read: {path}");
+
+        byte[] resultBytes = new byte[(int)fileStream.Length];
+        int offset = 0;
+
+        while (offset < resultBytes.Length)
+        {
+            int bytesRead = await fileStream.ReadAsync(
+                resultBytes, offset, resultBytes.Length - offset);
+
+            if (bytesRead == 0)
+                throw new EndOfStreamException($"Unexpected end of file: {path}");
+
+            offset += bytesRead;
+        }
+
+        return resultBytes;
+    }
     public static Texture2D BinaryToTexture(byte[] bytes)
     {
         Texture2D texture = new Texture2D(1, 1);
@@ -29,7 +40,7 @@ public class StreamingAssetsUtility
 
     public static async Task<Sprite> GetSprite(string fileName, bool isCard = false, bool isLauncher = false)
     {
-        string path = "";
+        string path;
 
         if (isCard)
         {
@@ -41,14 +52,16 @@ public class StreamingAssetsUtility
             {
                 path = Path.Combine(GetStreamingAssetPath("Textures", isLauncher), $"Card/{fileName}.webp").Replace("\\", "/");
 
-                if (!File.Exists(path))
-                {
-                    return await GetCardImageData(fileName, path);
-                }
-                else
-                {
-                    return await GetCardImageDataLocal(path);
-                }
+                Sprite sprite = null;
+
+                if (File.Exists(path))
+                    sprite = await GetCardImageDataLocal(path);
+
+                if (sprite != null)
+                    return sprite;
+
+                // Also retry downloading if the local file exists but is invalid.
+                return await GetCardImageData(fileName, path);
             }
         }
         else
@@ -93,86 +106,156 @@ public class StreamingAssetsUtility
 
     public static async Task<Sprite> GetCardImageDataLocal(string path)
     {
-        if (File.Exists(path))
-        {
-            Debug.Log($"File Exists Locally: {path}");
-            byte[] imageBuff = await ReadFile(path);
-            Debug.Log($"Grabbing image bytes: {imageBuff}");
-            Texture2D texture = Texture2DExt.CreateTexture2DFromWebP(imageBuff, lMipmaps: true, lLinear: false, lError: out WebP.Error lError);
-            Debug.Log($"Converting WebP to Texture2D: {texture}");
-            if (lError == WebP.Error.Success)
-            {
-                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+        if (!File.Exists(path))
+            return null;
 
-                return sprite;
-            }
-            else
-            {
-                Debug.Log(lError.ToString());
-            }
+        byte[] imageBuff = await ReadFile(path);
+
+        if (!IsValidWebP(imageBuff))
+        {
+            Debug.LogWarning($"Invalid local WebP file: {path}. Will attempt to download it again.");
+            return null;
         }
 
-        return null;
+        try
+        {
+            Texture2D texture = Texture2DExt.CreateTexture2DFromWebP(
+                imageBuff,
+                lMipmaps: true,
+                lLinear: false,
+                lError: out WebP.Error lError);
+
+            if (lError != WebP.Error.Success || texture == null)
+            {
+                Debug.LogWarning($"Failed to decode local WebP: {path}. Error: {lError}");
+                return null;
+            }
+
+            return Sprite.Create(
+                texture,
+                new Rect(0, 0, texture.width, texture.height),
+                Vector2.zero);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"Exception decoding local WebP: {path}\n{ex.Message}");
+            return null;
+        }
+    }
+
+    private static bool IsValidWebP(byte[] data)
+    {
+        if (data == null || data.Length < 12)
+            return false;
+
+        return data[0] == (byte)'R'
+            && data[1] == (byte)'I'
+            && data[2] == (byte)'F'
+            && data[3] == (byte)'F'
+            && data[8] == (byte)'W'
+            && data[9] == (byte)'E'
+            && data[10] == (byte)'B'
+            && data[11] == (byte)'P';
     }
 
     public static async Task<Sprite> GetCardImageData(string fileName, string filePath)
     {
-        Sprite sprite;
+        Sprite sprite = await HandleCardImage(fileName, filePath);
 
-        // Attempt to get the card image from repo
-        sprite = await HandleCardImage(fileName, filePath);
+        if (sprite != null)
+            return sprite;
 
-        if (sprite != null) return sprite;
-        else
+        return await HandleCardImage(fileName, filePath, isSample: true);
+    }
+
+    public static async Task<Sprite> HandleCardImage(
+        string fileName,
+        string filePath,
+        bool isSample = false,
+        bool isBackup = false)
+    {
+        string urlPath = isBackup
+            ? $"https://web-garage.takaotaku.de/{fileName}"
+            : $"https://raw.githubusercontent.com/Facundo-Villafane/dcg-cards/main/cards/{fileName}";
+
+        urlPath += isSample ? "-Sample.webp" : ".webp";
+
+        using UnityWebRequest request = UnityWebRequest.Get(urlPath);
+        UnityWebRequestAsyncOperation operation = request.SendWebRequest();
+
+        while (!operation.isDone)
+            await Task.Yield();
+
+        byte[] data = request.downloadHandler?.data;
+
+        Debug.Log(
+            $"Image request: {urlPath}\n" +
+            $"Result: {request.result}\n" +
+            $"HTTP status: {request.responseCode}\n" +
+            $"Bytes received: {(data == null ? 0 : data.Length)}");
+
+        if (request.result != UnityWebRequest.Result.Success)
         {
+            Debug.LogWarning($"Image request failed: {urlPath}\n{request.error}");
 
-            // Attempt to get the card image from repo, this time with the sample suffix
-            sprite = await HandleCardImage(fileName, filePath, isSample: true);
+            if (!isBackup)
+                return await HandleCardImage(fileName, filePath, isSample, true);
 
-            if (sprite != null) return sprite;
             return null;
         }
 
-    }
-
-    public static async Task<Sprite> HandleCardImage(string fileName, string filePath, bool isSample = false, bool isBackup = false)
-    {
-        string urlPath = isBackup ? $"https://web-garage.takaotaku.de/{fileName}" : $"https://github.com/Facundo-Villafane/dcg-cards/tree/main/cards/{fileName}";
-        if (isSample) urlPath += $"-Sample.webp";
-        else urlPath += $".webp";
-
-        UnityWebRequest webReq_CardImage = UnityWebRequest.Get(urlPath);
-        UnityWebRequestAsyncOperation operation = webReq_CardImage.SendWebRequest();
-
-        while (!operation.isDone)
+        if (!IsValidWebP(data))
         {
-            await Task.Yield();
+            Debug.LogWarning($"Response is not a valid WebP file: {urlPath}");
+
+            if (!isBackup)
+                return await HandleCardImage(fileName, filePath, isSample, true);
+
+            return null;
         }
 
-        Debug.Log($"WebRequest isDone: {fileName}");
-        if (webReq_CardImage.result == UnityWebRequest.Result.ConnectionError)
-            return isBackup ? null : await HandleCardImage(fileName, filePath, isSample, true);
-        else if (webReq_CardImage.result == UnityWebRequest.Result.ProtocolError)
-            return isBackup ? null : await HandleCardImage(fileName, filePath, isSample, true);
-        else
+        try
         {
-            Debug.Log($"WebRequest Successful: Checking local file - {File.Exists(filePath)}");
-            if (!File.Exists(filePath))
-                File.WriteAllBytes(filePath, webReq_CardImage.downloadHandler.data);
+            Texture2D texture = Texture2DExt.CreateTexture2DFromWebP(
+                data,
+                lMipmaps: true,
+                lLinear: false,
+                lError: out WebP.Error lError);
 
-            Texture2D texture = Texture2DExt.CreateTexture2DFromWebP(webReq_CardImage.downloadHandler.data, lMipmaps: true, lLinear: false, lError: out WebP.Error lError);
-
-            if (lError == WebP.Error.Success)
+            if (lError != WebP.Error.Success || texture == null)
             {
-                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
-                return sprite;
+                Debug.LogWarning($"WebP decoding failed: {urlPath}. Error: {lError}");
+
+                if (!isBackup)
+                    return await HandleCardImage(fileName, filePath, isSample, true);
+
+                return null;
             }
-            else Debug.Log($"Failed to convert: {lError.ToString()}");
-            return isBackup ? null : await HandleCardImage(fileName, filePath, isSample, true);
+
+            // Save only after confirming the response can be decoded.
+            string directory = Path.GetDirectoryName(filePath);
+
+            if (!string.IsNullOrEmpty(directory))
+                Directory.CreateDirectory(directory);
+
+            File.WriteAllBytes(filePath, data);
+
+            return Sprite.Create(
+                texture,
+                new Rect(0, 0, texture.width, texture.height),
+                Vector2.zero);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"Exception decoding WebP from {urlPath}\n{ex}");
+
+            if (!isBackup)
+                return await HandleCardImage(fileName, filePath, isSample, true);
+
+            return null;
         }
     }
 
-    #endregion
 
     public static bool IsCardExists(CEntity_Base cEntity_Base)
     {
@@ -184,7 +267,6 @@ public class StreamingAssetsUtility
         return File.Exists(path);
     }
 
-    #region テキストファイルの取得
     public static string GetText(string fileName)
     {
         string path = Path.Combine(GetStreamingAssetPath("", false), $"{fileName}.txt").Replace("\\", "/");
@@ -196,7 +278,6 @@ public class StreamingAssetsUtility
 
         return "";
     }
-    #endregion
 
     public static string GetStreamingAssetPath(string subPath, bool isLauncher)
     {
@@ -231,16 +312,16 @@ public class StreamingAssetsUtility
         path = path.Replace("\\", "/");
         if (!path.Contains("/")) return path;
 
-        path = path.Substring(0, path.LastIndexOf("/") + 1);
+        path = path[..(path.LastIndexOf("/") + 1)];
 
         if (path.Length >= 1)
         {
             if (path[path.Length - 1] == '/')
             {
-                path = path.Substring(0, path.LastIndexOf("/"));
+                path = path[..path.LastIndexOf("/")];
             }
         }
 
-        return path.Substring(0, path.LastIndexOf("/") + 1);
+        return path[..(path.LastIndexOf("/") + 1)];
     }
 }
