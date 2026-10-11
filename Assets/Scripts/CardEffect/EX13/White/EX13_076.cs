@@ -165,8 +165,7 @@ namespace DCGO.CardEffects.EX13
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("May botdeck 1 enemy Digimon, may unsuspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
-                activateClass.SetIsSkippable(true);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("EX13_076_AT");
                 cardEffects.Add(activateClass);
 
@@ -282,9 +281,8 @@ namespace DCGO.CardEffects.EX13
                     return null;
                 }
             }
-            #endregion
+            #endregion   
             
-
             return cardEffects;
         }
     }
