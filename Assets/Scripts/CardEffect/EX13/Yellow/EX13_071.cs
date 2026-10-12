@@ -356,7 +356,7 @@ namespace DCGO.CardEffects.EX13
                         bool CanEvoKentaurosmonCardCondition(CardSource cardSource)
                         {
                             return CanSelectKentaurosmonCardCondition(cardSource)
-                                && cardSource.CanPlayCardTargetFrame(selectedKudamonPermanent.PermanentFrame, false, activateClass);
+                                && cardSource.CanPlayCardTargetFrame(selectedKudamonPermanent.PermanentFrame, true, activateClass);
                         }
 
                         bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanEvoKentaurosmonCardCondition);
