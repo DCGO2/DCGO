@@ -353,17 +353,50 @@ namespace DCGO.CardEffects.EX13
                         yield return ContinuousController.instance.StartCoroutine(
                             selectedKudamonPermanent.AddDigivolutionCardsBottom(digivolutionCardsOrder, activateClass));
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                        bool CanEvoKentaurosmonCardCondition(CardSource cardSource)
+                        {
+                            return CanSelectKentaurosmonCardCondition(cardSource)
+                                && cardSource.CanPlayCardTargetFrame(selectedKudamonPermanent.PermanentFrame, false, activateClass);
+                        }
+
+                        bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanEvoKentaurosmonCardCondition);
+                        bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanEvoKentaurosmonCardCondition);
+
+                        if (canSelectHand || canSelectTrash)
+                        {
+                            if (canSelectHand && canSelectTrash)
+                            {
+                                GManager.instance.userSelectionManager.SetBoolSelection(
+                                    selectionElements: new List<SelectionElement<bool>>()
+                                    {
+                                    new SelectionElement<bool>(message: "From hand", value: true, spriteIndex: 0),
+                                    new SelectionElement<bool>(message: "From trash", value: false, spriteIndex: 1),
+                                    },
+                                    selectPlayer: card.Owner,
+                                    selectPlayerMessage: "From which area will you Digivolve?",
+                                    notSelectPlayerMessage: "The opponent is choosing from which area to Digivolve.");
+                            }
+                            else
+                            {
+                                GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                            bool isHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                             selectedKudamonPermanent,
                             CanSelectKentaurosmonCardCondition,
                             payCost: true,
                             reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
                             fixedCostTuple: null,
                             ignoreDigivolutionRequirementFixedCost: -1,
-                            isHand: true,
+                            isHand: isHand,
                             activateClass: activateClass,
                             successProcess: null,
                             ignoreRequirements: CardEffectCommons.IgnoreRequirement.Level));
+                        }
                     }
 
                     if (!trashed) activateClass.RemoveUse();
