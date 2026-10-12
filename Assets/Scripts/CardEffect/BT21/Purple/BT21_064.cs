@@ -43,7 +43,8 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool HasNameOrTrait(CardSource cardSource)
@@ -57,7 +58,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass) &&
                            CardEffectCommons.HasMatchConditionOwnersHand(card, HasNameOrTrait);
                 }
 

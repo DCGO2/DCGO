@@ -42,12 +42,12 @@ namespace DCGO.CardEffects.BT24
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card)
-                        && CardEffectCommons.IsExistOnBattleArea(card);
+                        && CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 bool CanSelectCardCondition(CardSource card)
