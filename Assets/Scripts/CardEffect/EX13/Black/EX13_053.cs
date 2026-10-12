@@ -108,32 +108,7 @@ namespace DCGO.CardEffects.EX13
             #region Rule
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as including [Mamemon]", CanUseCondition, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-
-                cardEffects.Add(changeCardNamesClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> changeCardNames(CardSource cardSource, List<string> cardNames)
-                {
-                    if (cardSource == card)
-                    {
-                        for (int i = 0; i < cardNames.Count; i++)
-                        {
-                            if (!cardNames[i].Contains("Mamemon"))
-                            {
-                                cardNames[i] = $"Mamemon {cardNames[i]}";
-                            }
-                        }
-                    }
-
-                    return cardNames;
-                }
+                cardEffects.Add(CardEffectFactory.NameTreatedAsIncluding(card, "Mamemon"));
             }
             #endregion
 

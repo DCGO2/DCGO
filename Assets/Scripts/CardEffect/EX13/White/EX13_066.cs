@@ -13,17 +13,7 @@ namespace DCGO.CardEffects.EX13
             #region Rule - Name
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("[Rule] Name: Also treated as [Sistermon Ciel (Awakened)].", _ => true, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: ChangeCardNames);
-                cardEffects.Add(changeCardNamesClass);
-
-                List<string> ChangeCardNames(CardSource cardSource, List<string> cardNames)
-                {
-                    if (cardSource == card) cardNames.Add("Sistermon Ciel (Awakened)");
-
-                    return cardNames;
-                }
+                cardEffects.Add(CardEffectFactory.NameIsAlso(card, "Sistermon Ciel (Awakened)"));
             }
             #endregion         
 

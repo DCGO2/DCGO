@@ -1491,7 +1491,7 @@ public class CardSource : MonoBehaviour
         string replaced = name.Replace(" ", "");
         string lower = name.ToLower();
 
-        return CardNames.Some((cardName) =>
+        return CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0]).Some((cardName) =>
         cardName.Equals(name)
         || cardName.Equals(replaced)
         || cardName.Replace(" ", "").Equals(replaced)
@@ -1604,7 +1604,8 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardNames.Some((cardName) => (cardName.Contains("Greymon") || cardName.Contains("greymon"))
+            if (CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0])
+            .Some((cardName) => (cardName.Contains("Greymon") || cardName.Contains("greymon"))
             && cardName != "DoruGreymon"
             && cardName != "BurningGreymon"
             && cardName != "DexDoruGreymon"))
@@ -1624,7 +1625,8 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardNames.Some((cardName) => (cardName.Contains("Garurumon") || cardName.Contains("garurumon"))
+            if (CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0])
+            .Some((cardName) => (cardName.Contains("Garurumon") || cardName.Contains("garurumon"))
             && cardName != "KendoGarurumon"))
             {
                 return true;
@@ -1642,7 +1644,8 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardNames.Some((cardName) => (cardName.Contains("Impmon") || cardName.Contains("impmon"))
+            if (CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0])
+            .Some((cardName) => (cardName.Contains("Impmon") || cardName.Contains("impmon"))
             && cardName != "Blimpmon"))
             {
                 return true;
@@ -1660,7 +1663,8 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardNames.Some((cardName) => (cardName.Contains("Agumon") || cardName.Contains("agumon"))
+            if (CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0])
+            .Some((cardName) => (cardName.Contains("Agumon") || cardName.Contains("agumon"))
             && cardName != "Pagumon"))
             {
                 return true;
@@ -1678,7 +1682,8 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardNames.Some((cardName) => (cardName.Contains("Dramon") || cardName.Contains("dramon"))
+            if (CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0])
+            .Some((cardName) => (cardName.Contains("Dramon") || cardName.Contains("dramon"))
             && cardName != "Indramon"))
             {
                 return true;
@@ -1692,7 +1697,7 @@ public class CardSource : MonoBehaviour
 
     #region whether this card has at least 1 card name that contains "AAntibody"
 
-    public bool HasXAntiBodyName => CardNames.Some(DataBase.IsContainingXAntibodyString);
+    public bool HasXAntiBodyName => CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0]).Some(DataBase.IsContainingXAntibodyString);
 
     #endregion
 
