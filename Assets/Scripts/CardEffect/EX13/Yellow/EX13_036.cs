@@ -167,7 +167,7 @@ namespace DCGO.CardEffects.EX13
                             {
                                 if (card.PermanentOfThisCard().IsDigimon)
                                 {
-                                    List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnEnterFieldAnyone)
+                                    List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.SecuritySkill)
                                     .Clone()
                                     .Filter(CanBeEffectCandidate);
 
@@ -226,7 +226,7 @@ namespace DCGO.CardEffects.EX13
                                         && selectedEffect.EffectSourceCard != null
                                         && selectedEffect.EffectSourceCard.PermanentOfThisCard() != null)
                                         {
-                                            Hashtable securityHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(selectedEffect.EffectSourceCard);
+                                            Hashtable securityHashtable = CardEffectCommons.SecurityCheckHashtableOfCard(selectedEffect.EffectSourceCard);
 
                                             if (selectedEffect.CanUse(securityHashtable))
                                             {
