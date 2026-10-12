@@ -16,22 +16,7 @@ namespace DCGO.CardEffects.AD1
             #region Name Rule
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("[Rule] Name: Also treated as [Tommy Himi]/[Takuya Kanbara]/[Zoe Orimoto].", _ => true, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: ChangeCardNames);
-                cardEffects.Add(changeCardNamesClass);
-            
-                List<string> ChangeCardNames(CardSource cardSource, List<string> cardNames)
-                {
-                    if (cardSource == card)
-                    {
-                        cardNames.Add("Tommy Himi");
-                        cardNames.Add("Takuya Kanbara");
-                        cardNames.Add("Zoe Orimoto");
-                    }
-            
-                    return cardNames;
-                }
+                cardEffects.Add(CardEffectFactory.NameIsAlso(card, "Tommy Himi", "Takuya Kanbara", "Zoe Orimoto"));
             }
             #endregion
             

@@ -87,7 +87,7 @@ public static class Combinations
         List<string[]> cardNames = new List<string[]>();
 
         foreach (CardSource cardSource in cardSources)
-            cardNames.Add(cardSource.CardNames.ToArray());
+            cardNames.Add(cardSource.CardNames.Map(name => name.Split(CardEffectFactory.NAME_SEPARATOR)[0]).ToArray());
 
         return HighestValue(GetCombinations(cardNames));
     }
