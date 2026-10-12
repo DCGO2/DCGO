@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Linq;
 
 // Richard Sampson
@@ -353,14 +354,14 @@ namespace DCGO.CardEffects.EX13
                         yield return ContinuousController.instance.StartCoroutine(
                             selectedKudamonPermanent.AddDigivolutionCardsBottom(digivolutionCardsOrder, activateClass));
 
-                        bool CanEvoKentaurosmonCardCondition(CardSource cardSource)
+                        bool CanEvoKentaurosmonCardCondition(CardSource cardSource, bool root)
                         {
                             return CanSelectKentaurosmonCardCondition(cardSource)
-                                && cardSource.CanPlayCardTargetFrame(selectedKudamonPermanent.PermanentFrame, true, activateClass);
+                                && cardSource.CanPlayCardTargetFrame(selectedKudamonPermanent.PermanentFrame, true, activateClass, root ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash, -1, false, CardEffectCommons.IgnoreRequirement.Level);
                         }
 
-                        bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanEvoKentaurosmonCardCondition);
-                        bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanEvoKentaurosmonCardCondition);
+                        bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, (cardSource) => CanEvoKentaurosmonCardCondition(cardSource, true));
+                        bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanEvoKentaurosmonCardCondition(cardSource, false));
 
                         if (canSelectHand || canSelectTrash)
                         {
