@@ -139,13 +139,25 @@ namespace DCGO.CardEffects.EX13
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        isUsed = true;
+                        List<CardSource> targetCards = new List<CardSource>();
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
-                            targetPermanent: permanent, 
-                            trashCount: permanent.DigivolutionCards.Count, 
-                            isFromTop: true, 
-                            activateClass: activateClass));
+                        if (!permanent.ImmuneFromStackReturnToLibrary(activateClass))
+                        {
+                            for (int i = 0; i < permanent.DigivolutionCards.Count; i++)
+                            {
+                                if (permanent.DigivolutionCards.Count >= i + 1)
+                                {
+                                    int index = false ? i : permanent.DigivolutionCards.Count - 1 - i;
+                                    CardSource botdeckTargetCard = permanent.DigivolutionCards[index];
+
+                                    targetCards.Add(botdeckTargetCard);
+                                }
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(new ReturnToLibraryBottomDigivolutionCardsClass(
+                                permanent,
+                                targetCards, CardEffectCommons.CardEffectHashtable(activateClass)).ReturnToLibraryBottomDigivolutionCards());
+                        }
 
                         yield return ContinuousController.instance.StartCoroutine(new IBattle(card.PermanentOfThisCard(), permanent, null, true, CompareDigivolutionCards: true).Battle());
                     }
