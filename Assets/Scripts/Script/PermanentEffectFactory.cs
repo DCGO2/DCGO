@@ -51,6 +51,49 @@ public partial class PermanentEffectFactory
     }
     #endregion
 
+    #region Effect of a Permanent to Delete Itself
+    public static ActivateClass BounceSelfEffect(Permanent permanent, ICardEffect cardEffect, bool bounceOnOwnturn = true, bool bounceOnOpponentsTurn = true)
+    {
+        if (permanent == null || permanent.TopCard == null) return null;
+
+        ActivateClass activateClass = new ActivateClass();
+        activateClass.SetUpICardEffect("Bounce this Digimon", CanUseCondition, permanent.TopCard);
+        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, "");
+        activateClass.SetEffectSourcePermanent(permanent);
+        return activateClass;
+
+        bool CanUseCondition(Hashtable hashtable)
+        {
+            if (permanent.TopCard != null
+            && CardEffectCommons.IsExistOnBattleArea(permanent.TopCard)
+            && !permanent.TopCard.CanNotBeAffected(cardEffect))
+            {
+                if (CardEffectCommons.IsOwnerTurn(permanent.TopCard))
+                {
+                    return bounceOnOwnturn;
+                }
+                else
+                {
+                    return bounceOnOpponentsTurn;
+                }
+            }
+            return false;
+        }
+
+        bool CanActivateCondition(Hashtable hashtable)
+        {
+            return permanent.TopCard != null
+                && CardEffectCommons.IsExistOnBattleArea(permanent.TopCard)
+                && !permanent.TopCard.CanNotBeAffected(cardEffect);
+        }
+
+        IEnumerator ActivateCoroutine(Hashtable hashtable)
+        {
+            yield return ContinuousController.instance.StartCoroutine(new HandBounceClaass(new List<Permanent>() { permanent }, CardEffectCommons.CardEffectHashtable(activateClass)).Bounce());
+        }
+    }
+    #endregion
+
     #region Digimon Effect Immunity
     public static CanNotAffectedClass DigimonEffectImmunity(Permanent permanent)
     {
