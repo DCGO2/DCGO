@@ -43,114 +43,176 @@ namespace DCGO.CardEffects.P
                     CardSource selectedCard = null;
                     Permanent selectedPermanent = null;
 
+                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
+                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
 
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to place under another card.",
-                        "The opponent is selecting 1 card to place under another card.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
-
-                    yield return StartCoroutine(selectHandEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    if (canSelectHand || canSelectTrash)
                     {
-                        selectedCard = cardSource;
-                        yield return null;
-                    }
-
-                    if (selectedCard != null)
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerPermanentCondition))
+                        if (canSelectHand && canSelectTrash)
                         {
                             List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                             {
-                                new(message: "Under this Digimon", value: 1, spriteIndex: 0),
-                                new(message: "Under Tamer with inherited effects", value: 2, spriteIndex: 0),
-                                new(message: "Don't place", value: 3, spriteIndex: 1),
+                                new(message: "From hand", value: 1, spriteIndex: 0),
+                                new(message: "From trash", value: 2, spriteIndex: 0),
+                                new(message: "Don't select", value: 3, spriteIndex: 1),
                             };
 
                             GManager.instance.userSelectionManager.SetIntSelection(
                                 selectionElements: selectionElements,
                                 selectPlayer: card.Owner,
-                                selectPlayerMessage: "To which area will you place a card?",
-                                notSelectPlayerMessage: "The opponent is choosing to which area to place a card.");
+                                selectPlayerMessage: "From which area will you select a card?",
+                                notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                            if (GManager.instance.userSelectionManager.SelectedIntValue == 3) yield break;
                         }
                         else
                         {
-                            GManager.instance.userSelectionManager.SetInt(1);
+                            GManager.instance.userSelectionManager.SetInt(canSelectHand ? 1 : 2);
                         }
 
-                        if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { selectedCard }, activateClass));
-                            placed = true;
-                        }
-                        else
-                        {
-                            SelectPermanentEffect suspendPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        int selectedArea = GManager.instance.userSelectionManager.SelectedIntValue;
 
-                            suspendPermanentEffect.SetUp(
+                        if (selectedArea == 3) yield break;
+
+                        if (selectedArea == 1)
+                        {
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                            selectHandEffect.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectTamerPermanentCondition,
+                                canTargetCondition: CanSelectCardCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
                                 canNoSelect: true,
                                 canEndNotMax: false,
-                                selectPermanentCoroutine: selectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
+                                isShowOpponent: true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(suspendPermanentEffect.Activate());
+                            selectHandEffect.SetUpCustomMessage("Select 1 card to place under another card.",
+                                "The opponent is selecting 1 card to place under another card.");
+                            selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
 
-                            IEnumerator selectPermanentCoroutine(Permanent permanent)
-                            {
-                                selectedPermanent = permanent;
+                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                        }
+                        else
+                        {
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                                yield return null;
-                            }
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 card to place under another card.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
 
-                            if (selectedPermanent != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource> { selectedCard }, activateClass));
-                                placed = true;
-                            }
+                            selectCardEffect.SetUpCustomMessage("Select 1 card to place under another card.",
+                                "The opponent is selecting 1 card to place under another card.");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Selected Card");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                         }
 
-                        if (placed)
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            Permanent targetPermanent = selectedPermanent ?? card.PermanentOfThisCard();
+                            selectedCard = cardSource;
+                            yield return null;
+                        }
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                targetPermanent: targetPermanent,
-                                cardCondition: CanSelectCardCondition,
-                                payCost: true,
-                                reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
-                                fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: true,
-                                activateClass: activateClass,
-                                successProcess: null
-                            ));
+                        if (selectedCard != null)
+                        {
+                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerPermanentCondition))
+                            {
+                                List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
+                                {
+                                    new(message: "Under this Digimon", value: 1, spriteIndex: 0),
+                                    new(message: "Under Tamer with inherited effects", value: 2, spriteIndex: 0),
+                                    new(message: "Don't place", value: 3, spriteIndex: 1),
+                                };
+
+                                GManager.instance.userSelectionManager.SetIntSelection(
+                                    selectionElements: selectionElements,
+                                    selectPlayer: card.Owner,
+                                    selectPlayerMessage: "To which area will you place a card?",
+                                    notSelectPlayerMessage: "The opponent is choosing to which area to place a card.");
+
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                                if (GManager.instance.userSelectionManager.SelectedIntValue == 3) yield break;
+                            }
+                            else
+                            {
+                                GManager.instance.userSelectionManager.SetInt(1);
+                            }
+
+                            if (GManager.instance.userSelectionManager.SelectedIntValue == 1)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { selectedCard }, activateClass));
+                                placed = true;
+                            }
+                            else
+                            {
+                                SelectPermanentEffect suspendPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                suspendPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectTamerPermanentCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: true,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: selectPermanentCoroutine,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                yield return ContinuousController.instance.StartCoroutine(suspendPermanentEffect.Activate());
+
+                                IEnumerator selectPermanentCoroutine(Permanent permanent)
+                                {
+                                    selectedPermanent = permanent;
+
+                                    yield return null;
+                                }
+
+                                if (selectedPermanent != null)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource> { selectedCard }, activateClass));
+                                    placed = true;
+                                }
+                            }
+
+                            if (placed)
+                            {
+                                Permanent targetPermanent = selectedPermanent ?? card.PermanentOfThisCard();
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                    targetPermanent: targetPermanent,
+                                    cardCondition: CanSelectCardCondition,
+                                    payCost: true,
+                                    reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
+                                    fixedCostTuple: null,
+                                    ignoreDigivolutionRequirementFixedCost: -1,
+                                    isHand: true,
+                                    activateClass: activateClass,
+                                    successProcess: null
+                                ));
+                            }
                         }
                     }
                 }
