@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// Volcanicdramon
 namespace DCGO.CardEffects.EX3
 {
     public class EX3_012 : CEntity_Effect
@@ -9,14 +10,15 @@ namespace DCGO.CardEffects.EX3
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete opponent's all Digimon with the lowest DP or opponent can't play Digimon with 5000 DP or less", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[On Play] Delete all of your opponent's Digimon with the lowest DP. If no Digimon is deleted by this effect, your opponent can't play Digimon with 5000 DP or less until the end of their turn.";
                 }
@@ -28,17 +30,13 @@ namespace DCGO.CardEffects.EX3
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -62,17 +60,11 @@ namespace DCGO.CardEffects.EX3
 
                         bool CardCondition(CardSource cardSource)
                         {
-                            if (cardSource.IsDigimon || cardSource.IsDigiEgg)
-                            {
-                                if (cardSource.HasDP && cardSource.CardDP <= 5000)
-                                {
-                                    return true;
-                                }
-                            }
-
-                            return cardSource.Owner == card.Owner.Enemy &&
-                                   (cardSource.IsDigimon || cardSource.IsDigiEgg) &&
-                                   (cardSource.HasDP && cardSource.CardDP <= 5000);
+                            return cardSource.Owner == card.Owner.Enemy
+                                && (cardSource.IsDigimon
+                                    || cardSource.IsDigiEgg)
+                                && (cardSource.HasDP
+                                    && cardSource.CardDP <= 5000);
                         }
 
                         bool CardEffectCondition(ICardEffect cardEffect)
@@ -84,49 +76,45 @@ namespace DCGO.CardEffects.EX3
                     }
                 }
             }
+            #endregion
 
+            #region When Attacking
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect($"Trash the top card of opponent's security", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Trash the top card of opponent's security", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Attacking] If you have a Tamer in play, trash the top card of your opponent's security stack.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.Enemy.SecurityCards.Count >= 1)
-                        {
-                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner.Enemy,
-                        destroySecurityCount: 1,
-                        cardEffect: activateClass,
-                        fromTop: true).DestroySecurity());
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                            player: card.Owner.Enemy,
+                            destroySecurityCount: 1,
+                            cardEffect: activateClass,
+                            fromTop: true).DestroySecurity());
+                    }
                 }
             }
+            #endregion
 
             return cardEffects;
         }
