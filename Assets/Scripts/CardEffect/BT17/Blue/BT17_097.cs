@@ -98,6 +98,8 @@ namespace DCGO.CardEffects.BT17
             #region Delay Effect
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
+                List<Permanent> removedPermanents = null;
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into a Digimon card with [Imperialdramon] in its name in your hand to prevent deletion", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
@@ -110,9 +112,15 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanDeclareOptionDelayEffect(card)
-                        && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, IsOwnerPermanentCondition)
-                        && !CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card));
+                    if (CardEffectCommons.CanDeclareOptionDelayEffect(card)
+                    && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, IsOwnerPermanentCondition)
+                    && !CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card)))
+                    {
+                        removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(IsOwnerPermanentCondition);
+                            return true;
+                    }
+
+                    return false;
                 }
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
@@ -139,9 +147,7 @@ namespace DCGO.CardEffects.BT17
 
                     IEnumerator SuccessProcess()
                     {
-                        List<Permanent> removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(IsOwnerPermanentCondition);
-
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, removedPermanents.Contains))
+                        if (CardEffectCommons.HasMatchConditionPermanent(removedPermanents.Contains))
                         {
                             Permanent selectedPermanent = null;
 
