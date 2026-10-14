@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
+// Quantumon
 namespace DCGO.CardEffects.LM
 {
     public class LM_020 : CEntity_Effect
@@ -15,48 +15,31 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 Digimon card to top of Security, and return 1 Security to top of deck", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Digivolving] By placing 1 Digimon on the top of its owner's security stack, reveal all of your opponent's security cards, and place 1 card among them on top of your opponent's deck. Shuffle the rest and return them to the security stack.";
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return true;
-                }
-
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
-                    {
-                        if (permanent.TopCard.Owner.CanAddSecurity(activateClass))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition)
+                        && card.Owner.CanAddSecurity(activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -67,7 +50,7 @@ namespace DCGO.CardEffects.LM
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        canNoSelect: false,
+                        canNoSelect: true,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
                         maxCount: 1,
@@ -90,68 +73,64 @@ namespace DCGO.CardEffects.LM
 
                     IEnumerator SuccessProcess(CardSource cardSource)
                     {
-                        if (card.Owner.Enemy.SecurityCards.Count >= 1)
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(card.Owner.Enemy.SecurityCards, "Security Cards", true, true));
+
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        CardSource selectedCard = null;
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: cardSource => true,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => false,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            message: "Select 1 card to return to top of deck.",
+                            maxCount: 1,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Security,
+                            customRootCardList: card.Owner.Enemy.SecurityCards,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        selectCardEffect.SetUpCustomMessage_ShowCard("Return card to top of deck");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(card.Owner.Enemy.SecurityCards, "Security Cards", true, true));
-
-                            int maxCount = 1;
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            CardSource selectedCard = null;
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => false,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                                message: "Select 1 card to return to top of deck.",
-                                maxCount: maxCount,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Security,
-                                customRootCardList: card.Owner.Enemy.SecurityCards,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Return card to top of deck");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCard = cardSource;
-                                yield return null;
-                            }
-
-                            IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                            {
-                                if (cardSources.Count >= 1)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
-                                        player: card.Owner.Enemy,
-                                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
-                                        activateClass).ReduceSecurity());
-                                }
-                            }
-
-                            if (selectedCard != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(new List<CardSource>() { selectedCard }, cardEffect: activateClass));
-                            }
-
-                            ContinuousController.instance.PlaySE(GManager.instance.ShuffleSE);
-
-                            card.Owner.Enemy.SecurityCards = RandomUtility.ShuffledDeckCards(card.Owner.Enemy.SecurityCards);
+                            selectedCard = cardSource;
+                            yield return null;
                         }
+
+                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                        {
+                            if (cardSources.Count >= 1)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
+                                    player: card.Owner.Enemy,
+                                    refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                    activateClass).ReduceSecurity());
+                            }
+                        }
+
+                        if (selectedCard != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(new List<CardSource>() { selectedCard }, cardEffect: activateClass));
+                        }
+
+                        ContinuousController.instance.PlaySE(GManager.instance.ShuffleSE);
+
+                        card.Owner.Enemy.SecurityCards = RandomUtility.ShuffledDeckCards(card.Owner.Enemy.SecurityCards);
+
                         yield return null;
                     }
                 }
             }
-
             #endregion
 
             #region Start of Opponent's Turn
@@ -159,32 +138,25 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Choose 1 category", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 CardKind selectedCategory = CardKind.Digimon;
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Start of Opponent's Turn] Declare 1 card category. Then, reveal the top card of your opponent's deck. If that card is of the declared category, this Digimon isn't affected by the effects of that card category for the turn. Return the revealed card to the top or bottom of your opponent's deck.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOpponentTurn(card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.IsOpponentTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -274,13 +246,13 @@ namespace DCGO.CardEffects.LM
                                         }
                                         break;
                                     case CardKind.Option:
-                                        if (cardEffect.EffectSourceCard.IsOption || cardEffect.EffectSourceCard.IsOption)
+                                        if (cardEffect.EffectSourceCard.IsOption)
                                         {
                                             return true;
                                         }
                                         break;
                                     case CardKind.DigiEgg:
-                                        if (cardEffect.IsDigimonEffect || cardEffect.EffectSourceCard.IsDigiEgg)
+                                        if (cardEffect.EffectSourceCard.IsDigiEgg)
                                         {
                                             return true;
                                         }
