@@ -159,7 +159,7 @@ namespace DCGO.CardEffects.LM
                     return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent selectedPermanent = card.PermanentOfThisCard();
 
