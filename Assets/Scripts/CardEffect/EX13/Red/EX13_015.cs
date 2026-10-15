@@ -158,36 +158,39 @@ namespace DCGO.CardEffects.EX13
                         maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: null,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to send to delete.", "Your opponent is selecting 1 digimon to delete.");
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to attempt to delete.", "Your opponent is selecting 1 Digimon to attempt to delete.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+
+                        IEnumerator SuccessProcess()
+                        {
+                            card.PermanentOfThisCard().willBeRemoveField = false;
+
+                            card.PermanentOfThisCard().HideDeleteEffect();
+                            card.PermanentOfThisCard().HideHandBounceEffect();
+                            card.PermanentOfThisCard().HideDeckBounceEffect();
+                            card.PermanentOfThisCard().HideWillRemoveFieldEffect();
+
+                            yield return null;
+                        }
+                    }
 
                     IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                     {
                         if (permanents.Count == 1)
                         {
                             isUsed = true;
-                            Permanent permanent = permanents[0];
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
-
-                            IEnumerator SuccessProcess()
-                            {
-                                card.PermanentOfThisCard().willBeRemoveField = false;
-                                card.PermanentOfThisCard().HideDeleteEffect();
-                                card.PermanentOfThisCard().HideHandBounceEffect();
-                                card.PermanentOfThisCard().HideDeckBounceEffect();
-                                card.PermanentOfThisCard().HideWillRemoveFieldEffect();
-
-                                yield return null;
-                            }
+                            yield return null;
                         }
                     }
 
