@@ -161,13 +161,13 @@ namespace DCGO.CardEffects.BT27
                 canNotAffectedClass.SetIsBackgroundProcess(true);
                 cardEffects.Add(canNotAffectedClass);
 
-                bool CanUseCondition(Hashtable hashtable) => GManager.instance.attackProcess.IsAttacking;
-
-                bool CardCondition(CardSource cardSource)
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && cardSource == card.PermanentOfThisCard().TopCard;
+                        && GManager.instance.attackProcess.IsAttacking;
                 }
+
+                bool CardCondition(CardSource cardSource) => cardSource == card.PermanentOfThisCard()?.TopCard;
 
                 bool SkillCondition(ICardEffect cardEffect)
                 {
