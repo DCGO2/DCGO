@@ -201,7 +201,7 @@ namespace DCGO.CardEffects.EX13
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
-                    => "[End of Your Turn] [Once Per Turn] 1 of your [Free] or [Royal Knight] trait Digimon may unsuspend.\r\n[Assembly -2] [Veemon]";
+                    => "[End of Your Turn] [Once Per Turn] 1 of your [Free] or [Royal Knight] trait Digimon may unsuspend.";
             }
             #endregion
 
