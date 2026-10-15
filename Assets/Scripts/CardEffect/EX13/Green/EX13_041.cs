@@ -181,11 +181,9 @@ namespace DCGO.CardEffects.EX13
                 string EffectDescription()
                     => "[All Turns] [Once Per Turn] When any of your Digimon with [Dracomon] or [Examon] in their texts delete your opponent's Digimon in battle, trash their top security card.";
 
-                // Battle hashtable winner copies have their card order reversed, so check text on the real winners' top cards
+                // Use the battle snapshot: a qualifying Digimon can also be deleted in
+                // that battle (Q7339), leaving its real permanent without a TopCard.
                 bool WinnerCondition(Permanent permanent)
-                    => CardEffectCommons.IsOwnerPermanent(permanent, card);
-
-                bool WinnerRealCondition(Permanent permanent)
                     => CardEffectCommons.IsOwnerPermanent(permanent, card)
                         && (permanent.TopCard.HasText("Dracomon") || permanent.TopCard.HasText("Examon"));
 
@@ -195,8 +193,7 @@ namespace DCGO.CardEffects.EX13
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(
-                            hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false,
-                            winnerRealCondition: WinnerRealCondition);
+                            hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
