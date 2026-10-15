@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System;
 
+// Menoa Bellucci
 namespace DCGO.CardEffects.BT17
 {
     public class BT17_092 : CEntity_Effect
@@ -16,63 +15,59 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1, Draw 2", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[On Play] By trashing 1 [Morphomon] or [Eosmon] in your hand, <Draw 2>.";
                 }
 
                 bool HasSpecifiedTrashTarget(CardSource source)
                 {
-                    return source.EqualsCardName("Morphomon") || source.EqualsCardName("Eosmon");
+                    return source.EqualsCardName("Morphomon")
+                            || source.EqualsCardName("Eosmon");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (isExistOnField(card))
-                        return CardEffectCommons.HasMatchConditionOwnersHand(card, HasSpecifiedTrashTarget);
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, HasSpecifiedTrashTarget);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, HasSpecifiedTrashTarget))
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: HasSpecifiedTrashTarget,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: false,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: SelectCardCoroutine,
+                        mode: SelectHandEffect.Mode.Discard,
+                        cardEffect: activateClass);
+
+                    selectHandEffect.SetUpCustomMessage("Select card to discard.", "The opponent is selecting card to discard.");
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(List<CardSource> selectedCards)
                     {
-                        int maxCount = Math.Min(1, card.Owner.HandCards.Count(HasSpecifiedTrashTarget));
-
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: HasSpecifiedTrashTarget,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: false,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: SelectCardCoroutine,
-                            mode: SelectHandEffect.Mode.Discard,
-                            cardEffect: activateClass);
-
-                        selectHandEffect.SetUpCustomMessage("Select card to discard.", "The opponent is selecting card to discard.");
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(List<CardSource> selectedCards)
-                        {
-                            if (selectedCards.Count > 0)
-                                yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
-                        }
+                        if (selectedCards.Count > 0)
+                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
                     }
                 }
             }
@@ -88,50 +83,25 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasEosmon))
-                            return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasEosmon);
                 }
 
                 bool HasEosmon(Permanent permanent)
                 {
-                    if (permanent.IsDigimon)
-                        return permanent.TopCard.EqualsCardName("Eosmon");
-
-                    return false;
+                    return permanent.TopCard.EqualsCardName("Eosmon");
                 }
 
                 bool InvalidateCondition(ICardEffect cardEffect)
                 {
-                    if (cardEffect != null)
-                    {
-                        if (cardEffect is ActivateICardEffect)
-                        {
-                            if (cardEffect.EffectSourceCard != null)
-                            {
-                                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(cardEffect.EffectSourceCard.PermanentOfThisCard(), card))
-                                {
-                                    if (cardEffect.EffectSourceCard.PermanentOfThisCard().IsTamer)
-                                    {
-                                        if (!cardEffect.EffectSourceCard.PermanentOfThisCard().TopCard.CanNotBeAffected(invalidationClass))
-                                        {
-                                            if (cardEffect.IsOnPlay)
-                                            {
-                                                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasEosmon))
-                                                    return true;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
+                    return cardEffect != null
+                        && cardEffect is ActivateICardEffect
+                        && cardEffect.EffectSourceCard != null
+                        && CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(cardEffect.EffectSourceCard.PermanentOfThisCard(), card)
+                        && cardEffect.EffectSourceCard.PermanentOfThisCard().IsTamer
+                        && !cardEffect.EffectSourceCard.PermanentOfThisCard().TopCard.CanNotBeAffected(invalidationClass)
+                        && cardEffect.IsOnPlay
+                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasEosmon);
                 }
             }
             #endregion
@@ -142,116 +112,100 @@ namespace DCGO.CardEffects.BT17
                 List<Permanent> removedPermanents = new List<Permanent>();
 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Prevent from leaving battle area, by opponents effect", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("Prevent_BT17_092");
+                activateClass.SetUpICardEffect("Delete 1 other [Eosmon] to prevent leaving battle area", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
+                activateClass.SetHashString("BT17_092_OT");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[Opponent's Turn] [Once Per Turn] When one of your [Eosmon] would leave the battle area by an opponent's effect, by deleting 1 of your other [Eosmon], prevent it from leaving.";
                 }
 
-                bool isEosmon(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                        return permanent.TopCard.EqualsCardName("Eosmon");
-
-                    return false;
-                }
-
-                bool HasOtherEosmon(Permanent permanent)
-                {
-                    if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        foreach (Permanent removed in removedPermanents)
-                        {
-                            if (removed != permanent)
-                                return permanent.TopCard.EqualsCardName("Eosmon");
-                        }
-                    }
-                    
-                    return false;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsOpponentTurn(card))
-                    {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
-                        {
-                            if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, isEosmon))
-                            {
-                                if (CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOpponentEffect(cardEffect, card)))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.IsOpponentTurn(card)
+                        && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, isEosmon)
+                        && CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOpponentEffect(cardEffect, card));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass))
                     {
                         removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(isEosmon);
 
                         return CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasOtherEosmon);
                     }
                         
+                    return false;
+                }
+
+                bool isEosmon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                        && permanent.TopCard.EqualsCardName("Eosmon");
+                }
+
+                bool HasOtherEosmon(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        foreach (Permanent removed in removedPermanents)
+                        {
+                            if (removed != permanent)
+                            {
+                                return permanent.TopCard.EqualsCardName("Eosmon");
+                            }
+                        }
+                    }
 
                     return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(HasOtherEosmon))
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: HasOtherEosmon,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(HasOtherEosmon));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                            targetPermanents: new List<Permanent>() { permanent },
+                            activateClass: activateClass,
+                            successProcess: permanents => SuccessProcess(),
+                            failureProcess: null));
 
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: HasOtherEosmon,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        IEnumerator SuccessProcess()
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                                targetPermanents: new List<Permanent>() { permanent },
-                                activateClass: activateClass,
-                                successProcess: permanents => SuccessProcess(),
-                                failureProcess: null));
-
-                            IEnumerator SuccessProcess()
+                            foreach (Permanent removed in removedPermanents)
                             {
-                                foreach (Permanent removed in removedPermanents)
-                                {
-                                    removed.willBeRemoveField = false;
-                                    removed.HideDeleteEffect();
-                                    removed.HideHandBounceEffect();
-                                    removed.HideDeckBounceEffect();
-                                    removed.HideWillRemoveFieldEffect();
-                                }
-                                    
-                                yield return null;
+                                removed.willBeRemoveField = false;
+                                removed.HideDeleteEffect();
+                                removed.HideHandBounceEffect();
+                                removed.HideDeckBounceEffect();
+                                removed.HideWillRemoveFieldEffect();
                             }
+                                    
+                            yield return null;
                         }
                     }
                 }
