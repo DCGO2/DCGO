@@ -74,7 +74,7 @@ namespace DCGO.CardEffects.EX12
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage(customMessageArray: CardEffectCommons.customPermanentMessageArray_ChangeDP(changeValue: -3000, maxCount: 1));
+                    selectPermanentEffect.SetUpCustomMessage(customMessageArray: CardEffectCommons.customPermanentMessageArray_ChangeDP(changeValue: -4000, maxCount: 1));
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
