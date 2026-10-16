@@ -4,10 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Unity.Profiling;
 
 
 public class AutoProcessing : MonoBehaviourPunCallbacks
 {
+    private static readonly ProfilerMarker GetSkillInfosMarker = new ProfilerMarker("DCGO.GetSkillInfos");
     //Skill list before triggering and entering resolution timing
     public List<SkillInfo> StackedSkillInfos { get; set; } = new List<SkillInfo>();
     //Skill Processing Component List
@@ -773,13 +775,16 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     #region Get skillInfos
     public static List<SkillInfo> GetSkillInfos(Hashtable hashtable, EffectTiming timing, Func<ICardEffect, bool> cardEffectCondition = null)
     {
+        using (GetSkillInfosMarker.Auto())
+        {
         List<SkillInfo> skillInfos = new List<SkillInfo>();
 
         #region player effect
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
-            foreach (ICardEffect cardEffect in player.EffectList(timing).Filter(cardEffect => cardEffectCondition == null || cardEffectCondition(cardEffect)))
+            foreach (ICardEffect cardEffect in player.EffectList(timing))
             {
+                if (cardEffectCondition != null && !cardEffectCondition(cardEffect)) continue;
                 if (cardEffect is ActivateICardEffect)
                 {
                     if (!cardEffect.IsBackgroundProcess)
@@ -799,9 +804,10 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         {
             foreach (Permanent permanent in player.GetFieldPermanents())
             {
-                foreach (ICardEffect cardEffect in permanent.EffectList(timing).Filter(cardEffect => cardEffectCondition == null || cardEffectCondition(cardEffect)))
+                foreach (ICardEffect cardEffect in permanent.EffectList(timing))
                 {
-                    if (cardEffect is ActivateICardEffect)
+                    if (cardEffectCondition != null && !cardEffectCondition(cardEffect)) continue;
+                if (cardEffect is ActivateICardEffect)
                     {
                         if (!cardEffect.IsBackgroundProcess)
                         {
@@ -821,9 +827,10 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         {
             foreach (CardSource cardSource in player.TrashCards)
             {
-                foreach (ICardEffect cardEffect in cardSource.EffectList(timing).Filter(cardEffect => cardEffectCondition == null || cardEffectCondition(cardEffect)))
+                foreach (ICardEffect cardEffect in cardSource.EffectList(timing))
                 {
-                    if (cardEffect is ActivateICardEffect)
+                    if (cardEffectCondition != null && !cardEffectCondition(cardEffect)) continue;
+                if (cardEffect is ActivateICardEffect)
                     {
                         if (!cardEffect.IsBackgroundProcess)
                         {
@@ -843,9 +850,10 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         {
             foreach (CardSource cardSource in player.HandCards)
             {
-                foreach (ICardEffect cardEffect in cardSource.EffectList(timing).Filter(cardEffect => cardEffectCondition == null || cardEffectCondition(cardEffect)))
+                foreach (ICardEffect cardEffect in cardSource.EffectList(timing))
                 {
-                    if (cardEffect is ActivateICardEffect)
+                    if (cardEffectCondition != null && !cardEffectCondition(cardEffect)) continue;
+                if (cardEffect is ActivateICardEffect)
                     {
                         if (!cardEffect.IsBackgroundProcess)
                         {
@@ -868,9 +876,10 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                 if (source.IsFlipped)
                     continue;
 
-                foreach (ICardEffect cardEffect in source.EffectList(timing).Filter(cardEffect => cardEffectCondition == null || cardEffectCondition(cardEffect)))
+                foreach (ICardEffect cardEffect in source.EffectList(timing))
                 {
-                    if (cardEffect is ActivateICardEffect)
+                    if (cardEffectCondition != null && !cardEffectCondition(cardEffect)) continue;
+                if (cardEffect is ActivateICardEffect)
                     {
                         if (!cardEffect.IsBackgroundProcess)
                         {
@@ -886,6 +895,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         #endregion
 
         return skillInfos;
+        }
     }
     #endregion
 
