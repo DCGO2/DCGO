@@ -175,6 +175,7 @@ namespace DCGO.CardEffects.BT16
                         ActivateClass activateClass1 = new ActivateClass();
                         activateClass1.SetUpICardEffect("Delete the played Digimon", CanUseCondition1, card);
                         activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "");
+                        activateClass.SetEffectTargets(TargetablePermanents);
                         selectedPermanent.UntilOpponentTurnEndEffects.Add(GetCardEffect);
 
                         bool CanUseCondition1(Hashtable hashtable)
@@ -188,6 +189,13 @@ namespace DCGO.CardEffects.BT16
                             return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent)
                                 && selectedPermanent.CanBeDestroyedBySkill(activateClass1)
                                 && !selectedPermanent.TopCard.CanNotBeAffected(activateClass1);
+                        }
+
+                        List<Permanent> TargetablePermanents(Hashtable hashtable)
+                        {
+                            List<Permanent> playedPermanents = new List<Permanent> { selectedPermanent };
+
+                            return playedPermanents;
                         }
 
                         IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
