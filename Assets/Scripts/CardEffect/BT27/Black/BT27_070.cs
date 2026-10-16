@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,7 @@ namespace DCGO.CardEffects.BT27
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Digimon Side
             #region Alt Digivolution
             if (timing == EffectTiming.None)
             {
@@ -20,14 +20,7 @@ namespace DCGO.CardEffects.BT27
                     return permanent.TopCard.EqualsCardName("Craniamon");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 2, true, card, null));
-            }
-            #endregion
-
-            #region Blocker
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 2, false, card, null));
             }
             #endregion
 
@@ -35,6 +28,13 @@ namespace DCGO.CardEffects.BT27
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
+            #region Blocker
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
             #endregion
 
@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.BT27
                     return "[All Turns] When any of your Digimon would leave the battle area, by suspending this Digimon, they don't leave.";
                 }
 
-                bool OtherDigimon(Permanent permanent)
+                bool RemovedDigimon(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.BT27
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, OtherDigimon);
+                        && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, RemovedDigimon);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.BT27
                     IEnumerator SuccessProcess(List<Permanent> _permanents)
                     {
                         List<Permanent> protectedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable)
-                            .Filter(OtherDigimon);
+                            .Filter(RemovedDigimon);
 
                         foreach (Permanent permanent in protectedPermanents)
                         {
@@ -118,45 +118,68 @@ namespace DCGO.CardEffects.BT27
                         && CardEffectCommons.CanTriggerWhenSelfPermanentSuspends(hashtable, card);
                 }
 
-                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
-
-                bool CanSelectSource(CardSource source)
+                bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return (source.EqualsCardName("Craniamon") || source.HasXAntiBodyName) && 
-                            !source.CanNotTrashFromDigivolutionCards(activateClass);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition)
+                            || card.PermanentOfThisCard().DigivolutionCards.Any(CanSelectSource));
+                }
+
+                bool PermanentCondition(Permanent permanent) => CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
+
+                bool CanSelectSource(CardSource cardSource)
+                {
+                    return (cardSource.EqualsCardName("Craniamon") || cardSource.HasXAntiBodyName) &&
+                            !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    bool PermanentCondition(Permanent permanent) => CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
+                    if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
+                    {
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"Delete", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"Do not delete", value : false, spriteIndex: 1),
+                        };
 
-                    List<Permanent> destroyTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(PermanentCondition);
-                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(destroyTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
+                        string selectPlayerMessage = "Will you delete opponent's lowest DP?";
+                        string notSelectPlayerMessage = "The opponent is choosing whether to delete your lowest DP.";
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        if (GManager.instance.userSelectionManager.SelectedBoolValue)
+                        {
+                            List<Permanent> destroyTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(PermanentCondition);
+                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(destroyTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
+                        }
+                    }
 
                     if (card.PermanentOfThisCard().DigivolutionCards.Any(CanSelectSource))
                     {
-                        #region Select Digivolution Card to Trash
                         Permanent selectedPermanment = card.PermanentOfThisCard();
                         CardSource selectedCard = null;
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectSource,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 digivolution card to discard.",
-                                    maxCount: 1,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Custom,
-                                    customRootCardList: selectedPermanment.DigivolutionCards,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: null);
+                            canTargetCondition: CanSelectSource,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 digivolution card to discard.",
+                            maxCount: 1,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Custom,
+                            customRootCardList: selectedPermanment.DigivolutionCards,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: null);
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
@@ -166,8 +189,6 @@ namespace DCGO.CardEffects.BT27
 
                         selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to discard.", "The opponent is selecting 1 digivolution card to discard.");
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                        #endregion
 
                         if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsAndProcessAccordingToResult(
                             targetPermanent: selectedPermanment,
@@ -184,21 +205,19 @@ namespace DCGO.CardEffects.BT27
                 }
             }
             #endregion
+            #endregion
 
-            #region Option Effects
-
-            string SharedEffectName = "As an option effect, 1 of your Digimon is immune to digimon and gets +5k DP, then unsuspend.";
-
-            string SharedEffectDescription() => $"[Main] Until your opponent's turn ends, 1 of your Digimon with <Blocker> isn't affected by their Digimon effects and gets +5000 DP. Then, 1 of your Digimon may unsuspend.";
-
+            #region Option Side
             #region Main
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(SharedEffectName, CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, SharedEffectDescription());
+                activateClass.SetUpICardEffect("As an option effect, 1 of your Digimon is immune to digimon and gets + 5k DP, then unsuspend", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
+
+                string EffectDescription() => $"[Main] Until your opponent's turn ends, 1 of your Digimon with <Blocker> isn't affected by their Digimon effects and gets +5000 DP. Then, 1 of your Digimon may unsuspend.";
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
@@ -256,7 +275,7 @@ namespace DCGO.CardEffects.BT27
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
@@ -277,7 +296,6 @@ namespace DCGO.CardEffects.BT27
                 cardEffects.Add(CardEffectFactory.ArtsDigivolveEffect(card));
             }
             #endregion
-
             #endregion
 
             return cardEffects;
