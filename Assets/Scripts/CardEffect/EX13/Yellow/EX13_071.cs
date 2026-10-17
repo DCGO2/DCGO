@@ -308,6 +308,8 @@ namespace DCGO.CardEffects.EX13
 
                         yield return StartCoroutine(selectCardEffect2.Activate());
 
+                        selectedSourceCards.Reverse();
+
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
