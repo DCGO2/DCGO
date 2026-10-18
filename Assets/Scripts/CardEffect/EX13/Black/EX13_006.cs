@@ -31,7 +31,8 @@ namespace DCGO.CardEffects.EX13
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
 
                 bool CanSelectPermanentCondition(Permanent permanent)
-                    => permanent.IsSuspended
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    && permanent.IsSuspended
                     && (permanent.TopCard.EqualsTraits("X Antibody")
                         || permanent.TopCard.EqualsTraits("Chronicle"));
 
