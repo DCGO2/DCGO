@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // VictoryGreymon // Dramon Breaker
 namespace DCGO.CardEffects.EX14
@@ -19,7 +20,14 @@ namespace DCGO.CardEffects.EX14
                     return targetPermanent.TopCard.EqualsTraits("TERMINAL");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 5));
+                cardEffects.Add(
+                    CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                        permanentCondition: PermanentCondition, 
+                        digivolutionCost: 3, 
+                        ignoreDigivolutionRequirement: false, 
+                        card: card, 
+                        condition: null, 
+                        level: 5));
             }
             #endregion
 
@@ -93,7 +101,7 @@ namespace DCGO.CardEffects.EX14
 
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsTamerWithFaceDownCard))
                 {
-                    Permanent selectedTamer = null;
+                    bool trashed = false;
 
                     SelectPermanentEffect selectTamerEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -105,40 +113,33 @@ namespace DCGO.CardEffects.EX14
                         maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: SelectTamerCoroutine,
-                        afterSelectPermanentCoroutine: null,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    IEnumerator SelectTamerCoroutine(Permanent permanent)
+                    IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                     {
-                        selectedTamer = permanent;
-                        yield return null;
+                        if (permanents.Count == 1)
+                        {
+                            CardSource bottomFaceDownCard = permanents[0].DigivolutionCards.LastOrDefault(CanTrashFaceDownCard);
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
+                                targetPermanent: permanents[0],
+                                trashCount: 1,
+                                isFromTop: false,
+                                activateClass: activateClass,
+                                cardCondition: CanTrashFaceDownCard));
+
+                            trashed = bottomFaceDownCard != null && !permanents[0].DigivolutionCards.Contains(bottomFaceDownCard);
+                        }
                     }
 
                     selectTamerEffect.SetUpCustomMessage("Select 1 Tamer to trash the bottom face-down card from.", "The opponent is selecting 1 Tamer to trash the bottom face-down card from.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectTamerEffect.Activate());
 
-                    if (selectedTamer != null)
-                    {
-                        List<CardSource> trashableFaceDownCards = selectedTamer.DigivolutionCards.Filter(CanTrashFaceDownCard);
-
-                        if (trashableFaceDownCards.Count >= 1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsAndProcessAccordingToResult(
-                                targetPermanent: selectedTamer,
-                                targetDigivolutionCards: new List<CardSource>() { trashableFaceDownCards[^1] },
-                                activateClass: activateClass,
-                                successProcess: SuccessProcess,
-                                failureProcess: null));
-                        }
-                    }
-                }
-
-                IEnumerator SuccessProcess(List<CardSource> trashedCards)
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetCondition))
+                    if (trashed && CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteTargetCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
