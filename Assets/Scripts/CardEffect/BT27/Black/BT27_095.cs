@@ -78,34 +78,16 @@ namespace DCGO.CardEffects.BT27
             }
             #endregion
 
-
             #region Main
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend this Tamer, trash 2 bottom face-down Tamer cards, digivolve for 2 less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend this Tamer, trash 2 bottom face-down Tamer sources, digivolve for 2 less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                     => "[Main] By suspending this Tamer and trashing 2 bottom face-down cards from under any of your Tamers, 1 of your Digimon may digivolve into a [Cyborg] or [Aquatic] trait Digimon card in the hand with the cost reduced by 2.";
-
-                bool IsEligibleHandCard(CardSource candidate)
-                    => candidate.IsDigimon && (candidate.EqualsTraits("Cyborg") || candidate.EqualsTraits("Aquatic"));
-
-                bool IsEligibleDigimon(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-
-                bool IsFaceDown(CardSource source) => source.IsFaceDown;
-
-                bool TamerWithSource(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
-                        && permanent.DigivolutionCards.Any(IsFaceDown);
-
-                int AvailableSourceCount()
-                    => card.Owner.GetBattleAreaPermanents()
-                        .Where(TamerWithSource)
-                        .Sum(permanent => permanent.DigivolutionCards.Count(IsFaceDown));
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
@@ -114,69 +96,71 @@ namespace DCGO.CardEffects.BT27
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && CardEffectCommons.CanActivateSuspendCostEffect(card)
-                        && AvailableSourceCount() >= 2
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, IsEligibleHandCard)
-                        && CardEffectCommons.HasMatchConditionPermanent(IsEligibleDigimon);
+                        && AvailableSourceCount() >= 2;
+
+                bool IsEligibleHandCard(CardSource candidate)
+                    => candidate.IsDigimon && (candidate.EqualsTraits("Cyborg") || candidate.EqualsTraits("Aquatic"));
+
+                bool IsEligibleDigimon(Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+
+                bool TamerWithOneFaceDownSource(Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
+                        && permanent.DigivolutionCards.Any(FaceDownCards)
+                        && !permanent.ImmuneFromStackTrashing(activateClass);
+
+                bool FaceDownCards(CardSource cardSource) => cardSource.IsFaceDown;
+
+                int AvailableSourceCount()
+                    => card.Owner.GetBattleAreaPermanents()
+                        .Where(TamerWithOneFaceDownSource)
+                        .Sum(permanent => permanent.DigivolutionCards.Count(FaceDownCards));
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    // Pay suspension cost first, following the existing Tamer activation pattern.
-                    bool suspended = false;
-                    yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.SuspendPeremanentAndProcessAccordingToResult(
-                            targetPermanents: new List<Permanent> { card.PermanentOfThisCard() },
-                            activateClass: activateClass,
-                            successProcess: OnSuspended,
-                            failureProcess: null));
+                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                    IEnumerator OnSuspended(List<Permanent> permanents)
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource));
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: TamerWithOneFaceDownSource,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: CanEndSelectCondition,
+                        maxCount: maxCount,
+                        canNoSelect: false,
+                        canEndNotMax: true,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage("Select all Tamer(s) to trash bottom face-down cards from.", "The opponent is selecting Tamer(s) to trash bottom face-down cards from.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    bool CanEndSelectCondition(List<Permanent> permanents)
                     {
-                        suspended = permanents != null && permanents.Count > 0;
-                        yield return null;
+                        return permanents.Count == 2
+                            || (permanents.Count > 0 && permanents[0].DigivolutionCards.Count(FaceDownCards) >= 2);
                     }
 
-                    if (!suspended) yield break;
-
-                    // Each payment removes the bottom-most eligible face-down source
-                    // from any selected friendly Tamer; the same Tamer may be chosen twice.
-                    for (int i = 0; i < 2; i++)
+                    IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                     {
-                        Permanent chosenTamer = null;
-                        SelectPermanentEffect selector = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        selector.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: TamerWithSource,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectTamer,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-                        selector.SetUpCustomMessage(
-                            "Select a Tamer to trash its bottom face-down card.",
-                            "The opponent is selecting a Tamer.");
-                        yield return ContinuousController.instance.StartCoroutine(selector.Activate());
-
-                        IEnumerator SelectTamer(Permanent permanent)
+                        if (permanents.Count == 1)
                         {
-                            chosenTamer = permanent;
-                            yield return null;
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 2, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
                         }
-
-                        if (chosenTamer == null) yield break;
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
-                                targetPermanent: chosenTamer,
-                                trashCount: 1,
-                                isFromTop: false,
-                                activateClass: activateClass,
-                                cardCondition: IsFaceDown));
+                        else if (permanents.Count == 2)
+                        {
+                            foreach (Permanent selectedPermanent in permanents)
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 1, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
+                        }
                     }
 
                     Permanent chosenDigimon = null;
+
                     SelectPermanentEffect digimonSelector = GManager.instance.GetComponent<SelectPermanentEffect>();
                     digimonSelector.SetUp(
                         selectPlayer: card.Owner,
@@ -184,7 +168,7 @@ namespace DCGO.CardEffects.BT27
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: false,
+                        canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectDigimon,
                         afterSelectPermanentCoroutine: null,
@@ -203,17 +187,17 @@ namespace DCGO.CardEffects.BT27
 
                     if (chosenDigimon != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                targetPermanent: chosenDigimon,
-                                cardCondition: IsEligibleHandCard,
-                                payCost: true,
-                                reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
-                                fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: true,
-                                activateClass: activateClass,
-                                successProcess: null));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                            targetPermanent: chosenDigimon,
+                            cardCondition: IsEligibleHandCard,
+                            payCost: true,
+                            reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
+                            fixedCostTuple: null,
+                            ignoreDigivolutionRequirementFixedCost: -1,
+                            isHand: true,
+                            activateClass: activateClass,
+                            successProcess: null
+                        ));
                     }
                 }
             }
