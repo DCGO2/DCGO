@@ -64,14 +64,11 @@ namespace DCGO.CardEffects.BT27
 
                             IEnumerator AttackCoroutine(Hashtable ht)
                             {
-                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(target) && target.CanAttack(granted))
-                                {
-                                    SelectAttackEffect attack = GManager.instance.GetComponent<SelectAttackEffect>();
-                                    attack.SetUp(attacker: target, canAttackPlayerCondition: () => true,
-                                        defenderCondition: permanent => true, cardEffect: granted);
-                                    attack.SetCanNotSelectNotAttack();
-                                    yield return ContinuousController.instance.StartCoroutine(attack.Activate());
-                                }
+                                SelectAttackEffect attack = GManager.instance.GetComponent<SelectAttackEffect>();
+                                attack.SetUp(attacker: target, canAttackPlayerCondition: () => true,
+                                    defenderCondition: permanent => true, cardEffect: granted);
+                                attack.SetCanNotSelectNotAttack();
+                                yield return ContinuousController.instance.StartCoroutine(attack.Activate());
                             }
 
                             if (!target.TopCard.CanNotBeAffected(activateClass))
@@ -114,20 +111,11 @@ namespace DCGO.CardEffects.BT27
                     IEnumerator DelayPaid() { delayPaid = true; yield return null; }
                     if (!delayPaid) yield break;
 
-                    // Snapshot first: de-digivolution may change the active board.
-                    List<Permanent> targets = card.Owner.Enemy.GetBattleAreaDigimons().Clone();
-                    foreach (Permanent target in targets)
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(target, card) &&
-                            !target.TopCard.CanNotBeAffected(activateClass))
-                            yield return ContinuousController.instance.StartCoroutine(
-                                new IDegeneration(target, 1, activateClass).Degeneration());
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(new IMassDegeneration(card.Owner.Enemy.GetBattleAreaDigimons(), 1, activateClass).Degeneration());
 
-                    // Recalculate after de-digivolution; play costs may have changed.
                     List<Permanent> lowest = card.Owner.Enemy.GetBattleAreaDigimons().Filter(
-                        permanent => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                                     CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true));
+                        permanent => CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true));
+
                     yield return ContinuousController.instance.StartCoroutine(
                         new DestroyPermanentsClass(lowest, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                 }
@@ -148,8 +136,7 @@ namespace DCGO.CardEffects.BT27
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     List<Permanent> lowest = card.Owner.Enemy.GetBattleAreaDigimons().Filter(
-                        permanent => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                                     CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true));
+                        permanent => CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true));
                     yield return ContinuousController.instance.StartCoroutine(
                         new DestroyPermanentsClass(lowest, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                     yield return ContinuousController.instance.StartCoroutine(
