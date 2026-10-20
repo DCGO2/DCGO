@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,8 +52,6 @@ namespace DCGO.CardEffects.BT27
                             checkAvailability: false)
                         <= card.Owner.MaxMemoryCost;
 
-                    int maxCount = 1;
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -62,7 +59,7 @@ namespace DCGO.CardEffects.BT27
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: CanNoSelect,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -161,11 +158,8 @@ namespace DCGO.CardEffects.BT27
                     {
                         ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Delete your 1 level 4 Digimon to get Play Cost -6");
 
-                        if (activateClass != null)
-                        {
-                            return activateClass != null
+                        return activateClass != null
                             && CardEffectCommons.HasMatchConditionPermanent(permanent => CanSelectPermanentCondition(permanent, activateClass));
-                        }
                     }
 
                     return false;
@@ -207,6 +201,7 @@ namespace DCGO.CardEffects.BT27
             }
             #endregion
 
+            #region All Turns
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
@@ -216,34 +211,70 @@ namespace DCGO.CardEffects.BT27
                     condition: () => CardEffectCommons.IsExistOnBattleArea(card),
                     effectName: "Can't digivolve"));
             }
+            #endregion
+
+            #region On Deletion
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
-                ActivateClass effect = new ActivateClass();
-                effect.SetUpICardEffect("Play a cost 5 or lower Kurata's Army card", CanUse, card);
-                effect.SetUpActivateClass(CanActivate, Resolve, -1, false,
-                    "[On Deletion] You may play 1 play cost 5 or lower [Kurata's Army] trait card from your hand or trash without paying the cost.");
-                effect.SetIsSkippable(true);
-                cardEffects.Add(effect);
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Play a cost 5 or lower Kurata's Army card", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, "[On Deletion] You may play 1 play cost 5 or lower [Kurata's Army] trait card from your hand or trash without paying the cost.");
+                activateClass.SetIsSkippable(true);
+                cardEffects.Add(activateClass);
 
-                bool Eligible(CardSource candidate)
+                bool CanUseCondition(Hashtable data) => CardEffectCommons.CanTriggerOnDeletion(data, card, activateClass);
+
+                bool CanActivateCondition(Hashtable data) => CardEffectCommons.CanActivateOnDeletion(card, activateClass)
+                    && (card.Owner.TrashCards.Exists(CanSelectCardCondition) || card.Owner.HandCards.Exists(CanSelectCardCondition));
+
+                bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return candidate.EqualsTraits("Kurata's Army")
-                        && candidate.GetCostItself <= 5
-                        && CardEffectCommons.CanPlayAsNewPermanent(candidate, false, effect);
+                    return cardSource.EqualsTraits("Kurata's Army")
+                        && cardSource.HasPlayCost
+                        && cardSource.GetCostItself <= 5
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
-                bool CanUse(Hashtable data) => CardEffectCommons.CanTriggerOnDeletion(data, card, effect);
-                bool CanActivate(Hashtable data) => CardEffectCommons.CanActivateOnDeletion(card, effect)
-                    && (card.Owner.TrashCards.Exists(Eligible) || card.Owner.HandCards.Exists(Eligible));
-                IEnumerator Resolve(Hashtable data)
+
+                IEnumerator ActivateCoroutine(Hashtable data)
                 {
-                    // Integration note: this prioritizes trash if both zones contain eligible cards.
-                    // A combined hand/trash choice requires the project's zone-choice UI integration.
-                    SelectCardEffect.Root root = card.Owner.TrashCards.Exists(Eligible)
-                        ? SelectCardEffect.Root.Trash : SelectCardEffect.Root.Hand;
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
-                        canTargetCondition: Eligible, root: root, cardEffect: effect, payCost: false));
+                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
+                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
+
+                    if (canSelectHand || canSelectTrash)
+                    {
+                        SelectCardEffect.Root root;
+
+                        if (canSelectHand && canSelectTrash)
+                        {
+                            List<SelectionElement<int>> selectionElements1 = new List<SelectionElement<int>>()
+                            {
+                                new(message: "From hand", value: 1, spriteIndex: 0),
+                                new(message: "From trash", value: 2, spriteIndex: 0),
+                                new(message: "Don't play", value: 3, spriteIndex: 1),
+                            };
+
+                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: "From which area will you play a card?", notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                            if (GManager.instance.userSelectionManager.SelectedIntValue == 3) yield break;
+
+                            root = GManager.instance.userSelectionManager.SelectedIntValue == 1 ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
+                        }
+                        else
+                        {
+                            root = canSelectHand ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                            canTargetCondition: CanSelectCardCondition,
+                            root: root,
+                            cardEffect: activateClass,
+                            payCost: false));
+                    }
                 }
             }
+            #endregion
+
             return cardEffects;
         }
     }
