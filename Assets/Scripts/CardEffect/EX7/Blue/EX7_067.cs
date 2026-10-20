@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.EX7
                 string EffectDiscription()
                 {
                     return
-                        "[Main] trash the top 2 digivolution cards of all of your opponent's Digimon. If this effect didn't trash, you may play 1 level 4 or lower Digimon card with the [Ice-Snow] trait from your hand without paying the cost. Then, none of their Digimon with no digivolution cards can attack until the end of their turn.";
+                        "[Main] Trash the top 2 digivolution cards of all of your opponent's Digimon. If this effect didn't trash, you may play 1 level 4 or lower Digimon card with the [Ice-Snow] trait from your hand without paying the cost. Then, until the end of your opponent's turn, none of their Digimon with no digivolution cards can attack.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
