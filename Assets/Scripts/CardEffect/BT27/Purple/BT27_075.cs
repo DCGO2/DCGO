@@ -17,7 +17,6 @@ namespace DCGO.CardEffects.BT27
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete your 1 Digimon in breeding area to get Play Cost -2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
-                activateClass.SetHashString("PlayCost-2_BT27_075");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -53,8 +52,6 @@ namespace DCGO.CardEffects.BT27
                             checkAvailability: false)
                         <= card.Owner.MaxMemoryCost;
 
-                    int maxCount = 1;
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -62,7 +59,7 @@ namespace DCGO.CardEffects.BT27
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: CanNoSelect,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -105,7 +102,7 @@ namespace DCGO.CardEffects.BT27
                                 {
                                     Cost -= 2;
                                 }
-                                 
+
                                 return Cost;
                             }
 
@@ -273,43 +270,40 @@ namespace DCGO.CardEffects.BT27
                 {
                     bool returned = false;
 
-                    if (card.Owner.TrashCards.Count(CanSelectCardCondition) >= 2)
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                    canTargetCondition: (cardSource) => CanSelectCardCondition(cardSource),
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    canNoSelect: () => true,
+                    selectCardCoroutine: null,
+                    afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                    message: "Select cards to place at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
+                    maxCount: 2,
+                    canEndNotMax: false,
+                    isShowOpponent: false,
+                    mode: SelectCardEffect.Mode.Custom,
+                    root: SelectCardEffect.Root.Trash,
+                    customRootCardList: null,
+                    canLookReverseCard: true,
+                    selectPlayer: card.Owner,
+                    cardEffect: activateClass);
+
+                    selectCardEffect.SetNotShowCard();
+                    selectCardEffect.SetNotAddLog();
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                        canTargetCondition: (cardSource) => CanSelectCardCondition(cardSource),
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        message: "Select cards to place at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
-                        maxCount: 2,
-                        canEndNotMax: false,
-                        isShowOpponent: false,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Trash,
-                        customRootCardList: null,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                        selectCardEffect.SetNotShowCard();
-                        selectCardEffect.SetNotAddLog();
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                        if (cardSources.Count == 2)
                         {
-                            if (cardSources.Count == 2)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
 
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
 
-                                returned = true;
-                            }
+                            returned = true;
                         }
                     }
 
