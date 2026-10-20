@@ -133,48 +133,23 @@ public class ContinuousController : MonoBehaviour
     async Task LoadBanListOnline()
     {
         string url = "https://www.dcgo.online/Banlist.json";
-        int maxAttempts = 3;
-        int currentAttempt = 0;
-        bool isSuccessful = false;
+        UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url);
 
-        while(currentAttempt < maxAttempts && !isSuccessful)
+        UnityWebRequestAsyncOperation operation = jsonWebRequest.SendWebRequest();
+
+        while (!operation.isDone)
         {
-            currentAttempt++;
-            Debug.Log($"[Loading] Banlist Attempt {currentAttempt} of {maxAttempts}");
-
-            using (UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url))
-            {
-                UnityWebRequestAsyncOperation operation = jsonWebRequest.SendWebRequest();
-
-                while (!operation.isDone)
-                {
-                    await Task.Yield(); // Keep the method asynchronous without blocking
-                }
-
-                if (jsonWebRequest.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogWarning($"[Warning] Attempt {currentAttempt} failed: {jsonWebRequest.error}");
-
-                    // If we have attempts left, wait briefly before trying again (exponential backoff optional)
-                    if (currentAttempt < maxAttempts)
-                    {
-                        int delay = currentAttempt * 500; // Waits 0.5s after 1st fail, 1s after 2nd fail
-                        Debug.Log($"Waiting {delay} seconds before next attempt...");
-                        await Task.Delay(delay);
-                    }
-                }
-                else
-                {
-                    isSuccessful = true;
-                    BanList = JsonUtility.FromJson<BanList>(jsonWebRequest.downloadHandler.text);
-                }
-            }
+            await Task.Yield(); // Keep the method asynchronous without blocking
         }
 
-        if (!isSuccessful)
+        if (jsonWebRequest.result != UnityWebRequest.Result.Success)
         {
-            Debug.Log($"[Error] All {maxAttempts} attempts failed to load");
+            Debug.Log(jsonWebRequest.error);
             useBanlist = false;
+        }
+        else
+        {
+            BanList = JsonUtility.FromJson<BanList>(jsonWebRequest.downloadHandler.text);
         }
     }
 
@@ -1626,7 +1601,8 @@ public class PhotonUtility
         #region Exit Room
         if (PhotonNetwork.InRoom)
         {
-            PhotonNetwork.LeaveRoom();
+            //false: leave for good instead of staying inactive for PlayerTtl
+            PhotonNetwork.LeaveRoom(false);
         }
 
         yield return new WaitWhile(() => PhotonNetwork.InRoom);
