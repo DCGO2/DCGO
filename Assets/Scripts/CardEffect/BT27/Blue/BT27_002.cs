@@ -16,7 +16,8 @@ namespace DCGO.CardEffects.BT27
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 level 4 or lower Aquatic/DATA SQUAD Digimon from digivolution cards", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT27_002_Inherited");
                 cardEffects.Add(activateClass);
@@ -64,7 +65,7 @@ namespace DCGO.CardEffects.BT27
                         canEndNotMax: false,
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Custom,
+                        root: SelectCardEffect.Root.DigivolutionCards,
                         customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
                         canLookReverseCard: true,
                         selectPlayer: card.Owner,
@@ -88,16 +89,19 @@ namespace DCGO.CardEffects.BT27
                         activateClass.RemoveUse();
                         yield break;
                     }
-
-                    yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.PlayPermanentCards(
-                            cardSources: new List<CardSource> { selectedCard },
-                            activateClass: activateClass,
-                            payCost: true,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.DigivolutionCards,
-                            activateETB: true,
-                            fixedCost: ReducedCost(selectedCard)));
+                    else
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.PlayPermanentCards(
+                                cardSources: new List<CardSource> { selectedCard },
+                                activateClass: activateClass,
+                                payCost: true,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.DigivolutionCards,
+                                activateETB: true,
+                                fixedCost: ReducedCost(selectedCard)
+                            ));
+                    }
                 }
             }
             #endregion
