@@ -27,8 +27,8 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card)
-                        && permanent.TopCard.IsLevel2
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                        && permanent.TopCard.IsLevel3
                         && !permanent.TopCard.CanNotBeAffected(activateClass)
                         && permanent.CanBeDestroyedBySkill(activateClass);
                 }
@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return card.Owner.GetBreedingAreaPermanents().Count(CanSelectPermanentCondition) >= 1;
+                    return card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -53,8 +53,6 @@ namespace DCGO.CardEffects.BT27
                             checkAvailability: false)
                         <= card.Owner.MaxMemoryCost;
 
-                    int maxCount = 1;
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -62,7 +60,7 @@ namespace DCGO.CardEffects.BT27
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: CanNoSelect,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -105,7 +103,7 @@ namespace DCGO.CardEffects.BT27
                                 {
                                     Cost -= 4;
                                 }
-                                 
+
                                 return Cost;
                             }
 
@@ -149,8 +147,8 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanSelectPermanentCondition(Permanent permanent, ICardEffect activateClass)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card)
-                        && permanent.TopCard.IsLevel2
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                        && permanent.TopCard.IsLevel3
                         && !permanent.TopCard.CanNotBeAffected(activateClass)
                         && permanent.CanBeDestroyedBySkill(activateClass);
                 }
@@ -162,7 +160,7 @@ namespace DCGO.CardEffects.BT27
                         ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Delete 1 of your level 3 Digimon to reduce play cost by 4");
 
                         return activateClass != null
-                            && card.Owner.GetBreedingAreaPermanents().Count((permanent) => CanSelectPermanentCondition(permanent, activateClass)) >= 1;
+                            && card.Owner.GetBattleAreaPermanents().Count((permanent) => CanSelectPermanentCondition(permanent, activateClass)) >= 1;
                     }
 
                     return false;
@@ -222,7 +220,8 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanUseCondition(Hashtable data)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(data, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnPlay(data, card);
                 }
 
                 bool CanActivateCondition(Hashtable data)
@@ -233,15 +232,12 @@ namespace DCGO.CardEffects.BT27
 
                 IEnumerator ActivateCoroutine(Hashtable data)
                 {
-                    if (card.Owner.HandCards.Any(CanSelectCard))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.PlayByEffect(
-                                canTargetCondition: CanSelectCard,
-                                root: SelectCardEffect.Root.Hand,
-                                activateClass,
-                                payCost: false));
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.PlayByEffect(
+                            canTargetCondition: CanSelectCard,
+                            root: SelectCardEffect.Root.Hand,
+                            activateClass,
+                            payCost: false));
                 }
             }
             #endregion
@@ -304,43 +300,40 @@ namespace DCGO.CardEffects.BT27
                 {
                     bool returned = false;
 
-                    if (card.Owner.TrashCards.Count(CanSelectCardCondition) >= 2)
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                    canTargetCondition: (cardSource) => CanSelectCardCondition(cardSource),
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    canNoSelect: () => true,
+                    selectCardCoroutine: null,
+                    afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                    message: "Select cards to place at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
+                    maxCount: 2,
+                    canEndNotMax: false,
+                    isShowOpponent: false,
+                    mode: SelectCardEffect.Mode.Custom,
+                    root: SelectCardEffect.Root.Trash,
+                    customRootCardList: null,
+                    canLookReverseCard: true,
+                    selectPlayer: card.Owner,
+                    cardEffect: activateClass);
+
+                    selectCardEffect.SetNotShowCard();
+                    selectCardEffect.SetNotAddLog();
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                        canTargetCondition: (cardSource) => CanSelectCardCondition(cardSource),
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        message: "Select cards to place at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
-                        maxCount: 2,
-                        canEndNotMax: false,
-                        isShowOpponent: false,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Trash,
-                        customRootCardList: null,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                        selectCardEffect.SetNotShowCard();
-                        selectCardEffect.SetNotAddLog();
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                        if (cardSources.Count == 2)
                         {
-                            if (cardSources.Count == 2)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
 
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
 
-                                returned = true;
-                            }
+                            returned = true;
                         }
                     }
 
