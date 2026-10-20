@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.BT27
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: DataSquadLevelSix, digivolutionCost: 5,
-                    ignoreDigivolutionRequirement: true, card: card, condition: null, level: 6));
+                    ignoreDigivolutionRequirement: false, card: card, condition: null, level: 6));
             }
             #endregion
 
@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT27
                 "May activate this card's Option-side Main effect",
                 ActivateOptionSide,
                 tag => $"[{tag}] [Once Per Turn] You may activate 1 [Main] effect on this card's Option side.",
-                optional: false, isSkippable: true, maxCountPerTurn: 1,
+                optional: true, maxCountPerTurn: 1,
                 hashValue: "BT27_035_WD_WA_Option", whenDigivolving: true, whenAttacking: true);
 
             IEnumerator ActivateOptionSide(Hashtable hashtable, ActivateClass activateClass)
@@ -96,13 +96,9 @@ namespace DCGO.CardEffects.BT27
 
             IEnumerator ReduceHandAndSecurity(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (card.Owner.Enemy.HandCards.Count < 8) yield break;
-
                 int count = card.Owner.Enemy.HandCards.Count - 7;
                 List<CardSource> selectedCards = new List<CardSource>();
 
-                // Follow BT13_033: conceal hand identities, shuffle selection presentation,
-                // and select exactly the required number without looking.
                 if (card.Owner.isYou)
                     foreach (CardSource source in card.Owner.Enemy.HandCards) source.SetReverse();
 
@@ -113,7 +109,7 @@ namespace DCGO.CardEffects.BT27
                     canTargetCondition: _ => true,
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
-                    canNoSelect: () => false,
+                    canNoSelect: () => true,
                     selectCardCoroutine: null,
                     afterSelectCardCoroutine: AfterSelect,
                     message: "Select cards to return to the bottom of the opponent's deck without looking.",
@@ -152,7 +148,6 @@ namespace DCGO.CardEffects.BT27
                         GManager.instance.GetComponent<Effects>().ShowCardEffect(selectedCards,
                             "Deck Bottom Cards", true, true));
 
-                // Resolve the security movement only after the hand reduction finishes.
                 if (selectedCards.Count == count && card.Owner.Enemy.SecurityCards.Count > 0)
                 {
                     List<CardSource> topSecurity = new List<CardSource> { card.Owner.Enemy.SecurityCards[0] };
