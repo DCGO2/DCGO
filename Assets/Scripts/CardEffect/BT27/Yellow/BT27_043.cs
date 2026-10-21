@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.BT27
 
             string SharedEffectDescription(string tag) => $"[{tag}] [Once Per Turn] By trashing your top security card, this Digimon unsuspends.";
 
-            bool SharedCanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
             {
                 return card.Owner.SecurityCards.Count >= 1;
             }
@@ -88,7 +88,7 @@ namespace DCGO.CardEffects.BT27
                     SharedActivateCoroutine,
                     SharedEffectDescription,
                     optional: true,
-                    additionalActivateCondition: SharedCanActivateCondition,
+                    additionalActivateCondition: AdditionalActivateCondition,
                     maxCountPerTurn: 1,
                     hashValue: SharedHashString,
                     whenDigivolving: true,
