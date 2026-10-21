@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +16,7 @@ namespace DCGO.CardEffects.BT27
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return permanent.TopCard.IsLevel2
-                        && permanent.TopCard.EqualsTraits("DATA SQUAD");
+                    return permanent.TopCard.EqualsTraits("DATA SQUAD");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -37,6 +35,7 @@ namespace DCGO.CardEffects.BT27
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 eligible hand Digimon under a Digimon or DATA SQUAD Tamer, then Draw 1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -57,11 +56,11 @@ namespace DCGO.CardEffects.BT27
                     => OwnDigimon(permanent) || OwnDataSquadTamer(permanent);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleArea(card)
+                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && card.Owner.HandCards.Any(EligibleHandCard)
                         && CardEffectCommons.HasMatchConditionPermanent(EligibleDestination);
 
@@ -103,7 +102,7 @@ namespace DCGO.CardEffects.BT27
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: false,
+                        canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: OnSelectedDestination,
                         afterSelectPermanentCoroutine: null,
@@ -146,19 +145,19 @@ namespace DCGO.CardEffects.BT27
                     => "[When Attacking] [Once Per Turn] Trash the top or bottom digivolution card of 1 of your opponent's Digimon.";
 
                 bool EligibleOpponentDigimon(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && permanent.DigivolutionCards.Any(source => !source.CanNotTrashFromDigivolutionCards(activateClass));
+                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    => CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionPermanent(EligibleOpponentDigimon);
+                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    if (!CardEffectCommons.HasMatchConditionPermanent(EligibleOpponentDigimon)) yield break;
+
                     Permanent selectedTarget = null;
                     SelectPermanentEffect permanentSelection = GManager.instance.GetComponent<SelectPermanentEffect>();
                     permanentSelection.SetUp(
@@ -183,22 +182,31 @@ namespace DCGO.CardEffects.BT27
                         yield return null;
                     }
 
-                    if (selectedTarget == null || !EligibleOpponentDigimon(selectedTarget))
+                    if (selectedTarget == null || selectedTarget.DigivolutionCards.Count == 0)
                         yield break;
 
-                    List<SelectionElement<bool>> choices = new List<SelectionElement<bool>>
+                    bool fromTop = true;
+
+                    if (selectedTarget.DigivolutionCards.Count >= 2)
                     {
-                        new SelectionElement<bool>(message: "Trash top digivolution card", value: true, spriteIndex: 0),
-                        new SelectionElement<bool>(message: "Trash bottom digivolution card", value: false, spriteIndex: 1)
-                    };
-                    GManager.instance.userSelectionManager.SetBoolSelection(
-                        selectionElements: choices,
-                        selectPlayer: card.Owner,
-                        selectPlayerMessage: "Trash the top or bottom digivolution card?",
-                        notSelectPlayerMessage: "The opponent is choosing a digivolution card to trash.");
-                    yield return ContinuousController.instance.StartCoroutine(
-                        GManager.instance.userSelectionManager.WaitForEndSelect());
-                    bool fromTop = GManager.instance.userSelectionManager.SelectedBoolValue;
+                        List<SelectionElement<bool>> choices = new List<SelectionElement<bool>>
+                        {
+                            new SelectionElement<bool>(message: "Trash top digivolution card", value: true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: "Trash bottom digivolution card", value: false, spriteIndex: 1)
+                        };
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(
+                            selectionElements: choices,
+                            selectPlayer: card.Owner,
+                            selectPlayerMessage: "Trash the top or bottom digivolution card?",
+                            notSelectPlayerMessage: "The opponent is choosing a digivolution card to trash.");
+
+                        yield return ContinuousController.instance.StartCoroutine(
+                            GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        fromTop = GManager.instance.userSelectionManager.SelectedBoolValue;
+                    }
+
                     yield return ContinuousController.instance.StartCoroutine(
                         CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
                             targetPermanent: selectedTarget,
@@ -209,8 +217,6 @@ namespace DCGO.CardEffects.BT27
             }
             #endregion
 
-            // [Rule] Trait: Has [Aquatic] Type is a card-data trait rule.
-            // Confirm the card's metadata includes Aquatic; do not add an always-active effect here.
             return cardEffects;
         }
     }
