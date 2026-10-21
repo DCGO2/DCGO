@@ -48,8 +48,6 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared WD/WA
-            string SharedHashString = "BT27_043_WD_WA";
-
             string SharedEffectName = "By trashing your top security card, this Digimon unsuspends";
 
             string SharedEffectDescription(string tag) => $"[{tag}] [Once Per Turn] By trashing your top security card, this Digimon unsuspends.";
@@ -87,7 +85,7 @@ namespace DCGO.CardEffects.BT27
                     optional: true,
                     additionalActivateCondition: AdditionalActivateCondition,
                     maxCountPerTurn: 1,
-                    hashValue: SharedHashString,
+                    hashValue: "BT27_043_WD_WA",
                     whenDigivolving: true,
                     whenAttacking: true);
             #endregion
