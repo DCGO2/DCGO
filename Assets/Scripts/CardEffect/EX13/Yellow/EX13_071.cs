@@ -135,10 +135,11 @@ namespace DCGO.CardEffects.EX13
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool trashed = false;
+                    const int targetTrashAmount = 3;
 
                     SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    int maxCount1 = Math.Min(3, CardEffectCommons.MatchConditionPermanentCount(TamerWithOneOrMoreFaceDownSource));
+                    int maxCount1 = Math.Min(targetTrashAmount, CardEffectCommons.MatchConditionPermanentCount(TamerWithOneOrMoreFaceDownSource));
 
                     selectPermanentEffect1.SetUp(
                         selectPlayer: card.Owner,
@@ -153,7 +154,10 @@ namespace DCGO.CardEffects.EX13
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect1.SetUpCustomMessage("Select all Tamer(s) to trash bottom face-down cards from", "The opponent is selecting Tamer(s) to trash bottom face-down cards from");
+                    selectPermanentEffect1.SetUpCustomMessage(
+                        $"Select Tamer(s) to trash bottom face-down cards from (Total: {targetTrashAmount})",
+                        $"The opponent is selecting Tamer(s) to trash bottom face-down cards from (Total: {targetTrashAmount})"
+                    );
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 
@@ -162,68 +166,151 @@ namespace DCGO.CardEffects.EX13
                         if (permanents.Count > 0)
                         {
                             int faceDownCount = 0;
-
-                            foreach(Permanent permanent in permanents)
+                            foreach (Permanent permanent in permanents)
                             {
                                 faceDownCount += permanent.DigivolutionCards.Count(CanSelectTrashSourceCardCondition);
                             }
 
-                            if (faceDownCount >= 3)
-                            {
-                                return true;
-                            }
+                            return faceDownCount >= targetTrashAmount;
                         }
+
                         return false;
                     }
 
                     IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                     {
-                        if (permanents.Count == 1)
-                        {
-                            trashed = true;
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 3, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
-                        }
-                        else if (permanents.Count == 2)
-                        {
-                            Permanent trash2Tamer = null;
+                        if (permanents == null || permanents.Count == 0) yield break;
 
-                            SelectPermanentEffect selectPermanentEffect2 = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        int remainingTrashCount = targetTrashAmount;
+                        List<Permanent> validTargets = new List<Permanent>(permanents);
 
-                            selectPermanentEffect2.SetUp(
+                        while (remainingTrashCount > 0 && validTargets.Count > 0)
+                        {
+                            if (validTargets.Count == 1)
+                            {
+                                Permanent finalTarget = validTargets[0];
+                                int availableCards = finalTarget.DigivolutionCards.Count(CanSelectTrashSourceCardCondition);
+                                int trashThisAmount = Math.Min(remainingTrashCount, availableCards);
+
+                                if (trashThisAmount > 0)
+                                {
+                                    trashed = true;
+
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
+                                        targetPermanent: finalTarget,
+                                        trashCount: trashThisAmount,
+                                        isFromTop: false,
+                                        activateClass: activateClass,
+                                        CanSelectTrashSourceCardCondition
+                                    ));
+
+                                    remainingTrashCount -= trashThisAmount;
+                                }
+
+                                break;
+                            }
+
+                            bool allTargetsHaveExactlyOneLeft = validTargets.All(p => p.DigivolutionCards.Count(CanSelectTrashSourceCardCondition) == 1);
+
+                            if (allTargetsHaveExactlyOneLeft)
+                            {
+                                foreach (Permanent target in new List<Permanent>(validTargets))
+                                {
+                                    if (remainingTrashCount <= 0) break;
+
+                                    trashed = true;
+
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
+                                        targetPermanent: target,
+                                        trashCount: 1,
+                                        isFromTop: false,
+                                        activateClass: activateClass,
+                                        CanSelectTrashSourceCardCondition
+                                    ));
+
+                                    remainingTrashCount--;
+                                }
+
+                                break;
+                            }
+
+                            Permanent selectedTarget = null;
+                            SelectPermanentEffect selectPermanentEffectLoop = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffectLoop.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: permanent => permanents.Contains(permanent) && permanent.DigivolutionCards.Count(CanSelectTrashSourceCardCondition) >= 2,
+                                canTargetCondition: permanent => validTargets.Contains(permanent) && permanent.DigivolutionCards.Count(CanSelectTrashSourceCardCondition) > 0,
                                 canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: CanEndSelectCondition,
+                                canEndSelectCondition: null,
                                 maxCount: 1,
                                 canNoSelect: false,
                                 canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                selectPermanentCoroutine: (p) => { selectedTarget = p; return null; },
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect2.SetUpCustomMessage("Select Tamer to trash 2 from", "The opponent is selecting Tamer(s) to trash bottom face-down cards from");
+                            selectPermanentEffectLoop.SetUpCustomMessage(
+                                $"Select a Tamer to trash up to {remainingTrashCount} cards from\n(You can choose another Tamer after if max is not chosen)",
+                                "The opponent is selecting a Tamer to trash cards from"
+                            );
 
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect2.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffectLoop.Activate());
 
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            if (selectedTarget != null)
                             {
-                                trash2Tamer = permanent;
+                                int availableCards = selectedTarget.DigivolutionCards.Count(CanSelectTrashSourceCardCondition);
 
-                                yield return null;
+                                int maxSelectableNumber = Math.Min(remainingTrashCount, availableCards);
+                                int chosenTrashAmount = 1;
+
+                                if (maxSelectableNumber > 1)
+                                {
+                                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+
+                                    for (int i = 1; i <= maxSelectableNumber; i++)
+                                        selectionElements.Add(new SelectionElement<int>(message: $"{i}", value: i, spriteIndex: 0));
+
+                                    string selectPlayerMessage = "Choose how many cards to trash?";
+                                    string notSelectPlayerMessage = "The opponent is choosing how many cards to trash.";
+
+                                    if (selectionElements.Count > 1)
+                                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                                    else
+                                        GManager.instance.userSelectionManager.SetInt(selectionElements[0].Value);
+
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                                    chosenTrashAmount = GManager.instance.userSelectionManager.SelectedIntValue;
+                                }
+                                else
+                                {
+                                    chosenTrashAmount = maxSelectableNumber;
+                                }
+
+                                if (chosenTrashAmount > 0)
+                                {
+                                    trashed = true;
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
+                                        targetPermanent: selectedTarget,
+                                        trashCount: chosenTrashAmount,
+                                        isFromTop: false,
+                                        activateClass: activateClass,
+                                        CanSelectTrashSourceCardCondition
+                                    ));
+
+                                    remainingTrashCount -= chosenTrashAmount;
+
+                                    if (selectedTarget.DigivolutionCards.Count(CanSelectTrashSourceCardCondition) == 0)
+                                    {
+                                        validTargets.Remove(selectedTarget);
+                                    }
+                                }
                             }
-
-                            Permanent trash1Tamer = permanents.FirstOrDefault(permanent => permanent != trash2Tamer);
-
-                            trashed = true;
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: trash2Tamer, trashCount: 2, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: trash1Tamer, trashCount: 1, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
-                        }
-                        else if (permanents.Count == 3)
-                        {
-                            trashed = true;
-                            foreach (Permanent selectedPermanent in permanents)
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 1, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
+                            else
+                            {
+                                break;
+                            }
                         }
 
                         yield return null;
