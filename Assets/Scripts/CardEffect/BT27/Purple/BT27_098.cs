@@ -82,8 +82,6 @@ namespace DCGO.CardEffects.BT27
             #region End of All Turns
             if (timing == EffectTiming.OnEndTurn)
             {
-                int faceDownSourceCount = 0;
-
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 5 Tamer sources to play [Gizmon]/[Belphemon] in name from hand/trash for free, then place this Tamer under it", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
@@ -102,7 +100,7 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    faceDownSourceCount = card.Owner.GetBattleAreaPermanents()
+                    var faceDownSourceCount = card.Owner.GetBattleAreaPermanents()
                         .Filter(TamerWithOneOrMoreFaceDownSource)
                         .Sum(permanent => permanent.DigivolutionCards.Count(CanSelectTrashSourceCardCondition));
 
@@ -169,11 +167,9 @@ namespace DCGO.CardEffects.BT27
                                 faceDownCount += permanent.DigivolutionCards.Count(CanSelectTrashSourceCardCondition);
                             }
 
-                            if (faceDownCount >= targetTrashAmount)
-                            {
-                                return true;
-                            }
+                            return faceDownCount >= targetTrashAmount;
                         }
+
                         return false;
                     }
 
@@ -195,14 +191,23 @@ namespace DCGO.CardEffects.BT27
                                 if (trashThisAmount > 0)
                                 {
                                     trashed = true;
+
                                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
-                                        targetPermanent: finalTarget, trashCount: trashThisAmount, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
+                                        targetPermanent: finalTarget,
+                                        trashCount: trashThisAmount,
+                                        isFromTop: false,
+                                        activateClass: activateClass,
+                                        CanSelectTrashSourceCardCondition
+                                    ));
+
                                     remainingTrashCount -= trashThisAmount;
                                 }
+
                                 break;
                             }
 
                             bool allTargetsHaveExactlyOneLeft = validTargets.All(p => p.DigivolutionCards.Count(CanSelectTrashSourceCardCondition) == 1);
+
                             if (allTargetsHaveExactlyOneLeft)
                             {
                                 foreach (Permanent target in new List<Permanent>(validTargets))
@@ -210,10 +215,18 @@ namespace DCGO.CardEffects.BT27
                                     if (remainingTrashCount <= 0) break;
 
                                     trashed = true;
+
                                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
-                                        targetPermanent: target, trashCount: 1, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
+                                        targetPermanent: target,
+                                        trashCount: 1,
+                                        isFromTop: false,
+                                        activateClass: activateClass,
+                                        CanSelectTrashSourceCardCondition
+                                    ));
+
                                     remainingTrashCount--;
                                 }
+
                                 break;
                             }
 
@@ -234,8 +247,8 @@ namespace DCGO.CardEffects.BT27
                                 cardEffect: activateClass);
 
                             selectPermanentEffectLoop.SetUpCustomMessage(
-                                $"Select a Tamer to allocate trash count ({remainingTrashCount} left)",
-                                "The opponent is selecting a Tamer to allocate trash count to"
+                                $"Select a Tamer to trash up to {remainingTrashCount} cards from\n(You can choose another Tamer after if max is not chosen)",
+                                "The opponent is selecting a Tamer to trash cards from"
                             );
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffectLoop.Activate());
