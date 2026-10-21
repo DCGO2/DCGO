@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,6 @@ namespace DCGO.CardEffects.BT27
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Digimon Effects
-
             #region Alt Digivolution
             if (timing == EffectTiming.None)
             {
@@ -29,7 +27,7 @@ namespace DCGO.CardEffects.BT27
             #region Blocker
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(false, card, null));
             }
             #endregion
 
@@ -43,12 +41,24 @@ namespace DCGO.CardEffects.BT27
             #region Ascension
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
-                cardEffects.Add(CardEffectFactory.AscensionSelfEffect(isInheritedEffect: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AscensionSelfEffect(false, card, null));
             }
             #endregion
 
             #region Shared WD/WA
             string SharedEffectName = "By trashing your top security card, this Digimon unsuspends";
+
+            CardEffectFactory.ActivateClassesForSharedEffects
+                (ref cardEffects, timing, card,
+                    SharedEffectName,
+                    SharedActivateCoroutine,
+                    SharedEffectDescription,
+                    optional: true,
+                    additionalActivateCondition: AdditionalActivateCondition,
+                    maxCountPerTurn: 1,
+                    hashValue: "BT27_043_WD_WA",
+                    whenDigivolving: true,
+                    whenAttacking: true);
 
             string SharedEffectDescription(string tag) => $"[{tag}] [Once Per Turn] By trashing your top security card, this Digimon unsuspends.";
 
@@ -69,25 +79,11 @@ namespace DCGO.CardEffects.BT27
 
                 IEnumerator SuccessProcess(List<CardSource> cardSources)
                 {
-                    Permanent thisPermanent = card.PermanentOfThisCard();
-
                     yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
-                        permanents: new List<Permanent>() { thisPermanent },
+                        permanents: new List<Permanent>() { card.PermanentOfThisCard() },
                         cardEffect: activateClass).Unsuspend());
                 }
             }
-
-            CardEffectFactory.ActivateClassesForSharedEffects
-                (ref cardEffects, timing, card,
-                    SharedEffectName,
-                    SharedActivateCoroutine,
-                    SharedEffectDescription,
-                    optional: true,
-                    additionalActivateCondition: AdditionalActivateCondition,
-                    maxCountPerTurn: 1,
-                    hashValue: "BT27_043_WD_WA",
-                    whenDigivolving: true,
-                    whenAttacking: true);
             #endregion
 
             #region All Turns - Security Removed
@@ -95,22 +91,14 @@ namespace DCGO.CardEffects.BT27
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 [Kentaurosmon]/[X Antibody] from digivolution cards as bottom security, activate Option side Main", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("BT27_043_AT");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
                     return "[All Turns] [Once Per Turn] When your security stack is removed from, by placing 1 [Kentaurosmon] or [X Antibody] from this Digimon's digivolution cards as the bottom security card, activate 1 [Main] effect on this card's Option side.";
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    Permanent thisPermanent = card.PermanentOfThisCard();
-
-                    return thisPermanent != null
-                        && thisPermanent.DigivolutionCards.Contains(cardSource)
-                        && (cardSource.EqualsCardName("Kentaurosmon") || cardSource.EqualsCardName("X Antibody"));
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -126,6 +114,12 @@ namespace DCGO.CardEffects.BT27
                         && card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1;
                 }
 
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return cardSource.EqualsCardName("Kentaurosmon")
+                            || cardSource.EqualsCardName("X Antibody");
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool placedInSecurity = false;
@@ -138,7 +132,7 @@ namespace DCGO.CardEffects.BT27
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: () => false,
+                        canNoSelect: () => true,
                         canEndNotMax: false,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
@@ -165,10 +159,10 @@ namespace DCGO.CardEffects.BT27
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ActivateMainOfOptionSide(card, activateClass));
                     }
+                    else activateClass.RemoveUse();
                 }
             }
             #endregion
-
             #endregion
 
             #region Option Effects
@@ -177,7 +171,7 @@ namespace DCGO.CardEffects.BT27
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("1 opponent's Digimon gets -20K DP until their turn ends, -1K more per security card", CanUseCondition, card);
+                activateClass.SetUpICardEffect("1 opponent's Digimon gets -20K DP until their turn ends, -1K less reduction per security card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
@@ -222,7 +216,7 @@ namespace DCGO.CardEffects.BT27
                             {
                                 // Counted when the effect resolves: every card in both players' security stacks adds 1000 to the reduction.
                                 int securityCount = card.Owner.SecurityCards.Count + card.Owner.Enemy.SecurityCards.Count;
-                                int dpReduction = 20000 + 1000 * securityCount;
+                                int dpReduction = 20000 - 1000 * securityCount;
 
                                 yield return ContinuousController.instance.StartCoroutine(
                                     CardEffectCommons.ChangeDigimonDP(
@@ -243,7 +237,6 @@ namespace DCGO.CardEffects.BT27
                 cardEffects.Add(CardEffectFactory.ArtsDigivolveEffect(card));
             }
             #endregion
-
             #endregion
 
             return cardEffects;
