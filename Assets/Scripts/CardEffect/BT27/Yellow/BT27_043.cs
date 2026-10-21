@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT27
                     return permanent.TopCard.EqualsCardName("Kentaurosmon");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 2, true, card, null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 2, false, card, null));
             }
             #endregion
 
