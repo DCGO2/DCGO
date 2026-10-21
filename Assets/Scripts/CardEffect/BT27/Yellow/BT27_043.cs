@@ -56,8 +56,7 @@ namespace DCGO.CardEffects.BT27
 
             bool SharedCanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
             {
-                return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                    && card.Owner.SecurityCards.Count >= 1;
+                return card.Owner.SecurityCards.Count >= 1;
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
