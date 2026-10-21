@@ -73,12 +73,9 @@ namespace DCGO.CardEffects.BT27
                 {
                     Permanent thisPermanent = card.PermanentOfThisCard();
 
-                    if (thisPermanent != null && CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
-                            permanents: new List<Permanent>() { thisPermanent },
-                            cardEffect: activateClass).Unsuspend());
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
+                        permanents: new List<Permanent>() { thisPermanent },
+                        cardEffect: activateClass).Unsuspend());
                 }
             }
 
