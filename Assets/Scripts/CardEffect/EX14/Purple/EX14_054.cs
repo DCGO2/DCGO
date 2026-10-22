@@ -22,6 +22,69 @@ namespace DCGO.CardEffects.EX14
             }
             #endregion
 
+            #region Assembly
+            if (timing == EffectTiming.None)
+            {
+                AddAssemblyConditionClass addAssemblyConditionClass = new AddAssemblyConditionClass();
+                addAssemblyConditionClass.SetUpICardEffect("Assembly", CanUseCondition, card);
+                addAssemblyConditionClass.SetUpAddAssemblyConditionClass(getAssemblyCondition: GetAssembly);
+                addAssemblyConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addAssemblyConditionClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                    => true;
+
+                AssemblyCondition GetAssembly(CardSource cardSource)
+                {
+                    if (cardSource == card)
+                    {
+                        AssemblyConditionElement element = new AssemblyConditionElement(CanSelectCardCondition);
+
+                        bool CanSelectCardCondition(CardSource cardSource)
+                            => cardSource != null
+                                && cardSource.Owner == card.Owner
+                                && cardSource.IsDigimon
+                                && cardSource.HasLevel
+                                && cardSource.EqualsTraits("Greed");
+
+                        bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
+                        {
+                            List<int> cardLevels = new List<int>();
+
+                            foreach (CardSource cardSource1 in cardSources)
+                            {
+                                if (!cardLevels.Contains(cardSource1.Level))
+                                {
+                                    cardLevels.Add(cardSource1.Level);
+                                }
+                                foreach (int level in cardSource1.Level_Assembly)
+                                {
+                                    if (!cardLevels.Contains(level))
+                                    {
+                                        cardLevels.Add(level);
+                                    }
+                                }
+                            }
+
+                            return !cardLevels.Contains(cardSource.Level)
+                                && !cardSource.Level_Assembly.Some(level => cardLevels.Contains(level));
+                        }
+
+                        AssemblyCondition assemblyCondition = new AssemblyCondition(
+                            element: element,
+                            CanTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                            selectMessage: "3 [Greed] trait Digimon cards w/different levels",
+                            elementCount: 3,
+                            reduceCost: 5);
+
+                        return assemblyCondition;
+                    }
+
+                    return null;
+                }
+            }
+            #endregion
+
             #region Alliance
             if (timing == EffectTiming.OnAllyAttack)
             {
