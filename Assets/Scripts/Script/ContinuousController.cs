@@ -138,7 +138,7 @@ public class ContinuousController : MonoBehaviour
         int currentAttempt = 0;
         bool isSuccessful = false;
 
-        while(currentAttempt < maxAttempts && !isSuccessful)
+        while (currentAttempt < maxAttempts && !isSuccessful)
         {
             try
             {
@@ -1640,7 +1640,8 @@ public class PhotonUtility
         #region Exit Room
         if (PhotonNetwork.InRoom)
         {
-            PhotonNetwork.LeaveRoom();
+            //false: leave for good instead of staying inactive for PlayerTtl
+            PhotonNetwork.LeaveRoom(false);
         }
 
         yield return new WaitWhile(() => PhotonNetwork.InRoom);
