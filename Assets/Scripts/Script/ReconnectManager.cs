@@ -27,8 +27,8 @@ using UnityEngine.UI;
 public class ReconnectManager : MonoBehaviourPunCallbacks
 {
     // How long a disconnected player has to come back. Keep in sync with the room's PlayerTtl.
-    public const float ReconnectWindowSeconds = 30f;
-    public const int PlayerTtlMilliseconds = 30000;
+    public const float ReconnectWindowSeconds = 60f;
+    public const int PlayerTtlMilliseconds = 60000;
 
     const float AttemptTimeoutSeconds = 6f;
     const float AttemptRetryDelaySeconds = 1f;
