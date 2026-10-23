@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT27
             bool CanSelectTamerWithFaceDown(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
-                    && permanent.DigivolutionCards.Any(c => c.IsFlipped);
+                    && permanent.DigivolutionCards.Any(c => c.IsFaceDown);
             }
 
             // Pays the cost. onResult(true) when a face-down card was trashed.
@@ -126,12 +126,6 @@ namespace DCGO.CardEffects.BT27
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (!CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsWolvermon)
-                        || !CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsPristimon))
-                    {
-                        yield break;
-                    }
-
                     CardSource wolvermon = null;
                     Permanent pristimon = null;
 
@@ -168,11 +162,6 @@ namespace DCGO.CardEffects.BT27
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                     #endregion
 
-                    if (wolvermon == null)
-                    {
-                        yield break;
-                    }
-
                     #region Select Pristimon
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -199,11 +188,6 @@ namespace DCGO.CardEffects.BT27
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     #endregion
-
-                    if (pristimon == null)
-                    {
-                        yield break;
-                    }
 
                     yield return ContinuousController.instance.StartCoroutine(
                         pristimon.AddDigivolutionCardsBottom(new List<CardSource>() { wolvermon }, activateClass));
@@ -266,11 +250,6 @@ namespace DCGO.CardEffects.BT27
                 #endregion
 
                 #region Then, pay cost and give forced attack
-                if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerWithFaceDown)
-                    || !CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentDigimon))
-                {
-                    yield break;
-                }
 
                 bool paid = false;
                 yield return ContinuousController.instance.StartCoroutine(PayFaceDownCost(activateClass, result => paid = result));
@@ -395,17 +374,15 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && HasGlowingDawn()
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerOnPermanentAttackTargetSwitch(hashtable, permanent => true);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
                         && HasGlowingDawn()
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerWithFaceDown)
-                        && card.Owner.Enemy.SecurityCards.Count >= 1;
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerWithFaceDown);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
