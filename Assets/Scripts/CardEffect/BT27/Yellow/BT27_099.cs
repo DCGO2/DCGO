@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Surtr Brander
 namespace DCGO.CardEffects.BT27
@@ -137,7 +135,7 @@ namespace DCGO.CardEffects.BT27
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 opponent's lowest DP Digimon as their top security card", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -148,18 +146,12 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
+                    return CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
