@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,9 +33,7 @@ namespace DCGO.CardEffects.BT27
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return permanent.TopCard.HasLevel
-                        && permanent.TopCard.IsLevel4
-                        && permanent.TopCard.ContainsCardName("Sukamon");
+                    return permanent.TopCard.ContainsCardName("Sukamon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -44,7 +41,8 @@ namespace DCGO.CardEffects.BT27
                     digivolutionCost: 3,
                     ignoreDigivolutionRequirement: false,
                     card: card,
-                    condition: null));
+                    condition: null,
+                    level: 4));
             }
             #endregion
 
@@ -292,36 +290,38 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentDigimonCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentDigimonCondition))
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectOpponentDigimonCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Degenerate,
-                        cardEffect: activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectOpponentDigimonCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Degenerate,
+                            cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to <De-Digivolve 1>.", "The opponent is selecting 1 Digimon to <De-Digivolve 1>.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to <De-Digivolve 1>.", "The opponent is selecting 1 Digimon to <De-Digivolve 1>.");
 
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
                 }
             }
             #endregion
