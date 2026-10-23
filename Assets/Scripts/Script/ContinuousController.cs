@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -137,13 +138,14 @@ public class ContinuousController : MonoBehaviour
         int currentAttempt = 0;
         bool isSuccessful = false;
 
-        while(currentAttempt < maxAttempts && !isSuccessful)
+        while (currentAttempt < maxAttempts && !isSuccessful)
         {
-            currentAttempt++;
-            Debug.Log($"[Loading] Banlist Attempt {currentAttempt} of {maxAttempts}");
-
-            using (UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url))
+            try
             {
+                currentAttempt++;
+                Debug.Log($"[Loading] Banlist Attempt {currentAttempt} of {maxAttempts}");
+
+                UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url);
                 UnityWebRequestAsyncOperation operation = jsonWebRequest.SendWebRequest();
 
                 while (!operation.isDone)
@@ -168,6 +170,18 @@ public class ContinuousController : MonoBehaviour
                     isSuccessful = true;
                     BanList = JsonUtility.FromJson<BanList>(jsonWebRequest.downloadHandler.text);
                 }
+            }
+            catch(TaskCanceledException ex) when (ex.InnerException is TimeoutException)
+            {
+                Debug.LogWarning("Error: Request timed out (cURL error 28 equivalent via HttpClient.Timeout).");
+            }
+            catch (TaskCanceledException)
+            {
+                Debug.LogWarning($"Error: Request was manually cancelled.");
+            }
+            catch(HttpRequestException ex)
+            {
+                Debug.LogWarning($"Network error occurred: {ex.Message}");
             }
         }
 
@@ -1626,7 +1640,8 @@ public class PhotonUtility
         #region Exit Room
         if (PhotonNetwork.InRoom)
         {
-            PhotonNetwork.LeaveRoom();
+            //false: leave for good instead of staying inactive for PlayerTtl
+            PhotonNetwork.LeaveRoom(false);
         }
 
         yield return new WaitWhile(() => PhotonNetwork.InRoom);
