@@ -96,7 +96,7 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         #region Leave From Room
         if (PhotonNetwork.InRoom)
         {
-            PhotonNetwork.LeaveRoom();
+            PhotonNetwork.LeaveRoom(false);
         }
 
         yield return new WaitWhile(() => PhotonNetwork.InRoom);
@@ -346,6 +346,9 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
             PublishUserId = true,
 
             MaxPlayers = 2,
+
+            //Keep a disconnected player's slot so they can rejoin the match
+            PlayerTtl = ReconnectManager.PlayerTtlMilliseconds,
 
             //To display room creator in room custom properties, store creator's name
             CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()

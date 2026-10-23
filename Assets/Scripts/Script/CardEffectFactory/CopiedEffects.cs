@@ -50,7 +50,7 @@ public partial class CardEffectFactory
         }
 
         List<CardSource> validSources(List<CardSource> availableSources) => availableSources.Filter(
-            cardSource => cardSource.IsFaceUp && (cardCondition == null || cardCondition(cardSource))
+            cardSource => cardCondition == null || cardCondition(cardSource)
         );
 
         canUseCondition ??= DefaultCanUseCondition;
@@ -196,8 +196,6 @@ public partial class CardEffectFactory
                     }
                     else if (!isSuccession || cardEffect.EffectName != "Succession") // Succession can never copy another succession skill
                     {
-                        cardEffect.SetIsInheritedEffect(isInheritedEffect);
-                        cardEffect.SetIsLinkedEffect(isLinkedEffect);
                         getCardEffects.Add(cardEffect);
                         getCardEffects.Add(PermanentEffectFactory.AddDetailClass(
                             thisPermanent,
