@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -16,9 +15,7 @@ namespace DCGO.CardEffects.BT27
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasLevel
-                        && targetPermanent.TopCard.IsLevel3
-                        && targetPermanent.TopCard.HasGlowingDawnTraits;
+                    return targetPermanent.TopCard.HasGlowingDawnTraits;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -26,7 +23,8 @@ namespace DCGO.CardEffects.BT27
                     digivolutionCost: 2,
                     ignoreDigivolutionRequirement: false,
                     card: card,
-                    condition: null));
+                    condition: null,
+                    level: 3));
             }
             #endregion
 
@@ -50,50 +48,12 @@ namespace DCGO.CardEffects.BT27
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.OwnerHas1OrLessTamers(card)
-                    && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
-                {
-                    CardSource selectedCard = null;
-
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardCondition));
-
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                    {
-                        selectedCard = cardSource;
-                        yield return null;
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                    if (selectedCard != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            new List<CardSource>() { selectedCard },
-                            activateClass: activateClass,
-                            payCost: false,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.Hand,
-                            activateETB: true));
-                    }
-                }
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                    canTargetCondition: CanSelectCardCondition,
+                    SelectCardEffect.Root.Hand,
+                    activateClass,
+                    false
+                ));
             }
 
             CardEffectFactory.ActivateClassesForSharedEffects
@@ -101,7 +61,8 @@ namespace DCGO.CardEffects.BT27
                     SharedEffectName,
                     SharedActivateCoroutine,
                     SharedEffectDescription,
-                    optional: true,
+                    optional: false,
+                    isSkippable: true,
                     additionalActivateCondition: SharedAdditionalActivateCondition,
                     security: true,
                     whenDigivolving: true);
