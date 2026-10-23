@@ -55,11 +55,11 @@ namespace DCGO.CardEffects.BT27
                                 effectTiming == EffectTiming.OnStartMainPhase ? granted : null;
 
                             bool CanTriggerGranted(Hashtable ht) =>
-                                CardEffectCommons.IsPermanentExistsOnBattleArea(target) &&
+                                CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(target.TopCard, activateClass) &&
                                 GManager.instance.turnStateMachine.gameContext.TurnPlayer == target.TopCard.Owner;
 
                             bool CanActivateGranted(Hashtable ht) =>
-                                CardEffectCommons.IsPermanentExistsOnBattleArea(target) &&
+                                CardEffectCommons.IsExistOnBattleAreaDigimonActivate(target.TopCard, activateClass) &&
                                 !target.TopCard.CanNotBeAffected(activateClass) && target.CanAttack(granted);
 
                             IEnumerator AttackCoroutine(Hashtable ht)
