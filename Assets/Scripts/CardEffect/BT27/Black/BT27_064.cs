@@ -302,14 +302,14 @@ namespace DCGO.CardEffects.BT27
 
                     bool CanUseGrant(Hashtable h)
                     {
-                        return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent)
+                        return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(selectedPermanent.TopCard, activateClass)
                             && selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent)
                             && GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner;
                     }
 
                     bool CanActivateGrant(Hashtable h)
                     {
-                        return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent)
+                        return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(selectedPermanent.TopCard, activateClass)
                             && !selectedPermanent.TopCard.CanNotBeAffected(activateClass)
                             && selectedPermanent.CanAttack(grant);
                     }
