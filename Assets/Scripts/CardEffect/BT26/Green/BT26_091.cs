@@ -102,8 +102,10 @@ namespace DCGO.CardEffects.BT26
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
-                        && (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, OpponentPermanentCondition)
-                            || CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, ThisTamerCondition, null, _ => true));
+                        && ((timing == EffectTiming.OnTappedAnyone
+                            && CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, OpponentPermanentCondition))
+                        || (timing == EffectTiming.OnDigivolutionCardDiscarded
+                            && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, ThisTamerCondition, null, _ => true)));
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
