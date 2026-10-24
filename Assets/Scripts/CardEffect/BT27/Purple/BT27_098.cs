@@ -35,19 +35,37 @@ namespace DCGO.CardEffects.BT27
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SuspendPeremanentAndProcessAccordingToResult(
-                        targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
-                        activateClass: activateClass,
-                        successProcess: SuccessProcess,
-                        failureProcess: null));
-
-                    IEnumerator SuccessProcess(List<Permanent> _permanents)
+                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>
                     {
-                        List<CardSource> topCards = card.Owner.LibraryCards.Take(2).ToList();
+                        new(message: $"Suspend and place 2 cards from deck under this card", value: 1, spriteIndex: 0),
+                        new(message: $"Only suspend without placing cards", value: 2, spriteIndex: 0),
+                        new(message: $"No", value: 3, spriteIndex: 1)
+                    };
 
-                        if (topCards.Count >= 1)
+                    string selectPlayerMessage = "Will you suspend this tamer to place the top 2 cards from your deck under this Tamer face down?";
+                    string notSelectPlayerMessage = "The opponent is choosing whether to place the top 2 cards from their deck under their Tamer face down.";
+
+                    GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    int answer = GManager.instance.userSelectionManager.SelectedIntValue;
+
+                    if (answer != 3)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SuspendPeremanentAndProcessAccordingToResult(
+                            new List<Permanent>() { card.PermanentOfThisCard() },
+                            activateClass,
+                            SuccessProcess,
+                            null));
+                    }
+
+                    IEnumerator SuccessProcess(List<Permanent> suspendedPermaments)
+                    {
+                        if (answer == 1)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(topCards, activateClass, isFacedown: true));
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
+                                    new List<CardSource> { card.Owner.LibraryCards[0], card.Owner.LibraryCards[1] }, activateClass, isFacedown: true));
                         }
                     }
                 }
@@ -101,8 +119,6 @@ namespace DCGO.CardEffects.BT27
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     #region Cost - Trash 5 bottom face-down cards from under any of your Tamers
-                    // Each step picks 1 Tamer and how many to trash from it. Every selection finishes before the next one starts,
-                    // so no selection is opened from inside another selection's callback.
                     int remainingTrashCount = TrashCount;
 
                     while (remainingTrashCount > 0 && FaceDownCountUnderTamers() >= remainingTrashCount)
