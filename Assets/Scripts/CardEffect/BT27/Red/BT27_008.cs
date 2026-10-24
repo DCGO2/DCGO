@@ -10,11 +10,11 @@ namespace DCGO.CardEffects.BT27
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alternate Digivolution Requirement - [Kyokomon]
+            #region Alternate Digivolution Requirement - [Kyokyomon]
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.EqualsCardName("Kyokomon");
+                    => targetPermanent.TopCard.EqualsCardName("Kyokyomon");
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -39,7 +39,8 @@ namespace DCGO.CardEffects.BT27
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 [Chronicle] trait from hand to <Draw 1> and gain 1 memory", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
