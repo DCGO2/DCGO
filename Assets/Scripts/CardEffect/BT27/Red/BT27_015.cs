@@ -48,7 +48,6 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName = "Delete 1 Digimon with as much DP as 1 of your Digimon or less, then if during an attack, trash their top security card";
 
             string SharedEffectDescription(string tag)
@@ -142,7 +141,8 @@ namespace DCGO.CardEffects.BT27
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("May play or use 1 [Chronicle] trait Tamer or Option from hand for free", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("BT27_015_AT");
                 cardEffects.Add(activateClass);
 
@@ -193,7 +193,11 @@ namespace DCGO.CardEffects.BT27
 
                     yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                    if (selectedCard == null) yield break;
+                    if (selectedCard == null)
+                    {
+                        activateClass.RemoveUse();
+                        yield break;
+                    }
 
                     if (selectedCard.IsOption)
                     {
