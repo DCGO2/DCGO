@@ -532,9 +532,9 @@ public class DataBase : MonoBehaviour
         return "<Vortex> (At the end of your turn, this Digimon may attack an opponent's Digimon. With this effect, it can attack the turn it was played.)";
     }
 
-    public static string OverclockEffectDiscription(string trait)
+    public static string OverclockEffectDiscription(string condition)
     {
-        return $"<Overclock [{trait}]> (At the end of your turn, by deleting 1 of your Tokens or other [{trait}] trait Digimon, this Digimon attacks a player without suspending.)";
+        return $"<Overclock {condition}> (At the end of your turn, by deleting 1 of your Tokens or other {condition} Digimon, this Digimon attacks a player without suspending.)";
     }
 
     public static string TrainingEffectDiscription()
