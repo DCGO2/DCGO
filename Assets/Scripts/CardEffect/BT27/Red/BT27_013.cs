@@ -33,7 +33,6 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName = "<De-Digivolve 1> 1 opponent's Digimon, then if during an attack, delete 1 Digimon with as much DP as this or less";
 
             string SharedEffectDescription(string tag)
@@ -115,7 +114,7 @@ namespace DCGO.CardEffects.BT27
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into a [Chronicle] trait Digimon card from hand or trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -197,7 +196,8 @@ namespace DCGO.CardEffects.BT27
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Change the attack target to 1 of your [Chronicle] trait Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT27_013_Inherited");
                 cardEffects.Add(activateClass);
