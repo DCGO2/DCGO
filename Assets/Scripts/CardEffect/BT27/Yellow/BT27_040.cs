@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Etemon
 namespace DCGO.CardEffects.BT27
@@ -39,24 +38,21 @@ namespace DCGO.CardEffects.BT27
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && permanent.TopCard.ContainsCardNames("Chuumon", "Sukamon", "Etemon");
             }
-            
+
             bool IsOpponentsDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             #endregion
 
             #region Shared Security / OP / WD
-
             string SharedEffectName = "Reduce an enemy's DP based on number of [Chuumon], [Sukamon], [Etemon]";
 
             string SharedEffectDescription(string tag) => $"[{tag}] To 1 of your opponent's Digimon, give -3000 DP for the turn for each of your Digimon with [Chuumon], [Sukamon] or [Etemon] in their names";
-
-            bool SharedIsSkippableFunction(Hashtable hashtable) => !CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon);
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon))
                 {
                     int dpChange = CardEffectCommons.MatchConditionPermanentCount(IsYourPoopFamily) * -3000;
-                    
+
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -72,13 +68,13 @@ namespace DCGO.CardEffects.BT27
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage($"Choose a digimon to give {dpChange}DP to.", "Opponent is choosign a digimomn to reduce dp.");
+                    selectPermanentEffect.SetUpCustomMessage($"Choose a Digimon to give {dpChange} DP to.", $"Opponent is choosing a Digimon to give {dpChange} DP to.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: dpChange, effectDuration: EffectDuration.UntilOwnerTurnEnd, activateClass: activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: dpChange, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                     }
                 }
             }
@@ -88,7 +84,6 @@ namespace DCGO.CardEffects.BT27
                 SharedActivateCoroutine,
                 SharedEffectDescription,
                 optional: false,
-                isSkippableFunction: SharedIsSkippableFunction,
                 security: true,
                 onPlay: true,
                 whenDigivolving: true);
@@ -139,12 +134,12 @@ namespace DCGO.CardEffects.BT27
             }
             #endregion
 
-            #region All Turns
+            #region Inherited All Turns
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("<De-digivolve 1> 1 opponent's Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpICardEffect("<De-Digivolve 1> 1 opponent's Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT27_040_AT_ESS");
                 cardEffects.Add(activateClass);
