@@ -22,7 +22,6 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared Security / When Digivolving
-
             string SharedEffectName = "If 1 or fewer Tamers, may play 1 [Makoto Kuonji] in name Tamer from hand for free";
 
             string SharedEffectDescription(string tag)
@@ -42,8 +41,6 @@ namespace DCGO.CardEffects.BT27
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.MatchConditionPermanentCount(IsOwnTamer) > 1) yield break;
-
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                     canTargetCondition: cardSource => CanSelectCardCondition(cardSource, activateClass),
                     root: SelectCardEffect.Root.Hand,
@@ -61,7 +58,6 @@ namespace DCGO.CardEffects.BT27
                 additionalActivateCondition: SharedCanActivateCondition,
                 whenDigivolving: true,
                 security: true);
-
             #endregion
 
             #region Inherited - Retaliation
