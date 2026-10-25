@@ -15,8 +15,7 @@ namespace DCGO.CardEffects.BT27
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into [Leomon] in name or [ACCEL] trait Digimon in hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
-                activateClass.SetIsSkippable(true);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("BT27_003_Inherited");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
