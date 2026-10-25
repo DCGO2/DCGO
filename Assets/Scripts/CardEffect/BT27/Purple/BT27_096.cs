@@ -162,7 +162,15 @@ namespace DCGO.CardEffects.BT27
                             }
                         }
 
-                        if (selectedTamer == null) break;
+                        if (selectedTamer == null)
+                        {
+                            if (remainingTrashCount == TrashCount)
+                            {
+                                activateClass.RemoveUse();
+                                yield break;
+                            }
+                            else break;
+                        }
 
                         int availableCount = selectedTamer.DigivolutionCards.Count(FaceDownCards);
                         int otherTamersCount = FaceDownCountUnderTamers() - availableCount;
@@ -181,6 +189,8 @@ namespace DCGO.CardEffects.BT27
                                 selectionElements.Add(new(message: $"Trash {i}", value: i, spriteIndex: 0));
                             }
 
+                            selectionElements.Add(new(message: $"Don't trash", value: 0, spriteIndex: 1));
+
                             GManager.instance.userSelectionManager.SetIntSelection(
                                 selectionElements: selectionElements,
                                 selectPlayer: card.Owner,
@@ -190,6 +200,16 @@ namespace DCGO.CardEffects.BT27
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
                             trashCount = GManager.instance.userSelectionManager.SelectedIntValue;
+                        }
+
+                        if (trashCount == 0)
+                        {
+                            if (remainingTrashCount == TrashCount)
+                            {
+                                activateClass.RemoveUse();
+                                yield break;
+                            }
+                            else break;
                         }
 
                         int countBefore = selectedTamer.DigivolutionCards.Count(FaceDownCards);

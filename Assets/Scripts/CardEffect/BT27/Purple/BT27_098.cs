@@ -160,7 +160,11 @@ namespace DCGO.CardEffects.BT27
                             }
                         }
 
-                        if (selectedTamer == null) break;
+                        if (selectedTamer == null)
+                        {
+                            if (remainingTrashCount == TrashCount) yield break;
+                            else break;
+                        }
 
                         int availableCount = selectedTamer.DigivolutionCards.Count(FaceDownCards);
                         int otherTamersCount = FaceDownCountUnderTamers() - availableCount;
