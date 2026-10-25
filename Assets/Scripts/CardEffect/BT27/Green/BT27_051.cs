@@ -23,30 +23,6 @@ namespace DCGO.CardEffects.BT27
             }
             #endregion
 
-            #region Rule - Trait: Has [Holy Beast] Type
-            // Rule traits normally come from the card data; this keeps the trait even if the data omits it.
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Has the [Holy Beast] trait", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => true;
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card && !cardTraits.Contains("Holy Beast"))
-                    {
-                        cardTraits.Add("Holy Beast");
-                    }
-
-                    return cardTraits;
-                }
-            }
-            #endregion
-
             #region Fortitude
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
@@ -55,7 +31,6 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName = "This Digimon may battle 1 of your opponent's Digimon";
 
             string SharedEffectDescription(string tag)
@@ -114,58 +89,32 @@ namespace DCGO.CardEffects.BT27
                 additionalActivateCondition: SharedCanActivateCondition,
                 onPlay: true,
                 whenDigivolving: true);
-
             #endregion
 
-            #region On Deletion
+            #region Shared OD/Inherited OD
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Recovery +1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                    => "[On Deletion] <Recovery +1>.";
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass)
-                        && card.Owner.LibraryCards.Count >= 1
-                        && card.Owner.CanAddSecurity(activateClass);
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                foreach (bool isInheritedEffect in new[] { false, true })
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
-                }
-            }
-            #endregion
+                    ActivateClass activateClass = new ActivateClass();
+                    activateClass.SetUpICardEffect("Recovery +1", CanUseCondition, card);
+                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                    activateClass.SetIsInheritedEffect(isInheritedEffect);
+                    cardEffects.Add(activateClass);
 
-            #region On Deletion - ESS
-            if (timing == EffectTiming.OnDestroyedAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Recovery +1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetIsInheritedEffect(true);
-                cardEffects.Add(activateClass);
+                    string EffectDescription()
+                        => "[On Deletion] <Recovery +1>.";
 
-                string EffectDescription()
-                    => "[On Deletion] <Recovery +1>.";
+                    bool CanUseCondition(Hashtable hashtable)
+                        => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
 
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
+                    bool CanActivateCondition(Hashtable hashtable)
+                        => CardEffectCommons.CanActivateOnDeletion(card, activateClass);
 
-                bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass)
-                        && card.Owner.LibraryCards.Count >= 1
-                        && card.Owner.CanAddSecurity(activateClass);
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                    IEnumerator ActivateCoroutine(Hashtable hashtable)
+                    {
+                        if (card.Owner.CanAddSecurity(activateClass)) yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                    }
                 }
             }
             #endregion
