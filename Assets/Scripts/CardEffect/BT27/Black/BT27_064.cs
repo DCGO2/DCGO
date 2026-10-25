@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.BT27
                         canTargetCondition: IsWolvermon,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        canNoSelect: () => false,
+                        canNoSelect: () => true,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
                         message: "Select 1 [Wolvermon] to place as a digivolution card.",
@@ -162,6 +162,8 @@ namespace DCGO.CardEffects.BT27
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                     #endregion
 
+                    if (wolvermon == null) yield break;
+
                     #region Select Pristimon
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -171,7 +173,7 @@ namespace DCGO.CardEffects.BT27
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: false,
+                        canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
@@ -188,6 +190,8 @@ namespace DCGO.CardEffects.BT27
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     #endregion
+
+                    if (pristimon == null) yield break;
 
                     yield return ContinuousController.instance.StartCoroutine(
                         pristimon.AddDigivolutionCardsBottom(new List<CardSource>() { wolvermon }, activateClass));

@@ -92,7 +92,7 @@ namespace DCGO.CardEffects.BT27
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                     #endregion
 
-                    if (nightChiropmon = null) yield break;
+                    if (nightChiropmon == null) yield break;
 
                     #region Select Chiropmon
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
