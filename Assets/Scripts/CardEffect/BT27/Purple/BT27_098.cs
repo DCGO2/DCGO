@@ -139,7 +139,7 @@ namespace DCGO.CardEffects.BT27
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
-                                canNoSelect: false,
+                                canNoSelect: remainingTrashCount == TrashCount,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: SelectPermanentCoroutine,
                                 afterSelectPermanentCoroutine: null,
