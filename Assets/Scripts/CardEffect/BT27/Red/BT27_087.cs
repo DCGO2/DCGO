@@ -31,12 +31,11 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(ChronicleDigimonCondition)
-                        && card.Owner.CanAddMemory(activateClass);
+                        && CardEffectCommons.HasMatchConditionPermanent(ChronicleDigimonCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    if (card.Owner.CanAddMemory(activateClass)) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
             #endregion
@@ -74,6 +73,7 @@ namespace DCGO.CardEffects.BT27
                     {
                         new(message: "Reveal 3, add 1 [X Antibody]/[Chronicle] card", value: 1, spriteIndex: 0),
                         new(message: "Play 1 Lv.3 [Chronicle] Digimon to breeding area", value: 2, spriteIndex: 0),
+                        new(message: "Don't Activate", value: 3, spriteIndex: 1),
                     };
 
                     GManager.instance.userSelectionManager.SetIntSelection(
@@ -105,7 +105,7 @@ namespace DCGO.CardEffects.BT27
                             activateClass: activateClass));
                         #endregion
                     }
-                    else if (choice == 2)
+                    else if (choice == 2 && card.Owner.GetBreedingAreaPermanents().Count == 0)
                     {
                         #region May play 1 Lv.3 [Chronicle] Digimon to breeding area
                         if (!CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectBreedingCardCondition)) yield break;
