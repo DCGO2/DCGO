@@ -137,7 +137,7 @@ namespace DCGO.CardEffects.LM
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return this card to the bottom of the deck to delete 1 opponent Digimon.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("May use this card with the cost reduced by 3", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
