@@ -138,7 +138,7 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("May use this card with the cost reduced by 3", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -151,9 +151,13 @@ namespace DCGO.CardEffects.LM
                 {
                     return CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.IsExistOnTrash(card)
-                        && card.Owner.HandCards.Count <= 4
-                        && CanUseOption(card)
                         && CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, PermanentCondition);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return card.Owner.HandCards.Count <= 4
+                        && CanUseOption(card);
                 }
 
                 bool CanUseOption(CardSource card)
