@@ -66,7 +66,7 @@ namespace DCGO.CardEffects.BT27
                         canTargetCondition: IsNightChiropmon,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        canNoSelect: () => false,
+                        canNoSelect: () => true,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
                         message: "Select 1 [NightChiropmon] to place as a digivolution card.",
@@ -92,6 +92,8 @@ namespace DCGO.CardEffects.BT27
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                     #endregion
 
+                    if (nightChiropmon = null) yield break;
+
                     #region Select Chiropmon
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -101,7 +103,7 @@ namespace DCGO.CardEffects.BT27
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: false,
+                        canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
@@ -119,14 +121,13 @@ namespace DCGO.CardEffects.BT27
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     #endregion
 
-                    if (nightChiropmon == null || chiropmon == null) yield break;
+                    if (chiropmon == null) yield break;
 
                     yield return ContinuousController.instance.StartCoroutine(
                         chiropmon.AddDigivolutionCardsBottom(new List<CardSource>() { nightChiropmon }, activateClass));
 
                     if (chiropmon.DigivolutionCards.Contains(nightChiropmon))
                     {
-                        // Normal digivolution cost, ignoring level only.
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                             targetPermanent: chiropmon,
                             cardCondition: IsThisCard,
@@ -147,7 +148,6 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName = "Delete 1 opponent's level 4 or lower Digimon, then by trashing 1 Tamer face-down card, gain <Rush> and <Piercing>";
 
             string SharedEffectDescription(string tag)
