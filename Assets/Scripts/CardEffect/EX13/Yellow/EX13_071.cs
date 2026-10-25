@@ -231,7 +231,7 @@ namespace DCGO.CardEffects.EX13
                                 activateClass.RemoveUse();
                                 yield break;
                             }
-                            else break;
+                            else continue;
                         }
 
                         int countBefore = selectedTamer.DigivolutionCards.Count(CanSelectTrashSourceCardCondition);
