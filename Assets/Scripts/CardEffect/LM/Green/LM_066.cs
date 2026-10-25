@@ -301,6 +301,8 @@ namespace DCGO.CardEffects.LM
 
                     List<Permanent> selectedPermanents = new List<Permanent>();
 
+                    int successes = 0;
+
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -329,6 +331,12 @@ namespace DCGO.CardEffects.LM
 
                     IEnumerator SuccessProcess(List<Permanent> selectedPermanents)
                     {
+                        successes += 1;
+                        yield return null;
+                    }
+
+                    if (successes == 2)
+                    { 
                         if (card.Owner.CanReduceCost(null, card)) ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
 
                         ChangeCostClass changeCostClass = new ChangeCostClass();
