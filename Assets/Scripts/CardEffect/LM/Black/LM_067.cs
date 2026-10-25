@@ -344,6 +344,8 @@ namespace DCGO.CardEffects.LM
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: null);
+
+                            yield return StartCoroutine(selectCardEffect.Activate());
                         }
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
