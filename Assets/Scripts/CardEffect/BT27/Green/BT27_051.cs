@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-// LoaderLeomon — BT27-051
+// LoaderLeomon
 namespace DCGO.CardEffects.BT27
 {
     public class BT27_051 : CEntity_Effect
@@ -10,128 +10,167 @@ namespace DCGO.CardEffects.BT27
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alternate Digivolution
+            #region Alternate Digivolution Requirement - Lv.4 w/[Leomon] in name or [Holy Beast]/[ACCEL] trait
             if (timing == EffectTiming.None)
             {
-                bool PermanentCondition(Permanent targetPermanent)
-                {
-                    CardSource top = targetPermanent.TopCard;
-                    return top != null && top.IsLevel4 &&
-                           (top.ContainsCardName("Leomon") ||
-                            top.EqualsTraits("Holy Beast") ||
-                            top.EqualsTraits("ACCEL"));
-                }
+                static bool PermanentCondition(Permanent targetPermanent)
+                    => targetPermanent.TopCard.ContainsCardName("Leomon")
+                        || targetPermanent.TopCard.HasHolyBeastTraits
+                        || targetPermanent.TopCard.EqualsTraits("ACCEL");
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition,
-                    digivolutionCost: 3,
-                    ignoreDigivolutionRequirement: false,
-                    card: card,
-                    condition: null));
+                    permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 4));
+            }
+            #endregion
+
+            #region Rule - Trait: Has [Holy Beast] Type
+            // Rule traits normally come from the card data; this keeps the trait even if the data omits it.
+            if (timing == EffectTiming.None)
+            {
+                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
+                changeTraitsClass.SetUpICardEffect("Has the [Holy Beast] trait", CanUseCondition, card);
+                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
+                cardEffects.Add(changeTraitsClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                    => true;
+
+                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
+                {
+                    if (cardSource == card && !cardTraits.Contains("Holy Beast"))
+                    {
+                        cardTraits.Add("Holy Beast");
+                    }
+
+                    return cardTraits;
+                }
             }
             #endregion
 
             #region Fortitude
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
-                cardEffects.Add(CardEffectFactory.FortitudeSelfEffect(
-                    isInheritedEffect: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.FortitudeSelfEffect(isInheritedEffect: false, card: card, condition: null));
             }
             #endregion
 
-            #region On Play / When Digivolving - Battle
-            string BattleName() => "This Digimon may battle 1 of your opponent's Digimon";
-            string BattleDescription(string tag)
+            #region Shared On Play / When Digivolving
+
+            string SharedEffectName = "This Digimon may battle 1 of your opponent's Digimon";
+
+            string SharedEffectDescription(string tag)
                 => $"[{tag}] This Digimon may battle 1 of your opponent's Digimon.";
 
-            bool EligibleOpponent(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                   && permanent.HasDP;
+            bool IsDefenderCondition(Permanent permanent)
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
-            bool CanBattle(Hashtable hashtable, ActivateClass activateClass)
-                => CardEffectCommons.HasMatchConditionPermanent(EligibleOpponent);
+            bool SharedCanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+                => CardEffectCommons.HasMatchConditionPermanent(IsDefenderCondition);
 
-            IEnumerator BattleCoroutine(Hashtable hashtable, ActivateClass activateClass)
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                Permanent attacker = card.PermanentOfThisCard();
-                if (attacker == null) yield break;
+                Permanent selectedDefender = null;
 
-                SelectPermanentEffect selector = GManager.instance.GetComponent<SelectPermanentEffect>();
-                selector.SetUp(
+                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                selectPermanentEffect.SetUp(
                     selectPlayer: card.Owner,
-                    canTargetCondition: EligibleOpponent,
+                    canTargetCondition: IsDefenderCondition,
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
                     maxCount: 1,
                     canNoSelect: true,
                     canEndNotMax: false,
-                    selectPermanentCoroutine: SelectedTarget,
+                    selectPermanentCoroutine: SelectDefenderCoroutine,
                     afterSelectPermanentCoroutine: null,
                     mode: SelectPermanentEffect.Mode.Custom,
                     cardEffect: activateClass);
-                selector.SetUpCustomMessage("Select 1 Digimon to battle (or skip).",
-                    "The opponent is choosing a Digimon to battle.");
-                yield return ContinuousController.instance.StartCoroutine(selector.Activate());
 
-                IEnumerator SelectedTarget(Permanent target)
+                selectPermanentEffect.SetUpCustomMessage("Select 1 of your opponent's Digimon to battle.", "The opponent is selecting 1 Digimon to battle.");
+
+                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                IEnumerator SelectDefenderCoroutine(Permanent permanent)
                 {
-                    if (target != null && card.PermanentOfThisCard() != null)
-                        yield return ContinuousController.instance.StartCoroutine(
-                            new IBattle(card.PermanentOfThisCard(), target, null, true).Battle());
+                    selectedDefender = permanent;
+                    yield return null;
+                }
+
+                Permanent thisPermanent = card.PermanentOfThisCard();
+
+                if (selectedDefender != null && thisPermanent != null)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(new IBattle(thisPermanent, selectedDefender, null, true).Battle());
                 }
             }
 
             CardEffectFactory.ActivateClassesForSharedEffects(
                 ref cardEffects, timing, card,
-                BattleName(), BattleCoroutine, BattleDescription,
+                SharedEffectName,
+                SharedActivateCoroutine,
+                SharedEffectDescription,
                 optional: false,
                 isSkippable: true,
-                additionalActivateCondition: CanBattle,
+                additionalActivateCondition: SharedCanActivateCondition,
                 onPlay: true,
                 whenDigivolving: true);
+
             #endregion
 
-            #region Main On Deletion - Recovery +1
+            #region On Deletion
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
-                ActivateClass recovery = new ActivateClass();
-                recovery.SetUpICardEffect("Recovery +1 (On Deletion)",
-                    hashtable => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, recovery), card);
-                recovery.SetUpActivateClass(
-                    hashtable => CardEffectCommons.IsExistOnTrash(card)
-                                 && card.Owner.LibraryCards.Count > 0
-                                 && card.Owner.CanAddSecurity(recovery),
-                    hashtable => Recover(recovery),
-                    -1, false,
-                    "[On Deletion] <Recovery +1>.");
-                cardEffects.Add(recovery);
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Recovery +1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                    => "[On Deletion] <Recovery +1>.";
+
+                bool CanUseCondition(Hashtable hashtable)
+                    => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
+
+                bool CanActivateCondition(Hashtable hashtable)
+                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass)
+                        && card.Owner.LibraryCards.Count >= 1
+                        && card.Owner.CanAddSecurity(activateClass);
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                }
             }
             #endregion
 
-            #region Inherited On Deletion - Recovery +1
+            #region On Deletion - ESS
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
-                ActivateClass inheritedRecovery = new ActivateClass();
-                inheritedRecovery.SetUpICardEffect("Recovery +1 (Inherited On Deletion)",
-                    hashtable => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, inheritedRecovery), card);
-                inheritedRecovery.SetIsInheritedEffect(true);
-                inheritedRecovery.SetUpActivateClass(
-                    hashtable => card.Owner.LibraryCards.Count > 0
-                                 && card.Owner.CanAddSecurity(inheritedRecovery),
-                    hashtable => Recover(inheritedRecovery),
-                    -1, false,
-                    "[On Deletion] <Recovery +1>.");
-                cardEffects.Add(inheritedRecovery);
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Recovery +1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                    => "[On Deletion] <Recovery +1>.";
+
+                bool CanUseCondition(Hashtable hashtable)
+                    => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
+
+                bool CanActivateCondition(Hashtable hashtable)
+                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass)
+                        && card.Owner.LibraryCards.Count >= 1
+                        && card.Owner.CanAddSecurity(activateClass);
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                }
             }
             #endregion
 
             return cardEffects;
-
-            IEnumerator Recover(ActivateClass effect)
-            {
-                yield return ContinuousController.instance.StartCoroutine(
-                    new IRecovery(card.Owner, 1, effect).Recovery());
-            }
         }
     }
 }

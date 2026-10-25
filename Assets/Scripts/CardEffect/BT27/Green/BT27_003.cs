@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-// Frimon — BT27-003
+// Frimon
 namespace DCGO.CardEffects.BT27
 {
     public class BT27_003 : CEntity_Effect
@@ -10,61 +10,48 @@ namespace DCGO.CardEffects.BT27
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Inherited — When Attacking
+            #region Inherited
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digivolve into [Leomon] or [ACCEL]", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digivolve into [Leomon] in name or [ACCEL] trait Digimon in hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("BT27_003_Inherited");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
-                {
-                    return "[When Attacking] [Once Per Turn] This Digimon may digivolve into a Digimon card with [Leomon] in its name or the [ACCEL] trait in the hand.";
-                }
+                    => "[When Attacking] [Once Per Turn] This Digimon may digivolve into a Digimon card with [Leomon] in its name or the [ACCEL] trait in the hand.";
 
-                Permanent ThisDigimon()
-                {
-                    return card.PermanentOfThisCard();
-                }
+                bool DigivolveCardCondition(CardSource cardSource)
+                    => cardSource.IsDigimon
+                        && (cardSource.ContainsCardName("Leomon") || cardSource.EqualsTraits("ACCEL"));
 
-                bool IsEligibleDigivolutionCard(CardSource targetCard)
-                {
-                    return targetCard.IsDigimon &&
-                           (targetCard.ContainsCardName("Leomon") || targetCard.EqualsTraits("ACCEL"));
-                }
+                bool CanDigivolveFromHandCondition(CardSource cardSource)
+                    => DigivolveCardCondition(cardSource)
+                        && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass, SelectCardEffect.Root.Hand);
 
                 bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
+                    => CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersHand(card, IsEligibleDigivolutionCard);
-                }
+                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanDigivolveFromHandCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Permanent attackingDigimon = ThisDigimon();
-                    if (attackingDigimon == null)
-                        yield break;
-
-                    yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                            targetPermanent: attackingDigimon,
-                            cardCondition: IsEligibleDigivolutionCard,
-                            payCost: true,
-                            reduceCostTuple: null,
-                            fixedCostTuple: null,
-                            ignoreDigivolutionRequirementFixedCost: -1,
-                            isHand: true,
-                            activateClass: activateClass,
-                            successProcess: null));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                        targetPermanent: card.PermanentOfThisCard(),
+                        cardCondition: DigivolveCardCondition,
+                        payCost: true,
+                        reduceCostTuple: null,
+                        fixedCostTuple: null,
+                        ignoreDigivolutionRequirementFixedCost: -1,
+                        isHand: true,
+                        activateClass: activateClass,
+                        successProcess: null));
                 }
             }
             #endregion
