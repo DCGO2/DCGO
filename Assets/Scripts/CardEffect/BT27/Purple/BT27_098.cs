@@ -62,10 +62,11 @@ namespace DCGO.CardEffects.BT27
 
                     IEnumerator SuccessProcess(List<Permanent> suspendedPermaments)
                     {
-                        if (answer == 1)
+                        List<CardSource> topCards = card.Owner.LibraryCards.Take(2).ToList();
+
+                        if (answer == 1 && topCards.Count >= 1)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
-                                    new List<CardSource> { card.Owner.LibraryCards[0], card.Owner.LibraryCards[1] }, activateClass, isFacedown: true));
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(topCards, activateClass, isFacedown: true));
                         }
                     }
                 }
