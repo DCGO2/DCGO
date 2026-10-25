@@ -33,26 +33,10 @@ namespace DCGO.CardEffects.BT27
             }
             #endregion
 
-            #region Rule - Name: Treated as including [Leomon]
+            #region Rule Treated as Including
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Treated as including [Leomon] in its name", CanUseCondition, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: ChangeCardNames);
-                cardEffects.Add(changeCardNamesClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => true;
-
-                List<string> ChangeCardNames(CardSource cardSource, List<string> cardNames)
-                {
-                    if (cardSource == card)
-                    {
-                        cardNames.Add("Leomon");
-                    }
-
-                    return cardNames;
-                }
+                cardEffects.Add(CardEffectFactory.NameTreatedAsIncluding(card, "Leomon"));
             }
             #endregion
 
