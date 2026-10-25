@@ -119,7 +119,7 @@ namespace DCGO.CardEffects.BT27
                         && FaceDownCountUnderTamers() >= TrashCount
                         && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectOptionCondition);
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     #region Cost - Trash 5 bottom face-down cards from under any of your Tamers
                     int remainingTrashCount = TrashCount;
@@ -142,7 +142,7 @@ namespace DCGO.CardEffects.BT27
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
-                                canNoSelect: false,
+                                canNoSelect: remainingTrashCount == TrashCount,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: SelectPermanentCoroutine,
                                 afterSelectPermanentCoroutine: null,
@@ -216,7 +216,8 @@ namespace DCGO.CardEffects.BT27
                     #endregion
 
                     #region May use 1 [Ravemon] text Option from trash
-                    if (!CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectOptionCondition)) yield break;
+                    if (!CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectOptionCondition)
+                        || remainingTrashCount != 0) yield break;
 
                     CardSource selectedCard = null;
 
