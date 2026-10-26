@@ -22,14 +22,13 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared When Moving / On Play
-
             string SharedEffectName = "By placing 1 hand card face down under a [Keenan Crier], <Draw 1> and trash 1 card in your hand";
 
             string SharedEffectDescription(string tag)
                 => $"[{tag}] By placing 1 card from your hand face down under any of your [Keenan Crier]s, <Draw 1> and trash 1 card in your hand.";
 
             bool CanSelectKeenanCrierCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
+                => CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
                     && permanent.TopCard.EqualsCardName("Keenan Crier");
 
             bool SharedCanActivateCondition(Hashtable hashtable, ActivateClass activateClass)
@@ -139,7 +138,6 @@ namespace DCGO.CardEffects.BT27
                 additionalActivateCondition: SharedCanActivateCondition,
                 whenMoving: true,
                 onPlay: true);
-
             #endregion
 
             #region When Attacking - OPT - ESS
