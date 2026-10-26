@@ -68,6 +68,7 @@ namespace DCGO.CardEffects.LM
             {
                 bool isBreedingArea = false;
                 bool hasEmptyBattleAreaFrame = card.Owner.fieldCardFrames.Some((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame());
+                bool doNotPlay = false;
 
                 if (card.Owner.GetBreedingAreaPermanents().Count == 0 && hasEmptyBattleAreaFrame)
                 {
@@ -85,14 +86,14 @@ namespace DCGO.CardEffects.LM
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                    bool doPlay = GManager.instance.userSelectionManager.SelectedIntValue != 3;
+                    doNotPlay = GManager.instance.userSelectionManager.SelectedIntValue == 3;
                     isBreedingArea = GManager.instance.userSelectionManager.SelectedIntValue == 2;
                 }
                 else if (card.Owner.GetBreedingAreaPermanents().Count == 0 && !hasEmptyBattleAreaFrame)
                 {
                     isBreedingArea = true;
                 }
-                else if (!card.Owner.fieldCardFrames.Some((frame) => frame.IsEmptyFrame()))
+                else if (!card.Owner.fieldCardFrames.Some((frame) => frame.IsEmptyFrame()) || doNotPlay)
                 {
                     yield break;
                 }
