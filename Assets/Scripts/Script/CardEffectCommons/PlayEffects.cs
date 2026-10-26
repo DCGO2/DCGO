@@ -18,7 +18,8 @@ public partial class CardEffectCommons
         bool canEndNotMax = false,
         (int reduceCost, Func<CardSource, bool> reduceCostCardCondition)? reduceCostTuple = null,
         (int fixedCost, Func<CardSource, bool> fixedCostCardCondition)? fixedCostTuple = null,
-        Permanent targetPermanent = null)
+        Permanent targetPermanent = null,
+        bool isBreedingArea = false)
     {
         if (cardEffect == null) yield break;
 
@@ -270,7 +271,8 @@ public partial class CardEffectCommons
                 payCost: payCost, 
                 isTapped: false, 
                 root: root, 
-                activateETB: true));
+                activateETB: true,
+                isBreedingArea: isBreedingArea));
         
         #region release effect
         if (getChangeCostEffect != null) owner.UntilCalculateFixedCostEffect.Remove(getChangeCostEffect);
