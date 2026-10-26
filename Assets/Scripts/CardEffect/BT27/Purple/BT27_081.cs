@@ -24,11 +24,25 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared On Play / When Digivolving / When Attacking - OPT
-
             string SharedEffectName = "If opponent has 6+ hand cards, they trash 1, then by trashing 2 Tamer face-down cards, may play or use 1 cost 5 or lower [DATA SQUAD] card from hand";
+
+            CardEffectFactory.ActivateClassesForSharedEffects(
+                ref cardEffects, timing, card,
+                SharedEffectName,
+                SharedActivateCoroutine,
+                SharedEffectDescription,
+                optional: false,
+                isSkippableFunction: IsOptional,
+                maxCountPerTurn: 1,
+                hashValue: "BT27_081_OP_WD_WA",
+                onPlay: true,
+                whenDigivolving: true,
+                whenAttacking: true);
 
             string SharedEffectDescription(string tag)
                 => $"[{tag}] [Once Per Turn] If your opponent's hand has 6 or more cards, they trash 1 card in their hand. Then, by trashing 2 bottom face-down cards from under any of your Tamers, you may play or use 1 [DATA SQUAD] trait card with a play or use cost of 5 or less from your hand without paying the cost.";
+
+            bool IsOptional(Hashtable hashtable) => card.Owner.Enemy.HandCards.Count !>= 6;
 
             bool FaceDownCards(CardSource cardSource) => cardSource.IsFaceDown;
 
@@ -46,13 +60,15 @@ namespace DCGO.CardEffects.BT27
                 => CardEffectCommons.HasMatchConditionPermanent(permanent => TamerWith2OrMoreFaceDownSources(permanent, activateClass))
                     || CardEffectCommons.MatchConditionPermanentCount(permanent => TamerWithOneFaceDownSource(permanent, activateClass)) >= 2;
 
-            bool CanSelectCardCondition(CardSource cardSource, ActivateClass activateClass)
+            bool CanSelectCardCondition1(CardSource cardSource, ActivateClass activateClass)
                 => cardSource.HasDataSquadTraits
                     && cardSource.GetCostItself <= 5
                     && CardEffectCommons.CanPlayOrUse(cardSource, activateClass);
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool isUsed = false;
+
                 #region Opponent trashes 1 hand card
                 if (card.Owner.Enemy.HandCards.Count >= 6)
                 {
@@ -67,18 +83,24 @@ namespace DCGO.CardEffects.BT27
                         canNoSelect: false,
                         canEndNotMax: false,
                         isShowOpponent: true,
-                        selectCardCoroutine: null,
+                        selectCardCoroutine: SelectCardCoroutine1,
                         afterSelectCardCoroutine: null,
                         mode: SelectHandEffect.Mode.Discard,
                         cardEffect: activateClass);
+
+                    IEnumerator SelectCardCoroutine1(CardSource cardSource)
+                    {
+                        if (cardSource != null) isUsed = true;
+
+                        yield return null;
+                    }
 
                     yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                 }
                 #endregion
 
                 #region By trashing 2 Tamer face-down cards, may play or use 1 [DATA SQUAD] card
-                if (!CanPayFaceDownCost(activateClass)
-                    || !CardEffectCommons.HasMatchConditionOwnersHand(card, cardSource => CanSelectCardCondition(cardSource, activateClass))) yield break;
+                if (!CanPayFaceDownCost(activateClass)) yield break;
 
                 bool paid = false;
 
@@ -93,12 +115,19 @@ namespace DCGO.CardEffects.BT27
                     maxCount: maxCount,
                     canNoSelect: true,
                     canEndNotMax: true,
-                    selectPermanentCoroutine: null,
+                    selectPermanentCoroutine: SelectPermanentCoroutine,
                     afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                     mode: SelectPermanentEffect.Mode.Custom,
                     cardEffect: activateClass);
 
                 selectPermanentEffect.SetUpCustomMessage("Select all Tamer(s) to trash bottom face-down cards from.", "The opponent is selecting Tamer(s) to trash bottom face-down cards from.");
+
+                IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                {
+                    if (permanent != null) isUsed = true;
+
+                    yield return null;
+                }
 
                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -131,14 +160,14 @@ namespace DCGO.CardEffects.BT27
 
                 selectPlayEffect.SetUp(
                     selectPlayer: card.Owner,
-                    canTargetCondition: cardSource => CanSelectCardCondition(cardSource, activateClass),
+                    canTargetCondition: cardSource => CanSelectCardCondition1(cardSource, activateClass),
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
                     maxCount: 1,
                     canNoSelect: true,
                     canEndNotMax: false,
                     isShowOpponent: true,
-                    selectCardCoroutine: SelectCardCoroutine,
+                    selectCardCoroutine: SelectCardCoroutine2,
                     afterSelectCardCoroutine: null,
                     mode: SelectHandEffect.Mode.Custom,
                     cardEffect: activateClass);
@@ -146,7 +175,7 @@ namespace DCGO.CardEffects.BT27
                 selectPlayEffect.SetUpCustomMessage("Select 1 card to play/use.", "The opponent is selecting 1 card to play/use.");
                 selectPlayEffect.SetUpCustomMessage_ShowCard("Played Card");
 
-                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                IEnumerator SelectCardCoroutine2(CardSource cardSource)
                 {
                     selectedCard = cardSource;
                     yield return null;
@@ -175,20 +204,9 @@ namespace DCGO.CardEffects.BT27
                         activateETB: true));
                 }
                 #endregion
+
+                if (!isUsed) activateClass.RemoveUse();
             }
-
-            CardEffectFactory.ActivateClassesForSharedEffects(
-                ref cardEffects, timing, card,
-                SharedEffectName,
-                SharedActivateCoroutine,
-                SharedEffectDescription,
-                optional: false,
-                maxCountPerTurn: 1,
-                hashValue: "BT27_081_OP_WD_WA",
-                onPlay: true,
-                whenDigivolving: true,
-                whenAttacking: true);
-
             #endregion
 
             #region On Deletion - ESS
@@ -204,7 +222,7 @@ namespace DCGO.CardEffects.BT27
                 string EffectDescription()
                     => "[On Deletion] You may play 1 play cost 5 or lower card with [Avian] or [Bird] in any of its traits or the [DATA SQUAD] trait from your trash without paying the cost.";
 
-                bool CanSelectCardCondition(CardSource cardSource)
+                bool CanSelectCardCondition2(CardSource cardSource)
                     => cardSource.HasPlayCost
                         && cardSource.GetCostItself <= 5
                         && (cardSource.ContainsTraits("Avian") || cardSource.ContainsTraits("Bird") || cardSource.HasDataSquadTraits)
@@ -215,12 +233,12 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.CanActivateOnDeletion(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
+                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition2);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
-                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition: CanSelectCardCondition2,
                         root: SelectCardEffect.Root.Trash,
                         cardEffect: activateClass,
                         payCost: false));
