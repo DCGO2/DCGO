@@ -63,8 +63,7 @@ namespace DCGO.CardEffects.BT27
                         && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
-                        && (card.Owner.Enemy.HandCards.Count >= 1 || card.Owner.Enemy.SecurityCards.Count >= 1);
+                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
@@ -72,26 +71,23 @@ namespace DCGO.CardEffects.BT27
                     bool canTrashSecurity = card.Owner.Enemy.SecurityCards.Count >= 1;
                     bool trashFromHand = canTrashHand;
 
-                    if (canTrashHand && canTrashSecurity)
+                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                     {
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                        {
-                            new SelectionElement<bool>(message: "From hand", value: true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: "From security", value: false, spriteIndex: 1),
-                        };
+                        new SelectionElement<bool>(message: "From hand", value: true, spriteIndex: 0),
+                        new SelectionElement<bool>(message: "From security", value: false, spriteIndex: 1),
+                    };
 
-                        GManager.instance.userSelectionManager.SetBoolSelection(
-                            selectionElements: selectionElements,
-                            selectPlayer: card.Owner.Enemy,
-                            selectPlayerMessage: "From which area will you trash 1 card?",
-                            notSelectPlayerMessage: "The opponent is choosing from which area to trash 1 card.");
+                    GManager.instance.userSelectionManager.SetBoolSelection(
+                        selectionElements: selectionElements,
+                        selectPlayer: card.Owner.Enemy,
+                        selectPlayerMessage: "From which area will you trash 1 card?",
+                        notSelectPlayerMessage: "The opponent is choosing from which area to trash 1 card.");
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        trashFromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
-                    }
+                    trashFromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                    if (trashFromHand)
+                    if (trashFromHand && canTrashHand)
                     {
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -111,7 +107,7 @@ namespace DCGO.CardEffects.BT27
 
                         yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                     }
-                    else
+                    else if (canTrashSecurity)
                     {
                         // Security selection follows BT24_018, but the opponent picks which of their own security cards to trash.
                         CardSource selectedSecurityCard = null;
@@ -230,7 +226,6 @@ namespace DCGO.CardEffects.BT27
                 {
                     int handCountBefore = card.Owner.Enemy.HandCards.Count;
 
-                    #region Trash down to 7
                     if (handCountBefore > 7)
                     {
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
@@ -251,12 +246,7 @@ namespace DCGO.CardEffects.BT27
 
                         yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                     }
-                    #endregion
-
-                    #region If this effect didn't trash, delete 1 of their Digimon
-                    if (card.Owner.Enemy.HandCards.Count < handCountBefore) yield break;
-
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteCondition))
+                    else if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -277,7 +267,6 @@ namespace DCGO.CardEffects.BT27
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
-                    #endregion
                 }
             }
             #endregion
