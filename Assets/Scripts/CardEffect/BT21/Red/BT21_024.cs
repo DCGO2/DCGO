@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT21
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 CardSource selectedCard = null;
-                if (card.Owner.Enemy.SecurityCards.Count <= 5 && card.Owner.Enemy.HandCards.Count() >= 1)
+                if (card.Owner.CanAddSecurity(activateClass) && card.Owner.Enemy.SecurityCards.Count <= 5 && card.Owner.Enemy.HandCards.Count() >= 1)
                 {
                     int maxCount = 1;
 
