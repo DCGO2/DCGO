@@ -22,7 +22,6 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared On Play / When Digivolving
-
             string SharedEffectName = "If 1 or fewer Tamers, may play 1 [Keenan Crier] from hand for free";
 
             string SharedEffectDescription(string tag)
@@ -58,7 +57,6 @@ namespace DCGO.CardEffects.BT27
                 additionalActivateCondition: SharedCanActivateCondition,
                 onPlay: true,
                 whenDigivolving: true);
-
             #endregion
 
             #region On Deletion - ESS
