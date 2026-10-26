@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.BT27
                 onPlay: true,
                 whenDigivolving: true);
 
-            string SharedEffectDescription(string tag) => $"[{tag}]1 of your Digimon can't be deleted in battle until your opponent's turn ends.If played by effects, it also gains<Blocker>.";
+            string SharedEffectDescription(string tag) => $"[{tag}] 1 of your Digimon can't be deleted in battle until your opponent's turn ends.If played by effects, it also gains<Blocker>.";
 
             bool IsOwnDigimon(Permanent permanent)
             {

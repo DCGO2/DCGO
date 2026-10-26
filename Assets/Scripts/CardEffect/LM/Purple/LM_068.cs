@@ -66,11 +66,43 @@ namespace DCGO.CardEffects.LM
 
             IEnumerator SharedActivateCoroutine1(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool isBreedingArea = false;
+                bool hasEmptyBattleAreaFrame = card.Owner.fieldCardFrames.Some((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame());
+
+                if (card.Owner.GetBreedingAreaPermanents().Count == 0 && hasEmptyBattleAreaFrame)
+                {
+                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>
+                    {
+                        new(message: $"Battle Area", value: 1, spriteIndex: 0),
+                        new(message: $"Breeding Area", value: 2, spriteIndex: 0),
+                        new(message: $"Do not play", value: 3, spriteIndex: 1)
+                    };
+
+                    string selectPlayerMessage = "Where will you play a card to?";
+                    string notSelectPlayerMessage = "The opponent is choosing what location to play a card to.";
+
+                    GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    if (GManager.instance.userSelectionManager.SelectedIntValue == 3) yield break;
+                    isBreedingArea = GManager.instance.userSelectionManager.SelectedIntValue == 2;
+                }
+                else if (card.Owner.GetBreedingAreaPermanents().Count == 0 && !hasEmptyBattleAreaFrame)
+                {
+                    isBreedingArea = true;
+                }
+                else if (!card.Owner.fieldCardFrames.Some((frame) => frame.IsEmptyFrame()))
+                {
+                    yield break;
+                }
+
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                     canTargetCondition: CanSelectCardCondition1,
                     root: SelectCardEffect.Root.Trash,
                     cardEffect: activateClass,
-                    payCost: false));
+                    payCost: false,
+                    isBreedingArea: isBreedingArea));
             }
             #endregion
 
