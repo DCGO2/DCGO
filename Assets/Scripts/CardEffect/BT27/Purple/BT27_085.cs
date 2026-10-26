@@ -72,7 +72,6 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared When Digivolving / When Attacking
-
             string SharedEffectName = "May activate 1 [Main] effect on this card's Option side";
 
             string SharedEffectDescription(string tag)
@@ -88,11 +87,9 @@ namespace DCGO.CardEffects.BT27
                 SharedEffectName,
                 SharedActivateCoroutine,
                 SharedEffectDescription,
-                optional: false,
-                isSkippable: true,
+                optional: true,
                 whenDigivolving: true,
                 whenAttacking: true);
-
             #endregion
 
             #region All Turns - OPT
@@ -100,8 +97,7 @@ namespace DCGO.CardEffects.BT27
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("This Digimon may unsuspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
-                activateClass.SetIsSkippable(true);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("BT27_085_AT");
                 cardEffects.Add(activateClass);
 
@@ -159,102 +155,92 @@ namespace DCGO.CardEffects.BT27
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    #region Opponent trashes 1 card from hand or security
                     bool canTrashHand = card.Owner.Enemy.HandCards.Count >= 1;
                     bool canTrashSecurity = card.Owner.Enemy.SecurityCards.Count >= 1;
 
-                    if (canTrashHand || canTrashSecurity)
+                    bool trashFromHand = canTrashHand;
+
+                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                     {
-                        bool trashFromHand = canTrashHand;
+                        new SelectionElement<bool>(message: "From hand", value: true, spriteIndex: 0),
+                        new SelectionElement<bool>(message: "From security", value: false, spriteIndex: 1),
+                    };
 
-                        if (canTrashHand && canTrashSecurity)
+                    GManager.instance.userSelectionManager.SetBoolSelection(
+                        selectionElements: selectionElements,
+                        selectPlayer: card.Owner.Enemy,
+                        selectPlayerMessage: "From which area will you trash 1 card?",
+                        notSelectPlayerMessage: "The opponent is choosing from which area to trash 1 card.");
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    trashFromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                    if (trashFromHand && canTrashHand)
+                    {
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner.Enemy,
+                            canTargetCondition: _ => true,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Discard,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                    }
+                    else if (canTrashSecurity)
+                    {
+                        CardSource selectedSecurityCard = null;
+
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: _ => true,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => false,
+                            selectCardCoroutine: SelectSecurityCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 security card to trash.\n (cards to the left are at the top and cards to the right are at the bottom)",
+                            maxCount: 1,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Security,
+                            customRootCardList: card.Owner.Enemy.SecurityCards,
+                            canLookReverseCard: false,
+                            selectPlayer: card.Owner.Enemy,
+                            cardEffect: activateClass);
+
+                        selectCardEffect.SetUpCustomMessage_ShowCard("Send to trash");
+
+                        selectCardEffect.SetUseFaceDown();
+
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                        IEnumerator SelectSecurityCardCoroutine(CardSource cardSource)
                         {
-                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                            {
-                                new SelectionElement<bool>(message: "From hand", value: true, spriteIndex: 0),
-                                new SelectionElement<bool>(message: "From security", value: false, spriteIndex: 1),
-                            };
-
-                            GManager.instance.userSelectionManager.SetBoolSelection(
-                                selectionElements: selectionElements,
-                                selectPlayer: card.Owner.Enemy,
-                                selectPlayerMessage: "From which area will you trash 1 card?",
-                                notSelectPlayerMessage: "The opponent is choosing from which area to trash 1 card.");
-
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                            trashFromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+                            selectedSecurityCard = cardSource;
+                            yield return null;
                         }
 
-                        if (trashFromHand)
+                        if (selectedSecurityCard != null)
                         {
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner.Enemy,
-                                canTargetCondition: _ => true,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: null,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Discard,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-                        }
-                        else
-                        {
-                            // Security selection follows BT24_018, but the opponent picks which of their own security cards to trash.
-                            CardSource selectedSecurityCard = null;
-
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: _ => true,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => false,
-                                selectCardCoroutine: SelectSecurityCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 security card to trash.\n (cards to the left are at the top and cards to the right are at the bottom)",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Security,
-                                customRootCardList: card.Owner.Enemy.SecurityCards,
-                                canLookReverseCard: false,
-                                selectPlayer: card.Owner.Enemy,
-                                cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Send to trash");
-
-                            selectCardEffect.SetUseFaceDown();
-
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                            IEnumerator SelectSecurityCardCoroutine(CardSource cardSource)
-                            {
-                                selectedSecurityCard = cardSource;
-                                yield return null;
-                            }
-
-                            if (selectedSecurityCard != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                                    player: card.Owner.Enemy,
-                                    card: selectedSecurityCard,
-                                    cardEffect: activateClass).DestroySecurity());
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                                player: card.Owner.Enemy,
+                                card: selectedSecurityCard,
+                                cardEffect: activateClass).DestroySecurity());
                         }
                     }
-                    #endregion
 
-                    #region Delete 1 Digimon with level at least their hand size
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -276,7 +262,6 @@ namespace DCGO.CardEffects.BT27
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
-                    #endregion
                 }
             }
             #endregion
