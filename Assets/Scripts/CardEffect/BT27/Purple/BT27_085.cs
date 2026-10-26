@@ -204,7 +204,7 @@ namespace DCGO.CardEffects.BT27
 
                             yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                         }
-                        else
+                        else if(canTrashSecurity)
                         {
                             CardSource selectedSecurityCard = null;
 
