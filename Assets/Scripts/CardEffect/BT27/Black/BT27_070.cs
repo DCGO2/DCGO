@@ -129,7 +129,7 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanSelectSource(CardSource cardSource)
                 {
-                    return (cardSource.EqualsCardName("Craniamon") || cardSource.HasXAntiBodyName) &&
+                    return (cardSource.EqualsCardName("Craniamon") || cardSource.EqualsCardName("X Antibody")) &&
                             !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
                 }
 
