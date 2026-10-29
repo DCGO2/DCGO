@@ -121,11 +121,12 @@ namespace DCGO.CardEffects.BT27
                         && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition)) yield break;
+
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
