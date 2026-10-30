@@ -157,7 +157,9 @@ namespace DCGO.CardEffects.BT27
                         }
                     }
 
-                    if (card.PermanentOfThisCard() != null && card.PermanentOfThisCard().DigivolutionCards.Any(CanSelectSource))
+                    Permanent thisPermanent = card.PermanentOfThisCard();
+
+                    if (thisPermanent != null && thisPermanent.DigivolutionCards.Any(CanSelectSource))
                     {
                         Permanent selectedPermanment = card.PermanentOfThisCard();
                         CardSource selectedCard = null;
