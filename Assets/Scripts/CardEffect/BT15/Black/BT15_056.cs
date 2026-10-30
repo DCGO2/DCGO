@@ -160,11 +160,14 @@ namespace DCGO.CardEffects.BT15
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        if (permanent.TopCard.GetCostItself <= card.PermanentOfThisCard().TopCard.GetCostItself)
+                        if (permanent.TopCard.HasPlayCost)
                         {
-                            if (permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer)
+                            if (permanent.TopCard.GetCostItself <= card.PermanentOfThisCard().TopCard.GetCostItself)
                             {
-                                return true;
+                                if (permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer)
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
