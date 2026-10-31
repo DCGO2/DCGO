@@ -484,7 +484,7 @@ namespace DCGO.CardEffects.BT15
 
                             if (selectedEffect != null)
                             {
-                                Hashtable effectHashtable = CardEffectCommons.OnPlayCheckHashtableOfCard(card);
+                                Hashtable effectHashtable = CardEffectCommons.OnPlayCheckHashtableOfPermanent(card.PermanentOfThisCard());
 
                                 if (selectedEffect.CanUse(effectHashtable))
                                 {
