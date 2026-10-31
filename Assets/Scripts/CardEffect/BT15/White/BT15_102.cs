@@ -486,10 +486,12 @@ namespace DCGO.CardEffects.BT15
                             {
                                 Hashtable effectHashtable = CardEffectCommons.OnPlayCheckHashtableOfPermanent(card.PermanentOfThisCard());
 
-                                if (selectedEffect.CanUse(effectHashtable))
+                                ActivateClass effectToActivate = CardEffectFactory.CopyActivateClassToCard(card, (ActivateClass)selectedEffect);
+
+                                if (effectToActivate.CanUse(effectHashtable))
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(
-                                        ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
+                                        effectToActivate.Activate_Optional_Effect_Execute(effectHashtable));
                                 }
                             }
                         }
