@@ -105,27 +105,15 @@ public partial class CardEffectFactory
 
                     if (cardEffect is ActivateClass activateClass)
                     {
-                        // Build a brand-new ActivateClass rather than mutating/reusing the source
-                        // card's own instance. The source card's copy needs its own independent
-                        // EffectSourceCard/HashString so per-turn-use tracking (ICardEffect.IsSameEffect,
-                        // which short-circuits on reference equality) doesn't treat "the original card
-                        // already used this ability this turn" as also covering "the Digimon that just
-                        // gained this ability via Succession/copy already used it" -- per game rules,
-                        // gaining another card's effects this way grants an independently-tracked copy,
-                        // not a shared use-count with the original (real bug: a [Once Per Turn] When
-                        // Digivolving effect used earlier the same turn on the source card silently
-                        // couldn't trigger again when copied onto the new top card via Succession, even
-                        // though it's a fresh instance from the new card's perspective).
-
                         List<CardSource> ValidCardSources = null;
 
-                        bool ValidCardSourceAtTrigger()
+                        bool ValidCardSourceAtTrigger(Hashtable hashtable)
                         {
                             ValidCardSources = validSources(targetSources(sourceCard.PermanentOfThisCard().DigivolutionCards));
                             return ValidCardSources.Contains(cardSource);
                         }
 
-                        bool ValidCardSourceAtActivate()
+                        bool ValidCardSourceAtActivate(Hashtable hashtable)
                         {
                             Permanent thisPermanent = sourceCard.PermanentOfThisCard();
                             if (thisPermanent != null)
@@ -135,56 +123,7 @@ public partial class CardEffectFactory
                             return ValidCardSources.Contains(cardSource);
                         }
 
-                        var originalUseCondition = activateClass.CanUseCondition;
-                        var originalActivateCondition = activateClass.CanActivateCondition;
-
-                        ActivateClass copiedActivateClass = new ActivateClass();
-
-                        copiedActivateClass.SetUpICardEffect(
-                            activateClass.EffectName,
-                            hashtable => ValidCardSourceAtTrigger()
-                                && (originalUseCondition is null || originalUseCondition(hashtable)),
-                            card);
-
-                        // activateClass's own coroutine body may self-reference activateClass to
-                        // adjust its own OPT usage mid-effect (e.g. "if (!isUsed) activateClass.
-                        // RemoveUse();" -- real precedent: BT26_016 Chronomon: Holy Mode). Since
-                        // that closure still targets activateClass (the source), redirect
-                        // RemoveUse()/AddUse() to affect copiedActivateClass instead for the
-                        // duration of this one call, so the source card's own OPT tracking isn't
-                        // touched by a copy's activation. Push/pop (not set/clear) and a finally
-                        // block: activateClass may already be mid-activation for a different copy
-                        // (e.g. awaiting player input) when this one starts, and the underlying
-                        // coroutine could throw or be stopped externally -- both must not leave a
-                        // stale redirect in place for the source's own later activations.
-                        IEnumerator ActivateWithRedirectedUseTracking(Hashtable hashtable)
-                        {
-                            activateClass.SetIsDigimonEffect(true);//Copy effects were for some reason refusing to act as Digimon effects. Explicitly setting here to bypass this being unset
-
-                            activateClass.PushUseTrackingRedirectTarget(copiedActivateClass);
-                            try
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(activateClass.Activate(hashtable));
-                            }
-                            finally
-                            {
-                                activateClass.PopUseTrackingRedirectTarget();
-                            }
-                        }
-
-                        copiedActivateClass.SetUpActivateClass(
-                            hashtable => ValidCardSourceAtActivate()
-                                && (originalActivateCondition is null || originalActivateCondition(hashtable)),
-                            ActivateWithRedirectedUseTracking,
-                            activateClass.MaxCountPerTurn,
-                            activateClass.IsOptional,
-                            activateClass.EffectDescription);
-
-                        copiedActivateClass.SetOriginalEffectSourceCard(cardSource);
-                        copiedActivateClass.SetHashString(GenerateHashString(card, cardSource, activateClass.HashString, isInheritedEffect, isLinkedEffect));
-                        copiedActivateClass.SetIsInheritedEffect(activateClass.IsInheritedEffect);
-                        copiedActivateClass.SetIsLinkedEffect(activateClass.IsLinkedEffect);
-
+                        ActivateClass copiedActivateClass = CopyActivateClassToCard(card, activateClass, ValidCardSourceAtTrigger, ValidCardSourceAtActivate, isInheritedEffect, isInheritedEffect);
 
                         getCardEffects.Add(copiedActivateClass);
 
@@ -219,6 +158,71 @@ public partial class CardEffectFactory
         );
 
         return addSkillClass;
+    }
+
+    // Build a brand-new ActivateClass rather than mutating/reusing the source
+    // card's own instance. The source card's copy needs its own independent
+    // EffectSourceCard/HashString so per-turn-use tracking (ICardEffect.IsSameEffect,
+    // which short-circuits on reference equality) doesn't treat "the original card
+    // already used this ability this turn" as also covering "the Digimon that just
+    // gained this ability via Succession/copy already used it" -- per game rules,
+    // gaining another card's effects this way grants an independently-tracked copy,
+    // not a shared use-count with the original (real bug: a [Once Per Turn] When
+    // Digivolving effect used earlier the same turn on the source card silently
+    // couldn't trigger again when copied onto the new top card via Succession, even
+    // though it's a fresh instance from the new card's perspective).
+    public static ActivateClass CopyActivateClassToCard(CardSource card, ActivateClass activateClass, Func<Hashtable, bool> additionalCanUseCondition = null, Func<Hashtable, bool> additionalCanActivateCondition = null, bool isInherited = false, bool isLinked = false)
+    {
+        ActivateClass copiedActivateClass = new ActivateClass();
+
+        var originalUseCondition = activateClass.CanUseCondition;
+        var originalActivateCondition = activateClass.CanActivateCondition;
+        var cardSource = activateClass.EffectSourceCard;
+
+        copiedActivateClass.SetUpICardEffect(
+            activateClass.EffectName,
+            hashtable => (additionalCanUseCondition is null || additionalCanUseCondition(hashtable))
+                && (originalUseCondition is null || originalUseCondition(hashtable)),
+            card);
+
+        // activateClass's own coroutine body may self-reference activateClass to
+        // adjust its own OPT usage mid-effect (e.g. "if (!isUsed) activateClass.
+        // RemoveUse();" -- real precedent: BT26_016 Chronomon: Holy Mode). Since
+        // that closure still targets activateClass (the source), redirect
+        // RemoveUse()/AddUse() to affect copiedActivateClass instead for the
+        // duration of this one call, so the source card's own OPT tracking isn't
+        // touched by a copy's activation. Push/pop (not set/clear) and a finally
+        // block: activateClass may already be mid-activation for a different copy
+        // (e.g. awaiting player input) when this one starts, and the underlying
+        // coroutine could throw or be stopped externally -- both must not leave a
+        // stale redirect in place for the source's own later activations.
+        IEnumerator ActivateWithRedirectedUseTracking(Hashtable hashtable)
+        {
+            activateClass.SetIsDigimonEffect(true);//Copy effects were for some reason refusing to act as Digimon effects. Explicitly setting here to bypass this being unset
+
+            activateClass.PushUseTrackingRedirectTarget(copiedActivateClass);
+            try
+            {
+                yield return ContinuousController.instance.StartCoroutine(activateClass.Activate(hashtable));
+            }
+            finally
+            {
+                activateClass.PopUseTrackingRedirectTarget();
+            }
+        }
+
+        copiedActivateClass.SetUpActivateClass(
+            hashtable => (additionalCanActivateCondition is null || additionalCanActivateCondition(hashtable))
+                && (originalActivateCondition is null || originalActivateCondition(hashtable)),
+            ActivateWithRedirectedUseTracking,
+            activateClass.MaxCountPerTurn,
+            activateClass.IsOptional,
+            activateClass.EffectDescription);
+
+        copiedActivateClass.SetOriginalEffectSourceCard(cardSource);
+        copiedActivateClass.SetHashString(GenerateHashString(card, cardSource, activateClass.HashString, isInherited, isLinked));
+
+        return copiedActivateClass;
     }
 
     private static string GenerateHashString(CardSource card, CardSource cardSource, string source, bool isInherited, bool isLinked)
