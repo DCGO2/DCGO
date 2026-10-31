@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.BT27
                         yield return null;
                     }
 
-                    while (!stop)
+                    while (!stop && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                     {
                         int maxCount = CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardCondition);
 
