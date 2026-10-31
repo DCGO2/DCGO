@@ -14,13 +14,12 @@ public static class GameRandom
     /// Seed the PRNG with a 64-bit value. Uses SplitMix64 to expand
     /// the seed into 256 bits of Xoshiro256** state.
     /// </summary>
-    public static void Seed(long seed)
+    public static void Seed(long random1, long random2, long random3, long random4)
     {
-        ulong s = (ulong)seed;
-        s0 = SplitMix64(ref s);
-        s1 = SplitMix64(ref s);
-        s2 = SplitMix64(ref s);
-        s3 = SplitMix64(ref s);
+        s0 = (ulong)random1;
+        s1 = (ulong)random2;
+        s2 = (ulong)random3;
+        s3 = (ulong)random4;
 
         // Ensure state is not all-zero (degenerate case)
         if (s0 == 0 && s1 == 0 && s2 == 0 && s3 == 0)
@@ -112,13 +111,5 @@ public static class GameRandom
         return (x << k) | (x >> (64 - k));
     }
 
-    // --- Internal: SplitMix64 (for seed expansion) ---
-
-    private static ulong SplitMix64(ref ulong state)
-    {
-        ulong z = (state += 0x9E3779B97F4A7C15UL);
-        z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9UL;
-        z = (z ^ (z >> 27)) * 0x94D049BB133111EBUL;
-        return z ^ (z >> 31);
-    }
+    public static string GetCurrentSeed() => $"{s0}:{s1}:{s2}:{s3}";
 }
