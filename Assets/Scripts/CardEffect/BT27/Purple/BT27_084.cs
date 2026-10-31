@@ -74,10 +74,10 @@ namespace DCGO.CardEffects.BT27
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectActivateCardCondition);
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
+                bool CanSelectActivateCardCondition(CardSource cardSource)
                 {
                     return cardSource.HasPlayCost
                         && cardSource.GetCostItself <= 8
