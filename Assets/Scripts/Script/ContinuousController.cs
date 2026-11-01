@@ -1159,7 +1159,17 @@ public class ContinuousController : MonoBehaviour
 
         DCGONetwork.Provider.EndGame();
 
-        if (isRandomMatch)
+        bool wasBotMatch = DCGONetwork.IsOffline;
+
+        DCGONetwork.UseOnlineProvider();
+
+        if (wasBotMatch)
+        {
+            Debug.Log("Unload from Bot Match");
+            Opening.instance.battle.lobbyManager_RandomMatch.Close();
+            Opening.instance.battle.selectBattleMode.SetUpSelectBattleModeCoroutine();
+        }
+        else if (isRandomMatch)
         {
             Debug.Log("Unload from Random Match");
             yield return StartCoroutine(Opening.instance.battle.lobbyManager_RandomMatch.CloseLobbyCoroutine());

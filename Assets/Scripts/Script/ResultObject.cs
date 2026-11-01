@@ -78,7 +78,7 @@ public class ResultObject : MonoBehaviour
 
             bool isDisconnected = true;
 
-            if (PhotonNetwork.IsConnected)
+            if (PhotonNetwork.IsConnected || GManager.instance.IsAI)
             {
                 if (PhotonNetwork.PlayerList.Length == 2)
                 {

@@ -38,6 +38,87 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
+    #region Decks for AI match
+    public static void GetAIDecks(out DeckData youDeck, out DeckData aiDeck)
+    {
+        List<DeckData> validDecks = new List<DeckData>();
+
+        foreach (DeckData deckData in ContinuousController.instance.DeckDatas)
+        {
+            if (deckData.IsValidDeckData())
+            {
+                validDecks.Add(deckData);
+            }
+        }
+
+        if (validDecks.Count > 0)
+        {
+            DeckData randomDeck = validDecks[UnityEngine.Random.Range(0, validDecks.Count)];
+
+#if UNITY_EDITOR && !UNITY_WINDOWS
+            randomDeck = validDecks[0];
+#endif
+
+            aiDeck = new DeckData(randomDeck.GetThisDeckCode(), randomDeck.DeckID);
+        }
+        else
+        {
+            aiDeck = CreateRandomCardsDeck();
+        }
+
+        DeckData battleDeck = ContinuousController.instance.BattleDeckData;
+        youDeck = aiDeck;
+
+        if (battleDeck == null && validDecks.Count > 0)
+        {
+            youDeck = validDecks[0];
+        }
+        else if (battleDeck != null && battleDeck.IsValidDeckData())
+        {
+            youDeck = battleDeck;
+        }
+    }
+
+    static DeckData CreateRandomCardsDeck()
+    {
+        void AddRandomCards(List<CEntity_Base> deck, List<CEntity_Base> candidates, int count)
+        {
+            if (candidates.Count == 0)
+            {
+                return;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                deck.Add(candidates[UnityEngine.Random.Range(0, candidates.Count)]);
+            }
+        }
+
+        List<CEntity_Base> mainDeckCandidates = new List<CEntity_Base>();
+        List<CEntity_Base> digitamaDeckCandidates = new List<CEntity_Base>();
+
+        foreach (CEntity_Base cEntity_Base in ContinuousController.instance.CardList)
+        {
+            if (cEntity_Base.cardKind.Contains(CardKind.DigiEgg))
+            {
+                digitamaDeckCandidates.Add(cEntity_Base);
+            }
+            else
+            {
+                mainDeckCandidates.Add(cEntity_Base);
+            }
+        }
+
+        List<CEntity_Base> mainDeckCards = new List<CEntity_Base>();
+        List<CEntity_Base> digitamaDeckCards = new List<CEntity_Base>();
+
+        AddRandomCards(mainDeckCards, mainDeckCandidates, 50);
+        AddRandomCards(digitamaDeckCards, digitamaDeckCandidates, 5);
+
+        return new DeckData(DeckData.GetDeckCode("サンプルデッキ", mainDeckCards, digitamaDeckCards, null));
+    }
+    #endregion
+
     #region generate card
     public static CardSource CreateCardSource(int _PlayerID, CEntity_Base cEntity_Base, bool isToken)
     {

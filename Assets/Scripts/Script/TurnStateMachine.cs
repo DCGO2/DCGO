@@ -49,6 +49,12 @@ public class TurnStateMachine : MonoBehaviour
         _payingCosts = new int[GManager.instance.You.fieldCardFrames.Count];
         #endregion
 
+        if (GManager.instance.IsAI)
+        {
+            ContinuousController.instance.isRandomMatch = true;
+            DCGONetwork.UseOfflineProvider();
+        }
+
         #region gameContextの設定
         gameContext = new GameContext(GManager.instance.You, GManager.instance.Opponent, GManager.instance.IsAI);
         #endregion
@@ -82,6 +88,14 @@ public class TurnStateMachine : MonoBehaviour
 
         NetworkPlayerInfo YouNetworkInfo = DCGONetwork.Provider.GetPlayerInfo(gameContext.You);
         NetworkPlayerInfo OpponentNetworkInfo = DCGONetwork.Provider.GetPlayerInfo(gameContext.Opponent);
+
+        if (GManager.instance.IsAI)
+        {
+            YouNetworkInfo.Name = ContinuousController.instance.PlayerName;
+            OpponentNetworkInfo.Name = "Bot";
+
+            CardObjectController.GetAIDecks(out YouNetworkInfo.DeckData, out OpponentNetworkInfo.DeckData);
+        }
 
         #region Save each player name
         SetPlayerName(gameContext.You, YouNetworkInfo.Name);
