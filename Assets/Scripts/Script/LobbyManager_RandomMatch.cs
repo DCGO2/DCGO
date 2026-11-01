@@ -63,6 +63,7 @@ public class LobbyManager_RandomMatch : MonoBehaviour
         MatchmakingEvents.OnConnected += HandleOnConnected;
         MatchmakingEvents.OnMatchFound += StateMatchFound;
         MatchmakingEvents.OnCanceled += OnMatchmakingCanceled;
+        MatchmakingEvents.OnDisconnected += OnMatchmakingCanceled;
 
         DCGONetwork.Provider.StartMatchmaking(MatchmakingEvents);
 
