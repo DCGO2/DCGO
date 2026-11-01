@@ -56,13 +56,13 @@ namespace DCGO.CardEffects.BT27
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Add top sec to hand, may play/use 1 [Iliad]/[TS] from hand cost -5", CanUseCondition, card);
+                activateClass.SetUpICardEffect("May Play up to 8 cost [Knightmon] in text from hand for free", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return "When Digivolving] You may play up to 8 play cost's total worth of cards with [Knightmon] in their texts from your hand without paying the cost.";
+                    return "[When Digivolving] You may play up to 8 play cost's total worth of cards with [Knightmon] in their texts from your hand without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -177,7 +177,7 @@ namespace DCGO.CardEffects.BT27
             if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By suspending this Tamer, 1 [DATA SQUAD] Digimon gains Execute", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1 [LordKnightmon]/[X Antibody] from source to activate option side [Main]", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("BT27_084_AT");
                 activateClass.SetIsSkippable(true);
