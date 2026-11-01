@@ -1,28 +1,33 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace DCGO.Networking
 {
-    public enum GameState
+    public struct MatchmakingEvents
     {
-        Menu,
-        Matchmaking,
-        EnteringPrivateRoom,
-        PrivateRoom,
-        InMatchmakingGame,
-        InPrivateRoomGame,
-        BotMatch
+        public Action<bool> OnConnected;
+        public Action OnMatchFound;
+        public Action OnCanceled;
+        public Action OnDisconnected;
+    }
+
+    public struct PrivateRoomEvents
+    {
+        public Action<bool> OnJoined;
+        public Action<RoomInfo> OnRoomInfoUpdated;
+        public Action OnAllPlayersReady;
+        public Action OnLeft;
+        public Action OnDisconnected;
     }
 
     public struct GameNetworkEvents
     {
         public Action OnGameStarted;
         public Action<long> OnGameSeed;
-        public Action<Player, IPlayerSelection> OnPlayerSelecton;
+        public Action<Player, IPlayerSelection> OnPlayerSelection;
         public Action<Player, MainPhaseAction> OnMainPhaseAction;
         public Action<Player> OnSurrender;
+        public Action OnDisconnected;
     }
 
     public struct NetworkPlayerInfo
@@ -31,7 +36,6 @@ namespace DCGO.Networking
         public string Name;
         public bool IsReady;
         public DeckData DeckData;
-        public bool WaitingForGameStart;
     }
 
     public struct RoomInfo
@@ -41,54 +45,32 @@ namespace DCGO.Networking
         public Dictionary<string, int> RoomSettings;
     }
 
-    public struct PrivateRoomEvents
-    {
-        public Action<RoomInfo> OnRoomInfoUpdated;
-        public Action OnAllPlayersReady;
-    }
-
-    public struct MatchmakingEvents
-    {
-        public Action<bool> OnConnected;
-        public Action OnMatchFound;
-        public Action OnCanceled;
-    }
-
     public interface INetworkProvider
     {
-        public abstract void Initialise();
+        bool IsConnected();
+        void Disconnect(Action onDisconnected);
 
-        public abstract void StartMatchmaking(MatchmakingEvents matchmakingEvents);
-        public abstract void CancelMatchmaking();
+        void StartMatchmaking(MatchmakingEvents matchmakingEvents);
+        void CancelMatchmaking();
 
-        public abstract void CreatePrivateRoom(bool useBanList, Action<bool> onRoomCreated);
+        void CreatePrivateRoom(bool useBanList, PrivateRoomEvents privateRoomEvents);
+        void JoinPrivateRoom(string roomCode, PrivateRoomEvents privateRoomEvents);
+        void LeavePrivateRoom();
+        void SetRoomReadyState(bool isReady);
+        void SetRoomSetting(string settingsKey, int value);
 
-        public abstract bool IsRoomHost();
+        bool IsInRoom();
+        bool IsRoomHost();
+        RoomInfo GetRoomInfo();
+        int GetRoomSetting(string settingsKey, int defaultValue);
+        void SetDeckData(DeckData deckData);
 
-        public abstract void JoinPrivateRoom(string roomCode, Action<bool> onRoomJoined);
-
-        public abstract void SetRoomReadyState(bool isReady);
-
-        public abstract void SetDeckData(DeckData deckData);
-
-        public abstract void SetRoomSetting(string settingsKey, int value);
-
-        public abstract void OnPrivateRoomEvents(PrivateRoomEvents roomNetworkEvents);
-        public abstract void LeavePrivateRoom(Action onPrivateRoomLeft);
-
-        public abstract void CreateGame(GameContext context, GameNetworkEvents gameNetworkEvents);
-
-        public abstract void SetGameSeed(long gameSeed);
-
-        public abstract int GetRoomSetting(string setting);
-
-        public abstract NetworkPlayerInfo GetPlayerInfo(Player player);
-
-        public abstract void EndGame();
-
-        abstract void SendMainPhaseAction(Player player, MainPhaseAction action);
-        abstract void SendPlayerSelection(Player player, IPlayerSelection playerSelection);
-
-        abstract void SendSurrender(Player player);
+        void CreateGame(GameContext gameContext, GameNetworkEvents gameNetworkEvents);
+        NetworkPlayerInfo GetPlayerInfo(Player player);
+        void SetGameSeed(long gameSeed);
+        void SendMainPhaseAction(Player player, MainPhaseAction action);
+        void SendPlayerSelection(Player player, IPlayerSelection playerSelection);
+        void SendSurrender(Player player);
+        void EndGame();
     }
 }

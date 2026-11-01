@@ -64,7 +64,15 @@ public class TurnStateMachine : MonoBehaviour
         gameNetworkEvents.OnGameSeed += ContinuousController.instance.SetRandom;
         gameNetworkEvents.OnSurrender += Surrender;
 
-        gameNetworkEvents.OnPlayerSelecton += (Player player, IPlayerSelection playerSelection) => 
+        gameNetworkEvents.OnDisconnected += () =>
+        {
+            if (!endGame)
+            {
+                EndGame(null, false);
+            }
+        };
+
+        gameNetworkEvents.OnPlayerSelection +=(Player player, IPlayerSelection playerSelection) => 
         {
             player.QueuePlayerSelection(playerSelection);
         };
@@ -156,7 +164,7 @@ public class TurnStateMachine : MonoBehaviour
         gameContext.TurnPlayer = gameContext.PlayerFromID(GameRandom.Range(0, 2));
 
         #region get first player from room custom property
-        int firstPlayerId = DCGONetwork.Provider.GetRoomSetting(DataBase.FirstPlayerKey);
+        int firstPlayerId = DCGONetwork.Provider.GetRoomSetting(DataBase.FirstPlayerKey, -1);
 
         if (firstPlayerId >= 0)
         {

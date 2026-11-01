@@ -1,5 +1,4 @@
 ﻿using DCGO.Networking;
-using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,9 +7,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Effects))]
-public class GManager : MonoBehaviourPun
+public class GManager : MonoBehaviour
 {
-    private static WaitForSeconds _waitForSeconds5 = new WaitForSeconds(5f);
     [Header("あなた")]
     public Player You;
 
@@ -251,7 +249,7 @@ public class GManager : MonoBehaviourPun
 #if UNITY_EDITOR
 
 #endif
-        if (!PhotonNetwork.IsConnected)
+        if (!DCGONetwork.IsConnected)
         {
             IsAI = true;
         }
@@ -282,8 +280,6 @@ public class GManager : MonoBehaviourPun
         yield return StartCoroutine(Init());
 
         StartCoroutine(turnStateMachine.Init());
-
-        StartCoroutine(CheckDisconnect());
 
         if (Opening.instance != null)
         {
@@ -333,52 +329,6 @@ public class GManager : MonoBehaviourPun
         {
             BackgroundImage.gameObject.SetActive(false);
             BackgroundSpriteRenderer.gameObject.SetActive(false);
-        }
-    }
-
-    IEnumerator CheckDisconnect()
-    {
-        if (IsAI)
-        {
-            yield break;
-        }
-
-        yield return new WaitWhile(() => turnStateMachine == null);
-
-        yield return _waitForSeconds5;
-
-        while (true)
-        {
-            if (!PhotonNetwork.IsConnected)
-            {
-                break;
-            }
-
-            else
-            {
-                if (!PhotonNetwork.InRoom)
-                {
-                    break;
-                }
-
-                else
-                {
-                    if (PhotonNetwork.CurrentRoom != null)
-                    {
-                        if (PhotonNetwork.PlayerList.Length < 2)
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            yield return null;
-        }
-
-        if (!turnStateMachine.endGame)
-        {
-            turnStateMachine.EndGame(null, false);
         }
     }
 

@@ -65,17 +65,6 @@ public class ContinuousController : MonoBehaviour
     public bool isRandomMatch { get; set; }
     [HideInInspector] public List<SkillInfo> nullSkillInfos = null;
     public String GameVerString => Application.version;//GameVer.ToString(CultureInfo.InvariantCulture);
-    #region Key for property to save deck data for battle
-    public static string DeckDataPropertyKey => "BattleDeckData";
-    #endregion
-
-    #region Key for the property that stores the player name data
-    public static string PlayerNameKey => "PlayerNameKey";
-    #endregion
-
-    #region Key for the property that stores the win count data
-    public static string WinCountKey => "WinCountKey";
-    #endregion
 
     [Header("Player name character limit")]
     public int PlayerNameMaxLength;
@@ -1013,7 +1002,6 @@ public class ContinuousController : MonoBehaviour
     {
         //serverRegion = PlayerPrefs.GetString(_serverRegionKey, "us");
     }
-    public string LastConnectServerRegion = "";
     #endregion
 
     #region Language
@@ -1159,20 +1147,12 @@ public class ContinuousController : MonoBehaviour
 
         DCGONetwork.Provider.EndGame();
 
-        bool wasBotMatch = DCGONetwork.IsOffline;
-
         DCGONetwork.UseOnlineProvider();
 
-        if (wasBotMatch)
-        {
-            Debug.Log("Unload from Bot Match");
-            Opening.instance.battle.lobbyManager_RandomMatch.Close();
-            Opening.instance.battle.selectBattleMode.SetUpSelectBattleModeCoroutine();
-        }
-        else if (isRandomMatch)
+        if (isRandomMatch)
         {
             Debug.Log("Unload from Random Match");
-            yield return StartCoroutine(Opening.instance.battle.lobbyManager_RandomMatch.CloseLobbyCoroutine());
+            Opening.instance.battle.lobbyManager_RandomMatch.Close();
             Opening.instance.battle.selectBattleMode.SetUpSelectBattleModeCoroutine();
         }
 

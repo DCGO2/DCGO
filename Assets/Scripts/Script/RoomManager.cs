@@ -52,6 +52,8 @@ public class RoomManager : MonoBehaviour
 
     bool DoneStartBattle = false;
 
+    bool _leftRoom = false;
+
     void Awake()
     {
         foreach (FirstPlayerIndexIdToggle firstPlayerIndexIdToggle in _firstPlayerIndexIdToggles)
@@ -110,17 +112,45 @@ public class RoomManager : MonoBehaviour
         while (!inRoom)
         {
             waitingOnRequest = true;
-            DCGONetwork.Provider.CreatePrivateRoom(ContinuousController.instance.useBanlist, (bool success) => 
+            DCGONetwork.Provider.CreatePrivateRoom(ContinuousController.instance.useBanlist, GetPrivateRoomEvents((bool success) =>
             {
                 waitingOnRequest = false;
                 if (success)
                 {
                     inRoom = true;
                 }
-            });
+            }));
 
             yield return new WaitUntil(() => !waitingOnRequest);
             yield return new WaitForSeconds(1f);
+        }
+    }
+    #endregion
+
+    #region Private room events
+    public PrivateRoomEvents GetPrivateRoomEvents(Action<bool> onJoined)
+    {
+        PrivateRoomEvents privateRoomEvents = new PrivateRoomEvents();
+
+        privateRoomEvents.OnJoined += onJoined;
+        privateRoomEvents.OnRoomInfoUpdated += OnRoomInfoUpdated;
+        privateRoomEvents.OnAllPlayersReady += GoToBattleScene;
+        privateRoomEvents.OnLeft += OnLeftRoom;
+        privateRoomEvents.OnDisconnected += OnRoomDisconnected;
+
+        return privateRoomEvents;
+    }
+
+    void OnLeftRoom()
+    {
+        _leftRoom = true;
+    }
+
+    void OnRoomDisconnected()
+    {
+        if (Parent.activeSelf)
+        {
+            CloseRoom();
         }
     }
     #endregion
@@ -131,15 +161,6 @@ public class RoomManager : MonoBehaviour
         Opening.instance.battle.selectBattleDeck.Off();
         DoneStartBattle = false;
         _isReady = false;
-
-        UpdatePlayersUI(null);
-
-        PrivateRoomEvents privateRoomEvents = new PrivateRoomEvents();
-
-        privateRoomEvents.OnRoomInfoUpdated += OnRoomInfoUpdated;
-        privateRoomEvents.OnAllPlayersReady += GoToBattleScene;
-
-        DCGONetwork.Provider.OnPrivateRoomEvents(privateRoomEvents);
 
         if (ContinuousController.instance.LastBattleDeckData != null
            && ContinuousController.instance.DeckDatas.Contains(ContinuousController.instance.LastBattleDeckData)
@@ -156,6 +177,8 @@ public class RoomManager : MonoBehaviour
         DCGONetwork.Provider.SetDeckData(ContinuousController.instance.BattleDeckData);
         DCGONetwork.Provider.SetRoomReadyState(_isReady);
         DCGONetwork.Provider.SetRoomSetting(DataBase.FirstPlayerKey, -1);
+
+        OnRoomInfoUpdated(DCGONetwork.Provider.GetRoomInfo());
     }
 
     #region The first proper deck in the deck list
@@ -218,14 +241,11 @@ public class RoomManager : MonoBehaviour
         _isReady = false;
         endSetUp = false;
 
-        bool leaveRoom = false;
+        _leftRoom = false;
 
-        DCGONetwork.Provider.LeavePrivateRoom(() => 
-        {
-            leaveRoom = true;
-        });
+        DCGONetwork.Provider.LeavePrivateRoom();
 
-        yield return new WaitUntil(() => leaveRoom);
+        yield return new WaitUntil(() => _leftRoom);
 
         if (!Opening.instance.battle.selectBattleMode.selectBattleModeWindow.gameObject.activeSelf)
         {

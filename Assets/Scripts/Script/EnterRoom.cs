@@ -68,7 +68,7 @@ public class EnterRoom : MonoBehaviour
             _canClick = false;
 
             string roomCode = RoomIDInputField.text + "-" + ContinuousController.instance.useBanlist;
-            DCGONetwork.Provider.JoinPrivateRoom(roomCode , (bool success) =>
+            DCGONetwork.Provider.JoinPrivateRoom(roomCode, roomManager.GetPrivateRoomEvents((bool success) =>
             {
                 _canClick = true;
                 if (success)
@@ -79,7 +79,7 @@ public class EnterRoom : MonoBehaviour
                 {
                     OnJoinRoomFailed();
                 }
-            });
+            }));
         }
     }
 

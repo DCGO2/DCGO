@@ -1,737 +1,60 @@
 using DCGO.Networking;
 using Photon.Pun;
-using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using PhotonPlayer = Photon.Realtime.Player;
+using PhotonRoomInfo = Photon.Realtime.RoomInfo;
 
 public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 {
-    Player[] _players = null;
-
-    private MatchmakingEvents _matchmakingEvents;
-    private GameNetworkEvents _gameEvents;
-    private PrivateRoomEvents _privateRoomEvents;
-    private Action<bool> _onPrivateRoomJoined = null;
-    private Action _onPrivateRoomLeft = null;
-
-    private GameState _gameState = GameState.Menu;
-
-    private DCGO.Networking.RoomInfo _roomInfo;
-
     const string RandomMatchKey = "RandomMatchKey";
+    const string RoomCreatorKey = "RoomCreator";
+    const string UseBanListKey = "UseBanlist";
+    const string RoomSettingPrefix = "RoomSetting-";
     const string ReadyKey = "IsReady";
     const string WaitingForGameStartKey = "WaitingForGameStart";
+    const string DeckDataKey = "BattleDeckData";
+    const int MaxConnectRetries = 5;
 
-    List<Photon.Realtime.RoomInfo> _rooms = new List<Photon.Realtime.RoomInfo>();
-    List<Photon.Realtime.RoomInfo> _matchmakingRooms = null;
+    private MatchmakingEvents _matchmakingEvents;
+    private PrivateRoomEvents _privateRoomEvents;
+    private GameNetworkEvents _gameEvents;
 
-    Coroutine _matchmakingCoroutine = null;
-    Coroutine _enteringPrivateRoomCoroutine = null;
+    private Coroutine _matchmakingCoroutine = null;
+    private Coroutine _enteringPrivateRoomCoroutine = null;
 
-    public void Awake()
+    private bool _inPrivateRoom = false;
+    private bool _inGame = false;
+    private bool _gameStarted = false;
+
+    private List<PhotonRoomInfo> _rooms = new List<PhotonRoomInfo>();
+    private bool _receivedRoomList = false;
+    private int _roomState = 0;
+
+    private Player[] _players = null;
+    private List<NetworkPlayerInfo> _playerInfos = new List<NetworkPlayerInfo>();
+
+    private string _connectedRegion = null;
+    private string _retryStatus = null;
+
+    void Awake()
     {
         DCGONetwork.Provider = this;
     }
 
-    public void Initialise()
+    void Update()
     {
-        _gameState = GameState.Menu;
-    }
-
-    #region Matchmaking
-
-    public void StartMatchmaking(MatchmakingEvents MatchmakingEvents)
-    {
-        if (_gameState != GameState.Menu)
+        if (_inGame)
         {
-            return;
-        }
-
-        _matchmakingEvents = MatchmakingEvents;
-        _gameState = GameState.Matchmaking;
-        _matchmakingCoroutine = StartCoroutine(MatchmakingCoroutine());
-    }
-
-    public void CancelMatchmaking()
-    {
-        if (_gameState != GameState.Matchmaking)
-        {
-            return;
-        }
-
-        StartCoroutine(CancelMatchmakingCoroutine());
-    }
-
-    IEnumerator MatchmakingCoroutine()
-    {
-        _matchmakingRooms = null;
-
-        if (PhotonNetwork.InLobby)
-        {
-            PhotonNetwork.LeaveLobby();
-        }
-
-        yield return new WaitWhile(() => PhotonNetwork.InLobby);
-
-        if (PhotonNetwork.IsConnected)
-        {
-            PhotonNetwork.Disconnect();
-        }
-
-        yield return new WaitWhile(() => PhotonNetwork.IsConnected);
-
-        yield return ContinuousController.instance.StartCoroutine(PhotonUtility.ConnectToLobbyCoroutine());
-
-        if (_matchmakingEvents.OnConnected != null)
-        {
-            _matchmakingEvents.OnConnected(true);
-        }
-
-        yield return new WaitWhile(() => _matchmakingRooms == null);
-
-        CreateOrJoinRandomMatch();
-
-        yield return new WaitWhile(() => !PhotonNetwork.InRoom);
-
-        yield return new WaitWhile(() => PhotonNetwork.CurrentRoom.PlayerCount != PhotonNetwork.CurrentRoom.MaxPlayers);
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            PhotonNetwork.CurrentRoom.IsVisible = false;
-        }
-
-        if (_matchmakingEvents.OnMatchFound != null)
-        {
-            _matchmakingEvents.OnMatchFound();
-        }
-    }
-
-    void CreateOrJoinRandomMatch()
-    {
-        //If there is no room, make room.
-        if (_matchmakingRooms == null || _matchmakingRooms.Count == 0)
-        {
-            StartCoroutine(CreateRoomCoroutine(true, true));
-        }
-
-        //If there's room, I'll go in.
-        else
-        {
-            PhotonNetwork.JoinRoom(_matchmakingRooms[UnityEngine.Random.Range(0, _matchmakingRooms.Count)].Name);
-        }
-    }
-
-    IEnumerator CancelMatchmakingCoroutine()
-    {
-        StopCoroutine(_matchmakingCoroutine);
-
-        SetWaitingForGameStartProperty(PhotonNetwork.LocalPlayer, false);
-        SetReadyProperty(PhotonNetwork.LocalPlayer, false);
-
-        yield return PhotonUtility.DisconnectCoroutine();
-
-        _gameState = GameState.Menu;
-
-        if (_matchmakingEvents.OnCanceled != null)
-        {
-            _matchmakingEvents.OnCanceled();
-        } 
-    }    
-    #endregion
-
-    #region Private Room
-    public void CreatePrivateRoom(bool useBanList, Action<bool> onPrivateRoomJoined) 
-    {
-        if (_gameState != GameState.Menu)
-        {
-            return;
-        }
-
-        _onPrivateRoomJoined = onPrivateRoomJoined;
-        _gameState = GameState.EnteringPrivateRoom;
-        _enteringPrivateRoomCoroutine = StartCoroutine(CreatePrivateRoomCoroutine(useBanList));
-
-    }
-    public IEnumerator CreatePrivateRoomCoroutine(bool useBanList)
-    {
-        if (PhotonNetwork.InLobby)
-        {
-            PhotonNetwork.LeaveLobby();
-        }
-
-        yield return new WaitWhile(() => PhotonNetwork.InLobby);
-
-        if (PhotonNetwork.IsConnected)
-        {
-            PhotonNetwork.Disconnect();
-        }
-
-        yield return new WaitWhile(() => PhotonNetwork.IsConnected);
-
-        yield return ContinuousController.instance.StartCoroutine(PhotonUtility.ConnectToLobbyCoroutine());
-
-        yield return StartCoroutine(CreateRoomCoroutine(false, useBanList));
-
-        yield return new WaitWhile(() => !PhotonNetwork.InRoom);
-
-        PrivateRoomUpdate();
-
-        _gameState = GameState.PrivateRoom;
-
-        if (_onPrivateRoomJoined != null)
-        {
-            _onPrivateRoomJoined(true);
-        }
-    }
-
-    public void JoinPrivateRoom(string roomCode, Action<bool> onPrivateRoomJoined)
-    {
-        if (_gameState != GameState.Menu)
-        {
-            return;
-        }
-
-        _onPrivateRoomJoined = onPrivateRoomJoined;
-        _gameState = GameState.EnteringPrivateRoom;
-        _enteringPrivateRoomCoroutine = StartCoroutine(JoinRoomCoroutine(roomCode));
-    }
-
-    IEnumerator JoinRoomCoroutine(string roomCode)
-    {
-        if (!PhotonNetwork.IsConnectedAndReady)
-        {
-            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.ConnectToMasterServerCoroutine());
-        }
-
-        yield return new WaitUntil(() => PhotonNetwork.IsConnectedAndReady);
-
-        if (!PhotonNetwork.InLobby)
-        {
-            PhotonNetwork.JoinLobby();
-        }
-
-        yield return new WaitUntil(() => PhotonNetwork.InLobby && PhotonNetwork.IsConnectedAndReady);
-
-        PhotonNetwork.JoinRoom(roomCode);
-
-        yield return new WaitWhile(() => !PhotonNetwork.InRoom);
-
-        _gameState = GameState.PrivateRoom;
-
-        if (_onPrivateRoomJoined != null)
-        {
-            _onPrivateRoomJoined(true);
-        }
-    }
-
-    public void OnPrivateRoomEvents(PrivateRoomEvents privateRoomEvents)
-    {
-        _privateRoomEvents = privateRoomEvents;
-        PrivateRoomUpdate(true);
-    }
-
-    public void SetRoomReadyState(bool isReady)
-    {
-        SetReadyProperty(PhotonNetwork.LocalPlayer, isReady);
-    }
-
-    void SetReadyProperty(Photon.Realtime.Player player, bool ready)
-    {
-        Hashtable PlayerProp = player.CustomProperties;
-
-        if (PlayerProp.TryGetValue(ReadyKey, out object _))
-        {
-            PlayerProp[ReadyKey] = ready;
-        }
-
-        else
-        {
-            PlayerProp.Add(ReadyKey, ready);
-        }
-
-        player.SetCustomProperties(PlayerProp);
-    }
-
-    void SetWaitingForGameStartProperty(Photon.Realtime.Player player, bool waitingForGameStart)
-    {
-        Hashtable PlayerProp = player.CustomProperties;
-
-        if (PlayerProp.TryGetValue(WaitingForGameStartKey, out object _))
-        {
-            PlayerProp[WaitingForGameStartKey] = waitingForGameStart;
-        }
-
-        else
-        {
-            PlayerProp.Add(WaitingForGameStartKey, waitingForGameStart);
-        }
-
-        player.SetCustomProperties(PlayerProp);
-    }
-
-    public void SetDeckData(DeckData deckData)
-    {
-        PhotonUtility.SetDeckData(deckData);
-    }
-
-    public void SetRoomSetting(string settingsKey, int value)
-    {
-        Hashtable RoomProp = PhotonNetwork.CurrentRoom.CustomProperties;
-
-        if (RoomProp.TryGetValue("RoomSetting-" + settingsKey, out object _))
-        {
-            RoomProp["RoomSetting-" + settingsKey] = value;
-        }
-
-        else
-        {
-            RoomProp.Add("RoomSetting-" + settingsKey, value);
-        }
-
-        PhotonNetwork.CurrentRoom.SetCustomProperties(RoomProp);
-    }
-
-    public int GetRoomSetting(string setting)
-    {
-        Hashtable RoomProp = PhotonNetwork.CurrentRoom.CustomProperties;
-
-        if (RoomProp.TryGetValue("RoomSetting-" + setting, out object _))
-        {
-            if (RoomProp["RoomSetting-" + setting] is int settingAsInt)
+            if (_gameStarted)
             {
-                return settingAsInt;
+                GameUpdate();
             }
         }
-
-        return 0;
-    }
-
-    void PrivateRoomUpdate(bool forceSend = false)
-    {
-        int GetState(DCGO.Networking.RoomInfo roomInfo)
-        {
-            HashCode result = new HashCode();
-            result.Add(roomInfo.Players != null ? roomInfo.Players.Count : 0);
-
-            int ReadyCount = 0;
-            if (roomInfo.Players != null)
-            {
-                foreach (var player in roomInfo.Players)
-                {
-                    ReadyCount += player.IsReady ? 1 : 0;
-                }
-            }
-            result.Add(ReadyCount);
-
-            int settingsTotalValue = 0;
-            if (roomInfo.RoomSettings != null)
-            {
-                foreach (var setting in roomInfo.RoomSettings)
-                {
-                    settingsTotalValue += setting.Value;
-                }
-            }
-            result.Add(settingsTotalValue);
-
-            return result.ToHashCode();
-        }
-
-        int oldState = GetState(_roomInfo);
-
-        string RoomName = PhotonNetwork.CurrentRoom.Name;
-        _roomInfo.RoomCode = RoomName[..5];
-
-        _roomInfo.Players = new List<NetworkPlayerInfo>();
-        bool allPlayersReady = PhotonNetwork.PlayerList.Length == PhotonNetwork.CurrentRoom.MaxPlayers;
-
-        foreach (var player in PhotonNetwork.PlayerList)
-        {
-            NetworkPlayerInfo playerInfo = CollectPlayerInfo(player);
-            allPlayersReady = allPlayersReady && playerInfo.IsReady;
-            _roomInfo.Players.Add(playerInfo);
-        }
-
-        _roomInfo.RoomSettings = new Dictionary<string, int>();
-        Hashtable RoomProp = PhotonNetwork.CurrentRoom.CustomProperties;
-
-        foreach (var Prop in RoomProp)
-        {
-            string key = Prop.Key.ToString();
-            if (key.Contains("RoomSetting-") && Prop.Value is int value)
-            {
-                _roomInfo.RoomSettings.Add(key.Split("-")[1], value);
-            }
-        }
-
-        if (_privateRoomEvents.OnRoomInfoUpdated != null && (forceSend || oldState != GetState(_roomInfo)))
-        {
-            _privateRoomEvents.OnRoomInfoUpdated.Invoke(_roomInfo);
-        }
-
-        if (allPlayersReady && _privateRoomEvents.OnAllPlayersReady != null)
-        {
-            _privateRoomEvents.OnAllPlayersReady.Invoke();
-        }
-    }
-
-    NetworkPlayerInfo CollectPlayerInfo(Photon.Realtime.Player player)
-    {
-        NetworkPlayerInfo playerInfo = new NetworkPlayerInfo();
-        playerInfo.Name = player.NickName;
-
-        playerInfo.GameID = player.IsMasterClient ? 0 : 1;
-
-        if (player.CustomProperties.TryGetValue(ReadyKey, out object readyValue))
-        {
-            playerInfo.IsReady = (bool)readyValue;
-        }
-
-        if (player.CustomProperties.TryGetValue(WaitingForGameStartKey, out object waitingForGameStart))
-        {
-            playerInfo.WaitingForGameStart = (bool)waitingForGameStart;
-        }
-
-        if (player.CustomProperties.TryGetValue(ContinuousController.DeckDataPropertyKey, out object deckValue))
-        {
-            playerInfo.DeckData = new DeckData((string)deckValue);
-        }
-
-        return playerInfo;
-    }
-
-    public void LeavePrivateRoom(Action onPrivateRoomLeft) 
-    {
-        _onPrivateRoomLeft = onPrivateRoomLeft;
-        StartCoroutine(LeaveRoomCoroutine());
-    }
-
-    IEnumerator LeaveRoomCoroutine()
-    {
-        yield return PhotonUtility.DisconnectCoroutine();
-
-        _gameState = GameState.Menu;
-
-        SetWaitingForGameStartProperty(PhotonNetwork.LocalPlayer, false);
-        SetReadyProperty(PhotonNetwork.LocalPlayer, false);
-
-        if (_onPrivateRoomLeft != null)
-        {
-            _onPrivateRoomLeft.Invoke();
-        }
-    }
-    #endregion
-
-    #region Room
-
-    public bool IsRoomHost()
-    {
-        return PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient;
-    }
-
-    public override void OnRoomListUpdate(List<Photon.Realtime.RoomInfo> roomList)
-    {
-        foreach (Photon.Realtime.RoomInfo info in roomList)
-        {
-            if (info.RemovedFromList)
-            {
-                _rooms.RemoveAll(r => r.Name == info.Name);
-            }
-            else if (!_rooms.Any(r => r.Name == info.Name))
-            {
-                _rooms.Add(info);
-            }
-            else
-            {
-                int index = _rooms.FindIndex(r => r.Name == info.Name);
-                _rooms[index] = info;
-            }
-        }
-
-        GetRandomMatcingRoom(_rooms);
-    }
-
-    public void GetRandomMatcingRoom(List<Photon.Realtime.RoomInfo> roomInfo)
-    {
-        _matchmakingRooms = new List<Photon.Realtime.RoomInfo>();
-
-        if (roomInfo == null || roomInfo.Count == 0)
-        {
-            return;
-        }
-
-        for (int i = 0; i < roomInfo.Count; i++)
-        {
-            int p = roomInfo[i].PlayerCount;
-            string n = roomInfo[i].Name;
-            int m = roomInfo[i].MaxPlayers;
-            object c = roomInfo[i].CustomProperties["RoomCreator"];
-
-            if (p != 0 && m != 0 && c != null)
-            {
-                if (n.Contains(RandomMatchKey))
-                {
-                    _matchmakingRooms.Add(roomInfo[i]);
-                }
-            }
-        }
-    }
-
-    public override void OnCreateRoomFailed(short returnCode, string message)
-    {
-        if (this.gameObject.activeSelf && _gameState == GameState.EnteringPrivateRoom)
-        {
-            StopCoroutine(_enteringPrivateRoomCoroutine);
-            if (_onPrivateRoomJoined != null)
-            {
-                _onPrivateRoomJoined(false);
-            }
-        }
-    }
-
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        if (_gameState == GameState.EnteringPrivateRoom)
-        {
-            Debug.Log($"[Private Room] Join room failed: [{returnCode}] {message}");
-            StopCoroutine(_enteringPrivateRoomCoroutine);
-            if (_onPrivateRoomJoined != null)
-            {
-                _onPrivateRoomJoined(false);
-            }
-        }
-        else if (_gameState == GameState.Matchmaking)
-        {
-            Debug.Log($"[Random Match] Join room failed: [{returnCode}] {message}, retrying...");
-            _matchmakingRooms = null;
-
-            if (!PhotonNetwork.InLobby)
-            {
-                PhotonNetwork.JoinLobby();
-            }
-
-            CreateOrJoinRandomMatch();
-        }
-    }
-
-    public IEnumerator CreateRoomCoroutine(bool isRandomMatch, bool useBanList)
-    {
-        yield return new WaitWhile(() => !PhotonNetwork.IsConnectedAndReady);
-        yield return new WaitWhile(() => !PhotonNetwork.InLobby);
-
-        //Setting up the room to be created
-        RoomOptions roomOptions = new RoomOptions
-        {
-            IsVisible = true,   //Make the room visible in the lobby.
-            IsOpen = true,      //Allow other players to enter the room
-            PublishUserId = true,
-
-            MaxPlayers = 2,
-
-            //To display room creator in room custom properties, store creator's name
-            CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
-            {
-                { "RoomCreator",PhotonNetwork.NickName },
-                { "UseBanlist", useBanList }
-
-            },
-
-            //Display custom property information in the lobby
-            CustomRoomPropertiesForLobby = new string[]
-            {
-                "RoomCreator",
-                "UseBanlist"
-            }
-        };
-
-        string RoomName = RandomString.Create_Num(isRandomMatch ? 8 : 5);
-
-        if (isRandomMatch)
-        {
-            RoomName += RandomMatchKey;
-        }
-        else
-        {
-            RoomName += "-" + useBanList;
-        }
-
-        //Room Creation
-        PhotonNetwork.CreateRoom(RoomName, roomOptions, null);
-
-        while (!PhotonNetwork.InRoom)
-        {
-            yield return null;
-        }
-    }
-    #endregion
-
-    #region Game
-    public void CreateGame(GameContext gameContext, GameNetworkEvents gameNetworkEvents)
-    {
-        if (_gameState == GameState.Matchmaking)
-        {
-            _gameState = GameState.InMatchmakingGame;
-        }
-        else if (_gameState == GameState.PrivateRoom)
-        {
-            _gameState = GameState.InPrivateRoomGame;
-        }
-
-        _roomInfo.Players.Clear();
-        foreach (var player in PhotonNetwork.PlayerList)
-        {
-            NetworkPlayerInfo playerInfo = CollectPlayerInfo(player);
-            _roomInfo.Players.Add(playerInfo);
-        }
-
-        _gameEvents = gameNetworkEvents;
-        _players = gameContext.Players.ToArray();
-
-        if (IsRoomHost())
-        {
-            StartCoroutine(WaitingToStartGameCoroutine());
-        }
-
-        SetWaitingForGameStartProperty(PhotonNetwork.LocalPlayer, true);
-    }
-
-    public IEnumerator WaitingToStartGameCoroutine()
-    {
-        yield return new WaitUntil(() => 
-        {
-            foreach (var player in PhotonNetwork.PlayerList)
-            {
-                NetworkPlayerInfo playerInfo = CollectPlayerInfo(player);
-                if (!playerInfo.WaitingForGameStart)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        });
-
-        photonView.RPC("StartGame", RpcTarget.All);
-    }
-
-    [PunRPC]
-    public void StartGame()
-    {
-        SetWaitingForGameStartProperty(PhotonNetwork.LocalPlayer, false);
-        SetReadyProperty(PhotonNetwork.LocalPlayer, false);
-
-        if (_gameEvents.OnGameStarted != null)
-        {
-            _gameEvents.OnGameStarted();
-        }
-    }
-
-    private Player GetPlayerFromID(int playerID)
-    {
-        foreach (var player in _players)
-        {
-            if (player.PlayerID == playerID)
-            {
-                return player;
-            }
-        }
-
-        return null;
-    }
-
-    public void SendMainPhaseAction(Player player, MainPhaseAction action)
-    {
-        photonView.RPC("QueueMainPhaseAction_Internal", RpcTarget.All, player.PlayerID, GamePacketFactory.GetId(action.GetType()), action.Serialize());
-    }
-
-    [PunRPC]
-    void QueueMainPhaseAction_Internal(int playerID, byte packetId, byte[] bytes)
-    {
-        Player player = GetPlayerFromID(playerID);
-
-        if (player == null)
-        {
-            return;
-        }
-
-        MainPhaseAction action = GamePacketFactory.Create(packetId, bytes) as MainPhaseAction;
-        _gameEvents.OnMainPhaseAction(player, action);
-    }
-
-    public void SendPlayerSelection(Player player, IPlayerSelection playerSelection)
-    {
-        photonView.RPC("QueuePlayerSelection_Internal", RpcTarget.All, player.PlayerID, GamePacketFactory.GetId(playerSelection.GetType()), playerSelection.Serialize());
-    }
-
-    [PunRPC]
-    void QueuePlayerSelection_Internal(int playerID, byte packetId, byte[] bytes)
-    {
-        Player player = GetPlayerFromID(playerID);
-
-        if (player == null)
-        {
-            return;
-        }
-
-        IPlayerSelection playerSelection = GamePacketFactory.Create(packetId, bytes) as IPlayerSelection;
-        _gameEvents.OnPlayerSelecton(player, playerSelection);
-    }
-
-    public void SetGameSeed(long gameSeed)
-    {
-        photonView.RPC("SetGameSeed_Internal", RpcTarget.All, gameSeed);
-    }
-
-    [PunRPC]
-    void SetGameSeed_Internal(long gameSeed)
-    {
-        if (_gameEvents.OnGameSeed != null)
-        {
-            _gameEvents.OnGameSeed.Invoke(gameSeed);
-        }
-    }
-
-    public NetworkPlayerInfo GetPlayerInfo(Player player)
-    {
-        foreach (var roomPlayer in _roomInfo.Players)
-        {
-            if (roomPlayer.GameID == player.PlayerID)
-            {
-                return roomPlayer;
-            }
-        }
-
-        return new NetworkPlayerInfo();
-    }
-
-    public void SendSurrender(Player player)
-    {
-        photonView.RPC("SendSurrender_Internal", RpcTarget.All, player.PlayerID);
-    }
-
-    [PunRPC]
-    void SendSurrender_Internal(int playerID)
-    {
-        if (_gameEvents.OnSurrender != null)
-        {
-            _gameEvents.OnSurrender.Invoke(GetPlayerFromID(playerID));
-        }
-    }
-
-    public void EndGame()
-    {
-        
-    }
-    #endregion
-
-    private void Update()
-    {
-        if (_gameState == GameState.PrivateRoom && PhotonNetwork.InRoom)
+        else if (_inPrivateRoom)
         {
             PrivateRoomUpdate();
         }
@@ -744,95 +67,806 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 #endif
     }
 
+    #region Connection
+    public bool IsConnected()
+    {
+        return PhotonNetwork.IsConnected;
+    }
+
+    public void Disconnect(Action onDisconnected)
+    {
+        StopAllCoroutines();
+
+        _matchmakingCoroutine = null;
+        _enteringPrivateRoomCoroutine = null;
+        _inPrivateRoom = false;
+        _inGame = false;
+        _gameStarted = false;
+
+        _matchmakingEvents = new MatchmakingEvents();
+        _privateRoomEvents = new PrivateRoomEvents();
+        _gameEvents = new GameNetworkEvents();
+
+        StartCoroutine(DisconnectCoroutine(onDisconnected));
+    }
+
+    IEnumerator DisconnectCoroutine(Action onDisconnected)
+    {
+        yield return DisconnectCoroutine();
+
+        if (onDisconnected != null)
+        {
+            onDisconnected();
+        }
+    }
+
+    IEnumerator DisconnectCoroutine()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.Disconnect();
+        }
+
+        yield return new WaitWhile(() => PhotonNetwork.IsConnected);
+
+        SetLocalPlayerProperty(ReadyKey, false);
+        SetLocalPlayerProperty(WaitingForGameStartKey, false);
+    }
+
+    IEnumerator ConnectCoroutine()
+    {
+        string region = ContinuousController.instance.serverRegion;
+
+        if (PhotonNetwork.IsConnected && _connectedRegion != region)
+        {
+            yield return DisconnectCoroutine();
+        }
+
+        float retryDelay = 3f;
+
+        for (int attempt = 0; attempt <= MaxConnectRetries && !PhotonNetwork.IsConnectedAndReady; attempt++)
+        {
+            if (!PhotonNetwork.IsConnected)
+            {
+                PhotonNetwork.NetworkingClient.AppId = PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime;
+                PhotonNetwork.NickName = ContinuousController.instance.PlayerName;
+                PhotonNetwork.GameVersion = ContinuousController.instance.GameVerString;
+                PhotonNetwork.ConnectToRegion(region);
+                _connectedRegion = region;
+            }
+
+            yield return new WaitUntil(() => PhotonNetwork.IsConnectedAndReady || PhotonNetwork.NetworkingClient.State == Photon.Realtime.ClientState.Disconnected);
+
+            if (PhotonNetwork.IsConnectedAndReady)
+            {
+                break;
+            }
+
+            Photon.Realtime.DisconnectCause cause = PhotonNetwork.NetworkingClient.DisconnectedCause;
+            Debug.LogWarning($"[Photon] Connection failed: {cause} (attempt {attempt + 1}/{MaxConnectRetries + 1})");
+
+            if (cause != Photon.Realtime.DisconnectCause.MaxCcuReached || attempt == MaxConnectRetries)
+            {
+                break;
+            }
+
+            _retryStatus = LocalizeUtility.GetLocalizedString(
+                EngMessage: $"Server full. Retrying... ({attempt + 1}/{MaxConnectRetries})",
+                JpnMessage: $"サーバーが満員です。再接続中... ({attempt + 1}/{MaxConnectRetries})"
+            );
+
+            yield return new WaitForSeconds(retryDelay);
+            retryDelay += 2f;
+        }
+
+        if (PhotonNetwork.IsConnectedAndReady)
+        {
+            _retryStatus = null;
+        }
+        else
+        {
+            _retryStatus = LocalizeUtility.GetLocalizedString(
+                EngMessage: "Connection failed. Please try again later.",
+                JpnMessage: "接続に失敗しました。後でもう一度お試しください。"
+            );
+            Debug.LogError("[Photon] Connection failed permanently");
+        }
+    }
+
+    IEnumerator ConnectToLobbyCoroutine()
+    {
+        yield return ConnectCoroutine();
+
+        if (PhotonNetwork.IsConnectedAndReady && !PhotonNetwork.InLobby)
+        {
+            PhotonNetwork.JoinLobby();
+        }
+
+        yield return new WaitUntil(() => PhotonNetwork.InLobby || !PhotonNetwork.IsConnected);
+    }
+    #endregion
+
+    #region Matchmaking
+    public void StartMatchmaking(MatchmakingEvents matchmakingEvents)
+    {
+        if (_matchmakingCoroutine != null)
+        {
+            return;
+        }
+
+        _matchmakingEvents = matchmakingEvents;
+        _matchmakingCoroutine = StartCoroutine(MatchmakingCoroutine());
+    }
+
+    public void CancelMatchmaking()
+    {
+        if (_inGame)
+        {
+            return;
+        }
+
+        if (_matchmakingCoroutine != null)
+        {
+            StopCoroutine(_matchmakingCoroutine);
+            _matchmakingCoroutine = null;
+        }
+
+        StartCoroutine(CancelMatchmakingCoroutine());
+    }
+
+    IEnumerator MatchmakingCoroutine()
+    {
+        yield return DisconnectCoroutine();
+
+        _rooms.Clear();
+        _receivedRoomList = false;
+
+        yield return ConnectToLobbyCoroutine();
+
+        bool connected = PhotonNetwork.InLobby;
+
+        if (_matchmakingEvents.OnConnected != null)
+        {
+            _matchmakingEvents.OnConnected(connected);
+        }
+
+        if (!connected)
+        {
+            _matchmakingCoroutine = null;
+            yield break;
+        }
+
+        yield return new WaitUntil(() => _receivedRoomList || !PhotonNetwork.IsConnected);
+
+        if (PhotonNetwork.IsConnected)
+        {
+            CreateOrJoinRandomMatch();
+        }
+
+        yield return new WaitUntil(() => IsRoomFull() || !PhotonNetwork.IsConnected);
+
+        _matchmakingCoroutine = null;
+
+        if (!PhotonNetwork.IsConnected)
+        {
+            if (_matchmakingEvents.OnDisconnected != null)
+            {
+                _matchmakingEvents.OnDisconnected();
+            }
+
+            yield break;
+        }
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+        }
+
+        if (_matchmakingEvents.OnMatchFound != null)
+        {
+            _matchmakingEvents.OnMatchFound();
+        }
+    }
+
+    IEnumerator CancelMatchmakingCoroutine()
+    {
+        yield return DisconnectCoroutine();
+
+        MatchmakingEvents matchmakingEvents = _matchmakingEvents;
+        _matchmakingEvents = new MatchmakingEvents();
+
+        if (matchmakingEvents.OnCanceled != null)
+        {
+            matchmakingEvents.OnCanceled();
+        }
+    }
+
+    void CreateOrJoinRandomMatch()
+    {
+        List<PhotonRoomInfo> matchmakingRooms = GetMatchmakingRooms();
+
+        if (matchmakingRooms.Count == 0)
+        {
+            CreateRoom(true, true);
+        }
+        else
+        {
+            PhotonNetwork.JoinRoom(matchmakingRooms[UnityEngine.Random.Range(0, matchmakingRooms.Count)].Name);
+        }
+    }
+
+    IEnumerator RetryRandomMatchCoroutine()
+    {
+        yield return new WaitUntil(() => PhotonNetwork.IsConnectedAndReady || !PhotonNetwork.IsConnected);
+
+        if (_matchmakingCoroutine != null && PhotonNetwork.IsConnectedAndReady)
+        {
+            CreateRoom(true, true);
+        }
+    }
+
+    List<PhotonRoomInfo> GetMatchmakingRooms()
+    {
+        List<PhotonRoomInfo> matchmakingRooms = new List<PhotonRoomInfo>();
+
+        foreach (PhotonRoomInfo room in _rooms)
+        {
+            if (room.PlayerCount != 0 && room.MaxPlayers != 0 && room.CustomProperties[RoomCreatorKey] != null && room.Name.Contains(RandomMatchKey))
+            {
+                matchmakingRooms.Add(room);
+            }
+        }
+
+        return matchmakingRooms;
+    }
+
+    bool IsRoomFull()
+    {
+        return PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers;
+    }
+    #endregion
+
+    #region Private Room
+    public void CreatePrivateRoom(bool useBanList, PrivateRoomEvents privateRoomEvents)
+    {
+        if (_enteringPrivateRoomCoroutine != null)
+        {
+            return;
+        }
+
+        _privateRoomEvents = privateRoomEvents;
+        _enteringPrivateRoomCoroutine = StartCoroutine(CreatePrivateRoomCoroutine(useBanList));
+    }
+
+    public void JoinPrivateRoom(string roomCode, PrivateRoomEvents privateRoomEvents)
+    {
+        if (_enteringPrivateRoomCoroutine != null)
+        {
+            return;
+        }
+
+        _privateRoomEvents = privateRoomEvents;
+        _enteringPrivateRoomCoroutine = StartCoroutine(JoinPrivateRoomCoroutine(roomCode));
+    }
+
+    IEnumerator CreatePrivateRoomCoroutine(bool useBanList)
+    {
+        yield return DisconnectCoroutine();
+        yield return ConnectToLobbyCoroutine();
+
+        if (PhotonNetwork.InLobby)
+        {
+            CreateRoom(false, useBanList);
+        }
+
+        yield return WaitForPrivateRoomCoroutine();
+    }
+
+    IEnumerator JoinPrivateRoomCoroutine(string roomCode)
+    {
+        yield return ConnectToLobbyCoroutine();
+
+        if (PhotonNetwork.InLobby)
+        {
+            PhotonNetwork.JoinRoom(roomCode);
+        }
+
+        yield return WaitForPrivateRoomCoroutine();
+    }
+
+    IEnumerator WaitForPrivateRoomCoroutine()
+    {
+        yield return new WaitUntil(() => PhotonNetwork.InRoom || !PhotonNetwork.IsConnected);
+
+        OnPrivateRoomEntered(PhotonNetwork.InRoom);
+    }
+
+    void OnPrivateRoomEntered(bool success)
+    {
+        _enteringPrivateRoomCoroutine = null;
+        _inPrivateRoom = success;
+        _roomState = 0;
+
+        if (_privateRoomEvents.OnJoined != null)
+        {
+            _privateRoomEvents.OnJoined(success);
+        }
+    }
+
+    public void LeavePrivateRoom()
+    {
+        if (_enteringPrivateRoomCoroutine != null)
+        {
+            StopCoroutine(_enteringPrivateRoomCoroutine);
+            _enteringPrivateRoomCoroutine = null;
+        }
+
+        _inPrivateRoom = false;
+
+        StartCoroutine(LeavePrivateRoomCoroutine());
+    }
+
+    IEnumerator LeavePrivateRoomCoroutine()
+    {
+        yield return DisconnectCoroutine();
+
+        PrivateRoomEvents privateRoomEvents = _privateRoomEvents;
+        _privateRoomEvents = new PrivateRoomEvents();
+
+        if (privateRoomEvents.OnLeft != null)
+        {
+            privateRoomEvents.OnLeft();
+        }
+    }
+
+    public void SetRoomReadyState(bool isReady)
+    {
+        SetLocalPlayerProperty(ReadyKey, isReady);
+    }
+
+    public void SetRoomSetting(string settingsKey, int value)
+    {
+        if (!PhotonNetwork.InRoom)
+        {
+            return;
+        }
+
+        Hashtable roomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+        roomProperties[RoomSettingPrefix + settingsKey] = value;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
+    }
+
+    void PrivateRoomUpdate()
+    {
+        if (!PhotonNetwork.InRoom)
+        {
+            _inPrivateRoom = false;
+
+            if (_privateRoomEvents.OnDisconnected != null)
+            {
+                _privateRoomEvents.OnDisconnected();
+            }
+
+            return;
+        }
+
+        RoomInfo roomInfo = GetRoomInfo();
+        int roomState = GetRoomState(roomInfo);
+
+        if (roomState != _roomState)
+        {
+            _roomState = roomState;
+
+            if (_privateRoomEvents.OnRoomInfoUpdated != null)
+            {
+                _privateRoomEvents.OnRoomInfoUpdated(roomInfo);
+            }
+        }
+
+        bool allPlayersReady = roomInfo.Players.Count == PhotonNetwork.CurrentRoom.MaxPlayers;
+
+        foreach (NetworkPlayerInfo playerInfo in roomInfo.Players)
+        {
+            allPlayersReady = allPlayersReady && playerInfo.IsReady;
+        }
+
+        if (allPlayersReady && _privateRoomEvents.OnAllPlayersReady != null)
+        {
+            _privateRoomEvents.OnAllPlayersReady();
+        }
+    }
+
+    int GetRoomState(RoomInfo roomInfo)
+    {
+        HashCode roomState = new HashCode();
+        roomState.Add(roomInfo.RoomCode);
+        roomState.Add(roomInfo.Players.Count);
+
+        foreach (NetworkPlayerInfo playerInfo in roomInfo.Players)
+        {
+            roomState.Add(playerInfo.Name);
+            roomState.Add(playerInfo.IsReady);
+        }
+
+        foreach (KeyValuePair<string, int> setting in roomInfo.RoomSettings)
+        {
+            roomState.Add(setting.Key);
+            roomState.Add(setting.Value);
+        }
+
+        return roomState.ToHashCode();
+    }
+    #endregion
+
+    #region Room
+    public bool IsInRoom()
+    {
+        return PhotonNetwork.InRoom;
+    }
+
+    public bool IsRoomHost()
+    {
+        return PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient;
+    }
+
+    public RoomInfo GetRoomInfo()
+    {
+        RoomInfo roomInfo = new RoomInfo();
+        roomInfo.Players = new List<NetworkPlayerInfo>();
+        roomInfo.RoomSettings = new Dictionary<string, int>();
+
+        if (!PhotonNetwork.InRoom)
+        {
+            return roomInfo;
+        }
+
+        roomInfo.RoomCode = PhotonNetwork.CurrentRoom.Name[..5];
+
+        foreach (PhotonPlayer player in PhotonNetwork.PlayerList)
+        {
+            roomInfo.Players.Add(CollectPlayerInfo(player));
+        }
+
+        foreach (var property in PhotonNetwork.CurrentRoom.CustomProperties)
+        {
+            string key = property.Key.ToString();
+
+            if (key.StartsWith(RoomSettingPrefix) && property.Value is int value)
+            {
+                roomInfo.RoomSettings[key.Substring(RoomSettingPrefix.Length)] = value;
+            }
+        }
+
+        return roomInfo;
+    }
+
+    public int GetRoomSetting(string settingsKey, int defaultValue)
+    {
+        if (PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(RoomSettingPrefix + settingsKey, out object value) && value is int setting)
+        {
+            return setting;
+        }
+
+        return defaultValue;
+    }
+
+    public void SetDeckData(DeckData deckData)
+    {
+        SetLocalPlayerProperty(DeckDataKey, deckData != null ? deckData.GetThisDeckCode() : null);
+    }
+
+    NetworkPlayerInfo CollectPlayerInfo(PhotonPlayer player)
+    {
+        NetworkPlayerInfo playerInfo = new NetworkPlayerInfo();
+        playerInfo.Name = player.NickName;
+        playerInfo.GameID = player.IsMasterClient ? 0 : 1;
+        playerInfo.IsReady = GetPlayerProperty(player, ReadyKey);
+
+        if (player.CustomProperties.TryGetValue(DeckDataKey, out object value) && value is string deckCode)
+        {
+            playerInfo.DeckData = new DeckData(deckCode);
+        }
+
+        return playerInfo;
+    }
+
+    bool GetPlayerProperty(PhotonPlayer player, string key)
+    {
+        return player.CustomProperties.TryGetValue(key, out object value) && value is bool flag && flag;
+    }
+
+    void SetLocalPlayerProperty(string key, object value)
+    {
+        Hashtable playerProperties = PhotonNetwork.LocalPlayer.CustomProperties;
+        playerProperties[key] = value;
+
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
+        }
+    }
+
+    void CreateRoom(bool isRandomMatch, bool useBanList)
+    {
+        Photon.Realtime.RoomOptions roomOptions = new Photon.Realtime.RoomOptions
+        {
+            IsVisible = true,
+            IsOpen = true,
+            PublishUserId = true,
+            MaxPlayers = 2,
+            CustomRoomProperties = new Hashtable()
+            {
+                { RoomCreatorKey, PhotonNetwork.NickName },
+                { UseBanListKey, useBanList }
+            },
+            CustomRoomPropertiesForLobby = new string[] { RoomCreatorKey, UseBanListKey }
+        };
+
+        string roomName = RandomString.Create_Num(isRandomMatch ? 8 : 5);
+        roomName += isRandomMatch ? RandomMatchKey : "-" + useBanList;
+
+        PhotonNetwork.CreateRoom(roomName, roomOptions, null);
+    }
+
+    public override void OnRoomListUpdate(List<PhotonRoomInfo> roomList)
+    {
+        foreach (PhotonRoomInfo room in roomList)
+        {
+            _rooms.RemoveAll(r => r.Name == room.Name);
+
+            if (!room.RemovedFromList)
+            {
+                _rooms.Add(room);
+            }
+        }
+
+        _receivedRoomList = true;
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        OnEnterRoomFailed(returnCode, message);
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        OnEnterRoomFailed(returnCode, message);
+    }
+
+    void OnEnterRoomFailed(short returnCode, string message)
+    {
+        if (_enteringPrivateRoomCoroutine != null)
+        {
+            Debug.Log($"[Private Room] Entering room failed: [{returnCode}] {message}");
+            StopCoroutine(_enteringPrivateRoomCoroutine);
+            OnPrivateRoomEntered(false);
+        }
+        else if (_matchmakingCoroutine != null)
+        {
+            Debug.Log($"[Random Match] Entering room failed: [{returnCode}] {message}, retrying...");
+            StartCoroutine(RetryRandomMatchCoroutine());
+        }
+    }
+    #endregion
+
+    #region Game
+    public void CreateGame(GameContext gameContext, GameNetworkEvents gameNetworkEvents)
+    {
+        _inGame = true;
+        _gameStarted = false;
+        _gameEvents = gameNetworkEvents;
+        _players = gameContext.Players.ToArray();
+        _playerInfos = GetRoomInfo().Players;
+
+        if (IsRoomHost())
+        {
+            StartCoroutine(WaitForPlayersCoroutine());
+        }
+
+        SetLocalPlayerProperty(WaitingForGameStartKey, true);
+    }
+
+    IEnumerator WaitForPlayersCoroutine()
+    {
+        yield return new WaitUntil(() =>
+        {
+            foreach (PhotonPlayer player in PhotonNetwork.PlayerList)
+            {
+                if (!GetPlayerProperty(player, WaitingForGameStartKey))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        photonView.RPC("StartGame_Internal", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void StartGame_Internal()
+    {
+        SetLocalPlayerProperty(WaitingForGameStartKey, false);
+        SetLocalPlayerProperty(ReadyKey, false);
+
+        _gameStarted = true;
+
+        if (_gameEvents.OnGameStarted != null)
+        {
+            _gameEvents.OnGameStarted();
+        }
+    }
+
+    public NetworkPlayerInfo GetPlayerInfo(Player player)
+    {
+        foreach (NetworkPlayerInfo playerInfo in _playerInfos)
+        {
+            if (playerInfo.GameID == player.PlayerID)
+            {
+                return playerInfo;
+            }
+        }
+
+        return new NetworkPlayerInfo();
+    }
+
+    Player GetPlayerFromID(int playerID)
+    {
+        if (_players == null)
+        {
+            return null;
+        }
+
+        foreach (Player player in _players)
+        {
+            if (player.PlayerID == playerID)
+            {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    public void SetGameSeed(long gameSeed)
+    {
+        photonView.RPC("SetGameSeed_Internal", RpcTarget.All, gameSeed);
+    }
+
+    [PunRPC]
+    void SetGameSeed_Internal(long gameSeed)
+    {
+        if (_gameEvents.OnGameSeed != null)
+        {
+            _gameEvents.OnGameSeed(gameSeed);
+        }
+    }
+
+    public void SendMainPhaseAction(Player player, MainPhaseAction action)
+    {
+        photonView.RPC("QueueMainPhaseAction_Internal", RpcTarget.All, player.PlayerID, GamePacketFactory.GetId(action.GetType()), action.Serialize());
+    }
+
+    [PunRPC]
+    void QueueMainPhaseAction_Internal(int playerID, byte packetId, byte[] bytes)
+    {
+        Player player = GetPlayerFromID(playerID);
+
+        if (player != null && _gameEvents.OnMainPhaseAction != null)
+        {
+            _gameEvents.OnMainPhaseAction(player, GamePacketFactory.Create(packetId, bytes) as MainPhaseAction);
+        }
+    }
+
+    public void SendPlayerSelection(Player player, IPlayerSelection playerSelection)
+    {
+        photonView.RPC("QueuePlayerSelection_Internal", RpcTarget.All, player.PlayerID, GamePacketFactory.GetId(playerSelection.GetType()), playerSelection.Serialize());
+    }
+
+    [PunRPC]
+    void QueuePlayerSelection_Internal(int playerID, byte packetId, byte[] bytes)
+    {
+        Player player = GetPlayerFromID(playerID);
+
+        if (player != null && _gameEvents.OnPlayerSelection != null)
+        {
+            _gameEvents.OnPlayerSelection(player, GamePacketFactory.Create(packetId, bytes) as IPlayerSelection);
+        }
+    }
+
+    public void SendSurrender(Player player)
+    {
+        photonView.RPC("SendSurrender_Internal", RpcTarget.All, player.PlayerID);
+    }
+
+    [PunRPC]
+    void SendSurrender_Internal(int playerID)
+    {
+        if (_gameEvents.OnSurrender != null)
+        {
+            _gameEvents.OnSurrender(GetPlayerFromID(playerID));
+        }
+    }
+
+    void GameUpdate()
+    {
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom.PlayerCount < 2)
+        {
+            _gameStarted = false;
+
+            if (_gameEvents.OnDisconnected != null)
+            {
+                _gameEvents.OnDisconnected();
+            }
+        }
+    }
+
+    public void EndGame()
+    {
+        _inGame = false;
+        _gameStarted = false;
+        _gameEvents = new GameNetworkEvents();
+        _players = null;
+        _playerInfos = new List<NetworkPlayerInfo>();
+
+        if (!_inPrivateRoom)
+        {
+            StartCoroutine(DisconnectCoroutine());
+        }
+    }
+    #endregion
+
 #if UNITY_EDITOR
     #region Photon Debug HUD
     bool _showPhotonDebug = false;
-    Photon.Realtime.IConnectionCallbacks _connectionCallbacks;
-    Photon.Realtime.IMatchmakingCallbacks _matchmakingCallbacks;
-    Photon.Realtime.ILobbyCallbacks _lobbyCallbacks;
+    PhotonDebugListener _debugListener = null;
 
     public override void OnEnable()
     {
         base.OnEnable();
-         
-        var listener = new PhotonDebugListener();
-        _connectionCallbacks = listener;
-        _matchmakingCallbacks = listener;
-        _lobbyCallbacks = listener;
-        PhotonNetwork.AddCallbackTarget(listener);
+
+        _debugListener = new PhotonDebugListener();
+        PhotonNetwork.AddCallbackTarget(_debugListener);
     }
 
     public override void OnDisable()
     {
         base.OnDisable();
 
-        if (_connectionCallbacks != null)
-            PhotonNetwork.RemoveCallbackTarget(_connectionCallbacks);
+        if (_debugListener != null)
+        {
+            PhotonNetwork.RemoveCallbackTarget(_debugListener);
+            _debugListener = null;
+        }
     }
 
-    class PhotonDebugListener :
-        Photon.Realtime.IConnectionCallbacks,
-        Photon.Realtime.IMatchmakingCallbacks,
-        Photon.Realtime.ILobbyCallbacks
+    class PhotonDebugListener : Photon.Realtime.IConnectionCallbacks, Photon.Realtime.IMatchmakingCallbacks, Photon.Realtime.ILobbyCallbacks
     {
-        public void OnDisconnected(Photon.Realtime.DisconnectCause cause)
-        {
-            Debug.LogWarning($"[Photon Debug] Disconnected: {cause}");
-        }
-
         public void OnConnected() { }
-        public void OnConnectedToMaster()
-        {
-            Debug.Log("[Photon Debug] Connected to Master");
-        }
+        public void OnConnectedToMaster() { Debug.Log("[Photon Debug] Connected to Master"); }
+        public void OnDisconnected(Photon.Realtime.DisconnectCause cause) { Debug.LogWarning($"[Photon Debug] Disconnected: {cause}"); }
         public void OnRegionListReceived(Photon.Realtime.RegionHandler handler) { }
         public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { }
-        public void OnCustomAuthenticationFailed(string debugMessage)
-        {
-            Debug.LogError($"[Photon Debug] Auth failed: {debugMessage}");
-        }
+        public void OnCustomAuthenticationFailed(string debugMessage) { Debug.LogError($"[Photon Debug] Auth failed: {debugMessage}"); }
 
-        public void OnJoinedLobby()
-        {
-            Debug.Log("[Photon Debug] Joined Lobby");
-        }
-        public void OnLeftLobby()
-        {
-            Debug.Log("[Photon Debug] Left Lobby");
-        }
+        public void OnJoinedLobby() { Debug.Log("[Photon Debug] Joined Lobby"); }
+        public void OnLeftLobby() { Debug.Log("[Photon Debug] Left Lobby"); }
         public void OnLobbyStatisticsUpdate(List<Photon.Realtime.TypedLobbyInfo> lobbyStatistics) { }
-        public void OnRoomListUpdate(List<Photon.Realtime.RoomInfo> roomList) { }
+        public void OnRoomListUpdate(List<PhotonRoomInfo> roomList) { }
 
-        public void OnJoinedRoom()
-        {
-            Debug.Log($"[Photon Debug] Joined Room: {PhotonNetwork.CurrentRoom?.Name}");
-        }
-        public void OnJoinRoomFailed(short returnCode, string message)
-        {
-            Debug.LogError($"[Photon Debug] Join Room FAILED: [{returnCode}] {message}");
-        }
-        public void OnJoinRandomFailed(short returnCode, string message)
-        {
-            Debug.LogError($"[Photon Debug] Join Random FAILED: [{returnCode}] {message}");
-        }
-        public void OnCreateRoomFailed(short returnCode, string message)
-        {
-            Debug.LogError($"[Photon Debug] Create Room FAILED: [{returnCode}] {message}");
-        }
-        public void OnCreatedRoom()
-        {
-            Debug.Log("[Photon Debug] Created Room");
-        }
-        public void OnLeftRoom()
-        {
-            Debug.Log("[Photon Debug] Left Room");
-        }
         public void OnFriendListUpdate(List<Photon.Realtime.FriendInfo> friendList) { }
+        public void OnCreatedRoom() { Debug.Log("[Photon Debug] Created Room"); }
+        public void OnCreateRoomFailed(short returnCode, string message) { Debug.LogError($"[Photon Debug] Create Room FAILED: [{returnCode}] {message}"); }
+        public void OnJoinedRoom() { Debug.Log($"[Photon Debug] Joined Room: {PhotonNetwork.CurrentRoom?.Name}"); }
+        public void OnJoinRoomFailed(short returnCode, string message) { Debug.LogError($"[Photon Debug] Join Room FAILED: [{returnCode}] {message}"); }
+        public void OnJoinRandomFailed(short returnCode, string message) { Debug.LogError($"[Photon Debug] Join Random FAILED: [{returnCode}] {message}"); }
+        public void OnLeftRoom() { Debug.Log("[Photon Debug] Left Room"); }
     }
 
     void OnGUI()
     {
-        if (!string.IsNullOrEmpty(PhotonUtility.RetryStatus))
+        if (!string.IsNullOrEmpty(_retryStatus))
         {
             GUIStyle retryStyle = new GUIStyle(GUI.skin.label);
             retryStyle.fontSize = 20;
@@ -846,10 +880,13 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
             float y = (Screen.height - boxH) / 2;
 
             GUI.Box(new Rect(x - 10, y - 10, boxW + 20, boxH + 20), "");
-            GUI.Label(new Rect(x, y, boxW, boxH), $"<color=#FFAA00>{PhotonUtility.RetryStatus}</color>", retryStyle);
+            GUI.Label(new Rect(x, y, boxW, boxH), $"<color=#FFAA00>{_retryStatus}</color>", retryStyle);
         }
 
-        if (!_showPhotonDebug) return;
+        if (!_showPhotonDebug)
+        {
+            return;
+        }
 
         string status;
 
@@ -859,9 +896,7 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
         }
         else if (PhotonNetwork.InRoom)
         {
-            string roomName = PhotonNetwork.CurrentRoom != null ? PhotonNetwork.CurrentRoom.Name : "?";
-            int players = PhotonNetwork.CurrentRoom != null ? PhotonNetwork.CurrentRoom.PlayerCount : 0;
-            status = $"<color=#44FF44>[Photon] Connected | Region: {PhotonNetwork.CloudRegion} | Room: {roomName} ({players} players)</color>";
+            status = $"<color=#44FF44>[Photon] Connected | Region: {PhotonNetwork.CloudRegion} | Room: {PhotonNetwork.CurrentRoom.Name} ({PhotonNetwork.CurrentRoom.PlayerCount} players)</color>";
         }
         else if (PhotonNetwork.InLobby)
         {
@@ -881,245 +916,4 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
     }
     #endregion
 #endif
-
-    #region Manage connections to Photon
-    public class PhotonUtility
-    {
-        public static string RetryStatus { get; set; } = null;
-
-        #region Disconnected from Photon
-        public static IEnumerator DisconnectCoroutine()
-        {
-            #region Exit Room
-            if (PhotonNetwork.InRoom)
-            {
-                PhotonNetwork.LeaveRoom();
-            }
-
-            yield return new WaitWhile(() => PhotonNetwork.InRoom);
-            #endregion
-
-            #region Exit from the lobby
-            if (PhotonNetwork.InLobby)
-            {
-                PhotonNetwork.LeaveLobby();
-            }
-
-            yield return new WaitWhile(() => PhotonNetwork.InLobby);
-            #endregion
-
-            #region Disconnected from Photon
-            if (PhotonNetwork.IsConnected)
-            {
-                PhotonNetwork.Disconnect();
-            }
-
-            yield return new WaitWhile(() => PhotonNetwork.IsConnected);
-            #endregion
-        }
-        #endregion
-
-        #region Connect to Photon server
-        public static IEnumerator ConnectToMasterServerCoroutine()
-        {
-            int maxRetries = 5;
-            float retryDelay = 3f;
-
-            for (int attempt = 0; attempt <= maxRetries; attempt++)
-            {
-                if (!PhotonNetwork.IsConnected || ContinuousController.instance.LastConnectServerRegion != ContinuousController.instance.serverRegion)
-                {
-                    if (PhotonNetwork.IsConnected)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(DisconnectCoroutine());
-
-                        yield return new WaitWhile(() => PhotonNetwork.IsConnected);
-                    }
-
-                    PhotonNetwork.NetworkingClient.AppId = PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime;
-                    PhotonNetwork.ConnectToRegion(ContinuousController.instance.serverRegion);
-                    PhotonNetwork.NickName = ContinuousController.instance.PlayerName;
-                    PhotonNetwork.GameVersion = ContinuousController.instance.GameVerString;
-                    ContinuousController.instance.LastConnectServerRegion = ContinuousController.instance.serverRegion;
-                }
-
-                yield return new WaitUntil(() =>
-                    PhotonNetwork.IsConnectedAndReady ||
-                    PhotonNetwork.NetworkingClient.State == Photon.Realtime.ClientState.Disconnected);
-
-                if (PhotonNetwork.IsConnectedAndReady)
-                {
-                    RetryStatus = null;
-                    yield break;
-                }
-
-                var cause = PhotonNetwork.NetworkingClient.DisconnectedCause;
-                Debug.LogWarning($"[Photon] Connection failed: {cause} (attempt {attempt + 1}/{maxRetries + 1})");
-
-                if (cause == Photon.Realtime.DisconnectCause.MaxCcuReached && attempt < maxRetries)
-                {
-                    RetryStatus = LocalizeUtility.GetLocalizedString(
-                        EngMessage: $"Server full. Retrying... ({attempt + 1}/{maxRetries})",
-                        JpnMessage: $"サーバーが満員です。再接続中... ({attempt + 1}/{maxRetries})"
-                    );
-                    Debug.Log($"[Photon] Server full, retrying in {retryDelay}s...");
-                    yield return new WaitForSeconds(retryDelay);
-                    retryDelay += 2f;
-                    continue;
-                }
-
-                RetryStatus = LocalizeUtility.GetLocalizedString(
-                    EngMessage: "Connection failed. Please try again later.",
-                    JpnMessage: "接続に失敗しました。後でもう一度お試しください。"
-                );
-                Debug.LogError($"[Photon] Connection failed permanently: {cause}");
-                yield break;
-            }
-        }
-        #endregion
-        #region Connect to Photon Server and Lobby
-        public static IEnumerator ConnectToLobbyCoroutine()
-        {
-            #region Connect to Photon server
-            yield return ContinuousController.instance.StartCoroutine(ConnectToMasterServerCoroutine());
-            #endregion
-
-            #region Save player name to custom properties
-            yield return ContinuousController.instance.StartCoroutine(SetPlayerName());
-            #endregion
-
-            #region Save the number of wins to a custom property
-            Hashtable hash = PhotonNetwork.LocalPlayer.CustomProperties;
-
-            object value;
-
-            hash = PhotonNetwork.LocalPlayer.CustomProperties;
-
-            if (hash.TryGetValue(ContinuousController.WinCountKey, out value))
-            {
-                hash[ContinuousController.WinCountKey] = ContinuousController.instance.WinCount;
-            }
-
-            else
-            {
-                hash.Add(ContinuousController.WinCountKey, ContinuousController.instance.WinCount);
-            }
-
-            PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
-
-            while (true)
-            {
-                Hashtable _hash = PhotonNetwork.LocalPlayer.CustomProperties;
-
-                if (_hash.TryGetValue(ContinuousController.WinCountKey, out value))
-                {
-                    if ((int)value == ContinuousController.instance.WinCount)
-                    {
-                        break;
-                    }
-
-                }
-
-                yield return null;
-            }
-            #endregion
-
-            #region Connect to Lobby
-            if (!PhotonNetwork.InLobby)
-            {
-                PhotonNetwork.JoinLobby();
-            }
-
-            yield return new WaitWhile(() => !PhotonNetwork.InLobby);
-
-            yield return new WaitUntil(() => PhotonNetwork.InLobby && PhotonNetwork.IsConnectedAndReady);
-            #endregion
-        }
-        #endregion
-
-        #region Save player name to properties
-        public static IEnumerator SetPlayerName()
-        {
-            Hashtable hash = PhotonNetwork.LocalPlayer.CustomProperties;
-
-            object value;
-
-            hash = PhotonNetwork.LocalPlayer.CustomProperties;
-
-            if (hash.TryGetValue(ContinuousController.PlayerNameKey, out value))
-            {
-                hash[ContinuousController.PlayerNameKey] = ContinuousController.instance.PlayerName;
-            }
-
-            else
-            {
-                hash.Add(ContinuousController.PlayerNameKey, ContinuousController.instance.PlayerName);
-            }
-
-            PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
-
-            while (true)
-            {
-                Hashtable _hash = PhotonNetwork.LocalPlayer.CustomProperties;
-
-                if (_hash.TryGetValue(ContinuousController.PlayerNameKey, out value))
-                {
-                    if ((string)value == ContinuousController.instance.PlayerName)
-                    {
-                        break;
-                    }
-                }
-
-                yield return null;
-            }
-        }
-        #endregion
-
-        #region Save deck data to custom properties
-        public static void SetDeckData(DeckData deckData)
-        {
-            Hashtable hash = PhotonNetwork.LocalPlayer.CustomProperties;
-
-            if (hash.TryGetValue(ContinuousController.DeckDataPropertyKey, out object value))
-            {
-                hash[ContinuousController.DeckDataPropertyKey] = deckData.GetThisDeckCode();
-            }
-
-            else
-            {
-                hash.Add(ContinuousController.DeckDataPropertyKey, deckData.GetThisDeckCode());
-            }
-
-            PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
-        }
-        #endregion
-
-        #region Remove custom properties from deck data
-        public static IEnumerator DeleteBattleDeckData()
-        {
-            Hashtable hash = PhotonNetwork.LocalPlayer.CustomProperties;
-
-            if (hash.TryGetValue(ContinuousController.DeckDataPropertyKey, out object value))
-            {
-                hash.Remove(ContinuousController.DeckDataPropertyKey);
-            }
-
-            PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
-
-            while (true)
-            {
-                Hashtable _hash = PhotonNetwork.LocalPlayer.CustomProperties;
-
-                if (!_hash.TryGetValue(ContinuousController.DeckDataPropertyKey, out value))
-                {
-                    break;
-                }
-
-                yield return null;
-            }
-        }
-        #endregion
-    }
-    #endregion
-
 }

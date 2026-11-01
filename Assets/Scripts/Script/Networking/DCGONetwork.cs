@@ -13,6 +13,10 @@ namespace DCGO.Networking
 
         public static bool IsOffline => Provider is OfflineNetworkProvider;
 
+        public static bool IsConnected => Provider != null && Provider.IsConnected();
+
+        public static bool IsInRoom => Provider != null && Provider.IsInRoom();
+
         public static void UseOfflineProvider()
         {
             if (IsOffline)
