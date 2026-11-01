@@ -19,6 +19,13 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
     const string DeckDataKey = "BattleDeckData";
     const int MaxConnectRetries = 5;
 
+    const float ReconnectWindowSeconds = 60f;
+    const int PlayerTtlMilliseconds = 60000;
+    const float ReconnectAttemptSeconds = 6f;
+    const float ReconnectRetryDelaySeconds = 1f;
+    const float StateCheckSeconds = 8f;
+    const float StateCheckIntervalSeconds = 1f;
+
     private MatchmakingEvents _matchmakingEvents;
     private PrivateRoomEvents _privateRoomEvents;
     private GameNetworkEvents _gameEvents;
@@ -35,7 +42,18 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
     private int _roomState = 0;
 
     private Player[] _players = null;
+    private Player _localPlayer = null;
+    private Player _remotePlayer = null;
     private List<NetworkPlayerInfo> _playerInfos = new List<NetworkPlayerInfo>();
+
+    private Coroutine _reconnectCoroutine = null;
+    private bool _localReconnecting = false;
+    private string _gameRoomName = null;
+    private bool _rejoinedRoom = false;
+    private bool _rejoinFailed = false;
+    private bool _rejoinByNameOnMaster = false;
+    private bool _hasRemoteStateHash = false;
+    private int _remoteStateHash = 0;
 
     private string _connectedRegion = null;
     private string _retryStatus = null;
@@ -79,6 +97,8 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 
         _matchmakingCoroutine = null;
         _enteringPrivateRoomCoroutine = null;
+        _reconnectCoroutine = null;
+        _localReconnecting = false;
         _inPrivateRoom = false;
         _inGame = false;
         _gameStarted = false;
@@ -102,6 +122,14 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 
     IEnumerator DisconnectCoroutine()
     {
+        if (PhotonNetwork.InRoom)
+        {
+            //false: leave for good instead of staying inactive for PlayerTtl
+            PhotonNetwork.LeaveRoom(false);
+        }
+
+        yield return new WaitUntil(() => !PhotonNetwork.IsConnected || PhotonNetwork.IsConnectedAndReady);
+
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.Disconnect();
@@ -524,7 +552,10 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 
         foreach (PhotonPlayer player in PhotonNetwork.PlayerList)
         {
-            roomInfo.Players.Add(CollectPlayerInfo(player));
+            if (!player.IsInactive)
+            {
+                roomInfo.Players.Add(CollectPlayerInfo(player));
+            }
         }
 
         foreach (var property in PhotonNetwork.CurrentRoom.CustomProperties)
@@ -594,6 +625,7 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
             IsOpen = true,
             PublishUserId = true,
             MaxPlayers = 2,
+            PlayerTtl = PlayerTtlMilliseconds,
             CustomRoomProperties = new Hashtable()
             {
                 { RoomCreatorKey, PhotonNetwork.NickName },
@@ -630,6 +662,13 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
+        if (_localReconnecting)
+        {
+            Debug.LogWarning($"[Reconnect] Rejoin failed: [{returnCode}] {message}");
+            _rejoinFailed = true;
+            return;
+        }
+
         OnEnterRoomFailed(returnCode, message);
     }
 
@@ -656,7 +695,10 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
         _gameStarted = false;
         _gameEvents = gameNetworkEvents;
         _players = gameContext.Players.ToArray();
+        _localPlayer = gameContext.You;
+        _remotePlayer = gameContext.Opponent;
         _playerInfos = GetRoomInfo().Players;
+        _gameRoomName = PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.Name : null;
 
         if (IsRoomHost())
         {
@@ -777,6 +819,12 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 
     public void SendSurrender(Player player)
     {
+        if (!PhotonNetwork.InRoom)
+        {
+            SendSurrender_Internal(player.PlayerID);
+            return;
+        }
+
         photonView.RPC("SendSurrender_Internal", RpcTarget.All, player.PlayerID);
     }
 
@@ -791,29 +839,324 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 
     void GameUpdate()
     {
-        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom.PlayerCount < 2)
+        if (_reconnectCoroutine == null && PhotonNetwork.InRoom && PhotonNetwork.PlayerListOthers.Length == 0)
         {
-            _gameStarted = false;
+            EndGameByDisconnect(null);
+        }
+    }
 
-            if (_gameEvents.OnDisconnected != null)
-            {
-                _gameEvents.OnDisconnected();
-            }
+    void EndGameByDisconnect(Player player)
+    {
+        StopReconnect();
+        _gameStarted = false;
+
+        if (_gameEvents.OnDisconnected != null)
+        {
+            _gameEvents.OnDisconnected(player);
         }
     }
 
     public void EndGame()
     {
+        StopReconnect();
+
         _inGame = false;
         _gameStarted = false;
         _gameEvents = new GameNetworkEvents();
         _players = null;
+        _localPlayer = null;
+        _remotePlayer = null;
         _playerInfos = new List<NetworkPlayerInfo>();
+        _gameRoomName = null;
 
         if (!_inPrivateRoom)
         {
             StartCoroutine(DisconnectCoroutine());
         }
+    }
+    #endregion
+
+    #region Reconnect
+    public override void OnDisconnected(Photon.Realtime.DisconnectCause cause)
+    {
+        if (!_gameStarted || _localReconnecting)
+        {
+            return;
+        }
+
+        if (!IsRecoverable(cause))
+        {
+            Debug.Log($"[Reconnect] Disconnected ({cause}); not recoverable.");
+            EndGameByDisconnect(null);
+            return;
+        }
+
+        Debug.LogWarning($"[Reconnect] Connection lost ({cause}). Trying to rejoin for {ReconnectWindowSeconds}s.");
+        StartReconnect(LocalReconnectCoroutine());
+    }
+
+    public override void OnPlayerLeftRoom(PhotonPlayer otherPlayer)
+    {
+        if (!_gameStarted || _reconnectCoroutine != null)
+        {
+            return;
+        }
+
+        if (otherPlayer.IsInactive)
+        {
+            Debug.LogWarning("[Reconnect] Opponent became inactive. Waiting for them to return.");
+            StartReconnect(WaitForOpponentCoroutine());
+        }
+        else
+        {
+            EndGameByDisconnect(null);
+        }
+    }
+
+    public override void OnJoinedRoom()
+    {
+        if (_localReconnecting)
+        {
+            _rejoinedRoom = true;
+        }
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        if (_localReconnecting && _rejoinByNameOnMaster)
+        {
+            _rejoinByNameOnMaster = false;
+            PhotonNetwork.RejoinRoom(_gameRoomName);
+        }
+    }
+
+    bool IsRecoverable(Photon.Realtime.DisconnectCause cause)
+    {
+        switch (cause)
+        {
+            case Photon.Realtime.DisconnectCause.ClientTimeout:
+            case Photon.Realtime.DisconnectCause.ServerTimeout:
+            case Photon.Realtime.DisconnectCause.Exception:
+            case Photon.Realtime.DisconnectCause.ExceptionOnConnect:
+            case Photon.Realtime.DisconnectCause.DnsExceptionOnConnect:
+            case Photon.Realtime.DisconnectCause.DisconnectByServerReasonUnknown:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    void StartReconnect(IEnumerator reconnectCoroutine)
+    {
+        StopReconnect();
+        _reconnectCoroutine = StartCoroutine(reconnectCoroutine);
+    }
+
+    void StopReconnect()
+    {
+        if (_reconnectCoroutine != null)
+        {
+            StopCoroutine(_reconnectCoroutine);
+            _reconnectCoroutine = null;
+        }
+
+        _localReconnecting = false;
+        _rejoinByNameOnMaster = false;
+    }
+
+    IEnumerator LocalReconnectCoroutine()
+    {
+        _localReconnecting = true;
+        _rejoinFailed = false;
+
+        OnConnectionLost(_localPlayer);
+
+        float deadline = Time.unscaledTime + ReconnectWindowSeconds;
+        bool rejoined = false;
+
+        while (!rejoined && !_rejoinFailed && Time.unscaledTime < deadline)
+        {
+            _rejoinedRoom = false;
+
+            if (TryStartReconnect())
+            {
+                float attemptEnd = Mathf.Min(deadline, Time.unscaledTime + ReconnectAttemptSeconds);
+
+                yield return new WaitUntil(() => _rejoinedRoom || _rejoinFailed || Time.unscaledTime >= attemptEnd);
+
+                rejoined = _rejoinedRoom;
+
+                if (!rejoined && PhotonNetwork.IsConnected)
+                {
+                    PhotonNetwork.Disconnect();
+                }
+            }
+
+            if (!rejoined)
+            {
+                yield return new WaitForSecondsRealtime(ReconnectRetryDelaySeconds);
+            }
+        }
+
+        if (!rejoined)
+        {
+            Debug.LogWarning("[Reconnect] Could not rejoin in time.");
+            EndGameByDisconnect(_localPlayer);
+
+            if (PhotonNetwork.IsConnected)
+            {
+                PhotonNetwork.Disconnect();
+            }
+
+            yield break;
+        }
+
+        Debug.Log("[Reconnect] Rejoined the room.");
+        _localReconnecting = false;
+
+        if (PhotonNetwork.PlayerListOthers.Length == 0)
+        {
+            EndGameByDisconnect(null);
+            yield break;
+        }
+
+        if (!IsOpponentActive())
+        {
+            yield return WaitForOpponentCoroutine();
+            yield break;
+        }
+
+        yield return CheckGameStateCoroutine();
+    }
+
+    bool TryStartReconnect()
+    {
+        if (PhotonNetwork.NetworkingClient.LoadBalancingPeer.PeerState != ExitGames.Client.Photon.PeerStateValue.Disconnected)
+        {
+            return false;
+        }
+
+        if (PhotonNetwork.ReconnectAndRejoin())
+        {
+            return true;
+        }
+
+        if (!string.IsNullOrEmpty(_gameRoomName) && PhotonNetwork.NetworkingClient.ReconnectToMaster())
+        {
+            _rejoinByNameOnMaster = true;
+            return true;
+        }
+
+        return false;
+    }
+
+    IEnumerator WaitForOpponentCoroutine()
+    {
+        OnConnectionLost(_remotePlayer);
+
+        float deadline = Time.unscaledTime + ReconnectWindowSeconds;
+
+        yield return new WaitUntil(() => !PhotonNetwork.InRoom || PhotonNetwork.PlayerListOthers.Length == 0 || IsOpponentActive() || Time.unscaledTime >= deadline);
+
+        if (!PhotonNetwork.InRoom)
+        {
+            //Our own connection dropped as well, OnDisconnected starts the local reconnect
+            yield break;
+        }
+
+        if (!IsOpponentActive())
+        {
+            Debug.Log("[Reconnect] Opponent did not return.");
+            EndGameByDisconnect(_remotePlayer);
+            yield break;
+        }
+
+        Debug.Log("[Reconnect] Opponent is back.");
+
+        yield return CheckGameStateCoroutine();
+    }
+
+    IEnumerator CheckGameStateCoroutine()
+    {
+        _hasRemoteStateHash = false;
+
+        float end = Time.unscaledTime + StateCheckSeconds;
+        float nextSend = 0f;
+        bool inSync = false;
+
+        while (!inSync && Time.unscaledTime < end && PhotonNetwork.InRoom && IsOpponentActive())
+        {
+            if (Time.unscaledTime >= nextSend)
+            {
+                SendStateHash();
+                nextSend = Time.unscaledTime + StateCheckIntervalSeconds;
+            }
+
+            if (_hasRemoteStateHash && _remoteStateHash == GetStateHash())
+            {
+                //Send once more so the other client can finish too
+                SendStateHash();
+                inSync = true;
+            }
+            else
+            {
+                yield return null;
+            }
+        }
+
+        if (!inSync)
+        {
+            Debug.LogError($"[Reconnect] State check failed. local: {GetStateHash()} remote: {(_hasRemoteStateHash ? _remoteStateHash.ToString() : "none")}");
+            EndGameByDisconnect(null);
+            yield break;
+        }
+
+        Debug.Log("[Reconnect] State check passed. Resuming match.");
+        _reconnectCoroutine = null;
+
+        if (_gameEvents.OnConnectionRestored != null)
+        {
+            _gameEvents.OnConnectionRestored();
+        }
+    }
+
+    void OnConnectionLost(Player player)
+    {
+        if (_gameEvents.OnConnectionLost != null)
+        {
+            _gameEvents.OnConnectionLost(player, ReconnectWindowSeconds);
+        }
+    }
+
+    bool IsOpponentActive()
+    {
+        foreach (PhotonPlayer player in PhotonNetwork.PlayerListOthers)
+        {
+            if (!player.IsInactive)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    int GetStateHash()
+    {
+        return _gameEvents.GetStateHash != null ? _gameEvents.GetStateHash() : 0;
+    }
+
+    void SendStateHash()
+    {
+        photonView.RPC("ReceiveStateHash_Internal", RpcTarget.Others, GetStateHash());
+    }
+
+    [PunRPC]
+    void ReceiveStateHash_Internal(int stateHash)
+    {
+        _remoteStateHash = stateHash;
+        _hasRemoteStateHash = true;
     }
     #endregion
 

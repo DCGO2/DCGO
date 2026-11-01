@@ -27,7 +27,16 @@ namespace DCGO.Networking
         public Action<Player, IPlayerSelection> OnPlayerSelection;
         public Action<Player, MainPhaseAction> OnMainPhaseAction;
         public Action<Player> OnSurrender;
-        public Action OnDisconnected;
+
+        //Player whose connection dropped, and how many seconds they have to come back
+        public Action<Player, float> OnConnectionLost;
+        public Action OnConnectionRestored;
+
+        //Player who didn't come back, or null when the match should end with no result
+        public Action<Player> OnDisconnected;
+
+        //Compared between clients after a reconnect so a desynced match isn't continued
+        public Func<int> GetStateHash;
     }
 
     public struct NetworkPlayerInfo

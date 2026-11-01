@@ -126,16 +126,6 @@ public class SelectBattleMode : MonoBehaviour
         ContinuousController.instance.isAI = isAI;
         ContinuousController.instance.isRandomMatch = true;
 
-        if (!isAI && PhotonNetwork.OfflineMode)
-        {
-            if (PhotonNetwork.InRoom)
-            {
-                PhotonNetwork.LeaveRoom();
-            }
-
-            PhotonNetwork.OfflineMode = false;
-        }
-
         Opening.instance.battle.selectBattleDeck.Off();
 
         if (!ContinuousController.instance.isAI)
