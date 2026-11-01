@@ -1,11 +1,22 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CEntity_EffectController : MonoBehaviour
 {
     //Number of skills used this turn (referenced by use limit)
-    List<ICardEffect> UseEffectsThisTurn = new List<ICardEffect>();
+    private List<ICardEffect> _useEffectsThisTurn = new List<ICardEffect>();
+    public List<ICardEffect> UseEffectsThisTurn
+    {
+        get
+        {
+            return _useEffectsThisTurn;
+        }
+        private set
+        {
+            _useEffectsThisTurn = value;
+        }
+    }
 
     #region CEntity_Effect
     public CEntity_Effect cEntity_Effect { get; set; }
@@ -65,17 +76,31 @@ public class CEntity_EffectController : MonoBehaviour
 
                                     foreach (ICardEffect cardEffect in cardSource.cEntity_EffectController.cEntity_Effect.GetCardEffects(EffectTiming.None, permanent.TopCard))
                                     {
-                                        if (cardEffect is IAddSkillEffect)
+                                        if (cardEffect is IAddSkillEffect addCardEffect)
                                         {
                                             if (cardEffect.IsInheritedEffect == (cardSource == permanent.TopCard) || cardSource.IsFlipped)
                                             {
                                                 continue;
                                             }
 
-                                            if (((IAddSkillEffect)cardEffect).ShouldAddEffect(timing) && cardEffect.CanUse(null))
+                                            if (addCardEffect.ShouldAddEffect(timing) && cardEffect.CanUse(null))
                                             {
                                                 if (!card.CanNotBeAffected(cardEffect))
-                                                    GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
+                                                {
+                                                    var SkillsToAdd = addCardEffect.GetCardEffect(card, GetCardEffects, timing);
+                                                    if (cardEffect.IsInheritedEffect)
+                                                    {
+                                                        foreach (var eff in SkillsToAdd)
+                                                        {
+                                                            if (eff.OriginalEffectSourceCard is not null)
+                                                            {
+                                                                eff.SetHashString(eff.HashString.Replace(permanent.TopCard.GetHashCode().ToString(), cardSource.GetHashCode().ToString()));
+                                                            }
+                                                        }
+                                                        cardEffect.SetOriginalEffectSourceCard(cardSource);
+                                                    }
+                                                    GetCardEffects = SkillsToAdd;
+                                                }
                                             }
                                         }
                                     }
@@ -136,11 +161,6 @@ public class CEntity_EffectController : MonoBehaviour
                                     if (cardEffect.IsInheritedEffect == (cardSource == thisPermanent.TopCard) || cardSource.IsFlipped)
                                     {
                                         continue;
-                                    }
-
-                                    if (cardEffect.CanUse(null))
-                                    {
-                                        //GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
                                     }
                                 }
                             }

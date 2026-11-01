@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT17
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if (targetPermanent.TopCard.ContainsCardName("Agumon"))
+                    if (targetPermanent.TopCard.HasAgumonName)
                     {
                         if (targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 3)
                         {

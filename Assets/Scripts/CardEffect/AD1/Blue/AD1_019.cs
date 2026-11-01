@@ -80,27 +80,13 @@ namespace DCGO.CardEffects.AD1
 
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, cardSource => IsAdventureDigimon(cardSource, reduceCost)))
                         {
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                                 canTargetCondition: cardSource => IsAdventureDigimon(cardSource, reduceCost),
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: null,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.PlayForCost,
-                                cardEffect: activateClass);
-
-                            selectHandEffect.SetReducedCostTuple((reduceCost, null));
-
-                            selectHandEffect.SetUpCustomMessage("Select 1 card to play", "The opponent is selecting 1 card to play");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                                SelectCardEffect.Root.Hand,
+                                activateClass,
+                                payCost: true,
+                                reduceCostTuple: (reduceCost, null)
+                            ));
                         }
                     }
                 }

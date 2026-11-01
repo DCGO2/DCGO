@@ -48,6 +48,8 @@ public partial class CardEffectCommons
             condition: CanUseCondition,
             setFixedCost: setFixedCost);
 
+        changeCostClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         AddEffectToPlayer(effectDuration: effectDuration, card: activateClass.EffectSourceCard, cardEffect: changeCostClass, timing: EffectTiming.None);
 
         foreach (Permanent permanent in GManager.instance.turnStateMachine.gameContext.PermanentsForTurnPlayer)

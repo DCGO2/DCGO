@@ -349,18 +349,19 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 2 source cards, trash opponent top security", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("EX10_056_AllTurns");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] [Once Per Turn] When any of your opponent's Digimon or Tamers digivolve or effects place cards under them, by trashing any 2 of this Digimon's digivolution cards, trash your opponent's top security card.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && card.PermanentOfThisCard().DigivolutionCards.Count >= 2
                         && CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermamentCondition);
                 }
 
@@ -371,7 +372,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                         && card.PermanentOfThisCard().DigivolutionCards.Count >= 2;
                 }
 
@@ -447,19 +448,23 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 2 source cards, trash opponent top security", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("EX10_056_AllTurns");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] [Once Per Turn] When any of your opponent's Digimon or Tamers digivolve or effects place cards under them, by trashing any 2 of this Digimon's digivolution cards, trash your opponent's top security card.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, PermamentCondition, cardEffect => cardEffect.EffectSourceCard != null, null);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && card.PermanentOfThisCard().DigivolutionCards.Count >= 2)
+                    {
+                    return CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, PermamentCondition, cardEffect => cardEffect.EffectSourceCard != null, null);
+                    }
+                        return false;
                 }
 
                 bool PermamentCondition(Permanent permanent)
@@ -469,8 +474,16 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && card.PermanentOfThisCard().DigivolutionCards.Count >= 2;
+                    bool isExist = CardEffectCommons.IsExistOnBattleAreaActivate(card,activateClass);
+
+                    Permanent thisPermanent = card.PermanentOfThisCard();
+                    int sourceCount = 0;
+
+                    if (thisPermanent != null && thisPermanent.DigivolutionCards != null)
+                        sourceCount = thisPermanent.DigivolutionCards.Count;
+
+                    bool result = isExist && sourceCount >= 2;
+                    return result;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

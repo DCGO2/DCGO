@@ -31,6 +31,8 @@ public partial class CardEffectCommons
             card: card, 
             condition: CanUseCondition);
 
+        treatAsDigimonClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         AddEffectToPermanent(
             targetPermanent: targetPermanent, 
             effectDuration: effectDuration, 
@@ -46,6 +48,7 @@ public partial class CardEffectCommons
             card: card, 
             condition: CanUseCondition);
         changeBaseDPClass.SetActivatedTime(DateTime.Now);
+        changeBaseDPClass.SetIsOptionEffect(activateClass.IsOptionEffect);
 
         AddEffectToPermanent(
             targetPermanent: targetPermanent, 
@@ -62,6 +65,7 @@ public partial class CardEffectCommons
             card: card, 
             condition: CanUseCondition, 
             effectName: "Can't digivolve");
+        canNotEvolveClass.SetIsOptionEffect(activateClass.IsOptionEffect);
 
         AddEffectToPermanent(
             targetPermanent: targetPermanent, 

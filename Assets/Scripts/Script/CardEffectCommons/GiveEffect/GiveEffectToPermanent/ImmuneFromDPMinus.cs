@@ -1,8 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using System;
-using System.Linq;
-using UnityEngine;
 
 public partial class CardEffectCommons
 {
@@ -20,15 +17,8 @@ public partial class CardEffectCommons
 
         bool CanUseCondition()
         {
-            if (IsPermanentExistsOnBattleArea(targetPermanent))
-            {
-                if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return IsPermanentExistsOnBattleArea(targetPermanent)
+                && !targetPermanent.TopCard.CanNotBeAffected(activateClass);
         }
 
         ImmuneFromDPMinusClass immuneFromDPMinusClass = CardEffectFactory.ImmuneFromDPMinusStaticEffect(
@@ -38,6 +28,8 @@ public partial class CardEffectCommons
             card: card,
             condition: CanUseCondition,
             effectName: effectName);
+
+        immuneFromDPMinusClass.SetIsOptionEffect(activateClass.IsOptionEffect);
 
         AddEffectToPermanent(
             targetPermanent: targetPermanent,

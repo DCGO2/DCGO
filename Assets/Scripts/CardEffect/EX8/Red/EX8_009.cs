@@ -38,17 +38,9 @@ namespace DCGO.CardEffects.EX8
                 return cardSource.EqualsCardName("X Antibody");
             }
 
-            bool CanActivateOnPlayWhenDigivolvingCondition(Hashtable hashtable)
+            bool CanActivateOnPlayWhenDigivolvingCondition(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                {
-                    if (card.Owner.LibraryCards.Count >= 1)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
             }
             
             #endregion
@@ -58,7 +50,7 @@ namespace DCGO.CardEffects.EX8
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateOnPlayWhenDigivolvingCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass((hashtable) => CanActivateOnPlayWhenDigivolvingCondition(hashtable, activateClass), ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -68,7 +60,8 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -103,7 +96,7 @@ namespace DCGO.CardEffects.EX8
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateOnPlayWhenDigivolvingCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass((hashtable) => CanActivateOnPlayWhenDigivolvingCondition(hashtable, activateClass), ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -113,7 +106,7 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass))
                     {
                         if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
                         {

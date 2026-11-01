@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.BT24
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.IsLevel3
-                        && (targetPermanent.TopCard.ContainsCardName("Agumon") || targetPermanent.TopCard.HasTSTraits);
+                        && (targetPermanent.TopCard.HasAgumonName || targetPermanent.TopCard.HasTSTraits);
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

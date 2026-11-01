@@ -30,6 +30,8 @@ public class TurnStateMachine : MonoBehaviour
 
     bool _gameStated = false;
 
+    ReconnectOverlay _reconnectOverlay = null;
+
     #region Initialization
 
     public IEnumerator Init()
@@ -64,13 +66,42 @@ public class TurnStateMachine : MonoBehaviour
         gameNetworkEvents.OnGameSeed += ContinuousController.instance.SetRandom;
         gameNetworkEvents.OnSurrender += Surrender;
 
-        gameNetworkEvents.OnDisconnected += () =>
+        _reconnectOverlay = gameObject.AddComponent<ReconnectOverlay>();
+
+        gameNetworkEvents.OnConnectionLost += (Player player, float seconds) =>
         {
-            if (!endGame)
+            if (endGame)
             {
-                EndGame(null, false);
+                return;
+            }
+
+            if (player == gameContext.You)
+            {
+                _reconnectOverlay.Show(LocalizeUtility.GetLocalizedString(
+                    EngMessage: "Connection lost. Reconnecting...",
+                    JpnMessage: "接続が切れました。再接続中..."), seconds);
+            }
+            else
+            {
+                _reconnectOverlay.Show(LocalizeUtility.GetLocalizedString(
+                    EngMessage: "Opponent disconnected. Waiting for them to return...",
+                    JpnMessage: "対戦相手の接続が切れました。復帰を待っています..."), seconds);
             }
         };
+
+        gameNetworkEvents.OnConnectionRestored += _reconnectOverlay.Hide;
+
+        gameNetworkEvents.OnDisconnected += (Player player) =>
+        {
+            _reconnectOverlay.Hide();
+
+            if (!endGame)
+            {
+                EndGame(player != null ? player.Enemy : null, false);
+            }
+        };
+
+        gameNetworkEvents.GetStateHash = GetStateHash;
 
         gameNetworkEvents.OnPlayerSelection +=(Player player, IPlayerSelection playerSelection) => 
         {
@@ -229,6 +260,7 @@ public class TurnStateMachine : MonoBehaviour
     bool _isRedraw = false;
     IEnumerator StartGame()
     {
+        PlayLog.OnAddLog?.Invoke($"\n-------------Turn: 0-------------\n");
 #if UNITY_EDITOR
         //gameContext.TurnPlayer = GManager.instance.Opponent;
 #endif
@@ -355,7 +387,7 @@ public class TurnStateMachine : MonoBehaviour
                 #endregion
 
                 #region 手札のカードを山札の下に加える
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(player.HandCards.Clone(),true));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(player.HandCards.Clone(), cardEffect: null, notAddLog: true));
 
                 #region Log
                 if (_isRedraw)
@@ -405,13 +437,13 @@ public class TurnStateMachine : MonoBehaviour
             player.FirstObject.SetActive(false);
         }
 
-        #region ログ追加
-        PlayLog.OnAddLog?.Invoke($"\n---------------------------------\nActive Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
-        #endregion
-
         TurnCount++;
 
         gameContext.TurnPlayer.TurnCount++;
+
+        #region ログ追加
+        PlayLog.OnAddLog?.Invoke($"\n-------------Turn: {TurnCount}-------------\n\nActive Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
+        #endregion
 
         gameContext.TurnPhase = GameContext.phase.Active;
         Debug.Log($"{gameContext.TurnPlayer}:Start Turn({TurnCount}th Turn)");
@@ -3063,6 +3095,47 @@ public class TurnStateMachine : MonoBehaviour
         }
     }
     #endregion
+    #endregion
+
+    #region State check after a reconnect
+    //Only uses things that are identical on both clients (player IDs, never You/Opponent)
+    int GetStateHash()
+    {
+        int hash = 17;
+
+        void Add(int value)
+        {
+            unchecked
+            {
+                hash = hash * 31 + value;
+            }
+        }
+
+        Add(TurnCount);
+        Add((int)gameContext.TurnPhase);
+        Add(gameContext.TurnPlayer != null ? gameContext.TurnPlayer.PlayerID : -1);
+        Add(gameContext.Memory);
+
+        for (int id = 0; id <= 1; id++)
+        {
+            Player player = gameContext.PlayerFromID(id);
+
+            if (player == null)
+            {
+                Add(-1);
+                continue;
+            }
+
+            Add(player.HandCards.Count);
+            Add(player.LibraryCards.Count);
+            Add(player.SecurityCards.Count);
+            Add(player.TrashCards.Count);
+            Add(player.DigitamaLibraryCards.Count);
+            Add(player.GetFieldPermanents().Count);
+        }
+
+        return hash;
+    }
     #endregion
 
     #region Game over

@@ -126,31 +126,22 @@ namespace DCGO.CardEffects.P
             }
 
             #region Before Pay Cost - Condition Effect
-
             if (timing == EffectTiming.BeforePayCost)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("If [Nightmare Soldiers] is in your face up security cards get Play Cost -4", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetHashString("PlayCost-4_P_174");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "When this card would be played, if [Nightmare Soldiers] is in your face up security cards, reduce the play cost by 4.";
                 }
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    if (cardSource == card)
-                    {
-                        if (CardEffectCommons.IsExistOnHand(cardSource))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource == card;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -160,15 +151,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnHand(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition, false))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                        return CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition, false);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -190,40 +173,25 @@ namespace DCGO.CardEffects.P
 
                     int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                     {
-                        if (CardSourceCondition(cardSource))
+                        if (CardSourceCondition(cardSource)
+                        && RootCondition(root)
+                        && PermanentsCondition(targetPermanents))
                         {
-                            if (RootCondition(root))
-                            {
-                                if (PermanentsCondition(targetPermanents))
-                                {
-                                    int targetCost = 0;
+                            int targetCost = 0;
 
-                                    if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition, false))
-                                        targetCost += 4;
+                            if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition, false))
+                                targetCost += 4;
 
-                                    Cost -= targetCost;
-                                }
-                            }
+                            Cost -= targetCost;
                         }
-
+                    
                         return Cost;
                     }
 
                     bool PermanentsCondition(List<Permanent> targetPermanents)
                     {
-                        if (targetPermanents == null)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
+                        return targetPermanents == null
+                                || targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
                     }
 
                     bool CardSourceCondition(CardSource cardSource)
@@ -244,11 +212,9 @@ namespace DCGO.CardEffects.P
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
                 }
             }
-
             #endregion
 
             #region Reduce Play Cost - Not Shown
-
             if (timing == EffectTiming.None)
             {
                 ChangeCostClass changeCostClass = new ChangeCostClass();
@@ -277,53 +243,31 @@ namespace DCGO.CardEffects.P
 
                 int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                 {
-                    if (CardSourceCondition(cardSource))
+                    if (CardSourceCondition(cardSource)
+                    && RootCondition(root)
+                    && PermanentsCondition(targetPermanents))
                     {
-                        if (RootCondition(root))
-                        {
-                            if (PermanentsCondition(targetPermanents))
-                            {
-                                int targetCount = 0;
+                        int targetCount = 0;
 
-                                if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition, false))
-                                    targetCount += 4;
+                        if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition, false))
+                            targetCount += 4;
 
-                                Cost -= targetCount;
-                            }
-                        }
+                        Cost -= targetCount;
                     }
-
+                     
                     return Cost;
                 }
 
                 bool PermanentsCondition(List<Permanent> targetPermanents)
                 {
-                    if (targetPermanents == null)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return targetPermanents == null
+                        || targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
                 }
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
-                    if (cardSource != null)
-                    {
-                        if (cardSource == card)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource != null
+                        && cardSource == card;
                 }
 
                 bool RootCondition(SelectCardEffect.Root root)
@@ -336,9 +280,7 @@ namespace DCGO.CardEffects.P
                     return true;
                 }
             }
-
             #endregion
-
             #endregion
 
             #region Blocker
@@ -353,10 +295,10 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("<De-Digivolve 1>, then delete 1 digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Digivolving] [On Deletion] <De-Digivolve 1> 1 of your opponent's Digimon. Then, delete 1 of their level 4 or lower Digimon.";
                 }
@@ -432,10 +374,10 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("<De-Digivolve 1>, then delete 1 digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[On Deletion] <De-Digivolve 1> 1 of your opponent's Digimon. Then, delete 1 of their level 4 or lower Digimon.";
                 }

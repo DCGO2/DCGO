@@ -305,7 +305,7 @@ namespace DCGO.CardEffects.BT19
                         {
                             cardSources.Reverse();
 
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources, cardEffect: activateClass));
 
                             if (card.Owner.Enemy.SecurityCards.Count >= 1)
                             {

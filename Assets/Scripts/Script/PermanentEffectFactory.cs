@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -39,12 +40,56 @@ public partial class PermanentEffectFactory
         bool CanActivateCondition(Hashtable hashtable)
         {
             return permanent.TopCard != null
-                && CardEffectCommons.IsExistOnBattleArea(permanent.TopCard);
+                && CardEffectCommons.IsExistOnBattleArea(permanent.TopCard)
+                && !permanent.TopCard.CanNotBeAffected(cardEffect);
         }
 
         IEnumerator ActivateCoroutine(Hashtable hashtable)
         {
             yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent>() { permanent }, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
+        }
+    }
+    #endregion
+
+    #region Effect of a Permanent to Delete Itself
+    public static ActivateClass BounceSelfEffect(Permanent permanent, ICardEffect cardEffect, bool bounceOnOwnturn = true, bool bounceOnOpponentsTurn = true)
+    {
+        if (permanent == null || permanent.TopCard == null) return null;
+
+        ActivateClass activateClass = new ActivateClass();
+        activateClass.SetUpICardEffect("Bounce this Digimon", CanUseCondition, permanent.TopCard);
+        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, "");
+        activateClass.SetEffectSourcePermanent(permanent);
+        return activateClass;
+
+        bool CanUseCondition(Hashtable hashtable)
+        {
+            if (permanent.TopCard != null
+            && CardEffectCommons.IsExistOnBattleArea(permanent.TopCard)
+            && !permanent.TopCard.CanNotBeAffected(cardEffect))
+            {
+                if (CardEffectCommons.IsOwnerTurn(permanent.TopCard))
+                {
+                    return bounceOnOwnturn;
+                }
+                else
+                {
+                    return bounceOnOpponentsTurn;
+                }
+            }
+            return false;
+        }
+
+        bool CanActivateCondition(Hashtable hashtable)
+        {
+            return permanent.TopCard != null
+                && CardEffectCommons.IsExistOnBattleArea(permanent.TopCard)
+                && !permanent.TopCard.CanNotBeAffected(cardEffect);
+        }
+
+        IEnumerator ActivateCoroutine(Hashtable hashtable)
+        {
+            yield return ContinuousController.instance.StartCoroutine(new HandBounceClaass(new List<Permanent>() { permanent }, CardEffectCommons.CardEffectHashtable(activateClass)).Bounce());
         }
     }
     #endregion
@@ -68,7 +113,8 @@ public partial class PermanentEffectFactory
         bool SkillCondition(ICardEffect cardEffect)
         {
             return CardEffectCommons.IsOpponentEffect(cardEffect, permanent.TopCard)
-                && cardEffect.IsDigimonEffect;
+                && ((!cardEffect.EffectSourceCard.IsDualCard && (cardEffect.EffectSourceCard.IsDigimon || cardEffect.IsDigimonEffect))
+                    || (cardEffect.EffectSourceCard.IsDualCard && !cardEffect.IsOptionEffect));
         }
 
         CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
@@ -99,7 +145,8 @@ public partial class PermanentEffectFactory
         bool SkillCondition(ICardEffect cardEffect)
         {
             return CardEffectCommons.IsOpponentEffect(cardEffect, permanent.TopCard)
-                && !cardEffect.IsDigimonEffect && !cardEffect.IsTamerEffect;
+                && ((!cardEffect.EffectSourceCard.IsDualCard && (cardEffect.EffectSourceCard.IsOption || cardEffect.IsOptionEffect))
+                    || (cardEffect.EffectSourceCard.IsDualCard && cardEffect.IsOptionEffect));
         }
 
         CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
@@ -157,19 +204,26 @@ public partial class PermanentEffectFactory
     {
         if(targetPermanent == null || targetPermanent.TopCard == null) return null;
         
-        return CardEffectFactory.AddDetailClass(CanUseCondition, PermanentCondition, detail, triggerEffect, activateClass.EffectSourceCard);
+        return StaticAddDetailClass(CanUseCondition, PermanentCondition, detail, triggerEffect, activateClass);
 
         bool PermanentCondition(Permanent permanent)
         {
             return permanent != null
-                && permanent == targetPermanent;
+                && permanent == targetPermanent
+                && !targetPermanent.TopCard.CanNotBeAffected(activateClass);
         }
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent)
-                && !targetPermanent.TopCard.CanNotBeAffected(activateClass);
+            return CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent);
         }
+    }
+    #endregion
+
+    #region Add Global Detail for Display
+    public static AddDetailClass StaticAddDetailClass(Func<Hashtable, bool> canUseCondition, Func<Permanent, bool> permanentCondition, string detail, bool triggerEffect, ICardEffect activateClass)
+    {
+        return CardEffectFactory.AddDetailClass(canUseCondition, permanentCondition, detail, triggerEffect, activateClass.EffectSourceCard);
     }
     #endregion
 }

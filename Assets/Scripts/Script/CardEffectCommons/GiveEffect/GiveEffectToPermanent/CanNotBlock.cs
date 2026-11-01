@@ -43,6 +43,8 @@ public partial class CardEffectCommons
 
         CannotBlockClass canNotAttackClass = CardEffectFactory.CanNotBlockStaticEffect(attackerCondition: AttackerCondition, defenderCondition: DefenderCondition, isInheritedEffect: false, card: card, condition: CanUseCondition, effectName: effectName);
 
+        canNotAttackClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: canNotAttackClass, timing: EffectTiming.None);
 
         if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))

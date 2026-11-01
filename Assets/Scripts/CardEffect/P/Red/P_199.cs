@@ -102,51 +102,30 @@ namespace DCGO.CardEffects.P
 
             bool CardCondition(CardSource cardSource)
             {
-                if (cardSource.Owner == card.Owner)
-                {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.HasTSTraits)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
+                return cardSource.Owner == card.Owner
+                    && cardSource.IsDigimon
+                    && cardSource.HasPlayCost
+                    && cardSource.HasTSTraits;
             }
 
             bool CanUseCondition2(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.CanActivateSuspendCostEffect(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if (CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass2)
+                    && CardEffectCommons.IsOwnerTurn(card)
+                    && CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition);
             }
 
             bool CanActivateCondition2(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass2)
+                && CardEffectCommons.CanActivateSuspendCostEffect(card))
                 {
                     PlayCardClass playCardClass = CardEffectCommons.GetPlayCardClassFromHashtable(hashtable);
 
-                    if (playCardClass != null)
+                    if (playCardClass != null
+                    && playCardClass.PayCost)
                     {
-                        if (playCardClass.PayCost)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
 
@@ -319,15 +298,9 @@ namespace DCGO.CardEffects.P
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.HasTSTraits)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsDigimon
+                        && cardSource.HasPlayCost
+                        && cardSource.HasTSTraits;
                 }
 
                 bool RootCondition(SelectCardEffect.Root root)

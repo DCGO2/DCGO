@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.EX10
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel3 && targetPermanent.TopCard.ContainsCardName("Agumon");
+                    return targetPermanent.TopCard.IsLevel3 && targetPermanent.TopCard.HasAgumonName;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));

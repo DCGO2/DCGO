@@ -391,7 +391,7 @@ public class GManager : MonoBehaviour
         rt.sizeDelta = new Vector2(0f, 30f);
 
         TextMeshProUGUI text = warningObj.AddComponent<TextMeshProUGUI>();
-        text.text = "WARNING: THE BOT IS NOT ACTIVELY MAINTAINED AND MAKES ILLEGAL PLAYS";
+        text.text = "WARNING: THE BOT IS DEPRECATED AND WILL MAKE ILLEGAL PLAYS/SOFTLOCK THE GAME";
         text.alignment = TextAlignmentOptions.Center;
         text.color = new Color(1f, 0.3f, 0.3f, 1f);
         text.fontSize = 20f;
@@ -547,7 +547,12 @@ public class GManager : MonoBehaviour
         {
             DCGONetwork.Provider.SendMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.LoseMemory));
         }
-
+        
+        //Add security to hand
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.H))
+        {
+            DCGONetwork.Provider.SendMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.RemoveFromSecurity));
+        }
     }
 
     public IEnumerator DrawCard(Player _player)
@@ -647,6 +652,33 @@ public class GManager : MonoBehaviour
             // Place this card face up as the top security card
             yield return StartCoroutine(CardObjectController.AddSecurityCard(selectedSource, toTop: true, faceUp: placeFaceup));
         }
+
+        yield return StartCoroutine(turnStateMachine.SetMainPhase());
+    }
+
+    public IEnumerator RemoveFromSecurity (Player _player)
+    {
+        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+    
+        selectCardEffect.SetUp(
+            canTargetCondition: (cardSource) => true,
+            canTargetCondition_ByPreSelecetedList: null,
+            canEndSelectCondition: null,
+            canNoSelect: () => true,
+            selectCardCoroutine: null,
+            afterSelectCardCoroutine: null,
+            message: "Select Cards to add to hand",
+            maxCount: _player.SecurityCards.Count,
+            canEndNotMax: true,
+            isShowOpponent: false,
+            mode: SelectCardEffect.Mode.AddHand,
+            root: SelectCardEffect.Root.Security,
+            customRootCardList: null,
+            canLookReverseCard: true,
+            selectPlayer: _player,
+            cardEffect: null);
+    
+        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
         yield return StartCoroutine(turnStateMachine.SetMainPhase());
     }

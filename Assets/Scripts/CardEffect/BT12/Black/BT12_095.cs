@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT12
                                 {
                                     if (permanent.TopCard.Owner.GetBattleAreaPermanents().Contains(permanent))
                                     {
-                                        if (permanent.TopCard.ContainsCardName("Agumon"))
+                                        if (permanent.TopCard.HasAgumonName)
                                         {
                                             return true;
                                         }
@@ -146,7 +146,7 @@ namespace DCGO.CardEffects.BT12
                                 {
                                     if (permanent.TopCard.Owner.GetBattleAreaPermanents().Contains(permanent))
                                     {
-                                        if (permanent.TopCard.ContainsCardName("Agumon"))
+                                        if (permanent.TopCard.HasAgumonName)
                                         {
                                             return true;
                                         }

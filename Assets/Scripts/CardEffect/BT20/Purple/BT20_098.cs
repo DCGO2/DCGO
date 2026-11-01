@@ -113,7 +113,7 @@ namespace DCGO.CardEffects.BT20
                             // Return opponent's cards from trash to the bottom of their deck
 
                             yield return ContinuousController.instance.StartCoroutine(
-                                CardObjectController.AddLibraryBottomCards(selectedCardsToReturn));
+                                CardObjectController.AddLibraryBottomCards(selectedCardsToReturn, cardEffect: activateClass));
 
                             // For each returned card, choose a card from your trash with the same level, then play them
 

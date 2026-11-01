@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.EX10
 
                         if (selectedCards.Count > 0)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(selectedCards));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(selectedCards, cardEffect: activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(selectedCards, "Deck Bottom Card", true, true));
 

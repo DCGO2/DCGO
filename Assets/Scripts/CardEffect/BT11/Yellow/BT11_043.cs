@@ -1,8 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// KingSukamon
 namespace DCGO.CardEffects.BT11
 {
     public class BT11_043 : CEntity_Effect
@@ -11,11 +11,12 @@ namespace DCGO.CardEffects.BT11
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Alt Evo
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Sukamon") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4;
+                    return targetPermanent.TopCard.ContainsCardName("Sukamon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -23,315 +24,137 @@ namespace DCGO.CardEffects.BT11
                     digivolutionCost: 3,
                     ignoreDigivolutionRequirement: false,
                     card: card,
-                    condition: null));
+                    condition: null,
+                    level: 4));
             }
+            #endregion
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            #region Shared OP/WD
+            string SharedEffectName = "1 enemy Digimon's name becomes [Sukamon], color becomes white, and DP becomes 3000";
+
+            string SharedEffectDescription(string tag) => $"[{tag}] If your opponent has 16 or more cards in their trash, or you have 3 or more cards with [Sukamon] in their names in your trash, change 1 of your opponent's Digimon into a white Digimon with 3000 DP and an original name of [Sukamon] until the end of your opponent's turn.";
+
+            CardEffectFactory.ActivateClassesForSharedEffects
+               (ref cardEffects, timing, card,
+                   SharedEffectName,
+                   SharedActivateCoroutine,
+                   SharedEffectDescription,
+                   optional: false,
+                   onPlay: true,
+                   whenDigivolving: true,
+                   isSkippable: true,
+                   additionalUseCondition: AdditionalCanUseCondition);
+
+            bool AdditionalCanUseCondition(Hashtable hashtable, ActivateClass activateClass)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Opponent's 1 Digimon becomes [Sukamon]", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[On Play] If your opponent has 16 or more cards in their trash, or you have 3 or more cards with [Sukamon] in their names in your trash, change 1 of your opponent's Digimon into a white Digimon with 3000 DP and an original name of [Sukamon] until the end of your opponent's turn.";
-                }
-
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            if (card.Owner.Enemy.TrashCards.Count >= 16)
-                            {
-                                return true;
-                            }
-
-                            if (card.Owner.TrashCards.Count((cardSource) => cardSource.ContainsCardName("Sukamon")) >= 3)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage(
-                            "Select 1 Digimon that will get effects.",
-                            "The opponent is selecting 1 Digimon that will get effects.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            Permanent selectedPermanent = permanent;
-
-                            if (selectedPermanent != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeBaseDigimonDP(
-                                    targetPermanent: permanent,
-                                    changeValue: 3000,
-                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                    activateClass: activateClass));
-                            }
-
-                            if (selectedPermanent != null)
-                            {
-                                ChangeBaseCardNameClass changeBaseCardNameClass = new ChangeBaseCardNameClass();
-                                changeBaseCardNameClass.SetUpICardEffect("Original card name is [Sukamon]", CanUseCondition1, card);
-                                changeBaseCardNameClass.SetUpChangeBaseCardNamesClass(changeBaseCardNames: ChangeBaseCardNames);
-                                selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => changeBaseCardNameClass);
-
-                                bool CanUseCondition1(Hashtable hashtable)
-                                {
-                                    if (selectedPermanent.TopCard != null)
-                                    {
-                                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
-                                }
-
-                                List<string> ChangeBaseCardNames(CardSource cardSource, List<string> CardNames)
-                                {
-                                    if (cardSource == selectedPermanent.TopCard)
-                                    {
-                                        CardNames = new List<string>() { "Sukamon" };
-                                    }
-
-                                    return CardNames;
-                                }
-                            }
-
-                            if (selectedPermanent != null)
-                            {
-                                ChangeBaseCardColorClass changeBaseCardNameClass = new ChangeBaseCardColorClass();
-                                changeBaseCardNameClass.SetUpICardEffect("Original card color is white", CanUseCondition1, card);
-                                changeBaseCardNameClass.SetUpChangeBaseCardColorClass(ChangeBaseCardColors: ChangeBaseCardColors);
-                                selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => changeBaseCardNameClass);
-
-                                bool CanUseCondition1(Hashtable hashtable)
-                                {
-                                    if (selectedPermanent.TopCard != null)
-                                    {
-                                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
-                                }
-
-                                List<CardColor> ChangeBaseCardColors(CardSource cardSource, List<CardColor> CardColors)
-                                {
-                                    if (cardSource == selectedPermanent.TopCard)
-                                    {
-                                        CardColors = new List<CardColor>() { CardColor.White };
-                                    }
-
-                                    return CardColors;
-                                }
-                            }
-                        }
-                    }
-                }
+                return card.Owner.Enemy.TrashCards.Count >= 16
+                    || card.Owner.TrashCards.Count((cardSource) => cardSource.ContainsCardName("Sukamon")) >= 3;
             }
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            bool CanSelectOpponentPermanentCondition(Permanent permanent)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Opponent's 1 Digimon becomes [Sukamon]", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+            }
 
-                string EffectDiscription()
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
+            {
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
                 {
-                    return "[When Digivolving] If your opponent has 16 or more cards in their trash, or you have 3 or more cards with [Sukamon] in their names in your trash, change 1 of your opponent's Digimon into a white Digimon with 3000 DP and an original name of [Sukamon] until the end of your opponent's turn.";
-                }
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-                }
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectOpponentPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
 
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
+                    selectPermanentEffect.SetUpCustomMessage(
+                        "Select 1 Digimon that will get effects.",
+                        "The opponent is selecting 1 Digimon that will get effects.");
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        Permanent selectedPermanent = permanent;
+
+                        if (selectedPermanent != null)
                         {
-                            if (card.Owner.Enemy.TrashCards.Count >= 16)
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeBaseDigimonDP(
+                                targetPermanent: permanent,
+                                changeValue: 3000,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass));
+                        }
+
+                        if (selectedPermanent != null)
+                        {
+                            ChangeBaseCardNameClass changeBaseCardNameClass = new ChangeBaseCardNameClass();
+                            changeBaseCardNameClass.SetUpICardEffect("Original card name is [Sukamon]", CanUseCondition1, card);
+                            changeBaseCardNameClass.SetUpChangeBaseCardNamesClass(changeBaseCardNames: ChangeBaseCardNames);
+                            selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => changeBaseCardNameClass);
+
+                            bool CanUseCondition1(Hashtable hashtable)
                             {
-                                return true;
+                                return selectedPermanent.TopCard != null
+                                    && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
                             }
 
-                            if (card.Owner.TrashCards.Count((cardSource) => cardSource.ContainsCardName("Sukamon")) >= 3)
+                            List<string> ChangeBaseCardNames(CardSource cardSource, List<string> CardNames)
                             {
-                                return true;
+                                if (cardSource == selectedPermanent.TopCard)
+                                {
+                                    CardNames = new List<string>() { "Sukamon" };
+                                }
+
+                                return CardNames;
                             }
                         }
-                    }
 
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage(
-                            "Select 1 Digimon that will get effects.",
-                            "The opponent is selecting 1 Digimon that will get effects.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        if (selectedPermanent != null)
                         {
-                            Permanent selectedPermanent = permanent;
+                            ChangeBaseCardColorClass changeBaseCardNameClass = new ChangeBaseCardColorClass();
+                            changeBaseCardNameClass.SetUpICardEffect("Original card color is white", CanUseCondition1, card);
+                            changeBaseCardNameClass.SetUpChangeBaseCardColorClass(ChangeBaseCardColors: ChangeBaseCardColors);
+                            selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => changeBaseCardNameClass);
 
-                            if (selectedPermanent != null)
+                            bool CanUseCondition1(Hashtable hashtable)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeBaseDigimonDP(
-                                    targetPermanent: permanent,
-                                    changeValue: 3000,
-                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                    activateClass: activateClass));
+                                return selectedPermanent.TopCard != null
+                                    && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
                             }
 
-                            if (selectedPermanent != null)
+                            List<CardColor> ChangeBaseCardColors(CardSource cardSource, List<CardColor> CardColors)
                             {
-                                ChangeBaseCardNameClass changeBaseCardNameClass = new ChangeBaseCardNameClass();
-                                changeBaseCardNameClass.SetUpICardEffect("Original card name is [Sukamon]", CanUseCondition1, card);
-                                changeBaseCardNameClass.SetUpChangeBaseCardNamesClass(changeBaseCardNames: changeBaseCardNames);
-                                selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => changeBaseCardNameClass);
-
-                                bool CanUseCondition1(Hashtable hashtable)
+                                if (cardSource == selectedPermanent.TopCard)
                                 {
-                                    if (selectedPermanent.TopCard != null)
-                                    {
-                                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
+                                    CardColors = new List<CardColor>() { CardColor.White };
                                 }
 
-                                List<string> changeBaseCardNames(CardSource cardSource, List<string> CardNames)
-                                {
-                                    if (cardSource == selectedPermanent.TopCard)
-                                    {
-                                        CardNames = new List<string>() { "Sukamon" };
-                                    }
-
-                                    return CardNames;
-                                }
-                            }
-
-                            if (selectedPermanent != null)
-                            {
-                                ChangeBaseCardColorClass changeBaseCardNameClass = new ChangeBaseCardColorClass();
-                                changeBaseCardNameClass.SetUpICardEffect("Original card color is white", CanUseCondition1, card);
-                                changeBaseCardNameClass.SetUpChangeBaseCardColorClass(ChangeBaseCardColors: ChangeBaseCardColors);
-                                selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => changeBaseCardNameClass);
-
-                                bool CanUseCondition1(Hashtable hashtable)
-                                {
-                                    if (selectedPermanent.TopCard != null)
-                                    {
-                                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
-                                }
-
-                                List<CardColor> ChangeBaseCardColors(CardSource cardSource, List<CardColor> CardColors)
-                                {
-                                    if (cardSource == selectedPermanent.TopCard)
-                                    {
-                                        CardColors = new List<CardColor>() { CardColor.White };
-                                    }
-
-                                    return CardColors;
-                                }
+                                return CardColors;
                             }
                         }
                     }
                 }
             }
+            #endregion
 
+            #region When Attacking
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("This Digimon gains Security Attack+", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Attacking] For each other Digimon with [Sukamon] in its name in play, this Digimon gains <Security Attack +1> for the turn.";
                 }
@@ -343,39 +166,22 @@ namespace DCGO.CardEffects.BT11
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
-                    {
-                        if (permanent.IsDigimon)
-                        {
-                            if (permanent != card.PermanentOfThisCard())
-                            {
-                                if (permanent.TopCard.ContainsCardName("Sukamon"))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)
+                        && permanent.IsDigimon
+                        && permanent != card.PermanentOfThisCard()
+                        && permanent.TopCard.ContainsCardName("Sukamon");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (count() >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && count() >= 1;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -389,109 +195,88 @@ namespace DCGO.CardEffects.BT11
                         activateClass: activateClass));
                 }
             }
+            #endregion
 
+            #region Inherit
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Prevent this Digimon from being deleted", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("Substitute_BT11_043");
+                activateClass.SetIsSkippable(true);
+                activateClass.SetHashString("BT11_043_Inherit");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] When this Digimon would be deleted, by deleting 1 other Digimon with [Sukamon] in its name, prevent that deletion.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
-                    {
-                        if (permanent != card.PermanentOfThisCard())
-                        {
-                            if (permanent.TopCard.ContainsCardName("Sukamon"))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)
+                        && permanent != card.PermanentOfThisCard()
+                        && permanent.TopCard.ContainsCardName("Sukamon");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        int maxCount = 1;
+                        Permanent thisCardPermanent = card.PermanentOfThisCard();
 
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
 
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        IEnumerator SuccessProcess()
                         {
-                            Permanent thisCardPermanent = card.PermanentOfThisCard();
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
-
-                            IEnumerator SuccessProcess()
+                            if (thisCardPermanent.TopCard != null)
                             {
-                                if (thisCardPermanent.TopCard != null)
-                                {
-                                    thisCardPermanent.willBeRemoveField = false;
+                                thisCardPermanent.willBeRemoveField = false;
 
-                                    thisCardPermanent.HideDeleteEffect();
-                                }
-
-                                yield return null;
+                                thisCardPermanent.HideDeleteEffect();
                             }
+
+                            yield return null;
                         }
                     }
+
+                    activateClass.RemoveUse();
                 }
             }
+            #endregion
 
             return cardEffects;
         }

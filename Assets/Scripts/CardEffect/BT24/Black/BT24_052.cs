@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.BT24
 
             string SharedEffectName() => "Play Diaboromon Token";
 
-            string EffectDescriptionShared(string tag) => $"[{tag}] You may play 1 [Diaboromon] Token without paying the cost. (Digimon/Cost 14/Lv.6/White/Mega/Unknown/Unidentified/3000 DP).";
+            string EffectDescriptionShared(string tag) => $"[{tag}] You may play 1 [Diaboromon] Token without paying the cost. (Digimon / Cost 14 / Lv.6 / White / Mega / Unknown / Unidentified / 3000 DP).";
             
             bool CanActivateConditionShared(Hashtable hashtable)
             {

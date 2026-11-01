@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using UnityEngine;
 
+// Leviamon
 namespace DCGO.CardEffects.EX6
 {
     public class EX6_061 : CEntity_Effect
@@ -17,31 +17,34 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 card in hand, return sources, then delete 1 digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetHashString("AllTurns_EX6_061");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] [Once Per Turn] When an opponent's Digimon or one of your Digimon with the [Seven Great Demon Lords] trait is played, by trashing 1 card in your hand, return the bottom 3 digivolution cards of 1 of your opponent's Digimon to the bottom of the deck. Then, if your opponent has as many or less total Digimon and Tamers as you, delete 1 of your opponent's Digimon with no digivolution cards.";
                 }
 
                 bool PlayedDigimonConditions(Permanent permanent)
                 {
-                    if (permanent.IsDigimon)
-                    {
-                        if (CardEffectCommons.IsOwnerPermanent(permanent, card))
-                        {
-                            if (permanent.TopCard.ContainsTraits("Seven Great Demon Lords"))
-                                return true;
-                        }
-                        else
-                        {
-                            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-                        }
-                    }
+                    return permanent.IsDigimon
+                        && (CardEffectCommons.IsOwnerPermanent(permanent, card)
+                                && permanent.TopCard.EqualsTraits("Seven Great Demon Lords")
+                            || CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card));
+                }
 
-                    return false;
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedDigimonConditions);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && card.Owner.HandCards.Count > 0;
                 }
 
                 bool SelectOpponentsDigimonCondition(Permanent permanent)
@@ -51,46 +54,20 @@ namespace DCGO.CardEffects.EX6
 
                 bool SelectOpponentsDigimonWithoutSourcesCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards))
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                        && permanent.DigivolutionCards.Count == 0;
                 }
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return (permanent.IsDigimon || permanent.IsTamer);
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
-                        return true;
-
-                    if(CardEffectCommons.CanTriggerOnPermanentPlay(hashtable,PlayedDigimonConditions))
-                        return true;
-
-                    return false;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if(card.Owner.HandCards.Count > 0)
-                            return true;
-                    }
-
-                    return false;
+                    return permanent.IsDigimon
+                            || permanent.IsTamer;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool isUsed = false;
+
                     List<CardSource> discarded = new List<CardSource>();
 
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
@@ -101,7 +78,7 @@ namespace DCGO.CardEffects.EX6
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: false,
+                        canNoSelect: true,
                         canEndNotMax: false,
                         isShowOpponent: true,
                         selectCardCoroutine: null,
@@ -113,23 +90,26 @@ namespace DCGO.CardEffects.EX6
 
                     IEnumerator AfterSelectionCoroutine(List<CardSource> cardSources)
                     {
-                        discarded = cardSources.Clone();
+                        if (cardSources.Count >= 1)
+                        {
+                            isUsed = true;
+                            discarded = cardSources.Clone();
+                        }
+
                         yield return null;
                     }
 
-                    if (discarded.Count >=1)
+                    if (discarded.Count >=1
+                    && CardEffectCommons.HasMatchConditionPermanent(SelectOpponentsDigimonCondition))
                     {
-
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        int suspendCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(SelectOpponentsDigimonCondition));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: SelectOpponentsDigimonCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: suspendCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -144,20 +124,23 @@ namespace DCGO.CardEffects.EX6
                     {
                         List<CardSource> targetCards = new List<CardSource>();
 
-                        for (int i = 0; i < 3; i++)
+                        if (!permanent.ImmuneFromStackReturnToLibrary(activateClass))
                         {
-                            if (permanent.DigivolutionCards.Count >= i + 1)
+                            for (int i = 0; i < 3; i++)
                             {
-                                int index = false ? i : permanent.DigivolutionCards.Count - 1 - i;
-                                CardSource trashTargetCard = permanent.DigivolutionCards[index];
+                                if (permanent.DigivolutionCards.Count >= i + 1)
+                                {
+                                    int index = false ? i : permanent.DigivolutionCards.Count - 1 - i;
+                                    CardSource trashTargetCard = permanent.DigivolutionCards[index];
 
-                                targetCards.Add(trashTargetCard);
+                                    targetCards.Add(trashTargetCard);
+                                }
                             }
-                        }
 
-                        yield return ContinuousController.instance.StartCoroutine(new ReturnToLibraryBottomDigivolutionCardsClass(
+                            yield return ContinuousController.instance.StartCoroutine(new ReturnToLibraryBottomDigivolutionCardsClass(
                                 permanent,
                                 targetCards, CardEffectCommons.CardEffectHashtable(activateClass)).ReturnToLibraryBottomDigivolutionCards());
+                        }
                     }
 
                     if (card.Owner.GetBattleAreaPermanents().Count(PermanentCondition) >= card.Owner.Enemy.GetBattleAreaPermanents().Count(PermanentCondition))
@@ -181,6 +164,8 @@ namespace DCGO.CardEffects.EX6
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
+
+                    if (!isUsed) activateClass.RemoveUse();
                 }
             }
             #endregion
@@ -190,63 +175,35 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 7GDL from trash to bottom of [Gate of Deadly Sins]", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] When this Digimon would leave the battle area other than in battle, place 1 card with the [Seven Great Demon Lord] trait from your trash as the bottom digivolution cards of one of your [Gate of Deadly Sins] in your breeding area.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
-                        {
-                            if (!CardEffectCommons.IsByBattle(hashtable))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanSelect7GDLinTrash(CardSource cardSource)
-                {
-                    if (cardSource.CardTraits.Contains("SevenGreatDemonLords") || cardSource.CardTraits.Contains("Seven Great Demon Lords"))
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card))
-                    {
-                        if (permanent.TopCard.CardNames.Contains("Gate of Deadly Sins"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card)
+                        && !CardEffectCommons.IsByBattle(hashtable);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelect7GDLinTrash))
-                        {
-                            return true;
-                        }
-                    }
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
+                }
 
-                    return false;
+                bool CanSelect7GDLinTrash(CardSource cardSource)
+                {
+                    return cardSource.EqualsTraits("Seven Great Demon Lords");
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card)
+                        && permanent.TopCard.EqualsCardName("Gate of Deadly Sins");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -255,27 +212,25 @@ namespace DCGO.CardEffects.EX6
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
-                        int maxCount = 1;
-
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelect7GDLinTrash,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => false,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 card to place at the bottom of digivolution cards.",
-                                    maxCount: maxCount,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Trash,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
+                            canTargetCondition: CanSelect7GDLinTrash,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => false,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 card to place at the bottom of digivolution cards.",
+                            maxCount: 1,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
 
                         selectCardEffect.SetUpCustomMessage("Select 1 card to place at the bottom of digivolution cards.", "The opponent is selecting 1 card to place at the bottom of digivolution cards.");
 
@@ -288,16 +243,14 @@ namespace DCGO.CardEffects.EX6
                             yield return null;
                         }
 
-                        if (selectedCards.Count >= 1)
+                        if (selectedCards.Count >= 1
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition, true))
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition, true))
-                            {
-                                Permanent selectedPermanent = card.Owner.GetBreedingAreaPermanents()[0];
+                            Permanent selectedPermanent = card.Owner.GetBreedingAreaPermanents()[0];
 
-                                if (selectedPermanent != null)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(selectedCards, activateClass));
-                                }
+                            if (selectedPermanent != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(selectedCards, activateClass));
                             }
                         }
                     }

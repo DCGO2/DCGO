@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.BT25
             }
             #endregion
 
-            #region Shared OP / WA
+            #region Shared WD / WA
 
             string BounceEffectName = "Bottom deck 1 enemy Digimon with equal or fewer digivolution cards than this";
 
@@ -89,12 +89,12 @@ namespace DCGO.CardEffects.BT25
             bool IsEnemyWithLessSources(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && permanent.DigivolutionCards.Count() <= card.PermanentOfThisCard().DigivolutionCards.Count;
+                    && permanent.DigivolutionCards.Count() <= card.PermanentOfThisCard().DigivolutionCards.Count();
             }
 
             IEnumerator BounceActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsEnemyWithLessSources))
+                if (CardEffectCommons.HasMatchConditionPermanent(IsEnemyWithLessSources))
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 

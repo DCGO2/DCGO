@@ -35,6 +35,8 @@ public partial class CardEffectCommons
 
         changeBaseDPClass.SetActivatedTime(DateTime.Now);
 
+        changeBaseDPClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: changeBaseDPClass, timing: EffectTiming.None);
 
         if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))

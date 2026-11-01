@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.BT24
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     List<CardSource> cardSources = new List<CardSource>() { card };
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Card", true, true));
 
                     if (card.Owner.LibraryCards.Contains(card))
@@ -69,6 +69,7 @@ namespace DCGO.CardEffects.BT24
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 level 6 or higher. If not trash opponent's top 3 deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

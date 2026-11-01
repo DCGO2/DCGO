@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// Locomon
 namespace DCGO.CardEffects.BT17
 {
     public class BT17_056 : CEntity_Effect
@@ -14,40 +15,32 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal 3, Place 1 [Parasitemon] or 1 black level 5 or lower Digimon as bottom digivolution source", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("Reveal_BT17_056");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] [Once Per Turn] When an attack target is switched, reveal the top 3 cards of your deck. Place 1 [Parasitemon] or 1 black level 5 or lower Digimon card among them as this Digimon's bottom digivolution card. Trash the rest.";
                 }
                 
-                bool IsSelectableSource(CardSource source)
+                bool IsSelectableSource(CardSource cardSource)
                 {
-                    if(source.EqualsCardName("Parasitemon"))
-                        return true;
-
-                    if (source.IsDigimon)
-                    {
-                        if (source.HasCardColor(CardColor.Black))
-                        {
-                            if (source.HasLevel && source.Level <= 5)
-                                return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource.EqualsCardName("Parasitemon")
+                            || (cardSource.IsDigimon
+                        && cardSource.HasCardColor(CardColor.Black)
+                        && cardSource.HasLevel
+                        && cardSource.Level <= 5);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -83,23 +76,18 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into [GroundLocomon]", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] When one of your Digimon's effects adds to this Digimon's digivolution cards, this Digimon may digivolve into [GroundLocomon] in the hand without paying the cost.";
                 }
 
-                bool IsGroundLocomon(CardSource source)
+                bool IsGroundLocomon(CardSource cardSource)
                 {
-                    if (source.EqualsCardName("GroundLocomon"))
-                    {
-                        if (source.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass, SelectCardEffect.Root.Hand))
-                            return true;
-                    }
-
-                    return false;
+                    return cardSource.EqualsCardName("GroundLocomon")
+                        && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass, SelectCardEffect.Root.Hand);
                 }
 
                 bool IsThisDigimon(Permanent permanent)
@@ -109,36 +97,21 @@ namespace DCGO.CardEffects.BT17
 
                 bool IsMyDigimonEffect(ICardEffect effect)
                 {
-                    if (effect.EffectSourceCard != null)
-                    {
-                        if (effect.EffectSourceCard.Owner == card.Owner)
-                        {
-                            return effect.EffectSourceCard.IsDigimon;
-                        }
-                    }
-
-                    return false;
+                    return effect.EffectSourceCard != null
+                        && effect.EffectSourceCard.Owner == card.Owner
+                        && effect.EffectSourceCard.IsDigimon;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(
-                            hashtable: hashtable,
-                            permanentCondition: IsThisDigimon,
-                            cardEffectCondition: IsMyDigimonEffect,
-                            cardCondition: null))
-                        {
-                            return CardEffectCommons.HasMatchConditionOwnersHand(card, IsGroundLocomon);
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, IsThisDigimon, IsMyDigimonEffect, null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, IsGroundLocomon);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -162,10 +135,8 @@ namespace DCGO.CardEffects.BT17
             {
                 bool condition()
                 {
-                    if(card.PermanentOfThisCard().TopCard != card)
-                        return card.PermanentOfThisCard().TopCard.ContainsTraits("Machine");
-
-                    return false;
+                    return card.PermanentOfThisCard().TopCard != card
+                        && card.PermanentOfThisCard().TopCard.ContainsTraits("Machine");
                 }
 
                 cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(

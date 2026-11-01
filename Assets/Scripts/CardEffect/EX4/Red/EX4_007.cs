@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.EX4
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Agumon") && targetPermanent.TopCard.CardTraits.Contains("Dinosaur") && targetPermanent.TopCard.HasLevel && targetPermanent.Level == 3;
+                    return targetPermanent.TopCard.HasAgumonName && targetPermanent.TopCard.CardTraits.Contains("Dinosaur") && targetPermanent.TopCard.HasLevel && targetPermanent.Level == 3;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));

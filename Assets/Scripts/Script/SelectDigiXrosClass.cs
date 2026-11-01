@@ -8,6 +8,9 @@ using UnityEngine.Events;
 
 public class SelectDigiXrosClass : MonoBehaviour
 {
+    private static WaitForSeconds _waitForSeconds0_4 = new WaitForSeconds(0.4f);
+    private static WaitForSeconds _waitForSeconds0_3 = new WaitForSeconds(0.3f);
+
     public List<CardSource> selectedDigicrossCards { get; private set; } = new List<CardSource>();
     public List<AddDigivolutionCardsInfo> addDigivolutionCardInfos { get; private set; } = new List<AddDigivolutionCardsInfo>();
     public List<CardSource> excludedCards { get; private set; } = new List<CardSource>();
@@ -386,8 +389,7 @@ public class SelectDigiXrosClass : MonoBehaviour
 
                     if (_endSelectDigiXros)
                     {
-                        _endSelectDigiXros = false;
-                        //break; TODO: Removed for not triggering digixros in all situations
+                        _endSelectDigiXros = false;//Reset here in case of leftover from previous digixros
                     }
 
                     bool canSelectHand = false;
@@ -424,11 +426,11 @@ public class SelectDigiXrosClass : MonoBehaviour
                         }
                     }
 
-                    Func<IEnumerator> _SelectHandCard = () => SelectHandCard(digiXrosCondition, element, card);
-                    Func<IEnumerator> _SelectBattleAreaDigimon = () => SelectBattleAreaPermanent(digiXrosCondition, element, card);
-                    Func<IEnumerator> _SelectTrashCard = () => SelectTrashCard(digiXrosCondition, element, card);
-                    Func<IEnumerator> _SelectTamerDigivolutionCard = () => SelectTamerDigivolutionCard(digiXrosCondition, element, card);
-                    Func<IEnumerator> _EndSelectDigiXros = () => EndSelectDigiXros();
+                    IEnumerator _SelectHandCard() => SelectHandCard(digiXrosCondition, element, card);
+                    IEnumerator _SelectBattleAreaDigimon() => SelectBattleAreaPermanent(digiXrosCondition, element, card);
+                    IEnumerator _SelectTrashCard() => SelectTrashCard(digiXrosCondition, element, card);
+                    IEnumerator _SelectTamerDigivolutionCard() => SelectTamerDigivolutionCard(digiXrosCondition, element, card);
+                    IEnumerator _EndSelectDigiXros() => EndSelectDigiXros();
 
                     List<Func<IEnumerator>> actions = new List<Func<IEnumerator>>() { _SelectHandCard, _SelectBattleAreaDigimon, _SelectTrashCard, _SelectTamerDigivolutionCard, _EndSelectDigiXros };
 
@@ -469,7 +471,7 @@ public class SelectDigiXrosClass : MonoBehaviour
                         }
                     }
 
-                    else if (canSelectActions.Count == 2 && digiXrosCondition.CanTargetCondition_ByPreSelecetedList == null && !element.skipAllIfNoSelect)
+                    else if (canSelectActions.Count == 2 && !element.skipAllIfNoSelect)
                     {
                         card.Owner.QueuePlayerSelection(new ValueSelection(actions.IndexOf(canSelectActions[0])));
                     }
@@ -553,9 +555,14 @@ public class SelectDigiXrosClass : MonoBehaviour
                     {
                         yield return ContinuousController.instance.StartCoroutine(actions[_targetIndex]());
 
+                        if (_endSelectDigiXros)
+                        {
+                            break;//Perform here where the value will only just have been set by the above routine
+                        }
+
                         if (!card.Owner.isYou && GManager.instance.IsAI)
                         {
-                            yield return new WaitForSeconds(0.3f);
+                            yield return _waitForSeconds0_3;
                         }
                     }
                 }
@@ -564,7 +571,7 @@ public class SelectDigiXrosClass : MonoBehaviour
 
         if (selectedDigicrossCards.Count >= 1)
         {
-            yield return new WaitForSeconds(0.4f);
+            yield return _waitForSeconds0_4;
         }
 
         GManager.instance.GetComponent<Effects>().OffShowCard2();
@@ -618,7 +625,7 @@ public class SelectDigiXrosClass : MonoBehaviour
                     {
                         if (digiXrosCondition.CanTargetCondition_ByPreSelecetedList != null || element.skipAllIfNoSelect)
                         {
-                            EndSelectDigiXros();
+                            StartCoroutine(EndSelectDigiXros());
                         }
                     }
                 }
@@ -676,7 +683,7 @@ public class SelectDigiXrosClass : MonoBehaviour
                     {
                         if (digiXrosCondition.CanTargetCondition_ByPreSelecetedList != null || element.skipAllIfNoSelect)
                         {
-                            EndSelectDigiXros();
+                            StartCoroutine(EndSelectDigiXros());
                         }
                     }
                 }
@@ -738,7 +745,7 @@ public class SelectDigiXrosClass : MonoBehaviour
                     {
                         if (digiXrosCondition.CanTargetCondition_ByPreSelecetedList != null || element.skipAllIfNoSelect)
                         {
-                            EndSelectDigiXros();
+                            StartCoroutine(EndSelectDigiXros());
                         }
                     }
                 }
@@ -793,7 +800,7 @@ public class SelectDigiXrosClass : MonoBehaviour
                             {
                                 if (digiXrosCondition.CanTargetCondition_ByPreSelecetedList != null || element.skipAllIfNoSelect)
                                 {
-                                    EndSelectDigiXros();
+                                    StartCoroutine(EndSelectDigiXros());
                                 }
                             }
                         }
@@ -858,7 +865,7 @@ public class SelectDigiXrosClass : MonoBehaviour
                     {
                         if (digiXrosCondition.CanTargetCondition_ByPreSelecetedList != null || element.skipAllIfNoSelect)
                         {
-                            EndSelectDigiXros();
+                            StartCoroutine(EndSelectDigiXros());
                         }
                     }
                 }

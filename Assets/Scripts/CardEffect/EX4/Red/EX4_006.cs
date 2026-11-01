@@ -33,12 +33,13 @@ namespace DCGO.CardEffects.EX4
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (isExistOnField(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass))
                     {
                         if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
                         {

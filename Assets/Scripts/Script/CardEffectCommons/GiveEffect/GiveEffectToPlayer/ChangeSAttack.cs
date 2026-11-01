@@ -41,14 +41,16 @@ public partial class CardEffectCommons
             return true;
         }
 
-        ChangeSAttackClass changeDPClass = CardEffectFactory.ChangeSAttackStaticEffect(
+        ChangeSAttackClass changeSAttackClass = CardEffectFactory.ChangeSAttackStaticEffect(
             permanentCondition: PermanentCondition,
             changeValue: changeValue,
             isInheritedEffect: false,
             card: card,
             condition: CanUseCondition);
+        
+        changeSAttackClass.SetIsOptionEffect(activateClass.IsOptionEffect);
 
-        AddEffectToPlayer(effectDuration: effectDuration, card: card, cardEffect: changeDPClass, timing: EffectTiming.None);
+        AddEffectToPlayer(effectDuration: effectDuration, card: card, cardEffect: changeSAttackClass, timing: EffectTiming.None);
 
         foreach (Permanent permanent in GManager.instance.turnStateMachine.gameContext.PermanentsForTurnPlayer)
         {

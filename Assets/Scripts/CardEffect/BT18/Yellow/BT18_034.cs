@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.BT18
 
                 string EffectDiscription()
                 {
-                    return "[Start of Your Main Phase] By trashing 1 card in your hand, your opponent may trash their top security card. If this effect didn't trash, <Revovery +1>";
+                    return "[Start of Your Main Phase] By trashing 1 card in your hand, your opponent may trash their top security card. If this effect didn't trash, <Recovery +1>";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -158,7 +158,7 @@ namespace DCGO.CardEffects.BT18
 
                 string EffectDiscription()
                 {
-                    return "[On Play] By trashing 1 card in your hand, your opponent may trash their top security card. If this effect didn't trash, <Revovery +1>";
+                    return "[On Play] By trashing 1 card in your hand, your opponent may trash their top security card. If this effect didn't trash, <Recovery +1>";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

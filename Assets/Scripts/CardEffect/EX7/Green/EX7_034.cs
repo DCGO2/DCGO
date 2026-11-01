@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// GrandGalemon
 namespace DCGO.CardEffects.EX7
 {
     public class EX7_034 : CEntity_Effect
@@ -10,17 +11,14 @@ namespace DCGO.CardEffects.EX7
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Vortex
-
             if (timing == EffectTiming.OnEndTurn)
             {
                 cardEffects.Add(CardEffectFactory.VortexSelfEffect(isInheritedEffect: false, card: card,
                     condition: null));
             }
-
             #endregion
 
             #region When Digivolving
-
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -98,43 +96,17 @@ namespace DCGO.CardEffects.EX7
                         {
                             Permanent permanentOfThisCard = card.PermanentOfThisCard();
 
-                            CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                            canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects",
-                                CanUseConditionImmunity, card);
-                            canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition,
-                                SkillCondition: SkillCondition);
-                            permanentOfThisCard.UntilOpponentTurnEndEffects.Add(GetCardEffect);
-
-                            bool CanUseConditionImmunity(Hashtable hashtableImmunity)
-                            {
-                                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanentOfThisCard, card);
-                            }
-
-                            bool CardCondition(CardSource cardSource)
-                            {
-                                return CardEffectCommons.IsPermanentExistsOnBattleArea(permanentOfThisCard) &&
-                                       cardSource == permanentOfThisCard.TopCard;
-                            }
-
-                            bool SkillCondition(ICardEffect cardEffect)
-                            {
-                                return CardEffectCommons.IsOpponentEffect(cardEffect, card) &&
-                                       cardEffect.IsDigimonEffect;
-                            }
-
-                            ICardEffect GetCardEffect(EffectTiming timingImmunity)
-                            {
-                                return timingImmunity == EffectTiming.None ? canNotAffectedClass : null;
-                            }
+                            #region Give Digimon Effect Immunity
+                            permanentOfThisCard.UntilOpponentTurnEndEffects.Add((_timing) => PermanentEffectFactory.DigimonEffectImmunity(permanentOfThisCard));
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(permanentOfThisCard));
+                            #endregion
                         }
                     }
                 }
             }
-
             #endregion
 
             #region Your Turn - ESS
-
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -167,7 +139,6 @@ namespace DCGO.CardEffects.EX7
                         new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                 }
             }
-
             #endregion
 
             return cardEffects;

@@ -55,6 +55,8 @@ public partial class CardEffectCommons
             condition: CanUseCondition,
             effectName: effectName);
 
+        canNotUnsuspendClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         AddEffectToPlayer(effectDuration: effectDuration, card: card, cardEffect: canNotUnsuspendClass, timing: EffectTiming.None);
 
         foreach (Permanent permanent in GManager.instance.turnStateMachine.gameContext.PermanentsForTurnPlayer)

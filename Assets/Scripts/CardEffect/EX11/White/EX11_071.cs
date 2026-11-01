@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.EX11
                     return (cardSource.EqualsTraits("Royal Knight")
                             || cardSource.EqualsTraits("LIBERATOR"))
                         && cardSource.GetCostItself >= 4
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass, fixedCost: cardSource.GetCostItself - 2);
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass, fixedCost: Math.Max(0, cardSource.GetCostItself - 2));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

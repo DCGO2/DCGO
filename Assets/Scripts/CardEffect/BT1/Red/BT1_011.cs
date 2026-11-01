@@ -28,7 +28,7 @@ public class BT1_011 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.ContainsCardName("Agumon"))
+                    if (cardSource.HasAgumonName)
                     {
                         return true;
                     }

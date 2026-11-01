@@ -380,7 +380,9 @@ namespace DCGO.CardEffects.LM
 
                 bool SkillCondition(ICardEffect cardEffect)
                 {
-                    return CardEffectCommons.IsOpponentEffect(cardEffect, card) && cardEffect.IsDigimonEffect;
+                    return CardEffectCommons.IsOpponentEffect(cardEffect, card)
+                        && ((!cardEffect.EffectSourceCard.IsDualCard && (cardEffect.EffectSourceCard.IsDigimon || cardEffect.IsDigimonEffect))
+                            || (cardEffect.EffectSourceCard.IsDualCard && !cardEffect.IsOptionEffect));
                 }
             }
 

@@ -54,6 +54,8 @@ public partial class CardEffectCommons
             condition: CanUseCondition,
             effectName: effectName);
 
+        canNotAttackClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         AddEffectToPermanent(
             targetPermanent: targetPermanent,
             effectDuration: effectDuration,

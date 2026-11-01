@@ -43,6 +43,8 @@ public partial class CardEffectCommons
             condition: CanUseCondition,
             effectName: effectName);
 
+        canNotBeDestroyedByBattleClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         AddEffectToPlayer(effectDuration: effectDuration, card: card, cardEffect: canNotBeDestroyedByBattleClass, timing: EffectTiming.None);
 
         foreach (Permanent permanent in GManager.instance.turnStateMachine.gameContext.PermanentsForTurnPlayer)

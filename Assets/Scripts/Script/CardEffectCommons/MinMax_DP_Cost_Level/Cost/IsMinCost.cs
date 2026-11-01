@@ -18,16 +18,16 @@ public partial class CardEffectCommons
             if (!permanent.IsDigimon) return false;
 
             var costs = permanent.TopCard.Owner.GetBattleAreaDigimons()
-                .Filter(x => x.TopCard.HasPlayCost)
-                .Select(x => x.TopCard.GetCostItself).ToList();
+                .Filter(permanent => permanent.TopCard.HasPlayCost && (condition == null || condition(permanent)))
+                .Select(permanent => permanent.TopCard.GetCostItself).ToList();
 
             return costs.Count >= 1 && permanent.TopCard.GetCostItself == costs.Min();
         }
         else
         {
             var costs = permanent.TopCard.Owner.GetBattleAreaPermanents()
-                 .Filter(x => (x.IsDigimon || x.IsTamer) && x.TopCard.HasPlayCost)
-                 .Select(x => x.TopCard.GetCostItself).ToList();
+                 .Filter(permanent => (permanent.IsDigimon || permanent.IsTamer) && permanent.TopCard.HasPlayCost && (condition == null || condition(permanent)))
+                 .Select(permanent => permanent.TopCard.GetCostItself).ToList();
             return costs.Count >= 1 && permanent.TopCard.GetCostItself == costs.Min();
         }
     }

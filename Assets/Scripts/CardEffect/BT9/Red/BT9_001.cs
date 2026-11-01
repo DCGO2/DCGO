@@ -21,7 +21,7 @@ public class BT9_001 : CEntity_Effect
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (card.PermanentOfThisCard().TopCard.ContainsCardName("Agumon"))
+                        if (card.PermanentOfThisCard().TopCard.HasAgumonName)
                         {
                             return true;
                         }

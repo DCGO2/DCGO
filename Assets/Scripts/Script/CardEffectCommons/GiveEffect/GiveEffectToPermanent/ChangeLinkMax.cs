@@ -38,6 +38,8 @@ public partial class CardEffectCommons
                     card: card,
                     condition: CanUseCondition);
 
+        changeLinkMaxClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         AddEffectToPermanent(
             targetPermanent: targetPermanent,
             effectDuration: effectDuration,

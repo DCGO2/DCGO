@@ -130,7 +130,7 @@ public class EX5_074 : CEntity_Effect
                     {
                         if (cardSources.Count >= 1)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
 
@@ -247,7 +247,7 @@ public class EX5_074 : CEntity_Effect
                     {
                         if (cardSources.Count >= 1)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources, cardEffect: activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
 
@@ -354,20 +354,9 @@ public class EX5_074 : CEntity_Effect
 
             bool SkillCondition(ICardEffect cardEffect)
             {
-                if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
-                {
-                    if (cardEffect.IsDigimonEffect)
-                    {
-                        return true;
-                    }
-
-                    if (cardEffect.IsDigimonEffect && cardEffect.IsSecurityEffect)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsOpponentEffect(cardEffect, card)
+                    && ((!cardEffect.EffectSourceCard.IsDualCard && (cardEffect.EffectSourceCard.IsDigimon || cardEffect.IsDigimonEffect))
+                        || (cardEffect.EffectSourceCard.IsDualCard && !cardEffect.IsOptionEffect));
             }
         }
 

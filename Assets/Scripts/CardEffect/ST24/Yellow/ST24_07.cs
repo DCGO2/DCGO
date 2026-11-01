@@ -283,6 +283,7 @@ namespace DCGO.CardEffects.ST24
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 Enemy Digimon gets -6k  DP, Delete 1 Enemy Digimon with 7k or less DP.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsOptionEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

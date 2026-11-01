@@ -230,7 +230,8 @@ namespace DCGO.CardEffects.BT22
                 bool IsEaterDigimon(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasEaterTraits;
+                        && permanent.TopCard.HasEaterTraits
+                        && permanent.willBeRemoveField;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

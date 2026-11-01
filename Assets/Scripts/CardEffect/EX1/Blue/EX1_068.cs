@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.EX1
                         {
                             if (cardSource == cardSource.PermanentOfThisCard().TopCard)
                             {
-                                return true;
+                                return !cardSource.PermanentOfThisCard().TopCard.CanNotBeAffected(activateClass);
                             }
                         }
 

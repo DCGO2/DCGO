@@ -60,6 +60,8 @@ public partial class CardEffectCommons
 
         CanNotSuspendClass canNotSuspendClass = CardEffectFactory.CantSuspendStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, condition: CanUseCondition, effectName: effectName);
 
+        canNotSuspendClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: canNotSuspendClass, timing: EffectTiming.None);
 
         if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))

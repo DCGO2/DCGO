@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// QueenBeemon
 namespace DCGO.CardEffects.BT19
 {
     public class BT19_053 : CEntity_Effect
@@ -12,20 +13,17 @@ namespace DCGO.CardEffects.BT19
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Alternate Digivolution
-
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel5 &&
-                           targetPermanent.TopCard.EqualsTraits("Royal Base");
+                    return targetPermanent.TopCard.EqualsTraits("Royal Base");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false,
-                    card: card, condition: null));
+                    card: card, condition: null, level: 5));
             }
-
             #endregion
 
             #region Alliance
@@ -40,40 +38,32 @@ namespace DCGO.CardEffects.BT19
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play [Royal Base] Digimon from face up security", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("PlayDigimon_BT19_053");
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("BT19_053_WA");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[When Attacking] [Once Per Turn] You may play 1 [Royal Base] trait Digimon card from your face up security cards with the play cost reduced by 8.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.EqualsTraits("Royal Base"))
-                        {
-                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsDigimon
+                        && cardSource.EqualsTraits("Royal Base")
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.Owner.SecurityCards.Count(CanSelectCardCondition) > 0;
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && card.Owner.SecurityCards.Count(CanSelectCardCondition) > 0;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -102,49 +92,26 @@ namespace DCGO.CardEffects.BT19
 
                     int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                     {
-                        if (CardSourceCondition(cardSource))
+                        if (CardSourceCondition(cardSource)
+                        && RootCondition(root)
+                        && PermanentsCondition(targetPermanents))
                         {
-                            if (RootCondition(root))
-                            {
-                                if (PermanentsCondition(targetPermanents))
-                                {
-                                    Cost -= 8;
-                                }
-                            }
+                            Cost -= 8;
                         }
-
+                        
                         return Cost;
                     }
 
                     bool PermanentsCondition(List<Permanent> targetPermanents)
                     {
-                        if (targetPermanents == null)
-                        {
-                            return true;
-                        }
-
-                        else
-                        {
-                            if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
+                        return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
                     }
 
                     bool CardSourceCondition(CardSource cardSource)
                     {
-                        if (cardSource.IsDigimon)
-                        {
-                            if (cardSource.EqualsTraits("Royal Base"))
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
+                        return cardSource.IsDigimon
+                            && cardSource.HasPlayCost
+                            && cardSource.EqualsTraits("Royal Base");
                     }
 
                     bool RootCondition(SelectCardEffect.Root root)
@@ -163,22 +130,22 @@ namespace DCGO.CardEffects.BT19
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                     selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => false,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 card to play.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
-                                customRootCardList: card.Owner.SecurityCards.Filter(source => !source.IsFlipped),
-                                canLookReverseCard: false,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: () => false,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        message: "Select 1 card to play.",
+                        maxCount: 1,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.Custom,
+                        root: SelectCardEffect.Root.Security,
+                        customRootCardList: card.Owner.SecurityCards.Filter(source => !source.IsFlipped),
+                        canLookReverseCard: false,
+                        selectPlayer: card.Owner,
+                        cardEffect: activateClass);
 
                     selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
                     selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
@@ -197,7 +164,7 @@ namespace DCGO.CardEffects.BT19
                         activateClass: activateClass,
                         payCost: true,
                         isTapped: false,
-                        root: SelectCardEffect.Root.Custom,
+                        root: SelectCardEffect.Root.Security,
                         activateETB: true));
 
                     #region release effect reducing play cost 
@@ -214,46 +181,36 @@ namespace DCGO.CardEffects.BT19
 
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place those Digimon face up as your bottom security cards", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                activateClass.SetHashString("AllTurns_BT19-053");
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("BT19_053_AT");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] When any of your [Royal Base] trait Digimon would leave the battle area other than in battle, you may place those Digimon face up as your bottom security cards.";
                 }
 
                 bool HasRoyalBaseDigimon(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                        return permanent.TopCard.EqualsTraits("Royal Base");
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent.TopCard.EqualsTraits("Royal Base")
+                        && permanent.willBeRemoveField;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, HasRoyalBaseDigimon))
-                        {
-                            if (!CardEffectCommons.IsByBattle(hashtable))
-                            {
-                                if (!CardEffectCommons.IsByEffect(hashtable, effect => effect.HashString.Equals("AllTurns_BT19-053")))
-                                    return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, HasRoyalBaseDigimon)
+                        && !CardEffectCommons.IsByBattle(hashtable);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(HasRoyalBaseDigimon);
 
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && card.Owner.CanAddSecurity(activateClass);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
+                        && card.Owner.CanAddSecurity(activateClass)
+                        && removedPermanents.Some(permanent => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -267,6 +224,8 @@ namespace DCGO.CardEffects.BT19
                         permanent.HideHandBounceEffect();
                         permanent.HideDeckBounceEffect();
                     }
+
+                    activateClass.RemoveUse();
                 }
             }
             #endregion

@@ -38,6 +38,7 @@ public partial class CardEffectCommons
             card: card,
             condition: CanUseCondition);
 
+        changeDPClass.SetIsOptionEffect(activateClass.IsOptionEffect);
         AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: changeDPClass, timing: EffectTiming.None);
 
         if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))

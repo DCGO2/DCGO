@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
-            #region App Fusion (Globemon & Charismon)
+            #region App Fusion (Sociamon & Gossipmon)
 
             if (timing == EffectTiming.None)
             {
@@ -504,7 +504,7 @@ namespace DCGO.CardEffects.BT21
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Discard,
-                                root: SelectCardEffect.Root.Custom,
+                                root: SelectCardEffect.Root.LinkedCards,
                                 customRootCardList: card.PermanentOfThisCard().LinkedCards,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,

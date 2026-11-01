@@ -40,7 +40,7 @@ public partial class CardEffectFactory
         changeCostClass.SetUpICardEffect(effectName(), CanUseCondition, card);
         changeCostClass.SetUpChangeCostClass(
             changeCostFunc: ChangeCost,
-            cardSourceCondition: (card) => true,
+            cardSourceCondition: CardCondition,
             rootCondition: (card) => true,
             isUpDown: isUpDown,
             isCheckAvailability: () => false,
@@ -92,6 +92,12 @@ public partial class CardEffectFactory
             }
 
             return false;
+        }
+
+        bool CardCondition(CardSource cardSource)
+        {
+            return CardEffectCommons.IsExistOnBattleArea(cardSource)
+                && cardSource.PermanentOfThisCard().TopCard == cardSource;
         }
 
         bool PermanentCondition(Permanent targetPermanent)

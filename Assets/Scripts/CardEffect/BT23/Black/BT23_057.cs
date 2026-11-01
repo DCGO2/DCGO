@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.BT23
                         if (selectedCards.Count == 3)
                         {
                             selectedCards.Reverse();
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(selectedCards));
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(selectedCards, cardEffect: activateClass));
                         }
                     }
 

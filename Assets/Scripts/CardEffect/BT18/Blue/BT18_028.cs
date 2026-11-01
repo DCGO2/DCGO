@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// AncientMegatheriummon
 namespace DCGO.CardEffects.BT18
 {
     public class BT18_028 : CEntity_Effect
@@ -33,21 +34,10 @@ namespace DCGO.CardEffects.BT18
 
                         bool CanSelectCardCondition(CardSource conditionCardSource)
                         {
-                            if (conditionCardSource != null)
-                            {
-                                if (conditionCardSource.Owner == card.Owner)
-                                {
-                                    if (conditionCardSource.IsDigimon)
-                                    {
-                                        if (conditionCardSource.CardNames_DigiXros.Contains("Kumamon"))
-                                        {
-                                            return true;
-                                        }
-                                    }
-                                }
-                            }
-
-                            return false;
+                            return conditionCardSource != null
+                                && conditionCardSource.Owner == card.Owner
+                                && conditionCardSource.IsDigimon
+                                && conditionCardSource.CardNames_DigiXros.Contains("Kumamon");
                         }
 
                         DigiXrosConditionElement elementBeast =
@@ -55,21 +45,10 @@ namespace DCGO.CardEffects.BT18
 
                         bool CanSelectCardCondition1(CardSource conditionCardSource)
                         {
-                            if (conditionCardSource != null)
-                            {
-                                if (conditionCardSource.Owner == card.Owner)
-                                {
-                                    if (conditionCardSource.IsDigimon)
-                                    {
-                                        if (conditionCardSource.CardNames_DigiXros.Contains("Korikakumon"))
-                                        {
-                                            return true;
-                                        }
-                                    }
-                                }
-                            }
-
-                            return false;
+                            return conditionCardSource != null
+                                && conditionCardSource.Owner == card.Owner
+                                && conditionCardSource.IsDigimon
+                                && conditionCardSource.CardNames_DigiXros.Contains("Korikakumon");
                         }
 
                         List<DigiXrosConditionElement> elements = new List<DigiXrosConditionElement>()
@@ -83,116 +62,52 @@ namespace DCGO.CardEffects.BT18
                     return null;
                 }
             }
-
             #endregion
 
-            #region On Play/ When Digivolving Shared
+            #region Shared OP/WD
+            string SharedEffectName = "Trash 2 bottom sources from all opponent's Digimon. Their sourceless digimon can't suspend";
 
-            bool CanActivateConditionShared(Hashtable hashtable)
+            CardEffectFactory.ActivateClassesForSharedEffects
+            (ref cardEffects, timing, card,
+                SharedEffectName,
+                SharedActivateCoroutine,
+                SharedEffectDescription,
+                optional: false,
+                onPlay: true,
+                whenDigivolving: true);
+
+            string SharedEffectDescription(string tag)
             {
-                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                return $"[{tag}] Trash the bottom 2 digivolution cards of all of your opponent's Digimon. None of their Digimon with no digivolution cards can suspend until the end of their turn.";
             }
 
-            #endregion
-
-            #region On Play
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            bool PermanentCanNotSuspendCondition(Permanent permanentCanNotSuspend)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 2 bottom sources from all opponent's Digimon. Their sourceless digimon can't suspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return
-                        "[On Play] Trash the bottom 2 digivolution cards of all of your opponent's Digimon. None of their Digimon with no digivolution cards can suspend until the end of their turn.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    foreach (Permanent selectedPermanent in card.Owner.Enemy.GetBattleAreaDigimons())
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
-                            targetPermanent: selectedPermanent,
-                            trashCount: 2,
-                            isFromTop: false,
-                            activateClass: activateClass));    
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
-                        permanentCondition: PermanentCanNotSuspendCondition,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass,
-                        isOnlyActivePhase: false,
-                        effectName: "Can't Suspend"));
-
-                    bool PermanentCanNotSuspendCondition(Permanent permanentCanNotSuspend)
-                    {
-                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanentCanNotSuspend,card) &&
-                               permanentCanNotSuspend.HasNoDigivolutionCards;
-                    }
-                }
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanentCanNotSuspend, card)
+                    && permanentCanNotSuspend.HasNoDigivolutionCards;
             }
 
-            #endregion
-
-            #region When Digivolving
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 2 bottom digivolution cards of all your opponent's Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
+                foreach (Permanent selectedPermanent in card.Owner.Enemy.GetBattleAreaDigimons())
                 {
-                    return
-                        "[When Digivolving] Trash the bottom 2 digivolution cards of all of your opponent's Digimon. None of their Digimon with no digivolution cards can suspend until the end of their turn.";
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
+                        targetPermanent: selectedPermanent,
+                        trashCount: 2,
+                        isFromTop: false,
+                        activateClass: activateClass));
                 }
 
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    foreach (Permanent selectedPermanent in card.Owner.Enemy.GetBattleAreaDigimons())
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
-                            targetPermanent: selectedPermanent,
-                            trashCount: 2,
-                            isFromTop: false,
-                            activateClass: activateClass));
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
-                        permanentCondition: PermanentCanNotSuspendCondition,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass,
-                        isOnlyActivePhase: false,
-                        effectName: "Can't Suspend"));
-
-                    bool PermanentCanNotSuspendCondition(Permanent permanentCanNotSuspend)
-                    {
-                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanentCanNotSuspend, card) &&
-                               !permanentCanNotSuspend.HasNoDigivolutionCards;
-                    }
-                }
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
+                    permanentCondition: PermanentCanNotSuspendCondition,
+                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                    activateClass: activateClass,
+                    isOnlyActivePhase: false,
+                    effectName: "Can't Suspend"));
             }
-
             #endregion
 
             #region All Turns
-
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -208,8 +123,8 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -222,59 +137,21 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.PermanentOfThisCard().DigivolutionCards.Some(CanSelectCardCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
+                        && card.PermanentOfThisCard().DigivolutionCards.Some(CanSelectCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<CardSource> selectedCards = new List<CardSource>();
-
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                    selectCardEffect.SetUp(
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                         canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 1 digivolution card to play.",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Custom,
-                        customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                    selectCardEffect.SetUpCustomMessage(
-                        "Select 1 digivolution card to play.",
-                        "The opponent is selecting 1 digivolution card to play.");
-                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                    yield return StartCoroutine(selectCardEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                    {
-                        selectedCards.Add(cardSource);
-
-                        yield return null;
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.PlayPermanentCards(
-                            cardSources: selectedCards,
-                            activateClass: activateClass,
-                            payCost: false,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.DigivolutionCards,
-                            activateETB: true));
+                        SelectCardEffect.Root.DigivolutionCards,
+                        activateClass,
+                        payCost: false,
+                        targetPermanent: card.PermanentOfThisCard()
+                    ));
                 }
             }
-
             #endregion
 
             return cardEffects;

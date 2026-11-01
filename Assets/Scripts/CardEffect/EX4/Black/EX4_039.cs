@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.EX4
                             return true;
                         }
 
-                        if (cardSource.ContainsCardName("Agumon"))
+                        if (cardSource.HasAgumonName)
                         {
                             return true;
                         }

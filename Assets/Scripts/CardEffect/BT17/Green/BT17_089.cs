@@ -88,7 +88,7 @@ namespace DCGO.CardEffects.BT17
 
                         if (permanent.TopCard.CardColors.Contains(CardColor.Yellow))
                         {
-                            if(permanent.TopCard.ContainsCardName("Agumon") || permanent.TopCard.HasGreymonName)
+                            if(permanent.TopCard.HasAgumonName || permanent.TopCard.HasGreymonName)
                             {
                                 return true;
                             }

@@ -233,33 +233,22 @@ namespace DCGO.CardEffects.BT25
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        mode: SelectHandEffect.Mode.PlayForFree,
-                        cardEffect: activateClass);
-
-                    yield return StartCoroutine(selectHandEffect.Activate());
-
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
                         if (cardSources.Count == 0)
                             activateClass.RemoveUse();
                         yield return null;
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
+                        canTargetCondition: CanSelectCardCondition,
+                        SelectCardEffect.Root.Hand,
+                        activateClass,
+                        payCost: false,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine
+                    ));
                 }
             }
-
             #endregion
 
             #region Link

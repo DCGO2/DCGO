@@ -18,6 +18,15 @@ namespace DCGO.CardEffects.BT19
             }
             #endregion
 
+            #region Shared OP/WD
+            static bool CanSelectOptionCard(CardSource cardSource)
+            {
+                return cardSource.OptionCardColors.Count == 1 // the Option side's colours; a dual card's CardColors are the Digimon side's
+                    && cardSource.GetCostItself <= 5
+                    && !cardSource.CanNotPlayThisOption;
+            }
+            #endregion
+
             #region On Play 
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -34,13 +43,6 @@ namespace DCGO.CardEffects.BT19
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                bool CanSelectOptionCard(CardSource cardSource)
-                {
-                    return cardSource.OptionCardColors.Count == 1
-                        && cardSource.GetCostItself <= 5
-                        && !cardSource.CanNotPlayThisOption;
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -199,22 +201,6 @@ namespace DCGO.CardEffects.BT19
                         }
                     }
                                                
-                    return false;
-                }
-
-                bool CanSelectOptionCard(CardSource cardSource)
-                {
-                    if (cardSource.IsOption)
-                    {
-                        if (cardSource.CardColors.Count == 1 && cardSource.GetCostItself <= 5)
-                        {
-                            if (!cardSource.CanNotPlayThisOption)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
                     return false;
                 }
 

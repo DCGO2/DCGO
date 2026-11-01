@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.EX7
                         cardSources.Reverse();
 
                         yield return ContinuousController.instance.StartCoroutine(
-                            CardObjectController.AddLibraryTopCards(cardSources));
+                            CardObjectController.AddLibraryTopCards(cardSources, cardEffect: activateClass));
 
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentSharedCondition))
                         {

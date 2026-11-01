@@ -12,6 +12,7 @@ public class CheatAction : MainPhaseAction
         PlaceCardInSecurityFaceup,
         GainMemory,
         LoseMemory,
+        RemoveFromSecurity,
     }
 
     Type CheatType;
@@ -65,6 +66,9 @@ public class CheatAction : MainPhaseAction
                     break;
                 case Type.LoseMemory:
                     gameManager.StartCoroutine(gameManager.AlterMemory(player, -1));
+                    break;
+                case Type.RemoveFromSecurity:
+                    gameManager.StartCoroutine(gameManager.RemoveFromSecurity(player));
                     break;
                 default:
                     break;

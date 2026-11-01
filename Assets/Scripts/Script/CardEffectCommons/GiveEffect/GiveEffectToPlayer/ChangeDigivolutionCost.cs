@@ -48,6 +48,8 @@ public partial class CardEffectCommons
             condition: Condition,
             setFixedCost: setFixedCost);
 
+        changeCostClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         return GetCardEffectByEffectTiming(timing: EffectTiming.None, cardEffect: changeCostClass);
     }
     #endregion

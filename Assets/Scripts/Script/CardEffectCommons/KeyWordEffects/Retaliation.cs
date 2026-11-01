@@ -21,7 +21,7 @@ public partial class CardEffectCommons
 
                     if (TopCard != null)
                     {
-                        if (IsTopCardStillInTrash(cardEffect))
+                        if (CanActivateOnDeletion(TopCard, cardEffect))
                         {
                             IBattle battle = GetBattleFromHashtable(hashtable);
 
@@ -31,30 +31,14 @@ public partial class CardEffectCommons
 
                                 if (battleHashtable != null)
                                 {
-                                    List<Permanent> LoserPermanents = GetLoserPermanentsFromHashtable(battleHashtable);
 
-                                    if (LoserPermanents != null)
+                                    List<Permanent> WinnerPermanents = GetWinnerPermanentsRealFromHashtable(battleHashtable);
+
+                                    if (WinnerPermanents != null)
                                     {
-                                        if (LoserPermanents.Some((permanent) => permanent.cardSources.Contains(TopCard)))
+                                        if (WinnerPermanents.Some(permanent => IsOpponentPermanent(permanent, TopCard)))
                                         {
-                                            #region Work out if opponent is still in play
-                                            if (LoserPermanents.Some(permanent => IsOpponentPermanent(permanent, TopCard)))// In case of tie, any other permanent is the opponent's digimon
-                                            {
-                                                return true;
-                                            } 
-                                            else
-                                            {
-                                                List<Permanent> WinnerPermanents = GetWinnerPermanentsRealFromHashtable(battleHashtable);
-
-                                                if (WinnerPermanents != null)
-                                                {
-                                                    if (WinnerPermanents.Some(permanent => IsOpponentPermanent(permanent, TopCard)))
-                                                    {
-                                                        return true;
-                                                    }
-                                                }
-                                            }
-                                            #endregion
+                                            return true;
                                         }
                                     }
                                 }

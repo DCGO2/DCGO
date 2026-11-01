@@ -145,29 +145,13 @@ namespace DCGO.CardEffects.EX4
                                     {
                                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
                                         {
-                                            List<CardSource> selectedCards = new List<CardSource>();
-
-                                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                            selectCardEffect.SetUp(
+                                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                                                 canTargetCondition: CanSelectCardCondition,
-                                                canTargetCondition_ByPreSelecetedList: null,
-                                                canEndSelectCondition: null,
-                                                canNoSelect: () => false,
-                                                selectCardCoroutine: null,
-                                                afterSelectCardCoroutine: null,
-                                                message: "Select 1 [Ravemon] to play.",
-                                                maxCount: 1,
-                                                canEndNotMax: false,
-                                                isShowOpponent: true,
-                                                mode: SelectCardEffect.Mode.PlayForFree,
-                                                root: SelectCardEffect.Root.Trash,
-                                                customRootCardList: null,
-                                                canLookReverseCard: true,
-                                                selectPlayer: card.Owner,
-                                                cardEffect: activateClass1);
-
-                                            yield return StartCoroutine(selectCardEffect.Activate());
+                                                SelectCardEffect.Root.Trash,
+                                                activateClass,
+                                                payCost: false,
+                                                canNoSelect: false
+                                            ));
                                         }
                                     }
                                 }

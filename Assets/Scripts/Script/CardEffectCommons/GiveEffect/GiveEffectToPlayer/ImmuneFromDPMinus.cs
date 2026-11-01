@@ -43,6 +43,8 @@ public partial class CardEffectCommons
             condition: CanUseCondition,
             effectName: effectName);
 
+        immuneFromDPMinusClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         AddEffectToPlayer(effectDuration: effectDuration, card: card, cardEffect: immuneFromDPMinusClass, timing: EffectTiming.None);
 
         foreach (Permanent permanent in GManager.instance.turnStateMachine.gameContext.PermanentsForTurnPlayer)

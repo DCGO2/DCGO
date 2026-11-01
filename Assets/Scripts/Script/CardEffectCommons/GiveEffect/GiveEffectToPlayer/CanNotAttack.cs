@@ -58,6 +58,8 @@ public partial class CardEffectCommons
             condition: Condition, 
             effectName: effectName);
 
+        canNotAttackClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         AddEffectToPlayer(effectDuration: effectDuration, card: card, cardEffect: canNotAttackClass, timing: EffectTiming.None);
 
         foreach (Permanent permanent in GManager.instance.turnStateMachine.gameContext.PermanentsForTurnPlayer)

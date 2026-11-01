@@ -130,52 +130,13 @@ namespace DCGO.CardEffects.BT15
 
                         if (selectedPermanent != null)
                         {
-                            CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                            canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effect", CanUseCondition1, card);
-                            canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
-                            selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotAffectedClass);
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
 
+                            #region Give Digimon Effect Immunity
+                            selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => PermanentEffectFactory.DigimonEffectImmunity(selectedPermanent));
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(selectedPermanent));
-
-                            bool CanUseCondition1(Hashtable hashtable)
-                            {
-                                return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
-                            }
-
-                            bool CardCondition(CardSource cardSource)
-                            {
-                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
-                                {
-                                    if (cardSource == selectedPermanent.TopCard)
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
-                            }
-
-                            bool SkillCondition(ICardEffect cardEffect)
-                            {
-                                if (cardEffect != null)
-                                {
-                                    if (cardEffect.EffectSourceCard != null)
-                                    {
-                                        if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
-                                        {
-                                            if (cardEffect.IsDigimonEffect)
-                                            {
-                                                return true;
-                                            }
-                                        }
-                                    }
-                                }
-
-                                return false;
-                            }
+                            #endregion
                         }
-
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
                     }
                 }
             }
@@ -199,11 +160,14 @@ namespace DCGO.CardEffects.BT15
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        if (permanent.TopCard.GetCostItself <= card.PermanentOfThisCard().TopCard.GetCostItself)
+                        if (permanent.TopCard.HasPlayCost)
                         {
-                            if (permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer)
+                            if (permanent.TopCard.GetCostItself <= card.PermanentOfThisCard().TopCard.GetCostItself)
                             {
-                                return true;
+                                if (permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer)
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }

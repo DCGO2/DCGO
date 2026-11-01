@@ -257,6 +257,17 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Hashtable used when check whether the card can trigger [Security] effect
+    public static Hashtable SecurityCheckHashtableOfCard(CardSource cardSource, Permanent attacker = null)
+    {
+        return new Hashtable()
+        {
+            {"AttackingPermanent", attacker},//May need to fill this some day, but currently only Card is actually checked for can trigger. Likely create a fake attacking permanent
+            {"Card", cardSource}
+        };
+    }
+    #endregion
+
     #region Hashtable used when check whether the permanent can trigger [On Play] effect
     public static Hashtable OnPlayCheckHashtableOfPermanent(Permanent permanent)
     {

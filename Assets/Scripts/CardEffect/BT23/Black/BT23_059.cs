@@ -228,60 +228,9 @@ namespace DCGO.CardEffects.BT23
                         yield return ContinuousController.instance.StartCoroutine(
                         new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
 
-                        #region Cant Be Effected Functions
-                        ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-
+                        #region Give Digimon Effect Immunity
+                        selectedPermanent.UntilEachTurnEndEffects.Add((_timing) => PermanentEffectFactory.DigimonEffectImmunity(selectedPermanent));
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(selectedPermanent));
-
-                        CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                        canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's effect", CanUseCondition1, card);
-                        canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
-                        selectedPermanent.UntilEachTurnEndEffects.Add((_timing) => canNotAffectedClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(selectedPermanent));
-
-                        bool CanUseCondition1(Hashtable hashtable)
-                        {
-                            if (selectedPermanent.TopCard != null)
-                            {
-                                return true;
-                            }
-
-                            return false;
-                        }
-
-                        bool CardCondition(CardSource cardSource)
-                        {
-                            if (selectedPermanent.TopCard != null)
-                            {
-                                if (selectedPermanent.TopCard.Owner.GetBattleAreaPermanents().Contains(selectedPermanent))
-                                {
-                                    if (cardSource == selectedPermanent.TopCard)
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-
-                            return false;
-                        }
-
-                        bool SkillCondition(ICardEffect cardEffect)
-                        {
-                            if (cardEffect != null)
-                            {
-                                if (cardEffect.EffectSourceCard != null)
-                                {
-                                    if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
-                                    {
-                                        return cardEffect.EffectSourceCard.IsDigimon;
-                                    }
-                                }
-                            }
-
-                            return false;
-                        }
-
                         #endregion
                     }
                 }

@@ -90,7 +90,7 @@ namespace DCGO.CardEffects.BT13
                             return true;
                         }
 
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.ContainsCardName("Agumon") || permanent.TopCard.HasGreymonName))
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.HasAgumonName || permanent.TopCard.HasGreymonName))
                         {
                             if (card.Owner.CanAddMemory(activateClass))
                             {
@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.BT13
                         }
                     }
 
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.ContainsCardName("Agumon") || permanent.TopCard.HasGreymonName))
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.HasAgumonName || permanent.TopCard.HasGreymonName))
                     {
                         yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                     }

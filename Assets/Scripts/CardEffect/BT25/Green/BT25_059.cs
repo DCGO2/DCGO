@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System;
 
 // Ceresmon
@@ -46,7 +45,6 @@ namespace DCGO.CardEffects.BT25
             #endregion
 
             #region Shared OP / WD
-
             string SharedEffectName = "You may suspend 2 digimon. Your suspended [Vegetation]/[TS] Digimon are immune to opponent's Digimon Effects until end of opponents turn";
 
             string SharedEffectDescription(string tag)
@@ -91,7 +89,8 @@ namespace DCGO.CardEffects.BT25
                 bool SkillCondition(ICardEffect cardEffect)
                 {
                     return CardEffectCommons.IsOpponentEffect(cardEffect, card)
-                        && cardEffect.IsDigimonEffect;
+                        && ((!cardEffect.EffectSourceCard.IsDualCard && (cardEffect.EffectSourceCard.IsDigimon || cardEffect.IsDigimonEffect))
+                            || (cardEffect.EffectSourceCard.IsDualCard && !cardEffect.IsOptionEffect));
                 }
 
                 CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
@@ -122,7 +121,7 @@ namespace DCGO.CardEffects.BT25
 
                 string EffectDescription1()
                 {
-                    return "[All Turns] [Once Per Turn] When any Digimon suspend, to 1 of your opponent's Digimon, give -3000 DP until their ends for each suspended Digimon.";
+                    return "[All Turns] [Once Per Turn] When any Digimon suspend, to 1 of your opponent's Digimon, give -3000 DP until their turn ends for each suspended Digimon.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

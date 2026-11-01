@@ -34,8 +34,7 @@ namespace DCGO.CardEffects.EX8
             #endregion
 
             #region All Turns - Security
-
-            if(timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 bool PermanentCondition(Permanent permanent)
                 {
@@ -43,52 +42,13 @@ namespace DCGO.CardEffects.EX8
                            permanent.TopCard.EqualsTraits("NSp");
                 }
 
-                AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("Your Digimon gain Alliance", CanUseCondition, card);
-                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-                cardEffects.Add(addSkillClass);
-
-                bool CanUseCondition(Hashtable hashtable)
+                bool CanUseCondition()
                 {
-                    return CardEffectCommons.IsExistInSecurity(card, false) &&
-                        CardEffectCommons.HasMatchConditionPermanent(PermanentCondition);
+                    return CardEffectCommons.IsExistInSecurity(card, false);
                 }
 
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
-                    {
-                        if (cardSource.Owner == card.Owner)
-                        {
-                            if (cardSource == cardSource.PermanentOfThisCard().TopCard)
-                            {
-                                if (PermanentCondition(cardSource.PermanentOfThisCard()))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
-                {
-                    if (_timing == EffectTiming.OnAllyAttack)
-                    {
-                        bool Condition()
-                        {
-                            return CardSourceCondition(cardSource);
-                        }
-
-                        cardEffects.Add(CardEffectFactory.AllianceSelfEffect(false, cardSource, Condition));
-                    }
-
-                    return cardEffects;
-                }
+                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(PermanentCondition, false, card, CanUseCondition));
             }
-
             #endregion
 
             #region Main Effect

@@ -34,6 +34,8 @@ public partial class CardEffectCommons
             condition: null,
             effectName: "Ignore Digivolution requirements and change digivolution cost");
 
+        addDigivolutionRequirementClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         return GetCardEffectByEffectTiming(timing: EffectTiming.None, cardEffect: addDigivolutionRequirementClass);
     }
     #endregion

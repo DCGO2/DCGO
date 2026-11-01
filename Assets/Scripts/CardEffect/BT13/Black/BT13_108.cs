@@ -185,47 +185,10 @@ namespace DCGO.CardEffects.BT13
 
                             if (selectedPermanent != null)
                             {
-                                CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                                canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's option", CanUseCondition1, card);
-                                canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
-                                selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotAffectedClass);
-
-                                bool CanUseCondition1(Hashtable hashtable)
-                                {
-                                    return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
-                                }
-
-                                bool CardCondition(CardSource cardSource)
-                                {
-                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
-                                    {
-                                        if (cardSource == selectedPermanent.TopCard)
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
-                                }
-
-                                bool SkillCondition(ICardEffect cardEffect)
-                                {
-                                    if (cardEffect != null)
-                                    {
-                                        if (cardEffect.EffectSourceCard != null)
-                                        {
-                                            if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
-                                            {
-                                                if (cardEffect.EffectSourceCard.IsOption)
-                                                {
-                                                    return true;
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    return false;
-                                }
+                                #region Give Option Effect Immunity
+                                selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => PermanentEffectFactory.OptionEffectImmunity(selectedPermanent));
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(selectedPermanent));
+                                #endregion
                             }
                         }
                     }

@@ -513,7 +513,8 @@ public class Effects : MonoBehaviour
 
         else
         {
-            if (fieldPermanentCard.ThisPermanent.TopCard.Level >= 6)
+            if (fieldPermanentCard.ThisPermanent.TopCard.HasLevel
+            && fieldPermanentCard.ThisPermanent.TopCard.Level >= 6)
             {
                 if (HasETB)
                 {

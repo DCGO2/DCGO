@@ -327,7 +327,7 @@ namespace DCGO.CardEffects.BT12
 
                                     if (libraryCards.Count >= 1)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(libraryCards));
+                                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(libraryCards, cardEffect: activateClass));
 
                                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(libraryCards, "Deck Bottom Cards", true, true));
                                     }
@@ -402,7 +402,7 @@ namespace DCGO.CardEffects.BT12
                 {
                     if (cardSource == card)
                     {
-                        DigiXrosConditionElement element = new DigiXrosConditionElement(CanSelectCardCondition, "1 Digimon card with [Xros Heart] or [Blue Flare] trait");
+                        DigiXrosConditionElement element = new DigiXrosConditionElement(CanSelectCardCondition, "1 Digimon card with [Xros Heart] or [Blue Flare] trait", true);
 
                         bool CanSelectCardCondition(CardSource cardSource)
                         {

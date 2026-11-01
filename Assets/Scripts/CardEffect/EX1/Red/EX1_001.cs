@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.EX1
 
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.ContainsCardName("Agumon"))
+                        if (cardSource.HasAgumonName)
                         {
                             return true;
                         }

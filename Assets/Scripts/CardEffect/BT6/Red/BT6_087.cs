@@ -29,7 +29,7 @@ public class BT6_087 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.TopCard.ContainsCardName("Agumon"))
+                    if (permanent.TopCard.HasAgumonName)
                     {
                         return true;
                     }

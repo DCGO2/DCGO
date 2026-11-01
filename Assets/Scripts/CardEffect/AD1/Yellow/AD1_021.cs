@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.AD1
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.CardColors.Contains(CardColor.Yellow)
-                        && (permanent.TopCard.ContainsCardName("Agumon") || permanent.TopCard.ContainsCardName("Greymon"));
+                        && (permanent.TopCard.HasAgumonName || permanent.TopCard.ContainsCardName("Greymon"));
                 }
 
                 bool CanSelectTamer(Permanent permanent)

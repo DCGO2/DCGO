@@ -125,7 +125,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (IsDigimon && Owner.GetBattleAreaDigimons().Some(permanent => CanPlayCardTargetFrame(permanent.PermanentFrame, true, null)))
+            if (IsDigimon && Owner.GetFieldPermanents().Some(permanent => CanPlayCardTargetFrame(permanent.PermanentFrame, true, null)))
             {
                 return true;
             }
@@ -695,19 +695,25 @@ public class CardSource : MonoBehaviour
             {
                 if (Owner.CanReduceCost(null, this))
                 {
-                    //AI
-                    if (!(!Owner.isYou && GManager.instance.IsAI))
+                    SelectAssemblyClass selectAssemblyClass = GManager.instance.GetComponent<SelectAssemblyClass>();
+
+                    if (checkAvailability)
                     {
-                        if (checkAvailability)
+                        //AI
+                        if (!(!Owner.isYou && GManager.instance.IsAI))
                         {
-                            return 0;
+                            // Assembly's discount stacks additively with whatever cost was already computed
+                            // (e.g. a foreign ability's own reduced/fixed cost) - it doesn't replace it. Only
+                            // apply it here when the player genuinely has valid material available right now;
+                            // otherwise leave Cost untouched so the real (possibly foreign-reduced) cost is used.
+                            if (selectAssemblyClass != null && selectAssemblyClass.CanFulfillConditions(this))
+                            {
+                                Cost -= assemblyCondition.reduceCost;
+                            }
                         }
                     }
-
-                    if (!checkAvailability)
+                    else
                     {
-                        SelectAssemblyClass selectAssemblyClass = GManager.instance.GetComponent<SelectAssemblyClass>();
-
                         if (selectAssemblyClass != null)
                         {
                             if (selectAssemblyClass.playCard == this)
@@ -1470,12 +1476,22 @@ public class CardSource : MonoBehaviour
         string replaced = name.Replace(" ", "");
         string lower = name.ToLower();
 
-        return CardNames.Some((cardName) =>
+        return CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0]).Some((cardName) =>
         cardName.Equals(name)
         || cardName.Equals(replaced)
         || cardName.Replace(" ", "").Equals(replaced)
         || cardName.Equals(lower)
         || cardName.ToLower().Equals(lower));
+    }
+
+    /// <summary>
+    /// Convenience method for checking multiple names at once
+    /// </summary>
+    /// <param name="names">List of names to check</param>
+    /// <returns>True if any card name matches any given name</returns>
+    public bool EqualsCardNames(params string[] names)
+    {
+        return names.Any(name => EqualsCardName(name));
     }
 
     #endregion
@@ -1502,6 +1518,16 @@ public class CardSource : MonoBehaviour
         || cardName.Contains(replaced)
         || cardName.Contains(lower)
         || cardName.ToLower().Contains(lower));
+    }
+
+    /// <summary>
+    /// Convenience method for checking multiple names at once
+    /// </summary>
+    /// <param name="names">List of names to check</param>
+    /// <returns>True if card contains any of the given neames in its names</returns>
+    public bool ContainsCardNames(params string[] names)
+    {
+        return names.Any(name => ContainsCardName(name));
     }
 
     #endregion
@@ -1583,7 +1609,8 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardNames.Some((cardName) => (cardName.Contains("Greymon") || cardName.Contains("greymon"))
+            if (CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0])
+            .Some((cardName) => (cardName.Contains("Greymon") || cardName.Contains("greymon"))
             && cardName != "DoruGreymon"
             && cardName != "BurningGreymon"
             && cardName != "DexDoruGreymon"))
@@ -1603,7 +1630,8 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardNames.Some((cardName) => (cardName.Contains("Garurumon") || cardName.Contains("garurumon"))
+            if (CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0])
+            .Some((cardName) => (cardName.Contains("Garurumon") || cardName.Contains("garurumon"))
             && cardName != "KendoGarurumon"))
             {
                 return true;
@@ -1621,8 +1649,28 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardNames.Some((cardName) => (cardName.Contains("Impmon") || cardName.Contains("impmon"))
+            if (CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0])
+            .Some((cardName) => (cardName.Contains("Impmon") || cardName.Contains("impmon"))
             && cardName != "Blimpmon"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has at least 1 card name that contains "Agumon"
+
+    public bool HasAgumonName
+    {
+        get
+        {
+            if (CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0])
+            .Some((cardName) => (cardName.Contains("Agumon") || cardName.Contains("agumon"))
+            && cardName != "Pagumon"))
             {
                 return true;
             }
@@ -1639,7 +1687,8 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardNames.Some((cardName) => (cardName.Contains("Dramon") || cardName.Contains("dramon"))
+            if (CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0])
+            .Some((cardName) => (cardName.Contains("Dramon") || cardName.Contains("dramon"))
             && cardName != "Indramon"))
             {
                 return true;
@@ -1653,7 +1702,7 @@ public class CardSource : MonoBehaviour
 
     #region whether this card has at least 1 card name that contains "AAntibody"
 
-    public bool HasXAntiBodyName => CardNames.Some(DataBase.IsContainingXAntibodyString);
+    public bool HasXAntiBodyName => CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0]).Some(DataBase.IsContainingXAntibodyString);
 
     #endregion
 
@@ -2120,6 +2169,27 @@ public class CardSource : MonoBehaviour
             DataBase.ReplaceToASCII(_cEntity_Base.OptionEffect),
         };
 
+        foreach (string name in CardNames)
+        {
+            checkStrings.Add(DataBase.ReplaceToASCII(name));
+        }
+
+        if (HasAssembly)
+        {
+            foreach(AssemblyConditionElement element in assemblyCondition.elements)
+            {
+                checkStrings.Add(DataBase.ReplaceToASCII(element.selectMessage));
+            }
+        }
+
+        if (HasDigiXros)
+        {
+            foreach(DigiXrosConditionElement element in digiXrosCondition.elements)
+            {
+                checkStrings.Add(DataBase.ReplaceToASCII(element.selectMessage));
+            }
+        }
+
         foreach (string attribute in _cEntity_Base.Attribute_ENG)
             checkStrings.Add(DataBase.ReplaceToASCII(attribute));
 
@@ -2534,8 +2604,17 @@ public class CardSource : MonoBehaviour
             {
                 if (!string.IsNullOrEmpty(_cEntity_Base.EffectDiscription_JPN))
                 {
-                    bool result = Regex.IsMatch(_cEntity_Base.EffectDiscription_JPN, DataBase.DigiburstRegex);
+                    bool result = Regex.IsMatch(_cEntity_Base.EffectDiscription_JPN, DataBase.DigiBurstJpnRegex);
 
+                    if (result)
+                    {
+                        return true;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(_cEntity_Base.EffectDiscription_ENG))
+                {
+                    bool result = Regex.IsMatch(_cEntity_Base.EffectDiscription_ENG, DataBase.DigiBurstEngRegex);
                     if (result)
                     {
                         return true;
@@ -3557,6 +3636,23 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card has "Hybrid" trait
+
+    public bool HasHybridTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Hybrid"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
     #region whether this card has "SEEKERS" trait
 
     public bool HasSeekersTraits
@@ -3738,6 +3834,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Iliad");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Shambala" trait
+
+    public bool HasShambalaTraits
+    {
+        get
+        {
+            return EqualsTraits("Shambala");
         }
     }
 
@@ -3930,6 +4038,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Ult.");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "God" Appmon Grade trait
+
+    public bool HasGodAppTraits
+    {
+        get
+        {
+            return EqualsTraits("God");
         }
     }
 
@@ -4158,6 +4278,30 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Shaman");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has VB trait
+
+    public bool HasVBTraits
+    {
+        get
+        {
+            return EqualsTraits("VB");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has DATA SQUAD trait
+
+    public bool HasDataSquadTraits
+    {
+        get
+        {
+            return EqualsTraits("DATA SQUAD");
         }
     }
 

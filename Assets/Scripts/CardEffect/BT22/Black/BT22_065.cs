@@ -172,7 +172,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsOpponentDigimon(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.Owner != card.Owner;
+                    return targetPermanent.TopCard.Owner != card.Owner
+                        && targetPermanent.TopCard.IsDigimon;
                 }
 
                 bool IsCSOnBoard(Permanent permanent)

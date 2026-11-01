@@ -1,11 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using Photon;
-using System;
-using Photon.Pun;
 
+// Puppetmon
 public class BT2_049 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
@@ -15,13 +11,13 @@ public class BT2_049 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Suspend 1 Digimon and make opponent's all Digimon impossible to unsuspend", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpICardEffect("Suspend 1 enemy Digimon, enemy Digimon cannot unsuspend in enemy's next unsuspend phase", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
             cardEffects.Add(activateClass);
 
-            string EffectDiscription()
+            string EffectDescription()
             {
-                return "[On Play] Suspend 1 of your opponent's Digimon. During your opponent's next unsuspend phase, one of your opponent's Digimon can unsuspend.";
+                return "[On Play] Suspend 1 of your opponent's Digimon. During your opponent's next unsuspend phase, none of your opponent's Digimon can unsuspend.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -31,25 +27,19 @@ public class BT2_049 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                    && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    return true;
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -57,7 +47,7 @@ public class BT2_049 : CEntity_Effect
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
@@ -70,15 +60,8 @@ public class BT2_049 : CEntity_Effect
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                        && !permanent.TopCard.CanNotBeAffected(activateClass);
                 }
 
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(permanentCondition: PermanentCondition, effectDuration: EffectDuration.UntilOwnerActivePhase, activateClass: activateClass, isOnlyActivePhase: true, effectName: "Your Digimon can't unsuspend"));
@@ -89,35 +72,31 @@ public class BT2_049 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
             cardEffects.Add(activateClass);
 
-            string EffectDiscription()
+            string EffectDescription()
             {
                 return "[When Attacking] Gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                return CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                    && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (card.Owner.CanAddMemory(activateClass))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                if (card.Owner.CanAddMemory(activateClass))
+                {
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                }
             }
         }
 

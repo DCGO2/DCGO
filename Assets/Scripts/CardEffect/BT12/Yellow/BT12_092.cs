@@ -39,7 +39,7 @@ namespace DCGO.CardEffects.BT12
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.ContainsCardName("Agumon") || permanent.TopCard.HasGreymonName))
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.HasAgumonName || permanent.TopCard.HasGreymonName))
                         {
                             if (card.Owner.MaxMemoryCost >= 1)
                             {

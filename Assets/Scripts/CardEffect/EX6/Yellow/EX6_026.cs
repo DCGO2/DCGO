@@ -41,9 +41,9 @@ namespace DCGO.CardEffects.EX6
                                 {
                                     if (xrosCardSource.IsDigimon)
                                     {
-                                        if (xrosCardSource.ContainsCardName("Sanzomon") ||
-                                            xrosCardSource.ContainsCardName("Gokuumon") ||
-                                            xrosCardSource.ContainsCardName("Sagomon"))
+                                        if (xrosCardSource.EqualsCardNameDigiXros("Sanzomon") ||
+                                            xrosCardSource.EqualsCardNameDigiXros("Gokuumon") ||
+                                            xrosCardSource.EqualsCardNameDigiXros("Sagomon"))
                                         {
                                             return true;
                                         }

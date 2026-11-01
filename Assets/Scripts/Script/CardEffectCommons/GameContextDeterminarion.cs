@@ -139,6 +139,22 @@ public partial class CardEffectCommons
         return exists;
     }
 
+    /// <summary>
+    /// For effects that trigger as their card is on its way to the trash, such as "when an effect trashes this
+    /// card from your Digimon's digivolution cards". The trigger fires before the card arrives, so
+    /// IsExistOnTrashTrigger would still find it under the Digimon and pin nothing. Pin Root.Trash for the
+    /// destination instead, so EnforceLocationCheck invalidates the effect if the card leaves the trash before
+    /// it resolves, and pair it with IsExistOnTrashActivate. Always true so it can be chained onto the trigger.
+    /// </summary>
+    public static bool ExpectOnTrashTrigger(ICardEffect cardEffect)
+    {
+        if (cardEffect == null) return false;
+
+        CardLocationMap[cardEffect] = SelectCardEffect.Root.Trash;
+
+        return true;
+    }
+
     public static bool IsExistInSecurityTrigger(CardSource card, ICardEffect cardEffect)
     {
         bool exists = IsExistInSecurity(card);

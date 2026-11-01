@@ -244,7 +244,10 @@ public class SelectBattleDeck : MonoBehaviour
     {
         for (int i = 0; i < deckInfoPrefabParentScroll.content.childCount; i++)
         {
-            Destroy(deckInfoPrefabParentScroll.content.GetChild(i).gameObject);
+            if (i > 0)
+            {
+                Destroy(deckInfoPrefabParentScroll.content.GetChild(i).gameObject);
+            }
         }
 
         for (int i = 0; i < ContinuousController.instance.DeckDatas.Count; i++)
@@ -285,11 +288,27 @@ public class SelectBattleDeck : MonoBehaviour
 
         if (ContinuousController.instance.DeckDatas.Count == 0)
         {
-
+            for (int i = 0; i < deckInfoPrefabParentScroll.content.childCount; i++)
+            {
+                if (deckInfoPrefabParentScroll.content.GetChild(i).GetComponent<SelectRandomDeckButton>() != null)
+                {
+                    deckInfoPrefabParentScroll.content.GetChild(i).GetComponent<SelectRandomDeckButton>().Outline.SetActive(true);
+                    break;
+                }
+            }
         }
 
         else
         {
+            for (int i = 0; i < deckInfoPrefabParentScroll.content.childCount; i++)
+            {
+                if (deckInfoPrefabParentScroll.content.GetChild(i).GetComponent<SelectRandomDeckButton>() != null)
+                {
+                    deckInfoPrefabParentScroll.content.GetChild(i).GetComponent<SelectRandomDeckButton>().Outline.SetActive(false);
+                    break;
+                }
+            }
+
             for (int i = 0; i < deckInfoPrefabParentScroll.content.childCount; i++)
             {
                 if (deckInfoPrefabParentScroll.content.GetChild(i).GetComponent<DeckInfoPrefab>() != null)

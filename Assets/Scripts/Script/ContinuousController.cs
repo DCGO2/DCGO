@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -111,6 +112,9 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base AthoRenePorToken { get; private set; }
     public CEntity_Base HinukamuyToken { get; private set; }
     public CEntity_Base PetrificationToken { get; private set; }
+    public CEntity_Base PaishuToken { get; private set; }
+    public CEntity_Base KotenkenToken { get; private set; }
+
     //public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
     public BanList BanList { get; private set; } = new BanList();
 
@@ -118,23 +122,61 @@ public class ContinuousController : MonoBehaviour
     async Task LoadBanListOnline()
     {
         string url = "https://www.dcgo.online/Banlist.json";
-        UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url);
+        int maxAttempts = 3;
+        int currentAttempt = 0;
+        bool isSuccessful = false;
 
-        UnityWebRequestAsyncOperation operation = jsonWebRequest.SendWebRequest();
-
-        while (!operation.isDone)
+        while (currentAttempt < maxAttempts && !isSuccessful)
         {
-            await Task.Yield(); // Keep the method asynchronous without blocking
+            try
+            {
+                currentAttempt++;
+                Debug.Log($"[Loading] Banlist Attempt {currentAttempt} of {maxAttempts}");
+
+                UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url);
+                UnityWebRequestAsyncOperation operation = jsonWebRequest.SendWebRequest();
+
+                while (!operation.isDone)
+                {
+                    await Task.Yield(); // Keep the method asynchronous without blocking
+                }
+
+                if (jsonWebRequest.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogWarning($"[Warning] Attempt {currentAttempt} failed: {jsonWebRequest.error}");
+
+                    // If we have attempts left, wait briefly before trying again (exponential backoff optional)
+                    if (currentAttempt < maxAttempts)
+                    {
+                        int delay = currentAttempt * 500; // Waits 0.5s after 1st fail, 1s after 2nd fail
+                        Debug.Log($"Waiting {delay} seconds before next attempt...");
+                        await Task.Delay(delay);
+                    }
+                }
+                else
+                {
+                    isSuccessful = true;
+                    BanList = JsonUtility.FromJson<BanList>(jsonWebRequest.downloadHandler.text);
+                }
+            }
+            catch(TaskCanceledException ex) when (ex.InnerException is TimeoutException)
+            {
+                Debug.LogWarning("Error: Request timed out (cURL error 28 equivalent via HttpClient.Timeout).");
+            }
+            catch (TaskCanceledException)
+            {
+                Debug.LogWarning($"Error: Request was manually cancelled.");
+            }
+            catch(HttpRequestException ex)
+            {
+                Debug.LogWarning($"Network error occurred: {ex.Message}");
+            }
         }
 
-        if (jsonWebRequest.result != UnityWebRequest.Result.Success)
+        if (!isSuccessful)
         {
-            Debug.Log(jsonWebRequest.error);
+            Debug.Log($"[Error] All {maxAttempts} attempts failed to load");
             useBanlist = false;
-        }
-        else
-        {
-            BanList = JsonUtility.FromJson<BanList>(jsonWebRequest.downloadHandler.text);
         }
     }
 
@@ -441,8 +483,6 @@ public class ContinuousController : MonoBehaviour
 
         await HinukamuyToken.GetCardSprite();
 
-        
-
         PetrificationToken = ScriptableObject.CreateInstance<CEntity_Base>();
         PetrificationToken.cardColors = new List<CardColor>() { CardColor.White };
         PetrificationToken.PlayCost = -1;
@@ -461,6 +501,44 @@ public class ContinuousController : MonoBehaviour
         PetrificationToken.CardEffectClassName = "BT21_029_token";
 
         await PetrificationToken.GetCardSprite();
+
+        PaishuToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        PaishuToken.cardColors = new List<CardColor>() { CardColor.Yellow };
+        PaishuToken.PlayCost = -1;
+        PaishuToken.Level = 0;
+        PaishuToken.CardName_JPN = "";
+        PaishuToken.CardName_ENG = "Paishu";
+        PaishuToken.Form_JPN = new List<string>();
+        PaishuToken.Form_ENG = new List<string>();
+        PaishuToken.Attribute_JPN = new List<string>();
+        PaishuToken.Attribute_ENG = new List<string>();
+        PaishuToken.Type_JPN = new List<string>();
+        PaishuToken.Type_ENG = new List<string>();
+        PaishuToken.CardSpriteName = "EX12-057-token";
+        PaishuToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        PaishuToken.DP = 6000;
+        PaishuToken.CardEffectClassName = "EX12_057_token";
+
+        await PaishuToken.GetCardSprite();
+
+        KotenkenToken = ScriptableObject.CreateInstance<CEntity_Base>();
+        KotenkenToken.cardColors = new List<CardColor>() { CardColor.Black };
+        KotenkenToken.PlayCost = -1;
+        KotenkenToken.Level = 0;
+        KotenkenToken.CardName_JPN = "";
+        KotenkenToken.CardName_ENG = "Kotenken";
+        KotenkenToken.Form_JPN = new List<string>();
+        KotenkenToken.Form_ENG = new List<string>();
+        KotenkenToken.Attribute_JPN = new List<string>();
+        KotenkenToken.Attribute_ENG = new List<string>();
+        KotenkenToken.Type_JPN = new List<string>();
+        KotenkenToken.Type_ENG = new List<string>();
+        KotenkenToken.CardSpriteName = "EX12-034-token";
+        KotenkenToken.cardKind = new List<CardKind> { CardKind.Digimon };
+        KotenkenToken.DP = 9000;
+        KotenkenToken.CardEffectClassName = "EX12_034_token";
+
+        await KotenkenToken.GetCardSprite();
     }
 
     public static ContinuousController instance = null;

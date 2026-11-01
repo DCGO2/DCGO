@@ -16,7 +16,7 @@ public class ST15_08 : CEntity_Effect
         {
             bool PermanentCondition(Permanent targetPermanent)
             {
-                if (targetPermanent.TopCard.ContainsCardName("Agumon"))
+                if (targetPermanent.TopCard.HasAgumonName)
                 {
                     if (targetPermanent.TopCard.HasLevel)
                     {

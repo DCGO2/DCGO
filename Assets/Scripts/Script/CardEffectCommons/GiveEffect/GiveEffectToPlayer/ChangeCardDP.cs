@@ -36,6 +36,8 @@ public partial class CardEffectCommons
             condition: Condition,
             effectName: effectName);
 
+        changeDPClass.SetIsOptionEffect(activateClass.IsOptionEffect);
+
         AddEffectToPlayer(effectDuration: effectDuration, card: card, cardEffect: changeDPClass, timing: EffectTiming.None);
     }
     #endregion
