@@ -1,5 +1,4 @@
 using DCGO.Networking;
-using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -64,7 +63,6 @@ public class LobbyManager_RandomMatch : MonoBehaviour
         MatchmakingEvents.OnConnected += HandleOnConnected;
         MatchmakingEvents.OnMatchFound += StateMatchFound;
         MatchmakingEvents.OnCanceled += OnMatchmakingCanceled;
-
 
         DCGONetwork.Provider.StartMatchmaking(MatchmakingEvents);
 
@@ -141,7 +139,7 @@ public class LobbyManager_RandomMatch : MonoBehaviour
         yield return null;
     }
 
-    public void CloseLobby()
+    public void StopMatchmaking()
     {
         ContinuousController.instance.StartCoroutine(CloseLobbyCoroutine());
     }

@@ -24,7 +24,7 @@ public class PermanentSelection : IPlayerSelection
 
     public byte[] Serialize()
     {
-        byte[] bytes = new byte[(sizeof(int) * (PermanentIDList.Length + 2)) + (sizeof(bool) * IsTurnPlayerList.Length)];
+        byte[] bytes = new byte[sizeof(int) * ((PermanentIDList.Length + 1) + (IsTurnPlayerList.Length + 1))];
         int index = 0;
 
         Protocol.Serialize(PermanentIDList.Length, bytes, ref index);

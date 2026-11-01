@@ -1,18 +1,14 @@
 ﻿using DCGO.Networking;
-using Photon.Pun;
-using Photon.Pun.Demo.PunBasics;
-using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-//using Hashtable = ExitGames.Client.Photon.Hashtable;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static UnityEngine.ParticleSystem;
 using static UnityEngine.UIElements.UxmlAttributeDescription;
-public class TurnStateMachine : MonoBehaviourPunCallbacks
+public class TurnStateMachine : MonoBehaviour
 {
     private static WaitForSeconds _waitForSeconds0_2 = new WaitForSeconds(0.2f);
 
@@ -31,6 +27,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     //Turn Count
     public int TurnCount { get; set; } = 0;
     public bool isSecurityCehck { get; set; } = false;
+
+    bool _gameStated = false;
 
     #region Initialization
 
@@ -51,164 +49,48 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         _payingCosts = new int[GManager.instance.You.fieldCardFrames.Count];
         #endregion
 
-        #region AIモード
-        if (GManager.instance.IsAI)
-        {
-            ContinuousController.instance.isRandomMatch = true;
-
-            if (!PhotonNetwork.IsConnected)
-            {
-                yield return ContinuousController.instance.StartCoroutine(PhotonUtility.ConnectToMasterServerCoroutine());
-            }
-
-            yield return new WaitWhile(() => !PhotonNetwork.IsConnectedAndReady);
-
-            if (!PhotonNetwork.InLobby)
-            {
-                PhotonNetwork.JoinLobby();
-            }
-
-            yield return new WaitWhile(() => !PhotonNetwork.InLobby);
-
-            if (!PhotonNetwork.InRoom)
-            {
-                //Setting up the room to be created
-                RoomOptions roomOptions = new RoomOptions
-                {
-                    IsVisible = false,   //Make the room invisible in the lobby.
-                    IsOpen = false,      //Not Allow other players to enter the room
-                    PublishUserId = true,
-
-                    MaxPlayers = 1
-                };
-
-                string RoomName = "HelloWorld";//StringUtils.GeneratePassword_AlpahabetNum(50);
-
-                //Create Room
-                PhotonNetwork.CreateRoom(RoomName, roomOptions, null);
-            }
-
-            yield return new WaitWhile(() => !PhotonNetwork.InRoom);
-        }
-        #endregion
-
         #region gameContextの設定
-        gameContext = new GameContext(GManager.instance.You, GManager.instance.Opponent);
+        gameContext = new GameContext(GManager.instance.You, GManager.instance.Opponent, GManager.instance.IsAI);
         #endregion
+
+        GameNetworkEvents gameNetworkEvents = new GameNetworkEvents();
+
+        gameNetworkEvents.OnGameSeed += ContinuousController.instance.SetRandom;
+        gameNetworkEvents.OnSurrender += Surrender;
+
+        gameNetworkEvents.OnPlayerSelecton += (Player player, IPlayerSelection playerSelection) => 
+        {
+            player.QueuePlayerSelection(playerSelection);
+        };
+
+        gameNetworkEvents.OnMainPhaseAction += (Player player, MainPhaseAction action) =>
+        {
+            player.QueueMainPhaseAction(action);
+        };
+
+        _gameStated = false;
+        gameNetworkEvents.OnGameStarted += () =>
+        {
+            _gameStated = true;
+        };
+
+        DCGONetwork.Provider.CreateGame(gameContext, gameNetworkEvents);
+
+        yield return new WaitWhile(() => !_gameStated);
 
         #region プレイヤー名設定
 
-        #region Extract master and non-master clients among Photon clients
-        Photon.Realtime.Player MasterPlayer = null;
-        Photon.Realtime.Player nonMasterPlayer = null;
-
-        foreach (Photon.Realtime.Player player in PhotonNetwork.PlayerList)
-        {
-            if (player.ActorNumber != PhotonNetwork.CurrentRoom.MasterClientId)
-            {
-                nonMasterPlayer = player;
-            }
-
-            else
-            {
-                MasterPlayer = player;
-            }
-        }
-        #endregion
+        NetworkPlayerInfo YouNetworkInfo = DCGONetwork.Provider.GetPlayerInfo(gameContext.You);
+        NetworkPlayerInfo OpponentNetworkInfo = DCGONetwork.Provider.GetPlayerInfo(gameContext.Opponent);
 
         #region Save each player name
-        SetPlayerName(0, PlayerName(MasterPlayer));
-        SetPlayerName(1, PlayerName(nonMasterPlayer));
-        #endregion
-
-        #region Player name for that Photon client
-        string PlayerName(Photon.Realtime.Player player)
-        {
-            #region 対人戦
-            if (!GManager.instance.IsAI)
-            {
-                ExitGames.Client.Photon.Hashtable hashtable = player.CustomProperties;
-
-                if (HasPlayerName(player))
-                {
-                    if (hashtable.TryGetValue(ContinuousController.PlayerNameKey, out object value))
-                    {
-                        string playerName = (string)value;
-
-                        Debug.Log($"playername:{playerName}");
-
-                        if (!string.IsNullOrEmpty(playerName) && playerName != "Player")
-                        {
-                            return playerName;
-                        }
-
-                        if (player == PhotonNetwork.LocalPlayer)
-                        {
-                            return "You";
-                        }
-
-                        else
-                        {
-                            return "Opponent";
-                        }
-
-                        //return playerName;
-                    }
-                }
-
-                Debug.Log($"playername:None");
-                return "";
-            }
-            #endregion
-
-            #region AI mode
-            else
-            {
-                #region Player Name
-                if (player == MasterPlayer)
-                {
-                    return ContinuousController.instance.PlayerName;
-                }
-                #endregion
-
-                #region AI Player Name
-                else
-                {
-                    return "Bot";
-                }
-                #endregion
-
-            }
-            #endregion
-
-            #region Determine if that Photon client has custom properties for player names
-            bool HasPlayerName(Photon.Realtime.Player _player)
-            {
-                ExitGames.Client.Photon.Hashtable _hashtable = _player.CustomProperties;
-
-                if (_hashtable.TryGetValue(ContinuousController.PlayerNameKey, out object value))
-                {
-                    string playerName = (string)value;
-
-                    if (!string.IsNullOrEmpty(playerName))
-                    {
-                        if (playerName.Length <= ContinuousController.instance.PlayerNameMaxLength)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-            #endregion
-        }
+        SetPlayerName(gameContext.You, YouNetworkInfo.Name);
+        SetPlayerName(gameContext.Opponent, OpponentNetworkInfo.Name);
         #endregion
 
         #region Store player names in Player class and display UI
-        void SetPlayerName(int _PlayerID, string _PlayerName)
+        void SetPlayerName(Player player, string _PlayerName)
         {
-            Player player = gameContext.PlayerFromID(_PlayerID);
             player.PlayerName = _PlayerName;
 
             if (player.PlayerNameText != null)
@@ -224,9 +106,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         #endregion
 
         #region 乱数列初期化
-        if (PhotonNetwork.IsMasterClient)
+        if (DCGONetwork.Provider.IsRoomHost())
         {
-            ContinuousController.instance.GetComponent<PhotonView>().RPC("SetRandom", RpcTarget.All, RandomUtility.GetSecureRandom());
+            DCGONetwork.Provider.SetGameSeed(RandomUtility.GetSecureRandom());
         }
 
         yield return new WaitWhile(() => !ContinuousController.instance.DoneSetRandom);
@@ -235,7 +117,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
 
         #region デッキカード生成
-        yield return StartCoroutine(CardObjectController.CreatePlayerDecks(GManager.instance.CardPrefab, gameContext));
+        CardObjectController.CreatePlayerDecks(GManager.instance.CardPrefab, gameContext, YouNetworkInfo.DeckData, OpponentNetworkInfo.DeckData);
         yield return _waitForSeconds0_2;
         #endregion
 
@@ -260,31 +142,11 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         gameContext.TurnPlayer = gameContext.PlayerFromID(GameRandom.Range(0, 2));
 
         #region get first player from room custom property
-        int firstPlayerId = -1;
-
-        ExitGames.Client.Photon.Hashtable roomHash = PhotonNetwork.CurrentRoom.CustomProperties;
-
-        if (roomHash != null)
-        {
-            if (roomHash.TryGetValue(DataBase.FirstPlayerKey, out object value))
-            {
-                if (value is int)
-                {
-                    firstPlayerId = (int)value;
-                }
-            }
-        }
+        int firstPlayerId = DCGONetwork.Provider.GetRoomSetting(DataBase.FirstPlayerKey);
 
         if (firstPlayerId >= 0)
         {
-            foreach (Photon.Realtime.Player player in PhotonNetwork.PlayerList)
-            {
-                if (player.ActorNumber == firstPlayerId)
-                {
-                    int playerID = player.ActorNumber == PhotonNetwork.CurrentRoom.MasterClientId ? 0 : 1;
-                    gameContext.TurnPlayer = gameContext.PlayerFromID(playerID).Enemy;
-                }
-            }
+            gameContext.TurnPlayer = gameContext.PlayerFromID(firstPlayerId).Enemy;
         }
         #endregion
 
@@ -3185,58 +3047,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     public bool endGame { get; set; } = false;
     public void OnClickSurrenderButton()
     {
-        int localPlayerID;
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            localPlayerID = 0;
-        }
-
-        else
-        {
-            localPlayerID = 1;
-        }
-
-        photonView.RPC("Surrender", RpcTarget.All, localPlayerID);
+        DCGONetwork.Provider.SendSurrender(gameContext.You);
     }
 
-    [PunRPC]
-    public void Surrender(int loserPlayerID)
+    public void Surrender(Player player)
     {
-        Player player = null;
-
-        if (loserPlayerID == 0)
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                player = GManager.instance.You;
-            }
-
-            else
-            {
-                player = GManager.instance.Opponent;
-            }
-        }
-
-        else if (loserPlayerID == 1)
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                player = GManager.instance.Opponent;
-            }
-
-            else
-            {
-                player = GManager.instance.You;
-            }
-        }
-
         if (player != null)
         {
             EndGame(player.Enemy, true);
         }
-
-        //EndGame(gameContext.NonTurnPlayer, true);
     }
 
     public void EndGame(Player Winner, bool Surrendered, string effectName = "")
@@ -3250,17 +3069,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         ContinuousController.instance.CanSetRandom = false;
-
-        if (PhotonNetwork.InRoom)
-        {
-            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable());
-        }
-
-        if (!ContinuousController.instance.isRandomMatch && !ContinuousController.instance.isAI)
-        {
-            Debug.Log("Player property initialization");
-            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable());
-        }
 
         endGame = true;
 

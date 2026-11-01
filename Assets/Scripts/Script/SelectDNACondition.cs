@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
 using System;
 
 
-public class SelectDNACondition : MonoBehaviourPunCallbacks
+public class SelectDNACondition : MonoBehaviour
 {
     public void SetUp
         (Player SelectPlayer,

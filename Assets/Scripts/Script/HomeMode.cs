@@ -84,8 +84,6 @@ public class HomeMode : MonoBehaviour
         {
             yield return ContinuousController.instance.StartCoroutine(loadingObject.StartLoading("Disconnecting"));
 
-            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.DisconnectCoroutine());
-
             yield return ContinuousController.instance.StartCoroutine(loadingObject.EndLoading());
         }
 
