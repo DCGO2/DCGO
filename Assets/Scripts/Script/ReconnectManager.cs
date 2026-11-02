@@ -62,6 +62,7 @@ public class ReconnectManager : MonoBehaviourPunCallbacks
 
     GameObject _overlayRoot;
     Text _overlayText;
+    Button _leaveButton;
 
     #region Unity
     void Awake()
@@ -438,6 +439,9 @@ public class ReconnectManager : MonoBehaviourPunCallbacks
     {
         _resyncOk = false;
 
+        // Both sides are connected again; the check takes a few seconds and decides the outcome itself.
+        SetLeaveButtonVisible(false);
+
         SetText(Localized("Reconnected. Verifying game state...", "再接続しました。ゲーム状態を確認中..."));
 
         float end = Time.unscaledTime + ResyncTimeoutSeconds;
@@ -566,7 +570,7 @@ public class ReconnectManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region Ending the match
-    void EndMatch(Player winner)
+    void EndMatch(Player winner, bool surrendered = false)
     {
         StopRoutine();
         HideOverlay();
@@ -577,7 +581,35 @@ public class ReconnectManager : MonoBehaviourPunCallbacks
             && GManager.instance.turnStateMachine != null
             && !GManager.instance.turnStateMachine.endGame)
         {
-            GManager.instance.turnStateMachine.EndGame(winner, false);
+            GManager.instance.turnStateMachine.EndGame(winner, surrendered);
+        }
+    }
+
+    // "Leave match" on the overlay: the player does not want to wait out the reconnect window.
+    void OnClickLeaveButton()
+    {
+        if (!MatchInProgress)
+        {
+            FinishWithoutResult();
+            return;
+        }
+
+        switch (_state)
+        {
+            case State.LocalReconnecting:
+                // We are the one who dropped. Giving up is a surrender: the same loss as running out the timer, just sooner.
+                // The opponent cannot be told (we are offline); they win when our PlayerTtl runs out.
+                Debug.Log("[Reconnect] Player chose to leave instead of reconnecting. Match is lost.");
+                StopRoutine();
+                AbandonConnection();
+                EndMatch(GManager.instance.Opponent, true);
+                break;
+
+            case State.WaitingForOpponent:
+                // The opponent dropped. Leaving early gives the same result as letting the timer run out.
+                Debug.Log("[Reconnect] Player chose not to wait for the opponent. You win.");
+                EndMatch(GManager.instance.You);
+                break;
         }
     }
 
@@ -592,7 +624,8 @@ public class ReconnectManager : MonoBehaviourPunCallbacks
 
     #region Overlay
     // A full-screen blocker built at runtime (no scene or prefab changes needed). It also swallows clicks,
-    // so nobody can act (and send RPCs into the void) while the other side is away.
+    // so nobody can act (and send RPCs into the void) while the other side is away. The only thing that
+    // can be clicked is the "Leave match" button, which is hidden while the post-rejoin state check runs.
     void ShowOverlay()
     {
         if (_overlayRoot == null)
@@ -625,14 +658,63 @@ public class ReconnectManager : MonoBehaviourPunCallbacks
             _overlayText.color = new Color(1f, 0.67f, 0f, 1f);
             _overlayText.raycastTarget = false;
             Stretch(textObject.GetComponent<RectTransform>());
+
+            _leaveButton = CreateLeaveButton(_overlayRoot.transform);
         }
 
         _overlayRoot.SetActive(true);
+        SetLeaveButtonVisible(true);
 
         // Drop keyboard/controller focus so Enter/Space cannot trigger a hidden button.
         if (EventSystem.current != null)
         {
             EventSystem.current.SetSelectedGameObject(null);
+        }
+    }
+
+    Button CreateLeaveButton(Transform parent)
+    {
+        GameObject buttonObject = new GameObject("LeaveButton");
+        buttonObject.transform.SetParent(parent, false);
+
+        RectTransform rect = buttonObject.AddComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f, 0.5f);
+        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.sizeDelta = new Vector2(360f, 80f);
+        rect.anchoredPosition = new Vector2(0f, -180f);
+
+        Image image = buttonObject.AddComponent<Image>();
+        image.color = new Color(0.55f, 0.1f, 0.1f, 1f);
+
+        Button button = buttonObject.AddComponent<Button>();
+        button.targetGraphic = image;
+        button.onClick.AddListener(() =>
+        {
+            // One click only; the match result screen takes over from here.
+            button.interactable = false;
+            OnClickLeaveButton();
+        });
+
+        GameObject labelObject = new GameObject("Label");
+        labelObject.transform.SetParent(buttonObject.transform, false);
+        Text label = labelObject.AddComponent<Text>();
+        label.font = Font.CreateDynamicFontFromOSFont("Arial", 32);
+        label.fontSize = 32;
+        label.alignment = TextAnchor.MiddleCenter;
+        label.color = Color.white;
+        label.raycastTarget = false;
+        label.text = Localized("Leave match", "対戦から退出");
+        Stretch(labelObject.GetComponent<RectTransform>());
+
+        return button;
+    }
+
+    void SetLeaveButtonVisible(bool visible)
+    {
+        if (_leaveButton != null)
+        {
+            _leaveButton.gameObject.SetActive(visible);
+            _leaveButton.interactable = visible;
         }
     }
 
@@ -651,6 +733,7 @@ public class ReconnectManager : MonoBehaviourPunCallbacks
             Destroy(_overlayRoot);
             _overlayRoot = null;
             _overlayText = null;
+            _leaveButton = null;
         }
     }
 
