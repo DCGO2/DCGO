@@ -206,8 +206,7 @@ namespace DCGO.CardEffects.BT27
                         && permanent.TopCard.ContainsCardName("Mamemon");
 
                 bool CanSelectPermanentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true);
+                    => CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
