@@ -89,7 +89,6 @@ namespace DCGO.CardEffects.BT27
                         && cardSource.IsDigimon
                         && cardSource.Owner == card.Owner
                         && cardSource.CanPlayJogress(true)
-                        && CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && cardSource.CanJogressFromTargetPermanent(card.PermanentOfThisCard(), true);
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -98,7 +97,6 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
-                        && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectDNACardCondition)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanent => permanent.IsDigimon && permanent != card.PermanentOfThisCard());
 
