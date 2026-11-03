@@ -686,7 +686,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
             }
 
             //Wait until selection is complete
-            yield return new WaitUntil(() => _selectPlayer.HasPlayerSelection());
+            yield return _selectPlayer.WaitForPlayerSelection();
             PermanentSelection permanentSelection = _selectPlayer.DequeuePlayerSelection<PermanentSelection>();
 
             if (permanentSelection != null)

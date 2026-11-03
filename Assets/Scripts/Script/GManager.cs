@@ -275,6 +275,9 @@ public class GManager : MonoBehaviourPun
         {
             //Handles dropped connections during online matches (reconnect window / pause / resync)
             gameObject.AddComponent<ReconnectManager>();
+
+            //Per-player turn clock; running out of time loses the match
+            gameObject.AddComponent<TurnTimer>();
         }
 
         GetComponent<Effects>().Init();

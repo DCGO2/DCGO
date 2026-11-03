@@ -114,7 +114,7 @@ public class OptionalSkill : MonoBehaviourPunCallbacks
             }
         }
 
-        yield return new WaitUntil(() => player.HasPlayerSelection());
+        yield return player.WaitForPlayerSelection();
         ValueSelection valueSelection = player.DequeuePlayerSelection<ValueSelection>();
         _useOptional = valueSelection != null ? valueSelection.ValueAsBool() : false;
 

@@ -462,7 +462,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
             }
 
             //Wait until selection ends
-            yield return new WaitUntil(() => attackOwner.HasPlayerSelection());
+            yield return attackOwner.WaitForPlayerSelection();
 
             _defender = null;
             bool isTargetTurnPlayer = false;
