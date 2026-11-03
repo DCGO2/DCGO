@@ -100,8 +100,7 @@ namespace DCGO.CardEffects.BT27
                     => "[All Turns] [Once Per Turn] When any of your other Digimon with [Chessmon] in their names are deleted, delete 1 of your opponent's lowest play cost Digimon. If this effect didn't delete, trash their top security card.";
 
                 bool OtherChessmonCondition(Permanent permanent)
-                    => CardEffectCommons.IsOwnerPermanent(permanent, card)
-                        && permanent.IsDigimon
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent != card.PermanentOfThisCard()
                         && permanent.TopCard.ContainsCardName("Chessmon");
 
