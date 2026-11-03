@@ -23,7 +23,10 @@ namespace DCGO.CardEffects.BT27
 
                 string EffectDescription() => "[Main] [Once Per Turn] By paying 1 cost, you may activate 1 of this Digimon's [On Deletion] effects.";
 
-                bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass) && card.Owner.MaxMemoryCost >= 1;
+                bool CanUseCondition(Hashtable hashtable) 
+                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    && card.Owner.MaxMemoryCost >= 1
+                    && CardEffectCommons.IsOwnerTurn(card);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
@@ -101,7 +104,7 @@ namespace DCGO.CardEffects.BT27
 
             #region Shared On Deletion
             
-            string OnDeletionEffectName = "May delete 1 of your opponent's Digimon with 6000 DP or less";
+            string OnDeletionEffectName = "Delete 1 of your opponent's Digimon with 6000 DP or less";
 
             string OnDeletionEffectDescription() => "[On Deletion] Delete 1 of your opponent's Digimon with 6000 DP or less.";
 
@@ -141,19 +144,14 @@ namespace DCGO.CardEffects.BT27
 
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
-                ActivateClass activateClass = new();
-                activateClass.SetUpICardEffect(OnDeletionEffectName, hash => OnDeletionUseCondition(hash, activateClass), card);
-                activateClass.SetUpActivateClass(hash => OnDeletionActivateCondition(hash, activateClass), hash => OnDeletionActivateCoroutine(hash, activateClass), -1, false, OnDeletionEffectDescription());
-                cardEffects.Add(activateClass);
-            }
-
-            if (timing == EffectTiming.OnDestroyedAnyone)
-            {
-                ActivateClass activateClass = new();
-                activateClass.SetUpICardEffect(OnDeletionEffectName, hash => OnDeletionUseCondition(hash, activateClass), card);
-                activateClass.SetUpActivateClass(hash => OnDeletionActivateCondition(hash, activateClass), hash => OnDeletionActivateCoroutine(hash, activateClass), -1, false, OnDeletionEffectDescription());
-                activateClass.SetIsInheritedEffect(true);
-                cardEffects.Add(activateClass);
+                foreach(bool isInheritedEffect in new[]{true, false})
+                {
+                    ActivateClass activateClass = new();
+                    activateClass.SetUpICardEffect(OnDeletionEffectName, hash => OnDeletionUseCondition(hash, activateClass), card);
+                    activateClass.SetUpActivateClass(hash => OnDeletionActivateCondition(hash, activateClass), hash => OnDeletionActivateCoroutine(hash, activateClass), -1, false, OnDeletionEffectDescription());
+                    activateClass.SetIsInheritedEffect(isInheritedEffect);
+                    cardEffects.Add(activateClass);
+                }
             }
             #endregion
 
