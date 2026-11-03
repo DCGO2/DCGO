@@ -227,7 +227,8 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanSelectOptionCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
-                        && permanent.IsOption;
+                        && permanent.IsOption
+                        && !permanent.IsDigimon; // I don't want dual cards to be selectable, this might be a problem if there's ever a way to turn an option into a digimon and Bandai rules that the option is not trashed by game rules in that situation
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
