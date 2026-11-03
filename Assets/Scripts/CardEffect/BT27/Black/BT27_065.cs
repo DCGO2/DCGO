@@ -200,8 +200,7 @@ namespace DCGO.CardEffects.BT27
                     => "[All Turns] [Once Per Turn] When any of your other Digimon with [Mamemon] in their names are deleted, delete 1 of your opponent's lowest play cost Digimon.";
 
                 bool OtherMamemonCondition(Permanent permanent)
-                    => CardEffectCommons.IsOwnerPermanent(permanent, card)
-                        && permanent.IsDigimon
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent != card.PermanentOfThisCard()
                         && permanent.TopCard.ContainsCardName("Mamemon");
 
