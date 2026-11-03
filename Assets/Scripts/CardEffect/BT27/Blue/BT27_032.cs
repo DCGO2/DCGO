@@ -159,8 +159,7 @@ namespace DCGO.CardEffects.BT27
                     => CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
 
                 bool CanSelectPermanentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && CardEffectCommons.IsMaxLevel(permanent, card.Owner.Enemy);
+                    => CardEffectCommons.IsMaxLevel(permanent, card.Owner.Enemy);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
