@@ -23,7 +23,10 @@ namespace DCGO.CardEffects.BT27
 
                 string EffectDescription() => "[Main] [Once Per Turn] By paying 1 cost, you may activate 1 of this Digimon's [On Deletion] effects.";
 
-                bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaDigimon(card) && card.Owner.MaxMemoryCost >= 1;
+                bool CanUseCondition(Hashtable hashtable) 
+                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    && card.Owner.MaxMemoryCost >= 1
+                    && CardEffectCommons.IsOwnerTurn(card);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
