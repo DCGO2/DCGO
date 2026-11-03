@@ -96,8 +96,7 @@ namespace DCGO.CardEffects.BT27
                         }
 
                         if (!CardEffectCommons.IsOpponentTurn(card)
-                            || FaceDownCountUnderTamers() < TrashCount
-                            || !CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectOptionCondition)) yield break;
+                            || FaceDownCountUnderTamers() < TrashCount) yield break;
 
                         #region Cost - Trash 4 bottom face-down cards from under any of your Tamers
                         List<SelectionElement<bool>> useElements = new List<SelectionElement<bool>>()
