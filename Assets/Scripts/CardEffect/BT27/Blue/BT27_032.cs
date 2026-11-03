@@ -24,16 +24,10 @@ namespace DCGO.CardEffects.BT27
             }
             #endregion
 
-            #region Reboot
+            #region Reboot/Blocker
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
-            }
-            #endregion
-
-            #region Blocker
-            if (timing == EffectTiming.None)
-            {
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
             #endregion
