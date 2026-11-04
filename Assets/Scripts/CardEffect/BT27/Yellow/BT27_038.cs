@@ -30,7 +30,6 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared On Play / When Digivolving / When Attacking - OPT
-
             string SharedEffectName = "1 opponent's Digimon gets Security A. -1, then by deleting 1 of your Digimon, 1 opponent's Digimon gets -6000 DP";
 
             string SharedEffectDescription(string tag)
@@ -77,10 +76,10 @@ namespace DCGO.CardEffects.BT27
                 }
                 #endregion
 
-                #region By choosing 1 of your Digimon, delete it and 1 opponent's Digimon gets -6000 DP
+                #region By choosing 1 of your Digimon, delete it and 1 opponent's Digimon can't suspend
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnDigimonCondition))
                 {
-                    Permanent selectedOwnDigimon = null;
+                    List<Permanent> selectedOwnDigimon = new List<Permanent>();
 
                     SelectPermanentEffect selectOwnEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -103,22 +102,16 @@ namespace DCGO.CardEffects.BT27
 
                     IEnumerator SelectOwnCoroutine(Permanent permanent)
                     {
-                        selectedOwnDigimon = permanent;
+                        selectedOwnDigimon.Add(permanent);
                         yield return null;
                     }
 
-                    if (selectedOwnDigimon != null)
+                    if (selectedOwnDigimon.Count == 1)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                            targetPermanents: new List<Permanent>() { selectedOwnDigimon },
-                            activateClass: activateClass,
-                            successProcess: SuccessProcess,
-                            failureProcess: null));
+                        Permanent selectOpponentPermanent = null;
 
-                        IEnumerator SuccessProcess(List<Permanent> _permanents)
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentDigimonCondition))
                         {
-                            if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentDigimonCondition)) yield break;
-
                             SelectPermanentEffect selectOpponentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectOpponentEffect.SetUp(
@@ -140,12 +133,20 @@ namespace DCGO.CardEffects.BT27
 
                             IEnumerator SelectOpponentCoroutine(Permanent permanent)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                    targetPermanent: permanent,
-                                    changeValue: -6000,
-                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                    activateClass: activateClass));
+                                selectOpponentPermanent = permanent;
+                                yield return null;
                             }
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(selectedOwnDigimon, hashtable).Destroy());
+
+                        if (selectOpponentPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                                targetPermanent: selectOpponentPermanent,
+                                changeValue: -6000,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass));
                         }
                     }
                 }
@@ -163,7 +164,6 @@ namespace DCGO.CardEffects.BT27
                 onPlay: true,
                 whenDigivolving: true,
                 whenAttacking: true);
-
             #endregion
 
             return cardEffects;
