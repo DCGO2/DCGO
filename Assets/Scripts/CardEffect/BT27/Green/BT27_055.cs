@@ -57,7 +57,6 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared When Digivolving / When Attacking - OPT
-
             string SharedEffectName = "Suspend up to 2 opponent's Digimon/Tamers, then 1 of their Digimon/Tamers can't unsuspend";
 
             string SharedEffectDescription(string tag)
@@ -81,7 +80,7 @@ namespace DCGO.CardEffects.BT27
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: true,
                         selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: null,
@@ -134,7 +133,6 @@ namespace DCGO.CardEffects.BT27
                 hashValue: "BT27_055_WD_WA",
                 whenDigivolving: true,
                 whenAttacking: true);
-
             #endregion
 
             #region All Turns - OPT
