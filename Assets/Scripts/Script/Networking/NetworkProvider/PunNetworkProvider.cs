@@ -32,6 +32,7 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 
     private Coroutine _matchmakingCoroutine = null;
     private Coroutine _enteringPrivateRoomCoroutine = null;
+    private Coroutine _waitForGameStartCoroutine = null;
 
     private bool _inPrivateRoom = false;
     private bool _inGame = false;
@@ -97,6 +98,7 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 
         _matchmakingCoroutine = null;
         _enteringPrivateRoomCoroutine = null;
+        _waitForGameStartCoroutine = null;
         _reconnectCoroutine = null;
         _localReconnecting = false;
         _inPrivateRoom = false;
@@ -728,30 +730,52 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
         _playerInfos = GetRoomInfo().Players;
         _gameRoomName = PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.Name : null;
 
-        if (IsRoomHost())
-        {
-            StartCoroutine(WaitForPlayersCoroutine());
-        }
+        _waitForGameStartCoroutine = StartCoroutine(WaitForGameStartCoroutine());
 
         SetLocalPlayerProperty(WaitingForGameStartKey, true);
     }
 
-    IEnumerator WaitForPlayersCoroutine()
+    IEnumerator WaitForGameStartCoroutine()
     {
-        yield return new WaitUntil(() =>
-        {
-            foreach (PhotonPlayer player in PhotonNetwork.PlayerList)
-            {
-                if (!GetPlayerProperty(player, WaitingForGameStartKey))
-                {
-                    return false;
-                }
-            }
+        yield return new WaitUntil(() => _gameStarted || !PhotonNetwork.InRoom || !IsOpponentActive() || (IsRoomHost() && AllPlayersWaitingForGameStart()));
 
-            return true;
-        });
+        _waitForGameStartCoroutine = null;
+
+        if (_gameStarted)
+        {
+            yield break;
+        }
+
+        if (!PhotonNetwork.InRoom || !IsOpponentActive())
+        {
+            Debug.Log("[Game] Player dropped before the game started.");
+            EndGameByDisconnect(null);
+            yield break;
+        }
 
         photonView.RPC("StartGame_Internal", RpcTarget.All);
+    }
+
+    bool AllPlayersWaitingForGameStart()
+    {
+        foreach (PhotonPlayer player in PhotonNetwork.PlayerList)
+        {
+            if (!GetPlayerProperty(player, WaitingForGameStartKey))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    void StopWaitingForGameStart()
+    {
+        if (_waitForGameStartCoroutine != null)
+        {
+            StopCoroutine(_waitForGameStartCoroutine);
+            _waitForGameStartCoroutine = null;
+        }
     }
 
     [PunRPC]
@@ -887,6 +911,7 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
     public void EndGame()
     {
         StopReconnect();
+        StopWaitingForGameStart();
 
         _inGame = false;
         _gameStarted = false;
