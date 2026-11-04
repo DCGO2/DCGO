@@ -177,11 +177,6 @@ public class RoomManager : MonoBehaviour
         DCGONetwork.Provider.SetDeckData(ContinuousController.instance.BattleDeckData);
         DCGONetwork.Provider.SetRoomReadyState(_isReady);
 
-        if (DCGONetwork.Provider.IsRoomHost())
-        {
-            DCGONetwork.Provider.SetRoomSetting(DataBase.FirstPlayerKey, -1);
-        }
-
         OnRoomInfoUpdated(DCGONetwork.Provider.GetRoomInfo());
     }
 
