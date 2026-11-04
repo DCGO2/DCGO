@@ -1,4 +1,5 @@
 using ExitGames.Client.Photon;
+using System;
 
 public class CardSelection : IPlayerSelection
 {
@@ -11,7 +12,6 @@ public class CardSelection : IPlayerSelection
 
     public CardSelection()
     {
-        CardIDList = new int[0]; 
     }
 
     public CardSelection(byte[] bytes)
@@ -19,16 +19,22 @@ public class CardSelection : IPlayerSelection
         Deserialize(bytes);
     }
 
+    //A length of -1 means the list is null (no selection)
     public byte[] Serialize()
     {
-        byte[] bytes = new byte[sizeof(int) * (CardIDList.Length + 1)];
+        int length = CardIDList != null ? CardIDList.Length : -1;
+
+        byte[] bytes = new byte[sizeof(int) * (1 + Math.Max(length, 0))];
         int index = 0;
 
-        Protocol.Serialize(CardIDList.Length, bytes, ref index);
+        Protocol.Serialize(length, bytes, ref index);
 
-        foreach (int cardID in CardIDList)
+        if (CardIDList != null)
         {
-            Protocol.Serialize(cardID, bytes, ref index);
+            foreach (int cardID in CardIDList)
+            {
+                Protocol.Serialize(cardID, bytes, ref index);
+            }
         }
 
         return bytes;
@@ -40,7 +46,7 @@ public class CardSelection : IPlayerSelection
 
         Protocol.Deserialize(out int length, bytes, ref index);
 
-        CardIDList = new int[length];
+        CardIDList = length >= 0 ? new int[length] : null;
 
         for (int i = 0; i < length; i++)
         {

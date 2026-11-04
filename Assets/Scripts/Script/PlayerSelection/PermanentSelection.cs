@@ -1,4 +1,5 @@
 using ExitGames.Client.Photon;
+using System;
 
 public class PermanentSelection : IPlayerSelection
 {
@@ -22,22 +23,32 @@ public class PermanentSelection : IPlayerSelection
         Deserialize(bytes);
     }
 
+    //A count of -1 means the list is null
     public byte[] Serialize()
     {
-        byte[] bytes = new byte[sizeof(int) * ((PermanentIDList.Length + 1) + (IsTurnPlayerList.Length + 1))];
+        int PermanentIDListCount = PermanentIDList != null ? PermanentIDList.Length : -1;
+        int IsTurnPlayerListCount = IsTurnPlayerList != null ? IsTurnPlayerList.Length : -1;
+
+        byte[] bytes = new byte[sizeof(int) * (2 + Math.Max(PermanentIDListCount, 0) + Math.Max(IsTurnPlayerListCount, 0))];
         int index = 0;
 
-        Protocol.Serialize(PermanentIDList.Length, bytes, ref index);
-        Protocol.Serialize(IsTurnPlayerList.Length, bytes, ref index);
+        Protocol.Serialize(PermanentIDListCount, bytes, ref index);
+        Protocol.Serialize(IsTurnPlayerListCount, bytes, ref index);
 
-        foreach (var PermanentID in PermanentIDList)
+        if (PermanentIDList != null)
         {
-            Protocol.Serialize(PermanentID, bytes, ref index);
+            foreach (var PermanentID in PermanentIDList)
+            {
+                Protocol.Serialize(PermanentID, bytes, ref index);
+            }
         }
 
-        foreach (var IsTurnPlayer in IsTurnPlayerList)
+        if (IsTurnPlayerList != null)
         {
-            Protocol.Serialize(IsTurnPlayer ? 1 : 0, bytes, ref index);
+            foreach (var IsTurnPlayer in IsTurnPlayerList)
+            {
+                Protocol.Serialize(IsTurnPlayer ? 1 : 0, bytes, ref index);
+            }
         }
 
         return bytes;
@@ -50,8 +61,8 @@ public class PermanentSelection : IPlayerSelection
         Protocol.Deserialize(out int PermanentIDListCount, bytes, ref index);
         Protocol.Deserialize(out int IsTurnPlayerListCount, bytes, ref index);
 
-        PermanentIDList = new int[PermanentIDListCount];
-        IsTurnPlayerList = new bool[IsTurnPlayerListCount];
+        PermanentIDList = PermanentIDListCount >= 0 ? new int[PermanentIDListCount] : null;
+        IsTurnPlayerList = IsTurnPlayerListCount >= 0 ? new bool[IsTurnPlayerListCount] : null;
 
         for (int i = 0; i < PermanentIDListCount; i++)
         {
