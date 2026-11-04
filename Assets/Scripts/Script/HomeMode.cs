@@ -82,6 +82,15 @@ public class HomeMode : MonoBehaviour
         {
             yield return ContinuousController.instance.StartCoroutine(loadingObject.StartLoading("Disconnecting"));
 
+            bool disconnected = false;
+
+            DCGONetwork.Provider.Disconnect(() =>
+            {
+                disconnected = true;
+            });
+
+            yield return new WaitUntil(() => disconnected);
+
             yield return ContinuousController.instance.StartCoroutine(loadingObject.EndLoading());
         }
 
