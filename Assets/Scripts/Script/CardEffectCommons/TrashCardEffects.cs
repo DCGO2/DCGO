@@ -21,10 +21,10 @@ public partial class CardEffectCommons
         CardSource card,
         Func<CardSource, bool> canSelectCardCondition,
         ICardEffect cardEffect,
-        int drawCount,
-        int memoryGain,
         string customMessage = null,
         int trashCount = 1,
+        int drawCount = 1,
+        int memoryGain = 1,
         bool optional = true,
         IEnumerator successProcess = null,
         IEnumerator failureProcess = null)
@@ -58,8 +58,8 @@ public partial class CardEffectCommons
             {
                 if (cardSources.Count >= trashCount)
                 {
-                    if (drawCount > 0) yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, cardEffect).Draw());
-                    if (memoryGain > 0) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, cardEffect));
+                    if (drawCount > 0) yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, drawCount, cardEffect).Draw());
+                    if (memoryGain > 0) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(memoryGain, cardEffect));
                     if (successProcess != null) yield return ContinuousController.instance.StartCoroutine(successProcess);
                 }
                 else if (failureProcess != null) 
