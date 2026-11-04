@@ -11,6 +11,7 @@ public class CardSelection : IPlayerSelection
 
     public CardSelection()
     {
+        CardIDList = new int[0]; 
     }
 
     public CardSelection(byte[] bytes)

@@ -13,8 +13,8 @@ public class PermanentSelection : IPlayerSelection
 
     public PermanentSelection(bool isTurnPlayer, int permanentID)
     {
-        bool[] isTurnPlayerList = new bool[] { isTurnPlayer };
-        int[] permanentIndexList = new int[] { permanentID };
+        IsTurnPlayerList = new bool[] { isTurnPlayer };
+        PermanentIDList = new int[] { permanentID };
     }
 
     public PermanentSelection(byte[] bytes)
