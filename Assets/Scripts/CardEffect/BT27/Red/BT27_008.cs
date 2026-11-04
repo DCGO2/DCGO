@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.BT27
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.Trash1ToDraw1Gain1Memory(card, CanSelectCardCondition, activateClass, "Select 1 [Chronicle] trait card to trash."));
+                        CardEffectCommons.TrashToDrawAndGainMemory(card, CanSelectCardCondition, activateClass, drawCount: 1, memoryGain: 1, "Select 1 [Chronicle] trait card to trash."));
                 }
             }
             #endregion
