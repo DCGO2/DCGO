@@ -30,6 +30,7 @@ namespace DCGO.Networking
 
         //Player whose connection dropped, and how many seconds they have to come back
         public Action<Player, float> OnConnectionLost;
+        public Action OnVerifyingGameState;
         public Action OnConnectionRestored;
 
         //Player who didn't come back, or null when the match should end with no result
@@ -80,6 +81,7 @@ namespace DCGO.Networking
         void SendMainPhaseAction(Player player, MainPhaseAction action);
         void SendPlayerSelection(Player player, IPlayerSelection playerSelection);
         void SendSurrender(Player player);
+        void GiveUpReconnect();
         void EndGame();
     }
 }

@@ -79,13 +79,23 @@ public class TurnStateMachine : MonoBehaviour
             {
                 _reconnectOverlay.Show(LocalizeUtility.GetLocalizedString(
                     EngMessage: "Connection lost. Reconnecting...",
-                    JpnMessage: "接続が切れました。再接続中..."), seconds);
+                    JpnMessage: "接続が切れました。再接続中..."), seconds, DCGONetwork.Provider.GiveUpReconnect);
             }
             else
             {
                 _reconnectOverlay.Show(LocalizeUtility.GetLocalizedString(
                     EngMessage: "Opponent disconnected. Waiting for them to return...",
-                    JpnMessage: "対戦相手の接続が切れました。復帰を待っています..."), seconds);
+                    JpnMessage: "対戦相手の接続が切れました。復帰を待っています..."), seconds, DCGONetwork.Provider.GiveUpReconnect);
+            }
+        };
+
+        gameNetworkEvents.OnVerifyingGameState += () =>
+        {
+            if (!endGame)
+            {
+                _reconnectOverlay.ShowMessage(LocalizeUtility.GetLocalizedString(
+                    EngMessage: "Reconnected. Verifying game state...",
+                    JpnMessage: "再接続しました。ゲーム状態を確認中..."));
             }
         };
 

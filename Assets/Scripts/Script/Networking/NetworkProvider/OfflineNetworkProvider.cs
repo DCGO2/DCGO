@@ -139,6 +139,11 @@ public class OfflineNetworkProvider : INetworkProvider
         }
     }
 
+    public void GiveUpReconnect()
+    {
+
+    }
+
     public void EndGame()
     {
         _gameEvents = new GameNetworkEvents();

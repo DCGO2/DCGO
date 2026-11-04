@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT27
                 string EffectDescription()
                     => "[All Turns] When any Digimon are deleted, by suspending this Tamer, you may place the top 2 cards of your deck face down under this Tamer.";
 
-                bool AnyDigimonDeletedCondition(Permanent permanent) => permanent.IsDigimon;
+                bool AnyDigimonDeletedCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)

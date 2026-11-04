@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -7,15 +8,25 @@ public class ReconnectOverlay : MonoBehaviour
 {
     GameObject _overlayRoot = null;
     Text _overlayText = null;
+    Button _leaveButton = null;
     string _message = "";
     float _deadline = 0f;
+    bool _showCountdown = false;
+    Action _onLeave = null;
 
     void Update()
     {
         if (_overlayText != null)
         {
-            int seconds = Mathf.Max(0, Mathf.CeilToInt(_deadline - Time.unscaledTime));
-            _overlayText.text = $"{_message}\n{seconds}s";
+            if (_showCountdown)
+            {
+                int seconds = Mathf.Max(0, Mathf.CeilToInt(_deadline - Time.unscaledTime));
+                _overlayText.text = $"{_message}\n{seconds}s";
+            }
+            else
+            {
+                _overlayText.text = _message;
+            }
         }
     }
 
@@ -24,11 +35,47 @@ public class ReconnectOverlay : MonoBehaviour
         Hide();
     }
 
-    public void Show(string message, float seconds)
+    public void Show(string message, float seconds, Action onLeave)
     {
         _message = message;
         _deadline = Time.unscaledTime + seconds;
+        _showCountdown = true;
+        _onLeave = onLeave;
 
+        ShowOverlay();
+        SetLeaveButtonVisible(true);
+    }
+
+    public void ShowMessage(string message)
+    {
+        _message = message;
+        _showCountdown = false;
+        _onLeave = null;
+
+        ShowOverlay();
+        SetLeaveButtonVisible(false);
+    }
+
+    public void Hide()
+    {
+        if (_overlayRoot != null)
+        {
+            Destroy(_overlayRoot);
+            _overlayRoot = null;
+            _overlayText = null;
+            _leaveButton = null;
+        }
+
+        _onLeave = null;
+    }
+
+    void OnDestroy()
+    {
+        Hide();
+    }
+
+    void ShowOverlay()
+    {
         if (_overlayRoot == null)
         {
             _overlayRoot = new GameObject("ReconnectOverlay");
@@ -59,6 +106,8 @@ public class ReconnectOverlay : MonoBehaviour
             _overlayText.color = new Color(1f, 0.67f, 0f, 1f);
             _overlayText.raycastTarget = false;
             Stretch(textObject.GetComponent<RectTransform>());
+
+            _leaveButton = CreateLeaveButton(_overlayRoot.transform);
         }
 
         _overlayRoot.SetActive(true);
@@ -70,19 +119,60 @@ public class ReconnectOverlay : MonoBehaviour
         }
     }
 
-    public void Hide()
+    Button CreateLeaveButton(Transform parent)
     {
-        if (_overlayRoot != null)
+        GameObject buttonObject = new GameObject("LeaveButton");
+        buttonObject.transform.SetParent(parent, false);
+
+        RectTransform rect = buttonObject.AddComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f, 0.5f);
+        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.sizeDelta = new Vector2(360f, 80f);
+        rect.anchoredPosition = new Vector2(0f, -180f);
+
+        Image image = buttonObject.AddComponent<Image>();
+        image.color = new Color(0.55f, 0.1f, 0.1f, 1f);
+
+        Button button = buttonObject.AddComponent<Button>();
+        button.targetGraphic = image;
+        button.onClick.AddListener(OnClickLeaveButton);
+
+        GameObject labelObject = new GameObject("Label");
+        labelObject.transform.SetParent(buttonObject.transform, false);
+        Text label = labelObject.AddComponent<Text>();
+        label.font = Font.CreateDynamicFontFromOSFont("Arial", 32);
+        label.fontSize = 32;
+        label.alignment = TextAnchor.MiddleCenter;
+        label.color = Color.white;
+        label.raycastTarget = false;
+        label.text = LocalizeUtility.GetLocalizedString(
+            EngMessage: "Leave match",
+            JpnMessage: "対戦から退出");
+        Stretch(labelObject.GetComponent<RectTransform>());
+
+        return button;
+    }
+
+    void OnClickLeaveButton()
+    {
+        Action onLeave = _onLeave;
+
+        SetLeaveButtonVisible(false);
+        _onLeave = null;
+
+        if (onLeave != null)
         {
-            Destroy(_overlayRoot);
-            _overlayRoot = null;
-            _overlayText = null;
+            onLeave();
         }
     }
 
-    void OnDestroy()
+    void SetLeaveButtonVisible(bool visible)
     {
-        Hide();
+        if (_leaveButton != null)
+        {
+            _leaveButton.gameObject.SetActive(visible);
+            _leaveButton.interactable = visible;
+        }
     }
 
     static void Stretch(RectTransform rect)

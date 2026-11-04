@@ -1021,6 +1021,34 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
         }
     }
 
+    public void GiveUpReconnect()
+    {
+        if (_reconnectCoroutine == null)
+        {
+            return;
+        }
+
+        if (_localReconnecting)
+        {
+            Debug.Log("[Reconnect] Gave up reconnecting.");
+            EndGameByDisconnect(_localPlayer);
+            AbandonConnection();
+        }
+        else if (!IsOpponentActive())
+        {
+            Debug.Log("[Reconnect] Stopped waiting for the opponent.");
+            EndGameByDisconnect(_remotePlayer);
+        }
+    }
+
+    void AbandonConnection()
+    {
+        if (PhotonNetwork.NetworkClientState != Photon.Realtime.ClientState.Disconnected && PhotonNetwork.NetworkClientState != Photon.Realtime.ClientState.PeerCreated)
+        {
+            PhotonNetwork.Disconnect();
+        }
+    }
+
     void StartReconnect(IEnumerator reconnectCoroutine)
     {
         StopReconnect();
@@ -1077,12 +1105,7 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
         {
             Debug.LogWarning("[Reconnect] Could not rejoin in time.");
             EndGameByDisconnect(_localPlayer);
-
-            if (PhotonNetwork.IsConnected)
-            {
-                PhotonNetwork.Disconnect();
-            }
-
+            AbandonConnection();
             yield break;
         }
 
@@ -1154,6 +1177,11 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
     IEnumerator CheckGameStateCoroutine()
     {
         _hasRemoteStateHash = false;
+
+        if (_gameEvents.OnVerifyingGameState != null)
+        {
+            _gameEvents.OnVerifyingGameState();
+        }
 
         float end = Time.unscaledTime + StateCheckSeconds;
         float nextSend = 0f;
