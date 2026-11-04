@@ -628,6 +628,12 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
     void SetLocalPlayerProperty(string key, object value)
     {
         Hashtable playerProperties = PhotonNetwork.LocalPlayer.CustomProperties;
+
+        if (playerProperties.TryGetValue(key, out object currentValue) && Equals(currentValue, value))
+        {
+            return;
+        }
+
         playerProperties[key] = value;
 
         if (PhotonNetwork.InRoom)

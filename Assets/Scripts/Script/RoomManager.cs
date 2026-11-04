@@ -345,8 +345,6 @@ public class RoomManager : MonoBehaviour
     #region Check the Ready button
     public void CheckReadyButton()
     {
-        bool oldIsReady = _isReady;
-
         if (CanReady())
         {
             ReadyButton.interactable = true;
