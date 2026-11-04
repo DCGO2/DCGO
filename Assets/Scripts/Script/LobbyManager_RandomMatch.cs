@@ -140,6 +140,11 @@ public class LobbyManager_RandomMatch : MonoBehaviour
         yield return null;
     }
 
+    public void CloseLobby()
+    {
+        StopMatchmaking();
+    }
+
     public void StopMatchmaking()
     {
         ContinuousController.instance.StartCoroutine(CloseLobbyCoroutine());
