@@ -146,8 +146,6 @@ namespace DCGO.CardEffects.AD1
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectPermanentCondition));
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
