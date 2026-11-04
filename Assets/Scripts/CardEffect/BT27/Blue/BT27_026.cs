@@ -30,7 +30,6 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared On Play / When Digivolving / When Attacking - OPT
-
             string SharedEffectName = "May trash 2 opponent's digivolution cards, then by deleting 1 of your Digimon, 1 opponent's Digimon can't suspend";
 
             string SharedEffectDescription(string tag)
@@ -69,7 +68,7 @@ namespace DCGO.CardEffects.BT27
                 #region By choosing 1 of your Digimon, delete it and 1 opponent's Digimon can't suspend
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnDigimonCondition))
                 {
-                    Permanent selectedOwnDigimon = null;
+                    List<Permanent> selectedOwnDigimon = new List<Permanent>();
 
                     SelectPermanentEffect selectOwnEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -92,24 +91,17 @@ namespace DCGO.CardEffects.BT27
 
                     IEnumerator SelectOwnCoroutine(Permanent permanent)
                     {
-                        selectedOwnDigimon = permanent;
+                        selectedOwnDigimon.Add(permanent);
+                        isUsed = true;
                         yield return null;
                     }
 
-                    if (selectedOwnDigimon != null)
+                    if (selectedOwnDigimon.Count == 1)
                     {
-                        isUsed = true;
+                        Permanent selectOpponentPermanent = null;
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                            targetPermanents: new List<Permanent>() { selectedOwnDigimon },
-                            activateClass: activateClass,
-                            successProcess: SuccessProcess,
-                            failureProcess: null));
-
-                        IEnumerator SuccessProcess(List<Permanent> _permanents)
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentDigimonCondition))
                         {
-                            if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentDigimonCondition)) yield break;
-
                             SelectPermanentEffect selectOpponentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectOpponentEffect.SetUp(
@@ -131,13 +123,21 @@ namespace DCGO.CardEffects.BT27
 
                             IEnumerator SelectOpponentCoroutine(Permanent permanent)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspend(
-                                    targetPermanent: permanent,
-                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                    activateClass: activateClass,
-                                    condition: null,
-                                    effectName: "Can't suspend"));
+                                selectOpponentPermanent = permanent;
+                                yield return null;
                             }
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(selectedOwnDigimon, hashtable).Destroy());
+
+                        if (selectOpponentPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspend(
+                                targetPermanent: selectOpponentPermanent,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass,
+                                condition: null,
+                                effectName: "Can't suspend"));
                         }
                     }
                 }
@@ -151,14 +151,12 @@ namespace DCGO.CardEffects.BT27
                 SharedEffectName,
                 SharedActivateCoroutine,
                 SharedEffectDescription,
-                optional: false,
-                isSkippable: true,
+                optional: true,
                 maxCountPerTurn: 1,
                 hashValue: "BT27_026_OP_WD_WA",
                 onPlay: true,
                 whenDigivolving: true,
                 whenAttacking: true);
-
             #endregion
 
             return cardEffects;
