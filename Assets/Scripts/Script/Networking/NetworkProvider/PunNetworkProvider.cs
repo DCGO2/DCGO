@@ -508,7 +508,16 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
             allPlayersReady = allPlayersReady && playerInfo.IsReady;
         }
 
-        if (allPlayersReady && _privateRoomEvents.OnAllPlayersReady != null)
+        if (allPlayersReady && IsRoomHost())
+        {
+            photonView.RPC("AllPlayersReady_Internal", RpcTarget.All);
+        }
+    }
+
+    [PunRPC]
+    void AllPlayersReady_Internal()
+    {
+        if (_inPrivateRoom && !_inGame && _privateRoomEvents.OnAllPlayersReady != null)
         {
             _privateRoomEvents.OnAllPlayersReady();
         }
