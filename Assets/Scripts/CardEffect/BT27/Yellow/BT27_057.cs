@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.BT27
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.TrashToDrawAndGainMemory(card, CanSelectCardCondition, activateClass, drawCount: 1, memoryGain: 1, "Select 1 [Chessmon] in text card to trash."));
+                        CardEffectCommons.Trash1ToDraw1Gain1Memory(card, CanSelectCardCondition, activateClass, "Select 1 [Chessmon] in text card to trash."));
                 }
             }
             #endregion

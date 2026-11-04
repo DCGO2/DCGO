@@ -17,7 +17,6 @@ public partial class CardEffectCommons
     /// <param name="optional">Whether the trash is optional. It should be for all "By effects", included in case of "trash a card, if you do draw 1 and gain 1 memory"</param>
     /// <param name="successProcess">Function to use when effect is used. Can set a flag when the operation is carried out.</param>
     /// <param name="failureProcess">Function to use when cards are not chosen. Can be used to RemoveUse() on the cardEffect</param>
-    /// <returns></returns>
     public static IEnumerator TrashToDrawAndGainMemory(
         CardSource card,
         Func<CardSource, bool> canSelectCardCondition,
