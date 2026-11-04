@@ -99,7 +99,6 @@ namespace DCGO.CardEffects.BT27
                 if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition)) yield break;
 
                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
                 selectPermanentEffect.SetUp(
                     selectPlayer: card.Owner,
                     canTargetCondition: CanSelectPermanentCondition,
@@ -108,19 +107,15 @@ namespace DCGO.CardEffects.BT27
                     maxCount: 1,
                     canNoSelect: false,
                     canEndNotMax: false,
-                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                    selectPermanentCoroutine: null,
                     afterSelectPermanentCoroutine: null,
-                    mode: SelectPermanentEffect.Mode.Custom,
+                    mode: SelectPermanentEffect.Mode.Degenerate,
                     cardEffect: activateClass);
-
-                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.", "The opponent is selecting 1 Digimon to De-Digivolve.");
-
+                
+                selectPermanentEffect.SetDegenerationCount(2);
+                
+                selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to De-Digivolve", "The opponent is selecting 1 Digimon to De-Digivolve");
                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 2, activateClass).Degeneration());
-                }
             }
 
             CardEffectFactory.ActivateClassesForSharedEffects(
