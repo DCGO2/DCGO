@@ -419,6 +419,8 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
         {
             _privateRoomEvents.OnJoined(success);
         }
+
+        RefreshPrivateRoom();
     }
 
     public void LeavePrivateRoom()
@@ -474,7 +476,13 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
             {
                 _privateRoomEvents.OnDisconnected();
             }
+        }
+    }
 
+    void RefreshPrivateRoom()
+    {
+        if (!_inPrivateRoom || _inGame || !PhotonNetwork.InRoom)
+        {
             return;
         }
 
@@ -653,6 +661,26 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
         }
 
         _receivedRoomList = true;
+    }
+
+    public override void OnPlayerEnteredRoom(PhotonPlayer newPlayer)
+    {
+        RefreshPrivateRoom();
+    }
+
+    public override void OnPlayerPropertiesUpdate(PhotonPlayer targetPlayer, Hashtable changedProps)
+    {
+        RefreshPrivateRoom();
+    }
+
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+    {
+        RefreshPrivateRoom();
+    }
+
+    public override void OnMasterClientSwitched(PhotonPlayer newMasterClient)
+    {
+        RefreshPrivateRoom();
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -869,7 +897,11 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
         _playerInfos = new List<NetworkPlayerInfo>();
         _gameRoomName = null;
 
-        if (!_inPrivateRoom)
+        if (_inPrivateRoom)
+        {
+            RefreshPrivateRoom();
+        }
+        else
         {
             StartCoroutine(DisconnectCoroutine());
         }
@@ -897,6 +929,8 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 
     public override void OnPlayerLeftRoom(PhotonPlayer otherPlayer)
     {
+        RefreshPrivateRoom();
+
         if (!_gameStarted || _reconnectCoroutine != null)
         {
             return;
