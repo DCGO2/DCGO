@@ -239,7 +239,7 @@ namespace DCGO.CardEffects.BT27
                 #region May play or use 1 [Glowing Dawn] card from hand or digivolution cards
                 bool IsGlowingDawnCondition(CardSource cardSource)
                     => cardSource.HasGlowingDawnTraits
-                        && cardSource.GetCostItself <= 6;
+                        && cardSource.BasePlayCostFromEntity<= 6;
 
                 bool CanSelectHandCondition(CardSource cardSource)
                     => IsGlowingDawnCondition(cardSource)
