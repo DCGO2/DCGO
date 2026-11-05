@@ -943,7 +943,7 @@ public class ContinuousController : MonoBehaviour
     #endregion
 
     #region Show CutIn Animation
-    public bool showCutInAnimation = false;
+    public bool showCutInAnimation = true;
     string _showCutInAnimationKey = "ShowCutInAnimation";
 
     public void SaveShowCutInAnimation()
