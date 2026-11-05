@@ -96,7 +96,7 @@ public partial class CardEffectCommons
                         cardEffect: cardEffect);
 
                     selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
-                    if (customMessage != null) selectHandEffect.SetUpCustomMessage(customMessage, "The opponent is selecting 1 card to place under a permanent.");
+                    selectHandEffect.SetUpCustomMessage(customMessage ?? "Select 1 card to place under a permanent.", "The opponent is selecting 1 card to place under a permanent.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                 }
@@ -123,7 +123,7 @@ public partial class CardEffectCommons
                         cardEffect: cardEffect);
 
                     selectCardEffect.SetUpCustomMessage_ShowCard("Selected Card");
-                    if (customMessage != null) selectCardEffect.SetUpCustomMessage(customMessage, "The opponent is selecting 1 card to place under a permanent.");
+                    selectCardEffect.SetUpCustomMessage(customMessage ?? "Select 1 card to place under a permanent.", "The opponent is selecting 1 card to place under a permanent.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                 }
@@ -179,7 +179,7 @@ public partial class CardEffectCommons
                             }
                             else
                             {
-                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, cardEffect));
+                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, cardEffect, faceDown));
                             }
 
                             if (successProcess != null) yield return ContinuousController.instance.StartCoroutine(successProcess);
