@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT27
                 bool CanSelectOptionCondition(CardSource cardSource)
                     => cardSource.IsOption
                         && cardSource.HasBeatBreakTraits
-                        && cardSource.CardColors.Contains(CardColor.Black)
+                        && cardSource.HasOptionColor (CardColor.Black)
                         && !cardSource.CanNotPlayThisOption;
 
                 bool CanUseCondition(Hashtable hashtable)
