@@ -63,34 +63,8 @@ namespace DCGO.CardEffects.BT27
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        mode: SelectHandEffect.Mode.Discard,
-                        cardEffect: activateClass);
-
-                    selectHandEffect.SetUpCustomMessage("Select 1 [Chronicle] trait card to trash.", "The opponent is selecting 1 card to trash.");
-
-                    yield return StartCoroutine(selectHandEffect.Activate());
-
-                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                    {
-                        if (cardSources.Count >= 1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.TrashToDrawAndGainMemory(card, CanSelectCardCondition, activateClass, "Select 1 [Chronicle] trait card to trash."));
                 }
             }
             #endregion
