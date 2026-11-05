@@ -182,10 +182,9 @@ public partial class CardEffectCommons
                                 yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, cardEffect, faceDown));
                             }
 
-                            if (successProcess != null) yield return ContinuousController.instance.StartCoroutine(successProcess);
-
                             if (drawCount > 0) yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, drawCount, cardEffect).Draw());
                             if (memoryGain > 0 && card.Owner.CanAddMemory(cardEffect)) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(memoryGain, cardEffect));
+                            if (successProcess != null) yield return ContinuousController.instance.StartCoroutine(successProcess);
                         }
                     }
                 }
