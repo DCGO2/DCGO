@@ -59,7 +59,7 @@ public partial class CardEffectCommons
                 if (cardSources.Count >= trashCount)
                 {
                     if (drawCount > 0) yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, drawCount, cardEffect).Draw());
-                    if (memoryGain > 0) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(memoryGain, cardEffect));
+                    if (memoryGain > 0 && card.Owner.CanAddMemory(cardEffect)) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(memoryGain, cardEffect));
                     if (successProcess != null) yield return ContinuousController.instance.StartCoroutine(successProcess);
                 }
                 else if (failureProcess != null) 
