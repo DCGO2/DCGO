@@ -953,7 +953,7 @@ public class ContinuousController : MonoBehaviour
     }
     public void LoadShowCutInAnimation()
     {
-        showCutInAnimation = PlayerPrefsUtil.GetBool(_showCutInAnimationKey, false);
+        showCutInAnimation = PlayerPrefsUtil.GetBool(_showCutInAnimationKey, true);
     }
     #endregion
 
