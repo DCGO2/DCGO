@@ -15,10 +15,14 @@ public partial class CardEffectCommons
         bool optional = true,
         bool faceDown = false,
         bool toTop = false,
-        int from1Hand2TrashOr3Both = 1)
+        int from1Hand2TrashOr3Both = 1,
+        IEnumerator successProcess = null,
+        IEnumerator failureProcess = null)
     {
-        bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, canSelectCardCondition);
-        bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, canSelectCardCondition);
+        bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, canSelectCardCondition) && from1Hand2TrashOr3Both != 2;
+        bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, canSelectCardCondition) && from1Hand2TrashOr3Both != 1;
+
+        bool decline = false;
 
         if (canSelectHand || canSelectTrash)
         {
@@ -26,7 +30,7 @@ public partial class CardEffectCommons
             bool fromTrash = false;
             bool dontPlace = false;
 
-            if (canSelectHand && canSelectTrash && from1Hand2TrashOr3Both == 3)
+            if (canSelectHand && canSelectTrash)
             {
                 List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                 {
@@ -44,11 +48,11 @@ public partial class CardEffectCommons
                 fromTrash = GManager.instance.userSelectionManager.SelectedIntValue == 2;
                 dontPlace = GManager.instance.userSelectionManager.SelectedIntValue == 3;
             }
-            else if (canSelectHand && !canSelectTrash && from1Hand2TrashOr3Both == 1)
+            else if (canSelectHand)
             {
                 fromHand = true;
             }
-            else if (!canSelectHand && canSelectTrash && from1Hand2TrashOr3Both == 2)
+            else
             {
                 fromTrash = true;
             }
@@ -62,6 +66,13 @@ public partial class CardEffectCommons
                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                 {
                     selectedCard = cardSource;
+
+                    yield return null;
+                }
+
+                IEnumerator AfterSelectCardCoroutine(List<CardSource> selectedCards)
+                {
+                    if (selectedCards.Count == 0) decline = true;
 
                     yield return null;
                 }
@@ -80,12 +91,12 @@ public partial class CardEffectCommons
                         canEndNotMax: false,
                         isShowOpponent: true,
                         selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         mode: SelectHandEffect.Mode.Custom,
                         cardEffect: cardEffect);
 
                     selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to place under a permanent.", "The opponent is selecting 1 card to place under a permanent.");
+                    if (customMessage != null) selectHandEffect.SetUpCustomMessage(customMessage, "The opponent is selecting 1 card to place under a permanent.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                 }
@@ -99,7 +110,7 @@ public partial class CardEffectCommons
                         canEndSelectCondition: null,
                         canNoSelect: () => optional,
                         selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         message: "Select 1 card to place under a permanent.",
                         maxCount: 1,
                         canEndNotMax: false,
@@ -112,7 +123,7 @@ public partial class CardEffectCommons
                         cardEffect: cardEffect);
 
                     selectCardEffect.SetUpCustomMessage_ShowCard("Selected Card");
-                    selectCardEffect.SetUpCustomMessage("Select 1 card to place under a permanent.", "The opponent is selecting 1 card to place under a permanent.");
+                    if (customMessage != null) selectCardEffect.SetUpCustomMessage(customMessage, "The opponent is selecting 1 card to place under a permanent.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                 }
@@ -138,7 +149,7 @@ public partial class CardEffectCommons
                             canNoSelect: optional,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: cardEffect);
 
@@ -149,6 +160,13 @@ public partial class CardEffectCommons
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
                             selectedPermanent = permanent;
+
+                            yield return null;
+                        }
+
+                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> selectedPermanents)
+                        {
+                            if (selectedPermanents.Count == 0) decline = true;
 
                             yield return null;
                         }
@@ -164,12 +182,17 @@ public partial class CardEffectCommons
                                 yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, cardEffect));
                             }
 
+                            if (successProcess != null) yield return ContinuousController.instance.StartCoroutine(successProcess);
+
                             if (drawCount > 0) yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, drawCount, cardEffect).Draw());
                             if (memoryGain > 0 && card.Owner.CanAddMemory(cardEffect)) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(memoryGain, cardEffect));
                         }
                     }
                 }
             }
+            else if (optional) decline = true;
         }
+
+        if (failureProcess != null && decline) yield return ContinuousController.instance.StartCoroutine(failureProcess);
     }
 }
