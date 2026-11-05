@@ -410,7 +410,7 @@ namespace DCGO.CardEntities
                     {
                         foreach (CardColor color in DataBase.cardColors)
                         {
-                            if (color == CardColor.White || color == CardColor.None)
+                            if (color == CardColor.None)
                                 continue;
 
                             EvoCost evoCost = new EvoCost();

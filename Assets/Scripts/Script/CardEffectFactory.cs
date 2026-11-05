@@ -113,7 +113,7 @@ public partial class CardEffectFactory
         {
             return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                 && card.Owner.CanAddMemory(activateClass)
-                && condition()
+                && (condition == null || condition())
                 && card.Owner.GetBattleAreaDigimons().Any(permamentCondition);
         }
 

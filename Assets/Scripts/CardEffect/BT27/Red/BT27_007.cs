@@ -34,96 +34,71 @@ namespace DCGO.CardEffects.BT27
                     => "[Start of Your Main Phase] By trashing 1 card with the [Flame] or [Machine] trait from your hand, <Draw 1> and gain 1 memory.";
 
                 bool CanSelectCardCondition(CardSource cardSource)
-                    => cardSource.HasFlameTraits
-                        || cardSource.EqualsTraits("Machine");
+                    => cardSource.EqualsTraits("Flame") || cardSource.EqualsTraits("Machine");
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card);
+                }
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
+                }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        mode: SelectHandEffect.Mode.Discard,
-                        cardEffect: activateClass);
-
-                    selectHandEffect.SetUpCustomMessage("Select 1 [Flame]/[Machine] trait card to trash.", "The opponent is selecting 1 card to trash.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                    {
-                        if (cardSources.Count >= 1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-
-                            if (card.Owner.CanAddMemory(activateClass)) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.TrashToDrawAndGainMemory(card, CanSelectCardCondition, activateClass, "Select 1 [Flame] or [Machine] trait card to trash."));
                 }
             }
             #endregion
-
-            #region On Deletion - ESS
+            
+            #region On Deletion Inherited
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 1 opponent's Digimon with 6000 DP or less", CanUseCondition, card);
+                ActivateClass activateClass = new();
+                activateClass.SetUpICardEffect("Delete 1 of your opponent's Digimon with 6000 DP or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDescription()
-                    => "[On Deletion] Delete 1 of your opponent's Digimon with 6000 DP or less.";
+                string EffectDescription() => "[On Deletion] Delete 1 of your opponent's Digimon with 6000 DP or less.";
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
+
+                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.CanActivateOnDeletion(card, activateClass);
+
+                bool OpponentsDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                        && permanent.HasDP
                         && permanent.DP <= card.Owner.MaxDP_DeleteEffect(6000, activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanActivateOnDeletion(card, activateClass);
+                }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition)) yield break;
+                    if (CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimon))
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: OpponentsDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Destroy,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
                 }
             }
             #endregion
