@@ -175,7 +175,7 @@ public partial class CardEffectCommons
                         {
                             if (toTop)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsTop(new List<CardSource>() { selectedCard }, cardEffect));
+                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsTop(new List<CardSource>() { selectedCard }, cardEffect, faceDown));
                             }
                             else
                             {
