@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.BT27
                 bool CanSelectOptionCondition(CardSource cardSource)
                     => cardSource.IsOption
                         && cardSource.HasBeatBreakTraits
-                        && cardSource.CardColors.Contains(CardColor.Purple)
+                        && cardSource.HasOptionColor(CardColor.Purple)
                         && !cardSource.CanNotPlayThisOption
                         && cardSource.Owner.MaxMemoryCost >= cardSource.GetCostItself - ReduceCost;
 
