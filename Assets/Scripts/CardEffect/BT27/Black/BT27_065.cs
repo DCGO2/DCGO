@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.BT27
                     => "[On Deletion] Delete 1 of your opponent's lowest DP Digimon. If this effect didn't delete, trash their top security card.";
 
                 bool CanSelectPermanentCondition(Permanent permanent)
-                    => CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
+                    => CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy, true);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
