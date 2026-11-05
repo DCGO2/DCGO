@@ -180,7 +180,7 @@ namespace DCGO.CardEffects.BT27
                         }
                     }
 
-                    if (!paid) yield break;
+                    if (!suspended || !paid) yield break;
                     #endregion
 
                     #region 1 Digimon may digivolve
