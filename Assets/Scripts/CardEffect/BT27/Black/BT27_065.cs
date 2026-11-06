@@ -168,12 +168,7 @@ namespace DCGO.CardEffects.BT27
                         }
                     }
 
-                    if (deleteTargetPermanents.Count == 0)
-                    {
-                        //Nothing was selected, so this effect didn't delete
-                        yield return ContinuousController.instance.StartCoroutine(FailureProcess());
-                    }
-                    else yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                         targetPermanents: deleteTargetPermanents,
                         activateClass: activateClass,
                         successProcess: null,
