@@ -169,7 +169,7 @@ namespace DCGO.CardEffects.BT27
                                 activateClass.RemoveUse();
                                 yield break;
                             }
-                            else break;
+                            else continue;
                         }
 
                         int availableCount = selectedTamer.DigivolutionCards.Count(FaceDownCards);
