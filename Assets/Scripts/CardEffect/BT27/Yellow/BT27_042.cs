@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.BT27
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.CanAddSecurity(activateClass)) yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                    yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
 
                     if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectQueenCondition)) yield break;
 
