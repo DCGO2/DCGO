@@ -82,6 +82,7 @@ namespace DCGO.CardEffects.BT27
                     {
                         new(message: "Digivolve into a [Royal Knight] card under this Tamer", value: 1, spriteIndex: 0),
                         new(message: "Use a [Royal Knight] Option card", value: 2, spriteIndex: 0),
+                        new(message: "Suspend and do nothing", value: 3, spriteIndex: 0),
                         new(message: "Don't suspend", value: 0, spriteIndex: 1),
                     };
 
@@ -105,7 +106,8 @@ namespace DCGO.CardEffects.BT27
 
                     IEnumerator SuccessProcess(List<Permanent> _permanents)
                     {
-                        if (selectedEffect == 1)
+                        if (selectedEffect == 3) yield break;
+                        else if (selectedEffect == 1)
                         {
                             yield return ContinuousController.instance.StartCoroutine(DigivolveCoroutine());
                         }
