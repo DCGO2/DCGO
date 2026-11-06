@@ -6,8 +6,8 @@ public partial class CardEffectCommons
 {
     public static IEnumerator PlaceFromHandOrTrashToDrawAndGainMemory(
         CardSource card,
-        Func<CardSource, bool> canSelectCardCondition,
         ICardEffect cardEffect,
+        Func<CardSource, bool> canSelectCardCondition = null,
         Func<Permanent, bool> CanSelectPermanentCondition = null,
         string customMessage = null,
         int drawCount = 1,
@@ -19,6 +19,8 @@ public partial class CardEffectCommons
         IEnumerator successProcess = null,
         IEnumerator failureProcess = null)
     {
+        canSelectCardCondition ??= cardSource => true;
+
         bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, canSelectCardCondition) && from1Hand2TrashOr3Both != 2;
         bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, canSelectCardCondition) && from1Hand2TrashOr3Both != 1;
 
