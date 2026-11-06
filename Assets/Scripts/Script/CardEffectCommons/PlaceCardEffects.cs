@@ -46,6 +46,8 @@ public partial class CardEffectCommons
 
                 GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
                 fromHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
                 fromTrash = GManager.instance.userSelectionManager.SelectedIntValue == 2;
                 dontPlace = GManager.instance.userSelectionManager.SelectedIntValue == 3;
@@ -58,8 +60,6 @@ public partial class CardEffectCommons
             {
                 fromTrash = true;
             }
-
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
             if (!dontPlace)
             {
@@ -172,22 +172,22 @@ public partial class CardEffectCommons
 
                             yield return null;
                         }
+                    }
 
-                        if (selectedPermanent != null)
+                    if (selectedPermanent != null)
+                    {
+                        if (toTop)
                         {
-                            if (toTop)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsTop(new List<CardSource>() { selectedCard }, cardEffect, faceDown));
-                            }
-                            else
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, cardEffect, faceDown));
-                            }
-
-                            if (drawCount > 0) yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, drawCount, cardEffect).Draw());
-                            if (memoryGain > 0 && card.Owner.CanAddMemory(cardEffect)) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(memoryGain, cardEffect));
-                            if (successProcess != null) yield return ContinuousController.instance.StartCoroutine(successProcess);
+                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsTop(new List<CardSource>() { selectedCard }, cardEffect, faceDown));
                         }
+                        else
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, cardEffect, faceDown));
+                        }
+
+                        if (drawCount > 0) yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, drawCount, cardEffect).Draw());
+                        if (memoryGain > 0 && card.Owner.CanAddMemory(cardEffect)) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(memoryGain, cardEffect));
+                        if (successProcess != null) yield return ContinuousController.instance.StartCoroutine(successProcess);
                     }
                 }
             }
