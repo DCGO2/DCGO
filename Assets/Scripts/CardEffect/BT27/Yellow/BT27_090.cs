@@ -43,7 +43,6 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && card.PermanentOfThisCard().IsTamer
                         && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedDigimonCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
