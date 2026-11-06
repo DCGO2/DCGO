@@ -24,7 +24,8 @@ namespace DCGO.CardEffects.BT27
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By suspending this Tamer, place top 2 deck cards face down under this Tamer, then may use 1 black [BEATBREAK] Option", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -115,15 +116,33 @@ namespace DCGO.CardEffects.BT27
 
                         if (!GManager.instance.userSelectionManager.SelectedBoolValue) yield break;
 
+                        // Collect the whole plan first and trash only once all 4 are chosen, so backing out never leaves a partial payment.
+                        Dictionary<Permanent, int> trashPlan = new Dictionary<Permanent, int>();
+
+                        int PlannedCount(Permanent permanent)
+                            => trashPlan.TryGetValue(permanent, out int count) ? count : 0;
+
+                        int UnplannedFaceDownCount(Permanent permanent)
+                            => permanent.DigivolutionCards.Count(FaceDownCards) - PlannedCount(permanent);
+
+                        bool TamerWithUnplannedFaceDownSource(Permanent permanent)
+                            => TamerWithFaceDownSource(permanent)
+                                && UnplannedFaceDownCount(permanent) > 0;
+
+                        int UnplannedFaceDownCountUnderTamers()
+                            => card.Owner.GetBattleAreaPermanents()
+                                .Where(TamerWithFaceDownSource)
+                                .Sum(UnplannedFaceDownCount);
+
                         int remainingTrashCount = TrashCount;
 
-                        while (remainingTrashCount > 0 && FaceDownCountUnderTamers() >= remainingTrashCount)
+                        while (remainingTrashCount > 0 && UnplannedFaceDownCountUnderTamers() >= remainingTrashCount)
                         {
                             Permanent selectedTamer = null;
 
-                            if (CardEffectCommons.MatchConditionPermanentCount(TamerWithFaceDownSource) == 1)
+                            if (CardEffectCommons.MatchConditionPermanentCount(TamerWithUnplannedFaceDownSource) == 1)
                             {
-                                selectedTamer = card.Owner.GetBattleAreaPermanents().Find(TamerWithFaceDownSource);
+                                selectedTamer = card.Owner.GetBattleAreaPermanents().Find(TamerWithUnplannedFaceDownSource);
                             }
                             else
                             {
@@ -131,11 +150,11 @@ namespace DCGO.CardEffects.BT27
 
                                 selectPermanentEffect.SetUp(
                                     selectPlayer: card.Owner,
-                                    canTargetCondition: TamerWithFaceDownSource,
+                                    canTargetCondition: TamerWithUnplannedFaceDownSource,
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
                                     maxCount: 1,
-                                    canNoSelect: false,
+                                    canNoSelect: true,
                                     canEndNotMax: false,
                                     selectPermanentCoroutine: SelectPermanentCoroutine,
                                     afterSelectPermanentCoroutine: null,
@@ -155,10 +174,11 @@ namespace DCGO.CardEffects.BT27
                                 }
                             }
 
-                            if (selectedTamer == null) break;
+                            //Backing out cancels the whole payment, nothing has been trashed yet
+                            if (selectedTamer == null) yield break;
 
-                            int availableCount = selectedTamer.DigivolutionCards.Count(FaceDownCards);
-                            int otherTamersCount = FaceDownCountUnderTamers() - availableCount;
+                            int availableCount = UnplannedFaceDownCount(selectedTamer);
+                            int otherTamersCount = UnplannedFaceDownCountUnderTamers() - availableCount;
 
                             // Never let the player take so few that the other Tamers can't cover the rest.
                             int maxTrashCount = Math.Min(remainingTrashCount, availableCount);
@@ -174,6 +194,8 @@ namespace DCGO.CardEffects.BT27
                                     countElements.Add(new(message: $"Trash {i}", value: i, spriteIndex: 0));
                                 }
 
+                                countElements.Add(new(message: "Don't trash", value: 0, spriteIndex: 1));
+
                                 GManager.instance.userSelectionManager.SetIntSelection(
                                     selectionElements: countElements,
                                     selectPlayer: card.Owner,
@@ -185,23 +207,23 @@ namespace DCGO.CardEffects.BT27
                                 trashCount = GManager.instance.userSelectionManager.SelectedIntValue;
                             }
 
-                            int countBefore = selectedTamer.DigivolutionCards.Count(FaceDownCards);
+                            if (trashCount <= 0) yield break;
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
-                                targetPermanent: selectedTamer,
-                                trashCount: trashCount,
-                                isFromTop: false,
-                                activateClass: activateClass,
-                                cardCondition: FaceDownCards));
-
-                            int trashedCount = countBefore - selectedTamer.DigivolutionCards.Count(FaceDownCards);
-
-                            if (trashedCount <= 0) break;
-
-                            remainingTrashCount -= trashedCount;
+                            trashPlan[selectedTamer] = PlannedCount(selectedTamer) + trashCount;
+                            remainingTrashCount -= trashCount;
                         }
 
                         if (remainingTrashCount > 0) yield break;
+
+                        foreach (KeyValuePair<Permanent, int> plannedTrash in trashPlan)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
+                                targetPermanent: plannedTrash.Key,
+                                trashCount: plannedTrash.Value,
+                                isFromTop: false,
+                                activateClass: activateClass,
+                                cardCondition: FaceDownCards));
+                        }
                         #endregion
 
                         #region May use 1 black [BEATBREAK] Option from hand

@@ -128,7 +128,8 @@ namespace DCGO.CardEffects.BT27
                     => "[On Deletion] Delete 1 of your opponent's lowest DP Digimon. If this effect didn't delete, trash their top security card.";
 
                 bool CanSelectPermanentCondition(Permanent permanent)
-                    => CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy, true);
+                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                        && CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.CanTriggerOnDeletion(hashtable, card, activateClass);
@@ -168,7 +169,12 @@ namespace DCGO.CardEffects.BT27
                         }
                     }
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                    if (deleteTargetPermanents.Count == 0)
+                    {
+                        //Nothing was selected, so this effect didn't delete
+                        yield return ContinuousController.instance.StartCoroutine(FailureProcess());
+                    }
+                    else yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                         targetPermanents: deleteTargetPermanents,
                         activateClass: activateClass,
                         successProcess: null,

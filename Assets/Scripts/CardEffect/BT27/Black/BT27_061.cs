@@ -106,7 +106,6 @@ namespace DCGO.CardEffects.BT27
                         mode: SelectPermanentEffect.Mode.Degenerate,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetDegenerationCount(1);
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.", "The opponent is selecting 1 Digimon to De-Digivolve.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());

@@ -134,7 +134,8 @@ namespace DCGO.CardEffects.BT27
                         yield return null;
                     }
 
-                    if (!suspended || !CanPayFaceDownCost()) yield break;
+                    //Suspending and trashing are one cost, so the trash still happens if the suspend was prevented
+                    if (!CanPayFaceDownCost()) yield break;
 
                     #region Trash 2 bottom face-down cards
                     bool paid = false;

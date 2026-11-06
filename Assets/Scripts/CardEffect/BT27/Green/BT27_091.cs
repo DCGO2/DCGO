@@ -79,7 +79,8 @@ namespace DCGO.CardEffects.BT27
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By suspending this Tamer, place top deck card face down under this Tamer", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -98,6 +99,25 @@ namespace DCGO.CardEffects.BT27
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>
+                    {
+                        new(message: $"Suspend and place 1 card from deck under this card", value: 1, spriteIndex: 0),
+                        new(message: $"Only suspend without placing cards", value: 2, spriteIndex: 0),
+                        new(message: $"No", value: 3, spriteIndex: 1)
+                    };
+
+                    GManager.instance.userSelectionManager.SetIntSelection(
+                        selectionElements: selectionElements,
+                        selectPlayer: card.Owner,
+                        selectPlayerMessage: "Will you suspend this tamer to place the top card of your deck under this Tamer face down?",
+                        notSelectPlayerMessage: "The opponent is choosing whether to place the top card of their deck under their Tamer face down.");
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    int answer = GManager.instance.userSelectionManager.SelectedIntValue;
+
+                    if (answer == 3) yield break;
+
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SuspendPeremanentAndProcessAccordingToResult(
                         targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
                         activateClass: activateClass,
@@ -108,7 +128,7 @@ namespace DCGO.CardEffects.BT27
                     {
                         List<CardSource> topCards = card.Owner.LibraryCards.Take(1).ToList();
 
-                        if (topCards.Count >= 1)
+                        if (answer == 1 && topCards.Count >= 1)
                         {
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(topCards, activateClass, isFacedown: true));
                         }

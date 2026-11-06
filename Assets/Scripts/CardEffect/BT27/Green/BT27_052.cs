@@ -315,29 +315,66 @@ namespace DCGO.CardEffects.BT27
                 }
                 else
                 {
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                    //Pick the Digimon first so it's clear which stack the card leaves; declining the card goes back to the Digimon choice
+                    bool HasSelectableSourceCondition(Permanent permanent)
+                        => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                            && permanent.DigivolutionCards.Any(CanSelectSourceCondition);
 
-                    selectCardEffect.SetUp(
-                        canTargetCondition: CanSelectSourceCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 1 card to play or use.",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.DigivolutionCards,
-                        customRootCardList: digimonSources,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
+                    while (selectedCard == null && CardEffectCommons.HasMatchConditionPermanent(HasSelectableSourceCondition))
+                    {
+                        Permanent selectedDigimon = null;
 
-                    selectCardEffect.SetUpCustomMessage("Select 1 card to play or use.", "The opponent is selecting 1 card to play or use.");
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: HasSelectableSourceCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectDigimonCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to play or use a digivolution card from.", "The opponent is selecting 1 Digimon to play or use a digivolution card from.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectDigimonCoroutine(Permanent permanent)
+                        {
+                            selectedDigimon = permanent;
+                            yield return null;
+                        }
+
+                        if (selectedDigimon == null) break;
+
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectSourceCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 card to play or use.",
+                            maxCount: 1,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.DigivolutionCards,
+                            customRootCardList: selectedDigimon.DigivolutionCards,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        selectCardEffect.SetUpCustomMessage("Select 1 card to play or use.", "The opponent is selecting 1 card to play or use.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                    }
                 }
 
                 if (selectedCard == null) yield break;

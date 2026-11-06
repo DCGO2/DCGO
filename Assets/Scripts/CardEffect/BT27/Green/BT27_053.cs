@@ -24,64 +24,16 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Play Cost Reduction
-
-            bool OpponentHas11000DPDigimon()
-                => CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent =>
-                    CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && permanent.DP >= 11000);
-
-            int ChangePlayCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-            {
-                if (cardSource == card
-                    && (targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0))
-                {
-                    cost -= 6;
-                }
-
-                return cost;
-            }
-
-            if (timing == EffectTiming.BeforePayCost)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reduce play cost (6)", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                    => "When this card would be played, if your opponent has a Digimon with 11000 DP or more, reduce the play cost by 6.";
-
-                bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, cardSource => cardSource == card);
-
-                bool CanActivateCondition(Hashtable hashtable)
-                    => OpponentHas11000DPDigimon();
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (card.Owner.CanReduceCost(null, card))
-                    {
-                        ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                    }
-
-                    ChangeCostClass changeCostClass = new ChangeCostClass();
-                    changeCostClass.SetUpICardEffect("Play Cost -6", hashtable => true, card);
-                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangePlayCost, cardSourceCondition: cardSource => cardSource == card, rootCondition: _ => true, isUpDown: () => true, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                    card.Owner.UntilCalculateFixedCostEffect.Add(_ => changeCostClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
-                }
-            }
-
             if (timing == EffectTiming.None)
             {
-                ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -6", hashtable => OpponentHas11000DPDigimon(), card);
-                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangePlayCost, cardSourceCondition: cardSource => cardSource == card, rootCondition: _ => true, isUpDown: () => true, isCheckAvailability: () => true, isChangePayingCost: () => true);
-                changeCostClass.SetNotShowUI(true);
-                cardEffects.Add(changeCostClass);
-            }
+                bool Condition()
+                    => CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent =>
+                        CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                        && permanent.HasDP
+                        && permanent.DP >= 11000);
 
+                cardEffects.Add(CardEffectFactory.MandatorySelfPlayCostReduction(6, card, Condition));
+            }
             #endregion
 
             #region Blocker

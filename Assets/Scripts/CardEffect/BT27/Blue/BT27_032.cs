@@ -86,13 +86,15 @@ namespace DCGO.CardEffects.BT27
                 }
             }
 
-            CardEffectFactory.ActivateClassesForSharedEffects(
-                ref cardEffects, timing, card,
-                SharedEffectName,
-                SharedActivateCoroutine,
-                SharedEffectDescription,
-                optional: false,
-                whenDigivolving: true);
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                cardEffects.Add(CardEffectFactory.WhenDigivolvingClass(
+                    card,
+                    SharedEffectName,
+                    SharedActivateCoroutine,
+                    SharedEffectDescription("When Digivolving"),
+                    optional: false));
+            }
 
             #endregion
 

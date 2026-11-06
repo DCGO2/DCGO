@@ -92,7 +92,7 @@ namespace DCGO.CardEffects.BT27
                 string EffectDescription()
                     => "[All Turns] When any Digimon on the field are deleted, <Delay>. 1 of your Tamers may digivolve into a [Kurata's Army] trait Digimon card in the hand or trash without paying the cost.";
 
-                bool AnyDigimonDeletedCondition(Permanent permanent) => permanent.IsDigimon;
+                bool AnyDigimonDeletedCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)

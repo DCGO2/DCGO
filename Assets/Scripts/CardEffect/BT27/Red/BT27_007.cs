@@ -10,11 +10,11 @@ namespace DCGO.CardEffects.BT27
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alternate Digivolution Requirement - Lv.2 w/[Flame] trait
+            #region Alternate Digivolution Requirement - Lvl 2 [Flame]
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.HasFlameTraits;
+                    => targetPermanent.TopCard.EqualsTraits("Flame");
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 2));
@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT27
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 [Flame]/[Machine] trait card from hand to <Draw 1> and gain 1 memory", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1 [Flame] or [Machine] trait from hand to <Draw 1> and gain 1 memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);

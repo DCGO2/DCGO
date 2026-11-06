@@ -67,15 +67,25 @@ namespace DCGO.CardEffects.BT27
                         maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: null,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Degenerate,
+                        mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetDegenerationCount(deDigivolveCount);
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.", "The opponent is selecting 1 Digimon to De-Digivolve.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    //<De-Digivolve 1> once per other Chessmon, not one "up to X" De-Digivolve
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        for (int i = 0; i < deDigivolveCount; i++)
+                        {
+                            if (!CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)) yield break;
+
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                        }
+                    }
                 }
                 #endregion
 

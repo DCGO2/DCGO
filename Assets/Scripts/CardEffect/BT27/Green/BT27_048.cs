@@ -110,20 +110,15 @@ namespace DCGO.CardEffects.BT27
                         yield return null;
                     }
 
+                    //Choosing is the cost, so the opponent's target is picked up front and not tied to the deletion succeeding
                     if (selectedOwnDigimon != null)
                     {
                         isUsed = true;
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                            targetPermanents: new List<Permanent>() { selectedOwnDigimon },
-                            activateClass: activateClass,
-                            successProcess: SuccessProcess,
-                            failureProcess: null));
+                        Permanent selectedOpponentPermanent = null;
 
-                        IEnumerator SuccessProcess(List<Permanent> _permanents)
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentCondition))
                         {
-                            if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentCondition)) yield break;
-
                             SelectPermanentEffect selectOpponentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectOpponentEffect.SetUp(
@@ -145,8 +140,18 @@ namespace DCGO.CardEffects.BT27
 
                             IEnumerator SelectOpponentCoroutine(Permanent permanent)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(permanent, activateClass));
+                                selectedOpponentPermanent = permanent;
+                                yield return null;
                             }
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                            new List<Permanent>() { selectedOwnDigimon },
+                            CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
+
+                        if (selectedOpponentPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(selectedOpponentPermanent, activateClass));
                         }
                     }
                 }
