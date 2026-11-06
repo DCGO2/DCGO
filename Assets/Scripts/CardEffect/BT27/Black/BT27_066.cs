@@ -76,15 +76,10 @@ namespace DCGO.CardEffects.BT27
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    //<De-Digivolve 1> once per other Chessmon, not one "up to X" De-Digivolve
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
                         for (int i = 0; i < deDigivolveCount; i++)
-                        {
-                            if (!CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)) yield break;
-
                             yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
-                        }
                     }
                 }
                 #endregion
@@ -146,7 +141,7 @@ namespace DCGO.CardEffects.BT27
                         && CardEffectCommons.IsOpponentTurn(card)
                         && CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, OpponentsDigimon);
 
-                // An attack target can't be switched to a target that's already the attack target (rules 11-2-7-3).
+                // An attack target can't be switched to a target that's already the attack target (rules 11-2-7-3). - this only applies to Blocker, but since this effect is optional, this is fine
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
                         && GManager.instance.attackProcess.DefendingPermanent != card.PermanentOfThisCard();
