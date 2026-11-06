@@ -227,8 +227,7 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanSelectOptionCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
-                        && permanent.IsOption
-                        && !permanent.IsDigimon; // I don't want dual cards to be selectable, this might be a problem if there's ever a way to turn an option into a digimon and Bandai rules that the option is not trashed by game rules in that situation
+                        && permanent.IsOption;
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
@@ -277,12 +276,7 @@ namespace DCGO.CardEffects.BT27
                         }
                     }
 
-                    if (deleteTargetPermanents.Count == 0)
-                    {
-                        //Nothing was selected, so this effect didn't delete
-                        yield return ContinuousController.instance.StartCoroutine(FailureProcess());
-                    }
-                    else yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                         targetPermanents: deleteTargetPermanents,
                         activateClass: activateClass,
                         successProcess: null,
