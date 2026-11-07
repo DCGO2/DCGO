@@ -116,8 +116,7 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && FaceDownCountUnderTamers() >= TrashCount
-                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectOptionCondition);
+                        && FaceDownCountUnderTamers() >= TrashCount;
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {

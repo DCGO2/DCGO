@@ -12,6 +12,7 @@ public partial class CardEffectCommons
         string customMessage = null,
         int drawCount = 1,
         int memoryGain = 1,
+        int opponentDrawCount = 0,
         bool optional = true,
         bool faceDown = false,
         bool toTop = false,
@@ -186,6 +187,7 @@ public partial class CardEffectCommons
                         }
 
                         if (drawCount > 0) yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, drawCount, cardEffect).Draw());
+                        if (opponentDrawCount > 0) yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner.Enemy, opponentDrawCount, cardEffect).Draw());
                         if (memoryGain > 0 && card.Owner.CanAddMemory(cardEffect)) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(memoryGain, cardEffect));
                         if (successProcess != null) yield return ContinuousController.instance.StartCoroutine(successProcess);
                     }
