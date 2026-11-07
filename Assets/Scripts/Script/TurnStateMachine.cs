@@ -234,6 +234,10 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         yield return _waitForSeconds0_2;
         #endregion
 
+        #region Snapshot for game stats
+        GameStatsReporter.OnGameStart(gameContext);
+        #endregion
+
         /*#region ログのクリック処理を追加
         foreach (CardSource cardSource in gameContext.ActiveCardList)
         {
@@ -3349,6 +3353,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         GManager.instance.LoadingObject.gameObject.SetActive(false);
 
         GManager.instance.resultObject.ShowResult(Winner, Surrendered, effectName);
+
+        GameStatsReporter.OnGameEnd(this, Winner, Surrendered, effectName);
 
         EventSystem.current.SetSelectedGameObject(GManager.instance.resultObject.transform.GetChild(3).gameObject);
 
