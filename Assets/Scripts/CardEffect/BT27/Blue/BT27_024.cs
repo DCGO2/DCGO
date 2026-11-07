@@ -119,6 +119,7 @@ namespace DCGO.CardEffects.BT27
                 activateClass.SetUpICardEffect("Both players <Draw 1>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("BT27_024_Inherited");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

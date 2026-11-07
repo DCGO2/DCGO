@@ -53,6 +53,7 @@ namespace DCGO.CardEffects.BT27
                 SharedEffectName,
                 SharedActivateCoroutine,
                 SharedEffectDescription,
+                additionalActivateCondition: AdditionalActivateCondition,
                 optional: false,
                 isSkippable: true,
                 whenMoving: true,
@@ -63,11 +64,23 @@ namespace DCGO.CardEffects.BT27
                 return $"[{tag}] By placing 1 card from your hand face down under any of your [Thomas H. Norstein]s, both players <Draw 1>.";
             }
 
+            bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
+            {
+                return CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+            }
+
+            bool CanSelectPermanentCondition(Permanent permanent) 
+            {
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                    && permanent.TopCard.EqualsCardName("Thomas H. Norstein");
+            }
+
             IEnumerator SharedActivateCoroutine(Hashtable _hashtable, ActivateClass activateClass)
             {
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceFromHandOrTrashToDrawAndGainMemory(
                     card: card,
                     cardEffect: activateClass,
+                    CanSelectPermanentCondition: CanSelectPermanentCondition,
                     memoryGain: 0,
                     opponentDrawCount: 1,
                     customMessage: "Select 1 card to place face down under 1 [Thomas H. Norstein].",
@@ -82,6 +95,7 @@ namespace DCGO.CardEffects.BT27
                 activateClass.SetUpICardEffect("Both players <Draw 1>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("BT27_019_Inherited");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
