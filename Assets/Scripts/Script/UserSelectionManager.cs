@@ -1,11 +1,11 @@
-using Photon.Pun;
+using DCGO.Networking;
 using System;
-using System.Collections.Generic;
 using System.Collections;
-using UnityEngine;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
-public class UserSelectionManager : MonoBehaviourPunCallbacks
+public class UserSelectionManager : MonoBehaviour
 {
     bool _endSelect = false;
     int _selectedIntValue = 0;
@@ -16,52 +16,16 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
 
     Player _selectPlayer;
 
-    [PunRPC]
-    public void SetIntForPlayer(int playerID, int value)
-    {
-        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
-
-        if (selectionPlayer == null)
-        {
-            return;
-        }
-
-        selectionPlayer.QueuePlayerSelection(new ValueSelection(value));
-    }
-
     public void SetInt(int value)
     {
         _selectedIntValue = value;
         _endSelect = true;
     }
 
-    protected void SetInt_RPC(int playerID, int value)
-    {
-        photonView.RPC("SetIntForPlayer", RpcTarget.All, playerID, value);
-    }
-
-    [PunRPC]
-    public void SetBoolForPlayer(int playerID, bool value)
-    {
-        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
-
-        if (selectionPlayer == null)
-        {
-            return;
-        }
-
-        selectionPlayer.QueuePlayerSelection(new ValueSelection(value));
-    }
-
     public void SetBool(bool value)
     {
         _selectedIntValue = getIntFromBool(value);
         _endSelect = true;
-    }
-
-    protected void SetBool_RPC(int playerID, bool value)
-    {
-        photonView.RPC("SetBoolForPlayer", RpcTarget.All, playerID, value);
     }
 
     internal int getIntFromBool(bool value)
@@ -142,13 +106,14 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
 
         void SendSelection(int value)
         {
+            ValueSelection selection = new ValueSelection(value);
             if (_isLocal)
             {
-                SetIntForPlayer(selectPlayer.PlayerID, value);
+                selectPlayer.QueuePlayerSelection(selection);
             }
             else
             {
-                SetInt_RPC(selectPlayer.PlayerID, value);
+                DCGONetwork.Provider.SendPlayerSelection(selectPlayer, selection);
             }
         }
     }
@@ -196,13 +161,14 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
 
         void SendSelection(bool value)
         {
+            ValueSelection selection = new ValueSelection(value);
             if (_isLocal)
             {
-                SetBoolForPlayer(selectPlayer.PlayerID, value);
+                selectPlayer.QueuePlayerSelection(selection);
             }
             else
             {
-                SetBool_RPC(selectPlayer.PlayerID, value);
+                DCGONetwork.Provider.SendPlayerSelection(selectPlayer, selection);
             }
         }
     }

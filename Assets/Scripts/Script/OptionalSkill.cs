@@ -1,12 +1,10 @@
-using Photon;
-using Photon.Pun;
-using Photon.Realtime;
+using DCGO.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-public class OptionalSkill : MonoBehaviourPunCallbacks
+public class OptionalSkill : MonoBehaviour
 {
     public string waitingText { get; set; } = "The opponent is considering whether to use the effect.";
 
@@ -90,11 +88,11 @@ public class OptionalSkill : MonoBehaviourPunCallbacks
             GManager.instance.commandText.OpenCommandText(_Message);
 
             List<Command_SelectCommand> commands = new List<Command_SelectCommand>()
-            {
-                new Command_SelectCommand(_YesNoTexts[0] ,() => photonView.RPC("SetUseOptional",RpcTarget.All, player.PlayerID, true),0),
+            { 
+                new Command_SelectCommand(_YesNoTexts[0] ,() => DCGONetwork.Provider.SendPlayerSelection(player, new ValueSelection(true)),0),
             };
 
-            GManager.instance.BackButton.OpenSelectCommandButton(_YesNoTexts[1], () => { photonView.RPC("SetUseOptional", RpcTarget.All, player.PlayerID, false); }, 0);
+            GManager.instance.BackButton.OpenSelectCommandButton(_YesNoTexts[1], () => { DCGONetwork.Provider.SendPlayerSelection(player, new ValueSelection(false)); }, 0);
 
             GManager.instance.selectCommandPanel.SetUpCommandButton(commands);
         }
@@ -110,7 +108,7 @@ public class OptionalSkill : MonoBehaviourPunCallbacks
 
             if (GManager.instance.IsAI)
             {
-                SetUseOptional(player.PlayerID, RandomUtility.IsSucceedProbability(0.9f));
+                player.QueuePlayerSelection(new ValueSelection(RandomUtility.IsSucceedProbability(0.9f)));
             }
         }
 
@@ -129,18 +127,5 @@ public class OptionalSkill : MonoBehaviourPunCallbacks
         cardEffect.SetUseOptional(_useOptional);
 
         cardEffect.EffectSourceCard.Owner.TrashHandCard.gameObject.SetActive(false);
-    }
-
-    [PunRPC]
-    public void SetUseOptional(int playerID, bool useOptional)
-    {
-        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
-
-        if (selectionPlayer == null)
-        {
-            return;
-        }
-
-        selectionPlayer.QueuePlayerSelection(new ValueSelection(useOptional));
     }
 }

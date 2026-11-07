@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
 using System;
 using System.Linq;
 using UnityEngine.UI;
 
-public class AttackProcess : MonoBehaviourPunCallbacks
+public class AttackProcess : MonoBehaviour
 {
     public Permanent AttackingPermanent { get; private set; } = null;
     public Permanent DefendingPermanent { get; private set; } = null;

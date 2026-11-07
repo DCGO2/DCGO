@@ -1,11 +1,11 @@
-using Photon.Pun;
+using DCGO.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class SelectAttackEffect : MonoBehaviourPunCallbacks
+public class SelectAttackEffect : MonoBehaviour
 {
     const int SecurityIndex = -1;
     const int NopIndex = -2;
@@ -354,7 +354,8 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                                 {
                                     if (_canSelectNotAttack)
                                     {
-                                        GManager.instance.BackButton.OpenSelectCommandButton("Not Attack", () => { photonView.RPC("SetAttackTarget", RpcTarget.All, attackOwner.PlayerID, false, NopIndex); }, 0);
+                                        
+                                        GManager.instance.BackButton.OpenSelectCommandButton("Not Attack", () => { DCGONetwork.Provider.SendPlayerSelection(attackOwner, new PermanentSelection(false, NopIndex)); }, 0);
                                     }
 
                                     GManager.instance.selectCommandPanel.CloseSelectCommandPanel();
@@ -394,7 +395,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                                     }
                                 }
 
-                                photonView.RPC("SetAttackTarget", RpcTarget.All, attackOwner.PlayerID, isTurnPlayer, PermanentIndex);
+                                DCGONetwork.Provider.SendPlayerSelection(attackOwner, new PermanentSelection(isTurnPlayer, PermanentIndex));
 
                                 GManager.instance.BackButton.CloseSelectCommandButton();
                             }
@@ -453,7 +454,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                                     }
                                 }
 
-                                SetAttackTarget(attackOwner.PlayerID, isTurnPlayer, PermanentIndex);
+                                attackOwner.QueuePlayerSelection(new PermanentSelection(isTurnPlayer, PermanentIndex));
                             }
                             #endregion
                         }
@@ -548,22 +549,4 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
             }
         }
     }
-
-    #region ‘I‘ðŒˆ’è
-    [PunRPC]
-    public void SetAttackTarget(int playerID, bool isTurnPlayer, int permanentIndex)
-    {
-        bool[] isTurnPlayerList = new bool[] { isTurnPlayer };
-        int[] permanentIndexList = new int[] { permanentIndex };
-
-        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
-
-        if (selectionPlayer == null)
-        {
-            return;
-        }
-
-        selectionPlayer.QueuePlayerSelection(new PermanentSelection(isTurnPlayerList, permanentIndexList));
-    }
-    #endregion
 }

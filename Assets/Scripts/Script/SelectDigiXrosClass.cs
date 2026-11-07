@@ -1,11 +1,12 @@
+using DCGO.Networking;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon.Pun;
-using System;
+using UnityEngine;
+using UnityEngine.Events;
 
-public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
+public class SelectDigiXrosClass : MonoBehaviour
 {
     private static WaitForSeconds _waitForSeconds0_4 = new WaitForSeconds(0.4f);
     private static WaitForSeconds _waitForSeconds0_3 = new WaitForSeconds(0.3f);
@@ -472,7 +473,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 
                     else if (canSelectActions.Count == 2 && !element.skipAllIfNoSelect)
                     {
-                        SetTargetDigiXrossIndex(card.Owner.PlayerID, actions.IndexOf(canSelectActions[0]));
+                        card.Owner.QueuePlayerSelection(new ValueSelection(actions.IndexOf(canSelectActions[0])));
                     }
 
                     else
@@ -514,7 +515,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                                         break;
                                 }
 
-                                command_SelectCommands.Add(new Command_SelectCommand(message, () => photonView.RPC("SetTargetDigiXrossIndex", RpcTarget.All, card.Owner.PlayerID, k), spriteIndex));
+                                command_SelectCommands.Add(new Command_SelectCommand(message, () => DCGONetwork.Provider.SendPlayerSelection(card.Owner, new ValueSelection(k)), spriteIndex));
                             }
 
                             GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
@@ -536,7 +537,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                                     indexes.Add(k);
                                 }
 
-                                SetTargetDigiXrossIndex(card.Owner.PlayerID, UnityEngine.Random.Range(0, indexes.Count));
+                                card.Owner.QueuePlayerSelection(new ValueSelection(UnityEngine.Random.Range(0, indexes.Count)));
                             }
                             #endregion
                         }
@@ -1020,19 +1021,6 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     int _targetIndex = 0;
 
     bool _endSelectDigiXros = false;
-
-    [PunRPC]
-    public void SetTargetDigiXrossIndex(int playerID, int targetIndex)
-    {
-        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
-
-        if (selectionPlayer == null)
-        {
-            return;
-        }
-
-        selectionPlayer.QueuePlayerSelection(new ValueSelection(targetIndex));
-    }
 }
 
 public class AddDigivolutionCardsInfo

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Threading.Tasks;
+using DCGO.Networking;
 
 public class SelectBattleDeck : MonoBehaviour
 {
@@ -77,7 +78,9 @@ public class SelectBattleDeck : MonoBehaviour
 
         ContinuousController.instance.BattleDeckData = deckInfoPanel.ShowingDeckData;
 
-        Opening.instance.battle.lobbyManager_RandomMatch.SetUpLobby();
+        DCGONetwork.Provider.SetDeckData(ContinuousController.instance.BattleDeckData);
+
+        Opening.instance.battle.lobbyManager_RandomMatch.StartMatchmaking();
     }
 
     public void OnClickSelectButton_BotMatch()
@@ -90,6 +93,8 @@ public class SelectBattleDeck : MonoBehaviour
         ContinuousController.instance.StartCoroutine(SetOnce());
 
         ContinuousController.instance.BattleDeckData = deckInfoPanel.ShowingDeckData;
+
+        DCGONetwork.Provider.SetDeckData(ContinuousController.instance.BattleDeckData);
     }
 
     public IEnumerator OnClickSelectButton_RoomMatchCoroutine()
@@ -105,7 +110,7 @@ public class SelectBattleDeck : MonoBehaviour
 
         Off();
 
-        yield return ContinuousController.instance.StartCoroutine(PhotonUtility.SignUpBattleDeckData());
+        DCGONetwork.Provider.SetDeckData(ContinuousController.instance.BattleDeckData);
     }
 
     IEnumerator SetOnce()

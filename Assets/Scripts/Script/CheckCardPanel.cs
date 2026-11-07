@@ -1,13 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using System;
-using UnityEngine.EventSystems;
-using UnityEngine.Events;
+﻿using DCGO.Networking;
 using DG.Tweening;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
-using Photon.Pun;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CheckCardPanel : MonoBehaviour
 {
@@ -364,7 +364,7 @@ public class CheckCardPanel : MonoBehaviour
 
                             handCard.GetComponent<Draggable_HandCard>().CanPointerEnterExitAction = true;
 
-                            GManager.instance.turnStateMachine.QueueMainPhaseAction(handCard.cardSource.Owner, new ActivateCardAction(handCard.cardSource.CardIndex, cardEffects1.IndexOf(cardEffect)));
+                            DCGONetwork.Provider.SendMainPhaseAction(handCard.cardSource.Owner, new ActivateCardAction(handCard.cardSource.CardIndex, cardEffects1.IndexOf(cardEffect)));
 
                             CloseSelectCardPanel();
                         }
