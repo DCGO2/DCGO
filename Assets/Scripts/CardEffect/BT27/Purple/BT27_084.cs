@@ -188,7 +188,6 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.IsOwnerTurn(card)
                         && ((timing == EffectTiming.OnEnterFieldAnyone
                             && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsDigimonCondition))
                         || (timing == EffectTiming.OnDestroyedAnyone
