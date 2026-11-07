@@ -323,7 +323,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                         }
                     }
 
-                    yield return new WaitUntil(() => player.HasPlayerSelection());
+                    yield return player.WaitForPlayerSelection();
 
                     ValueSelection valueSelection = player.DequeuePlayerSelection<ValueSelection>();
                     _skillIndex = valueSelection != null ? valueSelection.ValueAsInt() : 0;

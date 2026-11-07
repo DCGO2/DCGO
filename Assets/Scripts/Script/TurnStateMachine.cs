@@ -444,7 +444,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 #endregion
             }
 
-            yield return new WaitUntil(() => player.HasPlayerSelection());
+            yield return player.WaitForPlayerSelection();
             ValueSelection valueSeletion = player.DequeuePlayerSelection<ValueSelection>();
             _isRedraw = valueSeletion != null ? valueSeletion.ValueAsBool() : false;
 
@@ -547,6 +547,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         TurnCount++;
 
         gameContext.TurnPlayer.TurnCount++;
+
+        TurnTimer.ResetForNewTurn();
 
         #region ログ追加
         PlayLog.OnAddLog?.Invoke($"\n-------------Turn: {TurnCount}-------------\n\nActive Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
@@ -786,7 +788,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 #endregion
             }
 
-            yield return new WaitWhile(() => !gameContext.TurnPlayer.HasPlayerSelection() && gameContext.TurnPhase == GameContext.phase.Breeding);
+            yield return gameContext.TurnPlayer.WaitForPlayerSelection(TurnTimer.SelectionBonusSeconds, () => gameContext.TurnPhase != GameContext.phase.Breeding);
             ValueSelection breedSelection = gameContext.TurnPlayer.DequeuePlayerSelection<ValueSelection>();
             doAction_BreedingPhase = breedSelection != null ? breedSelection.ValueAsBool() : false;
 
@@ -972,6 +974,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             #region Wait until selection is complete
             while (PlayCard == null && UseCardEffect == null && AttackingPermanent == null)
             {
+                TurnTimer.BeginMainPhaseWait(gameContext.TurnPlayer);
+
                 yield return null;
 
                 if (endGame)
@@ -983,7 +987,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 {
                     if (gameContext.TurnPlayer.HasMainPhaseAction())
                     {
-                        gameContext.TurnPlayer.DequeueMainPhaseAction().Execute(this);
+                        MainPhaseAction mainPhaseAction = gameContext.TurnPlayer.DequeueMainPhaseAction();
+                        TurnTimer.EndMainPhaseWait(mainPhaseAction is PassAction ? 0f : TurnTimer.MainPhaseActionBonusSeconds);
+                        mainPhaseAction.Execute(this);
                     }
                 }
 
