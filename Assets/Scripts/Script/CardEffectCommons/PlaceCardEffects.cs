@@ -183,7 +183,7 @@ public partial class CardEffectCommons
                         }
                         else
                         {
-                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, cardEffect, faceDown));
+                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, cardEffect, isFacedown: faceDown));
                         }
 
                         if (drawCount > 0) yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, drawCount, cardEffect).Draw());
