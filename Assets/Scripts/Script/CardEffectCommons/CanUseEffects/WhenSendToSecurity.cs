@@ -16,7 +16,7 @@ public partial class CardEffectCommons
 
         if (player == null) return false;
         if (isOpponent && player == card.Owner) return false;
-        if (!isOpponent && player == card.Owner) return false;
+        if (!isOpponent && player == card.Owner.Enemy) return false;
 
         bool orientantion = false;
 
