@@ -25,33 +25,25 @@ namespace DCGO.CardEffects.EX11
                     return "[Your Turn] [Once Per Turn] When face-up [Royal Base] trait cards are placed in your security stack, <Draw 1>.";
                 }
 
+                bool Condition(CardSource cardSource)
+                {
+                    return cardSource.HasRoyalBaseTraits;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    bool faceUp = hashtable.ContainsKey("FaceUp")
-                        && hashtable["FaceUp"] is bool isFaceUp
-                        && isFaceUp;
-
-                    List<CardSource> sentCards =
-                        CardEffectCommons.GetCardSourcesFromHashtable(hashtable)
-                            .Filter(cardSource => SecurityCondition(cardSource, faceUp));
-
-                    return sentCards.Count > 0
-                        && CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                    
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanTriggerWhenSendToSecurity(
                             hashtable,
-                            player => player == card.Owner);
+                            player => player == card.Owner)
+                        && CardEffectCommons.PlacedFaceUpToSecurity(hashtable, Condition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
-                }
-
-                bool SecurityCondition(CardSource cardSource, bool faceUp)
-                {
-                    return faceUp
-                        && cardSource.EqualsTraits("Royal Base");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
