@@ -271,6 +271,12 @@ public class GManager : MonoBehaviourPun
 
         turnStateMachine = gameObject.AddComponent<TurnStateMachine>();
 
+        if (!IsAI)
+        {
+            //Handles dropped connections during online matches (reconnect window / pause / resync)
+            gameObject.AddComponent<ReconnectManager>();
+        }
+
         GetComponent<Effects>().Init();
 
         playLog.Init();
@@ -349,8 +355,23 @@ public class GManager : MonoBehaviourPun
 
         while (true)
         {
+            //While ReconnectManager is handling a drop it decides how the match ends
+            if (ReconnectManager.IsHandlingDisconnect)
+            {
+                yield return null;
+                continue;
+            }
+
             if (!PhotonNetwork.IsConnected)
             {
+                //Give ReconnectManager one frame to claim the drop before ending the match
+                yield return null;
+
+                if (ReconnectManager.IsHandlingDisconnect)
+                {
+                    continue;
+                }
+
                 break;
             }
 

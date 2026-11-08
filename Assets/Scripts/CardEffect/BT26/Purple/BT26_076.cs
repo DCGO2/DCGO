@@ -150,8 +150,10 @@ namespace DCGO.CardEffects.BT26
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
-                        && (CardEffectCommons.CanTriggerOnTrashHand(hashtable, null, OpponentHandCardCondition)
-                            || CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, OwnerTamerCondition, null, _ => true));
+                        && ((timing == EffectTiming.OnDiscardHand
+                            && CardEffectCommons.CanTriggerOnTrashHand(hashtable, null, OpponentHandCardCondition))
+                        || (timing == EffectTiming.OnDigivolutionCardDiscarded
+                            && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, OwnerTamerCondition, null, _ => true)));
 
                 bool CanSelectCardCondition(CardSource cardSource)
                     => cardSource.EqualsCardName("Ravemon") || cardSource.EqualsTraits("DATA SQUAD");

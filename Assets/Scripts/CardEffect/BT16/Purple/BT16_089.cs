@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.BT16
                         Permanent selectedPermanent = selectedCard.PermanentOfThisCard();
 
                         ActivateClass activateClass1 = new ActivateClass();
-                        activateClass1.SetUpICardEffect("Delete the played Digimon", CanUseCondition1, card);
+                        activateClass1.SetUpICardEffect("Delete the played Digimon", CanUseCondition1, selectedCard);
                         activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "");
                         selectedPermanent.UntilOpponentTurnEndEffects.Add(GetCardEffect);
 

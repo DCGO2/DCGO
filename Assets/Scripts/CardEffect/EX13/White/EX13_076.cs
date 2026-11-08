@@ -277,8 +277,9 @@ namespace DCGO.CardEffects.EX13
                         AssemblyConditionElement element = new AssemblyConditionElement(CanSelectCardCondition);
 
                         bool CanSelectCardCondition(CardSource cardSource)
-                            => cardSource.EqualsTraits("Free") 
-                            || cardSource.EqualsTraits("Royal Knight");
+                            => cardSource.IsDigimon
+                            && (cardSource.EqualsTraits("Free") 
+                                || cardSource.EqualsTraits("Royal Knight"));
 
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
                             element: element,

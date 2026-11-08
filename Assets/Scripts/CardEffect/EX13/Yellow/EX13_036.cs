@@ -276,9 +276,12 @@ namespace DCGO.CardEffects.EX13
                 List<Permanent> selectedPermanents = new List<Permanent>();
                 bool isUsed = false;
                 bool canNoSelect = true;
+                bool selectedNo = false;
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnerPermanentCondition))
                 {
+                    selectedNo = true;
+
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -299,7 +302,7 @@ namespace DCGO.CardEffects.EX13
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
 
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectEnemyPermanentCondition))
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectEnemyPermanentCondition) && !selectedNo)
                 {
                     if (canNoSelect == true) canNoSelect = !CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnerPermanentCondition);
 
@@ -329,6 +332,7 @@ namespace DCGO.CardEffects.EX13
                     {
                         selectedPermanents.Add(permanents[0]);
                         isUsed = true;
+                        selectedNo = false;
                         canNoSelect = false;
                     }
 

@@ -83,7 +83,7 @@ namespace DCGO.CardEffects.BT11
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Prevent this Digimon from being deleted", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Substitute_BT11_040");
                 cardEffects.Add(activateClass);
@@ -179,6 +179,8 @@ namespace DCGO.CardEffects.BT11
                             }
                         }
                     }
+
+                    activateClass.RemoveUse();
                 }
             }
 

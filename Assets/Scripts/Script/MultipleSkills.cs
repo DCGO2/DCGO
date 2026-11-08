@@ -339,7 +339,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                 #region Executing the effect
                 IEnumerator Activate(bool isCheckOptional)
                 {
-                    if (_skillIndex < 0 || skillInfos_active.Count < _skillIndex)
+                    if (_skillIndex < 0 || _skillIndex >= skillInfos_active.Count)
                     {
                         StackedSkillInfos = new List<SkillInfo>();
                         yield break;
@@ -350,14 +350,15 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                         player.securityObject.securityBreakGlass.gameObject.SetActive(false);
                     }
 
-                    ICardEffect cardEffect = skillInfos_active[_skillIndex].CardEffect;
-                    Hashtable hashtable = skillInfos_active[_skillIndex].Hashtable;
+                    SkillInfo selectedSkill = skillInfos_active[_skillIndex];
+                    ICardEffect cardEffect = selectedSkill.CardEffect;
+                    Hashtable hashtable = selectedSkill.Hashtable;
 
-                    StackedSkillInfos.Remove(skillInfos_active[_skillIndex]);
+                    StackedSkillInfos.Remove(selectedSkill);
 
-                    skillInfos_active[_skillIndex].CardEffect.SetOnProcessCallbuck(() =>
+                    selectedSkill.CardEffect.SetOnProcessCallbuck(() =>
                         {
-                            SkillInfos_used.Add(skillInfos_active[_skillIndex]);
+                            SkillInfos_used.Add(selectedSkill);
                             cardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEffectThisTurn(cardEffect);
                         });
 

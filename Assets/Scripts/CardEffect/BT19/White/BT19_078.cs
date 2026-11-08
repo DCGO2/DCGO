@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
+// ADR-01 Jeri
 namespace DCGO.CardEffects.BT19
 {
     public class BT19_078 : CEntity_Effect
@@ -220,8 +220,9 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("You may play 1 [ADR-01 Jeri] from this Digimon's digivolution cards, then change the attack target to the  Digimon played.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("You may play 1 [ADR-01 Jeri] from this Digimon's digivolution cards, then change the attack target to the Digimon played.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsSkippable(true);
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -244,12 +245,13 @@ namespace DCGO.CardEffects.BT19
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsOpponentTurn(card) &&
-                           CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, IsOpponentDigimon);
+                           CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, IsOpponentDigimon)
+                        && CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass) &&
                            card.PermanentOfThisCard().DigivolutionCards.Count(IsADRJeri) > 0;
                 }
 
@@ -274,7 +276,7 @@ namespace DCGO.CardEffects.BT19
                         selectCardCoroutine: null,
                         afterSelectCardCoroutine: SelectCardCoroutine,
                         mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Custom,
+                        root: SelectCardEffect.Root.DigivolutionCards,
                         customRootCardList:card.PermanentOfThisCard().DigivolutionCards,
                         cardEffect: activateClass);
 
@@ -287,7 +289,7 @@ namespace DCGO.CardEffects.BT19
                             activateClass: activateClass,
                             payCost: false,
                             isTapped: false,
-                            root: SelectCardEffect.Root.Custom,
+                            root: SelectCardEffect.Root.DigivolutionCards,
                             activateETB: true));
 
                         if(cardSources.Count > 0)

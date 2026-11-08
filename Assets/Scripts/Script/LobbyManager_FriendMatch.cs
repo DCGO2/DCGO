@@ -198,6 +198,9 @@ public class LobbyManager_FriendMatch : MonoBehaviourPunCallbacks
 
         roomOptions.MaxPlayers = 2;
 
+        //Keep a disconnected player's slot so they can rejoin the match
+        roomOptions.PlayerTtl = ReconnectManager.PlayerTtlMilliseconds;
+
         //To display room creator in room custom properties, store creator's name
         roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
         {

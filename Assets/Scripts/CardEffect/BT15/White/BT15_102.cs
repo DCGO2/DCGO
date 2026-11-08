@@ -484,20 +484,25 @@ namespace DCGO.CardEffects.BT15
 
                             if (selectedEffect != null)
                             {
-                                Hashtable effectHashtable = CardEffectCommons.OnPlayCheckHashtableOfCard(card);
+                                Hashtable effectHashtable = CardEffectCommons.OnPlayCheckHashtableOfPermanent(card.PermanentOfThisCard());
 
-                                if (selectedEffect.CanUse(effectHashtable))
+                                ActivateClass effectToActivate = CardEffectFactory.CopyActivateClassToCard(card, (ActivateClass)selectedEffect);
+
+                                if (effectToActivate.CanUse(effectHashtable))
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(
-                                        ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
+                                        effectToActivate.Activate_Optional_Effect_Execute(effectHashtable));
                                 }
                             }
                         }
                     }
 
-                    int trashCount = 2 * card.PermanentOfThisCard().cardSources.Filter(cardSource => cardSource != card && cardSource.HasLevel && cardSource.Level == 6).Count;
+                    if (card.PermanentOfThisCard() != null)
+                    {
+                        int trashCount = 2 * card.PermanentOfThisCard().DigivolutionCards.Count(cardSource => cardSource.IsLevel6);
 
-                    yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(trashCount, card.Owner.Enemy, activateClass).AddTrashCardsFromLibraryTop());
+                        yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(trashCount, card.Owner.Enemy, activateClass).AddTrashCardsFromLibraryTop());
+                    }
                 }
             }
             #endregion

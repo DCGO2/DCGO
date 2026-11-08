@@ -89,8 +89,8 @@ namespace DCGO.CardEffects.BT11
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return ((isAngewomon && cardSource.EqualsCardName("Angewomon"))
-                            || (!isAngewomon && cardSource.EqualsCardName("LadyDevimon")))
+                    return ((!isAngewomon && cardSource.EqualsCardName("Angewomon"))
+                            || (isAngewomon && cardSource.EqualsCardName("LadyDevimon")))
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 

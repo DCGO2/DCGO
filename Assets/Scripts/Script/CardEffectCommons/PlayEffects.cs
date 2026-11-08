@@ -18,7 +18,8 @@ public partial class CardEffectCommons
         bool canEndNotMax = false,
         (int reduceCost, Func<CardSource, bool> reduceCostCardCondition)? reduceCostTuple = null,
         (int fixedCost, Func<CardSource, bool> fixedCostCardCondition)? fixedCostTuple = null,
-        Permanent targetPermanent = null)
+        Permanent targetPermanent = null,
+        bool isBreedingArea = false)
     {
         if (cardEffect == null) yield break;
 
@@ -31,6 +32,10 @@ public partial class CardEffectCommons
             selectedCards.Add(card);
             yield return null;
         }
+
+        string setUpCustomMessage1 = $"Select card(s) to play to the {(isBreedingArea ? "Breeding Area" : "Battle Area")}.";
+        string setUpCustomMessage2 = $"The opponent is selecting card(s) to play to the {(isBreedingArea ? "Breeding Area" : "Battle Area")}.";
+
         switch (root)
         {
             case SelectCardEffect.Root.Hand:
@@ -51,7 +56,7 @@ public partial class CardEffectCommons
                     mode: SelectHandEffect.Mode.Custom,
                     cardEffect: cardEffect);
 
-                selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                selectHandEffect.SetUpCustomMessage(setUpCustomMessage1, setUpCustomMessage2);
                 selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
                 yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
@@ -71,7 +76,7 @@ public partial class CardEffectCommons
                     canNoSelect: () => canNoSelect,
                     selectCardCoroutine: SelectCardCoroutine,
                     afterSelectCardCoroutine: afterSelectCardCoroutine,
-                    message: "Select 1 card to play.",
+                    message: setUpCustomMessage1,
                     maxCount: maxCount,
                     canEndNotMax: canEndNotMax,
                     isShowOpponent: true,
@@ -82,7 +87,7 @@ public partial class CardEffectCommons
                     selectPlayer: owner,
                     cardEffect: cardEffect);
 
-                selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                selectCardEffect.SetUpCustomMessage(setUpCustomMessage1, setUpCustomMessage2);
 
                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                 break;
@@ -101,7 +106,7 @@ public partial class CardEffectCommons
                     canNoSelect: () => canNoSelect,
                     selectCardCoroutine: SelectCardCoroutine,
                     afterSelectCardCoroutine: afterSelectCardCoroutine,
-                    message: "Select 1 card to play.",
+                    message: setUpCustomMessage1,
                     maxCount: maxCount,
                     canEndNotMax: canEndNotMax,
                     isShowOpponent: true,
@@ -112,7 +117,7 @@ public partial class CardEffectCommons
                     selectPlayer: owner,
                     cardEffect: cardEffect);
 
-                selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                selectCardEffect.SetUpCustomMessage(setUpCustomMessage1, setUpCustomMessage2);
 
                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                 break;
@@ -129,7 +134,7 @@ public partial class CardEffectCommons
                     canNoSelect: () => canNoSelect,
                     selectCardCoroutine: SelectCardCoroutine,
                     afterSelectCardCoroutine: afterSelectCardCoroutine,
-                    message: "Select 1 card to play.",
+                    message: setUpCustomMessage1,
                     maxCount: maxCount,
                     canEndNotMax: canEndNotMax,
                     isShowOpponent: true,
@@ -140,7 +145,7 @@ public partial class CardEffectCommons
                     selectPlayer: owner,
                     cardEffect: cardEffect);
 
-                selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                selectCardEffect.SetUpCustomMessage(setUpCustomMessage1, setUpCustomMessage2);
 
                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                 break;
@@ -270,7 +275,8 @@ public partial class CardEffectCommons
                 payCost: payCost, 
                 isTapped: false, 
                 root: root, 
-                activateETB: true));
+                activateETB: true,
+                isBreedingArea: isBreedingArea));
         
         #region release effect
         if (getChangeCostEffect != null) owner.UntilCalculateFixedCostEffect.Remove(getChangeCostEffect);

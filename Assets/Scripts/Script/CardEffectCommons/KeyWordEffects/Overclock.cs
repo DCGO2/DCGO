@@ -1,39 +1,33 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 public partial class CardEffectCommons
 {
-    static bool CanSelectPermanentCondition(Permanent permanent, string trait, CardSource cardSource)
-    {
-        return IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, cardSource) &&
-               permanent != cardSource.PermanentOfThisCard() &&
-               (permanent.IsToken || permanent.TopCard.ContainsTraits(trait));
-    }
-
     #region Can activate [Overclock]
 
-    public static bool CanActivateOverclock(string trait, CardSource cardSource, ICardEffect activateClass)
+    public static bool CanActivateOverclock(Func<Permanent, bool> permanentCondition, CardSource cardSource, ICardEffect activateClass)
     {
-        return IsExistOnBattleArea(cardSource) &&
-               HasMatchConditionPermanent(permanent => CanSelectPermanentCondition(permanent, trait, cardSource));
+        return IsExistOnBattleAreaActivate(cardSource, activateClass) &&
+               HasMatchConditionPermanent(permanent => permanentCondition(permanent));
     }
 
     #endregion
 
     #region Effect process of [Overclock]
 
-    public static IEnumerator OverclockProcess(string trait, CardSource cardSource, ICardEffect activateClass)
+    public static IEnumerator OverclockProcess(Func<Permanent, bool> permanentCondition, CardSource cardSource, ICardEffect activateClass)
     {
         Permanent selectedPermanent = null;
         bool isDeleted = false;
 
-        if (HasMatchConditionPermanent(permanent => CanSelectPermanentCondition(permanent, trait, cardSource)))
+        if (HasMatchConditionPermanent(permanentCondition))
         {
             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
             selectPermanentEffect.SetUp(
                 selectPlayer: cardSource.Owner,
-                canTargetCondition: permanent => CanSelectPermanentCondition(permanent, trait, cardSource),
+                canTargetCondition: permanentCondition,
                 canTargetCondition_ByPreSelecetedList: null,
                 canEndSelectCondition: null,
                 maxCount: 1,
@@ -103,8 +97,8 @@ public partial class CardEffectCommons
 
     #region Target 1 Digimon gains [Overclock]
 
-    public static IEnumerator GainOverclock(string trait, Permanent targetPermanent, EffectDuration effectDuration,
-        ICardEffect activateClass)
+    public static IEnumerator GainOverclock(Func<Permanent, bool> permanentCondition, Permanent targetPermanent, EffectDuration effectDuration,
+        ICardEffect activateClass, string displayString)
     {
         if (targetPermanent == null) yield break;
         if (!IsPermanentExistsOnBattleArea(targetPermanent)) yield break;
@@ -120,12 +114,13 @@ public partial class CardEffectCommons
         }
 
         ActivateClass overclock = CardEffectFactory.OverclockEffect(
-            trait: trait,
+            permanentCondition: permanentCondition,
             targetPermanent: targetPermanent,
             isInheritedEffect: false,
             condition: CanUseCondition,
             rootCardEffect: activateClass,
-            targetPermanent.TopCard);
+            targetPermanent.TopCard,
+            displayString: displayString);
 
         AddEffectToPermanent(
             targetPermanent: targetPermanent,

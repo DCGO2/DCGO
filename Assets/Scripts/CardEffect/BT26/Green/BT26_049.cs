@@ -91,6 +91,7 @@ namespace DCGO.CardEffects.BT26
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("May play/use 1 [DATA SQUAD] card cost 3 (+1 per suspended Digimon/Tamer) or lower from hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetHashString("BT26_049_AT");
                 activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
@@ -111,8 +112,10 @@ namespace DCGO.CardEffects.BT26
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, OpponentPermanentCondition)
-                            || CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, OwnTamerCondition, cardEffect => cardEffect != null, _ => true));
+                        && ((timing == EffectTiming.OnTappedAnyone
+                            && CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, OpponentPermanentCondition))
+                        || (timing == EffectTiming.OnDigivolutionCardDiscarded
+                            && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, OwnTamerCondition, cardEffect => cardEffect != null, _ => true)));
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {

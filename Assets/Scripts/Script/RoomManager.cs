@@ -135,6 +135,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
                 MaxPlayers = 2,
 
+                //Keep a disconnected player's slot so they can rejoin the match
+                PlayerTtl = ReconnectManager.PlayerTtlMilliseconds,
+
                 //Stores the creator's name to display the room creator in the room's custom properties
                 CustomRoomProperties = new Hashtable()
                 {
@@ -314,7 +317,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         #region Leave Room
         if (PhotonNetwork.InRoom)
         {
-            PhotonNetwork.LeaveRoom();
+            PhotonNetwork.LeaveRoom(false);
         }
 
         yield return new WaitWhile(() => PhotonNetwork.InRoom);

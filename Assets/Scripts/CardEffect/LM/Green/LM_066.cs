@@ -43,8 +43,7 @@ namespace DCGO.CardEffects.LM
             #region Vortex
             if (timing == EffectTiming.OnEndTurn)
             {
-                cardEffects.Add(CardEffectFactory.VortexSelfEffect(isInheritedEffect: false, card: card,
-                    condition: null));
+                cardEffects.Add(CardEffectFactory.VortexSelfEffect(isInheritedEffect: false, card: card, condition: null));
             }
             #endregion
 
@@ -56,7 +55,6 @@ namespace DCGO.CardEffects.LM
             #endregion
 
             #region Shared WD / WA
-            string SharedHashString = "LM_066_WD/WA";
             string SharedEffectName = "May unsuspend 1 Digimon, then may battle 1 enemy Digimon";
             string SharedEffectDescription(string tag) => $"[{tag}] [Once Per Turn] You may unsuspend 1 Digimon. Then, this Digimon may battle 1 of your opponent's Digimon.";
 
@@ -65,10 +63,9 @@ namespace DCGO.CardEffects.LM
                     SharedEffectName,
                     SharedActivateCoroutine,
                     SharedEffectDescription,
-                    optional: false,
-                    isSkippable: true,
+                    optional: true,
                     maxCountPerTurn: 1,
-                    hashValue: SharedHashString,
+                    hashValue: "LM_066_WD / WA",
                     whenDigivolving: true,
                     whenAttacking: true);
 
@@ -274,7 +271,8 @@ namespace DCGO.CardEffects.LM
                 bool CanSelectSuspendCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
-                        && !permanent.IsSuspended;
+                        && !permanent.IsSuspended
+                        && permanent.CanSuspend;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -302,6 +300,8 @@ namespace DCGO.CardEffects.LM
                     }
 
                     List<Permanent> selectedPermanents = new List<Permanent>();
+
+                    int successes = 0;
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -331,6 +331,12 @@ namespace DCGO.CardEffects.LM
 
                     IEnumerator SuccessProcess(List<Permanent> selectedPermanents)
                     {
+                        successes += 1;
+                        yield return null;
+                    }
+
+                    if (successes == 2)
+                    { 
                         if (card.Owner.CanReduceCost(null, card)) ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
 
                         ChangeCostClass changeCostClass = new ChangeCostClass();
@@ -390,7 +396,8 @@ namespace DCGO.CardEffects.LM
                 bool CanSelectSuspendCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
-                        && !permanent.IsSuspended;
+                        && !permanent.IsSuspended
+                        && permanent.CanSuspend;
                 }
 
                 int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)

@@ -1499,6 +1499,16 @@ public class CardSource : MonoBehaviour
         || cardName.ToLower().Equals(lower));
     }
 
+    /// <summary>
+    /// Convenience method for checking multiple names at once
+    /// </summary>
+    /// <param name="names">List of names to check</param>
+    /// <returns>True if any card name matches any given name</returns>
+    public bool EqualsCardNames(params string[] names)
+    {
+        return names.Any(name => EqualsCardName(name));
+    }
+
     #endregion
 
     #region whether this card has at least 1 card name that contains the string
@@ -1523,6 +1533,16 @@ public class CardSource : MonoBehaviour
         || cardName.Contains(replaced)
         || cardName.Contains(lower)
         || cardName.ToLower().Contains(lower));
+    }
+
+    /// <summary>
+    /// Convenience method for checking multiple names at once
+    /// </summary>
+    /// <param name="names">List of names to check</param>
+    /// <returns>True if card contains any of the given neames in its names</returns>
+    public bool ContainsCardNames(params string[] names)
+    {
+        return names.Any(name => ContainsCardName(name));
     }
 
     #endregion

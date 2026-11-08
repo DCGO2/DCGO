@@ -1116,7 +1116,7 @@ public class Permanent
     /// <param name="cardEffect"></param>
     /// <param name="skipEffectAndActivateSkill"></param>
     /// <returns></returns>
-    public IEnumerator AddDigivolutionCardsTop(List<CardSource> addedDigivolutionCards, ICardEffect cardEffect)
+    public IEnumerator AddDigivolutionCardsTop(List<CardSource> addedDigivolutionCards, ICardEffect cardEffect, bool isFacedown = false)
     {
         List<CardSource> addedCards = new List<CardSource>();
 
@@ -1144,7 +1144,9 @@ public class Permanent
             {
                 this.cardSources.Insert(1, addedDigivolutionCard);
 
-                if (!addedDigivolutionCard.IsFlipped || addedDigivolutionCard.IsBeingRevealed || GManager.instance.turnStateMachine.gameContext.IsSecurityLooking)
+                if (isFacedown)
+                    addedDigivolutionCard.SetReverse();
+                else
                     addedDigivolutionCard.SetFace();
 
                 addedCards.Add(addedDigivolutionCard);
