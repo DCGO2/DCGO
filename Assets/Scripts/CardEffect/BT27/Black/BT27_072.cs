@@ -105,7 +105,7 @@ namespace DCGO.CardEffects.BT27
 
                         ActivateClass effectToActivate = CardEffectFactory.CopyActivateClassToCard(card, (ActivateClass)selectedEffect);
 
-                        if (effectToActivate.CanUse(effectHashtable))
+                        if (effectToActivate.CanTrigger(effectHashtable))
                         {
                             yield return ContinuousController.instance.StartCoroutine(
                                 effectToActivate.Activate_Optional_Effect_Execute(effectHashtable));
