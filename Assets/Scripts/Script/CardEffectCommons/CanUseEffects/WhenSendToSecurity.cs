@@ -29,7 +29,7 @@ public partial class CardEffectCommons
         else
         {
             orientantion = !hashtable.ContainsKey("FaceUp")
-                && hashtable["FaceDown"] is bool isFaceUp
+                && hashtable["FaceUp"] is bool isFaceUp
                 && !isFaceUp;
         }
 
