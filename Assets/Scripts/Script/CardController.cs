@@ -3603,6 +3603,11 @@ public class IPutSecurityPermanent
         if (topCard == null)
             yield break;
 
+        yield return ContinuousController.instance.StartCoroutine(
+            CardObjectController.TriggerOnSendToSecurity(
+                topCard,
+                _isFaceup));
+
         #region add log
 
         string log = "";
@@ -3653,7 +3658,7 @@ public class IPutSecurityPermanent
 
         yield return ContinuousController.instance.StartCoroutine(_permanent.DiscardEvoRoots());
         yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(_permanent));
-
+     
         if (!topCard.IsToken)
         {
             if (!topCard.IsDigiEgg)
@@ -5702,6 +5707,7 @@ public class IAddSecurity
 
         #endregion
 
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnSendToSecurity));
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnAddSecurity));
 
         #endregion

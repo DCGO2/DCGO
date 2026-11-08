@@ -1,10 +1,8 @@
 ﻿using Photon.Pun;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using UnityEngine.UI;
 using DG.Tweening;
@@ -1020,20 +1018,30 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
+
     #region Add card to security
-    public static IEnumerator AddSecurityCard(CardSource cardSource, bool toTop = true, bool faceUp = false, bool useEffect = true)
+    public static IEnumerator AddSecurityCard(
+        CardSource cardSource,
+        bool toTop = true,
+        bool faceUp = false,
+        bool useEffect = true)
     {
         if (!cardSource.Owner.SecurityCards.Contains(cardSource))
         {
-            yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(new List<CardSource>() { cardSource }).Overflow());
-            
-            yield return ContinuousController.instance.StartCoroutine(RemoveFromAllArea(cardSource));
+            yield return ContinuousController.instance.StartCoroutine(
+                new AceOverflowClass(new List<CardSource>() { cardSource }).Overflow());
+
+            yield return ContinuousController.instance.StartCoroutine(
+                RemoveFromAllArea(cardSource));
 
             if (cardSource.IsDigiEgg)
             {
                 cardSource.Owner.DigitamaLibraryCards.Add(cardSource);
 
-                yield return ContinuousController.instance.StartCoroutine(FireOnAddLibraryAnyone(new List<CardSource>() { cardSource }, isTop: false));
+                yield return ContinuousController.instance.StartCoroutine(
+                    FireOnAddLibraryAnyone(
+                        new List<CardSource>() { cardSource },
+                        isTop: false));
             }
             else if (!cardSource.IsToken)
             {
@@ -1050,14 +1058,39 @@ public class CardObjectController : MonoBehaviour
                     cardSource.Owner.SecurityCards.Add(cardSource);
                 }
 
-                if(useEffect)
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
+                if (useEffect)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        GManager.instance.GetComponent<Effects>()
+                            .CreateRecoveryEffect(cardSource.Owner));
+                }
 
-                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource).AddSecurity());
+                yield return ContinuousController.instance.StartCoroutine(
+                    new IAddSecurity(cardSource).AddSecurity());
             }
         }
     }
     #endregion
+
+
+
+    #region Trigger on place to security
+    public static IEnumerator TriggerOnSendToSecurity(CardSource cardSource, bool faceUp = false)
+    {
+        System.Collections.Hashtable hashtable = new System.Collections.Hashtable()
+    {
+        { "Player", cardSource.Owner },
+        { "CardSources", new List<CardSource> { cardSource } },
+        { "FaceUp", faceUp }
+    };
+
+        yield return ContinuousController.instance.StartCoroutine(
+            GManager.instance.autoProcessing.StackSkillInfos(
+                hashtable,
+                EffectTiming.OnSendToSecurity));
+    }
+    #endregion
+
 
     #region Shuffle
     public static IEnumerator Shuffle(Player player)

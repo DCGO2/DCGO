@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.EX11
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Inherited
-            if (timing == EffectTiming.OnAddSecurity)
+            if (timing == EffectTiming.OnSendToSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 1.", CanUseCondition, card);
@@ -27,11 +27,20 @@ namespace DCGO.CardEffects.EX11
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    List<CardSource> securityCards = CardEffectCommons.GetCardSourcesFromHashtable(hashtable).Filter(SecurityCondition);
+                    bool faceUp = hashtable.ContainsKey("FaceUp")
+                        && hashtable["FaceUp"] is bool isFaceUp
+                        && isFaceUp;
 
-                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                    List<CardSource> sentCards =
+                        CardEffectCommons.GetCardSourcesFromHashtable(hashtable)
+                            .Filter(cardSource => SecurityCondition(cardSource, faceUp));
+
+                    return sentCards.Count > 0
+                        && CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.CanTriggerWhenAddSecurity(hashtable, player => player == card.Owner);
+                        && CardEffectCommons.CanTriggerWhenSendToSecurity(
+                            hashtable,
+                            player => player == card.Owner);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -39,10 +48,9 @@ namespace DCGO.CardEffects.EX11
                     return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
                 }
 
-                bool SecurityCondition(CardSource cardSource)
+                bool SecurityCondition(CardSource cardSource, bool faceUp)
                 {
-                    return (!cardSource.IsFlipped
-                            || cardSource.IsDigiEgg)
+                    return faceUp
                         && cardSource.EqualsTraits("Royal Base");
                 }
 
