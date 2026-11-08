@@ -16,16 +16,11 @@ public partial class CardEffectCommons
             return IsMaxDP(permanent, targetPermanent.TopCard.Owner.Enemy, PermanentCondition);
         }
 
-        if (IsPermanentExistsOnBattleArea(targetPermanent)
+        return IsPermanentExistsOnBattleArea(targetPermanent)
             && GManager.instance.attackProcess.IsAttacking
             && GManager.instance.attackProcess.AttackingPermanent == targetPermanent
             && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition)
-            && targetPermanent.CanSwitchAttackTarget)
-        {
-            return true;
-        }
-
-        return false;
+            && targetPermanent.CanSwitchAttackTarget;
     }
     #endregion
 
