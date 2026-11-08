@@ -32,13 +32,10 @@ namespace DCGO.CardEffects.EX11
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    
+
                     return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.CanTriggerWhenSendToSecurity(
-                            hashtable,
-                            player => player == card.Owner)
-                        && CardEffectCommons.PlacedFaceUpToSecurity(hashtable, Condition);
+                        && CardEffectCommons.CanTriggerWhenSendToSecurity(card, hashtable, Condition, sendFaceUp: true);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
