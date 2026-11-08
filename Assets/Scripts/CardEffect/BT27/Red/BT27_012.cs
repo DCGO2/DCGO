@@ -100,7 +100,7 @@ namespace DCGO.CardEffects.BT27
                         {
                             Hashtable effectHashtable = CardEffectCommons.OnDeletionCheckHashtableOfPermanent(card.PermanentOfThisCard());
 
-                            if (selectedEffect.CanUse(effectHashtable))
+                            if (selectedEffect.CanTrigger(effectHashtable))
                             {
                                 yield return ContinuousController.instance.StartCoroutine(
                                     ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
