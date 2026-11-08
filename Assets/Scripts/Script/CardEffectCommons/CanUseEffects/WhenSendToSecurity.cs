@@ -18,31 +18,16 @@ public partial class CardEffectCommons
         if (isOpponent && player == card.Owner) return false;
         if (!isOpponent && player == card.Owner.Enemy) return false;
 
-        bool orientantion = false;
+        bool orientation = hashtable.ContainsKey("FaceUp")
+            && hashtable["FaceUp"] is bool isFaceUp
+            && isFaceUp == sendFaceUp;
 
-        if (sendFaceUp)
-        {
-            orientantion = hashtable.ContainsKey("FaceUp")
-                && hashtable["FaceUp"] is bool isFaceUp
-                && isFaceUp;
-        }
-        else
-        {
-            orientantion = !hashtable.ContainsKey("FaceUp")
-                && hashtable["FaceUp"] is bool isFaceUp
-                && !isFaceUp;
-        }
-
-        bool SecurityCondition(CardSource cardSource, bool orientantion)
-        {
-            return orientantion
-                && (condition == null
-                    || condition(cardSource));
-        }
+        if (!orientation) return false;
 
         List<CardSource> sentCards =
-            CardEffectCommons.GetCardSourcesFromHashtable(hashtable)
-                .Filter(cardSource => SecurityCondition(cardSource, orientantion));
+            GetCardSourcesFromHashtable(hashtable)
+                .Filter(cardSource =>
+                    condition == null || condition(cardSource));
 
         return sentCards.Count >= 1;
     }
