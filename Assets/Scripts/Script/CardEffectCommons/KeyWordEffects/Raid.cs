@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using System;
-using System.Linq;
-using UnityEngine;
+
 public partial class CardEffectCommons
 {
     #region Can activate [Raid]
@@ -18,18 +16,13 @@ public partial class CardEffectCommons
             return IsMaxDP(permanent, targetPermanent.TopCard.Owner.Enemy, PermanentCondition);
         }
 
-        if (IsPermanentExistsOnBattleArea(targetPermanent))
+        if (IsPermanentExistsOnBattleArea(targetPermanent)
+            && GManager.instance.attackProcess.IsAttacking
+            && GManager.instance.attackProcess.AttackingPermanent == targetPermanent
+            && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition)
+            && targetPermanent.CanSwitchAttackTarget)
         {
-            if (GManager.instance.attackProcess.IsAttacking)
-            {
-                if (GManager.instance.attackProcess.AttackingPermanent == targetPermanent)
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        return true;
-                    }
-                }
-            }
+            return true;
         }
 
         return false;
@@ -89,15 +82,8 @@ public partial class CardEffectCommons
 
         bool CanUseCondition()
         {
-            if (IsPermanentExistsOnBattleArea(targetPermanent))
-            {
-                if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return IsPermanentExistsOnBattleArea(targetPermanent)
+                && !targetPermanent.TopCard.CanNotBeAffected(activateClass);
         }
 
         ActivateClass raid = CardEffectFactory.RaidEffect(
