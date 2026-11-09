@@ -18,6 +18,7 @@ namespace DCGO.CardEffects.BT27
                 activateClass.SetUpICardEffect("Play/Use 1 [Knightmon] text card from hand for 2 less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("BT27_062_WA");
+                activateClass.SetIsSkippable(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
