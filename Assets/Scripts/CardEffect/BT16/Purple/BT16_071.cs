@@ -16,16 +16,8 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if (targetPermanent.TopCard.CardNames.Contains("Liollmon"))
-                    {
-                        return true;
-                    }
-
-                    if (targetPermanent.TopCard.CardNames.Contains("Elecmon"))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return targetPermanent.TopCard.EqualsCardName("Liollmon")
+                        || targetPermanent.TopCard.EqualsCardName("Elecmon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
