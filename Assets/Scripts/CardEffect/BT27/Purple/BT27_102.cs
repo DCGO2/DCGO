@@ -94,7 +94,6 @@ namespace DCGO.CardEffects.BT27
 
                 bool AnyDigimonDeletedCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnField(permanent)
-                        && permanent.TopCard.Owner == card.Owner
                         && permanent.IsDigimon;
 
                 bool CanUseCondition(Hashtable hashtable)
