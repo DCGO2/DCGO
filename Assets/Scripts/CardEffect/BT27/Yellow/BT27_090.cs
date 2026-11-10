@@ -20,6 +20,8 @@ namespace DCGO.CardEffects.BT27
             #region All Turns
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
+                List<Permanent> playedDigimon = new List<Permanent>();
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By placing this Tamer under a played Digimon, opponent's effects can't return 1 of your Digimon or trash its stacked cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
@@ -42,8 +44,16 @@ namespace DCGO.CardEffects.BT27
                     => CardEffectCommons.IsOpponentEffect(cardEffect, card);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedDigimonCondition);
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
+                    && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedDigimonCondition))
+                    {
+                        playedDigimon = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(PlayedDigimonCondition);
+                        return true;
+                    }
+
+                    return false;
+                }
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
@@ -51,8 +61,6 @@ namespace DCGO.CardEffects.BT27
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<Permanent> playedDigimon = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(PlayedDigimonCondition);
-
                     if (playedDigimon.Count == 0) yield break;
 
                     Permanent selectedDigimon = null;
