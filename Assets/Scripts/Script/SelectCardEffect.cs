@@ -1,11 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using Photon.Pun;
+﻿using DCGO.Networking;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
-public class SelectCardEffect : MonoBehaviourPunCallbacks
+public class SelectCardEffect : MonoBehaviour
 {
     public void SetUp(
         Func<CardSource, bool> canTargetCondition,
@@ -600,11 +600,13 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
                     if (_isLocal)
                     {
-                        SetTargetCardAndIndicies(_selectPlayer.PlayerID, targetCardIDs.ToArray(), _slectedInexesInList.ToArray());
+                        _selectPlayer.QueuePlayerSelection(new CardSelection(targetCardIDs.ToArray()));
+                        _selectPlayer.QueuePlayerSelection(new CardSelection(_slectedInexesInList.ToArray()));
                     }
                     else
                     {
-                        photonView.RPC("SetTargetCardAndIndicies", RpcTarget.All, _selectPlayer.PlayerID, targetCardIDs.ToArray(), _slectedInexesInList.ToArray());
+                        DCGONetwork.Provider.SendPlayerSelection(_selectPlayer, new CardSelection(targetCardIDs.ToArray()));
+                        DCGONetwork.Provider.SendPlayerSelection(_selectPlayer, new CardSelection(_slectedInexesInList.ToArray()));
                     }
 
                    
@@ -675,11 +677,13 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
                         if (GManager.instance.IsAI || _isLocal)
                         {
-                            SetTargetCardAndIndicies(_selectPlayer.PlayerID, CardIDs.ToArray(), null);
+                            _selectPlayer.QueuePlayerSelection(new CardSelection(CardIDs.ToArray()));
+                            _selectPlayer.QueuePlayerSelection(new CardSelection());
                         }
                         else
                         {
-                            photonView.RPC("SetTargetCardAndIndicies", RpcTarget.All, _selectPlayer.PlayerID, CardIDs.ToArray(), null);
+                            DCGONetwork.Provider.SendPlayerSelection(_selectPlayer, new CardSelection(CardIDs.ToArray()));
+                            DCGONetwork.Provider.SendPlayerSelection(_selectPlayer, new CardSelection());
                         }
 
                         break;
@@ -883,19 +887,5 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         GManager.instance.turnStateMachine.gameContext.IsSecurityLooking = false;
 
         GManager.instance.turnStateMachine.IsSelecting = oldIsSelecting;
-    }
-
-    [PunRPC]
-    public void SetTargetCardAndIndicies(int playerID, int[] CardIDs, int[] Indicies)
-    {
-        Player player = GManager.instance.GetPlayerFromID(playerID);
-
-        if (!player)
-        {
-            return;
-        }
-
-        player.QueuePlayerSelection(new CardSelection(CardIDs));
-        player.QueuePlayerSelection(new CardSelection(Indicies));
     }
 }

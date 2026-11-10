@@ -35,7 +35,7 @@ public class CreateRoom : OffAnimation
     {
         ContinuousController.instance.isAI = false;
         ContinuousController.instance.isRandomMatch = false;
-        roomManager.SetUpRoom();
+        roomManager.SetUpRoom(true);
         CloseCreateRoom();
     }
 }

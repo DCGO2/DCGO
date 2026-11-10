@@ -1,16 +1,14 @@
-﻿using Photon.Pun;
+﻿using DCGO.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Effects))]
-public class GManager : MonoBehaviourPun
+public class GManager : MonoBehaviour
 {
-    private static WaitForSeconds _waitForSeconds5 = new WaitForSeconds(5f);
     [Header("あなた")]
     public Player You;
 
@@ -251,7 +249,7 @@ public class GManager : MonoBehaviourPun
 #if UNITY_EDITOR
 
 #endif
-        if (!PhotonNetwork.IsConnected)
+        if (!DCGONetwork.IsConnected)
         {
             IsAI = true;
         }
@@ -271,12 +269,6 @@ public class GManager : MonoBehaviourPun
 
         turnStateMachine = gameObject.AddComponent<TurnStateMachine>();
 
-        if (!IsAI)
-        {
-            //Handles dropped connections during online matches (reconnect window / pause / resync)
-            gameObject.AddComponent<ReconnectManager>();
-        }
-
         GetComponent<Effects>().Init();
 
         playLog.Init();
@@ -288,8 +280,6 @@ public class GManager : MonoBehaviourPun
         yield return StartCoroutine(Init());
 
         StartCoroutine(turnStateMachine.Init());
-
-        StartCoroutine(CheckDisconnect());
 
         if (Opening.instance != null)
         {
@@ -339,67 +329,6 @@ public class GManager : MonoBehaviourPun
         {
             BackgroundImage.gameObject.SetActive(false);
             BackgroundSpriteRenderer.gameObject.SetActive(false);
-        }
-    }
-
-    IEnumerator CheckDisconnect()
-    {
-        if (IsAI)
-        {
-            yield break;
-        }
-
-        yield return new WaitWhile(() => turnStateMachine == null);
-
-        yield return _waitForSeconds5;
-
-        while (true)
-        {
-            //While ReconnectManager is handling a drop it decides how the match ends
-            if (ReconnectManager.IsHandlingDisconnect)
-            {
-                yield return null;
-                continue;
-            }
-
-            if (!PhotonNetwork.IsConnected)
-            {
-                //Give ReconnectManager one frame to claim the drop before ending the match
-                yield return null;
-
-                if (ReconnectManager.IsHandlingDisconnect)
-                {
-                    continue;
-                }
-
-                break;
-            }
-
-            else
-            {
-                if (!PhotonNetwork.InRoom)
-                {
-                    break;
-                }
-
-                else
-                {
-                    if (PhotonNetwork.CurrentRoom != null)
-                    {
-                        if (PhotonNetwork.PlayerList.Length < 2)
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            yield return null;
-        }
-
-        if (!turnStateMachine.endGame)
-        {
-            turnStateMachine.EndGame(null, false);
         }
     }
 
@@ -578,19 +507,19 @@ public class GManager : MonoBehaviourPun
         //Draw a card
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.D))
         {
-            turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.Draw));
+            DCGONetwork.Provider.SendMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.Draw));
         }
 
         //Trash a card
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.T))
         {
-            turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.TrashCard));
+            DCGONetwork.Provider.SendMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.TrashCard));
         }
 
         //Top deck a card
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.L))
         {
-            turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.PlaceCardOnDeck));
+            DCGONetwork.Provider.SendMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.PlaceCardOnDeck));
         }
 
         //Place Top Security
@@ -599,30 +528,30 @@ public class GManager : MonoBehaviourPun
             bool keyInput = Input.GetKey(KeyCode.LeftShift);
             if (keyInput)
             {
-                turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.PlaceCardInSecurity));
+                DCGONetwork.Provider.SendMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.PlaceCardInSecurity));
             }
             else
             {
-                turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.PlaceCardInSecurityFaceup));
+                DCGONetwork.Provider.SendMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.PlaceCardInSecurityFaceup));
             }
         }
 
         //Gain Memory
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Equals))
         {
-            turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.GainMemory));
+            DCGONetwork.Provider.SendMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.GainMemory));
         }
 
         //Lose Memory
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Minus))
         {
-            turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.LoseMemory));
+            DCGONetwork.Provider.SendMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.LoseMemory));
         }
         
         //Add security to hand
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.H))
         {
-            turnStateMachine.QueueMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.RemoveFromSecurity));
+            DCGONetwork.Provider.SendMainPhaseAction(You, new CheatAction(You.PlayerID, CheatAction.Type.RemoveFromSecurity));
         }
     }
 

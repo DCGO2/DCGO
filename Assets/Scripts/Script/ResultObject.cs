@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun;
-using Photon.Realtime;
+using DCGO.Networking;
 using System;
 
 public class ResultObject : MonoBehaviour
@@ -79,9 +78,9 @@ public class ResultObject : MonoBehaviour
 
             bool isDisconnected = true;
 
-            if (PhotonNetwork.IsConnected)
+            if (DCGONetwork.IsConnected || GManager.instance.IsAI)
             {
-                if (PhotonNetwork.PlayerList.Length == 2)
+                if (DCGONetwork.Provider.GetRoomInfo().Players.Count == 2)
                 {
                     isDisconnected = false;
                 }

@@ -1,17 +1,14 @@
-using Photon.Pun;
-using Photon.Pun.Demo.PunBasics;
-using Photon.Realtime;
+﻿using DCGO.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-//using Hashtable = ExitGames.Client.Photon.Hashtable;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static UnityEngine.ParticleSystem;
 using static UnityEngine.UIElements.UxmlAttributeDescription;
-public class TurnStateMachine : MonoBehaviourPunCallbacks
+public class TurnStateMachine : MonoBehaviour
 {
     private static WaitForSeconds _waitForSeconds0_2 = new WaitForSeconds(0.2f);
 
@@ -30,6 +27,10 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     //Turn Count
     public int TurnCount { get; set; } = 0;
     public bool isSecurityCehck { get; set; } = false;
+
+    bool _gameStated = false;
+
+    ReconnectOverlay _reconnectOverlay = null;
 
     #region Initialization
 
@@ -50,160 +51,109 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         _payingCosts = new int[GManager.instance.You.fieldCardFrames.Count];
         #endregion
 
-        #region AIモード
         if (GManager.instance.IsAI)
         {
             ContinuousController.instance.isRandomMatch = true;
-
-            if (!PhotonNetwork.OfflineMode)
-            {
-                if (PhotonNetwork.IsConnected)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(PhotonUtility.DisconnectCoroutine());
-                }
-
-                PhotonNetwork.OfflineMode = true;
-            }
-
-            if (!PhotonNetwork.InRoom)
-            {
-                //Setting up the room to be created
-                RoomOptions roomOptions = new RoomOptions
-                {
-                    IsVisible = false,   //Make the room invisible in the lobby.
-                    IsOpen = false,      //Not Allow other players to enter the room
-                    PublishUserId = true,
-
-                    MaxPlayers = 1
-                };
-
-                string RoomName = StringUtils.GeneratePassword_AlpahabetNum(50);
-
-                //Create Room
-                PhotonNetwork.CreateRoom(RoomName, roomOptions, null);
-            }
-
-            yield return new WaitWhile(() => !PhotonNetwork.InRoom);
+            DCGONetwork.UseOfflineProvider();
         }
-        #endregion
 
         #region gameContextの設定
-        gameContext = new GameContext(GManager.instance.You, GManager.instance.Opponent);
+        gameContext = new GameContext(GManager.instance.You, GManager.instance.Opponent, GManager.instance.IsAI);
         #endregion
+
+        GameNetworkEvents gameNetworkEvents = new GameNetworkEvents();
+
+        gameNetworkEvents.OnGameSeed += ContinuousController.instance.SetRandom;
+        gameNetworkEvents.OnSurrender += Surrender;
+
+        _reconnectOverlay = gameObject.AddComponent<ReconnectOverlay>();
+
+        gameNetworkEvents.OnConnectionLost += (Player player, float seconds) =>
+        {
+            if (endGame)
+            {
+                return;
+            }
+
+            if (player == gameContext.You)
+            {
+                _reconnectOverlay.Show(LocalizeUtility.GetLocalizedString(
+                    EngMessage: "Connection lost. Reconnecting...",
+                    JpnMessage: "接続が切れました。再接続中..."), seconds, DCGONetwork.Provider.GiveUpReconnect);
+            }
+            else
+            {
+                _reconnectOverlay.Show(LocalizeUtility.GetLocalizedString(
+                    EngMessage: "Opponent disconnected. Waiting for them to return...",
+                    JpnMessage: "対戦相手の接続が切れました。復帰を待っています..."), seconds, DCGONetwork.Provider.GiveUpReconnect);
+            }
+        };
+
+        gameNetworkEvents.OnVerifyingGameState += () =>
+        {
+            if (!endGame)
+            {
+                _reconnectOverlay.ShowMessage(LocalizeUtility.GetLocalizedString(
+                    EngMessage: "Reconnected. Verifying game state...",
+                    JpnMessage: "再接続しました。ゲーム状態を確認中..."));
+            }
+        };
+
+        gameNetworkEvents.OnConnectionRestored += _reconnectOverlay.Hide;
+
+        gameNetworkEvents.OnDisconnected += (Player player) =>
+        {
+            _reconnectOverlay.Hide();
+
+            if (!endGame)
+            {
+                EndGame(player != null ? player.Enemy : null, false);
+            }
+        };
+
+        gameNetworkEvents.GetStateHash = GetStateHash;
+
+        gameNetworkEvents.OnPlayerSelection +=(Player player, IPlayerSelection playerSelection) => 
+        {
+            player.QueuePlayerSelection(playerSelection);
+        };
+
+        gameNetworkEvents.OnMainPhaseAction += (Player player, MainPhaseAction action) =>
+        {
+            player.QueueMainPhaseAction(action);
+        };
+
+        _gameStated = false;
+        gameNetworkEvents.OnGameStarted += () =>
+        {
+            _gameStated = true;
+        };
+
+        DCGONetwork.Provider.CreateGame(gameContext, gameNetworkEvents);
+
+        yield return new WaitWhile(() => !_gameStated);
 
         #region プレイヤー名設定
 
-        #region Extract master and non-master clients among Photon clients
-        Photon.Realtime.Player MasterPlayer = null;
-        Photon.Realtime.Player nonMasterPlayer = null;
+        NetworkPlayerInfo YouNetworkInfo = DCGONetwork.Provider.GetPlayerInfo(gameContext.You);
+        NetworkPlayerInfo OpponentNetworkInfo = DCGONetwork.Provider.GetPlayerInfo(gameContext.Opponent);
 
-        foreach (Photon.Realtime.Player player in PhotonNetwork.PlayerList)
+        if (GManager.instance.IsAI)
         {
-            if (player.ActorNumber != PhotonNetwork.CurrentRoom.MasterClientId)
-            {
-                nonMasterPlayer = player;
-            }
+            YouNetworkInfo.Name = ContinuousController.instance.PlayerName;
+            OpponentNetworkInfo.Name = "Bot";
 
-            else
-            {
-                MasterPlayer = player;
-            }
+            CardObjectController.GetAIDecks(out YouNetworkInfo.DeckData, out OpponentNetworkInfo.DeckData);
         }
-        #endregion
 
         #region Save each player name
-        SetPlayerName(0, PlayerName(MasterPlayer));
-        SetPlayerName(1, PlayerName(nonMasterPlayer));
-        #endregion
-
-        #region Player name for that Photon client
-        string PlayerName(Photon.Realtime.Player player)
-        {
-            #region 対人戦
-            if (!GManager.instance.IsAI)
-            {
-                ExitGames.Client.Photon.Hashtable hashtable = player.CustomProperties;
-
-                if (HasPlayerName(player))
-                {
-                    if (hashtable.TryGetValue(ContinuousController.PlayerNameKey, out object value))
-                    {
-                        string playerName = (string)value;
-
-                        Debug.Log($"playername:{playerName}");
-
-                        if (!string.IsNullOrEmpty(playerName) && playerName != "Player")
-                        {
-                            return playerName;
-                        }
-
-                        if (player == PhotonNetwork.LocalPlayer)
-                        {
-                            return "You";
-                        }
-
-                        else
-                        {
-                            return "Opponent";
-                        }
-
-                        //return playerName;
-                    }
-                }
-
-                Debug.Log($"playername:None");
-                return "";
-            }
-            #endregion
-
-            #region AI mode
-            else
-            {
-                #region Player Name
-                if (player == MasterPlayer)
-                {
-                    return ContinuousController.instance.PlayerName;
-                }
-                #endregion
-
-                #region AI Player Name
-                else
-                {
-                    return "Bot";
-                }
-                #endregion
-
-            }
-            #endregion
-
-            #region Determine if that Photon client has custom properties for player names
-            bool HasPlayerName(Photon.Realtime.Player _player)
-            {
-                ExitGames.Client.Photon.Hashtable _hashtable = _player.CustomProperties;
-
-                if (_hashtable.TryGetValue(ContinuousController.PlayerNameKey, out object value))
-                {
-                    string playerName = (string)value;
-
-                    if (!string.IsNullOrEmpty(playerName))
-                    {
-                        if (playerName.Length <= ContinuousController.instance.PlayerNameMaxLength)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-            #endregion
-        }
+        SetPlayerName(gameContext.You, YouNetworkInfo.Name);
+        SetPlayerName(gameContext.Opponent, OpponentNetworkInfo.Name);
         #endregion
 
         #region Store player names in Player class and display UI
-        void SetPlayerName(int _PlayerID, string _PlayerName)
+        void SetPlayerName(Player player, string _PlayerName)
         {
-            Player player = gameContext.PlayerFromID(_PlayerID);
             player.PlayerName = _PlayerName;
 
             if (player.PlayerNameText != null)
@@ -219,9 +169,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         #endregion
 
         #region 乱数列初期化
-        if (PhotonNetwork.IsMasterClient)
+        if (DCGONetwork.Provider.IsRoomHost())
         {
-            ContinuousController.instance.GetComponent<PhotonView>().RPC("SetRandom", RpcTarget.All, RandomUtility.GetSecureRandom());
+            DCGONetwork.Provider.SetGameSeed(RandomUtility.GetSecureRandom());
         }
 
         yield return new WaitWhile(() => !ContinuousController.instance.DoneSetRandom);
@@ -230,7 +180,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
 
         #region デッキカード生成
-        yield return StartCoroutine(CardObjectController.CreatePlayerDecks(GManager.instance.CardPrefab, gameContext));
+        CardObjectController.CreatePlayerDecks(GManager.instance.CardPrefab, gameContext, YouNetworkInfo.DeckData, OpponentNetworkInfo.DeckData);
         yield return _waitForSeconds0_2;
         #endregion
 
@@ -255,31 +205,11 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         gameContext.TurnPlayer = gameContext.PlayerFromID(GameRandom.Range(0, 2));
 
         #region get first player from room custom property
-        int firstPlayerId = -1;
-
-        ExitGames.Client.Photon.Hashtable roomHash = PhotonNetwork.CurrentRoom.CustomProperties;
-
-        if (roomHash != null)
-        {
-            if (roomHash.TryGetValue(DataBase.FirstPlayerKey, out object value))
-            {
-                if (value is int)
-                {
-                    firstPlayerId = (int)value;
-                }
-            }
-        }
+        int firstPlayerId = DCGONetwork.Provider.GetRoomSetting(DataBase.FirstPlayerKey, -1);
 
         if (firstPlayerId >= 0)
         {
-            foreach (Photon.Realtime.Player player in PhotonNetwork.PlayerList)
-            {
-                if (player.ActorNumber == firstPlayerId)
-                {
-                    int playerID = player.ActorNumber == PhotonNetwork.CurrentRoom.MasterClientId ? 0 : 1;
-                    gameContext.TurnPlayer = gameContext.PlayerFromID(playerID).Enemy;
-                }
-            }
+            gameContext.TurnPlayer = gameContext.PlayerFromID(firstPlayerId).Enemy;
         }
         #endregion
 
@@ -386,7 +316,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             {
                 if (GManager.instance.isAuto && GManager.instance.IsAI)
                 {
-                    SetRedraw(player.PlayerID, RandomUtility.IsSucceedProbability(0.5f));
+                    player.QueuePlayerSelection(new ValueSelection(RandomUtility.IsSucceedProbability(0.5f)));
                 }
 
                 else
@@ -407,8 +337,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         Message: message,
                         NotSelectButtonMessage: "Keep Hand",
                         EndSelectButtonMessage: "Mulligan",
-                        _OnClickNotSelectButtonAction: () => SetRedraw_RPC(player.PlayerID, false),
-                        _OnClickEndSelectButtonAction: () => SetRedraw_RPC(player.PlayerID, true),
+                        _OnClickNotSelectButtonAction: () => DCGONetwork.Provider.SendPlayerSelection(player, new ValueSelection(false)),
+                        _OnClickEndSelectButtonAction: () => DCGONetwork.Provider.SendPlayerSelection(player, new ValueSelection(true)),
                         RootCardSources: player.HandCards,
                         _CanTargetCondition: (cardSource) => false,
                         _CanTargetCondition_ByPreSelecetedList: null,
@@ -419,11 +349,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         CanLookReverseCard: true,
                         skillInfos: null,
                         root: SelectCardEffect.Root.None));
-
-                    void SetRedraw_RPC(int playerId, bool _isDraw)
-                    {
-                        photonView.RPC("SetRedraw", RpcTarget.All, playerId, _isDraw);
-                    }
                 }
             }
 
@@ -439,7 +364,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         doRedraw = true;
                     }
 
-                    SetRedraw(player.PlayerID, doRedraw);
+                    player.QueuePlayerSelection(new ValueSelection(doRedraw));
                 }
                 #endregion
             }
@@ -502,28 +427,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         #endregion
 
         DoneStartGame = true;
-    }
-
-    [PunRPC]
-    public void SetStartPlayer(bool doChange)
-    {
-        if (doChange)
-        {
-            gameContext.TurnPlayer = gameContext.NonTurnPlayer;
-        }
-    }
-
-    [PunRPC]
-    void SetRedraw(int playerID, bool isRedraw)
-    {
-        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
-
-        if (selectionPlayer == null)
-        {
-            return;
-        }
-
-        selectionPlayer.QueuePlayerSelection(new ValueSelection(isRedraw));
     }
     #endregion
 
@@ -781,14 +684,14 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         doHatch = true;
                     }
 
-                    SetBreedingPhase(gameContext.TurnPlayer.PlayerID, doHatch);
+                    gameContext.TurnPlayer.QueuePlayerSelection(new ValueSelection(doHatch));
                 }
                 #endregion
             }
 
             yield return new WaitWhile(() => !gameContext.TurnPlayer.HasPlayerSelection() && gameContext.TurnPhase == GameContext.phase.Breeding);
             ValueSelection breedSelection = gameContext.TurnPlayer.DequeuePlayerSelection<ValueSelection>();
-            doAction_BreedingPhase = breedSelection != null ? breedSelection.ValueAsBool() : false;
+            bool doAction_BreedingPhase = breedSelection != null ? breedSelection.ValueAsBool() : false;
 
             GManager.instance.hideCannotSelectObject.Close();
             gameContext.TurnPlayer.OffHatchObject();
@@ -840,22 +743,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     public void SendShouldHatch(bool shouldHatch)
     {
         gameContext.TurnPlayer.OffHatchObject();
-        photonView.RPC("SetBreedingPhase", RpcTarget.All, gameContext.TurnPlayer.PlayerID, shouldHatch);
+        DCGONetwork.Provider.SendPlayerSelection(gameContext.TurnPlayer, new ValueSelection(shouldHatch));
     }
 
-    bool doAction_BreedingPhase = false;
-    [PunRPC]
-    public void SetBreedingPhase(int playerID, bool doBreeding)
-    {
-        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
-
-        if (selectionPlayer == null)
-        {
-            return;
-        }
-
-        selectionPlayer.QueuePlayerSelection(new ValueSelection(doBreeding));
-    }
     #endregion
 
     #region main phase
@@ -1500,7 +1390,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                         }
                                         #endregion
 
-                                        QueueMainPhaseAction(gameContext.TurnPlayer, new ActivatePermanentAction(fieldPermanentCard.ThisPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(fieldPermanentCard.ThisPermanent), cardEffects1.IndexOf(cardEffect)));
+                                        DCGONetwork.Provider.SendMainPhaseAction(gameContext.TurnPlayer, new ActivatePermanentAction(fieldPermanentCard.ThisPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(fieldPermanentCard.ThisPermanent), cardEffects1.IndexOf(cardEffect)));
                                     }
                                 }
                             }
@@ -1597,7 +1487,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                             if (doAttack)
                                             {
-                                                QueueMainPhaseAction(gameContext.TurnPlayer, new AttackPermanentAction(fieldPermanentCard.ThisPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(fieldPermanentCard.ThisPermanent), -1));
+                                                DCGONetwork.Provider.SendMainPhaseAction(gameContext.TurnPlayer, new AttackPermanentAction(fieldPermanentCard.ThisPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(fieldPermanentCard.ThisPermanent), -1));
                                             }
 
                                             else
@@ -1691,7 +1581,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                         if (doAttack)
                                         {
-                                            QueueMainPhaseAction(gameContext.TurnPlayer, new AttackPermanentAction(fieldPermanentCard.ThisPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(fieldPermanentCard.ThisPermanent), attackTargetID));
+                                            DCGONetwork.Provider.SendMainPhaseAction(gameContext.TurnPlayer, new AttackPermanentAction(fieldPermanentCard.ThisPermanent.TopCard.Owner.GetFieldPermanents().IndexOf(fieldPermanentCard.ThisPermanent), attackTargetID));
                                         }
 
                                         else
@@ -1931,7 +1821,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     #endregion
 
                                                     //gameContext.NonTurnPlayer.LifeCardFrame.OffFrame_Select();
-                                                    QueueMainPhaseAction(gameContext.TurnPlayer, new AttackPermanentAction(gameContext.TurnPlayer.GetFieldPermanents().IndexOf(fieldPermanentCard2.ThisPermanent), gameContext.NonTurnPlayer.GetFieldPermanents().IndexOf(enemyFieldPermanentCard.ThisPermanent)));
+                                                    DCGONetwork.Provider.SendMainPhaseAction(gameContext.TurnPlayer, new AttackPermanentAction(gameContext.TurnPlayer.GetFieldPermanents().IndexOf(fieldPermanentCard2.ThisPermanent), gameContext.NonTurnPlayer.GetFieldPermanents().IndexOf(enemyFieldPermanentCard.ThisPermanent)));
                                                     return;
                                                 }
                                             }
@@ -1957,7 +1847,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     }
                                                 }
                                                 #endregion
-                                                QueueMainPhaseAction(gameContext.TurnPlayer, new AttackPermanentAction(gameContext.TurnPlayer.GetFieldPermanents().IndexOf(fieldPermanentCard2.ThisPermanent), -1));
+                                                DCGONetwork.Provider.SendMainPhaseAction(gameContext.TurnPlayer, new AttackPermanentAction(gameContext.TurnPlayer.GetFieldPermanents().IndexOf(fieldPermanentCard2.ThisPermanent), -1));
                                                 return;
                                             }
                                         }
@@ -2357,7 +2247,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             IEnumerator _EndSelectCoroutine_SelectDigivolutionRoots(List<Permanent> permanents)
                                                             {
                                                                 yield return null;
-                                                                QueueMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[] { permanents[0].PermanentFrame.FrameID, permanents[1].PermanentFrame.FrameID }, -1, new int[0]));
+                                                                DCGONetwork.Provider.SendMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[] { permanents[0].PermanentFrame.FrameID, permanents[1].PermanentFrame.FrameID }, -1, new int[0]));
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2404,7 +2294,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             IEnumerator EndSelectCoroutine_SelectTamer(Permanent permanent)
                                                             {
                                                                 yield return null;
-                                                                QueueMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], permanent.PermanentFrame.FrameID, new int[0]));
+                                                                DCGONetwork.Provider.SendMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], permanent.PermanentFrame.FrameID, new int[0]));
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2451,7 +2341,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             {
                                                                 yield return null;
 
-                                                                QueueMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, new int[] { targetPermanent.PermanentFrame.FrameID, targetPermanent.LinkedCards.IndexOf(cardSource) }));
+                                                                DCGONetwork.Provider.SendMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, new int[] { targetPermanent.PermanentFrame.FrameID, targetPermanent.LinkedCards.IndexOf(cardSource) }));
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2466,7 +2356,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     #region usually evolves
                                                     void Digivolution()
                                                     {
-                                                        QueueMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, new int[0]));
+                                                        DCGONetwork.Provider.SendMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, new int[0]));
                                                     }
                                                     #endregion
 
@@ -2519,7 +2409,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                             GManager.instance.You.playMatCardFrame.RemoveClickTarget();
                                             GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(false);
 
-                                            QueueMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, handCard.cardSource.PreferredFrame().FrameID, new int[0], -1, new int[0]));
+                                            DCGONetwork.Provider.SendMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, handCard.cardSource.PreferredFrame().FrameID, new int[0], -1, new int[0]));
                                             selected = true;
 
                                             return;
@@ -2556,7 +2446,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                         GManager.instance.You.playMatCardFrame.RemoveClickTarget();
                                         GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(false);
 
-                                        QueueMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, 0, new int[0], -1, new int[0]));
+                                        DCGONetwork.Provider.SendMainPhaseAction(gameContext.TurnPlayer, new PlayCardAction(handCard.cardSource.CardIndex, 0, new int[0], -1, new int[0]));
                                         selected = true;
 
                                         return;
@@ -2848,7 +2738,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                         handCard.GetComponent<Draggable_HandCard>().CanPointerEnterExitAction = true;
 
-                                        QueueMainPhaseAction(gameContext.TurnPlayer, new ActivateCardAction(handCard.cardSource.CardIndex, cardEffects1.IndexOf(cardEffect)));
+                                        DCGONetwork.Provider.SendMainPhaseAction(gameContext.TurnPlayer, new ActivateCardAction(handCard.cardSource.CardIndex, cardEffects1.IndexOf(cardEffect)));
                                     }
                                 }
                             }
@@ -3020,30 +2910,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         GManager.instance.commandText.CloseCommandText();
     }
-    #endregion
-
-    #region Queue Main Phase Action
-    public void QueueMainPhaseAction(Player player, MainPhaseAction action)
-    {
-        photonView.RPC("QueueMainPhaseAction_Internal", RpcTarget.All, player.PlayerID, GamePacketFactory.GetId(action.GetType()), action.Serialize());
-    }
-
-    [PunRPC]
-    void QueueMainPhaseAction_Internal(int playerID, byte packetId, byte[] bytes)
-    {
-        Player player = GManager.instance.GetPlayerFromID(playerID);
-        
-        if (player == null)
-        {
-            return;
-        }
-
-        if (GamePacketFactory.Create(packetId, bytes) is MainPhaseAction action)
-        {
-            player.QueueMainPhaseAction(action);
-        }
-    }
-
     #endregion
 
     #region Activation effect permanent determination
@@ -3241,70 +3107,60 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     #endregion
     #endregion
 
+    #region State check after a reconnect
+    //Only uses things that are identical on both clients (player IDs, never You/Opponent)
+    int GetStateHash()
+    {
+        int hash = 17;
+
+        void Add(int value)
+        {
+            unchecked
+            {
+                hash = hash * 31 + value;
+            }
+        }
+
+        Add(TurnCount);
+        Add((int)gameContext.TurnPhase);
+        Add(gameContext.TurnPlayer != null ? gameContext.TurnPlayer.PlayerID : -1);
+        Add(gameContext.Memory);
+
+        for (int id = 0; id <= 1; id++)
+        {
+            Player player = gameContext.PlayerFromID(id);
+
+            if (player == null)
+            {
+                Add(-1);
+                continue;
+            }
+
+            Add(player.HandCards.Count);
+            Add(player.LibraryCards.Count);
+            Add(player.SecurityCards.Count);
+            Add(player.TrashCards.Count);
+            Add(player.DigitamaLibraryCards.Count);
+            Add(player.GetFieldPermanents().Count);
+        }
+
+        return hash;
+    }
+    #endregion
+
     #region Game over
     public bool endGame { get; set; } = false;
     public void OnClickSurrenderButton()
     {
-        int localPlayerID;
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            localPlayerID = 0;
-        }
-
-        else
-        {
-            localPlayerID = 1;
-        }
-        try
-        {
-            
-            photonView.RPC("Surrender", RpcTarget.All, localPlayerID);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"Error sending surrender RPC: {e.Message}");
-            Surrender(localPlayerID);
-        }
+        DCGONetwork.Provider.SendSurrender(gameContext.You);
     }
 
-    [PunRPC]
-    public void Surrender(int loserPlayerID)
+    public void Surrender(Player player)
     {
-        Player player = null;
-
-        if (loserPlayerID == 0)
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                player = GManager.instance.You;
-            }
-
-            else
-            {
-                player = GManager.instance.Opponent;
-            }
-        }
-
-        else if (loserPlayerID == 1)
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                player = GManager.instance.Opponent;
-            }
-
-            else
-            {
-                player = GManager.instance.You;
-            }
-        }
-
         if (player != null)
         {
             EndGame(player.Enemy, true);
         }
-
-        //EndGame(gameContext.NonTurnPlayer, true);
     }
 
     public void EndGame(Player Winner, bool Surrendered, string effectName = "")
@@ -3318,17 +3174,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         ContinuousController.instance.CanSetRandom = false;
-
-        if (PhotonNetwork.InRoom)
-        {
-            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable());
-        }
-
-        if (!ContinuousController.instance.isRandomMatch && !ContinuousController.instance.isAI)
-        {
-            Debug.Log("Player property initialization");
-            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable());
-        }
 
         endGame = true;
 

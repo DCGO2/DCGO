@@ -1,21 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using Photon.Pun;
-using Photon.Realtime;
-using UnityEngine.SceneManagement;
+﻿using DCGO.Networking;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
+using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class RoomManager : MonoBehaviourPunCallbacks
+public class RoomManager : MonoBehaviour
 {
     private static WaitForSeconds _waitForSeconds1 = new WaitForSeconds(1f);
     private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
     [SerializeField] bool _isReady = false;
-    int playerCount { get; set; }
 
     bool endSetUp { get; set; }
 
@@ -53,6 +50,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public GameObject Parent;
 
+    bool DoneStartBattle = false;
+
+    bool _leftRoom = false;
+
     void Awake()
     {
         foreach (FirstPlayerIndexIdToggle firstPlayerIndexIdToggle in _firstPlayerIndexIdToggles)
@@ -64,12 +65,12 @@ public class RoomManager : MonoBehaviourPunCallbacks
     #region Open Room Screen
 
     #region Open Room Screen
-    public void SetUpRoom()
+    public void SetUpRoom(bool createRoom)
     {
-        ContinuousController.instance.StartCoroutine(SetUpRoomCoroutine());
+        ContinuousController.instance.StartCoroutine(SetUpRoomCoroutine(createRoom));
     }
 
-    public IEnumerator SetUpRoomCoroutine()
+    public IEnumerator SetUpRoomCoroutine(bool createRoom)
     {
         Opening.instance.OffYesNoObjects();
 
@@ -86,14 +87,12 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         Parent.SetActive(true);
 
-        if (!PhotonNetwork.InRoom)
+        if (createRoom)
         {
             yield return ContinuousController.instance.StartCoroutine(CreateRoomCoroutine());
         }
 
-        yield return ContinuousController.instance.StartCoroutine(ShowRoomInfo());
-
-        yield return ContinuousController.instance.StartCoroutine(Init(false));
+        Init();
 
         SetDeckInfoPanel();
         CheckReadyButton();
@@ -105,116 +104,80 @@ public class RoomManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region Process to create a room
-    bool CreateRoomFailed = false;
     public IEnumerator CreateRoomCoroutine()
     {
-        CreateRoomFailed = false;
+        bool waitingOnRequest = false;
+        bool inRoom = false;
 
-        if (!PhotonNetwork.IsConnected)
+        while (!inRoom)
         {
-            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.ConnectToMasterServerCoroutine());
-        }
-
-        yield return new WaitWhile(() => !PhotonNetwork.IsConnectedAndReady);
-
-        if (!PhotonNetwork.InLobby)
-        {
-            PhotonNetwork.JoinLobby();
-        }
-
-        yield return new WaitWhile(() => !PhotonNetwork.InLobby);
-
-        while (true)
-        {
-            //Setting up the room to be created
-            RoomOptions roomOptions = new RoomOptions
+            waitingOnRequest = true;
+            DCGONetwork.Provider.CreatePrivateRoom(ContinuousController.instance.useBanlist, GetPrivateRoomEvents((bool success) =>
             {
-                IsVisible = true,   //Make the room visible in the lobby
-                IsOpen = true,      //Allow other players to enter the room
-                PublishUserId = true,
-
-                MaxPlayers = 2,
-
-                //Keep a disconnected player's slot so they can rejoin the match
-                PlayerTtl = ReconnectManager.PlayerTtlMilliseconds,
-
-                //Stores the creator's name to display the room creator in the room's custom properties
-                CustomRoomProperties = new Hashtable()
+                waitingOnRequest = false;
+                if (success)
                 {
-                    { "RoomCreator",PhotonNetwork.NickName },
-                    { "UseBanlist", ContinuousController.instance.useBanlist }
-                },
-
-                //Display custom property information in the lobby
-                CustomRoomPropertiesForLobby = new string[]
-                {
-                    "RoomCreator",
-                    "UseBanlist"
+                    inRoom = true;
                 }
-            };
+            }));
 
-            string RoomName = StringUtils.GeneratePassword_Num(5);
-
-            //Create Room
-            PhotonNetwork.CreateRoom(RoomName + "-" + ContinuousController.instance.useBanlist, roomOptions, null);
-
-            while (true)
-            {
-                if (CreateRoomFailed || PhotonNetwork.InRoom)
-                {
-                    break;
-                }
-
-                yield return null;
-            }
-
-            //Room Creation Success
-            if (!CreateRoomFailed && PhotonNetwork.InRoom)
-            {
-                yield break;
-            }
+            yield return new WaitUntil(() => !waitingOnRequest);
+            yield return new WaitForSeconds(1f);
         }
     }
+    #endregion
 
-    public override void OnCreateRoomFailed(short returnCode, string message)
+    #region Private room events
+    public PrivateRoomEvents GetPrivateRoomEvents(Action<bool> onJoined)
     {
-        CreateRoomFailed = true;
+        PrivateRoomEvents privateRoomEvents = new PrivateRoomEvents();
+
+        privateRoomEvents.OnJoined += onJoined;
+        privateRoomEvents.OnRoomInfoUpdated += OnRoomInfoUpdated;
+        privateRoomEvents.OnAllPlayersReady += GoToBattleScene;
+        privateRoomEvents.OnLeft += OnLeftRoom;
+        privateRoomEvents.OnDisconnected += OnRoomDisconnected;
+
+        return privateRoomEvents;
+    }
+
+    void OnLeftRoom()
+    {
+        _leftRoom = true;
+    }
+
+    void OnRoomDisconnected()
+    {
+        if (Parent.activeSelf)
+        {
+            CloseRoom();
+        }
     }
     #endregion
 
     #region Initialized when room screen is opened
-    public IEnumerator Init(bool OnUnload)
+    public void Init()
     {
         Opening.instance.battle.selectBattleDeck.Off();
         DoneStartBattle = false;
         _isReady = false;
 
-        playerCount = 0;//PhotonNetwork.CurrentRoom.PlayerCount;
-        DestroyChildObject();//Delete PlayerElement
-        GetPlayers();
-
-        if (!OnUnload)
+        if (ContinuousController.instance.LastBattleDeckData != null
+           && ContinuousController.instance.DeckDatas.Contains(ContinuousController.instance.LastBattleDeckData)
+           && ContinuousController.instance.LastBattleDeckData.IsValidDeckData())
         {
-            if (ContinuousController.instance.LastBattleDeckData != null
-            && ContinuousController.instance.DeckDatas.Contains(ContinuousController.instance.LastBattleDeckData)
-            && ContinuousController.instance.LastBattleDeckData.IsValidDeckData())
-            {
-                ContinuousController.instance.BattleDeckData = ContinuousController.instance.LastBattleDeckData;
-            }
-
-            else
-            {
-                ContinuousController.instance.BattleDeckData = FirstValidDeckData();
-            }
-            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.SignUpBattleDeckData());
-            //yield return ContinuousController.instance.StartCoroutine(SignUpBattleDeck(FirstValidDeckData()));
-            SetReadyProperty(PhotonNetwork.LocalPlayer, _isReady);
+            ContinuousController.instance.BattleDeckData = ContinuousController.instance.LastBattleDeckData;
         }
 
         else
         {
-            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.SignUpBattleDeckData());
+            ContinuousController.instance.BattleDeckData = FirstValidDeckData();
         }
+
+        DCGONetwork.Provider.SetDeckData(ContinuousController.instance.BattleDeckData);
+        DCGONetwork.Provider.SetRoomReadyState(_isReady);
+
+        OnRoomInfoUpdated(DCGONetwork.Provider.GetRoomInfo());
     }
 
     #region The first proper deck in the deck list
@@ -238,61 +201,26 @@ public class RoomManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #endregion
-
-    #region Room information is acquired and reflected in the UIs
-    public IEnumerator ShowRoomInfo()
+    void OnRoomInfoUpdated(RoomInfo RoomInfo)
     {
-        yield return new WaitWhile(() => !PhotonNetwork.IsConnectedAndReady);
-        yield return new WaitWhile(() => !PhotonNetwork.InRoom);
+        RoomIDText.text = RoomInfo.RoomCode;
+        UpdatePlayersUI(RoomInfo.Players);
 
-        #region RoomName
-        string RoomName = PhotonNetwork.CurrentRoom.Name;
-        RoomIDText.text = RoomName[..5];
-        #endregion
-    }
-    #endregion
+        int firstPlayerIndexID = -1;
 
-    #endregion
-
-    #region Register Battle Deck
-    public IEnumerator SignUpBattleDeck(DeckData deckData)
-    {
-        ContinuousController.instance.BattleDeckData = deckData;
-
-        bool IsSignUpDeckData()
+        if (RoomInfo.RoomSettings.TryGetValue(DataBase.FirstPlayerKey, out int value))
         {
-            if (deckData != null)
-            {
-                if (ContinuousController.instance.DeckDatas != null)
-                {
-                    if (ContinuousController.instance.DeckDatas.Contains(deckData))
-                    {
-                        if (deckData.IsValidDeckData())
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
+            firstPlayerIndexID = (int)value;
         }
 
-        if (IsSignUpDeckData())
+        foreach (FirstPlayerIndexIdToggle firstPlayerIndexIdToggle in _firstPlayerIndexIdToggles)
         {
-            #region Save deck data to custom properties
-            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.SignUpBattleDeckData());
-            #endregion
-        }
-
-        else
-        {
-            #region Remove custom properties from deck data
-            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.DeleteBattleDeckData());
-            #endregion
+            firstPlayerIndexIdToggle.Toggle.isOn = firstPlayerIndexIdToggle.FirstPlayerIndexID == firstPlayerIndexID;
         }
     }
+
+    #endregion
+
     #endregion
 
     #region Close the room screen
@@ -312,16 +240,11 @@ public class RoomManager : MonoBehaviourPunCallbacks
         _isReady = false;
         endSetUp = false;
 
-        SetReadyProperty(PhotonNetwork.LocalPlayer, _isReady);
+        _leftRoom = false;
 
-        #region Leave Room
-        if (PhotonNetwork.InRoom)
-        {
-            PhotonNetwork.LeaveRoom(false);
-        }
+        DCGONetwork.Provider.LeavePrivateRoom();
 
-        yield return new WaitWhile(() => PhotonNetwork.InRoom);
-        #endregion
+        yield return new WaitUntil(() => _leftRoom);
 
         if (!Opening.instance.battle.selectBattleMode.selectBattleModeWindow.gameObject.activeSelf)
         {
@@ -330,10 +253,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
             Opening.instance.battle.selectBattleMode.StartSelectRoomMatch();
         }
 
-        yield return _waitForSeconds0_1;
-
         yield return ContinuousController.instance.StartCoroutine(disconnectLoadingObject.EndLoading());
     }
+   
 
     public void Off()
     {
@@ -341,29 +263,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region Key of the property indicating readiness
-    public static string ReadyKey()
-    {
-        if (PhotonNetwork.InRoom)
-        {
-            return "IsReady" + PhotonNetwork.CurrentRoom.Name;
-        }
-
-        return "IsReady";// + PhotonNetwork.CurrentRoom.Name;
-    }
-    #endregion
 
     #region Processing when the Ready button is pressed
     public void OnClickGetReadyButton()
     {
         _isReady = !_isReady;
 
-        SetReadyProperty(PhotonNetwork.LocalPlayer, _isReady);
-
-        CheckReadyButton();
-
-        photonView.RPC("DestroyChildObject", RpcTarget.All);
-        photonView.RPC("GetPlayers", RpcTarget.All);
+        DCGONetwork.Provider.SetRoomReadyState(_isReady);
 
         if (_isReady)
         {
@@ -377,178 +283,23 @@ public class RoomManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region Set properties to indicate readiness
-    void SetReadyProperty(Photon.Realtime.Player player, bool _isReady)
-    {
-        Hashtable PlayerProp = player.CustomProperties;
-
-        if (PlayerProp.TryGetValue(ReadyKey(), out object _))
-        {
-            PlayerProp[ReadyKey()] = _isReady;
-        }
-
-        else
-        {
-            PlayerProp.Add(ReadyKey(), _isReady);
-        }
-
-        player.SetCustomProperties(PlayerProp);
-    }
-    #endregion
-
-    #region All players in the room are determined to be ready.
-    public bool AllPlayerIsReady()
-    {
-        foreach (var p in PhotonNetwork.PlayerList)
-        {
-            if (p.CustomProperties.TryGetValue(ReadyKey(), out object value))
-            {
-                if (!(bool)value)
-                {
-                    return false;
-                }
-            }
-
-            else
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-    #endregion
-
-    #region Monitor the number of players and standby status → If OK, start battle
-    bool DoneStartBattle;
-    public void CheckPlayerState()
-    {
-        if (PhotonNetwork.InRoom && endSetUp)
-        {
-            if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers && AllPlayerIsReady())
-            {
-                if (PhotonNetwork.IsMasterClient && !DoneStartBattle)
-                {
-                    DoneStartBattle = true;
-
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        Hashtable RoomProp = PhotonNetwork.CurrentRoom.CustomProperties;
-
-                        // 0: MasterClient, -1: Random, 1: non-MasterClient
-                        int firstPlayerIndexID = -1;
-                        int firstPlayerId = -1;
-
-                        if (RoomProp.TryGetValue(DataBase.FirstPlayerIndexIdKey, out object value))
-                        {
-                            if (value is int)
-                            {
-                                firstPlayerIndexID = (int)value;
-                            }
-                        }
-
-                        if (firstPlayerIndexID == 0)
-                        {
-                            firstPlayerId = PhotonNetwork.MasterClient.ActorNumber;
-                        }
-
-                        else if (firstPlayerIndexID == 1)
-                        {
-                            Photon.Realtime.Player nonMasterPlayer = PhotonNetwork.PlayerList.ToList().Find(player => !player.IsMasterClient);
-
-                            if (nonMasterPlayer != null)
-                            {
-                                firstPlayerId = nonMasterPlayer.ActorNumber;
-                            }
-                        }
-
-                        if (RoomProp.TryGetValue(DataBase.FirstPlayerKey, out value))
-                        {
-                            RoomProp[DataBase.FirstPlayerKey] = firstPlayerId;
-                        }
-
-                        else
-                        {
-                            RoomProp.Add(DataBase.FirstPlayerKey, firstPlayerId);
-                        }
-
-                        PhotonNetwork.CurrentRoom.SetCustomProperties(RoomProp);
-                    }
-
-                    photonView.RPC("GoToBattleScene", RpcTarget.All);
-                }
-
-            }
-
-            else if (playerCount != PhotonNetwork.CurrentRoom.PlayerCount)
-            {
-                playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
-                DestroyChildObject();//PlayerElementを削除
-                GetPlayers();
-            }
-        }
-    }
-    #endregion
-
     #region Start of battle
-    [PunRPC]
     public void GoToBattleScene()
     {
-        StartCoroutine(GoToBattleSceneCoroutine());
+        if (!DoneStartBattle)
+        {
+            DoneStartBattle = true;
+            StartCoroutine(GoToBattleSceneCoroutine());
+        }
     }
 
     IEnumerator GoToBattleSceneCoroutine()
     {
         yield return ContinuousController.instance.StartCoroutine(Opening.instance.LoadingObject_Unload.StartLoading("Now Loading"));
 
-        DoneStartBattle = true;
-
-        Hashtable PlayerProp = PhotonNetwork.LocalPlayer.CustomProperties;
-
-        List<DictionaryEntry> dictionaryEntries = new List<DictionaryEntry>();
-
-        foreach (DictionaryEntry dictionaryEntry in PlayerProp)
-        {
-            dictionaryEntries.Add(dictionaryEntry);
-        }
-
-        foreach (DictionaryEntry dictionaryEntry in dictionaryEntries)
-        {
-            if (dictionaryEntry.Key.ToString().Contains("PhotonWaitController"))
-            {
-                if (PlayerProp.TryGetValue(dictionaryEntry.Key.ToString(), out _))
-                {
-                    PlayerProp.Remove(dictionaryEntry.Key.ToString());
-                }
-            }
-        }
-
-        if (PlayerProp.TryGetValue("isBattle", out _))
-        {
-            PlayerProp["isBattle"] = true;
-        }
-
-        else
-        {
-            PlayerProp.Add("isBattle", true);
-        }
-
-        if (PlayerProp.TryGetValue(ReadyKey(), out _))
-        {
-            PlayerProp[ReadyKey()] = false;
-        }
-
-        else
-        {
-            PlayerProp.Add(ReadyKey(), false);
-        }
-
-        PlayerProp[ContinuousController.DeckDataPropertyKey] = ContinuousController.instance.BattleDeckData.GetThisDeckCode();
-
-        PhotonNetwork.LocalPlayer.SetCustomProperties(PlayerProp);
         yield return _waitForSeconds0_1;
 
-        //Opening.instance.MainCamera.gameObject.SetActive(false);
+        Opening.instance.MainCamera.gameObject.SetActive(false);
 
         foreach (Camera camera in Opening.instance.openingCameras)
         {
@@ -565,54 +316,24 @@ public class RoomManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region Create PlayerElement corresponding to the information of players in the room
-    [PunRPC]
-    public void GetPlayers()
+    public void UpdatePlayersUI(List<NetworkPlayerInfo> PlayerInfo)
     {
-        if (PhotonNetwork.PlayerList == null || PhotonNetwork.CurrentRoom.PlayerCount == 0)
+        DestroyChildObject();
+
+        if (PlayerInfo == null)
         {
             return;
         }
 
-        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        for (int i = 0; i < PlayerInfo.Count; i++)
         {
             GameObject PlayerElement = Instantiate(PlayerElementPrefab, PlayerParent.transform);
 
-            string PlayerName;
-
-            #region Get player name from custom property
-            if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
-            {
-                PlayerName = "You";
-            }
-
-            else
-            {
-                PlayerName = "Opponent";
-            }
-
-            Hashtable hash = PhotonNetwork.PlayerList[i].CustomProperties;
-
-            if (hash.TryGetValue(ContinuousController.PlayerNameKey, out object value))
-            {
-                PlayerName = (string)value;
-            }
-            #endregion
-
-            if (PhotonNetwork.PlayerList[i].CustomProperties.TryGetValue(ReadyKey(), out value))
-            {
-                PlayerElement.GetComponent<CPlayerElement>().SetPlayerInfo(PlayerName, (bool)value);
-            }
-
-            else
-            {
-                PlayerElement.GetComponent<CPlayerElement>().SetPlayerInfo(PlayerName, false);
-            }
+            PlayerElement.GetComponent<CPlayerElement>().SetPlayerInfo(PlayerInfo[i].Name, PlayerInfo[i].IsReady);
         }
     }
     #endregion
 
-    #region Delete PlayerElement displayed
-    [PunRPC]
     public void DestroyChildObject()
     {
         for (int i = 0; i < PlayerParent.transform.childCount; ++i)
@@ -620,13 +341,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
             Destroy(PlayerParent.transform.GetChild(i).gameObject);
         }
     }
-    #endregion
 
     #region Check the Ready button
     public void CheckReadyButton()
     {
-        bool oldIsReady = _isReady;
-
         if (CanReady())
         {
             ReadyButton.interactable = true;
@@ -653,13 +371,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             ReadyButton.interactable = false;
             ReadyButtonText.text = "Finish Preparation";
             _isReady = false;
-            SetReadyProperty(PhotonNetwork.LocalPlayer, _isReady);
-
-            if (oldIsReady)
-            {
-                photonView.RPC("DestroyChildObject", RpcTarget.All);
-                photonView.RPC("GetPlayers", RpcTarget.All);
-            }
+            DCGONetwork.Provider.SetRoomReadyState(_isReady);
         }
     }
 
@@ -715,11 +427,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
         _oldIsReady = _isReady;
 
         _isReady = false;
-
-        SetReadyProperty(PhotonNetwork.LocalPlayer, _isReady);
-
-        photonView.RPC("DestroyChildObject", RpcTarget.All);
-        photonView.RPC("GetPlayers", RpcTarget.All);
     }
     #endregion
 
@@ -736,8 +443,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
             ContinuousController.instance.BattleDeckData = Opening.instance.battle.selectBattleDeck.deckInfoPanel.ShowingDeckData;
 
-            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.SignUpBattleDeckData());
-
             yield return new WaitForSeconds(Time.deltaTime);
 
             SetDeckInfoPanel();
@@ -751,27 +456,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
             CheckReadyButton();
 
-            SetReadyProperty(PhotonNetwork.LocalPlayer, _isReady);
-
-            #region プレイヤーの準備完了状態がプロパティにセットされるまで待機
-            while (true)
-            {
-                Hashtable _hash = PhotonNetwork.LocalPlayer.CustomProperties;
-
-                if (_hash.TryGetValue(ReadyKey(), out object value))
-                {
-                    if ((bool)value == _isReady)
-                    {
-                        break;
-                    }
-                }
-
-                yield return null;
-            }
-            #endregion
-
-            photonView.RPC("DestroyChildObject", RpcTarget.All);
-            photonView.RPC("GetPlayers", RpcTarget.All);
+            DCGONetwork.Provider.SetRoomReadyState(_isReady);
         }
     }
     #endregion
@@ -800,10 +485,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
     #region Processing when the Copy Room ID button is pressed
     public void OnClickCopyRoomIDButton()
     {
-        if (PhotonNetwork.InRoom)
+        if (RoomIDText.text != "")
         {
             #region クリップボードにデッキコードをコピー
-            GUIUtility.systemCopyBuffer = PhotonNetwork.CurrentRoom.Name[..5];
+            GUIUtility.systemCopyBuffer = RoomIDText.text;
             #endregion
 
             List<UnityAction> Commands = new List<UnityAction>()
@@ -835,59 +520,18 @@ public class RoomManager : MonoBehaviourPunCallbacks
             if (endSetUp && !DoneStartBattle)
             {
                 CheckReadyButton();
-                CheckPlayerState();
             }
         }
 
-        if (PhotonNetwork.IsConnectedAndReady)
+        if (gameObject.activeSelf && DCGONetwork.Provider != null)
         {
-            if (PhotonNetwork.InRoom)
-            {
-                if (PhotonNetwork.LocalPlayer != null)
-                {
-                    _switchFirstPlayerToggleCover.SetActive(!PhotonNetwork.LocalPlayer.IsMasterClient);
-
-                    Hashtable RoomProp = PhotonNetwork.CurrentRoom.CustomProperties;
-
-                    // 0: MasterClient, -1: Random, 1: non-MasterClient
-                    int firstPlayerIndexID = -1;
-
-                    if (RoomProp.TryGetValue(DataBase.FirstPlayerIndexIdKey, out object value))
-                    {
-                        if (value is int)
-                        {
-                            firstPlayerIndexID = (int)value;
-                        }
-                    }
-
-                    foreach (FirstPlayerIndexIdToggle firstPlayerIndexIdToggle in _firstPlayerIndexIdToggles)
-                    {
-                        firstPlayerIndexIdToggle.Toggle.isOn = firstPlayerIndexIdToggle.FirstPlayerIndexID == firstPlayerIndexID;
-                    }
-                }
-            }
+            _switchFirstPlayerToggleCover.SetActive(!DCGONetwork.Provider.IsRoomHost());
         }
+        
     }
 
     public void OnClickFirstPlayerIndexIDButton(int firstPlayerIndexID)
     {
-        if (!PhotonNetwork.IsConnectedAndReady) return;
-        if (!PhotonNetwork.InRoom) return;
-        if (PhotonNetwork.LocalPlayer == null) return;
-        if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
-
-        Hashtable RoomProp = PhotonNetwork.CurrentRoom.CustomProperties;
-
-        if (RoomProp.TryGetValue(DataBase.FirstPlayerIndexIdKey, out object _))
-        {
-            RoomProp[DataBase.FirstPlayerIndexIdKey] = firstPlayerIndexID;
-        }
-
-        else
-        {
-            RoomProp.Add(DataBase.FirstPlayerIndexIdKey, firstPlayerIndexID);
-        }
-
-        PhotonNetwork.CurrentRoom.SetCustomProperties(RoomProp);
+        DCGONetwork.Provider.SetRoomSetting(DataBase.FirstPlayerKey, firstPlayerIndexID);
     }
-}
+}
