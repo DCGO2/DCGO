@@ -39,10 +39,10 @@ public partial class CardEffectCommons
 
         bool useOPT = false;
 
-        if (totalTrashCount == 2)
+        if (totalTrashCount <= 2)
         {
             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-            int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(TamerWithFaceDownSource));
+            int maxCount = Math.Min(totalTrashCount, CardEffectCommons.MatchConditionPermanentCount(TamerWithFaceDownSource));
 
             selectPermanentEffect.SetUp(
                 selectPlayer: card.Owner,
@@ -63,8 +63,8 @@ public partial class CardEffectCommons
 
             bool CanEndSelectCondition(List<Permanent> permanents)
             {
-                return permanents.Count == 2
-                    || (permanents.Count > 0 && permanents[0].DigivolutionCards.Count(FaceDownCards) >= 2);
+                return permanents.Count == totalTrashCount
+                    || (permanents.Count > 0 && permanents[0].DigivolutionCards.Count(FaceDownCards) >= totalTrashCount);
             }
 
             IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
@@ -72,9 +72,9 @@ public partial class CardEffectCommons
                 if (permanents.Count == 1)
                 {
                     useOPT = true;
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 2, isFromTop: false, activateClass: cardEffect, cardCondition: FaceDownCards));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: totalTrashCount, isFromTop: false, activateClass: cardEffect, cardCondition: FaceDownCards));
                 }
-                else if (permanents.Count == 2)
+                else if (permanents.Count == totalTrashCount)
                 {
                     useOPT = true;
                     foreach (Permanent selectedPermanent in permanents)
