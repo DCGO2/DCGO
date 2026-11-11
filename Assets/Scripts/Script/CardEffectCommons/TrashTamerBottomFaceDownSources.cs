@@ -76,7 +76,7 @@ public partial class CardEffectCommons
                         useOPT = true;
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: totalTrashCount, isFromTop: false, activateClass: cardEffect, cardCondition: FaceDownCards));
                     }
-                    else if (permanents.Count == totalTrashCount)
+                    else if (permanents.Count == 2)
                     {
                         useOPT = true;
                         foreach (Permanent selectedPermanent in permanents)
