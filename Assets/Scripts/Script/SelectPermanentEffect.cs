@@ -1040,7 +1040,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                     {
                         foreach (Permanent selectedPermanent in tauntPermanents)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.Taunt(selectedPermanent));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.StartOfMainAttack(targetPermanent: selectedPermanent, cardEffect: _cardEffect));
                         }
                     }
                 }

@@ -6,72 +6,50 @@ public partial class CardEffectCommons
     {
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Attack with this Digimon", CanUseCondition, targetPermanent.TopCard);
-        activateClass.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription());
+        activateClass.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDescription());
         activateClass.SetEffectSourcePermanent(targetPermanent);
         targetPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 
-        string EffectDiscription()
+        string EffectDescription()
         {
             return "[Start of Your Main Phase] Attack with this Digimon.";
         }
 
         bool CanUseCondition(Hashtable hashtable1)
         {
-            if (IsPermanentExistsOnBattleArea(targetPermanent))
-            {
-                if (targetPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(targetPermanent))
-                {
-                    if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == targetPermanent.TopCard.Owner)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return IsPermanentExistsOnBattleArea(targetPermanent)
+                && targetPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(targetPermanent)
+                && GManager.instance.turnStateMachine.gameContext.TurnPlayer == targetPermanent.TopCard.Owner;
         }
 
         bool CanActivateCondition1(Hashtable hashtable1)
         {
-            if (IsPermanentExistsOnBattleArea(targetPermanent))
-            {
-                if (!targetPermanent.TopCard.CanNotBeAffected(cardEffect))
-                {
-                    if (targetPermanent.CanAttack(activateClass))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return IsPermanentExistsOnBattleArea(targetPermanent)
+                && !targetPermanent.TopCard.CanNotBeAffected(cardEffect)
+                && targetPermanent.CanAttack(activateClass);
         }
 
         IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
         {
-            if (IsPermanentExistsOnBattleArea(targetPermanent))
+            if (IsPermanentExistsOnBattleArea(targetPermanent) && targetPermanent.CanAttack(activateClass))
             {
-                if (targetPermanent.CanAttack(activateClass))
-                {
-                    SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                    selectAttackEffect.SetUp(
-                        attacker: targetPermanent,
-                        canAttackPlayerCondition: () => true,
-                        defenderCondition: (permanent) => true,
-                        cardEffect: activateClass);
+                selectAttackEffect.SetUp(
+                    attacker: targetPermanent,
+                    canAttackPlayerCondition: () => true,
+                    defenderCondition: (permanent) => true,
+                    cardEffect: activateClass);
 
-                    selectAttackEffect.SetCanNotSelectNotAttack();
+                selectAttackEffect.SetCanNotSelectNotAttack();
 
-                    yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                }
+                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
             }
         }
 
         ICardEffect GetCardEffect(EffectTiming _timing)
         {
-            if (_timing == EffectTiming.OnStartMainPhase) return activateClass;
-            return null;
+            return _timing == EffectTiming.OnStartMainPhase ? activateClass : null;
         }
 
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(targetPermanent));
