@@ -58,9 +58,6 @@ namespace DCGO.CardEffects.BT25
                     && permanent.TopCard.HasLevel
                     && permanent.Level <= 5;
 
-                bool TamerWithFaceDownCardCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
-                    && permanent.HasFaceDownDigivolutionCards;
-
                 bool LowestLevelPermanentCondition(Permanent permanent) => CardEffectCommons.IsMinLevel(permanent, card.Owner.Enemy);
 
                 bool Used = false;
@@ -92,66 +89,30 @@ namespace DCGO.CardEffects.BT25
                     }
                 }
 
-                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, TamerWithFaceDownCardCondition))
+                yield return StartCoroutine(CardEffectCommons.TrashTamerBottomFaceDownSources(card, activateClass, 1, successProcess: SuccessProcess()));
+
+                IEnumerator SuccessProcess()
                 {
-                    Permanent selectedPermanent = null;
+                    Used = true;
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: TamerWithFaceDownCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, LowestLevelPermanentCondition))
                     {
-                        selectedPermanent = permanent;
-                        yield return null;
-                    }
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: LowestLevelPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Bounce,
+                            cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 of your tamers to trash bottom face down card", "The opponent is selecting 1 of their tamers to trash bottom face down card");
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    if (selectedPermanent != null)
-                    {
-                        Used = true;
-                        var cardToTrash = selectedPermanent.DigivolutionCards.Last(x => x.IsFaceDown);
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsAndProcessAccordingToResult(
-                        targetPermanent: selectedPermanent,
-                        targetDigivolutionCards: new List<CardSource>() { cardToTrash },
-                        activateClass: activateClass,
-                        successProcess: SuccessProcess,
-                        failureProcess: null));
-
-                        IEnumerator SuccessProcess(List<CardSource> cardSources)
-                        {
-                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, LowestLevelPermanentCondition))
-                            {
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: LowestLevelPermanentCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: 1,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: null,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Bounce,
-                                    cardEffect: activateClass);
-
-                                selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's lowest level Digimon to return to hand", "The opponent is selecting 1 lowest level Digimon to return to hand");
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                            }
-                        }
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's lowest level Digimon to return to hand", "The opponent is selecting 1 lowest level Digimon to return to hand");
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
                 }
 

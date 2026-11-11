@@ -109,98 +109,57 @@ namespace DCGO.CardEffects.BT27
                     //Suspending and trashing are one cost, so the trash still happens if the suspend was prevented
                     if (!CanPayFaceDownCost()) yield break;
 
-                    #region Trash 2 bottom face-down cards
-                    bool paid = false;
+                    yield return StartCoroutine(CardEffectCommons.TrashTamerBottomFaceDownSources(card, activateClass, 2, successProcess: SuccessProcess()));
 
-                    SelectPermanentEffect selectTamerEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                    int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource));
-
-                    selectTamerEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: TamerWithOneFaceDownSource,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: CanEndSelectCondition,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: true,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectTamerEffect.SetUpCustomMessage("Select all Tamer(s) to trash bottom face-down cards from.", "The opponent is selecting Tamer(s) to trash bottom face-down cards from.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectTamerEffect.Activate());
-
-                    bool CanEndSelectCondition(List<Permanent> permanents)
+                    IEnumerator SuccessProcess()
                     {
-                        return permanents.Count == 2
-                            || (permanents.Count > 0 && permanents[0].DigivolutionCards.Count(FaceDownCards) >= 2);
-                    }
+                        #region 1 Digimon may digivolve
+                        if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition)
+                        || !CardEffectCommons.HasMatchConditionOwnersHand(card, ChessmonCardCondition)
+                        || !suspended) yield break;
 
-                    IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
-                    {
-                        if (permanents.Count == 1)
+                        Permanent selectedDigimon = null;
+
+                        SelectPermanentEffect selectDigimonEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectDigimonEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectDigimonCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectDigimonCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectDigimonEffect.SetUpCustomMessage("Select 1 Digimon to digivolve.", "The opponent is selecting 1 Digimon to digivolve.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectDigimonEffect.Activate());
+
+                        IEnumerator SelectDigimonCoroutine(Permanent permanent)
                         {
-                            paid = true;
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 2, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
+                            selectedDigimon = permanent;
+                            yield return null;
                         }
-                        else if (permanents.Count == 2)
+
+                        if (selectedDigimon != null)
                         {
-                            paid = true;
-                            foreach (Permanent selectedPermanent in permanents)
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 1, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                targetPermanent: selectedDigimon,
+                                cardCondition: ChessmonCardCondition,
+                                payCost: true,
+                                reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: -1,
+                                isHand: true,
+                                activateClass: activateClass,
+                                successProcess: null));
                         }
+                        #endregion
                     }
-
-                    if (!suspended || !paid) yield break;
-                    #endregion
-
-                    #region 1 Digimon may digivolve
-                    if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition)
-                        || !CardEffectCommons.HasMatchConditionOwnersHand(card, ChessmonCardCondition)) yield break;
-
-                    Permanent selectedDigimon = null;
-
-                    SelectPermanentEffect selectDigimonEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectDigimonEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectDigimonCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectDigimonCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectDigimonEffect.SetUpCustomMessage("Select 1 Digimon to digivolve.", "The opponent is selecting 1 Digimon to digivolve.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectDigimonEffect.Activate());
-
-                    IEnumerator SelectDigimonCoroutine(Permanent permanent)
-                    {
-                        selectedDigimon = permanent;
-                        yield return null;
-                    }
-
-                    if (selectedDigimon != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                            targetPermanent: selectedDigimon,
-                            cardCondition: ChessmonCardCondition,
-                            payCost: true,
-                            reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
-                            fixedCostTuple: null,
-                            ignoreDigivolutionRequirementFixedCost: -1,
-                            isHand: true,
-                            activateClass: activateClass,
-                            successProcess: null));
-                    }
-                    #endregion
                 }
             }
             #endregion
