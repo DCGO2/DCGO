@@ -75,6 +75,16 @@ public class CardSource : MonoBehaviour
 
     public void SetFace(string str = "")
     {
+        // Diagnostic for the security face-up desync (BT27-085 beta bug): a face-down card in
+        // security should only turn face up on purpose, so log where it happens and on whose client.
+        if (IsFlipped && Owner != null && Owner.SecurityCards.Contains(this))
+        {
+            UnityEngine.Debug.LogWarning(
+                $"[SecurityFaceUp] {BaseENGCardNameFromEntity} ({CardID}, index {CardIndex}) turned face up in " +
+                $"{(Owner.isYou ? "your" : "the opponent's")} security (position {Owner.SecurityCards.IndexOf(this)} of {Owner.SecurityCards.Count})" +
+                $"{(str != "" ? $", from - {str}" : "")}\n{Environment.StackTrace}");
+        }
+
         IsFlipped = false;
 
         if (str != "")
