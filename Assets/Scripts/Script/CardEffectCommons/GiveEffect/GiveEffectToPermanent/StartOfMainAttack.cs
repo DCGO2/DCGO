@@ -9,27 +9,34 @@ public partial class CardEffectCommons
         activateClass.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDescription());
         activateClass.SetEffectSourcePermanent(targetPermanent);
         targetPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+        targetPermanent.UntilOwnerTurnEndEffects.Add(GetDetailEffect);
 
         string EffectDescription()
         {
             return "[Start of Your Main Phase] Attack with this Digimon.";
         }
 
-        bool CanUseCondition(Hashtable hashtable1)
+        bool CanUseCondition(Hashtable hashtable)
         {
             return IsPermanentExistsOnBattleArea(targetPermanent)
                 && targetPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(targetPermanent)
                 && GManager.instance.turnStateMachine.gameContext.TurnPlayer == targetPermanent.TopCard.Owner;
         }
 
-        bool CanActivateCondition1(Hashtable hashtable1)
+        bool CanActivateCondition1(Hashtable hashtable)
         {
             return IsPermanentExistsOnBattleArea(targetPermanent)
                 && !targetPermanent.TopCard.CanNotBeAffected(cardEffect)
                 && targetPermanent.CanAttack(activateClass);
         }
 
-        IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
+        bool CanShowDebuffCondition(Hashtable hashtable)
+        {
+            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(targetPermanent, targetPermanent.TopCard) &&
+                   !targetPermanent.TopCard.CanNotBeAffected(activateClass);
+        }
+
+        IEnumerator ActivateCoroutine1(Hashtable hashtable)
         {
             if (IsPermanentExistsOnBattleArea(targetPermanent) && targetPermanent.CanAttack(activateClass))
             {
@@ -47,9 +54,19 @@ public partial class CardEffectCommons
             }
         }
 
-        ICardEffect GetCardEffect(EffectTiming _timing)
+        ICardEffect GetCardEffect(EffectTiming timing)
         {
-            return _timing == EffectTiming.OnStartMainPhase ? activateClass : null;
+            return timing == EffectTiming.OnStartMainPhase ? activateClass : null;
+        }
+
+        ICardEffect GetDetailEffect(EffectTiming timing)
+        {
+            if (timing == EffectTiming.None)
+            {
+                return CardEffectFactory.AddDetailClass(CanShowDebuffCondition, permanent => permanent == targetPermanent, EffectDescription(), true, targetPermanent.TopCard);
+            }
+
+            return null;
         }
 
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(targetPermanent));

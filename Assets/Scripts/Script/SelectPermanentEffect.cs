@@ -348,6 +348,10 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                             message = "Select a Digimon to attack with.";
                             break;
 
+                        case Mode.Taunt:
+                            message = "Select a Digimon to give [Start of Main Phase] This Digimon attacks.";
+                            break;
+
                         case Mode.Custom:
                             message = "Select cards.";
                             break;
