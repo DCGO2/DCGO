@@ -32,8 +32,8 @@ public partial class CardEffectCommons
 
         bool CanShowDebuffCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(targetPermanent, targetPermanent.TopCard) &&
-                   !targetPermanent.TopCard.CanNotBeAffected(activateClass);
+            return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(targetPermanent)
+                && !targetPermanent.TopCard.CanNotBeAffected(cardEffect);
         }
 
         IEnumerator ActivateCoroutine1(Hashtable hashtable)
@@ -69,6 +69,9 @@ public partial class CardEffectCommons
             return null;
         }
 
-        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(targetPermanent));
+        if (!targetPermanent.TopCard.CanNotBeAffected(cardEffect))
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(targetPermanent));
+        }
     }
 }
