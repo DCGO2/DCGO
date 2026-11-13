@@ -576,13 +576,24 @@ public partial class CardEffectCommons
 
     #region Deck Bounce target 1 permanent, and the effect determines whether the permanent has been bounced or not
 
-    public static IEnumerator DeckBouncePeremanentAndProcessAccordingToResult(List<Permanent> targetPermanents, ICardEffect activateClass, IEnumerator successProcess, IEnumerator failureProcess)
+    public static IEnumerator DeckBouncePeremanentAndProcessAccordingToResult(List<Permanent> targetPermanents, ICardEffect activateClass, IEnumerator successProcess, IEnumerator failureProcess, bool toTop = false)
     {
-        DeckBottomBounceClass deckBounceClass = new DeckBottomBounceClass(targetPermanents, CardEffectHashtable(activateClass));
+        Func<Permanent, bool> isDeckBounced;
 
-        yield return ContinuousController.instance.StartCoroutine(deckBounceClass.DeckBounce());
+        if (toTop)
+        {
+            DeckTopBounceClass deckTopBounceClass = new DeckTopBounceClass(targetPermanents, CardEffectHashtable(activateClass));
+            yield return ContinuousController.instance.StartCoroutine(deckTopBounceClass.DeckBounce());
+            isDeckBounced = deckTopBounceClass.IsDeckBounced;
+        }
+        else
+        {
+            DeckBottomBounceClass deckBottomBounceClass = new DeckBottomBounceClass(targetPermanents, CardEffectHashtable(activateClass));
+            yield return ContinuousController.instance.StartCoroutine(deckBottomBounceClass.DeckBounce());
+            isDeckBounced = deckBottomBounceClass.IsDeckBounced;
+        }
 
-        if (targetPermanents.Some((permanent) => deckBounceClass.IsDeckBounced(permanent)))
+        if (targetPermanents.Some(isDeckBounced))
         {
             if (successProcess != null)
             {

@@ -138,14 +138,14 @@ namespace DCGO.CardEffects.BT27
                         if (selectedPermanent != null)
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeckBouncePeremanentAndProcessAccordingToResult(
-                                targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                                targetPermanents: new List<Permanent>() { selectedPermanent },
                                 activateClass: activateClass,
                                 successProcess: SuccessProcess(),
                                 failureProcess: null));
 
                             IEnumerator SuccessProcess()
                             {
-                                returned = !CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
+                                returned = true;
                                 yield return null;
                             }
                         }
@@ -303,11 +303,18 @@ namespace DCGO.CardEffects.BT27
 
                         if (selectedPermanent != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(new DeckTopBounceClass(
-                                new List<Permanent>() { selectedPermanent },
-                                CardEffectCommons.CardEffectHashtable(activateClass)).DeckBounce());
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeckBouncePeremanentAndProcessAccordingToResult(
+                                targetPermanents: new List<Permanent>() { selectedPermanent },
+                                activateClass: activateClass,
+                                successProcess: ReturnedProcess(),
+                                failureProcess: null,
+                                toTop: true));
 
-                            returned = !CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
+                            IEnumerator ReturnedProcess()
+                            {
+                                returned = true;
+                                yield return null;
+                            }
                         }
                     }
 
