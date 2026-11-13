@@ -37,11 +37,12 @@ namespace DCGO.CardEffects.BT27
                         && CardEffectCommons.CanTriggerWhenSelfPermanentSuspends(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition) yield break;
+                    
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
