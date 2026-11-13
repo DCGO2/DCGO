@@ -137,11 +137,17 @@ namespace DCGO.CardEffects.BT27
 
                         if (selectedPermanent != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(
-                                new List<Permanent>() { selectedPermanent },
-                                CardEffectCommons.CardEffectHashtable(activateClass)).DeckBounce());
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeckBouncePeremanentAndProcessAccordingToResult(
+                                targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                                activateClass: activateClass,
+                                successProcess: SuccessProcess(),
+                                failureProcess: null));
 
-                            returned = !CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
+                            IEnumerator SuccessProcess()
+                            {
+                                returned = !CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
+                                yield return null;
+                            }
                         }
                     }
                     else if (answer == 2 && thisPermanent != null)
