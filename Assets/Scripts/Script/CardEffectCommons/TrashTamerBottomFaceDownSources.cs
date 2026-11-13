@@ -8,7 +8,7 @@ public partial class CardEffectCommons
     public static IEnumerator TrashTamerBottomFaceDownSources(
         CardSource card,
         ICardEffect cardEffect,
-        int totalTrashCount = 0,
+        int totalTrashCount,
         IEnumerator successProcess = null,
         IEnumerator failureProcess = null)
     {
@@ -73,14 +73,16 @@ public partial class CardEffectCommons
                 {
                     if (permanents.Count == 1)
                     {
-                        useOPT = true;
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: totalTrashCount, isFromTop: false, activateClass: cardEffect, cardCondition: FaceDownCards));
+
+                        useOPT = true;
                     }
                     else if (permanents.Count == 2)
                     {
-                        useOPT = true;
                         foreach (Permanent selectedPermanent in permanents)
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 1, isFromTop: false, activateClass: cardEffect, cardCondition: FaceDownCards));
+
+                        useOPT = true;
                     }
                 }
             }
@@ -159,17 +161,18 @@ public partial class CardEffectCommons
                             trashCount = GManager.instance.userSelectionManager.SelectedIntValue;
                         }
 
+                        if (trashCount == 0) break;
+
                         if (trashCount > 0)
                         {
                             trashPlan[selectedTamer] = PlannedCount(selectedTamer) + trashCount;
                             remainingTrashCount -= trashCount;
                         }
                     }
+                    else break;
 
                     if (remainingTrashCount == 0)
                     {
-                        useOPT = true;
-
                         foreach (KeyValuePair<Permanent, int> plannedTrash in trashPlan)
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
@@ -179,6 +182,8 @@ public partial class CardEffectCommons
                                 activateClass: cardEffect,
                                 cardCondition: FaceDownCards));
                         }
+
+                        useOPT = true;
                     }
                 }
             }
