@@ -27,13 +27,13 @@ namespace DCGO.CardEffects.BT27
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition, null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
-                        && CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
                 }
 
                 bool PermanentCondition(Permanent permanent)

@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.BT27
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
-                    => "[Your Turn] [Once Per Turn] ThisWhen any of your Digimon with [Huckmon] in their texts suspend, <Draw 1>";
+                    => "[Your Turn] [Once Per Turn] When any of your Digimon with [Huckmon] in their texts suspend, <Draw 1>";
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
