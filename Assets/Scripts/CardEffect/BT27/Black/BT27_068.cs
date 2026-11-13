@@ -33,14 +33,14 @@ namespace DCGO.CardEffects.BT27
             #region Reboot
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(false, card, null));
             }
             #endregion
 
             #region Blocker
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(false, card, null));
             }
             #endregion
 
@@ -58,8 +58,7 @@ namespace DCGO.CardEffects.BT27
 
                 bool OtherDigimonCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent != card.PermanentOfThisCard()
-                        && !permanent.willBeRemoveField;
+                        && permanent != card.PermanentOfThisCard();
 
                 bool SourceCondition(CardSource cardSource)
                     => cardSource.EqualsCardName("Gankoomon") || cardSource.EqualsCardName("X Antibody");
@@ -83,20 +82,28 @@ namespace DCGO.CardEffects.BT27
                     bool canReturnDigimon = CardEffectCommons.HasMatchConditionPermanent(OtherDigimonCondition);
                     bool canReturnSource = HasSource();
 
-                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
-                    if (canReturnDigimon) selectionElements.Add(new(message: "Return 1 of your other Digimon", value: 1, spriteIndex: 0));
-                    if (canReturnSource) selectionElements.Add(new(message: "Return 1 digivolution card", value: 2, spriteIndex: 0));
-                    selectionElements.Add(new(message: "Don't return", value: 0, spriteIndex: 1));
+                    int answer = canReturnDigimon ? 1 : 2;
 
-                    GManager.instance.userSelectionManager.SetIntSelection(
-                        selectionElements: selectionElements,
-                        selectPlayer: card.Owner,
-                        selectPlayerMessage: "Which card will you return to the bottom of the deck so this Digimon doesn't leave?",
-                        notSelectPlayerMessage: "The opponent is choosing which card to return to the bottom of the deck.");
+                    if (canReturnDigimon && canReturnSource)
+                    {
+                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>
+                        {
+                            new(message: "Return 1 of your other Digimon", value: 1, spriteIndex: 0),
+                            new(message: "Return 1 digivolution card", value: 2, spriteIndex: 0),
+                            new(message: "Don't return", value: 0, spriteIndex: 1)
+                        };
 
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                        GManager.instance.userSelectionManager.SetIntSelection(
+                            selectionElements: selectionElements,
+                            selectPlayer: card.Owner,
+                            selectPlayerMessage: "Which card will you return to the bottom of the deck so this Digimon doesn't leave?",
+                            notSelectPlayerMessage: "The opponent is choosing which card to return to the bottom of the deck.");
 
-                    int answer = GManager.instance.userSelectionManager.SelectedIntValue;
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        answer = GManager.instance.userSelectionManager.SelectedIntValue;
+                    }
+
                     bool returned = false;
 
                     if (answer == 1)
