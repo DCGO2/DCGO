@@ -45,6 +45,8 @@ public class PlayLog : MonoBehaviour
     //The whole log of the game without links, as _logList is trimmed to _maxLogCharacterLength
     List<string> _fullLogList = new List<string>();
 
+    public string FullLogText => string.Concat(_fullLogList).Trim();
+
     //Height taken from the bottom of the log to make room for the button
     const float ExportLogButtonAreaHeight = 60f;
     static readonly Vector2 ExportLogButtonSize = new Vector2(280f, 50f);
@@ -112,7 +114,7 @@ public class PlayLog : MonoBehaviour
 
     public void OnClickExportLogButton()
     {
-        GUIUtility.systemCopyBuffer = string.Concat(_fullLogList).Trim();
+        GUIUtility.systemCopyBuffer = FullLogText;
 
         if (GManager.instance != null)
         {
