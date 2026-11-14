@@ -3864,6 +3864,16 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card has "ALYSIAN" trait
+    public bool HasAlysianTraits
+    {
+        get
+        {
+            return EqualsTraits("ALYSIAN");
+        }
+    }
+    #endregion
+
     #region whether this card has "Shambala" trait
 
     public bool HasShambalaTraits
