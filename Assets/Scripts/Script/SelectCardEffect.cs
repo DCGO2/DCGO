@@ -687,7 +687,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                 }
             }
 
-            yield return new WaitUntil(() => _selectPlayer.HasPlayerSelection());
+            yield return _selectPlayer.WaitForPlayerSelection();
 
             CardSelection cardSelection = _selectPlayer.DequeuePlayerSelection<CardSelection>();
 
@@ -701,7 +701,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                 }
             }
 
-            yield return new WaitUntil(() => _selectPlayer.HasPlayerSelection());
+            yield return _selectPlayer.WaitForPlayerSelection(0f);
 
             CardSelection indiciesSelection = _selectPlayer.DequeuePlayerSelection<CardSelection>();
 

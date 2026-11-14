@@ -18,6 +18,11 @@ public class ResultObject : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
+    public void SetResultText(string text)
+    {
+        ResultText.text = text;
+    }
+
     public void ShowResult(Player Winner, bool Surrendered, string effectName = "")
     {
         this.gameObject.SetActive(true);
