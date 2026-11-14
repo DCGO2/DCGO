@@ -89,106 +89,70 @@ namespace DCGO.CardEffects.BT27
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    #region Trash 2 bottom face-down cards
-                    bool paid = false;
+                    yield return StartCoroutine(CardEffectCommons.TrashTamerBottomFaceDownSources(card, activateClass, 2, successProcess: SuccessProcess(), failureProcess: FailureProcess()));
 
-                    SelectPermanentEffect selectTamerEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                    int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource));
-
-                    selectTamerEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: TamerWithOneFaceDownSource,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: CanEndSelectCondition,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: true,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectTamerEffect.SetUpCustomMessage("Select all Tamer(s) to trash bottom face-down cards from.", "The opponent is selecting Tamer(s) to trash bottom face-down cards from.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectTamerEffect.Activate());
-
-                    bool CanEndSelectCondition(List<Permanent> permanents)
+                    IEnumerator SuccessProcess()
                     {
-                        return permanents.Count == 2
-                            || (permanents.Count > 0 && permanents[0].DigivolutionCards.Count(FaceDownCards) >= 2);
-                    }
+                        #region This Tamer may digivolve
+                        Permanent thisTamer = card.PermanentOfThisCard();
 
-                    IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
-                    {
-                        if (permanents.Count == 1)
+                        if (thisTamer == null) yield break;
+
+                        bool CanDigivolveFromHandCondition(CardSource cardSource)
+                            => DigivolveCardCondition(cardSource)
+                                && cardSource.CanPlayCardTargetFrame(thisTamer.PermanentFrame, true, activateClass, SelectCardEffect.Root.Hand);
+
+                        bool CanDigivolveFromTrashCondition(CardSource cardSource)
+                            => DigivolveCardCondition(cardSource)
+                                && cardSource.CanPlayCardTargetFrame(thisTamer.PermanentFrame, true, activateClass, SelectCardEffect.Root.Trash);
+
+                        bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanDigivolveFromHandCondition);
+                        bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanDigivolveFromTrashCondition);
+
+                        if (!canSelectHand && !canSelectTrash) yield break;
+
+                        bool isHand = canSelectHand;
+
+                        if (canSelectHand && canSelectTrash)
                         {
-                            paid = true;
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 2, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
-                        }
-                        else if (permanents.Count == 2)
-                        {
-                            paid = true;
-                            foreach (Permanent selectedPermanent in permanents)
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 1, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
-                        }
-                    }
-
-                    if (!paid) yield break;
-                    #endregion
-
-                    #region This Tamer may digivolve
-                    Permanent thisTamer = card.PermanentOfThisCard();
-
-                    if (thisTamer == null) yield break;
-
-                    bool CanDigivolveFromHandCondition(CardSource cardSource)
-                        => DigivolveCardCondition(cardSource)
-                            && cardSource.CanPlayCardTargetFrame(thisTamer.PermanentFrame, true, activateClass, SelectCardEffect.Root.Hand);
-
-                    bool CanDigivolveFromTrashCondition(CardSource cardSource)
-                        => DigivolveCardCondition(cardSource)
-                            && cardSource.CanPlayCardTargetFrame(thisTamer.PermanentFrame, true, activateClass, SelectCardEffect.Root.Trash);
-
-                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanDigivolveFromHandCondition);
-                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanDigivolveFromTrashCondition);
-
-                    if (!canSelectHand && !canSelectTrash) yield break;
-
-                    bool isHand = canSelectHand;
-
-                    if (canSelectHand && canSelectTrash)
-                    {
-                        List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
+                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                         {
                             new(message: "From hand", value: 1, spriteIndex: 0),
                             new(message: "From trash", value: 2, spriteIndex: 0),
                             new(message: "Don't digivolve", value: 3, spriteIndex: 1),
                         };
 
-                        GManager.instance.userSelectionManager.SetIntSelection(
-                            selectionElements: selectionElements,
-                            selectPlayer: card.Owner,
-                            selectPlayerMessage: "From which area will you digivolve?",
-                            notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
+                            GManager.instance.userSelectionManager.SetIntSelection(
+                                selectionElements: selectionElements,
+                                selectPlayer: card.Owner,
+                                selectPlayerMessage: "From which area will you digivolve?",
+                                notSelectPlayerMessage: "The opponent is choosing from which area to select a card.");
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        if (GManager.instance.userSelectionManager.SelectedIntValue == 3) yield break;
+                            if (GManager.instance.userSelectionManager.SelectedIntValue == 3) yield break;
 
-                        isHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+                            isHand = GManager.instance.userSelectionManager.SelectedIntValue == 1;
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                            targetPermanent: thisTamer,
+                            cardCondition: DigivolveCardCondition,
+                            payCost: true,
+                            reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
+                            fixedCostTuple: null,
+                            ignoreDigivolutionRequirementFixedCost: -1,
+                            isHand: isHand,
+                            activateClass: activateClass,
+                            successProcess: null));
+                        #endregion
                     }
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                        targetPermanent: thisTamer,
-                        cardCondition: DigivolveCardCondition,
-                        payCost: true,
-                        reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
-                        fixedCostTuple: null,
-                        ignoreDigivolutionRequirementFixedCost: -1,
-                        isHand: isHand,
-                        activateClass: activateClass,
-                        successProcess: null));
-                    #endregion
+                    IEnumerator FailureProcess()
+                    {
+                        activateClass.RemoveUse();
+                        yield return null;
+                    }
                 }
             }
             #endregion

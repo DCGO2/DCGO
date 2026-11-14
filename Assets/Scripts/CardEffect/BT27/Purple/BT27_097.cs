@@ -118,184 +118,80 @@ namespace DCGO.CardEffects.BT27
 
                         if (!GManager.instance.userSelectionManager.SelectedBoolValue) yield break;
 
-                        // Collect the whole plan first and trash only once all 4 are chosen, so backing out never leaves a partial payment.
-                        Dictionary<Permanent, int> trashPlan = new Dictionary<Permanent, int>();
-
-                        int PlannedCount(Permanent permanent)
-                            => trashPlan.TryGetValue(permanent, out int count) ? count : 0;
-
-                        int UnplannedFaceDownCount(Permanent permanent)
-                            => permanent.DigivolutionCards.Count(FaceDownCards) - PlannedCount(permanent);
-
-                        bool TamerWithUnplannedFaceDownSource(Permanent permanent)
-                            => TamerWithFaceDownSource(permanent)
-                                && UnplannedFaceDownCount(permanent) > 0;
-
-                        int UnplannedFaceDownCountUnderTamers()
-                            => card.Owner.GetBattleAreaPermanents()
-                                .Where(TamerWithFaceDownSource)
-                                .Sum(UnplannedFaceDownCount);
-
-                        int remainingTrashCount = TrashCount;
-
-                        while (remainingTrashCount > 0 && UnplannedFaceDownCountUnderTamers() >= remainingTrashCount)
-                        {
-                            Permanent selectedTamer = null;
-
-                            if (CardEffectCommons.MatchConditionPermanentCount(TamerWithUnplannedFaceDownSource) == 1)
-                            {
-                                selectedTamer = card.Owner.GetBattleAreaPermanents().Find(TamerWithUnplannedFaceDownSource);
-                            }
-                            else
-                            {
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: TamerWithUnplannedFaceDownSource,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: 1,
-                                    canNoSelect: true,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: SelectPermanentCoroutine,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Custom,
-                                    cardEffect: activateClass);
-
-                                selectPermanentEffect.SetUpCustomMessage(
-                                    $"Select 1 Tamer to trash bottom face-down cards from ({remainingTrashCount} left).",
-                                    "The opponent is selecting 1 Tamer to trash bottom face-down cards from.");
-
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                                IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                                {
-                                    selectedTamer = permanent;
-                                    yield return null;
-                                }
-                            }
-
-                            //Backing out cancels the whole payment, nothing has been trashed yet
-                            if (selectedTamer == null) yield break;
-
-                            int availableCount = UnplannedFaceDownCount(selectedTamer);
-                            int otherTamersCount = UnplannedFaceDownCountUnderTamers() - availableCount;
-
-                            // Never let the player take so few that the other Tamers can't cover the rest.
-                            int maxTrashCount = Math.Min(remainingTrashCount, availableCount);
-                            int minTrashCount = Math.Max(1, remainingTrashCount - otherTamersCount);
-                            int trashCount = maxTrashCount;
-
-                            if (maxTrashCount > minTrashCount)
-                            {
-                                List<SelectionElement<int>> countElements = new List<SelectionElement<int>>();
-
-                                for (int i = maxTrashCount; i >= minTrashCount; i--)
-                                {
-                                    countElements.Add(new(message: $"Trash {i}", value: i, spriteIndex: 0));
-                                }
-
-                                countElements.Add(new(message: "Don't trash", value: 0, spriteIndex: 1));
-
-                                GManager.instance.userSelectionManager.SetIntSelection(
-                                    selectionElements: countElements,
-                                    selectPlayer: card.Owner,
-                                    selectPlayerMessage: "How many face-down cards will you trash from this Tamer?",
-                                    notSelectPlayerMessage: "The opponent is choosing how many face-down cards to trash.");
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                                trashCount = GManager.instance.userSelectionManager.SelectedIntValue;
-                            }
-
-                            if (trashCount <= 0) yield break;
-
-                            trashPlan[selectedTamer] = PlannedCount(selectedTamer) + trashCount;
-                            remainingTrashCount -= trashCount;
-                        }
-
-                        if (remainingTrashCount > 0) yield break;
-
-                        foreach (KeyValuePair<Permanent, int> plannedTrash in trashPlan)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
-                                targetPermanent: plannedTrash.Key,
-                                trashCount: plannedTrash.Value,
-                                isFromTop: false,
-                                activateClass: activateClass,
-                                cardCondition: FaceDownCards));
-                        }
+                        yield return StartCoroutine(CardEffectCommons.TrashTamerBottomFaceDownSources(card, activateClass, TrashCount, successProcess: SuccessProcess()));
                         #endregion
 
-                        #region May use 1 purple [BEATBREAK] Option from trash with the cost reduced by 3
-                        if (!CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectOptionCondition)) yield break;
-
-                        CardSource selectedCard = null;
-
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                            canTargetCondition: CanSelectOptionCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: "Select 1 Option card to use.",
-                            maxCount: 1,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Trash,
-                            customRootCardList: null,
-                            canLookReverseCard: true,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
-
-                        selectCardEffect.SetUpCustomMessage("Select 1 Option card to use.", "The opponent is selecting 1 Option card to use.");
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Used Card");
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        IEnumerator SuccessProcess()
                         {
-                            selectedCard = cardSource;
-                            yield return null;
-                        }
+                            #region May use 1 purple [BEATBREAK] Option from trash with the cost reduced by 3
+                            if (!CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectOptionCondition)) yield break;
 
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            CardSource selectedCard = null;
 
-                        if (selectedCard != null)
-                        {
-                            ChangeCostClass changeCostClass = new ChangeCostClass();
-                            changeCostClass.SetUpICardEffect($"Use Cost -{ReduceCost}", _ => true, card);
-                            changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: PlayCondition, rootCondition: _ => true, isUpDown: () => true, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                            Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
-                            card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                            ICardEffect GetCardEffect(EffectTiming _timing)
-                                => _timing == EffectTiming.None ? changeCostClass : null;
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectOptionCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 Option card to use.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
 
-                            bool PlayCondition(CardSource cardSource) => cardSource == selectedCard;
+                            selectCardEffect.SetUpCustomMessage("Select 1 Option card to use.", "The opponent is selecting 1 Option card to use.");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Used Card");
 
-                            int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {
-                                if (PlayCondition(cardSource))
-                                {
-                                    cost -= ReduceCost;
-                                }
-
-                                return cost;
+                                selectedCard = cardSource;
+                                yield return null;
                             }
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
-                                cardSources: new List<CardSource>() { selectedCard },
-                                activateClass: activateClass,
-                                payCost: true,
-                                root: SelectCardEffect.Root.Trash));
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                            card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
+                            if (selectedCard != null)
+                            {
+                                ChangeCostClass changeCostClass = new ChangeCostClass();
+                                changeCostClass.SetUpICardEffect($"Use Cost -{ReduceCost}", _ => true, card);
+                                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: PlayCondition, rootCondition: _ => true, isUpDown: () => true, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                                Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
+                                card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
+
+                                ICardEffect GetCardEffect(EffectTiming _timing)
+                                    => _timing == EffectTiming.None ? changeCostClass : null;
+
+                                bool PlayCondition(CardSource cardSource) => cardSource == selectedCard;
+
+                                int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                                {
+                                    if (PlayCondition(cardSource))
+                                    {
+                                        cost -= ReduceCost;
+                                    }
+
+                                    return cost;
+                                }
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
+                                    cardSources: new List<CardSource>() { selectedCard },
+                                    activateClass: activateClass,
+                                    payCost: true,
+                                    root: SelectCardEffect.Root.Trash));
+
+                                card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
+                            }
+                            #endregion
                         }
-                        #endregion
                     }
                 }
             }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -134,126 +133,9 @@ namespace DCGO.CardEffects.EX13
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    #region Cost - Trash 3 bottom face-down cards from under any of your Tamers
-                    // Each step picks 1 Tamer and how many to trash from it. Every selection finishes before the next one starts,
-                    // so no selection is opened from inside another selection's callback.
-                    const int TrashCount = 3;
+                    yield return StartCoroutine(CardEffectCommons.TrashTamerBottomFaceDownSources(card, activateClass, 3, successProcess: SuccessProcess(), failureProcess: FailureProcess()));
 
-                    int FaceDownCountUnderTamers()
-                        => card.Owner.GetBattleAreaPermanents()
-                            .Where(TamerWithOneOrMoreFaceDownSource)
-                            .Sum(permanent => permanent.DigivolutionCards.Count(CanSelectTrashSourceCardCondition));
-
-                    int remainingTrashCount = TrashCount;
-
-                    while (remainingTrashCount > 0 && FaceDownCountUnderTamers() >= remainingTrashCount)
-                    {
-                        Permanent selectedTamer = null;
-
-                        if (CardEffectCommons.MatchConditionPermanentCount(TamerWithOneOrMoreFaceDownSource) == 1)
-                        {
-                            selectedTamer = card.Owner.GetBattleAreaPermanents().Find(TamerWithOneOrMoreFaceDownSource);
-                        }
-                        else
-                        {
-                            SelectPermanentEffect selectTamerEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectTamerEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: TamerWithOneOrMoreFaceDownSource,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: remainingTrashCount == TrashCount,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectTamerCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectTamerEffect.SetUpCustomMessage(
-                                $"Select 1 Tamer to trash bottom face-down cards from ({remainingTrashCount} left).",
-                                "The opponent is selecting 1 Tamer to trash bottom face-down cards from.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectTamerEffect.Activate());
-
-                            IEnumerator SelectTamerCoroutine(Permanent permanent)
-                            {
-                                selectedTamer = permanent;
-                                yield return null;
-                            }
-                        }
-
-                        if (selectedTamer == null)
-                        {
-                            if (remainingTrashCount == TrashCount)
-                            {
-                                activateClass.RemoveUse();
-                                yield break;
-                            }
-                            else break;
-                        }
-
-                        int availableCount = selectedTamer.DigivolutionCards.Count(CanSelectTrashSourceCardCondition);
-                        int otherTamersCount = FaceDownCountUnderTamers() - availableCount;
-
-                        // Never let the player take so few that the other Tamers can't cover the rest.
-                        int maxTrashCount = Math.Min(remainingTrashCount, availableCount);
-                        int minTrashCount = Math.Max(1, remainingTrashCount - otherTamersCount);
-                        int trashCount = maxTrashCount;
-
-                        if (maxTrashCount > minTrashCount)
-                        {
-                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
-
-                            for (int i = maxTrashCount; i >= minTrashCount; i--)
-                            {
-                                selectionElements.Add(new(message: $"Trash {i}", value: i, spriteIndex: 0));
-                            }
-
-                            selectionElements.Add(new(message: $"Don't trash", value: 0, spriteIndex: 1));
-
-                            GManager.instance.userSelectionManager.SetIntSelection(
-                                selectionElements: selectionElements,
-                                selectPlayer: card.Owner,
-                                selectPlayerMessage: "How many face-down cards will you trash from this Tamer?",
-                                notSelectPlayerMessage: "The opponent is choosing how many face-down cards to trash.");
-
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                            trashCount = GManager.instance.userSelectionManager.SelectedIntValue;
-                        }
-
-                        if (trashCount == 0)
-                        {
-                            if (remainingTrashCount == TrashCount)
-                            {
-                                activateClass.RemoveUse();
-                                yield break;
-                            }
-                            else continue;
-                        }
-
-                        int countBefore = selectedTamer.DigivolutionCards.Count(CanSelectTrashSourceCardCondition);
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
-                            targetPermanent: selectedTamer,
-                            trashCount: trashCount,
-                            isFromTop: false,
-                            activateClass: activateClass,
-                            cardCondition: CanSelectTrashSourceCardCondition));
-
-                        int trashedCount = countBefore - selectedTamer.DigivolutionCards.Count(CanSelectTrashSourceCardCondition);
-
-                        if (trashedCount <= 0) break;
-
-                        remainingTrashCount -= trashedCount;
-                    }
-
-                    bool trashed = remainingTrashCount <= 0;
-                    #endregion
-
-                    if (trashed)
+                    IEnumerator SuccessProcess()
                     {
                         List<CardSource> selectedSourceCards = new List<CardSource>();
                         List<CardSource> digivolutionCardsOrder = new List<CardSource>();
@@ -425,7 +307,11 @@ namespace DCGO.CardEffects.EX13
                         }
                     }
 
-                    if (!trashed) activateClass.RemoveUse();
+                    IEnumerator FailureProcess()
+                    {
+                        activateClass.RemoveUse();
+                        yield return null;
+                    }
                 }
             }
             #endregion

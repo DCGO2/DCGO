@@ -92,60 +92,18 @@ namespace DCGO.CardEffects.BT27
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    Permanent thisPermanent = card.PermanentOfThisCard();
+                    yield return StartCoroutine(CardEffectCommons.TrashTamerBottomFaceDownSources(card, activateClass, 2, successProcess: SuccessProcess()));
 
-                    bool paid = false;
-                    if (CardEffectCommons.HasMatchConditionPermanent(TamerWith2OrMoreFaceDownSources)
-                                            || CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource) >= 2)
+                    IEnumerator SuccessProcess()
                     {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(TamerWithOneFaceDownSource));
+                        Permanent thisPermanent = card.PermanentOfThisCard();
 
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: TamerWithOneFaceDownSource,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: CanEndSelectCondition,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: true,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select all Tamer(s) to trash bottom face-down cards from.", "The opponent is selecting Tamer(s) to trash bottom face-down cards from.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        bool CanEndSelectCondition(List<Permanent> permanents)
-                        {
-                            return permanents.Count == 2
-                                || (permanents.Count > 0 && permanents[0].DigivolutionCards.Count(FaceDownCards) >= 2);
-                        }
-
-                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
-                        {
-                            if (permanents.Count == 1)
-                            {
-                                paid = true;
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 2, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
-                            }
-                            else if (permanents.Count == 2)
-                            {
-                                paid = true;
-                                foreach (Permanent selectedPermanent in permanents)
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 1, isFromTop: false, activateClass: activateClass, cardCondition: FaceDownCards));
-                            }
-                        }
-                    }
-
-                    if (paid && thisPermanent != null)
-                    {
                         thisPermanent.willBeRemoveField = false;
                         thisPermanent.HideDeleteEffect();
                         thisPermanent.HideHandBounceEffect();
                         thisPermanent.HideDeckBounceEffect();
+
+                        yield return null;
                     }
                 }
             }
