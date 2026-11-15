@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.BT25
                             List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
                             new SelectionElement<bool>(message: $"Security Top", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"Security Bottom", value : false, spriteIndex: 1),
+                            new SelectionElement<bool>(message: $"Security Bottom", value : false, spriteIndex: 0),
                         };
 
                             string selectPlayerMessage = "Choose security position?";
@@ -120,6 +120,7 @@ namespace DCGO.CardEffects.BT25
                             bool position = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource, toTop: position));
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource> { cardSource }, $"{(position ? "Top" : "Bottom")} Security", true, true));
                         }
                     }
                 }

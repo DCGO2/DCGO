@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Shakkoumon
 namespace DCGO.CardEffects.BT25
@@ -275,6 +273,7 @@ namespace DCGO.CardEffects.BT25
                                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(selectedCard, selectedCard.PermanentOfThisCard()));
 
                                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard, toTop: toTop));
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource> { selectedCard }, $"{(toTop ? "Top" : "Bottom")} Security", true, true));
                                 }
                             }
                         }
