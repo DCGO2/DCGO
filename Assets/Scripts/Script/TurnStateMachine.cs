@@ -2756,7 +2756,18 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 {
                     handCard.SetOrangeOutline();
 
-                    handCard.SetClickText();
+                    if(handCard.cardSource.CanDeclareMainSkill && !handCard.cardSource.CanDeclareLinkSkill)
+                    {
+                        handCard.SetMainText();
+                    }
+                    else if (!handCard.cardSource.CanDeclareMainSkill && handCard.cardSource.CanDeclareLinkSkill)
+                    {
+                        handCard.SetLinkText();
+                    }
+                    else
+                    {
+                        handCard.SetClickText();
+                    }
 
                     handCard.AddClickTarget((_handCard) => StartCoroutine(OnClick_Select()));
 

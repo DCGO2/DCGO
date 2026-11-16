@@ -86,6 +86,8 @@ public class HandCard : MonoBehaviour
 
     [Header("クリックテキスト")]
     public Image ClickText;
+    public Image MainText;
+    public Image LinkText;
     public CardSource cardSource { get; set; }
 
     public UnityAction<HandCard> OnClickAction;
@@ -291,11 +293,36 @@ public class HandCard : MonoBehaviour
         }
     }
 
+    public void SetMainText()
+    {
+        if (MainText != null)
+        {
+            MainText.gameObject.SetActive(true);
+        }
+    }
+
+    public void SetLinkText()
+    {
+        if (LinkText != null)
+        {
+            LinkText.gameObject.SetActive(true);
+        }
+    }
+
+    //Single method turns off all 3 that share the slot and purpose
     public void OffClickText()
     {
         if (ClickText != null)
         {
             ClickText.gameObject.SetActive(false);
+        }
+        if (MainText != null)
+        {
+            MainText.gameObject.SetActive(false);
+        }
+        if (LinkText != null)
+        {
+            LinkText.gameObject.SetActive(false);
         }
     }
 
