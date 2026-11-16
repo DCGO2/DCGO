@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using TMPro;
-using System.Linq;
-using System.Threading.Tasks;
 public class HandCard : MonoBehaviour
 {
     [Header("カード画像")]
@@ -88,7 +85,7 @@ public class HandCard : MonoBehaviour
     public Sprite RainbowCircle;
 
     [Header("クリックテキスト")]
-    public TextMeshProUGUI ClickText;
+    public Image ClickText;
     public CardSource cardSource { get; set; }
 
     public UnityAction<HandCard> OnClickAction;
