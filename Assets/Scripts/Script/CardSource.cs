@@ -1060,14 +1060,14 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region  whether this card can declare a Link skill
-    public bool CanDeclareMainSkill => EffectList(EffectTiming.OnDeclaration)
+    public bool CanDeclareLinkSkill => EffectList(EffectTiming.OnDeclaration)
         .Any(cardEffect => cardEffect is ActivateICardEffect && cardEffect.CanUse(null) && cardEffect.EffectName.StartsWith("Link (Cost:"));
     
     #endregion
 
     #region  whether this card can declare a [Main] skill
-    public bool CanDeclareLinkSkill => EffectList(EffectTiming.OnDeclaration)
-        .Any(cardEffect => cardEffect is ActivateICardEffect && cardEffect.CanUse(null) && cardEffect.EffectName.StartsWith("[Main]"));
+    public bool CanDeclareMainSkill => EffectList(EffectTiming.OnDeclaration)
+        .Any(cardEffect => cardEffect is ActivateICardEffect && cardEffect.CanUse(null) && cardEffect.EffectDiscription.Contains("[Main]"));
     
     #endregion
 
