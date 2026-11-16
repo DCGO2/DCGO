@@ -37,7 +37,7 @@ public partial class CardEffectCommons
                 .Where(TamerWithFaceDownSource)
                 .Sum(UnplannedFaceDownCount);
 
-        bool useOPT = false;
+        bool used = false;
 
         if (totalTrashCount <= UnplannedFaceDownCountUnderTamers())
         {
@@ -75,14 +75,14 @@ public partial class CardEffectCommons
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: totalTrashCount, isFromTop: false, activateClass: cardEffect, cardCondition: FaceDownCards));
 
-                        useOPT = true;
+                        used = true;
                     }
                     else if (permanents.Count == 2)
                     {
                         foreach (Permanent selectedPermanent in permanents)
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 1, isFromTop: false, activateClass: cardEffect, cardCondition: FaceDownCards));
 
-                        useOPT = true;
+                        used = true;
                     }
                 }
             }
@@ -183,14 +183,14 @@ public partial class CardEffectCommons
                                 cardCondition: FaceDownCards));
                         }
 
-                        useOPT = true;
+                        used = true;
                     }
                 }
             }
         }
 
-        if (successProcess != null && useOPT) yield return ContinuousController.instance.StartCoroutine(successProcess);
+        if (successProcess != null && used) yield return ContinuousController.instance.StartCoroutine(successProcess);
 
-        if (failureProcess != null && !useOPT) yield return ContinuousController.instance.StartCoroutine(failureProcess);
+        if (failureProcess != null && !used) yield return ContinuousController.instance.StartCoroutine(failureProcess);
     }
 }
