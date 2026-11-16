@@ -120,166 +120,62 @@ namespace DCGO.CardEffects.BT27
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    #region Cost - Trash 5 bottom face-down cards from under any of your Tamers
-                    int remainingTrashCount = TrashCount;
+                    yield return StartCoroutine(CardEffectCommons.TrashTamerBottomFaceDownSources(card, activateClass, TrashCount, successProcess: SuccessProcess(), failureProcess: FailureProcess()));
 
-                    while (remainingTrashCount > 0 && FaceDownCountUnderTamers() >= remainingTrashCount)
+                    IEnumerator SuccessProcess()
                     {
-                        Permanent selectedTamer = null;
+                        #region May use 1 [Ravemon] text Option from trash
+                        if (!CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectOptionCondition)) yield break;
 
-                        if (CardEffectCommons.MatchConditionPermanentCount(TamerWithFaceDownSource) == 1)
+                        CardSource selectedCard = null;
+
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectOptionCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 Option card with [Ravemon] in its text to use.",
+                            maxCount: 1,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        selectCardEffect.SetUpCustomMessage("Select 1 Option card with [Ravemon] in its text to use.", "The opponent is selecting 1 Option card to use.");
+                        selectCardEffect.SetUpCustomMessage_ShowCard("Used Card");
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            selectedTamer = card.Owner.GetBattleAreaPermanents().Find(TamerWithFaceDownSource);
-                        }
-                        else
-                        {
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: TamerWithFaceDownSource,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: remainingTrashCount == TrashCount,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage(
-                                $"Select 1 Tamer to trash bottom face-down cards from ({remainingTrashCount} left).",
-                                "The opponent is selecting 1 Tamer to trash bottom face-down cards from.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                            {
-                                selectedTamer = permanent;
-                                yield return null;
-                            }
+                            selectedCard = cardSource;
+                            yield return null;
                         }
 
-                        if (selectedTamer == null)
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                        if (selectedCard != null)
                         {
-                            if (remainingTrashCount == TrashCount)
-                            {
-                                activateClass.RemoveUse();
-                                yield break;
-                            }
-                            else continue;
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
+                                cardSources: new List<CardSource>() { selectedCard },
+                                activateClass: activateClass,
+                                payCost: false,
+                                root: SelectCardEffect.Root.Trash));
                         }
-
-                        int availableCount = selectedTamer.DigivolutionCards.Count(FaceDownCards);
-                        int otherTamersCount = FaceDownCountUnderTamers() - availableCount;
-
-                        // Never let the player take so few that the other Tamers can't cover the rest.
-                        int maxTrashCount = Math.Min(remainingTrashCount, availableCount);
-                        int minTrashCount = Math.Max(1, remainingTrashCount - otherTamersCount);
-                        int trashCount = maxTrashCount;
-
-                        if (maxTrashCount > minTrashCount)
-                        {
-                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
-
-                            for (int i = maxTrashCount; i >= minTrashCount; i--)
-                            {
-                                selectionElements.Add(new(message: $"Trash {i}", value: i, spriteIndex: 0));
-                            }
-
-                            selectionElements.Add(new(message: $"Don't trash", value: 0, spriteIndex: 1));
-
-                            GManager.instance.userSelectionManager.SetIntSelection(
-                                selectionElements: selectionElements,
-                                selectPlayer: card.Owner,
-                                selectPlayerMessage: "How many face-down cards will you trash from this Tamer?",
-                                notSelectPlayerMessage: "The opponent is choosing how many face-down cards to trash.");
-
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                            trashCount = GManager.instance.userSelectionManager.SelectedIntValue;
-                        }
-
-                        if (trashCount == 0)
-                        {
-                            if (remainingTrashCount == TrashCount)
-                            {
-                                activateClass.RemoveUse();
-                                yield break;
-                            }
-                            else continue;
-                        }
-
-                        int countBefore = selectedTamer.DigivolutionCards.Count(FaceDownCards);
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
-                            targetPermanent: selectedTamer,
-                            trashCount: trashCount,
-                            isFromTop: false,
-                            activateClass: activateClass,
-                            cardCondition: FaceDownCards));
-
-                        int trashedCount = countBefore - selectedTamer.DigivolutionCards.Count(FaceDownCards);
-
-                        if (trashedCount <= 0) break;
-
-                        remainingTrashCount -= trashedCount;
+                        #endregion
                     }
 
-                    if (remainingTrashCount > 0)
+                    IEnumerator FailureProcess()
                     {
                         activateClass.RemoveUse();
-                        yield break;
-                    }
-                    #endregion
-
-                    #region May use 1 [Ravemon] text Option from trash
-                    if (!CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectOptionCondition)
-                        || remainingTrashCount != 0) yield break;
-
-                    CardSource selectedCard = null;
-
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                    selectCardEffect.SetUp(
-                        canTargetCondition: CanSelectOptionCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 1 Option card with [Ravemon] in its text to use.",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Trash,
-                        customRootCardList: null,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                    selectCardEffect.SetUpCustomMessage("Select 1 Option card with [Ravemon] in its text to use.", "The opponent is selecting 1 Option card to use.");
-                    selectCardEffect.SetUpCustomMessage_ShowCard("Used Card");
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                    {
-                        selectedCard = cardSource;
                         yield return null;
                     }
-
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                    if (selectedCard != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayOptionCards(
-                            cardSources: new List<CardSource>() { selectedCard },
-                            activateClass: activateClass,
-                            payCost: false,
-                            root: SelectCardEffect.Root.Trash));
-                    }
-                    #endregion
                 }
             }
             #endregion
