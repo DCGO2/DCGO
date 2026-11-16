@@ -57,122 +57,26 @@ namespace DCGO.CardEffects.BT23
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                Permanent selectedPermanent = null;
+                if (CardEffectCommons.HasMatchConditionPermanent(SharedCanSelectPermamentCondition))
+                { 
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                #region Select Permanent
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: SharedCanSelectPermamentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Taunt,
+                        cardEffect: activateClass);
 
-                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(SharedCanSelectPermamentCondition));
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to gain '[Start of Your Main Phase] This Digimon attacks'.", "The opponent is selecting 1 digimon to gain '[Start of Your Main Phase] This Digimon attacks'.");
 
-                selectPermanentEffect.SetUp(
-                    selectPlayer: card.Owner,
-                    canTargetCondition: SharedCanSelectPermamentCondition,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: maxCount,
-                    canNoSelect: false,
-                    canEndNotMax: false,
-                    selectPermanentCoroutine: SelectPermanentCoroutine,
-                    afterSelectPermanentCoroutine: null,
-                    mode: SelectPermanentEffect.Mode.Custom,
-                    cardEffect: activateClass);
-
-                IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                {
-                    selectedPermanent = permanent;
-                    yield return null;
-                }
-
-                selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to gain '[Start of Your Main Phase] This Digimon attacks'.", "The opponent is selecting 1 digimon to gain '[Start of Your Main Phase] This Digimon attacks'.");
-                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                #endregion
-
-                if (selectedPermanent != null)
-                {
-                    #region Setup Attack on Start of Main Phase
-
-                    ActivateClass activateClass1 = new ActivateClass();
-                    activateClass1.SetUpICardEffect("Attack with this Digimon", CanUseCondition1, selectedPermanent.TopCard);
-                    activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
-                    activateClass1.SetEffectSourcePermanent(selectedPermanent);
-
-                    if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
-                    }
-
-                    string EffectDiscription1()
-                    {
-                        return "[Start of Your Main Phase] Attack with this Digimon.";
-                    }
-
-                    bool CanUseCondition1(Hashtable hashtable1)
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
-                        {
-                            if (selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent))
-                            {
-                                if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    bool CanActivateCondition1(Hashtable hashtable1)
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
-                        {
-                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                            {
-                                if (selectedPermanent.CanAttack(activateClass1))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
-                        {
-                            if (selectedPermanent.CanAttack(activateClass1))
-                            {
-                                SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                                selectAttackEffect.SetUp(
-                                    attacker: selectedPermanent,
-                                    canAttackPlayerCondition: () => true,
-                                    defenderCondition: (permanent) => true,
-                                    cardEffect: activateClass1);
-
-                                selectAttackEffect.SetCanNotSelectNotAttack();
-
-                                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                            }
-                        }
-                    }
-
-                    ICardEffect GetCardEffect(EffectTiming _timing)
-                    {
-                        if (_timing == EffectTiming.OnStartMainPhase)
-                        {
-                            return activateClass1;
-                        }
-
-                        return null;
-                    }
-
-                    #endregion
-
-                    selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
             }
 

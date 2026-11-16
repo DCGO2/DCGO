@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -45,11 +44,10 @@ namespace DCGO.CardEffects.EX10
             {
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
-                    Permanent selectedPermanment = null;
+                    Permanent selectedPermanent = null;
 
                     #region Select Permanent
 
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -57,7 +55,7 @@ namespace DCGO.CardEffects.EX10
                         canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -67,7 +65,7 @@ namespace DCGO.CardEffects.EX10
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        selectedPermanment = permanent;
+                        selectedPermanent = permanent;
                         yield return null;
                     }
 
@@ -76,15 +74,15 @@ namespace DCGO.CardEffects.EX10
 
                     #endregion
 
-                    if (selectedPermanment != null)
+                    if (selectedPermanent != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(
-                            targetPermanent: selectedPermanment,
+                            targetPermanent: selectedPermanent,
                             effectDuration: EffectDuration.UntilOwnerTurnEnd,
                             activateClass: activateClass));
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.StartOfMainAttack(
-                            targetPermanent: selectedPermanment,
+                            targetPermanent: selectedPermanent,
                             cardEffect: activateClass));
                     }
                 }
