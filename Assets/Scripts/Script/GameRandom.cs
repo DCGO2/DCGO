@@ -8,6 +8,7 @@ using System;
 public static class GameRandom
 {
     private static ulong s0, s1, s2, s3;
+    private static long seed;
     private static bool initialized = false;
 
     /// <summary>
@@ -16,6 +17,8 @@ public static class GameRandom
     /// </summary>
     public static void Seed(long seed)
     {
+        GameRandom.seed = seed;
+
         ulong s = (ulong)seed;
         s0 = SplitMix64(ref s);
         s1 = SplitMix64(ref s);
@@ -27,6 +30,17 @@ public static class GameRandom
             s0 = 1;
 
         initialized = true;
+    }
+
+    /// <summary>
+    /// Returns the value the PRNG was last seeded with, without advancing the sequence.
+    /// </summary>
+    public static long PeekSeed()
+    {
+        if (!initialized)
+            throw new InvalidOperationException("GameRandom has not been seeded. Call GameRandom.Seed() first.");
+
+        return seed;
     }
 
     /// <summary>

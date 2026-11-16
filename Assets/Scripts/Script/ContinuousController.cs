@@ -1387,9 +1387,6 @@ public class ContinuousController : MonoBehaviour
     //Flag that the sharing of the random number sequence is over.
     public bool DoneSetRandom { get; set; } = false;
     public bool CanSetRandom { get; set; } = false;
-
-    //Seed shared by both clients, used to identify the match for game stats
-    public long RandomSeed { get; private set; }
     [PunRPC]
     public void SetRandom(long random)
     {
@@ -1401,7 +1398,6 @@ public class ContinuousController : MonoBehaviour
         yield return new WaitWhile(() => !CanSetRandom);
 
         GameRandom.Seed(random);
-        RandomSeed = random;
         DoneSetRandom = true;
 
         Debug.Log($"random number sequence initialization, GameRandom.Seed:{random}");

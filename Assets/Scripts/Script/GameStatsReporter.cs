@@ -65,7 +65,8 @@ public static class GameStatsReporter
     static string _roomName;
     static long _seed;
     static string _reporterSide;
-    static string _localName;
+    //Only used to replace the local player's name in the log; it is never sent
+    static string _nameToAnonymize;
     static string _startedAt;
     static GameStatsDeck _player1Deck;
     static GameStatsDeck _player2Deck;
@@ -116,10 +117,11 @@ public static class GameStatsReporter
 
             _gameContext = gameContext;
             _roomName = PhotonNetwork.CurrentRoom.Name;
-            _seed = ContinuousController.instance.RandomSeed;
+            //Both clients were seeded with the same value by SetRandom
+            _seed = GameRandom.PeekSeed();
             _reporterSide = gameContext.PlayerFromID(0) == GManager.instance.You ? GameStatsUtility.Player1Side : GameStatsUtility.Player2Side;
             //The log text goes through ReplaceToASCII, so the name has to as well
-            _localName = DataBase.ReplaceToASCII(GManager.instance.You.PlayerName);
+            _nameToAnonymize = DataBase.ReplaceToASCII(GManager.instance.You.PlayerName);
             _startedAt = GameStatsUtility.FormatUtc(DateTime.UtcNow);
             _hasSnapshot = true;
         }
@@ -225,7 +227,7 @@ public static class GameStatsReporter
                 },
                 player1 = _player1Deck,
                 player2 = _player2Deck,
-                log = GameStatsUtility.AnonymizeLog(GManager.instance.playLog.FullLogText, _localName, localLabel, opponentLabel),
+                log = GameStatsUtility.AnonymizeLog(GManager.instance.playLog.FullLogText, _nameToAnonymize, localLabel, opponentLabel),
             };
 
             string json = JsonUtility.ToJson(payload);
