@@ -197991,6 +197991,8 @@ MonoBehaviour:
   WhiteCircle: {fileID: 0}
   RainbowCircle: {fileID: 0}
   ClickText: {fileID: 0}
+  MainText: {fileID: 0}
+  LinkText: {fileID: 0}
   CanDrag: 0
   SelectedIndexText: {fileID: 0}
 --- !u!1001 &7288665835289778851

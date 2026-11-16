@@ -1054,8 +1054,21 @@ public class CardSource : MonoBehaviour
 
     #region whether this card can declare skill
 
-    public bool CanDeclareSkill => CanDeclareSkillList.Count > 0;
+    public bool CanDeclareSkill => EffectList(EffectTiming.OnDeclaration)
+        .Any(cardEffect => cardEffect is ActivateICardEffect && cardEffect.CanUse(null));
 
+    #endregion
+
+    #region  whether this card can declare a Link skill
+    public bool CanDeclareLinkSkill => EffectList(EffectTiming.OnDeclaration)
+        .Any(cardEffect => cardEffect is ActivateICardEffect && cardEffect.CanUse(null) && cardEffect.EffectName.StartsWith("Link (Cost:"));
+    
+    #endregion
+
+    #region  whether this card can declare a [Main] skill
+    public bool CanDeclareMainSkill => EffectList(EffectTiming.OnDeclaration)
+        .Any(cardEffect => cardEffect is ActivateICardEffect && cardEffect.CanUse(null) && cardEffect.EffectDiscription.Contains("[Main]"));
+    
     #endregion
 
     #region effect list that this card can declare
