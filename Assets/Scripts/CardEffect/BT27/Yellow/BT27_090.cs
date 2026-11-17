@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.BT27
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (playedDigimon.Count == 0) yield break;
+                    if (playedDigimon != null) yield break;
 
                     if(!CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanent => playedDigimon.Contains(permanent))) yield break;
 
