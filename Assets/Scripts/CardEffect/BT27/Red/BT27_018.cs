@@ -86,11 +86,11 @@ namespace DCGO.CardEffects.BT27
 
                 int activationCount = thisPermanent.DP / 8000;
 
+                bool selected = false;
+
                 for (int i = 0; i < activationCount; i++)
                 {
                     if (!CardEffectCommons.HasMatchConditionPermanent(LowestDPCondition)) yield break;
-
-                    bool selected = false;
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -122,6 +122,8 @@ namespace DCGO.CardEffects.BT27
                     // Declining one activation declines the rest
                     if (!selected) yield break;
                 }
+
+                if (!selected) activateClass.RemoveUse();
             }
 
             CardEffectFactory.ActivateClassesForSharedEffects(
@@ -157,8 +159,7 @@ namespace DCGO.CardEffects.BT27
                         && CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, OpponentDigimonCondition, activateClass);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
-                        && card.Owner.Enemy.SecurityCards.Count >= 1;
+                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
