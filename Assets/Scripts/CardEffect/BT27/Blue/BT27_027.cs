@@ -10,26 +10,6 @@ namespace DCGO.CardEffects.BT27
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Trait Rule
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("[Rule] Trait: Has [Ice-Snow] Type.", _ => true, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card && !cardTraits.Contains("Ice-Snow"))
-                    {
-                        cardTraits.Add("Ice-Snow");
-                    }
-
-                    return cardTraits;
-                }
-            }
-            #endregion
-
             #region Iceclad
             if (timing == EffectTiming.None)
             {
@@ -43,9 +23,8 @@ namespace DCGO.CardEffects.BT27
             string SharedEffectDescription(string tag)
                 => $"[{tag}] Trash the bottom 2 digivolution cards of 1 of your opponent's Digimon. Then, you may place 1 level 4 or lower [Ice-Snow] trait Digimon card from your hand as any of your Digimon's bottom digivolution card.";
 
-            bool OpponentDigimonWithSourcesCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && permanent.DigivolutionCards.Count >= 1;
+            bool OpponentDigimonCondition(Permanent permanent)
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
             bool OwnDigimonCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
@@ -59,13 +38,13 @@ namespace DCGO.CardEffects.BT27
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 #region Trash the bottom 2 digivolution cards of 1 of the opponent's Digimon
-                if (CardEffectCommons.HasMatchConditionPermanent(OpponentDigimonWithSourcesCondition))
+                if (CardEffectCommons.HasMatchConditionPermanent(OpponentDigimonCondition))
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: OpponentDigimonWithSourcesCondition,
+                        canTargetCondition: OpponentDigimonCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
@@ -133,7 +112,7 @@ namespace DCGO.CardEffects.BT27
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
                     maxCount: 1,
-                    canNoSelect: false,
+                    canNoSelect: true,
                     canEndNotMax: false,
                     selectPermanentCoroutine: SelectOwnPermanentCoroutine,
                     afterSelectPermanentCoroutine: null,
@@ -186,12 +165,11 @@ namespace DCGO.CardEffects.BT27
                         && CardEffectCommons.CanTriggerOnEndAttack(hashtable, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
-                        && card.Owner.CanAddMemory(activateClass);
+                    => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    if (card.Owner.CanAddMemory(activateClass)) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
             #endregion
