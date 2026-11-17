@@ -31,12 +31,11 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(GemmonDigimonCondition)
-                        && card.Owner.CanAddMemory(activateClass);
+                        && CardEffectCommons.HasMatchConditionPermanent(GemmonDigimonCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    if (card.Owner.CanAddMemory(activateClass)) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
             #endregion
@@ -52,10 +51,6 @@ namespace DCGO.CardEffects.BT27
                 string EffectDescription()
                     => "[Your Turn] When your Digimon are played or digivolve, if any of them have the [ALYSION] trait, by suspending this Tamer, 1 of your Digimon gets +3000 DP for the turn. After, if you have a Digimon with 8000 DP or more, <Draw 1>.";
 
-                bool AlysionDigimonCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.EqualsTraits("ALYSION");
-
                 bool OwnDigimonCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
@@ -67,12 +62,20 @@ namespace DCGO.CardEffects.BT27
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                         && CardEffectCommons.IsOwnerTurn(card)
-                        && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, AlysionDigimonCondition)
-                            || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, AlysionDigimonCondition));
+                        && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, OwnDigimonCondition)
+                            || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, OwnDigimonCondition));
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                {
+                    List<Permanent> permanents = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(
+                        hashtable: hashtable,
+                        rootCondition: null);
+
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && permanents != null
+                        && permanents.Some(permanent => permanent.TopCard.EqualsTraits("ALYSION"))
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
+                }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
