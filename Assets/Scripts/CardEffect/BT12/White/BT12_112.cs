@@ -83,7 +83,7 @@ namespace DCGO.CardEffects.BT12
                             && selectedPermanent.TopCard != null
                             && !selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                             {
-                                // Code to trash selectedPermanent's digivolution sources without triggering effects similar to by rules
+                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.DiscardEvoRoots());
 
                                 GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(new AddDigivolutionCardsInfo(activateClass, new List<CardSource>() { selectedPermanent.TopCard }));
 
