@@ -1,44 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
 
 public partial class CardEffectCommons
 {
-    public static IEnumerator SelectTrashDigivolutionCards(Func<Permanent, bool> permanentCondition, Func<CardSource, bool> cardCondition, int maxCount, bool canNoTrash, bool isFromOnly1Permanent, ICardEffect activateClass, string selectString = "Digimon", Func<Permanent, List<CardSource>, IEnumerator> afterSelectionCoroutine = null, bool canEndNotMax = false)
+    public static IEnumerator SelectTrashDigivolutionCards(
+        Func<Permanent, bool> permanentCondition,
+        Func<CardSource, bool> cardCondition,
+        int maxCount,
+        bool canNoTrash,
+        bool isFromOnly1Permanent,
+        ICardEffect activateClass,
+        string selectString = "Digimon",
+        Func<Permanent, List<CardSource>, IEnumerator> afterSelectionCoroutine = null,
+        bool canEndNotMax = false)
     {
         if (maxCount <= 0) yield break;
         if (activateClass == null) yield break;
+
         CardSource card = activateClass.EffectSourceCard;
         if (card == null) yield break;
 
         bool CanSelectPermanentCondition(Permanent permanent)
         {
-            if (IsPermanentExistsOnBattleArea(permanent))
-            {
-                if (permanentCondition == null || permanentCondition(permanent))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return IsPermanentExistsOnBattleArea(permanent)
+                && (permanentCondition == null
+                    || permanentCondition(permanent))
+                && (isFromOnly1Permanent
+                    || permanent.DigivolutionCards.Any(CanSelectCardCondition));
         }
 
         bool CanSelectCardCondition(CardSource cardSource)
         {
-            if (!cardSource.CanNotTrashFromDigivolutionCards(activateClass))
-            {
-                if (cardCondition == null || cardCondition(cardSource))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return !cardSource.CanNotTrashFromDigivolutionCards(activateClass)
+                && (cardCondition == null
+                    || cardCondition(cardSource));
         }
 
         int permanentSum =
@@ -47,7 +44,7 @@ public partial class CardEffectCommons
                 .Flat().Count();
 
         int digivolutionCardsSum =
-                GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+            GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
                 .Map(player => player.GetBattleAreaPermanents().Filter(CanSelectPermanentCondition))
                 .Flat()
                 .Map(permanent => permanent.DigivolutionCards.Count(CanSelectCardCondition))
@@ -61,27 +58,17 @@ public partial class CardEffectCommons
 
         int permanentSelectedCount = 0;
 
-        List<CardSource> selectedCards = new List<CardSource>();
+        // Store selections by permanent. Nothing is trashed until selection is complete.
+        Dictionary<Permanent, List<CardSource>> trashPlan =
+            new Dictionary<Permanent, List<CardSource>>();
 
         while (true)
         {
-            if (isFromOnly1Permanent)
-            {
-                if (permanentSelectedCount >= 1)
-                {
-                    break;
-                }
-            }
+            if (isFromOnly1Permanent && permanentSelectedCount >= 1) break;
 
-            if (digivolutionDiscardedCount >= maxDigivolutionDiscardCount)
-            {
-                break;
-            }
+            if (digivolutionDiscardedCount >= maxDigivolutionDiscardCount) break;
 
-            if (permanentSum < 1)
-            {
-                break;
-            }
+            if (permanentSum < 1) break;
             else
             {
                 Permanent selectedPermanent = null;
@@ -89,7 +76,8 @@ public partial class CardEffectCommons
                 permanentSelectedCount++;
                 maxCount = Math.Min(1, permanentSum);
 
-                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                SelectPermanentEffect selectPermanentEffect =
+                    GManager.instance.GetComponent<SelectPermanentEffect>();
 
                 selectPermanentEffect.SetUp(
                     selectPlayer: card.Owner,
@@ -104,9 +92,12 @@ public partial class CardEffectCommons
                     mode: SelectPermanentEffect.Mode.Custom,
                     cardEffect: activateClass);
 
-                selectPermanentEffect.SetUpCustomMessage($"Select 1 {selectString} that will trash digivolution cards.", $"The opponent is selecting 1 {selectString} that will trash digivolution cards.");
+                selectPermanentEffect.SetUpCustomMessage(
+                    $"Select 1 {selectString} that will trash digivolution cards.",
+                    $"The opponent is selecting 1 {selectString} that will trash digivolution cards.");
 
-                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                yield return ContinuousController.instance.StartCoroutine(
+                    selectPermanentEffect.Activate());
 
                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                 {
@@ -118,35 +109,42 @@ public partial class CardEffectCommons
                             maxDigivolutionDiscardCount - digivolutionDiscardedCount,
                             selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition));
 
-                        
+                        // Keep this permanent's selections separate from all other permanents.
+                        List<CardSource> selectedCards = new List<CardSource>();
 
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                        SelectCardEffect selectCardEffect =
+                            GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => canNoTrash && NotSelectYet(),
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select digivolution cards to trash.",
-                                    maxCount: trashMaxCountOfTargetPermanent,
-                                    canEndNotMax: trashMaxCountOfTargetPermanent >= 2 && !isFromOnly1Permanent,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Custom,
-                                    customRootCardList: selectedPermanent.DigivolutionCards,
-                                    canLookReverseCard: false,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => canNoTrash && NotSelectYet(),
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select digivolution cards to trash.",
+                            maxCount: trashMaxCountOfTargetPermanent,
+                            canEndNotMax: trashMaxCountOfTargetPermanent >= 2 && !isFromOnly1Permanent,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.DigivolutionCards,
+                            customRootCardList: selectedPermanent.DigivolutionCards,
+                            canLookReverseCard: false,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
 
                         selectCardEffect.SetUseFaceDown();
 
-                        selectCardEffect.SetUpCustomMessage("Select digivolution cards to trash.", "The opponent is selecting digivolution cards to trash.");
+                        selectCardEffect.SetUpCustomMessage(
+                            "Select digivolution cards to trash.",
+                            "The opponent is selecting digivolution cards to trash.");
 
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(
+                            selectCardEffect.Activate());
 
-                        bool CanTargetCondition_ByPreSelecetedList(List<CardSource> sources, CardSource source)
+                        bool CanTargetCondition_ByPreSelecetedList(
+                            List<CardSource> sources,
+                            CardSource source)
                         {
                             return !selectedCards.Contains(source);
                         }
@@ -154,41 +152,54 @@ public partial class CardEffectCommons
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectedCards.Add(cardSource);
-
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(
-                                selectedPermanent,
-                                selectedCards,
-                                activateClass).TrashDigivolutionCards());
-
-                        digivolutionDiscardedCount = selectedCards.Count;
+                        // Add the selection to the plan. Do not trash yet.
+                        if (selectedCards.Count > 0)
+                        {
+                            trashPlan[selectedPermanent] = selectedCards;
+                            digivolutionDiscardedCount += selectedCards.Count;
+                        }
 
                         if (canNoTrash && NotSelectYet())
                         {
                             EndSelection();
                         }
-
-                        if (afterSelectionCoroutine != null)
-                            yield return ContinuousController.instance.StartCoroutine(afterSelectionCoroutine(selectedPermanent, selectedCards));
                     }
                 }
 
                 IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                 {
-                    if (permanents.Count == 0)
+                    if (permanents.Count == 0
+                        && ((canNoTrash && NotSelectYet())
+                            || canEndNotMax))
                     {
-                        if ((canNoTrash && NotSelectYet()) || canEndNotMax)
-                        {
-                            EndSelection();
-                        }
+                        EndSelection();
                     }
 
                     yield return null;
                 }
             }
         }
-    }
 
+        // Selection is now complete. Execute the entire trash plan.
+        foreach (KeyValuePair<Permanent, List<CardSource>> plannedTrash in trashPlan)
+        {
+            Permanent selectedPermanent = plannedTrash.Key;
+            List<CardSource> selectedCards = plannedTrash.Value;
+
+            yield return ContinuousController.instance.StartCoroutine(
+                new ITrashDigivolutionCards(
+                    selectedPermanent,
+                    selectedCards,
+                    activateClass).TrashDigivolutionCards());
+
+            if (afterSelectionCoroutine != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(
+                    afterSelectionCoroutine(selectedPermanent, selectedCards));
+            }
+        }
+    }
 }
