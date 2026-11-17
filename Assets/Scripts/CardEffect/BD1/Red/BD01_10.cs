@@ -29,7 +29,7 @@ namespace DCGO.CardEffects.BD01
             #region All turns
             if (timing == EffectTiming.None)
             {
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] All of your red [ALYSIAN] trait Digimon get +1000 DP.";
                 }
@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.BD01
                 isInheritedEffect: false,
                 card: card,
                 condition: Condition,
-                effectName: EffectDiscription));
+                effectName: EffectDescription));
             }
             #endregion
 
