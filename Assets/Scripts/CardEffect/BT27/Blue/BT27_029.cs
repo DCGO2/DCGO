@@ -10,26 +10,6 @@ namespace DCGO.CardEffects.BT27
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Trait Rule
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("[Rule] Trait: Has [Ice-Snow] Type.", _ => true, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card && !cardTraits.Contains("Ice-Snow"))
-                    {
-                        cardTraits.Add("Ice-Snow");
-                    }
-
-                    return cardTraits;
-                }
-            }
-            #endregion
-
             #region Iceclad
             if (timing == EffectTiming.None)
             {
@@ -102,17 +82,20 @@ namespace DCGO.CardEffects.BT27
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
 
+                bool OpponentDigimonCondition(Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     bool trashed = false;
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(OpponentDigimonWithSourcesCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(OpponentDigimonCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: OpponentDigimonWithSourcesCondition,
+                            canTargetCondition: OpponentDigimonCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
