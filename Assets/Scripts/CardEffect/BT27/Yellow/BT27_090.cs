@@ -63,6 +63,8 @@ namespace DCGO.CardEffects.BT27
                 {
                     if (playedDigimon.Count == 0) yield break;
 
+                    if(!CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanent => playedDigimon.Contains(permanent))) yield break;
+
                     Permanent selectedDigimon = null;
 
                     SelectPermanentEffect selectPlacementEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
