@@ -132,8 +132,7 @@ namespace DCGO.CardEffects.BT27
 
                 bool IceSnowDigimonCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.EqualsTraits("Ice-Snow")
-                        && !permanent.IsSuspended;
+                        && permanent.TopCard.EqualsTraits("Ice-Snow");
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
