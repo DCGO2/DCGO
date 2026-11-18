@@ -31,12 +31,11 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && CardEffectCommons.HasMatchConditionPermanent(IceSnowDigimonCondition)
-                        && card.Owner.CanAddMemory(activateClass);
+                        && CardEffectCommons.HasMatchConditionPermanent(IceSnowDigimonCondition);
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    if (card.Owner.CanAddMemory(activateClass)) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
             #endregion
@@ -53,8 +52,7 @@ namespace DCGO.CardEffects.BT27
                     => "[All Turns] When your Digimon are played or digivolve, if any of them have the [Ice-Snow] trait, by suspending this Tamer, trash the bottom 2 digivolution cards from 1 of your opponent's Digimon. After, if they don't have a Digimon with digivolution cards, gain 1 memory.";
 
                 bool IceSnowDigimonCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.EqualsTraits("Ice-Snow");
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
                 bool OpponentDigimonWithSourcesCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
@@ -66,8 +64,16 @@ namespace DCGO.CardEffects.BT27
                             || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IceSnowDigimonCondition));
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                {
+                    List<Permanent> permanents = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(
+                        hashtable: hashtable,
+                        rootCondition: null);
+
+                    return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
+                        && permanents != null
+                        && permanents.Some(permanent => permanent.TopCard.EqualsTraits("Ice-Snow"))
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
+                }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
