@@ -36,6 +36,7 @@ public partial class CardEffectFactory
         activateClass.SetUpICardEffect("Engage", CanUseCondition, card);
         activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
         activateClass.SetIsInheritedEffect(isInheritedEffect);
+        activateClass.SetIsLinkedEffect(isLinkedEffect);
 
         string EffectDescription()
         {
@@ -52,7 +53,9 @@ public partial class CardEffectFactory
         bool CanUseCondition(Hashtable hashtable)
         {
             return CardEffectCommons.IsOwnerTurn(card)
-                && CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(targetPermanent);
+                && CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(targetPermanent)
+                && (condition == null
+                    || condition());
         }
 
         bool CanActivateCondition(Hashtable hashtable)
