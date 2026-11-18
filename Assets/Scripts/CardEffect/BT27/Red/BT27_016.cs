@@ -161,7 +161,7 @@ namespace DCGO.CardEffects.BT27
                         canNoSelect: () => true,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
-                        message: "Select 1 [Gankoomon] or [X Antibody] to return to the bottom of the deck.",
+                        message: "Select 1 [Jesmon] or [X Antibody] to return to the bottom of the deck.",
                         maxCount: 1,
                         canEndNotMax: false,
                         isShowOpponent: true,
@@ -172,7 +172,7 @@ namespace DCGO.CardEffects.BT27
                         selectPlayer: card.Owner,
                         cardEffect: activateClass);
 
-                    selectCardEffect.SetUpCustomMessage("Select 1 [Gankoomon] or [X Antibody] to return to the bottom of the deck.", "The opponent is selecting 1 digivolution card to return to the bottom of the deck.");
+                    selectCardEffect.SetUpCustomMessage("Select 1 [Jesmon] or [X Antibody] to return to the bottom of the deck.", "The opponent is selecting 1 digivolution card to return to the bottom of the deck.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 

@@ -46,8 +46,7 @@ namespace DCGO.CardEffects.EX12
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool CanSelectPermanentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                    && permanent.DigivolutionCards.Count >= 1;
+                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
                 bool CanSelectPermanentCondition2(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)

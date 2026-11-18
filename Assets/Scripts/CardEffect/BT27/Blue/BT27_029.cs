@@ -48,7 +48,8 @@ namespace DCGO.CardEffects.BT27
                     targetPermanent: thisPermanent,
                     effectDuration: EffectDuration.UntilOpponentTurnEnd,
                     activateClass: activateClass,
-                    effectName: "Can't be deleted other than in battle"));
+                    effectName: "Can't be deleted other than in battle",
+                    byBattle: true));
             }
 
             CardEffectFactory.ActivateClassesForSharedEffects(

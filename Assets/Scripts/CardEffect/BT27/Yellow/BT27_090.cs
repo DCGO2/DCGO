@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.BT27
                     if (CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
                     && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedDigimonCondition))
                     {
-                        playedDigimon = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(PlayedDigimonCondition);
+                        playedDigimon = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(hashtable: hashtable, rootCondition: null).Filter(PlayedDigimonCondition);
                         return true;
                     }
 
