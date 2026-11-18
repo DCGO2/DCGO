@@ -6,7 +6,7 @@ using UnityEngine;
 
 public partial class CardEffectCommons
 {
-    #region Target 1 Digimon can't be deleted by effect
+    #region Target 1 Digimon can't be deleted
     public static IEnumerator GainCanNotBeDeleted(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass, string effectName)
     {
         if (targetPermanent == null) yield break;
