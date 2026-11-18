@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT11
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && (permanent.TopCard.ContainsCardName("Veemon")
+                        && (permanent.TopCard.HasVeemonName
                             || permanent.TopCard.ContainsCardName("Veedramon"));
                 }
 

@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.P
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardNames.Contains("Veemon");
+                    return targetPermanent.TopCard.HasVeemonName;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

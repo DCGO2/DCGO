@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.ST17
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if ((targetPermanent.TopCard.CardNames.Contains("Veemon")))
+                    if ((targetPermanent.TopCard.HasVeemonName))
                     {
                         return true;
                     }

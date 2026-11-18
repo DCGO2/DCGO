@@ -38,7 +38,7 @@ public class P_110 : CEntity_Effect
                 {
                     if (cardSource.Owner == card.Owner)
                     {
-                        if (cardSource.CardNames.Contains("Veemon") || cardSource.CardNames.Contains("Wormmon"))
+                        if (cardSource.HasVeemonName || cardSource.CardNames.Contains("Wormmon"))
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
@@ -139,7 +139,7 @@ public class P_110 : CEntity_Effect
                 {
                     if (cardSource.Owner == card.Owner)
                     {
-                        if (cardSource.CardNames.Contains("Veemon") || cardSource.CardNames.Contains("Wormmon"))
+                        if (cardSource.HasVeemonName || cardSource.CardNames.Contains("Wormmon"))
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {

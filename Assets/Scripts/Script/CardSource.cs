@@ -1738,6 +1738,26 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card has at least 1 card name that contains "Veemon"
+
+    public bool HasVeemonName
+    {
+        get
+        {
+            if (CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0])
+            .Some((cardName) => (cardName.Contains("Veemon") || cardName.Contains("veemon"))
+            && cardName != "DemiVeemon"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+
     #region whether this card has at least 1 card name that contains "AAntibody"
 
     public bool HasXAntiBodyName => CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0]).Some(DataBase.IsContainingXAntibodyString);

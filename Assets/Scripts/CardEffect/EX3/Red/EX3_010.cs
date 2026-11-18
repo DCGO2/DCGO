@@ -211,7 +211,7 @@ namespace DCGO.CardEffects.EX3
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
-                        if (cardSource.CardNames.Contains("Veemon"))
+                        if (cardSource.HasVeemonName)
                         {
                             return true;
                         }

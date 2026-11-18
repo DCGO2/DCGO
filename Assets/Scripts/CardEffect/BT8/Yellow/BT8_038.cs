@@ -16,7 +16,7 @@ public class BT8_038 : CEntity_Effect
         {
             bool PermanentCondition(Permanent targetPermanent)
             {
-                return targetPermanent.TopCard.CardNames.Contains("Veemon");
+                return targetPermanent.TopCard.HasVeemonName;
             }
 
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

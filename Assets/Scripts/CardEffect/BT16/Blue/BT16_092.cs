@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("Veemon") || cardSource.CardNames.Contains("Wormmon"))
+                    if (cardSource.HasVeemonName || cardSource.CardNames.Contains("Wormmon"))
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {

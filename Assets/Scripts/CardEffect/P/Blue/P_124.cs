@@ -74,7 +74,7 @@ public class P_124 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardNames.Contains("Veemon"))
+                if (cardSource.HasVeemonName)
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
