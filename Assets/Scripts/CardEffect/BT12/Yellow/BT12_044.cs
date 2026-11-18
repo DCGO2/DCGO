@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,17 +80,10 @@ namespace DCGO.CardEffects.BT12
             #endregion
 
             #region Your Turn
-            int count = 0;
-
-            if (CardEffectCommons.IsOwnerTurn(card) && (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnUseOption || timing == EffectTiming.OptionSkill || timing == EffectTiming.SecuritySkill || timing == EffectTiming.WhenRemoveField))
-            {
-                count = card.Owner.Enemy.GetBattleAreaDigimons().Count((permanent) => permanent.HasSecurityAttackChanges);
-            }
-
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(
-                    changeValue: count,
+                    changeValue: (Func<int>)(() => card.Owner.Enemy.GetBattleAreaDigimons().Count(permanent => permanent.HasSecurityAttackChanges)),
                     isInheritedEffect: true,
                     card: card,
                     condition: () => CardEffectCommons.IsOwnerTurn(card)));
