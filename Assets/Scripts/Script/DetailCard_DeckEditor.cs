@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
 using TMPro;
-using System.Linq;
 public class DetailCard_DeckEditor : MonoBehaviour
 {
     [Header("カード画像")]
@@ -406,40 +404,39 @@ public class DetailCard_DeckEditor : MonoBehaviour
             alternativeEffectTitleText.transform.parent.gameObject.SetActive(true);
 
             #region Text Colors
-            for (int i = 0; i < alternativeEffectTitleBackgrounds.Count; i++)
+
+            List<CardColor> tempColors = cEntity_Base.IsDualCard
+                ? cEntity_Base.OptionCardColorRequirements
+                : cEntity_Base.cardColors;
+
+            int alternativeEffectTitleBackgroundCount =
+                alternativeEffectTitleBackgrounds.Count;
+
+            // Enable all background elements.
+            for (int i = 0; i < alternativeEffectTitleBackgroundCount; i++)
             {
-                CardColor cardColor;
-
-                if (i < cEntity_Base.cardColors.Count)
-                {
-                    cardColor = cEntity_Base.cardColors[i];
-                }
-
-                else
-                {
-                    cardColor = cEntity_Base.cardColors[0];
-                }
-
-                alternativeEffectTitleBackgrounds[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
-                List<CardColor> tempColors;
-
-                if (cEntity_Base.IsDualCard)
-                    tempColors = cEntity_Base.OptionCardColorRequirements;
-                else
-                    tempColors = cEntity_Base.cardColors;
-
-                if (tempColors.Contains(CardColor.Yellow) || tempColors.Contains(CardColor.White))
-                {
-                    alternativeEffectTitleText.color = Color.black;
-                }
-
-                else
-                {
-                    alternativeEffectTitleText.color = Color.white;
-                }
+                alternativeEffectTitleBackgrounds[i].gameObject.SetActive(true);
             }
-            #endregion
 
+            // Apply colors to the backgrounds.
+            for (int i = 0; i < alternativeEffectTitleBackgroundCount; i++)
+            {
+                CardColor cardColor = tempColors[
+                    Mathf.Min(i, tempColors.Count - 1)
+                ];
+
+                alternativeEffectTitleBackgrounds[i].color =
+                    DataBase.CardColor_ColorDarkDictionary[cardColor];
+            }
+
+            // Set text color.
+            alternativeEffectTitleText.color =
+                tempColors.Contains(CardColor.Yellow) ||
+                tempColors.Contains(CardColor.White)
+                    ? Color.black
+                    : Color.white;
+
+            #endregion
 
             if (ContinuousController.instance.language == Language.ENG)
             {
