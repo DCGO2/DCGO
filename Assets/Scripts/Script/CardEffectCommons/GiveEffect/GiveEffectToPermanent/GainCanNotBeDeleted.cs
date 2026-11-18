@@ -1,13 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
-using System;
-using System.Linq;
-using UnityEngine;
 
 public partial class CardEffectCommons
 {
     #region Target 1 Digimon can't be deleted
-    public static IEnumerator GainCanNotBeDeleted(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass, string effectName)
+    public static IEnumerator GainCanNotBeDeleted(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass, string effectName, bool byBattle = false)
     {
         if (targetPermanent == null) yield break;
         if (!IsPermanentExistsOnBattleArea(targetPermanent)) yield break;
@@ -20,15 +16,8 @@ public partial class CardEffectCommons
 
         bool CanUseCondition()
         {
-            if (IsPermanentExistsOnBattleArea(targetPermanent))
-            {
-                if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return IsPermanentExistsOnBattleArea(targetPermanent)
+                && !targetPermanent.TopCard.CanNotBeAffected(activateClass);
         }
 
         CanNotBeDestroyedClass canNotBeDestroyedClass = CardEffectFactory.CanNotBeDestroyedStaticEffect(
@@ -36,7 +25,8 @@ public partial class CardEffectCommons
             isInheritedEffect: false,
             card: card,
             condition: CanUseCondition,
-            effectName: effectName);
+            effectName: effectName,
+            byBattle: byBattle);
 
         canNotBeDestroyedClass.SetIsOptionEffect(activateClass.IsOptionEffect);
 
