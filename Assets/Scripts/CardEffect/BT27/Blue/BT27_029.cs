@@ -44,9 +44,8 @@ namespace DCGO.CardEffects.BT27
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
                     targetPermanent: thisPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
 
-                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotBeDeletedByEffect(
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotBeDeleted(
                     targetPermanent: thisPermanent,
-                    cardEffectCondition: cardEffect => true,
                     effectDuration: EffectDuration.UntilOpponentTurnEnd,
                     activateClass: activateClass,
                     effectName: "Can't be deleted other than in battle"));
