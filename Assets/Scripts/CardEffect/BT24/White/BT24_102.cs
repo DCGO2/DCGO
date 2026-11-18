@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
+// Homeros
 namespace DCGO.CardEffects.BT24
 {
     public class BT24_102 : CEntity_Effect
@@ -189,7 +190,7 @@ namespace DCGO.CardEffects.BT24
                                 foreach (ICardEffect effect in candidateEffects)
                                 {
                                     ICardEffect cardEffect = new ChangeBaseDPClass();
-                                    cardEffect.SetUpICardEffect((effect.IsOnPlay ? "On Play: " : "When Digivolving: ") + effect.EffectName, null, effect.EffectSourceCard);
+                                    cardEffect.SetUpICardEffect((effect.IsOnPlay ? "[On Play] " : "[When Digivolving] ") + effect.EffectName, null, effect.EffectSourceCard);
                                     
                                     skillInfos.Add(new SkillInfo(cardEffect, null, EffectTiming.None));
                                 }

@@ -17,6 +17,8 @@ namespace DCGO.CardEffects.BT27
             }
             #endregion
 
+            Permanent thisPermanent = card.PermanentOfThisCard();
+
             #region All Turns
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -57,11 +59,13 @@ namespace DCGO.CardEffects.BT27
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && card.PermanentOfThisCard().IsTamer;
+                        && thisPermanent.IsTamer;
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (playedDigimon.Count == 0) yield break;
+                    if (playedDigimon == null) yield break;
+
+                    if(!CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanent => playedDigimon.Contains(permanent))) yield break;
 
                     Permanent selectedDigimon = null;
 
@@ -93,7 +97,7 @@ namespace DCGO.CardEffects.BT27
                     if (selectedDigimon == null) yield break;
 
                     yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(
-                        new List<Permanent[]> { new Permanent[] { card.PermanentOfThisCard(), selectedDigimon } }, false, activateClass).PlacePermanentToDigivolutionCards());
+                        new List<Permanent[]> { new Permanent[] { thisPermanent, selectedDigimon } }, false, activateClass).PlacePermanentToDigivolutionCards());
 
                     if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectProtectedCondition)) yield break;
 
@@ -144,9 +148,9 @@ namespace DCGO.CardEffects.BT27
             {
                 bool Condition()
                     => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && (card.PermanentOfThisCard().TopCard.ContainsCardName("Leomon")
-                            || card.PermanentOfThisCard().TopCard.EqualsTraits("Boss")
-                            || card.PermanentOfThisCard().TopCard.HasDataSquadTraits);
+                        && (thisPermanent.TopCard.ContainsCardName("Leomon")
+                            || thisPermanent.TopCard.EqualsTraits("Boss")
+                            || thisPermanent.TopCard.HasDataSquadTraits);
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 3000, isInheritedEffect: true, card: card, condition: Condition));
             }
