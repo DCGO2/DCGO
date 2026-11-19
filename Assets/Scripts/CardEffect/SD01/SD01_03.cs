@@ -44,7 +44,6 @@ namespace DCGO.CardEffects.SD01
                         EffectDuration.UntilEachTurnEnd,
                         activateClass
                     ));
-
                 }
             }
             #endregion
