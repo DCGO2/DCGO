@@ -88,7 +88,7 @@ namespace DCGO.CardEffects.ST25
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition)) yield break;
 
@@ -160,24 +160,10 @@ namespace DCGO.CardEffects.ST25
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.EqualsTraits("ALYSION");
 
-                int HighestOwnDP()
-                {
-                    int highestDP = -1;
+                bool CanSelectOwnerDigimon(Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
-                    foreach (Permanent permanent in card.Owner.GetBattleAreaDigimons())
-                    {
-                        if (permanent.HasDP && permanent.DP > highestDP) highestDP = permanent.DP;
-                    }
-
-                    return highestDP;
-                }
-
-                bool CanSelectDeleteCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && permanent.HasDP
-                        && permanent.DP <= HighestOwnDP();
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(AlysionDigimonCondition))
                     {
@@ -207,26 +193,68 @@ namespace DCGO.CardEffects.ST25
                         }
                     }
 
-                    if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteCondition)) yield break;
+                    Permanent selectedOwnerDigimon = null;
 
-                    SelectPermanentEffect deleteSelectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    bool CanSelectOpponentDigimon(Permanent permanent, Permanent ownersPermanent)
+                    {
+                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                                permanent.DP <= ownersPermanent.DP;
+                    }
 
-                    deleteSelectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectDeleteCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Destroy,
-                        cardEffect: activateClass);
+                    bool HasDigimonAbleToDelete()
+                    {
+                        return card.Owner.GetBattleAreaDigimons().Some(ownersPermanent => CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => CanSelectOpponentDigimon(permanent, ownersPermanent)));
+                    }
 
-                    deleteSelectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
+                    if (HasDigimonAbleToDelete())
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    yield return ContinuousController.instance.StartCoroutine(deleteSelectPermanentEffect.Activate());
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectOwnerDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 of your Digimon. You will next be deleting a Digimon with less DP than this to delete.", "The opponent is selecting 1 Digimon");
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedOwnerDigimon = permanent;
+                            yield return null;
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+
+                    if (selectedOwnerDigimon != null && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => CanSelectOpponentDigimon(permanent, selectedOwnerDigimon)))
+                    {
+                        SelectPermanentEffect deleteSelectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        deleteSelectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: permanent => CanSelectOpponentDigimon(permanent, selectedOwnerDigimon),
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
+
+                        deleteSelectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
+
+                        yield return ContinuousController.instance.StartCoroutine(deleteSelectPermanentEffect.Activate());
+                    }
                 }
             }
             #endregion
