@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 // Liskmon
-namespace DCGO.CardEffects.SD01
+namespace DCGO.CardEffects.SD1
 {
     public class SD01_03 : CEntity_Effect
     {

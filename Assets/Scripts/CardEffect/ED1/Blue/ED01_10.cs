@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 //Bond of Snowflakes
-namespace DCGO.CardEffects.ED02
+namespace DCGO.CardEffects.ED1
 {
     public class ED02_10 : CEntity_Effect
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 // Sekkamon
-namespace DCGO.CardEffects.SD02
+namespace DCGO.CardEffects.SD2
 {
     public class SD02_04 : CEntity_Effect
     {

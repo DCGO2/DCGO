@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 // Yukinamon
-namespace DCGO.CardEffects.ED02
+namespace DCGO.CardEffects.ED1
 {
     public class ED02_01 : CEntity_Effect
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 // Rubeusdramon
-namespace DCGO.CardEffects.ED01
+namespace DCGO.CardEffects.ED1
 {
     public class ED01_01 : CEntity_Effect
     {

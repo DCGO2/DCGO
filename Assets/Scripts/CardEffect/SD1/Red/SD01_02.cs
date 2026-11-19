@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 // Gemmon
-namespace DCGO.CardEffects.SD01
+namespace DCGO.CardEffects.SD1
 {
     public class SD01_02 : CEntity_Effect
     {
