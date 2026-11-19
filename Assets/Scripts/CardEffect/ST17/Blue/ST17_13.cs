@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
 
 namespace DCGO.CardEffects.ST17
 {
@@ -31,7 +28,7 @@ namespace DCGO.CardEffects.ST17
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if ((targetPermanent.TopCard.HasVeemonName))
+                    if ((targetPermanent.TopCard.EqualsCardName("Veemon")))
                     {
                         return true;
                     }

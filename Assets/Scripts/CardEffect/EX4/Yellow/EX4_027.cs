@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.EX4
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasVeemonName;
+                    return targetPermanent.TopCard.EqualsCardName("Veemon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));

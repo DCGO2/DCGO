@@ -1,10 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
 
 
 public class P_124 : CEntity_Effect
@@ -74,7 +70,7 @@ public class P_124 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.HasVeemonName)
+                if (cardSource.EqualsCardName("Veemon"))
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
