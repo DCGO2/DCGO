@@ -11,6 +11,8 @@ namespace DCGO.CardEffects.ST25
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            Permanent thisPermanent = card.PermanentOfThisCard();
+
             #region Digimon Side
             #region Alternate Digivolution Requirement - Lv.5 w/[Gemmon] in text
             if (timing == EffectTiming.None)
@@ -50,7 +52,6 @@ namespace DCGO.CardEffects.ST25
 
                 int MaxTotalDP()
                 {
-                    Permanent thisPermanent = card.PermanentOfThisCard();
                     int bonus = thisPermanent != null && thisPermanent.HasDP ? thisPermanent.DP / 8000 * 4000 : 0;
 
                     return card.Owner.MaxDP_DeleteEffect(7000 + bonus, activateClass);
@@ -118,15 +119,23 @@ namespace DCGO.CardEffects.ST25
             {
                 int SecurityAttackBonus()
                 {
-                    Permanent thisPermanent = card.PermanentOfThisCard();
-                    return thisPermanent != null && thisPermanent.HasDP ? thisPermanent.DP / 8000 : 0;
+                    return thisPermanent != null
+                        && thisPermanent.HasDP ? thisPermanent.DP / 8000 : 0;
+                }
+
+                bool Condition()
+                {
+                    return CardEffectCommons.IsOwnerTurn(card)
+                        && thisPermanent != null
+                        && thisPermanent.HasDP
+                        && thisPermanent.DP >= 8000;
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(
                     changeValue: (Func<int>)SecurityAttackBonus,
                     isInheritedEffect: false,
                     card: card,
-                    condition: () => CardEffectCommons.IsOwnerTurn(card)));
+                    condition: Condition));
             }
             #endregion
             #endregion
