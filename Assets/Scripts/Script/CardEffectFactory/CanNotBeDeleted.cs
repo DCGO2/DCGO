@@ -17,7 +17,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (byBattle && !CardEffectCommons.IsByBattle(hashtable))
+            if (byBattle && CardEffectCommons.IsByBattle(hashtable))
             {
                 return false;
             }
