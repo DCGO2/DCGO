@@ -1,10 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
 public class BT1_113 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
@@ -20,7 +16,7 @@ public class BT1_113 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Until the end of your opponent's next turn, of your opponent's Digimon can't attack or block.";
+                return "[Main] Until the end of your opponent's next turn, 1 of your opponent's Digimon can't attack or block.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
