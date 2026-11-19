@@ -40,8 +40,6 @@ namespace DCGO.CardEffects.ST25
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.MatchConditionPermanentCount(OwnTamerCondition) > 1) yield break;
-
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayByEffect(
                     canTargetCondition: cardSource => KanataCondition(cardSource, activateClass),
                     root: SelectCardEffect.Root.Hand,
