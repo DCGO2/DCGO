@@ -3898,11 +3898,11 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether this card has "ALYSIAN" trait
-    public bool HasAlysianTraits
+    public bool HasAlysionTraits
     {
         get
         {
-            return EqualsTraits("ALYSIAN");
+            return EqualsTraits("ALYSION");
         }
     }
     #endregion

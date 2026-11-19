@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BD02
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.HasCardColor(CardColor.Blue)
-                        && cardSource.HasAlysianTraits;
+                        && cardSource.HasAlysionTraits;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

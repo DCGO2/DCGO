@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.SD01
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(thisPermanent, card)
-                        && thisPermanent.TopCard.HasAlysianTraits;
+                        && thisPermanent.TopCard.HasAlysionTraits;
                 }
 
                 int ChangeMaxDP(int maxDP, ICardEffect cardEffect)

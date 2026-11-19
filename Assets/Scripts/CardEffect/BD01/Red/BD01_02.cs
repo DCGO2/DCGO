@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BD01
                 {
                     return CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && card.PermanentOfThisCard().TopCard.HasAlysianTraits;
+                        && card.PermanentOfThisCard().TopCard.HasAlysionTraits;
                 }
 
                 int ChangeMaxDP(int maxDP, ICardEffect cardEffect)

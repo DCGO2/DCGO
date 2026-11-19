@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.ED01
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.CardColors.Contains(CardColor.Blue)
-                        && permanent.TopCard.HasAlysianTraits;
+                        && permanent.TopCard.HasAlysionTraits;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

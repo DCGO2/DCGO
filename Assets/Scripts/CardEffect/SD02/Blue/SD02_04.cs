@@ -103,7 +103,7 @@ namespace DCGO.CardEffects.SD02
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
-                        && thisPermanent.TopCard.HasAlysianTraits;
+                        && thisPermanent.TopCard.HasAlysionTraits;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

@@ -75,7 +75,7 @@ namespace DCGO.CardEffects.SD01
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.IsOwnerTurn(card)
-                        && thisPermanent.TopCard.HasAlysianTraits;
+                        && thisPermanent.TopCard.HasAlysionTraits;
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(1, true, card, Condition));
