@@ -10,7 +10,7 @@ namespace DCGO.CardEffects.SD02
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region On Play
+            #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
