@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.ED01
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 [Gemmon]/[Kanata Hondo] from hand for free, then place in battle area", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 red [Gemmon]/[Kanata Hondo] from hand for free, then place in battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -111,7 +111,7 @@ namespace DCGO.CardEffects.ED01
             {
                 string EffectDescription() => "[Security] Activate this card's [Main] effect.";
 
-                CardEffectCommons.AddActivateMainOptionSecurityEffect(card, ref cardEffects, "Play 1 [Gemmon]/[Kanata Hondo] from hand for free, then place in battle area", EffectDescription());
+                CardEffectCommons.AddActivateMainOptionSecurityEffect(card, ref cardEffects, "Play 1 red [Gemmon]/[Kanata Hondo] from hand for free, then place in battle area", EffectDescription());
             }
             #endregion
 
