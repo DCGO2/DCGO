@@ -59,7 +59,9 @@ public partial class CardEffectCommons
                     mode: SelectPermanentEffect.Mode.Custom,
                     cardEffect: cardEffect);
 
-                selectPermanentEffect.SetUpCustomMessage("Select all Tamer(s) to trash bottom face-down cards from.", "The opponent is selecting Tamer(s) to trash bottom face-down cards from.");
+                selectPermanentEffect.SetUpCustomMessage(
+                    $"Select {(totalTrashCount == 2 ? "1 or 2" : "1")} Tamer(s) to trash bottom face-down cards from.\r\n (There are no more opportunities to select Tamers after this)",
+                    "The opponent is selecting Tamer(s) to trash bottom face-down cards from.");
 
                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -116,7 +118,7 @@ public partial class CardEffectCommons
                             cardEffect: cardEffect);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            $"Select 1 Tamer to trash bottom face-down cards from ({remainingTrashCount} left).",
+                            $"Select 1 Tamer to trash bottom face-down cards from ({remainingTrashCount} left).{(remainingTrashCount != 1 ? "\r\n (You can select more Tamers after this)" : "")}",
                             "The opponent is selecting 1 Tamer to trash bottom face-down cards from.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
