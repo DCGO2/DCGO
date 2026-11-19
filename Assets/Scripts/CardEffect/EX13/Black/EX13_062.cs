@@ -125,11 +125,15 @@ namespace DCGO.CardEffects.EX13
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-
                     bool PermanentCondition(Permanent permanent) => CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true);
 
-                    List<Permanent> destroyTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(PermanentCondition);
-                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(destroyTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
+                    if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
+                    {
+                        List<Permanent> destroyTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(PermanentCondition);
+                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(destroyTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
+                    }
+
+                    yield return null;
                 }
             }
             #endregion
@@ -157,15 +161,21 @@ namespace DCGO.CardEffects.EX13
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(card.PermanentOfThisCard()));
+                    Permanent thisPermanent = card.PermanentOfThisCard();
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP
-                    (
-                        card.PermanentOfThisCard(),
-                        +3000,
-                        EffectDuration.UntilOwnerTurnEnd,
-                        activateClass
-                    ));
+                    if (thisPermanent != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(thisPermanent));
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                            thisPermanent,
+                            +3000,
+                            EffectDuration.UntilOwnerTurnEnd,
+                            activateClass
+                        ));
+                    }
+
+                    yield return null;
                 }
             }
             #endregion
