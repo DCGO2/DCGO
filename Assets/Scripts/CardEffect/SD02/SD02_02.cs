@@ -10,8 +10,6 @@ namespace DCGO.CardEffects.SD02
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            Permanent thisPermanent = card.PermanentOfThisCard();
-
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
