@@ -30,7 +30,8 @@ namespace DCGO.CardEffects.ED01
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return (cardSource.EqualsCardName("Gemmon")
+                    return cardSource.CardColors.Contains(CardColor.Red)
+                        && (cardSource.EqualsCardName("Gemmon")
                             || cardSource.EqualsCardName("Kanata Hondo"))
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
