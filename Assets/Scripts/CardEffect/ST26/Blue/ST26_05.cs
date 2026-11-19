@@ -61,7 +61,7 @@ namespace DCGO.CardEffects.ST26
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
                         permanentCondition: OpponentDigimonWithSourcesCondition,
@@ -111,7 +111,6 @@ namespace DCGO.CardEffects.ST26
                         defenderCondition: _ => true,
                         cardEffect: activateClass);
 
-                    selectAttackEffect.SetCanNotSelectNotAttack();
                     selectAttackEffect.SetWithoutTap();
 
                     yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
@@ -143,7 +142,7 @@ namespace DCGO.CardEffects.ST26
                     => CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
                         && CardEffectCommons.HasMatchConditionPermanent(SourcelessOpponentDigimonCondition);
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
