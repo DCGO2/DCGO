@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.ED01
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete up to 6K DP enemy Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash all sources from 1 enemy Digimon, then 1 enemy Digimon can't attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
