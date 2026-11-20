@@ -5415,7 +5415,7 @@ public class ITrashDigivolutionCards
         //fix trash target permanent
         Permanent permanentTarget_Fixed = _permanent;
 
-        // fix trash sources sources
+        // fix trash sources
         List<CardSource> trashDigivolutionCards_Fixed = _trashTargetCards.Filter(cardsource =>
             cardsource != null
             && cardsource.willBeRemoveSources);
