@@ -40,12 +40,13 @@ namespace DCGO.CardEffects.EX9
 
                 string EffectDescription()
                 {
-                    return "[All Turns][Once Per Turn] When this Digimon suspends, suspend 1 of your opponent's Digimon.";
+                    return "[All Turns] [Once Per Turn] When this Digimon suspends, suspend 1 of your opponent's Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) && CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, permanent => permanent == card.PermanentOfThisCard());
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
+                        && CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, permanent => permanent == card.PermanentOfThisCard());
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -55,7 +56,8 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

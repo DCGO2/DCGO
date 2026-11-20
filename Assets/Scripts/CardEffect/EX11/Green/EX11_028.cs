@@ -98,11 +98,11 @@ namespace DCGO.CardEffects.EX11
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Shoto Kazama] from your hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("EX11_028_AT");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] [Once Per Turn] When any of your Digimon suspend, if you have 1 or fewer Tamers, you may play 1 [Shoto Kazama] from your hand without paying the cost.";
                 }
@@ -126,13 +126,13 @@ namespace DCGO.CardEffects.EX11
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass)
                         && CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, PermanentCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass)
                         && CardEffectCommons.MatchConditionOwnersPermanentCount(card, HasTamers) <= 1;
                 }
 
