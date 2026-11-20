@@ -217,6 +217,22 @@ public class Player : MonoBehaviour
     {
         return _playerSelectionQueue.Count > 0;
     }
+
+    //Waits for this player's next selection. Their turn timer runs while waiting, and bonusSeconds
+    //is given back once the selection arrives. Stops early when stopWaiting returns true.
+    public IEnumerator WaitForPlayerSelection(float bonusSeconds = TurnTimer.SelectionBonusSeconds, Func<bool> stopWaiting = null)
+    {
+        if (HasPlayerSelection())
+        {
+            yield break;
+        }
+
+        TurnTimer.BeginWait(this);
+
+        yield return new WaitUntil(() => HasPlayerSelection() || (stopWaiting != null && stopWaiting()));
+
+        TurnTimer.EndWait(this, HasPlayerSelection() ? bonusSeconds : 0f);
+    }
     #endregion
 
     #region セキュリティアタックの座標

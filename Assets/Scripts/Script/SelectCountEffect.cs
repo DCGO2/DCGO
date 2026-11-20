@@ -161,7 +161,7 @@ public class SelectCountEffect : MonoBehaviourPunCallbacks
                     }
                 }
 
-                yield return new WaitUntil(() => _selectPlayer.HasPlayerSelection());
+                yield return _selectPlayer.WaitForPlayerSelection();
 
                 ValueSelection valueSelection = _selectPlayer.DequeuePlayerSelection<ValueSelection>();
                 _selectedCount = valueSelection != null ? valueSelection.ValueAsInt() : 0;

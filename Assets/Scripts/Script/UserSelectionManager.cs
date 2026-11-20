@@ -78,7 +78,7 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
     {
         if (_selectPlayer != null)
         {
-            yield return new WaitUntil(() => _selectPlayer.HasPlayerSelection());
+            yield return _selectPlayer.WaitForPlayerSelection();
 
             ValueSelection valueSeletion = _selectPlayer.DequeuePlayerSelection<ValueSelection>();
 
