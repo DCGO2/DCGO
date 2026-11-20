@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT27
                 bool PermanentCondition(Permanent permanent)
                 {
                     return permanent.TopCard.HasText("Chessmon")
-                        && permanent.TopCard.EqualsTraits("DATA SQUAD");
+                        || permanent.TopCard.EqualsTraits("DATA SQUAD");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
