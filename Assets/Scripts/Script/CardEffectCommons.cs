@@ -482,7 +482,6 @@ public partial class CardEffectCommons
     }
     #endregion
 
-
     #region Security effect of "add this card to hand"
 
     public static IEnumerator AddThisCardToHand(CardSource card1, ICardEffect activateClass)
