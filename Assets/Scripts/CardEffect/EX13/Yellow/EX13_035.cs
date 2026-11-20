@@ -26,10 +26,10 @@ namespace DCGO.CardEffects.EX13
 
             #region Shared On Play / When Digivolving
 
-            string SharedEffectName = "May play up to 2 [Chuumon]/[Sukamon]/[Etemon] in name Digimon with up to 6 total play cost from hand or trash";
+            string SharedEffectName = "May play up to 2 [Chuumon]/[Sukamon]/[Etemon] in name Digimon with up to 6 total play cost from hand or trash, return 10 from trash to make it 12 play cost";
 
             string SharedEffectDescription(string tag)
-                => $"[{tag}] You may play up to 2 Digimon cards with [Chuumon], [Sukamon] or [Etemon] in their names and up to 6 total play cost from your hand or trash without paying the costs. By returning 10 such cards from your trash to the bottom of the deck, add 6 to the play cost maximum.";
+                => $"[{tag}] You may play up to 2 Digimon cards with [Chuumon], [Sukamon] or [Etemon] in their names and up to 6 total play cost from your hand or trash without paying the costs. By returning 10 cards with [Chuumon], [Sukamon] or [Etemon] in their names from your trash to the bottom of the deck, add 6 to the play cost maximum.";
 
             bool IsChuumonSukamonEtemonCard(CardSource cardSource)
                 => cardSource.ContainsCardName("Chuumon")
