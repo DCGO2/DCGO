@@ -3897,7 +3897,7 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
-    #region whether this card has "ALYSIAN" trait
+    #region whether this card has "ALYSION" trait
     public bool HasAlysionTraits
     {
         get
