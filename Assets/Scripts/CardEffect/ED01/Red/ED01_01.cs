@@ -97,7 +97,7 @@ namespace DCGO.CardEffects.ED01
             #endregion
 
             #region All Turns
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
             {
                 bool PermanentCondition(Permanent permanent)
                 {
