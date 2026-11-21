@@ -3,15 +3,15 @@ using System.Collections.Generic;
 public partial class CardEffectFactory
 {
     public static string NAME_SEPARATOR = "§";
-    public static ChangeCardNamesClass NameTreatedAsIncluding(CardSource card, string otherName)
+    public static ChangeBaseCardNameClass NameTreatedAsIncluding(CardSource card, string otherName)
     {
-        ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-        changeCardNamesClass.SetUpICardEffect($"Also treated as including [{otherName}]", _ => true, card);
-        changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
+        ChangeBaseCardNameClass ChangeBaseCardNameClass = new ChangeBaseCardNameClass();
+        ChangeBaseCardNameClass.SetUpICardEffect($"Also treated as including [{otherName}]", _ => true, card);
+        ChangeBaseCardNameClass.SetUpChangeBaseCardNamesClass(changeBaseCardNames: ChangeBaseCardNames);
 
-        return changeCardNamesClass;
+        return ChangeBaseCardNameClass;
 
-        List<string> changeCardNames(CardSource cardSource, List<string> cardNames)
+        List<string> ChangeBaseCardNames(CardSource cardSource, List<string> cardNames)
         {
             if (cardSource == card)
             {
@@ -31,11 +31,11 @@ public partial class CardEffectFactory
     public static ChangeBaseCardNameClass NameIsAlso(CardSource card, params string[] otherNames)
     {
         string nameDisplay = string.Join("/", otherNames);
-        ChangeBaseCardNameClass changeBaseCardNameClass = new ChangeBaseCardNameClass();
-        changeBaseCardNameClass.SetUpICardEffect($"Also treated as [{nameDisplay}]", _ => true, card);
-        changeBaseCardNameClass.SetUpChangeBaseCardNamesClass(changeBaseCardNames: ChangeBaseCardNames);
+        ChangeBaseCardNameClass ChangeBaseCardNameClass = new ChangeBaseCardNameClass();
+        ChangeBaseCardNameClass.SetUpICardEffect($"Also treated as [{nameDisplay}]", _ => true, card);
+        ChangeBaseCardNameClass.SetUpChangeBaseCardNamesClass(changeBaseCardNames: ChangeBaseCardNames);
 
-        return changeBaseCardNameClass;
+        return ChangeBaseCardNameClass;
 
         List<string> ChangeBaseCardNames(CardSource cardSource, List<string> CardNames)
         {
