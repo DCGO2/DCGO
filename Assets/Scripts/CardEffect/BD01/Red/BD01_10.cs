@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 
 // Kanata Hondo
@@ -15,7 +14,7 @@ namespace DCGO.CardEffects.BD01
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && permanent.HasPermanentColor(CardColor.Red)
-                    && permanent.TopCard.EqualsTraits("ALYSIAN");
+                    && permanent.TopCard.HasAlysionTraits;
             }
             #endregion
 
