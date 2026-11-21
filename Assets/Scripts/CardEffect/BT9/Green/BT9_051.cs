@@ -1,10 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
-using System;
-using Photon.Pun;
 
 public class BT9_051 : CEntity_Effect
 {
@@ -12,15 +8,12 @@ public class BT9_051 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region Name Rule
         if (timing == EffectTiming.None)
         {
-            bool PermanentCondition(Permanent targetPermanent)
-            {
-                return targetPermanent.TopCard.CardNames.Contains("Panjyamon");
-            }
-
-            cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            cardEffects.Add(CardEffectFactory.NameTreatedAsIncluding(card, "Leomon"));
         }
+        #endregion
 
         if (timing == EffectTiming.None)
         {

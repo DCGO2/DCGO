@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using System.Diagnostics;
 
 namespace DCGO.CardEffects.P
 {
@@ -12,29 +11,10 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Rule: Name Change
+            #region Name Rule
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as [Shoutmon]/[Dorulumon]", CanUseCondition, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-                cardEffects.Add(changeCardNamesClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
-                {
-                    if (cardSource == card)
-                    {
-                        CardNames.Add("Shoutmon");
-                        CardNames.Add("Dorulumon");
-                    }
-
-                    return CardNames;
-                }
+                cardEffects.Add(CardEffectFactory.NameIsAlso(card, "Shoutmon", "Dorulumon"));
             }
             #endregion
 
@@ -57,7 +37,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("One of your opponents Digimon gets -2000 DP for the turn, then delete 1 of their Digimon wiht 3000 DP  or less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("One of your opponents Digimon gets -2000 DP for the turn, then delete 1 of their Digimon with 3000 DP  or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
