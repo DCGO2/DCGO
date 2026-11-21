@@ -58,6 +58,7 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
     private bool _rejoinFailed = false;
     private bool _retryRejoin = false;
     private bool _rejoinByNameOnMaster = false;
+    private int _resentPacketCount = 0;
     private bool _hasRemoteSyncState = false;
     private int _remoteSentCount = 0;
     private int _remoteReceivedCount = 0;
@@ -636,16 +637,25 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
     {
         Hashtable playerProperties = PhotonNetwork.LocalPlayer.CustomProperties;
 
-        if (playerProperties.TryGetValue(key, out object currentValue) && Equals(currentValue, value))
+        bool hadValue = playerProperties.TryGetValue(key, out object currentValue);
+
+        if (hadValue && Equals(currentValue, value))
         {
             return;
         }
 
         playerProperties[key] = value;
 
-        if (PhotonNetwork.InRoom)
+        if (PhotonNetwork.InRoom && !PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties))
         {
-            PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
+            if (hadValue)
+            {
+                playerProperties[key] = currentValue;
+            }
+            else
+            {
+                playerProperties.Remove(key);
+            }
         }
     }
 
@@ -762,6 +772,7 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
         _gameRoomName = PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.Name : null;
         _sentPackets.Clear();
         _receivedPacketCount = 0;
+        _resentPacketCount = 0;
 
         _waitForGameStartCoroutine = StartCoroutine(WaitForGameStartCoroutine());
 
@@ -881,18 +892,23 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 
     public void SendMainPhaseAction(Player player, MainPhaseAction action)
     {
-        SendPacket(false, player.PlayerID, GamePacketFactory.GetId(action.GetType()), action.Serialize());
+        SendPacket(GamePacketKind.MainPhaseAction, player.PlayerID, GamePacketFactory.GetId(action.GetType()), action.Serialize());
     }
 
     public void SendPlayerSelection(Player player, IPlayerSelection playerSelection)
     {
-        SendPacket(true, player.PlayerID, GamePacketFactory.GetId(playerSelection.GetType()), playerSelection.Serialize());
+        SendPacket(GamePacketKind.PlayerSelection, player.PlayerID, GamePacketFactory.GetId(playerSelection.GetType()), playerSelection.Serialize());
     }
 
-    void SendPacket(bool isSelection, int playerID, byte packetId, byte[] bytes)
+    public void SendSurrender(Player player)
+    {
+        SendPacket(GamePacketKind.Surrender, player.PlayerID, 0, new byte[0]);
+    }
+
+    void SendPacket(GamePacketKind kind, int playerID, byte packetId, byte[] bytes)
     {
         GamePacketData packet = new GamePacketData();
-        packet.IsSelection = isSelection;
+        packet.Kind = kind;
         packet.PlayerID = playerID;
         packet.PacketId = packetId;
         packet.Bytes = bytes;
@@ -911,12 +927,17 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
         }
 
         GamePacketData packet = _sentPackets[sequence - 1];
-        photonView.RPC("ReceivePacket_Internal", RpcTarget.Others, sequence, packet.IsSelection, packet.PlayerID, packet.PacketId, packet.Bytes);
+        photonView.RPC("ReceivePacket_Internal", RpcTarget.Others, sequence, (byte)packet.Kind, packet.PlayerID, packet.PacketId, packet.Bytes);
     }
 
     [PunRPC]
-    void ReceivePacket_Internal(int sequence, bool isSelection, int playerID, byte packetId, byte[] bytes)
+    void ReceivePacket_Internal(int sequence, byte kind, int playerID, byte packetId, byte[] bytes)
     {
+        if (_remotePlayer == null || playerID != _remotePlayer.PlayerID)
+        {
+            return;
+        }
+
         if (sequence != _receivedPacketCount + 1)
         {
             return;
@@ -925,7 +946,7 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
         _receivedPacketCount = sequence;
 
         GamePacketData packet = new GamePacketData();
-        packet.IsSelection = isSelection;
+        packet.Kind = (GamePacketKind)kind;
         packet.PlayerID = playerID;
         packet.PacketId = packetId;
         packet.Bytes = bytes;
@@ -942,45 +963,44 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
             return;
         }
 
-        if (packet.IsSelection)
+        switch (packet.Kind)
         {
-            if (_gameEvents.OnPlayerSelection != null)
-            {
-                _gameEvents.OnPlayerSelection(player, GamePacketFactory.Create(packet.PacketId, packet.Bytes) as IPlayerSelection);
-            }
+            case GamePacketKind.MainPhaseAction:
+                if (_gameEvents.OnMainPhaseAction != null)
+                {
+                    _gameEvents.OnMainPhaseAction(player, GamePacketFactory.Create(packet.PacketId, packet.Bytes) as MainPhaseAction);
+                }
+                break;
+
+            case GamePacketKind.PlayerSelection:
+                if (_gameEvents.OnPlayerSelection != null)
+                {
+                    _gameEvents.OnPlayerSelection(player, GamePacketFactory.Create(packet.PacketId, packet.Bytes) as IPlayerSelection);
+                }
+                break;
+
+            case GamePacketKind.Surrender:
+                if (_gameEvents.OnSurrender != null)
+                {
+                    _gameEvents.OnSurrender(player);
+                }
+                break;
         }
-        else if (_gameEvents.OnMainPhaseAction != null)
-        {
-            _gameEvents.OnMainPhaseAction(player, GamePacketFactory.Create(packet.PacketId, packet.Bytes) as MainPhaseAction);
-        }
+    }
+
+    enum GamePacketKind : byte
+    {
+        MainPhaseAction,
+        PlayerSelection,
+        Surrender
     }
 
     struct GamePacketData
     {
-        public bool IsSelection;
+        public GamePacketKind Kind;
         public int PlayerID;
         public byte PacketId;
         public byte[] Bytes;
-    }
-
-    public void SendSurrender(Player player)
-    {
-        if (!PhotonNetwork.InRoom)
-        {
-            SendSurrender_Internal(player.PlayerID);
-            return;
-        }
-
-        photonView.RPC("SendSurrender_Internal", RpcTarget.All, player.PlayerID);
-    }
-
-    [PunRPC]
-    void SendSurrender_Internal(int playerID)
-    {
-        if (_gameEvents.OnSurrender != null)
-        {
-            _gameEvents.OnSurrender(GetPlayerFromID(playerID));
-        }
     }
 
     void GameUpdate()
@@ -1017,6 +1037,7 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
         _gameRoomName = null;
         _sentPackets.Clear();
         _receivedPacketCount = 0;
+        _resentPacketCount = 0;
 
         if (_inPrivateRoom)
         {
@@ -1289,6 +1310,17 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
             }
         }
 
+        if (!inSync && !PhotonNetwork.InRoom)
+        {
+            yield break;
+        }
+
+        if (!inSync && PhotonNetwork.PlayerListOthers.Length > 0 && !IsOpponentActive())
+        {
+            yield return WaitForOpponentCoroutine();
+            yield break;
+        }
+
         if (!inSync)
         {
             Debug.LogError($"[Reconnect] State check failed. local: sent {_sentPackets.Count} received {_receivedPacketCount} hash {GetStateHash()} remote: {(_hasRemoteSyncState ? $"sent {_remoteSentCount} received {_remoteReceivedCount} hash {_remoteStateHash}" : "none")}");
@@ -1307,6 +1339,8 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 
     void OnConnectionLost(Player player)
     {
+        _resentPacketCount = 0;
+
         if (_gameEvents.OnConnectionLost != null)
         {
             _gameEvents.OnConnectionLost(player, ReconnectWindowSeconds);
@@ -1339,15 +1373,22 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
     [PunRPC]
     void ReceiveSyncState_Internal(int sentCount, int receivedCount, int stateHash, bool replyRequested)
     {
+        if (!_gameStarted)
+        {
+            return;
+        }
+
         _remoteSentCount = sentCount;
         _remoteReceivedCount = receivedCount;
         _remoteStateHash = stateHash;
         _hasRemoteSyncState = true;
 
-        for (int sequence = receivedCount + 1; sequence <= _sentPackets.Count; sequence++)
+        for (int sequence = Math.Max(receivedCount, _resentPacketCount) + 1; sequence <= _sentPackets.Count; sequence++)
         {
             SendPacketToOpponent(sequence);
         }
+
+        _resentPacketCount = Math.Max(_resentPacketCount, _sentPackets.Count);
 
         if (replyRequested)
         {
