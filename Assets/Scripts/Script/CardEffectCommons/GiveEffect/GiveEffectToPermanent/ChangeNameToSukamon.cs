@@ -13,10 +13,10 @@ public partial class CardEffectCommons
         if (activateClass == null) yield break;
         if (activateClass.EffectSourceCard == null) yield break;
 
-        ChangeBaseCardNameClass changeBaseCardNameClass = new ChangeBaseCardNameClass();
-        changeBaseCardNameClass.SetUpICardEffect("Original card name is [Sukamon]", CanUseCondition1, card);
-        changeBaseCardNameClass.SetUpChangeBaseCardNamesClass(changeBaseCardNames: ChangeBaseCardNames);
-        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => changeBaseCardNameClass);
+        ChangeCardNamesClass ChangeCardNamesClass = new ChangeCardNamesClass();
+        ChangeCardNamesClass.SetUpICardEffect("Original card name is [Sukamon]", CanUseCondition1, card);
+        ChangeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: ChangeCardNames);
+        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => ChangeCardNamesClass);
 
         bool CanUseCondition1(Hashtable hashtable)
         {
@@ -24,7 +24,7 @@ public partial class CardEffectCommons
                 && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
         }
 
-        List<string> ChangeBaseCardNames(CardSource cardSource, List<string> CardNames)
+        List<string> ChangeCardNames(CardSource cardSource, List<string> CardNames)
         {
             if (cardSource == selectedPermanent.TopCard)
             {
