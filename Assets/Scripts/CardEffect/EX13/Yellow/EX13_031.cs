@@ -162,34 +162,9 @@ namespace DCGO.CardEffects.EX13
                                         changeValue: 3000,
                                         effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                         activateClass: activateClass));
-                                }
 
-                                if (selectedPermanent != null)
-                                {
-                                    ChangeBaseCardNameClass changeBaseCardNameClass = new ChangeBaseCardNameClass();
-                                    changeBaseCardNameClass.SetUpICardEffect("Original card name is [Sukamon]", CanUseCondition1, card);
-                                    changeBaseCardNameClass.SetUpChangeBaseCardNamesClass(changeBaseCardNames: ChangeBaseCardNames);
-                                    selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => changeBaseCardNameClass);
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonNameToSukamon(selectedPermanent, card, activateClass));
 
-                                    bool CanUseCondition1(Hashtable hashtable)
-                                    {
-                                        return selectedPermanent.TopCard != null
-                                            && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
-                                    }
-
-                                    List<string> ChangeBaseCardNames(CardSource cardSource, List<string> CardNames)
-                                    {
-                                        if (cardSource == selectedPermanent.TopCard)
-                                        {
-                                            CardNames = new List<string>() { "Sukamon" };
-                                        }
-
-                                        return CardNames;
-                                    }
-                                }
-
-                                if (selectedPermanent != null)
-                                {
                                     ChangeBaseCardColorClass changeBaseCardNameClass = new ChangeBaseCardColorClass();
                                     changeBaseCardNameClass.SetUpICardEffect("Original card color is white", CanUseCondition1, card);
                                     changeBaseCardNameClass.SetUpChangeBaseCardColorClass(ChangeBaseCardColors: ChangeBaseCardColors);
