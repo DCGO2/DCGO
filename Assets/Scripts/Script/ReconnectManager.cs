@@ -581,6 +581,7 @@ public class ReconnectManager : MonoBehaviourPunCallbacks
             && GManager.instance.turnStateMachine != null
             && !GManager.instance.turnStateMachine.endGame)
         {
+            GameStatsReporter.OnReconnectEnd();
             GManager.instance.turnStateMachine.EndGame(winner, surrendered);
         }
     }

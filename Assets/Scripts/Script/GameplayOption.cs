@@ -18,6 +18,7 @@ public class GameplayOption : OffAnimation
     [SerializeField] Toggle _autoMaxCardCountToggle;
     [SerializeField] Toggle _autoHatchToggle;
     [SerializeField] Toggle _banlistToggle;
+    [SerializeField] Toggle _shareRandomMatchmakingGameplayDataToggle;
 
     public void Close()
     {
@@ -116,6 +117,12 @@ public class GameplayOption : OffAnimation
                 toggle: _autoHatchToggle,
                 onToggleChanged: OnAutoHatchToggleChanged,
                 value: ContinuousController.instance.autoHatch
+            );
+
+            OptionUtility.InitToggle(
+                toggle: _shareRandomMatchmakingGameplayDataToggle,
+                onToggleChanged: OnShareRandomMatchmakingGameplayDataToggleChanged,
+                value: ContinuousController.instance.shareRandomMatchmakingGameplayData
             );
 
             OptionUtility.InitToggle(
@@ -358,6 +365,27 @@ public class GameplayOption : OffAnimation
     public void HandleAutoHatchToggle()
     {
         OnAutoHatchToggleChanged(!_autoHatchToggle.isOn);
+    }
+    #endregion
+
+    #region Share random matchmaking gameplay data
+
+    public void OnShareRandomMatchmakingGameplayDataToggleChanged(bool value)
+    {
+        if (ContinuousController.instance == null) return;
+
+        OptionUtility.OnToggleChanged(
+            value: value,
+            toggle: _shareRandomMatchmakingGameplayDataToggle,
+            onToggleChanged: OnShareRandomMatchmakingGameplayDataToggleChanged,
+            settingRef: ref ContinuousController.instance.shareRandomMatchmakingGameplayData,
+            saveAction: ContinuousController.instance.SaveShareRandomMatchmakingGameplayData
+        );
+    }
+
+    public void HandleShareRandomMatchmakingGameplayDataToggle()
+    {
+        OnShareRandomMatchmakingGameplayDataToggleChanged(!_shareRandomMatchmakingGameplayDataToggle.isOn);
     }
     #endregion
 
