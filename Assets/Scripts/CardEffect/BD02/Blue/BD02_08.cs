@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BD02
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                     && permanent.HasPermanentColor(CardColor.Blue)
-                    && permanent.TopCard.EqualsTraits("ALYSIAN");
+                    && permanent.TopCard.HasAlysionTraits;
             }
             #endregion
 
