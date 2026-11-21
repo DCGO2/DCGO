@@ -68,6 +68,16 @@ public class CardSource : MonoBehaviour
 
     public void SetFace(string str = "")
     {
+        // Diagnostic for the security face-up desync (BT27-085 beta bug): a face-down card in
+        // security should only turn face up on purpose, so log where it happens and on whose client.
+        if (IsFlipped && Owner != null && Owner.SecurityCards.Contains(this))
+        {
+            UnityEngine.Debug.LogWarning(
+                $"[SecurityFaceUp] {BaseENGCardNameFromEntity} ({CardID}, index {CardIndex}) turned face up in " +
+                $"{(Owner.isYou ? "your" : "the opponent's")} security (position {Owner.SecurityCards.IndexOf(this)} of {Owner.SecurityCards.Count})" +
+                $"{(str != "" ? $", from - {str}" : "")}\n{Environment.StackTrace}");
+        }
+
         IsFlipped = false;
 
         if (str != "")
@@ -1029,8 +1039,21 @@ public class CardSource : MonoBehaviour
 
     #region whether this card can declare skill
 
-    public bool CanDeclareSkill => CanDeclareSkillList.Count > 0;
+    public bool CanDeclareSkill => EffectList(EffectTiming.OnDeclaration)
+        .Any(cardEffect => cardEffect is ActivateICardEffect && cardEffect.CanUse(null));
 
+    #endregion
+
+    #region  whether this card can declare a Link skill
+    public bool CanDeclareLinkSkill => EffectList(EffectTiming.OnDeclaration)
+        .Any(cardEffect => cardEffect is ActivateICardEffect && cardEffect.CanUse(null) && cardEffect.EffectName.StartsWith("Link (Cost:"));
+    
+    #endregion
+
+    #region  whether this card can declare a [Main] skill
+    public bool CanDeclareMainSkill => EffectList(EffectTiming.OnDeclaration)
+        .Any(cardEffect => cardEffect is ActivateICardEffect && cardEffect.CanUse(null) && cardEffect.EffectDiscription.Contains("[Main]"));
+    
     #endregion
 
     #region effect list that this card can declare
@@ -1699,6 +1722,26 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has at least 1 card name that contains "Veemon"
+
+    public bool HasVeemonName
+    {
+        get
+        {
+            if (CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0])
+            .Some((cardName) => (cardName.Contains("Veemon") || cardName.Contains("veemon"))
+            && cardName != "DemiVeemon"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
 
     #region whether this card has at least 1 card name that contains "AAntibody"
 
@@ -3837,6 +3880,16 @@ public class CardSource : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region whether this card has "ALYSION" trait
+    public bool HasAlysionTraits
+    {
+        get
+        {
+            return EqualsTraits("ALYSION");
+        }
+    }
     #endregion
 
     #region whether this card has "Shambala" trait

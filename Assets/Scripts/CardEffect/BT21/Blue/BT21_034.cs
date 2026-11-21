@@ -33,26 +33,26 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<Draw 1>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
                     return
-                        "[All Turns] (Once Per Turn)  When this Digimon suspends, <Draw 1>";
+                        "[All Turns] [Once Per Turn] When this Digimon suspends, <Draw 1>";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonTrigger(card, activateClass) &&
                            CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable,
                                permanent => permanent == card.PermanentOfThisCard());
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimonActivate(card, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

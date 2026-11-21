@@ -53,17 +53,6 @@ namespace DCGO.CardEffects.ST24
 
             string SharedEffectDescription(string tag) => $"[{tag}] [Once Per Turn] You may suspend up to 2 of your opponent's Digimon or Tamers. Then, by trashing the bottom face-down card from under any of your Tamers, none of their Digimon can unsuspend until their turn ends.";
 
-            bool TamerWithOneFaceDownSource(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card)
-                    && permanent.DigivolutionCards.Any(CanSelectTrashSourceCardCondition);
-            }
-
-            bool CanSelectTrashSourceCardCondition(CardSource cardSource)
-            {
-                return cardSource.IsFlipped;
-            }
-
             bool CanSelectOpponentPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
@@ -96,38 +85,9 @@ namespace DCGO.CardEffects.ST24
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
 
-                bool trashed = false;
+                yield return StartCoroutine(CardEffectCommons.TrashTamerBottomFaceDownSources(card, activateClass, 1, successProcess: SuccessProcess()));
 
-                SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                selectPermanentEffect1.SetUp(
-                    selectPlayer: card.Owner,
-                    canTargetCondition: TamerWithOneFaceDownSource,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: 1,
-                    canNoSelect: true,
-                    canEndNotMax: true,
-                    selectPermanentCoroutine: null,
-                    afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                    mode: SelectPermanentEffect.Mode.Custom,
-                    cardEffect: activateClass);
-
-                selectPermanentEffect1.SetUpCustomMessage("Select 1 Tamer to trash 1 bottom face-down card from", "The opponent is selecting 1 Tamer to trash 1 bottom face-down card from");
-
-                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
-
-                IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
-                {
-                    if (permanents.Count == 1)
-                    {
-                        trashed = true;
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 1, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
-                    }
-                }
-
-                if (trashed)
+                IEnumerator SuccessProcess()
                 {
                     bool PermanentCondition(Permanent permanent)
                     {
@@ -136,11 +96,11 @@ namespace DCGO.CardEffects.ST24
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(
-                            permanentCondition: PermanentCondition,
-                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                            activateClass: activateClass,
-                            isOnlyActivePhase: false,
-                            effectName: "Your Digimon can't unsuspend"));
+                        permanentCondition: PermanentCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        isOnlyActivePhase: false,
+                        effectName: "Your Digimon can't unsuspend"));
                 }
             }
             #endregion

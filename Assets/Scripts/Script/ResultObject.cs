@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DCGO.Networking;
@@ -7,9 +5,10 @@ using System;
 
 public class ResultObject : MonoBehaviour
 {
-    [SerializeField] Image WinImage;
-    [SerializeField] Image LoseImage;
-    [SerializeField] Text ResultText;
+    [SerializeField] Image _winImage;
+    [SerializeField] Image _loseImage;
+    [SerializeField] Image _drawImage;
+    [SerializeField] Text _resultText;
     public Button ReturnToResultButton;
 
     public void Init()
@@ -30,20 +29,21 @@ public class ResultObject : MonoBehaviour
             log += $"\nWinner:{Winner.PlayerName}";
         }
 
-        ResultText.text = "";
+        _resultText.text = "";
 
         if (String.IsNullOrEmpty(effectName))
         {
             log += $"\nEffect:{effectName}";
-            ResultText.text = effectName;
+            _resultText.text = effectName;
         }            
 
         if (Winner == GManager.instance.You)
         {
             ContinuousController.instance.PlaySE(GManager.instance.WinSE);
 
-            WinImage.gameObject.SetActive(true);
-            LoseImage.gameObject.SetActive(false);
+            _winImage.gameObject.SetActive(true);
+            _loseImage.gameObject.SetActive(false);
+            _drawImage.gameObject.SetActive(false);
 
             if (!GManager.instance.IsAI)
             {
@@ -51,10 +51,10 @@ public class ResultObject : MonoBehaviour
                 ContinuousController.instance.SaveWinCount();
 
                 if (Surrendered)
-                    ResultText.text = "The opponent has surrendered.";
+                    _resultText.text = "The opponent has surrendered.";
 
                 if (String.IsNullOrEmpty(effectName))
-                    ResultText.text = effectName;
+                    _resultText.text = effectName;
             }
         }
 
@@ -62,19 +62,21 @@ public class ResultObject : MonoBehaviour
         {
             ContinuousController.instance.PlaySE(GManager.instance.LoseSE);
 
-            WinImage.gameObject.SetActive(false);
-            LoseImage.gameObject.SetActive(true);
+            _winImage.gameObject.SetActive(false);
+            _loseImage.gameObject.SetActive(true);
+            _drawImage.gameObject.SetActive(false);
 
             if (Winner != null)
             {
                 if (Surrendered)
-                    ResultText.text = "You have surrendered.";
+                    _resultText.text = "You have surrendered.";
             }
         }
         else
         {
-            WinImage.gameObject.SetActive(false);
-            LoseImage.gameObject.SetActive(true);
+            _winImage.gameObject.SetActive(false);
+            _loseImage.gameObject.SetActive(true);
+            _drawImage.gameObject.SetActive(false);
 
             bool isDisconnected = true;
 
@@ -90,22 +92,27 @@ public class ResultObject : MonoBehaviour
                     isDisconnected = false;
                 }
 
-                WinImage.gameObject.SetActive(true);
-                LoseImage.gameObject.SetActive(false);
+                _winImage.gameObject.SetActive(true);
+                _loseImage.gameObject.SetActive(false);
+                _drawImage.gameObject.SetActive(false);
             }
 
             if (isDisconnected)
             {
                 log += $"\nDisconnected";
 
-                ResultText.text = "Disconnected.";
+                _resultText.text = "Disconnected.";
             }
 
             else
             {
+                _winImage.gameObject.SetActive(false);
+                _loseImage.gameObject.SetActive(false);
+                _drawImage.gameObject.SetActive(true);
+
                 log += $"\nDraw";
 
-                ResultText.text = "Draw.";
+                _resultText.text = "Reconnection Error.";
             }
         }
 

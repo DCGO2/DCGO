@@ -205,7 +205,7 @@ namespace DCGO.CardEffects.EX13
                     => true;
 
                 bool HasVeemonOrVeedramonName(CardSource assemblyCard)
-                    => assemblyCard.ContainsCardName("Veemon") || assemblyCard.ContainsCardName("Veedramon");
+                    => assemblyCard.HasVeemonName || assemblyCard.ContainsCardName("Veedramon");
 
                 AssemblyCondition GetAssembly(CardSource cardSource)
                 {

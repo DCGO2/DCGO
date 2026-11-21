@@ -1038,6 +1038,7 @@ public enum EffectTiming
     OnAddHand,
     OnLoseSecurity,
     OnAddSecurity,
+    OnSendToSecurity,
     OnUseDigiburst,
     OnDiscardHand,
     OnDiscardSecurity,

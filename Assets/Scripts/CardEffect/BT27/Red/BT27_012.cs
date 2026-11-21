@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // SkullMeramon
 namespace DCGO.CardEffects.BT27
@@ -11,6 +9,17 @@ namespace DCGO.CardEffects.BT27
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+            #region Alternate Digivolution Requirement
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                    => targetPermanent.TopCard.HasFlameTraits;
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null, level: 4));
+            }
+            #endregion
 
             #region Main
             if (timing == EffectTiming.OnDeclaration)
@@ -91,7 +100,7 @@ namespace DCGO.CardEffects.BT27
                         {
                             Hashtable effectHashtable = CardEffectCommons.OnDeletionCheckHashtableOfPermanent(card.PermanentOfThisCard());
 
-                            if (selectedEffect.CanUse(effectHashtable))
+                            if (selectedEffect.CanTrigger(effectHashtable))
                             {
                                 yield return ContinuousController.instance.StartCoroutine(
                                     ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));

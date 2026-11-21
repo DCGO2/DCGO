@@ -69,7 +69,7 @@ public class SelectBurstDigivolutionEffect : MonoBehaviour
                             root: SelectCardEffect.Root.None,
                             isCenter: true,
                             evoRootsArray: new CardSource[][] { new CardSource[] { _evoRoot }, new CardSource[] { _evoRoot } },
-                            titleStrings: new List<string>() { "Normal Digivolution", "<color=#FF633E>Burst</color> Digivollution" }));
+                            titleStrings: new List<string>() { "Normal Digivolution", "<color=#FF633E>Burst</color> Digivolution" }));
 
                 if (GManager.instance.selectCardPanel.SelectedIndex.Count > 0)
                 {

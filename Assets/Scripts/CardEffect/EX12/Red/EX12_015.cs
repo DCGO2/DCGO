@@ -122,6 +122,8 @@ namespace DCGO.CardEffects.EX12
                                 defenderCondition: _ => true,
                                 cardEffect: activateClass);
 
+                            selectAttackEffect.SetCanNotSelectNotAttack();
+
                             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
                     }

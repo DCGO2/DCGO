@@ -52,6 +52,7 @@ namespace DCGO.CardEffects.EX13
                         return cardSource.IsDigimon
                             && cardSource.Level <= 4
                             && cardSource.HasBlocker
+                            && cardSource.HasDigimonColor(CardColor.Black)
                             && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                     }
 
@@ -126,6 +127,7 @@ namespace DCGO.CardEffects.EX13
                     return cardSource.IsDigimon
                         && cardSource.Level <= 5
                         && cardSource.HasBlocker
+                        && cardSource.HasDigimonColor(CardColor.Black)
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 

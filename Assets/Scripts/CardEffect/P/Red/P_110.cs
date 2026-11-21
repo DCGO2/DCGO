@@ -14,7 +14,7 @@ public class P_110 : CEntity_Effect
         {
             bool PermanentCondition(Permanent targetPermanent)
             {
-                return targetPermanent.TopCard.CardNames.Contains("Wormmon");
+                return targetPermanent.TopCard.EqualsCardName("Wormmon");
             }
 
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -38,7 +38,7 @@ public class P_110 : CEntity_Effect
                 {
                     if (cardSource.Owner == card.Owner)
                     {
-                        if (cardSource.CardNames.Contains("Veemon") || cardSource.CardNames.Contains("Wormmon"))
+                        if (cardSource.EqualsCardName("Veemon") || cardSource.EqualsCardName("Wormmon"))
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
@@ -139,7 +139,7 @@ public class P_110 : CEntity_Effect
                 {
                     if (cardSource.Owner == card.Owner)
                     {
-                        if (cardSource.CardNames.Contains("Veemon") || cardSource.CardNames.Contains("Wormmon"))
+                        if (cardSource.EqualsCardName("Veemon") || cardSource.EqualsCardName("Wormmon"))
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {

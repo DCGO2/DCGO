@@ -85,7 +85,7 @@ namespace DCGO.CardEffects.BT25
                                 cardEffect: activateClass);
 
                             selectHandEffect.SetUpCustomMessage("Select 1 card to add to digivolution sources.", "The opponent is selecting 1 card to add to digivolution sources.");
-                            selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+                            selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
 
                             yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                         }

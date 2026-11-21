@@ -1,10 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
-using System;
-using Photon.Pun;
 
 public class BT8_038 : CEntity_Effect
 {
@@ -16,7 +12,7 @@ public class BT8_038 : CEntity_Effect
         {
             bool PermanentCondition(Permanent targetPermanent)
             {
-                return targetPermanent.TopCard.CardNames.Contains("Veemon");
+                return targetPermanent.TopCard.EqualsCardName("Veemon");
             }
 
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

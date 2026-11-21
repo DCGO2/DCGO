@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using TMPro;
-using System.Linq;
-using System.Threading.Tasks;
 public class HandCard : MonoBehaviour
 {
     [Header("カード画像")]
@@ -88,7 +85,9 @@ public class HandCard : MonoBehaviour
     public Sprite RainbowCircle;
 
     [Header("クリックテキスト")]
-    public TextMeshProUGUI ClickText;
+    public Image ClickText;
+    public Image MainText;
+    public Image LinkText;
     public CardSource cardSource { get; set; }
 
     public UnityAction<HandCard> OnClickAction;
@@ -294,11 +293,36 @@ public class HandCard : MonoBehaviour
         }
     }
 
+    public void SetMainText()
+    {
+        if (MainText != null)
+        {
+            MainText.gameObject.SetActive(true);
+        }
+    }
+
+    public void SetLinkText()
+    {
+        if (LinkText != null)
+        {
+            LinkText.gameObject.SetActive(true);
+        }
+    }
+
+    //Single method turns off all 3 that share the slot and purpose
     public void OffClickText()
     {
         if (ClickText != null)
         {
             ClickText.gameObject.SetActive(false);
+        }
+        if (MainText != null)
+        {
+            MainText.gameObject.SetActive(false);
+        }
+        if (LinkText != null)
+        {
+            LinkText.gameObject.SetActive(false);
         }
     }
 

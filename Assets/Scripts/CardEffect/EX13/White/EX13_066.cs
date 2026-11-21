@@ -203,13 +203,21 @@ namespace DCGO.CardEffects.EX13
                             maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: null,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Degenerate,
+                            mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetDegenerationCount(degenerationCount);
-                        selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon to De-Digivolve {degenerationCount}.", $"The opponent is selecting 1 Digimon to De-Digivolve {degenerationCount}.");
+                        selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon to <De-Digivolve 1> {degenerationCount} times.", $"The opponent is selecting 1 Digimon to <De-Digivolve 1> {degenerationCount} times.");
+
+                        IEnumerator SelectPermanentCoroutine (Permanent permanent)
+                        {
+                            for (int i = 0; i < degenerationCount; i++)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent: permanent, DegenerationCount: 1, cardEffect: activateClass).Degeneration());
+                            }
+                        }
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }

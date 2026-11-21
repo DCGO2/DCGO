@@ -9,6 +9,8 @@ using UnityEngine;
 
 public class SelectPermanentEffect : MonoBehaviour
 {
+    private static WaitForSeconds _waitForSeconds0_2 = new WaitForSeconds(0.2f);
+
     public void SetUp
         (Player selectPlayer,
         Func<Permanent, bool> canTargetCondition,
@@ -135,6 +137,7 @@ public class SelectPermanentEffect : MonoBehaviour
         PutSecurityTop,
         Degenerate,
         Attack,
+        Taunt,
         Custom
     }
 
@@ -255,6 +258,7 @@ public class SelectPermanentEffect : MonoBehaviour
         List<Permanent> handBouncePermanents = new List<Permanent>();
         List<Permanent> degeneratePermanents = new List<Permanent>();
         List<Permanent> attackPermanents = new List<Permanent>();
+        List<Permanent> tauntPermanents = new List<Permanent>();
 
         _noSelect = false;
 
@@ -344,6 +348,10 @@ public class SelectPermanentEffect : MonoBehaviour
 
                         case Mode.Attack:
                             message = "Select a Digimon to attack with.";
+                            break;
+
+                        case Mode.Taunt:
+                            message = "Select a Digimon to give [Start of Main Phase] This Digimon attacks.";
                             break;
 
                         case Mode.Custom:
@@ -643,13 +651,13 @@ public class SelectPermanentEffect : MonoBehaviour
 
                     List<int> selectedIndexes = AISelectionUtility.Choose(
                         ValidCharas.Count,
-                        canEndSelect: (List<int> indexes) =>
+                        canEndSelect: indexes =>
                         {
                             return CanEndSelect(indexes.Select((index) => ValidCharas[index]).ToList());
                         },
                         canAdd: _canTargetCondition_ByPreSelecetedList == null
                             ? (Func<List<int>, int, bool>)null
-                            : (List<int> prefixIndexes, int index) =>
+                            : (prefixIndexes, index) =>
                             {
                                 return _canTargetCondition_ByPreSelecetedList(prefixIndexes.Select((prefixIndex) => ValidCharas[prefixIndex]).ToList(), ValidCharas[index]);
                             },
@@ -748,8 +756,10 @@ public class SelectPermanentEffect : MonoBehaviour
 
             if (CanEndSelect(_targetPermanents))
             {
-                Hashtable hashtable = new Hashtable();
-                hashtable.Add("CardEffect", _cardEffect);
+                Hashtable hashtable = new Hashtable
+                {
+                    { "CardEffect", _cardEffect }
+                };
 
                 if (!_noSelect)
                 {
@@ -867,7 +877,7 @@ public class SelectPermanentEffect : MonoBehaviour
                             }
                         }
 
-                        yield return new WaitForSeconds(0.2f);
+                        yield return _waitForSeconds0_2;
                         #endregion
 
                         #region Perform processing on the selected unit
@@ -922,6 +932,10 @@ public class SelectPermanentEffect : MonoBehaviour
 
                             case Mode.Attack:
                                 attackPermanents.Add(targetPermanent);
+                                break;
+
+                            case Mode.Taunt:
+                                tauntPermanents.Add(targetPermanent);
                                 break;
                         }
                         #endregion
@@ -1025,6 +1039,14 @@ public class SelectPermanentEffect : MonoBehaviour
 
                                 yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                             }
+                        }
+                    }
+
+                    if (tauntPermanents.Count > 0)
+                    {
+                        foreach (Permanent selectedPermanent in tauntPermanents)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.StartOfMainAttack(targetPermanent: selectedPermanent, cardEffect: _cardEffect));
                         }
                     }
                 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-// Gizmon: XT — BT27-079
+// Gizmon: XT
 namespace DCGO.CardEffects.BT27
 {
     public class BT27_079 : CEntity_Effect
@@ -10,13 +10,13 @@ namespace DCGO.CardEffects.BT27
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
+
             #region Play Cost Reduction Shown
             if (timing == EffectTiming.BeforePayCost)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete your 1 level 4 Digimon to get Play Cost -6", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
-                activateClass.SetHashString("PlayCost-6_BT27_079");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -198,6 +198,20 @@ namespace DCGO.CardEffects.BT27
                 {
                     return true;
                 }
+            }
+            #endregion
+
+            #region Blocker
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(false, card, null));
+            }
+            #endregion
+
+            #region Retaliation
+            if (timing == EffectTiming.OnDestroyedAnyone)
+            {
+                cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(false, card, null));
             }
             #endregion
 

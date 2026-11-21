@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.BT25
                             List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
                             new SelectionElement<bool>(message: $"Security Top", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"Security Bottom", value : false, spriteIndex: 1),
+                            new SelectionElement<bool>(message: $"Security Bottom", value : false, spriteIndex: 0),
                         };
 
                             string selectPlayerMessage = "Choose security position?";
@@ -119,7 +119,21 @@ namespace DCGO.CardEffects.BT25
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                             bool position = GManager.instance.userSelectionManager.SelectedBoolValue;
 
+                            if (position)
+                            {
+                                GManager.instance.commandText.OpenCommandText("\"Place to the top of security\" was selected.");
+
+                                PlayLog.OnAddLog?.Invoke($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the top of security\n");
+                            }
+                            else
+                            {
+                                GManager.instance.commandText.OpenCommandText("\"Place to the bottom of security\" was selected.");
+
+                                PlayLog.OnAddLog?.Invoke($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the bottom of security\n");
+                            }
+
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource, toTop: position));
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource> { cardSource }, $"{(position ? "Top" : "Bottom")} Security", true, true));
                         }
                     }
                 }

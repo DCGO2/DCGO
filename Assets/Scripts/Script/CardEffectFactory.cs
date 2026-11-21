@@ -113,7 +113,7 @@ public partial class CardEffectFactory
         {
             return CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
                 && card.Owner.CanAddMemory(activateClass)
-                && condition()
+                && (condition == null || condition())
                 && card.Owner.GetBattleAreaDigimons().Any(permamentCondition);
         }
 
@@ -706,7 +706,7 @@ public partial class CardEffectFactory
     public static IgnoreColorConditionClass UseRequirements(CardSource card, Func<CardSource, bool> cardCondition)
     {
         IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
-        ignoreColorConditionClass.SetUpICardEffect("Ignore color requirements", CanUseCondition, card);
+        ignoreColorConditionClass.SetUpICardEffect("", CanUseCondition, card);
         ignoreColorConditionClass.SetUpIgnoreColorConditionClass(cardCondition: CardCondition);
         return ignoreColorConditionClass;
 

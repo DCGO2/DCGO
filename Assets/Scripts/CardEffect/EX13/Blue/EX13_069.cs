@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.EX13
 
                 bool IsVeemonOrVeedramonDigimon(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && (permanent.TopCard.ContainsCardName("Veemon") || permanent.TopCard.ContainsCardName("Veedramon"));
+                        && (permanent.TopCard.HasVeemonName || permanent.TopCard.ContainsCardName("Veedramon"));
 
                 bool AdditionalActivateCondition(Hashtable hashtable, ActivateClass activateClass)
                     => CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsVeemonOrVeedramonDigimon);

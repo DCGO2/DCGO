@@ -133,7 +133,30 @@ namespace DCGO.CardEffects.EX12
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                yield return ContinuousController.instance.StartCoroutine(new IMassDegeneration(card.Owner.Enemy.GetBattleAreaDigimons(), 2, activateClass).Degeneration());
+                int degenrationCount = 0;
+
+                SelectCountEffect selectCountEffect = GManager.instance.GetComponent<SelectCountEffect>();
+                if (selectCountEffect != null)
+                {
+                    selectCountEffect.SetUp(
+                        SelectPlayer: card.Owner,
+                        targetPermanent: null,
+                        MaxCount: 2,
+                        CanNoSelect: false,
+                        Message: "How much will you De-Digivolve?",
+                        Message_Enemy: "The opponent is choosing how much to De-Digivolve.",
+                        SelectCountCoroutine: SelectCountCoroutine);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCountEffect.Activate());
+
+                    IEnumerator SelectCountCoroutine(int count)
+                    {
+                        degenrationCount = count;
+                        yield return null;
+                    }
+                }
+
+                yield return ContinuousController.instance.StartCoroutine(new IMassDegeneration(card.Owner.Enemy.GetBattleAreaDigimons(), degenrationCount, activateClass).Degeneration());
 
                 if (card.Owner.HandCards.Count(CanSelectCardCondition) + card.Owner.TrashCards.Count(CanSelectCardCondition) >= 2)
                 {

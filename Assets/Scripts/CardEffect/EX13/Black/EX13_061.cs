@@ -44,22 +44,13 @@ namespace DCGO.CardEffects.EX13
                         && assemblyCard.IsDigimon
                         && assemblyCard.HasText("Huckmon");
 
-                bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
-                {
-                    List<CardSource> allCards = cardSources.Clone();
-
-                    allCards.Add(cardSource);
-
-                    return allCards.Count == Combinations.GetUniqueNameCardCount(allCards);
-                }
-
                 AssemblyCondition GetAssembly(CardSource cardSource)
                 {
                     if (cardSource != card) return null;
 
                     return new AssemblyCondition(
                         element: new AssemblyConditionElement(IsAssemblyCard),
-                        CanTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                        CanTargetCondition_ByPreSelecetedList: Combinations.WithDifferentNames,
                         selectMessage: "3 [Huckmon] text Digimon cards w/different names",
                         elementCount: 3,
                         reduceCost: 5);

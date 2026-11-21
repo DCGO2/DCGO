@@ -53,8 +53,6 @@ namespace DCGO.CardEffects.BT25
 
                 bool isGlowingDawnCard(CardSource cardSource) =>
                     cardSource.HasGlowingDawnTraits;
-
-                bool FaceDownCards(CardSource cardSource) => cardSource.IsFaceDown;
                 #endregion
 
                 bool isUsed = false;
@@ -65,9 +63,9 @@ namespace DCGO.CardEffects.BT25
                 #region Select to pay Cost
                 List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
 
-                if (canAddSecurityToHand) selectionElements.Add(new SelectionElement<int>(message: $"Add top security card to hand", value: 1, spriteIndex: 0));
-                if (canTrashBottomFaceDownCard) selectionElements.Add(new SelectionElement<int>(message: $"Trash bottom face down card from 1 tamer", value: 2, spriteIndex: 0));
-                selectionElements.Add(new SelectionElement<int>(message: $"Dont pay the cost", value: 3, spriteIndex: 1));
+                if (canAddSecurityToHand) selectionElements.Add(new SelectionElement<int>(message: "Add top security card to hand", value: 1, spriteIndex: 0));
+                if (canTrashBottomFaceDownCard) selectionElements.Add(new SelectionElement<int>(message: "Trash bottom face down card from 1 tamer", value: 2, spriteIndex: 0));
+                selectionElements.Add(new SelectionElement<int>(message: "Don't pay the cost", value: 3, spriteIndex: 1));
 
                 string selectPlayerMessage = "Will you pay the cost?";
                 string notSelectPlayerMessage = "The opponent is choosing to pay the cost.";
@@ -94,35 +92,14 @@ namespace DCGO.CardEffects.BT25
                     }
                     else
                     {
-                        bool trash = false;
-                        SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        yield return StartCoroutine(CardEffectCommons.TrashTamerBottomFaceDownSources(card, activateClass, 1, successProcess: SuccessProcess()));
 
-                        selectPermanentEffect1.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: IsTamerWithFaceDownCard,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-
-                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanents[0], trashCount: 1, isFromTop: false, activateClass: activateClass, FaceDownCards));
-                            trash = true;
-                        }
-
-                        selectPermanentEffect1.SetUpCustomMessage("Select 1 Tamer to trash 1 bottom face-down card from", "The opponent is selecting 1 Tamer to trash 1 bottom face-down card from");
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
-                        if (trash)
+                        IEnumerator SuccessProcess()
                         {
                             hasPaidCost = true;
                             isUsed = true;
+
+                            yield return null;
                         }
                     }
                 }
