@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 
 public partial class CardEffectFactory
 {
-
     public static string NAME_SEPARATOR = "§";
     public static ChangeCardNamesClass NameTreatedAsIncluding(CardSource card, string otherName)
     {
@@ -30,16 +28,16 @@ public partial class CardEffectFactory
         }
     }
 
-    public static ChangeCardNamesClass NameIsAlso(CardSource card, params string[] otherNames)
+    public static ChangeBaseCardNameClass NameIsAlso(CardSource card, params string[] otherNames)
     {
         string nameDisplay = string.Join("/", otherNames);
-        ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-        changeCardNamesClass.SetUpICardEffect($"Also treated as [{nameDisplay}]", _ => true, card);
-        changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
+        ChangeBaseCardNameClass changeBaseCardNameClass = new ChangeBaseCardNameClass();
+        changeBaseCardNameClass.SetUpICardEffect($"Also treated as [{nameDisplay}]", _ => true, card);
+        changeBaseCardNameClass.SetUpChangeBaseCardNamesClass(changeBaseCardNames: ChangeBaseCardNames);
 
-        return changeCardNamesClass;
+        return changeBaseCardNameClass;
 
-        List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
+        List<string> ChangeBaseCardNames(CardSource cardSource, List<string> CardNames)
         {
             if (cardSource == card)
             {

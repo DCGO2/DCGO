@@ -1,17 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
-
 
 public class BT7_083 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+        #region Name Rule
+        if (timing == EffectTiming.None)
+        {
+            cardEffects.Add(CardEffectFactory.NameIsAlso(card, "Sistermon Noir (Awakened)"));
+        }
+        #endregion
 
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {

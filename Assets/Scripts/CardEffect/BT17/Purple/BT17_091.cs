@@ -70,27 +70,11 @@ namespace DCGO.CardEffects.BT17
 
             #endregion
 
-            #region Rule Text - Name
-
+            #region Name Rule
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as [Eiji Nagasumi]", _ => true, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: ChangeCardNames);
-                cardEffects.Add(changeCardNamesClass);
-
-                List<string> ChangeCardNames(CardSource cardSource, List<string> cardNames)
-                {
-                    if (cardSource == card)
-                    {
-                        cardNames.Add("Eiji Nagasumi");
-                        cardNames.Add("EijiNagasumi");
-                    }
-
-                    return cardNames;
-                }
+                cardEffects.Add(CardEffectFactory.NameIsAlso(card, "Eiji Nagasumi"));
             }
-
             #endregion
 
             #region All Turns - ESS

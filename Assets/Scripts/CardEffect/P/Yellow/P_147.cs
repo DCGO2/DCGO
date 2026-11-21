@@ -1,10 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using static Cinemachine.DocumentationSortingAttribute;
-using System.Data;
-using System.Runtime.ConstrainedExecution;
-using UnityEngine.XR;
-using System.Linq;
 
 namespace DCGO.CardEffects.P
 {
@@ -14,28 +9,10 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Rule: Name is also Pulsemon
+            #region Name Rule
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as [Pulsemon]", CanUseCondition, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-                cardEffects.Add(changeCardNamesClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
-                {
-                    if (cardSource == card)
-                    {
-                        CardNames.Add("Pulsemon");
-                    }
-
-                    return CardNames;
-                }
+                cardEffects.Add(CardEffectFactory.NameIsAlso(card, "Pulsemon"));
             }
             #endregion
 

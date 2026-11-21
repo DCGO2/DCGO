@@ -13,26 +13,11 @@ namespace DCGO.CardEffects.P
 
             #region Static Effects
 
-            #region Card Name
-
+            #region Name Rule
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as having [Greymon]", hashtable => true, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-                cardEffects.Add(changeCardNamesClass);
-
-                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
-                {
-                    if (cardSource == card)
-                    {
-                        CardNames.Add("Greymon_P_183");
-                    }
-
-                    return CardNames;
-                }
+                cardEffects.Add(CardEffectFactory.NameTreatedAsIncluding(card, "Greymon"));
             }
-
             #endregion
 
             #region Blocker
