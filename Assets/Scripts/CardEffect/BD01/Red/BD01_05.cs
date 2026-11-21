@@ -16,6 +16,7 @@ namespace DCGO.CardEffects.BD01
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain <Security +1> for the turn", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BD01_05_ESS");
                 cardEffects.Add(activateClass);
 
