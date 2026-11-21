@@ -88,39 +88,54 @@ namespace DCGO.CardEffects.BT27
 
                 bool selected = false;
 
-                for (int i = 0; i < activationCount; i++)
+                string selectPlayerMessage = $"Will you delete {activationCount} of your opponent's Digimon?";
+                string notSelectPlayerMessage = "The opponent is choosing if they delete your Digimon.";
+
+                List<SelectionElement<bool>> command_SelectCommands = new List<SelectionElement<bool>>()
                 {
-                    if (!CardEffectCommons.HasMatchConditionPermanent(LowestDPCondition)) yield break;
+                    new SelectionElement<bool>(message: $"Yes", value: true, spriteIndex: 0),
+                    new SelectionElement<bool>(message: $"No", value: false, spriteIndex: 1),
+                };
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: command_SelectCommands, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: LowestDPCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                        mode: SelectPermanentEffect.Mode.Destroy,
-                        cardEffect: activateClass);
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                    selectPermanentEffect.SetUpCustomMessage(
-                        $"Select 1 Digimon to delete ({i + 1}/{activationCount}).",
-                        "The opponent is selecting 1 Digimon to delete.");
+                bool delete = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                if (delete)
+                {
+                    for (int i = 0; i < activationCount; i++)
                     {
-                        selected = permanents.Count > 0;
-                        yield return null;
-                    }
+                        if (!CardEffectCommons.HasMatchConditionPermanent(LowestDPCondition)) yield break;
 
-                    // Declining one activation declines the rest
-                    if (!selected) yield break;
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: LowestDPCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage(
+                            $"Select 1 Digimon to delete ({i + 1}/{activationCount}).",
+                            "The opponent is selecting 1 Digimon to delete.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                        {
+                            selected = permanents.Count > 0;
+                            yield return null;
+                        }
+                    }
                 }
 
                 if (!selected) activateClass.RemoveUse();
