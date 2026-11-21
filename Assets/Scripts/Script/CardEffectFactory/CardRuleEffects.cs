@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 
 public partial class CardEffectFactory
 {
-
     public static string NAME_SEPARATOR = "§";
     public static ChangeCardNamesClass NameTreatedAsIncluding(CardSource card, string otherName)
     {
