@@ -783,8 +783,8 @@ public class CardObjectController : MonoBehaviour
         // Cards revealed from the library (eg. "reveal the top X cards" effects) and then returned
         // there were never truly added from outside — track them here so they can be excluded from
         // the OnAddLibraryAnyone trigger below.
-        bool WasAlreadyInLibrary(CardSource cardSource)
-            => cardSource.Owner.LibraryCards.Contains(cardSource) || cardSource.Owner.DigitamaLibraryCards.Contains(cardSource);
+        static bool WasAlreadyInLibrary(CardSource cardSource)
+            => cardSource.Owner.LibraryCards.Contains(cardSource);
 
         HashSet<CardSource> alreadyInLibraryCardSources = new HashSet<CardSource>(cardSources.Filter(WasAlreadyInLibrary));
 
@@ -824,24 +824,11 @@ public class CardObjectController : MonoBehaviour
             {
                 cardSource.SetFace();
 
-                if (!cardSource.IsDigiEgg)
+                if (!cardSource.Owner.LibraryCards.Contains(cardSource))
                 {
-                    if (!cardSource.Owner.LibraryCards.Contains(cardSource))
-                    {
-                        cardSource.Owner.LibraryCards.Insert(0, cardSource);
-                        if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
-                    }
-                }
+                    cardSource.Owner.LibraryCards.Insert(0, cardSource);
 
-                else
-                {
-                    if (!cardSource.Owner.DigitamaLibraryCards.Contains(cardSource))
-                    {
-                        cardSource.Owner.DigitamaLibraryCards.Insert(0, cardSource);
-                        // Ruling: OnAddLibraryAnyone should not trigger from cards added to the digi-egg deck.
-                        // Commented out (not removed) so this is easy to restore if that ruling changes.
-                        // if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
-                    }
+                    if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
                 }
 
                 cardSource.Init();
@@ -881,8 +868,8 @@ public class CardObjectController : MonoBehaviour
         // Cards revealed from the library (eg. "reveal the top X cards" effects) and then returned
         // there were never truly added from outside — track them here so they can be excluded from
         // the OnAddLibraryAnyone trigger below.
-        bool WasAlreadyInLibrary(CardSource cardSource)
-            => cardSource.Owner.LibraryCards.Contains(cardSource) || cardSource.Owner.DigitamaLibraryCards.Contains(cardSource);
+        static bool WasAlreadyInLibrary(CardSource cardSource)
+            => cardSource.Owner.LibraryCards.Contains(cardSource);
 
         HashSet<CardSource> alreadyInLibraryCardSources = new HashSet<CardSource>(cardSources.Filter(WasAlreadyInLibrary));
 
@@ -934,24 +921,11 @@ public class CardObjectController : MonoBehaviour
             {
                 cardSource.SetFace();
 
-                if (!cardSource.IsDigiEgg)
+                if (!cardSource.Owner.LibraryCards.Contains(cardSource))
                 {
-                    if (!cardSource.Owner.LibraryCards.Contains(cardSource))
-                    {
-                        cardSource.Owner.LibraryCards.Add(cardSource);
-                        if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
-                    }
-                }
+                    cardSource.Owner.LibraryCards.Add(cardSource);
 
-                else
-                {
-                    if (!cardSource.Owner.DigitamaLibraryCards.Contains(cardSource))
-                    {
-                        cardSource.Owner.DigitamaLibraryCards.Add(cardSource);
-                        // Ruling: OnAddLibraryAnyone should not trigger from cards added to the digi-egg deck.
-                        // Commented out (not removed) so this is easy to restore if that ruling changes.
-                        // if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
-                    }
+                    if (!alreadyInLibraryCardSources.Contains(cardSource)) addedCardSources.Add(cardSource);
                 }
 
                 cardSource.Init();
@@ -1018,7 +992,6 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-
     #region Add card to security
     public static IEnumerator AddSecurityCard(
         CardSource cardSource,
@@ -1072,8 +1045,6 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-
-
     #region Trigger on place to security
     public static IEnumerator TriggerOnSendToSecurity(CardSource cardSource, bool faceUp = false)
     {
@@ -1090,7 +1061,6 @@ public class CardObjectController : MonoBehaviour
                 EffectTiming.OnSendToSecurity));
     }
     #endregion
-
 
     #region Shuffle
     public static IEnumerator Shuffle(Player player)
