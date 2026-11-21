@@ -834,6 +834,11 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
     [PunRPC]
     void StartGame_Internal()
     {
+        if (!_inGame)
+        {
+            return;
+        }
+
         SetLocalPlayerProperty(WaitingForGameStartKey, false);
         SetLocalPlayerProperty(ReadyKey, false);
 
@@ -1038,6 +1043,9 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
         _sentPackets.Clear();
         _receivedPacketCount = 0;
         _resentPacketCount = 0;
+
+        SetLocalPlayerProperty(WaitingForGameStartKey, false);
+        SetLocalPlayerProperty(ReadyKey, false);
 
         if (_inPrivateRoom)
         {

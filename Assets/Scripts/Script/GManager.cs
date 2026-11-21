@@ -249,7 +249,7 @@ public class GManager : MonoBehaviour
 #if UNITY_EDITOR
 
 #endif
-        if (!DCGONetwork.IsConnected)
+        if (Opening.instance == null)
         {
             IsAI = true;
         }
