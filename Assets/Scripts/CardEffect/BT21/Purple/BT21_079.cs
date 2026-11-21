@@ -35,26 +35,11 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
-            #region Rule Text
-
+            #region Name Rule
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as [ChaosGallantmon]", _ => true, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: ChangeCardNames);
-                cardEffects.Add(changeCardNamesClass);
-
-                List<string> ChangeCardNames(CardSource cardSource, List<string> cardNames)
-                {
-                    if (cardSource == card)
-                    {
-                        cardNames.Add("ChaosGallantmon");
-                    }
-
-                    return cardNames;
-                }
+                cardEffects.Add(CardEffectFactory.NameIsAlso(card, "ChaosGallantmon"));
             }
-
             #endregion
 
             #region End of attack

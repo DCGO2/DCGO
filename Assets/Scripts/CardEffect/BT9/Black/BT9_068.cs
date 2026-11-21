@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
 
 public class BT9_068 : CEntity_Effect
 {
@@ -22,29 +19,12 @@ public class BT9_068 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
         }
 
+        #region Name Rule
         if (timing == EffectTiming.None)
         {
-            ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-            changeCardNamesClass.SetUpICardEffect("Also treated as having [Greymon] in its name", CanUseCondition, card);
-            changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-
-            cardEffects.Add(changeCardNamesClass);
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return true;
-            }
-
-            List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
-            {
-                if (cardSource == card)
-                {
-                    CardNames.Add("Greymon_BT9_068");
-                }
-
-                return CardNames;
-            }
+            cardEffects.Add(CardEffectFactory.NameTreatedAsIncluding(card, "Greymon"));
         }
+        #endregion
 
         if (timing == EffectTiming.None)
         {

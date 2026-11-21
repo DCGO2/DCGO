@@ -18,28 +18,12 @@ public class EX5_030 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
         }
 
+        #region Name Rule
         if (timing == EffectTiming.None)
         {
-            ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-            changeCardNamesClass.SetUpICardEffect("Also treated as having [Leomon] in its name", CanUseCondition, card);
-            changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-            cardEffects.Add(changeCardNamesClass);
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return true;
-            }
-
-            List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
-            {
-                if (cardSource == card)
-                {
-                    CardNames.Add("Leomon_EX5_030");
-                }
-
-                return CardNames;
-            }
+            cardEffects.Add(CardEffectFactory.NameTreatedAsIncluding(card, "Leomon"));
         }
+        #endregion
 
         if (timing == EffectTiming.OnAllyAttack)
         {

@@ -145,13 +145,11 @@ namespace DCGO.CardEffects.BT18
 
             #endregion
 
-            #region Rule Text
-
+            #region Name Rule
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.NameIsAlso(card, "Takuya Kanbara", "Koji Minamoto"));
             }
-
             #endregion
 
             #region End of Your Turn
