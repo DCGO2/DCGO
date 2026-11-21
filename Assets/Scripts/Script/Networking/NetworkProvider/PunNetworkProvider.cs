@@ -25,6 +25,7 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
     const float ReconnectRetryDelaySeconds = 1f;
     const float StateCheckSeconds = 8f;
     const float StateCheckIntervalSeconds = 1f;
+    const float GameStartTimeoutSeconds = 90f;
 
     private MatchmakingEvents _matchmakingEvents;
     private PrivateRoomEvents _privateRoomEvents;
@@ -752,7 +753,9 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
 
     IEnumerator WaitForGameStartCoroutine()
     {
-        yield return new WaitUntil(() => _gameStarted || !PhotonNetwork.InRoom || !IsOpponentActive() || (IsRoomHost() && AllPlayersWaitingForGameStart()));
+        float deadline = Time.unscaledTime + GameStartTimeoutSeconds;
+
+        yield return new WaitUntil(() => _gameStarted || !PhotonNetwork.InRoom || !IsOpponentActive() || (IsRoomHost() && AllPlayersWaitingForGameStart()) || Time.unscaledTime >= deadline);
 
         _waitForGameStartCoroutine = null;
 
@@ -768,7 +771,14 @@ public class PunNetworkProvider : MonoBehaviourPunCallbacks, INetworkProvider
             yield break;
         }
 
-        photonView.RPC("StartGame_Internal", RpcTarget.All);
+        if (IsRoomHost() && AllPlayersWaitingForGameStart())
+        {
+            photonView.RPC("StartGame_Internal", RpcTarget.All);
+            yield break;
+        }
+
+        Debug.Log("[Game] Timed out waiting for the game to start.");
+        EndGameByDisconnect(null);
     }
 
     bool AllPlayersWaitingForGameStart()
