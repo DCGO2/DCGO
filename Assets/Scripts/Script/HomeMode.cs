@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun;
-using Photon.Realtime;
+using DCGO.Networking;
 using UnityEngine.SceneManagement;
 using System;
 using System.Linq;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class HomeMode : MonoBehaviour
 {
     [Header("playerInfo")]
@@ -80,11 +78,18 @@ public class HomeMode : MonoBehaviour
 
     public IEnumerator SetUpHomeMode_DisconnectCoroutine()
     {
-        if(PhotonNetwork.IsConnected)
+        if (DCGONetwork.IsConnected)
         {
             yield return ContinuousController.instance.StartCoroutine(loadingObject.StartLoading("Disconnecting"));
 
-            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.DisconnectCoroutine());
+            bool disconnected = false;
+
+            DCGONetwork.Provider.Disconnect(() =>
+            {
+                disconnected = true;
+            });
+
+            yield return new WaitUntil(() => disconnected);
 
             yield return ContinuousController.instance.StartCoroutine(loadingObject.EndLoading());
         }

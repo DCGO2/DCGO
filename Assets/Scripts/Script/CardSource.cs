@@ -1,4 +1,3 @@
-using Photon.Pun;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +10,6 @@ public class CardSource : MonoBehaviour
     #region card base entity
 
     CEntity_Base _cEntity_Base = null;
-
-    #endregion
-
-    #region PhotonView
-
-    public PhotonView PhotonView { get; set; }
 
     #endregion
 
@@ -114,15 +107,7 @@ public class CardSource : MonoBehaviour
 
     public void SetUpCardIndex(int _cardIndex)
     {
-        PhotonView _PhotonView = GetComponent<PhotonView>();
-
-        _PhotonView ??= gameObject.AddComponent<PhotonView>();
-
         CardIndex = _cardIndex;
-
-        _PhotonView.ViewID = CardIndex + 60;
-
-        PhotonView = _PhotonView;
     }
 
     #endregion

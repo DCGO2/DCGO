@@ -1,5 +1,4 @@
-﻿using Photon.Pun;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +6,7 @@ using UnityEngine;
 using Unity.Profiling;
 
 
-public class AutoProcessing : MonoBehaviourPunCallbacks
+public class AutoProcessing : MonoBehaviour
 {
     private static readonly ProfilerMarker GetSkillInfosMarker = new ProfilerMarker("DCGO.GetSkillInfos");
     //Skill list before triggering and entering resolution timing
@@ -682,8 +681,6 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     {
         if (GManager.instance.turnStateMachine.gameContext.TurnPhase != GameContext.phase.End)
         {
-            // yield return GManager.instance.photonWaitController.StartWait("EndTurnProcess");
-
             if (GManager.instance.turnStateMachine.Passed && GManager.instance.turnStateMachine.gameContext.TurnPhase == GameContext.phase.Main)
             {
                 if (GManager.instance.turnStateMachine.gameContext.TurnPlayer.PlayerID == 0)

@@ -1,4 +1,4 @@
-using Photon.Pun;
+using DCGO.Networking;
 using UnityEngine;
 using UnityEngine.UI;
 public class GameplayOption : OffAnimation
@@ -124,7 +124,7 @@ public class GameplayOption : OffAnimation
                value: ContinuousController.instance.useBanlist
            );
 
-            if (ContinuousController.instance.BanList.Restrictions.Count == 0 || PhotonNetwork.InRoom)
+            if (ContinuousController.instance.BanList.Restrictions.Count == 0 || DCGONetwork.IsInRoom)
                 _banlistToggle.interactable = false;
         }
 

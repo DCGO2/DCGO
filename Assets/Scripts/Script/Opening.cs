@@ -1,4 +1,4 @@
-﻿using Photon.Pun;
+﻿using DCGO.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -469,14 +469,16 @@ public class Opening : MonoBehaviour
 
         yield return StartCoroutine(deck.editDeck.InitEditDeck());
 
-        if (PhotonNetwork.IsConnected)
+        if (DCGONetwork.IsConnected)
         {
-            PhotonNetwork.Disconnect();
+            bool disconnected = false;
 
-            while (PhotonNetwork.IsConnected)
+            DCGONetwork.Provider.Disconnect(() =>
             {
-                yield return null;
-            }
+                disconnected = true;
+            });
+
+            yield return new WaitUntil(() => disconnected);
         }
 
         yield return _waitForSeconds0_1;

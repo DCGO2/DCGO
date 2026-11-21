@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun;
 using UnityEngine.Events;
-public class EnterRoom : MonoBehaviourPunCallbacks
+using DCGO.Networking;
+public class EnterRoom : MonoBehaviour
 {
     private static readonly int OpenHash = Animator.StringToHash("Open");
     private static readonly int CloseHash = Animator.StringToHash("Close");
@@ -65,44 +65,34 @@ public class EnterRoom : MonoBehaviourPunCallbacks
     {
         if (CanClickEnterRoomButton() && _canClick)
         {
-            ContinuousController.instance.StartCoroutine(JoinRoomCoroutine());
+            _canClick = false;
+
+            string roomCode = RoomIDInputField.text + "-" + ContinuousController.instance.useBanlist;
+            DCGONetwork.Provider.JoinPrivateRoom(roomCode, roomManager.GetPrivateRoomEvents((bool success) =>
+            {
+                _canClick = true;
+                if (success)
+                {
+                    OnJoinedRoom();
+                }
+                else
+                {
+                    OnJoinRoomFailed();
+                }
+            }));
         }
     }
 
-    IEnumerator JoinRoomCoroutine()
-    {
-        _canClick = false;
-
-        if (!PhotonNetwork.IsConnectedAndReady)
-        {
-            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.ConnectToMasterServerCoroutine());
-        }
-
-        yield return new WaitUntil(() => PhotonNetwork.IsConnectedAndReady);
-
-        if (!PhotonNetwork.InLobby)
-        {
-            PhotonNetwork.JoinLobby();
-        }
-
-        yield return new WaitUntil(() => PhotonNetwork.InLobby && PhotonNetwork.IsConnectedAndReady);
-
-        PhotonNetwork.JoinRoom(RoomIDInputField.text + "-" + ContinuousController.instance.useBanlist);
-
-        _canClick = true;
-    }
-
-    public override void OnJoinedRoom()
+    public void OnJoinedRoom()
     {
         ContinuousController.instance.isAI = false;
         ContinuousController.instance.isRandomMatch = false;
-        roomManager.SetUpRoom();
+        roomManager.SetUpRoom(false);
         Close_(false);
     }
 
-    public override void OnJoinRoomFailed(short returnCode, string message)
+    public void OnJoinRoomFailed()
     {
-        Debug.Log($"{returnCode} - {message}");
         Opening.instance.PlayDecisionSE();
         Opening.instance.SetUpActiveYesNoObject(
             new List<UnityAction>() { null },

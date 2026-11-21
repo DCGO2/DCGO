@@ -29,7 +29,7 @@ public class BattleMode : MonoBehaviour
 
         selectBattleMode.OffSelectBattleMode();
 
-        lobbyManager_RandomMatch.OffLobby();
+        lobbyManager_RandomMatch.Close();
 
         if (!first)
         {

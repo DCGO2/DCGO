@@ -1,11 +1,11 @@
-﻿using Photon.Pun;
+﻿using DCGO.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MultipleSkills : MonoBehaviourPunCallbacks
+public class MultipleSkills : MonoBehaviour
 {
     public bool IsUsing { get; private set; } = false;
     AutoProcessing _autoProcessing = null;
@@ -247,7 +247,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                                 }
                             }
 
-                            photonView.RPC("SetTargetSkill", RpcTarget.All, player.PlayerID, skillIndex);
+                            DCGONetwork.Provider.SendPlayerSelection(player, new ValueSelection(skillIndex));
                         }
 
                         else
@@ -255,7 +255,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                             #region AI
                             if (GManager.instance.IsAI)
                             {
-                                SetTargetSkill(player.PlayerID, 0);
+                                player.QueuePlayerSelection(new ValueSelection(0));
                             }
                             #endregion
                         }
@@ -304,7 +304,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                                 skillIndex = AutomaticOrder.GetSkillIndexAutomaticOrder(skillInfos_active);
                             }
 
-                            photonView.RPC("SetTargetSkill", RpcTarget.All, player.PlayerID, skillIndex);
+                            DCGONetwork.Provider.SendPlayerSelection(player, new ValueSelection(skillIndex));
                         }
 
                         else
@@ -317,7 +317,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                             #region AI
                             if (GManager.instance.IsAI)
                             {
-                                SetTargetSkill(player.PlayerID, 0);
+                                player.QueuePlayerSelection(new ValueSelection(0));
                             }
                             #endregion
                         }
@@ -421,18 +421,5 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                 break;
             }
         }
-    }
-
-    [PunRPC]
-    public void SetTargetSkill(int playerID, int skillIndex)
-    {
-        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
-
-        if (selectionPlayer == null)
-        {
-            return;
-        }
-
-        selectionPlayer.QueuePlayerSelection(new ValueSelection(skillIndex));
     }
 }

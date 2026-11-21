@@ -1,11 +1,13 @@
-﻿using Photon.Pun;
+﻿using DCGO.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class SelectPermanentEffect : MonoBehaviourPunCallbacks
+
+
+public class SelectPermanentEffect : MonoBehaviour
 {
     private static WaitForSeconds _waitForSeconds0_2 = new WaitForSeconds(0.2f);
 
@@ -564,12 +566,12 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                                 {
                                     if (!_isLocal)
                                     {
-                                        photonView.RPC("SetTargetFrames", RpcTarget.All, _selectPlayer.PlayerID, null, null);
+                                        DCGONetwork.Provider.SendPlayerSelection(_selectPlayer, new PermanentSelection(null, null));
                                     }
 
                                     else
                                     {
-                                        SetTargetFrames(_selectPlayer.PlayerID, null, null);
+                                        _selectPlayer.QueuePlayerSelection(new PermanentSelection(null, null));
                                     }
                                 }
                             }
@@ -604,12 +606,12 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
                     if (!_isLocal)
                     {
-                        photonView.RPC("SetTargetFrames", RpcTarget.All, _selectPlayer.PlayerID, isTurnPlayer.ToArray(), CharaIndex.ToArray());
+                        DCGONetwork.Provider.SendPlayerSelection(_selectPlayer, new PermanentSelection(isTurnPlayer.ToArray(), CharaIndex.ToArray()));
                     }
 
                     else
                     {
-                        SetTargetFrames(_selectPlayer.PlayerID, isTurnPlayer.ToArray(), CharaIndex.ToArray());
+                        _selectPlayer.QueuePlayerSelection(new PermanentSelection(isTurnPlayer.ToArray(), CharaIndex.ToArray()));
                     }
 
                     GManager.instance.BackButton.CloseSelectCommandButton();
@@ -679,13 +681,13 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                             }
                         }
 
-                        SetTargetFrames(_selectPlayer.PlayerID, isTurnPlayer.ToArray(), UnitIDs.ToArray());
+                        _selectPlayer.QueuePlayerSelection(new PermanentSelection(isTurnPlayer.ToArray(), UnitIDs.ToArray()));
                     }
 
                     else if (_canNoSelect)
                     {
                         // Decline when choosing nothing is allowed.
-                        SetTargetFrames(_selectPlayer.PlayerID, null, null);
+                        _selectPlayer.QueuePlayerSelection(new PermanentSelection(null, null));
                     }
                 }
                 #endregion
@@ -1058,19 +1060,4 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
         GManager.instance.turnStateMachine.IsSelecting = oldIsSelecting;
     }
-
-    #region 選択決定
-    [PunRPC]
-    public void SetTargetFrames(int playerID, bool[] isTurnPlayer, int[] UnitIndex)
-    {
-        Player selectionPlayer = GManager.instance.GetPlayerFromID(playerID);
-
-        if (selectionPlayer == null)
-        {
-            return;
-        }
-
-        selectionPlayer.QueuePlayerSelection(new PermanentSelection(isTurnPlayer, UnitIndex));
-    }
-    #endregion
 }

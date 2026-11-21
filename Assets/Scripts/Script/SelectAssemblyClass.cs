@@ -2,12 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Photon;
-using Photon.Pun;
 using System;
 using UnityEngine.Events;
 
-public class SelectAssemblyClass : MonoBehaviourPunCallbacks
+public class SelectAssemblyClass : MonoBehaviour
 {
     private static WaitForSeconds _waitForSeconds0_4 = new WaitForSeconds(0.4f);
 

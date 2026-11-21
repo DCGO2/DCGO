@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.Linq;
+using DCGO.Networking;
 
 //Class to manage the overall game situation
 [System.Serializable]
 public class GameContext
 {
     #region constructor
-    public GameContext(Player _You, Player _Opponent)
+    public GameContext(Player _You, Player _Opponent, bool isAI)
     {
         You = _You;
         Opponent = _Opponent;
+        IsAI = isAI;
 
-        if (PhotonNetwork.IsConnected)
-        {
-            SetPlayerID();
-        }
+        SetPlayerID();
 
         Memory = 0;
     }
@@ -33,6 +32,8 @@ public class GameContext
         get; set;
     } = new List<CardSource>();
     #endregion
+
+    public bool IsAI { get; private set; }
 
     #region Player
     public Player You;
@@ -129,7 +130,7 @@ public class GameContext
     #region Player ID Assignment
     public void SetPlayerID()
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (DCGONetwork.Provider.IsRoomHost() || IsAI)
         {
             You.PlayerID = 0;
             Opponent.PlayerID = 1;

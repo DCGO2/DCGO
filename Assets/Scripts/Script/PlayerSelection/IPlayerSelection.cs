@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface IPlayerSelection
+public interface IPlayerSelection : IGamePacket
 {
 
 }

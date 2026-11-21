@@ -11,5 +11,8 @@ public static class PacketRegistration
         GamePacketFactory.Register((btyes) => new CheatAction(btyes));
         GamePacketFactory.Register((btyes) => new PlayCardAction(btyes));
         GamePacketFactory.Register((btyes) => new PassAction(btyes));
+        GamePacketFactory.Register((btyes) => new ValueSelection(btyes));
+        GamePacketFactory.Register((btyes) => new PermanentSelection(btyes));
+        GamePacketFactory.Register((btyes) => new CardSelection(btyes));
     }
 }

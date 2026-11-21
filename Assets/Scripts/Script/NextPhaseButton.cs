@@ -1,5 +1,4 @@
-﻿using Photon;
-using Photon.Pun;
+﻿using DCGO.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using UnityEngine.Events;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
-public class NextPhaseButton : MonoBehaviourPunCallbacks
+public class NextPhaseButton : MonoBehaviour
 {
     [Header("ボタンテキスト")]
     public TextMeshProUGUI ButtonText;
@@ -55,7 +54,7 @@ public class NextPhaseButton : MonoBehaviourPunCallbacks
                             turnStateMachine.SendShouldHatch(false);
                             break;
                         case GameContext.phase.Main:
-                            turnStateMachine.QueueMainPhaseAction(turnStateMachine.gameContext.TurnPlayer, new PassAction());
+                            DCGONetwork.Provider.SendMainPhaseAction(turnStateMachine.gameContext.TurnPlayer, new PassAction());
                             break;
                     }
 

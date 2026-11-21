@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using System;
 using System.Linq;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
@@ -47,10 +44,10 @@ public class SelectBattleMode : MonoBehaviour
             return;
         }
 
-        ContinuousController.instance.StartCoroutine(SetUpSelectBattleModeCoroutine());
+        SetUpSelectBattleModeCoroutine();
     }
 
-    public IEnumerator SetUpSelectBattleModeCoroutine()
+    public void SetUpSelectBattleModeCoroutine()
     {
         selectBattleModeWindow.CloseOnButtonClicked = false;
         selectRoomMatchWindow.CloseOnButtonClicked = false;
@@ -60,11 +57,6 @@ public class SelectBattleMode : MonoBehaviour
         enterRoom.Off();
 
         Opening.instance.battle.selectBattleDeck.Off();
-
-        if (PhotonNetwork.IsConnected)
-        {
-            yield return ContinuousController.instance.StartCoroutine(PhotonUtility.DisconnectCoroutine());
-        }
 
         this.gameObject.SetActive(true);
 
@@ -133,16 +125,6 @@ public class SelectBattleMode : MonoBehaviour
 
         ContinuousController.instance.isAI = isAI;
         ContinuousController.instance.isRandomMatch = true;
-
-        if (!isAI && PhotonNetwork.OfflineMode)
-        {
-            if (PhotonNetwork.InRoom)
-            {
-                PhotonNetwork.LeaveRoom();
-            }
-
-            PhotonNetwork.OfflineMode = false;
-        }
 
         Opening.instance.battle.selectBattleDeck.Off();
 
@@ -236,7 +218,7 @@ public class SelectBattleMode : MonoBehaviour
 
     void StartCreateRoom()
     {
-        roomManager.SetUpRoom();
+        roomManager.SetUpRoom(true);
     }
 
     void StartEnterRoomID()
