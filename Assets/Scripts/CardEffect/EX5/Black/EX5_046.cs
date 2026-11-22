@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.EX5
             #region Name Rule
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.NameIsAlso(card, "Etemon", "Sukamon"));
+                cardEffects.Add(CardEffectFactory.NameTreatedAsIncluding(card, "Etemon", "Sukamon"));
             }
             #endregion
 
