@@ -6,22 +6,27 @@ using System;
 public class CanNotBeDestroyedClass : ICardEffect, ICanNotBeDestroyedEffect
 {
     Func<Permanent, bool> _permanentCondition { get; set; }
-    public void SetUpCanNotBeDestroyedClass(Func<Permanent, bool> permanentCondition)
+    bool _canBeDestroyedByBattle { get; set; }
+    public void SetUpCanNotBeDestroyedClass(Func<Permanent, bool> permanentCondition, bool canBeDestroyedByBattle = false)
     {
         _permanentCondition = permanentCondition;
+        _canBeDestroyedByBattle = canBeDestroyedByBattle;
     }
 
-    public bool CanNotBeDestroyed(Permanent permanent)
+    public bool CanNotBeDestroyed(Permanent permanent, bool isByBattle)
     {
-        if (permanent != null)
+        if (!isByBattle || !_canBeDestroyedByBattle)
         {
-            if (permanent.TopCard != null)
+            if (permanent != null)
             {
-                if (_permanentCondition != null)
+                if (permanent.TopCard != null)
                 {
-                    if (_permanentCondition(permanent))
+                    if (_permanentCondition != null)
                     {
-                        return true;
+                        if (_permanentCondition(permanent))
+                        {
+                            return true;
+                        }
                     }
                 }
             }

@@ -3,7 +3,7 @@ using System.Collections;
 public partial class CardEffectCommons
 {
     #region Target 1 Digimon can't be deleted
-    public static IEnumerator GainCanNotBeDeleted(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass, string effectName, bool byBattle = false)
+    public static IEnumerator GainCanNotBeDeleted(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass, string effectName, bool canBeDestroyedByBattle = false)
     {
         if (targetPermanent == null) yield break;
         if (!IsPermanentExistsOnBattleArea(targetPermanent)) yield break;
@@ -26,7 +26,7 @@ public partial class CardEffectCommons
             card: card,
             condition: CanUseCondition,
             effectName: effectName,
-            byBattle: byBattle);
+            canBeDestroyedByBattle: canBeDestroyedByBattle);
 
         canNotBeDestroyedClass.SetIsOptionEffect(activateClass.IsOptionEffect);
 

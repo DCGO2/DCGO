@@ -4,11 +4,11 @@ using System;
 public partial class CardEffectFactory
 {
     #region Static effect that can't be deleted
-    public static CanNotBeDestroyedClass CanNotBeDestroyedStaticEffect(Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition, string effectName, bool byBattle = false)
+    public static CanNotBeDestroyedClass CanNotBeDestroyedStaticEffect(Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition, string effectName, bool canBeDestroyedByBattle = false)
     {
         CanNotBeDestroyedClass canNotBeDestroyedClass = new CanNotBeDestroyedClass();
         canNotBeDestroyedClass.SetUpICardEffect(effectName, CanUseCondition, card);
-        canNotBeDestroyedClass.SetUpCanNotBeDestroyedClass(permanentCondition: PermanentCondition);
+        canNotBeDestroyedClass.SetUpCanNotBeDestroyedClass(permanentCondition: PermanentCondition, canBeDestroyedByBattle);
 
         if (isInheritedEffect)
         {
@@ -17,11 +17,6 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (byBattle && CardEffectCommons.IsByBattle(hashtable))
-            {
-                return false;
-            }
-
             return condition == null || condition();
         }
 

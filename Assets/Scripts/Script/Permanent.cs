@@ -3298,7 +3298,7 @@ public class Permanent
     #endregion
 
     #region Can Be Destroyed
-    public bool CanBeDestroyed()
+    public bool CanBeDestroyed(bool isByBattle = false)
     {
         #region 消滅しない効果
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
@@ -3312,7 +3312,7 @@ public class Permanent
                     {
                         if (cardEffect.CanUse(null))
                         {
-                            if (((ICanNotBeDestroyedEffect)cardEffect).CanNotBeDestroyed(this))
+                            if (((ICanNotBeDestroyedEffect)cardEffect).CanNotBeDestroyed(this, isByBattle))
                             {
                                 return false;
                             }
@@ -3329,7 +3329,7 @@ public class Permanent
                 {
                     if (cardEffect.CanUse(null))
                     {
-                        if (((ICanNotBeDestroyedEffect)cardEffect).CanNotBeDestroyed(this))
+                        if (((ICanNotBeDestroyedEffect)cardEffect).CanNotBeDestroyed(this, isByBattle))
                         {
                             return false;
                         }
@@ -3347,7 +3347,7 @@ public class Permanent
     #region Can Be Destroyed By Battle
     public bool CanBeDestroyedByBattle(Permanent AttackingPermanent, Permanent DefendingPermanent, CardSource DefendingCard)
     {
-        if (!CanBeDestroyed())
+        if (!CanBeDestroyed(true))
         {
             return false;
         }

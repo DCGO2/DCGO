@@ -485,7 +485,7 @@ public interface ICanNotSwitchAttackTargetEffect
 #region "Target permanent cannot be deleted" effect"
 public interface ICanNotBeDestroyedEffect
 {
-    bool CanNotBeDestroyed(Permanent permanent);
+    bool CanNotBeDestroyed(Permanent permanent, bool isByBattle);
 }
 #endregion
 
