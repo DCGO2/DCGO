@@ -4,7 +4,7 @@ using System;
 public partial class CardEffectFactory
 {
     #region Static effect that can't be deleted
-    public static CanNotBeDestroyedClass CanNotBeDestroyedStaticEffect(Hashtable _hashtable, Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition, string effectName, bool byBattle = false)
+    public static CanNotBeDestroyedClass CanNotBeDestroyedStaticEffect(Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition, string effectName, bool byBattle = false, Hashtable _hashtable = null)
     {
         CanNotBeDestroyedClass canNotBeDestroyedClass = new CanNotBeDestroyedClass();
         canNotBeDestroyedClass.SetUpICardEffect(effectName, CanUseCondition, card);
