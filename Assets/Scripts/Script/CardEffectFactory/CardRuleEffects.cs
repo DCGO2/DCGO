@@ -1,27 +1,29 @@
-using System;
 using System.Collections.Generic;
 
 public partial class CardEffectFactory
 {
-
     public static string NAME_SEPARATOR = "§";
-    public static ChangeCardNamesClass NameTreatedAsIncluding(CardSource card, string otherName)
+    public static ChangeBaseCardNameClass NameTreatedAsIncluding(CardSource card, params string[] otherNames)
     {
-        ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-        changeCardNamesClass.SetUpICardEffect($"Also treated as including [{otherName}]", _ => true, card);
-        changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
+        string nameDisplay = string.Join("/", otherNames);
+        ChangeBaseCardNameClass ChangeBaseCardNameClass = new ChangeBaseCardNameClass();
+        ChangeBaseCardNameClass.SetUpICardEffect($"Also treated as including [{nameDisplay}]", _ => true, card);
+        ChangeBaseCardNameClass.SetUpChangeBaseCardNamesClass(changeBaseCardNames: ChangeBaseCardNames);
 
-        return changeCardNamesClass;
+        return ChangeBaseCardNameClass;
 
-        List<string> changeCardNames(CardSource cardSource, List<string> cardNames)
+        List<string> ChangeBaseCardNames(CardSource cardSource, List<string> cardNames)
         {
             if (cardSource == card)
             {
                 for (int i = 0; i < cardNames.Count; i++)
                 {
-                    if (!cardNames[i].Contains(otherName))
+                    foreach(string otherName in otherNames)
                     {
-                        cardNames[i] = $"{cardNames[i]}{NAME_SEPARATOR}{otherName}";
+                        if (!cardNames[i].Contains(otherName))
+                        {
+                            cardNames[i] = $"{cardNames[i]}{NAME_SEPARATOR}{otherName}";
+                        }
                     }
                 }
             }
@@ -30,16 +32,16 @@ public partial class CardEffectFactory
         }
     }
 
-    public static ChangeCardNamesClass NameIsAlso(CardSource card, params string[] otherNames)
+    public static ChangeBaseCardNameClass NameIsAlso(CardSource card, params string[] otherNames)
     {
         string nameDisplay = string.Join("/", otherNames);
-        ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-        changeCardNamesClass.SetUpICardEffect($"Also treated as [{nameDisplay}]", _ => true, card);
-        changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
+        ChangeBaseCardNameClass ChangeBaseCardNameClass = new ChangeBaseCardNameClass();
+        ChangeBaseCardNameClass.SetUpICardEffect($"Also treated as [{nameDisplay}]", _ => true, card);
+        ChangeBaseCardNameClass.SetUpChangeBaseCardNamesClass(changeBaseCardNames: ChangeBaseCardNames);
 
-        return changeCardNamesClass;
+        return ChangeBaseCardNameClass;
 
-        List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
+        List<string> ChangeBaseCardNames(CardSource cardSource, List<string> CardNames)
         {
             if (cardSource == card)
             {

@@ -1,11 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
-
 
 public class P_072 : CEntity_Effect
 {
@@ -28,28 +24,12 @@ public class P_072 : CEntity_Effect
                 condition: null));
         }
 
+        #region Name Rule
         if (timing == EffectTiming.None)
         {
-            ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-            changeCardNamesClass.SetUpICardEffect("Also treated as [MetalGreymon]", CanUseCondition, card);
-            changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-            cardEffects.Add(changeCardNamesClass);
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return true;
-            }
-
-            List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
-            {
-                if (cardSource == card)
-                {
-                    CardNames.Add("MetalGreymon");
-                }
-
-                return CardNames;
-            }
+            cardEffects.Add(CardEffectFactory.NameIsAlso(card, "MetalGreymon"));
         }
+        #endregion
 
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {

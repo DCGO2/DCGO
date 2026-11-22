@@ -25,25 +25,7 @@ namespace DCGO.CardEffects.EX13
             #region Name Rule
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as [Wizardmon]", CanUseCondition, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-                cardEffects.Add(changeCardNamesClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
-                {
-                    if (cardSource == card)
-                    {
-                        CardNames.Add("Wizardmon");
-                    }
-
-                    return CardNames;
-                }
+                cardEffects.Add(CardEffectFactory.NameIsAlso(card, "Wizardmon"));
             }
             #endregion
 

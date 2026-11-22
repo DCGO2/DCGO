@@ -10,29 +10,12 @@ namespace DCGO.CardEffects.BT14
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Name Rule
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as having [Sukamon] in its name", CanUseCondition, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-
-                cardEffects.Add(changeCardNamesClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
-                {
-                    if (cardSource == card)
-                    {
-                        CardNames.Add("Sukamon_BT14_097");
-                    }
-
-                    return CardNames;
-                }
+                cardEffects.Add(CardEffectFactory.NameTreatedAsIncluding(card, "Sukamon"));
             }
+            #endregion
 
             if (timing == EffectTiming.OptionSkill)
             {
@@ -188,47 +171,9 @@ namespace DCGO.CardEffects.BT14
                                     changeValue: 3000,
                                     effectDuration: EffectDuration.UntilOwnerTurnEnd,
                                     activateClass: activateClass));
-                            }
 
-                            if (selectedPermanent != null)
-                            {
-                                ChangeBaseCardNameClass changeBaseCardNameClass = new ChangeBaseCardNameClass();
-                                changeBaseCardNameClass.SetUpICardEffect("Original card name is [Sukamon]", CanUseCondition1, card);
-                                changeBaseCardNameClass.SetUpChangeBaseCardNamesClass(changeBaseCardNames: changeBaseCardNames);
-                                CardEffectCommons.AddEffectToPermanent(
-                                    targetPermanent: selectedPermanent,
-                                    effectDuration: EffectDuration.UntilOwnerTurnEnd,
-                                    card: card,
-                                    cardEffect: changeBaseCardNameClass,
-                                    timing: EffectTiming.None
-                                );
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeCardName(selectedPermanent, card, activateClass, "Sukamon"));
 
-                                bool CanUseCondition1(Hashtable hashtable)
-                                {
-                                    if (selectedPermanent.TopCard != null)
-                                    {
-                                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
-                                }
-
-                                List<string> changeBaseCardNames(CardSource cardSource, List<string> CardNames)
-                                {
-                                    if (cardSource == selectedPermanent.TopCard)
-                                    {
-                                        CardNames = new List<string>() { "Sukamon" };
-                                    }
-
-                                    return CardNames;
-                                }
-                            }
-
-                            if (selectedPermanent != null)
-                            {
                                 ChangeBaseCardColorClass changeBaseCardColorClass = new ChangeBaseCardColorClass();
                                 changeBaseCardColorClass.SetUpICardEffect("Original card color is white", CanUseCondition1, card);
                                 changeBaseCardColorClass.SetUpChangeBaseCardColorClass(ChangeBaseCardColors: ChangeBaseCardColors);

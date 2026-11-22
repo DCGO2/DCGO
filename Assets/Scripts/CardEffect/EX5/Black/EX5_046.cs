@@ -10,51 +10,12 @@ namespace DCGO.CardEffects.EX5
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Name Rule
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as having [Etemon] in its name", CanUseCondition, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-                cardEffects.Add(changeCardNamesClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
-                {
-                    if (cardSource == card)
-                    {
-                        CardNames.Add("Etemon_EX5_046");
-                    }
-
-                    return CardNames;
-                }
+                cardEffects.Add(CardEffectFactory.NameTreatedAsIncluding(card, "Etemon", "Sukamon"));
             }
-
-            if (timing == EffectTiming.None)
-            {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as having [Sukamon] in its name", CanUseCondition, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-                cardEffects.Add(changeCardNamesClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
-                {
-                    if (cardSource == card)
-                    {
-                        CardNames.Add("Sukamon_EX5_046");
-                    }
-
-                    return CardNames;
-                }
-            }
+            #endregion
 
             if (timing == EffectTiming.None)
             {

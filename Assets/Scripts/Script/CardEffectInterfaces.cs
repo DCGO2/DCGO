@@ -150,6 +150,13 @@ public interface IChangeBaseCardNameEffect
 }
 #endregion
 
+#region "Override target card's card names" effect, called after change base, used for change to Sukamon
+public interface IOverrideBaseCardNameEffect
+{
+    List<string> OverrideBaseCardNames(List<string> CardNames, CardSource cardSource);
+}
+#endregion
+
 #region "Change target card's card names for DigiXros" effect
 public interface IChangeCardNamesForDigiXrosEffect
 {

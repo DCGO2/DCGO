@@ -10,28 +10,12 @@ namespace DCGO.CardEffects.BT14
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Name Rule
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as [Commandramon]", CanUseCondition, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-                cardEffects.Add(changeCardNamesClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
-                {
-                    if (cardSource == card)
-                    {
-                        CardNames.Add("Commandramon");
-                    }
-
-                    return CardNames;
-                }
+                cardEffects.Add(CardEffectFactory.NameIsAlso(card, "Commandramon"));
             }
+            #endregion
 
             if (timing == EffectTiming.OnAllyAttack)
             {
