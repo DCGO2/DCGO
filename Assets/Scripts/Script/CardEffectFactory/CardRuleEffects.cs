@@ -3,10 +3,11 @@ using System.Collections.Generic;
 public partial class CardEffectFactory
 {
     public static string NAME_SEPARATOR = "§";
-    public static ChangeBaseCardNameClass NameTreatedAsIncluding(CardSource card, string otherName)
+    public static ChangeBaseCardNameClass NameTreatedAsIncluding(CardSource card, params string[] otherNames)
     {
+        string nameDisplay = string.Join("/", otherNames);
         ChangeBaseCardNameClass ChangeBaseCardNameClass = new ChangeBaseCardNameClass();
-        ChangeBaseCardNameClass.SetUpICardEffect($"Also treated as including [{otherName}]", _ => true, card);
+        ChangeBaseCardNameClass.SetUpICardEffect($"Also treated as including [{nameDisplay}]", _ => true, card);
         ChangeBaseCardNameClass.SetUpChangeBaseCardNamesClass(changeBaseCardNames: ChangeBaseCardNames);
 
         return ChangeBaseCardNameClass;
@@ -17,9 +18,12 @@ public partial class CardEffectFactory
             {
                 for (int i = 0; i < cardNames.Count; i++)
                 {
-                    if (!cardNames[i].Contains(otherName))
+                    foreach(string otherName in otherNames)
                     {
-                        cardNames[i] = $"{cardNames[i]}{NAME_SEPARATOR}{otherName}";
+                        if (!cardNames[i].Contains(otherName))
+                        {
+                            cardNames[i] = $"{cardNames[i]}{NAME_SEPARATOR}{otherName}";
+                        }
                     }
                 }
             }
