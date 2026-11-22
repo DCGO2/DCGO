@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.BT27
                     effectDuration: EffectDuration.UntilOpponentTurnEnd,
                     activateClass: activateClass,
                     effectName: "Can't be deleted other than in battle",
-                    byBattle: true));
+                    canBeDestroyedByBattle: true));
             }
 
             CardEffectFactory.ActivateClassesForSharedEffects(
