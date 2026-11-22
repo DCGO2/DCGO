@@ -95,12 +95,19 @@ namespace DCGO.CardEffects.ED01
 
                         if (selectedPermanent == null) yield break;
 
-                        yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.ChangeDigimonSAttack(
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
                             targetPermanent: selectedPermanent,
                             changeValue: 1,
                             effectDuration: EffectDuration.UntilEachTurnEnd,
-                            activateClass: activateClass));
+                            activateClass: activateClass
+                        ));
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                            targetPermanent: selectedPermanent,
+                            changeValue: 3000,
+                            effectDuration: EffectDuration.UntilEachTurnEnd,
+                            activateClass: activateClass
+                        ));
                     }
                 }
             }
