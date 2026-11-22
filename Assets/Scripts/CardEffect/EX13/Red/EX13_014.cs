@@ -180,7 +180,7 @@ namespace DCGO.CardEffects.EX13
                         && permanent.TopCard.EqualsCardName(ContinuousController.instance.AthoRenePorToken.CardName_ENG);
 
                 bool CanPlayToken()
-                    => !CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsAthoRenePor);
+                    => !CardEffectCommons.HasMatchConditionPermanent(IsAthoRenePor);
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
@@ -188,7 +188,7 @@ namespace DCGO.CardEffects.EX13
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaActivate(card, activateClass)
-                        && (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentLowestDPDigimon)
+                        && (CardEffectCommons.HasMatchConditionPermanent(IsOpponentLowestDPDigimon)
                             || CanPlayToken());
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
