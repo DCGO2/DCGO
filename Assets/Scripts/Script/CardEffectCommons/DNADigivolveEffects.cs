@@ -592,7 +592,7 @@ public partial class CardEffectCommons
                 GManager.instance.commandText.OpenCommandText("The opponent is choosing a card to DNA digivolve.");
             }
 
-            yield return new WaitUntil(() => owner.HasPlayerSelection());
+            yield return owner.WaitForPlayerSelection();
             PermanentSelection permanentSelection = owner.DequeuePlayerSelection<PermanentSelection>();
 
             GManager.instance.commandText.CloseCommandText();

@@ -542,7 +542,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                         }
                     }
 
-                    yield return new WaitUntil(() => card.Owner.HasPlayerSelection());
+                    yield return card.Owner.WaitForPlayerSelection();
 
                     ValueSelection seletion = card.Owner.DequeuePlayerSelection<ValueSelection>();
                     _targetIndex = seletion != null ? seletion.ValueAsInt() : 0;
