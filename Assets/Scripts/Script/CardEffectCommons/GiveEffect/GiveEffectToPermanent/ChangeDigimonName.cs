@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public partial class CardEffectCommons
 {
     #region Change target's original name to [Sukamon]
-    public static IEnumerator ChangeDigimonNameToSukamon(Permanent selectedPermanent, CardSource card, ICardEffect activateClass)
+    public static IEnumerator ChangeDigimonName(Permanent selectedPermanent, CardSource card, ICardEffect activateClass, string newName)
     {
         string _separator = CardEffectFactory.NAME_SEPARATOR;
 
@@ -13,10 +13,10 @@ public partial class CardEffectCommons
         if (activateClass == null) yield break;
         if (activateClass.EffectSourceCard == null) yield break;
 
-        ChangeCardNamesClass ChangeCardNamesClass = new ChangeCardNamesClass();
-        ChangeCardNamesClass.SetUpICardEffect("Original card name is [Sukamon]", CanUseCondition1, card);
-        ChangeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: ChangeCardNames);
-        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => ChangeCardNamesClass);
+        OverrideBaseCardNameClass OverrideBaseCardNameClass = new OverrideBaseCardNameClass();
+        OverrideBaseCardNameClass.SetUpICardEffect($"Original card name is [{newName}]", CanUseCondition1, card);
+        OverrideBaseCardNameClass.SetUpOverrideBaseCardNamesClass(changeBaseCardNames: ChangeCardNames);
+        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => OverrideBaseCardNameClass);
 
         bool CanUseCondition1(Hashtable hashtable)
         {
@@ -34,9 +34,9 @@ public partial class CardEffectCommons
                     {
                         int separatorIndex = CardNames[i].IndexOf(_separator);
 
-                        CardNames[i] = "Sukamon" + CardNames[i][separatorIndex..];
+                        CardNames[i] = newName + CardNames[i][separatorIndex..];
                     }
-                    else CardNames[i] = "Sukamon";
+                    else CardNames[i] = newName;
                 }
             }
 

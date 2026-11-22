@@ -1414,13 +1414,26 @@ public class CardSource : MonoBehaviour
             }
             #endregion
 
+            List<IChangeBaseCardNameEffect> changeEffects = new List<IChangeBaseCardNameEffect>();
+            List<IOverrideBaseCardNameEffect> overrideEffects = new List<IOverrideBaseCardNameEffect>();
+
             #region card effects that change base card names
 
             if (isDigivolutionCard)
             {
-                EffectList_ExceptAddedEffects(EffectTiming.None)
-                    .Filter(cardEffect => cardEffect is IChangeBaseCardNameEffect && cardEffect.CanUse(null))
-                    .ForEach(cardEffect => baseCardNames = ((IChangeBaseCardNameEffect)cardEffect).ChangeBaseCardNames(baseCardNames, this));
+                foreach(ICardEffect cardEffect in EffectList_ExceptAddedEffects(EffectTiming.None))
+                {
+                    if (cardEffect is IChangeBaseCardNameEffect changeEffect)
+                    {
+                        if (cardEffect.CanUse(null))
+                            changeEffects.Add(changeEffect);
+                    }
+                    if (cardEffect is IOverrideBaseCardNameEffect overrideEffect)
+                    {
+                        if (cardEffect.CanUse(null))
+                            overrideEffects.Add(overrideEffect);
+                    }
+                }
             }
             else
             {
@@ -1428,35 +1441,72 @@ public class CardSource : MonoBehaviour
 
                 if (PermanentOfThisCard() == null)
                 {
-                    EffectList(EffectTiming.None)
-                        .Filter(cardEffect => cardEffect is IChangeBaseCardNameEffect && cardEffect.CanUse(null))
-                        .ForEach(cardEffect => baseCardNames = ((IChangeBaseCardNameEffect)cardEffect).ChangeBaseCardNames(baseCardNames, this));
+                    foreach(ICardEffect cardEffect in EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is IChangeBaseCardNameEffect changeEffect)
+                        {
+                            if (cardEffect.CanUse(null))
+                                changeEffects.Add(changeEffect);
+                        }
+                        if (cardEffect is IOverrideBaseCardNameEffect overrideEffect)
+                        {
+                            if (cardEffect.CanUse(null))
+                                overrideEffects.Add(overrideEffect);
+                        }
+                    }
                 }
 
                 #endregion
 
                 #region the effects of permanents
-
-                GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+                var permanentEffects = GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
                     .Map(player => player.GetFieldPermanents())
                     .Flat()
                     .Map(permanent => permanent.EffectList(EffectTiming.None))
-                    .Flat()
-                    .Filter(cardEffect => cardEffect is IChangeBaseCardNameEffect && cardEffect.CanUse(null))
-                    .ForEach(cardEffect => baseCardNames = ((IChangeBaseCardNameEffect)cardEffect).ChangeBaseCardNames(baseCardNames, this));
+                    .Flat();
 
+                foreach(ICardEffect cardEffect in permanentEffects)
+                {
+                    if (cardEffect is IChangeBaseCardNameEffect changeEffect)
+                    {
+                        if (cardEffect.CanUse(null))
+                            changeEffects.Add(changeEffect);
+                    }
+                    if (cardEffect is IOverrideBaseCardNameEffect overrideEffect)
+                    {
+                        if (cardEffect.CanUse(null))
+                            overrideEffects.Add(overrideEffect);
+                    }
+                }
                 #endregion
 
                 #region the effects of players
 
-                GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+                var playerEffects = GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
                     .Map(player => player.EffectList(EffectTiming.None))
-                    .Flat()
-                    .Filter(cardEffect => cardEffect is IChangeBaseCardNameEffect && cardEffect.CanUse(null))
-                    .ForEach(cardEffect => baseCardNames = ((IChangeBaseCardNameEffect)cardEffect).ChangeBaseCardNames(baseCardNames, this));
+                    .Flat();
 
+                foreach(ICardEffect cardEffect in playerEffects)
+                {
+                    if (cardEffect is IChangeBaseCardNameEffect changeEffect)
+                    {
+                        if (cardEffect.CanUse(null))
+                            changeEffects.Add(changeEffect);
+                    }
+                    if (cardEffect is IOverrideBaseCardNameEffect overrideEffect)
+                    {
+                        if (cardEffect.CanUse(null))
+                            overrideEffects.Add(overrideEffect);
+                    }
+                }
                 #endregion
             }
+
+            #region apply change effects, then override effects
+            changeEffects.ForEach(changeEffect => baseCardNames = changeEffect.ChangeBaseCardNames(baseCardNames, this));
+
+            overrideEffects.ForEach(overrideEffect => baseCardNames = overrideEffect.OverrideBaseCardNames(baseCardNames, this));
+            #endregion
 
             #endregion
 
@@ -1514,7 +1564,7 @@ public class CardSource : MonoBehaviour
         string replaced = name.Replace(" ", "");
         string lower = name.ToLower();
 
-        return CardNames.Map(cardName => cardName.Split(CardEffectFactory.NAME_SEPARATOR)[0]).Some((cardName) =>
+        return CardNames.Filter(cardName => !cardName.Contains(CardEffectFactory.NAME_SEPARATOR)).Some((cardName) =>
         cardName.Equals(name)
         || cardName.Equals(replaced)
         || cardName.Replace(" ", "").Equals(replaced)
