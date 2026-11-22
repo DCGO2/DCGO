@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public partial class CardEffectCommons
 {
-    #region Change target's original name to [Sukamon]
-    public static IEnumerator ChangeDigimonName(Permanent selectedPermanent, CardSource card, ICardEffect activateClass, string newName)
+    #region Change target's original name
+    public static IEnumerator ChangeCardName(Permanent selectedPermanent, CardSource card, ICardEffect activateClass, string newName)
     {
         string _separator = CardEffectFactory.NAME_SEPARATOR;
 

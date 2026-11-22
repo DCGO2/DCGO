@@ -93,7 +93,7 @@ namespace DCGO.CardEffects.BT11
                                 effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass));
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonName(selectedPermanent, card, activateClass, "Sukamon"));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeCardName(selectedPermanent, card, activateClass, "Sukamon"));
 
                             ChangeBaseCardColorClass changeBaseCardNameClass = new ChangeBaseCardColorClass();
                             changeBaseCardNameClass.SetUpICardEffect("Original card color is white", CanUseCondition1, card);
