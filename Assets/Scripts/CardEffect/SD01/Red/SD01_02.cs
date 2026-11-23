@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.SD01
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reveal 5, add 1 red [ALYSIAN] card, bot deck the rest", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Reveal 5, add 1 red [ALYSION] card, bot deck the rest", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.SD01
                         {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 red [ALYSIAN] trait card.",
+                            message: "Select 1 red [ALYSION] trait card.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null)

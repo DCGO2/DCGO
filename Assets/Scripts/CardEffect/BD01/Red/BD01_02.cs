@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BD01
             if (timing == EffectTiming.None)
             {
                 ChangeDPDeleteEffectMaxDPClass changeDPDeleteEffectMaxDPClass = new ChangeDPDeleteEffectMaxDPClass();
-                changeDPDeleteEffectMaxDPClass.SetUpICardEffect("Maximum DP of DP-based deletion effects gets +1000 DP for this [ALYSIAN] trait Digimon", CanUseCondition, card);
+                changeDPDeleteEffectMaxDPClass.SetUpICardEffect("Maximum DP of DP-based deletion effects gets +1000 DP for this [ALYSION] trait Digimon", CanUseCondition, card);
                 changeDPDeleteEffectMaxDPClass.SetUpChangeDPDeleteEffectMaxDPClass(changeMaxDP: ChangeMaxDP);
                 changeDPDeleteEffectMaxDPClass.SetIsInheritedEffect(true);
                 cardEffects.Add(changeDPDeleteEffectMaxDPClass);

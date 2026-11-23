@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.BD01
             #region Start of Main Phase
             if (timing == EffectTiming.OnStartMainPhase)
             {
-                cardEffects.Add(CardEffectFactory.Gain1MemoryTamerOwnerDigimonConditionalEffect("IF you have a red Digimon with the [ALYSIAN] trait, gain 1 memory", PermanentCondition, null, card));
+                cardEffects.Add(CardEffectFactory.Gain1MemoryTamerOwnerDigimonConditionalEffect("IF you have a red Digimon with the [ALYSION] trait, gain 1 memory", PermanentCondition, null, card));
             }
             #endregion
 
@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BD01
             {
                 string EffectDescription()
                 {
-                    return "[All Turns] All of your red [ALYSIAN] trait Digimon get +1000 DP.";
+                    return "[All Turns] All of your red [ALYSION] trait Digimon get +1000 DP.";
                 }
 
                 bool Condition()

@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BD02
             #region Start of Main Phase
             if (timing == EffectTiming.OnStartMainPhase)
             {
-                cardEffects.Add(CardEffectFactory.Gain1MemoryTamerOwnerDigimonConditionalEffect("IF you have a blue Digimon with the [ALYSIAN] trait, gain 1 memory", PermanentCondition, null, card));
+                cardEffects.Add(CardEffectFactory.Gain1MemoryTamerOwnerDigimonConditionalEffect("IF you have a blue Digimon with the [ALYSION] trait, gain 1 memory", PermanentCondition, null, card));
             }
             #endregion
 
@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BD02
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By suspending this Tamer, 1 of your blue [ALYSIAN] Digimon gains <Piercing>", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By suspending this Tamer, 1 of your blue [ALYSION] Digimon gains <Piercing>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("BT27_010_Main");
                 cardEffects.Add(activateClass);
