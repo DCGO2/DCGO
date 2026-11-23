@@ -1944,15 +1944,17 @@ public class DrawClass
     public IEnumerator Draw()
     {
         if (_drawCount <= 0) yield break;
-        if (_player.LibraryCards.Count <= 0) yield break;
+        if (!_player.LibraryCards.Any(cardSource => !cardSource.IsBeingRevealed)) yield break;
 
         List<CardSource> DrawCards = new List<CardSource>();
 
         for (int i = 0; i < _drawCount; i++)
         {
-            if (_player.LibraryCards.Count > 0)
+            List<CardSource> drawableCards = _player.LibraryCards.Filter(cardSource => !cardSource.IsBeingRevealed);
+
+            if (drawableCards.Count > 0)
             {
-                CardSource DrawCard = _player.LibraryCards[0];
+                CardSource DrawCard = drawableCards[0];
 
                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(DrawCard));
 
