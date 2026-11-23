@@ -307,25 +307,40 @@ public partial class CardEffectCommons
                         canNoSelect = true; // Can no select on the basis of choosing it as the second condition, leaving no valid targets for the first
                     }
 
-                    selectCardEffect.SetUp(
-                        canTargetCondition: selectCondition.CanTargetCondition,
-                        canTargetCondition_ByPreSelecetedList: selectCondition.CanTargetCondition_ByPreSelecetedList,
-                        canEndSelectCondition: selectCondition.CanEndSelectCondition,
-                        canNoSelect: () => canNoSelect,
-                        selectCardCoroutine: selectCondition.SelectCardCoroutine,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        message: selectCondition.Message,
-                        maxCount: maxCount,
-                        canEndNotMax: selectCondition.CanEndNotMax,
-                        isShowOpponent: true,
-                        mode: selectCondition.Mode,
-                        root: SelectCardEffect.Root.Library,
-                        customRootCardList: revealedCards,
-                        canLookReverseCard: true,
-                        selectPlayer: selectPlayer,
-                        cardEffect: activateClass);
+                    void SetUpSelectCardEffect()
+                    {
+                        selectCardEffect.SetUp(
+                            canTargetCondition: selectCondition.CanTargetCondition,
+                            canTargetCondition_ByPreSelecetedList: selectCondition.CanTargetCondition_ByPreSelecetedList,
+                            canEndSelectCondition: selectCondition.CanEndSelectCondition,
+                            canNoSelect: () => canNoSelect,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            message: selectCondition.Message,
+                            maxCount: maxCount,
+                            canEndNotMax: selectCondition.CanEndNotMax,
+                            isShowOpponent: true,
+                            mode: selectCondition.Mode,
+                            root: SelectCardEffect.Root.Library,
+                            customRootCardList: revealedCards,
+                            canLookReverseCard: true,
+                            selectPlayer: selectPlayer,
+                            cardEffect: activateClass);
+                    }
+
+                    SetUpSelectCardEffect();
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    {
+                        if (selectCondition.SelectCardCoroutine != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(selectCondition.SelectCardCoroutine(cardSource));//run the passed coroutine, if any
+
+                            SetUpSelectCardEffect();//Restore set up in case custom Coroutine reused the SelectCardEffect
+                        }
+                    }
                 }
 
                 IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
