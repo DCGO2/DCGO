@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.BT27
             #endregion
 
             #region Shared OP/WD/WA
-            string SharedEffectName = "If opponent has 6+ hand cards, they trash 1, then by trashing 2 Tamer face-down cards, may play or use 1 cost 5 or lower [DATA SQUAD] card from hand";
+            string SharedEffectName = "May bounce 1 enemy lvl 4 or lower Digimon, then by trashing 2 Tamer face-down cards, may play or use 1 cost 5 or lower [DATA SQUAD] card from hand";
 
             CardEffectFactory.ActivateClassesForSharedEffects(
                 ref cardEffects, timing, card,
