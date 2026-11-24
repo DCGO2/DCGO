@@ -93,7 +93,7 @@ public static class UIDebugTheme
 
       int id = image.GetInstanceID();
       _originals[id] = image.color;
-      image.color = ClassifyColor(image);
+      //image.color = ClassifyColor(image);
       count++;
     }
 
@@ -462,7 +462,7 @@ public static class UIDebugTheme
       }
 
       _originals[id] = image.color;
-      image.color = ClassifyColor(image);
+      //image.color = ClassifyColor(image);
       count++;
     }
 
