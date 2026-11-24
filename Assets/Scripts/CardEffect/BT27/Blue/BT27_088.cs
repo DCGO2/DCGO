@@ -51,17 +51,20 @@ namespace DCGO.CardEffects.BT27
                 string EffectDescription()
                     => "[All Turns] When your Digimon are played or digivolve, if any of them have the [Ice-Snow] trait, by suspending this Tamer, trash the bottom 2 digivolution cards from 1 of your opponent's Digimon. After, if they don't have a Digimon with digivolution cards, gain 1 memory.";
 
-                bool IceSnowDigimonCondition(Permanent permanent)
+                bool PermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
+                bool CanSelectPermanentCondition(Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+
                 bool OpponentDigimonWithSourcesCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                    => CanSelectPermanentCondition(permanent)
                         && permanent.DigivolutionCards.Count >= 1;
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleAreaTrigger(card, activateClass)
-                        && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IceSnowDigimonCondition)
-                            || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IceSnowDigimonCondition));
+                        && (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition)
+                            || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition));
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
@@ -91,7 +94,7 @@ namespace DCGO.CardEffects.BT27
 
                             selectPermanentEffect.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: OpponentDigimonWithSourcesCondition,
+                                canTargetCondition: CanSelectPermanentCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
