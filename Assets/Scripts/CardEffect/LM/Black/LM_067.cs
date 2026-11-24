@@ -170,7 +170,8 @@ namespace DCGO.CardEffects.LM
                     canNoTrash: true,
                     isFromOnly1Permanent: false,
                     activateClass: activateClass,
-                    afterSelectionCoroutine: AfterTrashedCards
+                    afterSelectionCoroutine: AfterTrashedCards,
+                    canEndNotMax: true
                 ));
 
                 IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
