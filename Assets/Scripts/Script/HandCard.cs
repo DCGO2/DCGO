@@ -338,18 +338,33 @@ public class HandCard : MonoBehaviour
     {
         if (ShowFaceCard != null && cardSource != null)
         {
+            int requestId = ++_showFaceCardRequestId;
+
             ShowFaceCard.gameObject.SetActive(true);
-            ShowFaceCard.sprite = await cardSource.GetCardSprite();
+
+            Sprite sprite = await cardSource.GetCardSprite();
+
+            // A later OffShowFaceCard/SetShowFaceCard call wins over this one if the image loaded slowly.
+            if (this == null || ShowFaceCard == null || requestId != _showFaceCardRequestId) return;
+
+            ShowFaceCard.sprite = sprite;
         }
     }
 
     public void OffShowFaceCard()
     {
+        _showFaceCardRequestId++;
+
         if (ShowFaceCard != null)
         {
             ShowFaceCard.gameObject.SetActive(false);
         }
     }
+
+    // Bumped whenever the card image is set, so a slow async image load (first time an image is
+    // downloaded) can't overwrite a card back drawn after it was requested.
+    int _cardImageRequestId = 0;
+    int _showFaceCardRequestId = 0;
 
     public void SetSkillName(ICardEffect cardEffect)
     {
@@ -488,6 +503,8 @@ public class HandCard : MonoBehaviour
 
     public void SetUpReverseCard()
     {
+        _cardImageRequestId++;
+
         CardImage.sprite = ContinuousController.instance.ReverseCard;
 
         OffShowFaceCard();
@@ -739,7 +756,14 @@ public class HandCard : MonoBehaviour
         }
 
         //カード画像
-        CardImage.sprite = await cardSource.GetCardSprite();
+        int requestId = ++_cardImageRequestId;
+
+        Sprite sprite = await cardSource.GetCardSprite();
+
+        // If the card back (or another image) was set while this image was loading, keep that instead.
+        if (this == null || CardImage == null || requestId != _cardImageRequestId) return;
+
+        CardImage.sprite = sprite;
     }
 
     void ShowPlayCost()

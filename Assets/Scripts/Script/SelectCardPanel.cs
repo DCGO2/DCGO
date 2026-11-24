@@ -309,7 +309,9 @@ public class SelectCardPanel : MonoBehaviour
 
             eventTrigger.triggers.Add(entry);
 
-            handCard.SetUpHandCard(cardSource);
+            // Don't start an image load here: for your own face-down cards it could finish after the
+            // card back below and show the face (same as CheckCardPanel).
+            handCard.SetUpHandCard(cardSource, showCardImage: false);
 
             if (!cardSource.IsFlipped || CanLookReverseCard)
             {
