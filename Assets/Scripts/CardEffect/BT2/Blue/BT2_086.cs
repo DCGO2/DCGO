@@ -89,7 +89,7 @@ public class BT2_086 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.ContainsCardName("Vee"))
+                    if (cardSource.ContainsCardName("Vee") && !cardSource.EqualsCardName("DemiVeemon"))
                     {
                         return true;
                     }
