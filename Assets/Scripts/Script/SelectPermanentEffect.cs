@@ -238,7 +238,6 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         }
     }
 
-
     //Selected unit list
     List<Permanent> _targetPermanents = new List<Permanent>();
     //No Selection Flag
