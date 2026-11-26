@@ -9,7 +9,6 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 {
     private static WaitForSeconds _waitForSeconds0_2 = new WaitForSeconds(0.2f);
 
-
     public void SetUp
         (Player selectPlayer,
         Func<Permanent, bool> canTargetCondition,
