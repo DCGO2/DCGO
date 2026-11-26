@@ -1385,7 +1385,7 @@ public class PlayPermanentClass
 
                             foreach (ICardEffect effect in _targetPermanent.TopCard.cEntity_EffectController.UseEffectsThisTurn)
                             {
-                                if (effect.OriginalEffectSourceCard is not null)
+                                if (effect.OriginalEffectSourceCard != null)
                                 {
                                     card.cEntity_EffectController.UseEffectsThisTurn.Add(effect);
                                 }
@@ -3605,11 +3605,6 @@ public class IPutSecurityPermanent
         if (topCard == null)
             yield break;
 
-        yield return ContinuousController.instance.StartCoroutine(
-            CardObjectController.TriggerOnSendToSecurity(
-                topCard,
-                _isFaceup));
-
         #region add log
 
         string log = "";
@@ -3656,34 +3651,28 @@ public class IPutSecurityPermanent
 
         #endregion
 
+
         #region place permanent to security
 
         yield return ContinuousController.instance.StartCoroutine(_permanent.DiscardEvoRoots());
         yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(_permanent));
-     
+
         if (!topCard.IsToken)
         {
             if (!topCard.IsDigiEgg)
             {
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(topCard, faceUp: _isFaceup));
-
-                if (!_isFaceup)
-                    topCard.SetReverse();
-                else
-                    topCard.SetFace();
-
-                if (!_toTop)
-                {
-                    topCard.Owner.SecurityCards.Remove(topCard);
-                    topCard.Owner.SecurityCards.Add(topCard);
-                }
-
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(topCard.Owner));
-                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(topCard).AddSecurity());
+                yield return ContinuousController.instance.StartCoroutine(
+                    CardObjectController.AddSecurityCard(
+                        topCard,
+                        toTop: _toTop,
+                        faceUp: _isFaceup));
             }
             else
             {
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { topCard }, cardEffect: cardEffect));
+                yield return ContinuousController.instance.StartCoroutine(
+                    CardObjectController.AddLibraryBottomCards(
+                        new List<CardSource>() { topCard },
+                        cardEffect: cardEffect));
             }
         }
 
@@ -5680,18 +5669,21 @@ public class IReduceSecurity
 
 #endregion
 
+
 #region Add Security
 
 public class IAddSecurity
 {
-    public IAddSecurity(CardSource source)
+    public IAddSecurity(CardSource source, bool faceUp = false)
     {
         _player = source.Owner;
         _cardSource = source;
+        _faceUp = faceUp;
     }
 
     Player _player { get; set; }
     CardSource _cardSource { get; set; }
+    bool _faceUp { get; set; }
 
     public IEnumerator AddSecurity()
     {
@@ -5699,36 +5691,34 @@ public class IAddSecurity
 
         #region "When security cards are added" effect
 
-        #region Hashtable setting
-
         Hashtable hashtable = new Hashtable()
         {
             {"Player", _player},
-            {"CardSources", new List<CardSource> { _cardSource } }
+            {"CardSources", new List<CardSource> { _cardSource } },
+            {"FaceUp", _faceUp }
         };
 
-        #endregion
-
-        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnSendToSecurity));
-        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnAddSecurity));
+        yield return ContinuousController.instance.StartCoroutine(
+            GManager.instance.autoProcessing.StackSkillInfos(
+                hashtable, EffectTiming.OnAddSecurity));
 
         #endregion
 
         #region "When face up cards are added"
+
         if (!_cardSource.IsFlipped)
         {
-            #region Hashtable setting
-
             Hashtable faceUpHashtable = new Hashtable()
             {
                 {"Player", _player},
                 {"CardSources", new List<CardSource> { _cardSource } }
             };
 
-            #endregion
-
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(faceUpHashtable, EffectTiming.OnFaceUpSecurityIncreased));
+            yield return ContinuousController.instance.StartCoroutine(
+                GManager.instance.autoProcessing.StackSkillInfos(
+                    faceUpHashtable, EffectTiming.OnFaceUpSecurityIncreased));
         }
+
         #endregion
     }
 }

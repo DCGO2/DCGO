@@ -783,7 +783,7 @@ public class CardObjectController : MonoBehaviour
         // Cards revealed from the library (eg. "reveal the top X cards" effects) and then returned
         // there were never truly added from outside — track them here so they can be excluded from
         // the OnAddLibraryAnyone trigger below.
-        bool WasAlreadyInLibrary(CardSource cardSource)
+        static bool WasAlreadyInLibrary(CardSource cardSource)
             => cardSource.Owner.LibraryCards.Contains(cardSource) || cardSource.Owner.DigitamaLibraryCards.Contains(cardSource);
 
         HashSet<CardSource> alreadyInLibraryCardSources = new HashSet<CardSource>(cardSources.Filter(WasAlreadyInLibrary));
@@ -881,7 +881,7 @@ public class CardObjectController : MonoBehaviour
         // Cards revealed from the library (eg. "reveal the top X cards" effects) and then returned
         // there were never truly added from outside — track them here so they can be excluded from
         // the OnAddLibraryAnyone trigger below.
-        bool WasAlreadyInLibrary(CardSource cardSource)
+        static bool WasAlreadyInLibrary(CardSource cardSource)
             => cardSource.Owner.LibraryCards.Contains(cardSource) || cardSource.Owner.DigitamaLibraryCards.Contains(cardSource);
 
         HashSet<CardSource> alreadyInLibraryCardSources = new HashSet<CardSource>(cardSources.Filter(WasAlreadyInLibrary));
@@ -1034,6 +1034,9 @@ public class CardObjectController : MonoBehaviour
             yield return ContinuousController.instance.StartCoroutine(
                 RemoveFromAllArea(cardSource));
 
+            yield return ContinuousController.instance.StartCoroutine(
+                TriggerOnSendToSecurity(cardSource, faceUp));
+
             if (cardSource.IsDigiEgg)
             {
                 cardSource.Owner.DigitamaLibraryCards.Add(cardSource);
@@ -1066,7 +1069,7 @@ public class CardObjectController : MonoBehaviour
                 }
 
                 yield return ContinuousController.instance.StartCoroutine(
-                    new IAddSecurity(cardSource).AddSecurity());
+                    new IAddSecurity(cardSource, faceUp).AddSecurity());
             }
         }
     }
