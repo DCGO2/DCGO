@@ -51,7 +51,6 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         _degenerationCount = 1;
     }
 
-
     public void SetIsLocal()
     {
         _isLocal = true;
