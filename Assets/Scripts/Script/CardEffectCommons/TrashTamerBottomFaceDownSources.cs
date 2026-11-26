@@ -88,7 +88,7 @@ public partial class CardEffectCommons
                     }
                 }
             }
-            else
+            else if (totalTrashCount > 2)
             {
                 int remainingTrashCount = totalTrashCount;
 
