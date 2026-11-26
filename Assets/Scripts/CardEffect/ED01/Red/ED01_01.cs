@@ -96,7 +96,7 @@ namespace DCGO.CardEffects.ED01
             }
             #endregion
 
-            #region All Turns
+            #region Your Turn
             if (timing == EffectTiming.OnDetermineDoSecurityCheck)
             {
                 bool PermanentCondition(Permanent permanent)
@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.ED01
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition);
+                        && CardEffectCommons.HasMatchConditionPermanent(PermanentCondition);
                 }
 
                 cardEffects.Add(CardEffectFactory.PierceSelfEffect(
