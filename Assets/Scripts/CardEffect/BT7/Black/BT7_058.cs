@@ -79,9 +79,11 @@ public class BT7_058 : CEntity_Effect
 
                 if (selectedPermanent != null)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { selectedPermanent, card.PermanentOfThisCard() } }, false, activateClass).PlacePermanentToDigivolutionCards());
+                    CardSource deadlyAxemon = selectedPermanent.TopCard;
 
-                    if (thisCardPermanent.DigivolutionCards.Contains(selectedPermanent.TopCard))
+                    yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { selectedPermanent, thisCardPermanent } }, false, activateClass).PlacePermanentToDigivolutionCards());
+
+                    if (thisCardPermanent.DigivolutionCards.Contains(deadlyAxemon))
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                             targetPermanent: thisCardPermanent,
