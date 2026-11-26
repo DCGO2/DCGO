@@ -97,26 +97,53 @@ namespace DCGO.CardEffects.ED01
             #endregion
 
             #region Your Turn
+            bool PermanentCondition(Permanent permanent)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                    && permanent.TopCard.EqualsCardName("Kanata Hondou");
+            }
+
+            bool CanUseCondition1()
+            {
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    && CardEffectCommons.IsOwnerTurn(card)
+                    && CardEffectCommons.HasMatchConditionPermanent(PermanentCondition);
+            }
+
+            bool CanUseCondition2(Hashtable hashtable)
+                => CanUseCondition1(); 
+
             if (timing == EffectTiming.OnDetermineDoSecurityCheck)
             {
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                        && permanent.TopCard.EqualsCardName("Kanata Hondou");
-                }
-
-                bool CanUseCondition()
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.HasMatchConditionPermanent(PermanentCondition);
-                }
-
                 cardEffects.Add(CardEffectFactory.PierceSelfEffect(
                     isInheritedEffect: false,
                     card: card,
-                    condition: CanUseCondition
+                    condition: CanUseCondition1
                 ));
+            }
+
+            CanAttackTargetDefendingPermanentClass canAttackTargetDefendingPermanentClass = new CanAttackTargetDefendingPermanentClass();
+            canAttackTargetDefendingPermanentClass.SetUpICardEffect($"Can attack unsuspended Digimon", CanUseCondition2, card);
+            canAttackTargetDefendingPermanentClass.SetUpCanAttackTargetDefendingPermanentClass(
+                attackerCondition: AttackerCondition,
+                defenderCondition: DefenderCondition,
+                cardEffectCondition: CardEffectCondition);
+            cardEffects.Add(canAttackTargetDefendingPermanentClass);
+
+            bool AttackerCondition(Permanent attacker)
+            {
+                return attacker == card.PermanentOfThisCard();
+            }
+
+            bool DefenderCondition(Permanent defender)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(defender, card)
+                    && !defender.IsSuspended;
+            }
+
+            bool CardEffectCondition(ICardEffect cardEffect)
+            {
+                return true;
             }
             #endregion
 
