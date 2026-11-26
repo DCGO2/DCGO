@@ -21,7 +21,13 @@ namespace DCGO.CardEffects.BD01
             #region Start of Main Phase
             if (timing == EffectTiming.OnStartMainPhase)
             {
-                cardEffects.Add(CardEffectFactory.Gain1MemoryTamerOwnerDigimonConditionalEffect("IF you have a red Digimon with the [ALYSION] trait, gain 1 memory", PermanentCondition, null, card));
+                bool condition()
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.IsOwnerTurn(card);
+                }
+
+                cardEffects.Add(CardEffectFactory.Gain1MemoryTamerOwnerDigimonConditionalEffect("IF you have a red Digimon with the [ALYSION] trait, gain 1 memory", PermanentCondition, condition, card));
             }
             #endregion
 
