@@ -89,6 +89,12 @@ namespace DCGO.CardEffects.EX13
             {
                 bool isUsed = false;
 
+                IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                {
+                    if (permanents.Count > 0) { isUsed = true; }
+                    yield return null;
+                }
+
                 #region May botdeck digimon
                 if (CardEffectCommons.HasMatchConditionPermanent(UnsuspendedDigimonCondition))
                 {
@@ -106,13 +112,7 @@ namespace DCGO.CardEffects.EX13
                         afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                         mode: SelectPermanentEffect.Mode.Tap,
                         cardEffect: activateClass);
-
-                    IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
-                    {
-                        if (permanents.Count > 0) { isUsed = true; }
-                        yield return null;
-                    }
-
+                    
                     selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to suspend.", "The opponent is selecting 1 Digimon to return to suspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.EX13
                         canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
