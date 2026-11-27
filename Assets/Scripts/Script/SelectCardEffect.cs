@@ -25,6 +25,11 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         Player selectPlayer,
         ICardEffect cardEffect)
     {
+        if (_activationDepth > 0)
+        {
+            _suspendedSelections.Push(new SelectionState(this));
+        }
+
         _canTargetCondition = canTargetCondition;
         _canTargetCondition_ByPreSelecetedList = canTargetCondition_ByPreSelecetedList;
         _canEndSelectCondition = canEndSelectCondition;
@@ -189,6 +194,13 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     (int reduceCost, Func<CardSource, bool> reduceCostCardCondition)? _reduceCostTuple = null;
     (int fixedCost, Func<CardSource, bool> fixedCostCardCondition)? _fixedCostTuple = null;
 
+    // Tracks overlapping selection activations.
+    private int _activationDepth = 0;
+
+    // Stores previous selection states while nested selections are active.
+    private readonly Stack<SelectionState> _suspendedSelections =
+        new Stack<SelectionState>();
+
     public enum Mode
     {
         AddHand,
@@ -196,6 +208,159 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         // PutLibraryTop,
         // PutLibraryBottom,
         Custom,
+    }
+
+    private class SelectionState
+    {
+        private Func<CardSource, bool> _canTargetCondition;
+        private Func<List<CardSource>, CardSource, bool> _canTargetCondition_ByPreSelecetedList;
+        private Func<List<CardSource>, bool> _canEndSelectCondition;
+        private Func<bool> _canNoSelect;
+
+        private List<CardSource> _targetCards;
+
+        private Func<CardSource, IEnumerator> _selectCardCoroutine;
+        private Func<List<CardSource>, IEnumerator> _afterSelectCardCoroutine;
+
+        private string _message;
+        private int _maxCount;
+        private bool _canEndNotMax;
+        private bool _isShowOpponent;
+        private bool _canLookReverseCard;
+
+        private List<CardSource> _customRootCardList;
+        private Player _selectPlayer;
+        private ICardEffect _cardEffect;
+
+        private bool _isLocal;
+        private bool _showReverseCard;
+        private bool _showCard;
+        private bool _notAddLog;
+        private bool _isDigiXros;
+        private bool _isAssembly;
+        private bool _isSecurity;
+        private bool _allowFaceDown;
+
+        private (int reduceCost, Func<CardSource, bool> reduceCostCardCondition)? _reduceCostTuple;
+        private (int fixedCost, Func<CardSource, bool> fixedCostCardCondition)? _fixedCostTuple;
+
+        private Mode _mode;
+        private Root _root;
+
+        private bool _isDeckBottom;
+        private bool _isDeckTop;
+
+        private string _customMessage;
+        private string _customMessage_Enemy;
+        private string _customMessage_ShowCard;
+        private string _customCountText;
+
+        private List<SkillInfo> _skillInfos;
+        private List<int> _slectedInexesInList;
+        private Func<List<int>, IEnumerator> _afterSelectIndexCoroutine;
+        private Dictionary<CardSource, string> _highlightCards;
+
+        public SelectionState(SelectCardEffect selection)
+        {
+            _canTargetCondition = selection._canTargetCondition;
+            _canTargetCondition_ByPreSelecetedList = selection._canTargetCondition_ByPreSelecetedList;
+            _canEndSelectCondition = selection._canEndSelectCondition;
+            _canNoSelect = selection._canNoSelect;
+
+            _targetCards = selection._targetCards;
+
+            _selectCardCoroutine = selection._selectCardCoroutine;
+            _afterSelectCardCoroutine = selection._afterSelectCardCoroutine;
+
+            _message = selection._message;
+            _maxCount = selection._maxCount;
+            _canEndNotMax = selection._canEndNotMax;
+            _isShowOpponent = selection._isShowOpponent;
+            _canLookReverseCard = selection._canLookReverseCard;
+
+            _customRootCardList = selection._customRootCardList;
+            _selectPlayer = selection._selectPlayer;
+            _cardEffect = selection._cardEffect;
+
+            _isLocal = selection._isLocal;
+            _showReverseCard = selection._showReverseCard;
+            _showCard = selection._showCard;
+            _notAddLog = selection._notAddLog;
+            _isDigiXros = selection._isDigiXros;
+            _isAssembly = selection._isAssembly;
+            _isSecurity = selection._isSecurity;
+            _allowFaceDown = selection._allowFaceDown;
+
+            _reduceCostTuple = selection._reduceCostTuple;
+            _fixedCostTuple = selection._fixedCostTuple;
+
+            _mode = selection._mode;
+            _root = selection._root;
+
+            _isDeckBottom = selection._isDeckBottom;
+            _isDeckTop = selection._isDeckTop;
+
+            _customMessage = selection._customMessage;
+            _customMessage_Enemy = selection._customMessage_Enemy;
+            _customMessage_ShowCard = selection._customMessage_ShowCard;
+            _customCountText = selection._customCountText;
+
+            _skillInfos = selection._skillInfos;
+            _slectedInexesInList = selection._slectedInexesInList;
+            _afterSelectIndexCoroutine = selection._afterSelectIndexCoroutine;
+            _highlightCards = selection._highlightCards;
+        }
+
+        public void Restore(SelectCardEffect selection)
+        {
+            selection._canTargetCondition = _canTargetCondition;
+            selection._canTargetCondition_ByPreSelecetedList = _canTargetCondition_ByPreSelecetedList;
+            selection._canEndSelectCondition = _canEndSelectCondition;
+            selection._canNoSelect = _canNoSelect;
+
+            selection._targetCards = _targetCards;
+
+            selection._selectCardCoroutine = _selectCardCoroutine;
+            selection._afterSelectCardCoroutine = _afterSelectCardCoroutine;
+
+            selection._message = _message;
+            selection._maxCount = _maxCount;
+            selection._canEndNotMax = _canEndNotMax;
+            selection._isShowOpponent = _isShowOpponent;
+            selection._canLookReverseCard = _canLookReverseCard;
+
+            selection._customRootCardList = _customRootCardList;
+            selection._selectPlayer = _selectPlayer;
+            selection._cardEffect = _cardEffect;
+
+            selection._isLocal = _isLocal;
+            selection._showReverseCard = _showReverseCard;
+            selection._showCard = _showCard;
+            selection._notAddLog = _notAddLog;
+            selection._isDigiXros = _isDigiXros;
+            selection._isAssembly = _isAssembly;
+            selection._isSecurity = _isSecurity;
+            selection._allowFaceDown = _allowFaceDown;
+
+            selection._reduceCostTuple = _reduceCostTuple;
+            selection._fixedCostTuple = _fixedCostTuple;
+
+            selection._mode = _mode;
+            selection._root = _root;
+
+            selection._isDeckBottom = _isDeckBottom;
+            selection._isDeckTop = _isDeckTop;
+
+            selection._customMessage = _customMessage;
+            selection._customMessage_Enemy = _customMessage_Enemy;
+            selection._customMessage_ShowCard = _customMessage_ShowCard;
+            selection._customCountText = _customCountText;
+
+            selection._skillInfos = _skillInfos;
+            selection._slectedInexesInList = _slectedInexesInList;
+            selection._afterSelectIndexCoroutine = _afterSelectIndexCoroutine;
+            selection._highlightCards = _highlightCards;
+        }
     }
 
     Mode _mode;
@@ -339,6 +504,8 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
     public virtual IEnumerator Activate()
     {
+        _activationDepth++;
+
         bool oldIsSelecting = GManager.instance.turnStateMachine.IsSelecting;
 
         List<CardSource> handCards = new List<CardSource>();
@@ -883,6 +1050,13 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         GManager.instance.turnStateMachine.gameContext.IsSecurityLooking = false;
 
         GManager.instance.turnStateMachine.IsSelecting = oldIsSelecting;
+
+        _activationDepth--;
+
+        if (_suspendedSelections.Count > 0)
+        {
+            _suspendedSelections.Pop().Restore(this);
+        }
     }
 
     [PunRPC]

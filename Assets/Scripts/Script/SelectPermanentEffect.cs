@@ -22,6 +22,12 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         Mode mode,
         ICardEffect cardEffect)
     {
+        // Preserve the currently running selection before overwriting its settings.
+        if (_activationDepth > 0)
+        {
+            _suspendedSelections.Push(new SelectionState(this));
+        }
+
         _selectPlayer = selectPlayer;
         _canTargetCondition = canTargetCondition;
         _canTargetCondition_ByPreSelecetedList = canTargetCondition_ByPreSelecetedList;
@@ -123,6 +129,12 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
     Func<Permanent, bool> _defenderCondition = (permanent) => true;
     bool _isFaceUp = false;
 
+    // Tracks nested SelectPermanentEffect activations.
+    private readonly Stack<SelectionState> _suspendedSelections =
+        new Stack<SelectionState>();
+
+    private int _activationDepth = 0;
+
     public enum Mode
     {
         Tap,
@@ -137,6 +149,93 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         Attack,
         Taunt,
         Custom
+    }
+
+    private class SelectionState
+    {
+        public Player SelectPlayer;
+        public Func<Permanent, bool> CanTargetCondition;
+        public Func<List<Permanent>, Permanent, bool> CanTargetCondition_ByPreSelecetedList;
+        public Func<List<Permanent>, bool> CanEndSelectCondition;
+        public int MaxCount;
+        public bool CanNoSelect;
+        public bool CanEndNotMax;
+        public Func<Permanent, IEnumerator> SelectPermanentCoroutine;
+        public Func<List<Permanent>, IEnumerator> AfterSelectPermanentCoroutine;
+        public Mode CurrentMode;
+        public ICardEffect CardEffect;
+
+        public bool IsLocal;
+        public bool IsDigiXros;
+        public int DegenerationCount;
+        public bool CanAttackPlayer;
+        public Func<Permanent, bool> DefenderCondition;
+        public bool IsFaceUp;
+
+        public List<Permanent> TargetPermanents;
+        public bool NoSelect;
+
+        public string CustomMessage;
+        public string CustomMessage_Enemy;
+        public string CustomBackButtonMessage;
+
+        public SelectionState(SelectPermanentEffect selector)
+        {
+            SelectPlayer = selector._selectPlayer;
+            CanTargetCondition = selector._canTargetCondition;
+            CanTargetCondition_ByPreSelecetedList = selector._canTargetCondition_ByPreSelecetedList;
+            CanEndSelectCondition = selector._canEndSelectCondition;
+            MaxCount = selector._maxCount;
+            CanNoSelect = selector._canNoSelect;
+            CanEndNotMax = selector._canEndNotMax;
+            SelectPermanentCoroutine = selector._selectPermanentCoroutine;
+            AfterSelectPermanentCoroutine = selector._afterSelectPermanentCoroutine;
+            CurrentMode = selector._mode;
+            CardEffect = selector._cardEffect;
+
+            IsLocal = selector._isLocal;
+            IsDigiXros = selector._isdigiXros;
+            DegenerationCount = selector._degenerationCount;
+            CanAttackPlayer = selector._canAttackPlayer;
+            DefenderCondition = selector._defenderCondition;
+            IsFaceUp = selector._isFaceUp;
+
+            TargetPermanents = selector._targetPermanents;
+            NoSelect = selector._noSelect;
+
+            CustomMessage = selector._customMessage;
+            CustomMessage_Enemy = selector._customMessage_Enemy;
+            CustomBackButtonMessage = selector._customBackButtonMessage;
+        }
+
+        public void Restore(SelectPermanentEffect selector)
+        {
+            selector._selectPlayer = SelectPlayer;
+            selector._canTargetCondition = CanTargetCondition;
+            selector._canTargetCondition_ByPreSelecetedList = CanTargetCondition_ByPreSelecetedList;
+            selector._canEndSelectCondition = CanEndSelectCondition;
+            selector._maxCount = MaxCount;
+            selector._canNoSelect = CanNoSelect;
+            selector._canEndNotMax = CanEndNotMax;
+            selector._selectPermanentCoroutine = SelectPermanentCoroutine;
+            selector._afterSelectPermanentCoroutine = AfterSelectPermanentCoroutine;
+            selector._mode = CurrentMode;
+            selector._cardEffect = CardEffect;
+
+            selector._isLocal = IsLocal;
+            selector._isdigiXros = IsDigiXros;
+            selector._degenerationCount = DegenerationCount;
+            selector._canAttackPlayer = CanAttackPlayer;
+            selector._defenderCondition = DefenderCondition;
+            selector._isFaceUp = IsFaceUp;
+
+            selector._targetPermanents = TargetPermanents;
+            selector._noSelect = NoSelect;
+
+            selector._customMessage = CustomMessage;
+            selector._customMessage_Enemy = CustomMessage_Enemy;
+            selector._customBackButtonMessage = CustomBackButtonMessage;
+        }
     }
 
     //Selected unit list
@@ -242,6 +341,8 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
     public IEnumerator Activate()
     {
+        _activationDepth++;
+
         bool oldIsSelecting = GManager.instance.turnStateMachine.IsSelecting;
 
         _targetPermanents = new List<Permanent>();
@@ -1057,6 +1158,16 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         }
 
         GManager.instance.turnStateMachine.IsSelecting = oldIsSelecting;
+
+        // Finish this activation.
+        _activationDepth--;
+
+        // Restore the previous activation if this was a nested selection.
+        if (_suspendedSelections.Count > 0)
+        {
+            SelectionState previousState = _suspendedSelections.Pop();
+            previousState.Restore(this);
+        }
     }
 
     #region 選択決定
