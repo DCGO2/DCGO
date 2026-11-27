@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Photon;
 using Photon.Pun;
 using System;
 
@@ -22,6 +21,11 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
         Mode mode,
         ICardEffect cardEffect)
     {
+        if (_activationDepth > 0)
+        {
+            _suspendedSelections.Push(new SelectionState(this));
+        }
+
         _selectPlayer = selectPlayer;
         _canTargetCondition = canTargetCondition;
         _canTargetCondition_ByPreSelecetedList = canTargetCondition_ByPreSelecetedList;
@@ -122,6 +126,9 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
     (int reduceCost, Func<CardSource, bool> reduceCostCardCondition)? _reduceCostTuple = null;
     (int fixedCost, Func<CardSource, bool> fixedCostCardCondition)? _fixedCostTuple = null;
 
+    private int _activationDepth = 0;
+    private readonly Stack<SelectionState> _suspendedSelections = new Stack<SelectionState>();
+
     public enum Mode
     {
         Discard,
@@ -129,6 +136,94 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
         PutLibraryBottom,
         PutSecurityBottom,
         Custom
+    }
+
+    private class SelectionState
+    {
+        private Player _selectPlayer;
+        private Func<CardSource, bool> _canTargetCondition;
+        private Func<List<CardSource>, CardSource, bool> _canTargetCondition_ByPreSelecetedList;
+        private Func<List<CardSource>, bool> _canEndSelectCondition;
+        private int _maxCount;
+        private bool _canNoSelect;
+        private bool _canEndNotMax;
+        private bool _isShowOpponent;
+        private Func<CardSource, IEnumerator> _selectCardCoroutine;
+        private Func<List<CardSource>, IEnumerator> _afterSelectCardCoroutine;
+        private Mode _mode;
+        private ICardEffect _cardEffect;
+        private bool _showCard;
+        private bool _digiXros;
+        private bool _isLocal;
+        private bool _isFaceUp;
+        private (int reduceCost, Func<CardSource, bool> reduceCostCardCondition)? _reduceCostTuple;
+        private (int fixedCost, Func<CardSource, bool> fixedCostCardCondition)? _fixedCostTuple;
+        private List<CardSource> _targetCards;
+        private bool _noSelect;
+        private string _customMessage_ShowCard;
+        private string _customMessage;
+        private string _customMessage_Enemy;
+        private bool _showOpponentMessage;
+
+        public SelectionState(SelectHandEffect selection)
+        {
+            _selectPlayer = selection._selectPlayer;
+            _canTargetCondition = selection._canTargetCondition;
+            _canTargetCondition_ByPreSelecetedList = selection._canTargetCondition_ByPreSelecetedList;
+            _canEndSelectCondition = selection._canEndSelectCondition;
+            _maxCount = selection._maxCount;
+            _canNoSelect = selection._canNoSelect;
+            _canEndNotMax = selection._canEndNotMax;
+            _isShowOpponent = selection._isShowOpponent;
+            _selectCardCoroutine = selection._selectCardCoroutine;
+            _afterSelectCardCoroutine = selection._afterSelectCardCoroutine;
+            _mode = selection._mode;
+            _cardEffect = selection._cardEffect;
+            _showCard = selection._showCard;
+            _digiXros = selection._digiXros;
+            _isLocal = selection._isLocal;
+            _isFaceUp = selection._isFaceUp;
+            _reduceCostTuple = selection._reduceCostTuple;
+            _fixedCostTuple = selection._fixedCostTuple;
+
+            _targetCards = selection._targetCards;
+            _noSelect = selection._noSelect;
+
+            _customMessage_ShowCard = selection._customMessage_ShowCard;
+            _customMessage = selection._customMessage;
+            _customMessage_Enemy = selection._customMessage_Enemy;
+            _showOpponentMessage = selection._showOpponentMessage;
+        }
+
+        public void Restore(SelectHandEffect selection)
+        {
+            selection._selectPlayer = _selectPlayer;
+            selection._canTargetCondition = _canTargetCondition;
+            selection._canTargetCondition_ByPreSelecetedList = _canTargetCondition_ByPreSelecetedList;
+            selection._canEndSelectCondition = _canEndSelectCondition;
+            selection._maxCount = _maxCount;
+            selection._canNoSelect = _canNoSelect;
+            selection._canEndNotMax = _canEndNotMax;
+            selection._isShowOpponent = _isShowOpponent;
+            selection._selectCardCoroutine = _selectCardCoroutine;
+            selection._afterSelectCardCoroutine = _afterSelectCardCoroutine;
+            selection._mode = _mode;
+            selection._cardEffect = _cardEffect;
+            selection._showCard = _showCard;
+            selection._digiXros = _digiXros;
+            selection._isLocal = _isLocal;
+            selection._isFaceUp = _isFaceUp;
+            selection._reduceCostTuple = _reduceCostTuple;
+            selection._fixedCostTuple = _fixedCostTuple;
+
+            selection._targetCards = _targetCards;
+            selection._noSelect = _noSelect;
+
+            selection._customMessage_ShowCard = _customMessage_ShowCard;
+            selection._customMessage = _customMessage;
+            selection._customMessage_Enemy = _customMessage_Enemy;
+            selection._showOpponentMessage = _showOpponentMessage;
+        }
     }
 
     //Selected Hand Card List
@@ -160,6 +255,8 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
 
     public virtual IEnumerator Activate()
     {
+        _activationDepth++;
+
         bool oldIsSelecting = GManager.instance.turnStateMachine.IsSelecting;
 
         List<PlayPermanentClass> playCharas = new List<PlayPermanentClass>();
@@ -517,7 +614,7 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
                                 }
                             }
 
-                            SetTargetHandCards(_selectPlayer.PlayerID, CardIDs != null ? CardIDs.ToArray() : null);
+                            SetTargetHandCards(_selectPlayer.PlayerID, CardIDs?.ToArray());
                         }  
                     }
 
@@ -554,7 +651,7 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
                             }
                         }
 
-                        SetTargetHandCards(_selectPlayer.PlayerID, CardIDs != null ? CardIDs.ToArray() : null);
+                        SetTargetHandCards(_selectPlayer.PlayerID, CardIDs?.ToArray());
 
                     }
                 }
@@ -757,6 +854,12 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
 
         GManager.instance.turnStateMachine.IsSelecting = oldIsSelecting;
 
+        _activationDepth--;
+
+        if (_suspendedSelections.Count > 0)
+        {
+            _suspendedSelections.Pop().Restore(this);
+        }
     }
 
     #region ƒJ[ƒh‘I‘ð‚ðŒˆ’è
