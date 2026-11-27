@@ -73,10 +73,6 @@ namespace DCGO.CardEffects.BT27
             bool OpponentDigimonCondition(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
-            bool OpponentSourcelessDigimonCondition(Permanent permanent)
-                => OpponentDigimonCondition(permanent)
-                    && permanent.DigivolutionCards.Count == 0;
-
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons().Filter(OpponentDigimonCondition))
@@ -87,8 +83,13 @@ namespace DCGO.CardEffects.BT27
                         targetPermanent: permanent, trashCount: 2, isFromTop: true, activateClass: activateClass));
                 }
 
+                bool OpponentSourcelessDigimonCondition(Permanent permanent, ActivateClass activateClass)
+                => OpponentDigimonCondition(permanent)
+                    && permanent.DigivolutionCards.Count == 0
+                    && !permanent.TopCard.CanNotBeAffected(activateClass);
+
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotDigivolvePlayerEffect(
-                    permanentCondition: OpponentSourcelessDigimonCondition,
+                    permanentCondition: permanent => OpponentSourcelessDigimonCondition(permanent, activateClass),
                     cardCondition: null,
                     effectDuration: EffectDuration.UntilOpponentTurnEnd,
                     activateClass: activateClass,
@@ -96,7 +97,7 @@ namespace DCGO.CardEffects.BT27
                     effectName: "Digimon without digivolution cards can't digivolve"));
 
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
-                    permanentCondition: OpponentSourcelessDigimonCondition,
+                    permanentCondition: permanent => OpponentSourcelessDigimonCondition(permanent, activateClass),
                     effectDuration: EffectDuration.UntilOpponentTurnEnd,
                     activateClass: activateClass,
                     isOnlyActivePhase: false,
