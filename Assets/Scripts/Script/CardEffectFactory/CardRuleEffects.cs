@@ -16,15 +16,9 @@ public partial class CardEffectFactory
         {
             if (cardSource == card)
             {
-                for (int i = 0; i < cardNames.Count; i++)
+                foreach(string otherName in otherNames)
                 {
-                    foreach(string otherName in otherNames)
-                    {
-                        if (!cardNames[i].Contains(otherName))
-                        {
-                            cardNames[i] = $"{cardNames[i]}{NAME_SEPARATOR}{otherName}";
-                        }
-                    }
+                    cardNames.Add($"{NAME_SEPARATOR}{otherName}");
                 }
             }
 
