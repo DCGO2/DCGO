@@ -599,6 +599,7 @@ public class ContinuousController : MonoBehaviour
         LoadAutoMinDigivolutionCost();
         LoadAutoMaxCardCount();
         LoadAutoHatch();
+        LoadShareRandomMatchmakingGameplayData();
         //LoadUseBanlist();
         LoadShowCutInAnimation();
         LoadReverseOpponentsCards();
@@ -924,6 +925,21 @@ public class ContinuousController : MonoBehaviour
     public void LoadAutoHatch()
     {
         autoHatch = PlayerPrefsUtil.GetBool(_autoHatchKey, false);
+    }
+    #endregion
+
+    #region Share random matchmaking gameplay data
+    [HideInInspector] public bool shareRandomMatchmakingGameplayData = true;
+    string _shareRandomMatchmakingGameplayDataKey = "ShareRandomMatchmakingGameplayData";
+
+    public void SaveShareRandomMatchmakingGameplayData()
+    {
+        PlayerPrefsUtil.SetBool(_shareRandomMatchmakingGameplayDataKey, shareRandomMatchmakingGameplayData);
+        PlayerPrefs.Save();
+    }
+    public void LoadShareRandomMatchmakingGameplayData()
+    {
+        shareRandomMatchmakingGameplayData = PlayerPrefsUtil.GetBool(_shareRandomMatchmakingGameplayDataKey, true);
     }
     #endregion
 
